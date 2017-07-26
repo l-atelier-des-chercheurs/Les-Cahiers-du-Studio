@@ -6,8 +6,6 @@ const fs = require('fs-extra'),
   mm = require('marky-mark'),
   exec = require('child_process').exec,
   gutil = require('gulp-util'),
-  parsedown = require('woods-parsedown'),
-  slugg = require('slugg'),
   gm = require('gm').subClass({imageMagick: true})
 ;
 
@@ -19,11 +17,11 @@ const
 ;
 
 
-var sockets = (function() {
+module.exports = function() {
 
-  console.log("main module initialized");
-  console.log( api.getCurrentDate('X'));
-  console.log( api.getCurrentDate());
+  console.log("Main module initialized");
+  console.log(api.getCurrentDate('X'));
+  console.log(api.getCurrentDate());
 
   let app;
   let io;
@@ -59,7 +57,7 @@ var sockets = (function() {
       socket.on('listSlides', function (data){ onListSlides(socket, data); });
 */
 
-      socket.on('listTimelines', function (data){ onListTimelines(socket, data); });
+      socket.on('listFolders', function (data){ onListFolders(socket,data); });
 
     });
   }
@@ -68,28 +66,28 @@ var sockets = (function() {
 
 
   /*
-    listTimelines : sans argument = retourne toutes les timelines avec tout leurs contenus (médias avec leurs méta)
+    onListFolders : sans argument = retourne toutes les timelines avec tout leurs contenus (médias avec leurs méta)
     avec arg :
       - scope: overview
       => get all timelines meta without listing medias (used on home page)
-      - scope: timeline,
+      - scope: folder,
         slug: compagnie-3-6-30
       => get this timeline meta + medias and meta
   */
-  function onListTimelines(socket, d) {
+  function onListFolders(socket, d) {
     dev.logfunction( "EVENT - onRemoveUserDirPath");
 
     if(!d) {
 
-      file.getTimeline().then(function(t) {
-        sendEventWithContent( 'listTimelines', t, io, socket);
+      file.getFolder().then(function(foldersData) {
+        sendEventWithContent('listFolder', foldersData, io, socket);
       }, function(error) {
         console.error("Failed to list folders! Error: ", error);
       });
 
-    } else if(d.scope === "timeline") {
-      file.getTimeline(d.slug).then(function(t) {
-        sendEventWithContent( 'listAllFolders', t, io, socket);
+    } else if(d.scope === "folder") {
+      file.getFolder(d.slug).then(function(foldersData) {
+        sendEventWithContent('listFolder', foldersData, io, socket);
       }, function(error) {
         console.error("Failed to list folders! Error: ", error);
       });
@@ -120,7 +118,7 @@ var sockets = (function() {
 
   function onListSlides( socket, dataFolder) {
     dev.logfunction( "EVENT - onListSlides");
-    api.readConfMeta(dataFolder.slugConfName).then(function(confMeta) {
+    api.readConfMeta(dataFolder.slugFolderName).then(function(confMeta) {
       dev.logverbose('just read conf meta, confMeta.slides.length = ' + confMeta.slides.length);
       // if no slides to show, or one slide that's just empty text
       if(confMeta.slides.length === 0 || (confMeta.slides.length === 1 && confMeta.slides[0] === ''))
@@ -128,7 +126,7 @@ var sockets = (function() {
       var confSlidesData = new Array();
       for(var slideName of confMeta.slides) {
         dev.logverbose('Slide : ' + slideName);
-        var mediaMeta = getMediaMeta(dataFolder.slugConfName, slideName);
+        var mediaMeta = getMediaMeta(dataFolder.slugFolderName, slideName);
         mediaMeta.metaName = slideName;
         confSlidesData.push(mediaMeta);
         dev.logverbose('new media meta added');
@@ -142,10 +140,10 @@ var sockets = (function() {
 
   function onMediaNewPos(slidePos) {
     var slideNameWE = new RegExp( settings.regexpRemoveFileExtension, 'i').exec(slidePos.mediaName)[1];
-    var mediaMeta = getMediaMeta(slidePos.slugConfName, slideNameWE);
+    var mediaMeta = getMediaMeta(slidePos.slugFolderName, slideNameWE);
     mediaMeta.posX = Math.max(slidePos.posX,0);
     mediaMeta.posY = slidePos.posY;
-    updateMediaMeta(slidePos.slugConfName, slideNameWE, mediaMeta).then(function(mediaNewMeta) {
+    updateMediaMeta(slidePos.slugFolderName, slideNameWE, mediaMeta).then(function(mediaNewMeta) {
       sendEventWithContent( 'updateOneSlide', mediaNewMeta);
     }, function(error) {
       console.error("Failed to update media meta! Error: ", error);
@@ -154,11 +152,11 @@ var sockets = (function() {
 
   function onMediaNewSize(slideWidth) {
     var slideNameWE = new RegExp( settings.regexpRemoveFileExtension, 'i').exec(slideWidth.mediaName)[1];
-    var mediaMeta = getMediaMeta(slideWidth.slugConfName, slideNameWE);
+    var mediaMeta = getMediaMeta(slideWidth.slugFolderName, slideNameWE);
     mediaMeta.width = slideWidth.width;
     if(!mediaMeta.hasOwnProperty('ratio'))
       mediaMeta.height = slideWidth.height;
-    updateMediaMeta(slideWidth.slugConfName, slideNameWE, mediaMeta).then(function(mediaNewMeta) {
+    updateMediaMeta(slideWidth.slugFolderName, slideNameWE, mediaMeta).then(function(mediaNewMeta) {
       sendEventWithContent( 'updateOneSlide', mediaNewMeta);
     }, function(error) {
       console.error("Failed to update media meta! Error: ", error);
@@ -177,8 +175,8 @@ var sockets = (function() {
       var confDate= confData.date;
       var confAuth = confData.auteur;
       var confIntro = confData.introduction;
-      var slugConfName = slugg(confName);
-      var confPath = api.getContentPath(slugConfName);
+      var slugFolderName = slugg(confName);
+      var confPath = api.getContentPath(slugFolderName);
       var currentDateString = api.getCurrentDate();
 
       fs.access(confPath, fs.F_OK, function( err) {
@@ -205,7 +203,7 @@ var sockets = (function() {
 
         } else {
           // if there's already something at path
-          console.log("WARNING - the following folder name already exists: " + slugConfName);
+          console.log("WARNING - the following folder name already exists: " + slugFolderName);
           var objectJson = {
             "name": confName,
             "timestamp": currentDateString
@@ -256,9 +254,9 @@ var sockets = (function() {
     });
   }
 
-  function getMediaMeta( slugConfName, fileNameWithoutExtension) {
-      dev.logfunction( "COMMON — getMediaMeta : slugConfName = " + slugConfName + " n = " + fileNameWithoutExtension);
-      var confPath = api.getContentPath(slugConfName);
+  function getMediaMeta( slugFolderName, fileNameWithoutExtension) {
+      dev.logfunction( "COMMON — getMediaMeta : slugFolderName = " + slugFolderName + " n = " + fileNameWithoutExtension);
+      var confPath = api.getContentPath(slugFolderName);
       dev.logverbose( 'confPath = ' + confPath);
       var mediaMetaPath = path.join(confPath, fileNameWithoutExtension + settings.metaFileext);
       dev.logverbose( 'mediaMetaPath = ' + mediaMetaPath);
@@ -281,10 +279,10 @@ var sockets = (function() {
     return mediaMetaData;
   }
 
-  function updateMediaMeta( slugConfName, fileNameWithoutExtension, newMediaMeta) {
+  function updateMediaMeta( slugFolderName, fileNameWithoutExtension, newMediaMeta) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction( "COMMON — updateMediaMeta : slugConfName = " + slugConfName + " fileNameWithoutExtension = " + fileNameWithoutExtension);
-      var confPath = api.getContentPath(slugConfName);
+      dev.logfunction( "COMMON — updateMediaMeta : slugFolderName = " + slugFolderName + " fileNameWithoutExtension = " + fileNameWithoutExtension);
+      var confPath = api.getContentPath(slugFolderName);
       var mediaMetaPath = path.join(confPath, fileNameWithoutExtension + settings.metaFileext);
       api.storeData( mediaMetaPath, newMediaMeta, 'update').then(function( meta) {
         console.log('just stored new media meta');
@@ -308,6 +306,4 @@ var sockets = (function() {
 
 
   return API;
-})();
-
-module.exports = sockets;
+}

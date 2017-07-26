@@ -174,7 +174,7 @@ var currentStream = (function() {
           resolve(stream);
         },
         function(err) {
-          alert( dodoc.lang.audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
+          alert( local.lang.audioStreamCouldntBeStarted + '\n\n error: ' + JSON.stringify(err));
         }
       );
     });

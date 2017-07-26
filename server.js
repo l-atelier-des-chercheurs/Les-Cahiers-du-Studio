@@ -9,10 +9,13 @@ var dev = require('./bin/dev-log');
 // var localtunnel = require('localtunnel');
 // var ngrok = require('ngrok');
 
-var config = require('./config.json');
+const
+  config = require('./config.json'),
+  local = require('./local')
+;
 
 module.exports = function(electronApp) {
-  dev.logverbose('Starting server');
+  dev.logverbose('Starting server 1');
 
   var app = express();
   // works without asking for a certificate
@@ -25,7 +28,8 @@ module.exports = function(electronApp) {
   else if( config.protocol === 'https')
     var server = https.createServer(options, app);
 
-  var io = require("socket.io").listen(server);
+  var io = require('socket.io').listen(server);
+  dev.logverbose('Starting server 2');
 
   var sockets = require('./sockets');
   var expressSettings = require('./express-settings');
@@ -43,15 +47,13 @@ module.exports = function(electronApp) {
   */
   router(app, io, m);
 
-
   /**
   * Start the http server at port and IP defined before
   */
-
   server.listen(
     app.get("port"), function() {
       dev.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
-      dev.log(' ');
+      dev.log(` `);
       process.on('unhandledRejection', function(reason, p) {
         dev.error("Unhandled Rejection at: Promise ", p, " reason: ", reason);
           // application specific logging, throwing an error, or other logic here

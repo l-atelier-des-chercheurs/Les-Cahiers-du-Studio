@@ -6,8 +6,9 @@ script
 script(src='/socket.io/socket.io.js')
 script
   | var app = {};
-  | app.slugConfName = "#{slugConfName}";
-  | app.settings = !{JSON.stringify(settings)};
+  | app.slugFolderName = "#{slugFolderName}";
+  | app.folderPath = "#{folderPath}";
+  | app.local = function() { return !{JSON.stringify(lang)} };
 script( src='/development/plugins.js')
 script moment.locale("#{settings.codelang}");
 script( src='/development/main.js')
