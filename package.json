@@ -1,18 +1,18 @@
 {
-  "name": "carreau.js",
-  "version": "1.0.0",
-  "description": "Carreau.js is a presentation tool in the browser.",
+  "name": "stv-doc",
+  "version": "0.1.0",
+  "description": "STV doc is a documentation tool.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
-  "homepage": "https://github.com/l-atelier-des-chercheurs/carreau.js#readme",
+  "homepage": "https://github.com/louis-ev/stv-documentation",
   "license": "CC-BY-NC-SA-4.0",
   "main": "main.js",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/l-atelier-des-chercheurs/carreau.js/"
+    "url": "git://github.com/louis-ev/stv-documentation"
   },
   "bugs": {
-    "url": "https://github.com/l-atelier-des-chercheurs/carreau.js/issues"
+    "url": "https://github.com/louis-ev/stv-documentation/issues"
   },
   "scripts": {
     "start": "electron .",
@@ -22,7 +22,7 @@
   },
   "build": {
     "electronVersion": "1.4.8",
-    "appId": "carreau.js",
+    "appId": "stv-doc",
     "asar": false,
     "mac": {
       "category": "public.app-category.education"
@@ -49,7 +49,7 @@
     "serve-favicon": "^2.3.0",
     "slugg": "^1.0.0",
     "socket.io": "^1.3.5",
-    "woods-parsedown": "git://github.com/louis-ev/woods-parsedown.git#master"
+    "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master"
   },
   "devDependencies": {
     "browser-sync": "^2.14.0",

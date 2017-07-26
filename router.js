@@ -31,7 +31,7 @@ module.exports = function(app,io,m){
   // GET
   function getIndex(req, res) {
     // console.log(req);
-    var pageTitle = "carreau.js";
+    var pageTitle = "stvdoc";
     res.render("index", {"pageTitle" : pageTitle, "settings" : settings});
   };
 

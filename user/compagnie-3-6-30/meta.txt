@@ -1,0 +1,17 @@
+name: Compagnie 3 6 30
+
+----
+
+created: 20170701_130000
+
+----
+
+start: 20170701_140000
+
+----
+
+end: 20170710_100000
+
+----
+
+password: $2a$10$z34.7hqjbETq6czEi96.KeGTo49XEtFFy3sgCefAQoGbE7c/ZmVi6

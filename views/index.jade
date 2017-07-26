@@ -3,42 +3,8 @@ html
   include snippets/head
   body(data-page='index' class=isDebug && 'is--debug')
 
-    .module--bandeau
-      #intro
-        h1 carreau.js
-
-    .module--listePresentations
-      h2 Liste des présentations
-      .dossier-list
-        .dossier.dossier_newconfform
-          form(onsubmit='return false;' class='add-new-conf-form')
-            h6 créer une présentation
-            .title
-              input(type="text" class="title" placeholder='Titre')
-            .meta-data
-              textarea(class="introduction" placeholder='Introduction')
-              input(type="text" class="lieu" placeholder='Lieu')
-              input(type="date" class="date" placeholder='Date')
-              input(type="text" class="auteur" placeholder='Auteur(s)')
-              input(type='submit' class='js-add-conf' value='ajouter')
-
-    .js--templates
-      .dossier(data-nom)
-        .index
-        .dossier-inside
-          a.folder-link(href title)
-            .title
-          .introduction
-          .meta-data
-            .lieu
-              h4 lieu&nbsp;:
-              span
-            .date
-              h4 date&nbsp;:
-              span
-            .auteur
-              h4 auteur&nbsp;:
-              span
+    #intro
+      h1 stv-doc
 
     include snippets/footer
     script( src='/js/pages/index.js')

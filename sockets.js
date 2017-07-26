@@ -14,7 +14,8 @@ const fs = require('fs-extra'),
 const
   settings  = require('./settings'),
   dev = require('./bin/dev-log'),
-  api = require('./bin/api')
+  api = require('./bin/api'),
+  file = require('./bin/file')
 ;
 
 
@@ -51,19 +52,51 @@ var sockets = (function() {
         dev.log('RECEIVED EVENT : ' + event);
       });
 
-        // I N D E X
-        socket.on('newConf', onNewConf);
-        socket.on('listConf', function (data){ onListConf(socket); });
+      // I N D E X
+/*
+      socket.on('newConf', onNewConf);
+      socket.on('listConf', function (data){ onListConf(socket); });
+      socket.on('listSlides', function (data){ onListSlides(socket, data); });
+*/
 
-        socket.on('listSlides', function (data){ onListSlides(socket, data); });
-        socket.on('mediaNewPos', onMediaNewPos);
-        socket.on('mediaNewSize', onMediaNewSize);
-      });
+      socket.on('listTimelines', function (data){ onListTimelines(socket, data); });
+
+    });
   }
 
 // ------------- F U N C T I O N S -------------------
 
-  // I N D E X      P A G E
+
+  /*
+    listTimelines : sans argument = retourne toutes les timelines avec tout leurs contenus (médias avec leurs méta)
+    avec arg :
+      - scope: overview
+      => get all timelines meta without listing medias (used on home page)
+      - scope: timeline,
+        slug: compagnie-3-6-30
+      => get this timeline meta + medias and meta
+  */
+  function onListTimelines(socket, d) {
+    dev.logfunction( "EVENT - onRemoveUserDirPath");
+
+    if(!d) {
+
+      file.getTimeline().then(function(t) {
+        sendEventWithContent( 'listTimelines', t, io, socket);
+      }, function(error) {
+        console.error("Failed to list folders! Error: ", error);
+      });
+
+    } else if(d.scope === "timeline") {
+      file.getTimeline(d.slug).then(function(t) {
+        sendEventWithContent( 'listAllFolders', t, io, socket);
+      }, function(error) {
+        console.error("Failed to list folders! Error: ", error);
+      });
+    }
+  }
+
+/*
   function onListConf( socket){
     console.log( "EVENT - onListConf");
     listAllFolders().then(function( allFoldersData) {
@@ -162,8 +195,8 @@ var sockets = (function() {
               "auteur": confAuth,
               "created" : currentDateString,
             };
-          storeData( getMetaFileOfFolder(confPath), fmeta, "create").then(function( meta) {
-              console.log('sucess ' + meta)
+          api.storeData( getMetaFileOfFolder(confPath), fmeta, "create").then(function( meta) {
+            console.log('sucess ' + meta)
             resolve( meta);
           }, function(err) {
             console.log( gutil.colors.red('--> Couldn\'t create conf meta.'));
@@ -184,59 +217,11 @@ var sockets = (function() {
     });
   }
 
-  function listAllFolders() {
-    return new Promise(function(resolve, reject) {
-      fs.readdir( api.getContentPath(), function (err, filenames) {
-        if (err) return console.log( 'Couldn\'t read content dir : ' + err);
-
-        var folders = filenames.filter( function(slugFolderName){ return new RegExp("^([^.]+)$", 'i').test( slugFolderName); });
-        console.log( "Number of folders in " + api.getContentPath() + " = " + folders.length + ". Folders are " + folders);
-
-        var foldersProcessed = 0;
-        var allFoldersData = [];
-        folders.forEach( function( slugFolderName) {
-
-          if( new RegExp("^([^.]+)$", 'i').test( slugFolderName)
-          && slugFolderName.indexOf( settings.deletedPrefix)){
-            var fmeta = getFolderMeta( slugFolderName);
-            fmeta.slugFolderName = slugFolderName;
-            allFoldersData.push( fmeta);
-          }
-
-          foldersProcessed++;
-          if( foldersProcessed === folders.length && allFoldersData.length > 0) {
-            console.log( "- - - - all folders JSON have been processed.");
-            resolve( allFoldersData);
-          }
-        });
-      });
-    });
-  }
 
   function getMetaFileOfFolder(folderPath) {
     console.log(`COMMON — getMetaFileOfFolder ${folderPath}`);
     return path.join(folderPath, settings.confMetafilename + settings.metaFileext);
   }
-
-  // C O M M O N     F U N C T I O N S
-  function eventAndContent( sendEvent, objectJson) {
-    var eventContentJSON =
-    {
-      "socketevent" : sendEvent,
-      "content" : objectJson
-    };
-    return eventContentJSON;
-  }
-
-  function sendEventWithContent( sendEvent, objectContent, socket) {
-    var eventAndContentJson = eventAndContent( sendEvent, objectContent);
-    console.log("eventAndContentJson " + JSON.stringify( eventAndContentJson));
-    if( socket === undefined)
-      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-    else
-      socket.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
-  }
-
 
 
   // should remove this function to replace with
@@ -301,7 +286,7 @@ var sockets = (function() {
       dev.logfunction( "COMMON — updateMediaMeta : slugConfName = " + slugConfName + " fileNameWithoutExtension = " + fileNameWithoutExtension);
       var confPath = api.getContentPath(slugConfName);
       var mediaMetaPath = path.join(confPath, fileNameWithoutExtension + settings.metaFileext);
-      storeData( mediaMetaPath, newMediaMeta, 'update').then(function( meta) {
+      api.storeData( mediaMetaPath, newMediaMeta, 'update').then(function( meta) {
         console.log('just stored new media meta');
         resolve(meta);
       }, function(err) {
@@ -319,6 +304,7 @@ var sockets = (function() {
     dev.logfunction( "COMMON — getFolderPath : " + slugFolderName);
     return path.join(api.getContentPath(), dodoc.settings().contentDirname, slugFolderName);
   }
+*/
 
 
   return API;

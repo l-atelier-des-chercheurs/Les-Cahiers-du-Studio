@@ -1,12 +1,12 @@
 {
-  "name": "conftool",
-  "description": "Conf tool",
+  "name": "stvdoc",
+  "description": "Documentation tool for stv",
   "main": "",
   "authors": [
     "louis eveillard <hello@louiseveillard.com>"
   ],
-  "license": "MIT",
-  "homepage": "https://github.com/louis-ev/CONFERENCE_TOOL",
+  "license": "",
+  "homepage": "https://github.com/louis-ev/stv-documentation",
   "moduleType": [
     "amd",
     "globals",
@@ -19,8 +19,10 @@
     "test",
     "tests"
   ],
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "dependencies": {
+    "alertifyjs": "^1.0.11",
     "moment": "^2.12.0",
     "store-js": "^1.3.20",
     "jquery": "^3.1.0",

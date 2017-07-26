@@ -19,6 +19,9 @@ var api = (function() {
     textifyObj                  : (obj) => { return textifyObj(obj); },
     storeData                   : (mpath, d, e) => { return storeData( mpath, d, e); },
     parseData                   : (d) => { return parseData(d); },
+    eventAndContent             : (sendEvent, objectJson) =>     { return eventAndContent(sendEvent, objectJson) },
+    sendEventWithContent        : (sendEvent, objectContent, io, socket) => { return sendEventWithContent(sendEvent, objectContent, io, socket) },
+
   }
 
   function getContentPath(toPath) {
@@ -148,7 +151,26 @@ var api = (function() {
     	return parsed;
   }
 
+  function eventAndContent(sendEvent, objectJson) {
+    var eventContentJSON =
+    {
+      "socketevent" : sendEvent,
+      "content" : objectJson
+    };
+    return eventContentJSON;
+  }
 
+  function sendEventWithContent(sendEvent, objectContent, io, socket) {
+    var eventAndContentJson = eventAndContent( sendEvent, objectContent);
+    dev.logpackets("eventAndContentJson ", JSON.stringify(eventAndContentJson, null, 4));
+    if(socket)
+      // content sent only to one user
+      socket.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+    else
+      // content broadcasted to all connected users
+      io.sockets.emit( eventAndContentJson["socketevent"], eventAndContentJson["content"]);
+    dev.logpackets("packet sent");
+  }
 
 
   return API;

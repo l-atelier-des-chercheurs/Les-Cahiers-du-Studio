@@ -4,5 +4,5 @@
   "port": 8080,
   "templateEngine": "jade",
   "userDirPath": "documents",
-  "userDirname": "carreau-js"
+  "userDirname": "stv-doc"
 }

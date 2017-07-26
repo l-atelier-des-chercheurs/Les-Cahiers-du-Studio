@@ -30,7 +30,7 @@ function createWindow() {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
-  dev.log('——— Starting carreaujs app v' + process.env.npm_package_version);
+  dev.log('——— Starting stv-doc app v' + process.env.npm_package_version);
 
   global.homeURL = `${config.protocol}://${config.host}:${config.port}`;
 
@@ -291,7 +291,7 @@ function copyAndRenameUserFolder() {
       dev.log('Missing path to content folder');
       try {
         userDirPath = dialog.showOpenDialog({
-          title: 'Sélectionnez le dossier qui contiendra le contenu de carreau.js',
+          title: 'Sélectionnez le dossier qui contiendra le contenu de stv doc',
           defaultPath: app.getPath("documents"),
           properties: ['openDirectory']
         })[0];
@@ -317,7 +317,7 @@ function copyAndRenameUserFolder() {
     const pathToUserContent = path.join(userDirPath, config.userDirname);
 
     fs.access(pathToUserContent, fs.F_OK, function(err) {
-      // if carreau.js folder doesn't exist yet at destination
+      // if userDir folder doesn't exist yet at destination
       if(err) {
         dev.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
         dev.log(`->duplicating /${settings.contentDirname} to create a new one`);
