@@ -1,0 +1,27 @@
+{
+	"boss":      true,
+	"browser":   true,
+	"curly":     true,
+	"eqeqeq":    true,
+	"eqnull":    true,
+	"immed":     true,
+	"latedef":   true,
+	"node":      true,
+	"newcap":    true,
+	"noarg":     true,
+	"quotmark":  "single",
+	"sub":       true,
+	"trailing":  false,
+	"laxcomma":  true,
+	"unused":    "vars",
+	"globals": {
+		"module":     true,
+		"require":    true,
+		"define":     true,
+		"console":    true,
+		"alert":      false,
+		"$":          true,
+		"jQuery":     true,
+		"Modernizr":  true
+	}
+}

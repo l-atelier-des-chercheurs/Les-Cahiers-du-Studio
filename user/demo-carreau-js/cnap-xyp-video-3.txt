@@ -1,0 +1,36 @@
+name: cnap-xyp-video-3.mp4
+
+----
+
+content: 
+
+----
+
+created: 20160831_191424
+
+----
+
+modified: 20160831_191424
+
+----
+
+informations: 
+
+----
+
+posX: 0.08540260646946185
+
+----
+
+posY: 0.2071486029948779
+
+----
+
+width: 0.9146049481245012
+
+----
+
+height: undefined
+
+----
+

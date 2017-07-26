@@ -1,0 +1,68 @@
+{
+  "name": "carreau.js",
+  "version": "1.0.0",
+  "description": "Carreau.js is a presentation tool in the browser.",
+  "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
+  "homepage": "https://github.com/l-atelier-des-chercheurs/carreau.js#readme",
+  "license": "CC-BY-NC-SA-4.0",
+  "main": "main.js",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/l-atelier-des-chercheurs/carreau.js/"
+  },
+  "bugs": {
+    "url": "https://github.com/l-atelier-des-chercheurs/carreau.js/issues"
+  },
+  "scripts": {
+    "start": "electron .",
+    "debug": "electron . --debug --verbose",
+    "pack": "build --dir",
+    "dist": "build"
+  },
+  "build": {
+    "electronVersion": "1.4.8",
+    "appId": "carreau.js",
+    "asar": false,
+    "mac": {
+      "category": "public.app-category.education"
+    }
+  },
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "download": "^3.3.0",
+    "electron-log": "^1.3.0",
+    "express": "3.1.0",
+    "flags": "^0.1.3",
+    "formidable": "^1.0.17",
+    "fs-extra": "^0.18.0",
+    "glob": "*",
+    "gm": "^1.22.0",
+    "gulp-util": "^3.0.7",
+    "i18n": "^0.5.0",
+    "image-size": "^0.5.0",
+    "jade": "^1.11.0",
+    "marky-mark": "^1.2.1",
+    "merge": "^1.2.0",
+    "moment": "^2.12.0",
+    "node-localstorage": "^1.3.0",
+    "serve-favicon": "^2.3.0",
+    "slugg": "^1.0.0",
+    "socket.io": "^1.3.5",
+    "woods-parsedown": "git://github.com/louis-ev/woods-parsedown.git#master"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.14.0",
+    "electron-builder": "^15.3.0",
+    "electron-prebuilt": "^1.4.13",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-minify-css": "^1.2.3",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.1.1",
+    "gulp-uglify": "^2.1.0",
+    "jshint": "^2.9.3"
+  }
+}

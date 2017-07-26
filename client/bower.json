@@ -1,0 +1,30 @@
+{
+  "name": "conftool",
+  "description": "Conf tool",
+  "main": "",
+  "authors": [
+    "louis eveillard <hello@louiseveillard.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/louis-ev/CONFERENCE_TOOL",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {},
+  "dependencies": {
+    "moment": "^2.12.0",
+    "store-js": "^1.3.20",
+    "jquery": "^3.1.0",
+    "interact": "^1.2.6",
+    "recordrtc": "^5.4.0"
+  }
+}

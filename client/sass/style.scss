@@ -1,0 +1,773 @@
+// I M P O R T
+
+@import "_normalize.scss";
+@import "_variables.scss";
+@import "_fonts.scss";
+
+::-moz-selection {
+    background: rgba(151, 151, 151,0.25);
+}
+::selection {
+    background: rgba(151, 151, 151,0.25);
+}
+html {
+	margin:0;
+}
+body,html {
+	min-height:100%;
+}
+
+
+html {
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+
+p {
+  font-size: 1em;
+  margin-bottom: .5em;
+  line-height:  1.4;
+}
+
+li{list-style: none;}
+
+h1,h2,h3,h4,h5,h6{
+  font-family: 'Fira Sans', sans-serif;
+  font-weight:  300;
+  margin: 0;
+
+}
+
+
+/******************
+  Mixins
+  ********************/
+
+@mixin clearfix {
+  &:before, &:after { content: " "; display: table; }
+  &:after { clear: both; }
+}
+
+
+
+@mixin container {
+  position: relative;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 1200px;
+}
+
+
+@mixin button {
+  -webkit-appearance: none;
+  display: inline-block;
+  background: $vert_sombre;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: .8em;
+  border-radius: 5px;
+  margin: 5px;
+  cursor: pointer;
+  text-align: center;
+
+  &:focus {
+    outline: none;
+
+  }
+}
+
+@mixin small_button {
+  @include button;
+  padding: 0px;
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  line-height: 0;
+  border-radius: 50%;
+}
+
+
+button, .btn {
+  @include button;
+
+  &.btn_retour {
+    margin-top:   15px;
+    margin-left:  15px;
+  }
+
+  &.btn_openCloseCameraSettings {
+
+  }
+}
+
+body {
+  margin: 0;
+  background-color: white;
+  color: #000;
+  font-size: 1em;
+  font-family: 'Fira Sans', sans-serif;
+  overflow-x: hidden;
+
+  &.is--unscrollable {
+    overflow-y: hidden;
+  }
+}
+
+a{
+	color: #000;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #000;
+	text-decoration: none;
+}
+
+ul {
+  margin: 0;
+}
+
+fieldset {
+  border: 1px solid #fff;
+}
+
+img, video, audio, svg {
+	display: block;
+	min-width: 100%;
+	width:100%;
+}
+
+
+// index
+
+.module--bandeau {
+  position: relative;
+  width:  100%;
+  min-height: 150px;
+  background-color: fade-out($vert_sombre, .2);
+  color: white;
+  overflow: hidden;
+
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+
+  &::before {
+    content: '';
+    z-index: 5;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: .3;
+    background: repeating-linear-gradient( -65deg, $vert_sombre, $vert_sombre 10px, transparent 10px, transparent 20px );
+  }
+  &::after {
+    content: '';
+    z-index: 3;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -50%;
+    opacity: .3;
+    background: repeating-linear-gradient( 65deg, $vert_sombre, $vert_sombre 10px, transparent 10px, transparent 20px );
+
+  }
+
+
+  #intro {
+    @include container;
+    position: relative;
+    z-index: 999;
+    color: white;
+    font-size:  2em;
+    margin-bottom: 5px;
+  }
+
+}
+
+
+
+.module--listePresentations {
+  @include container;
+
+  h2 {
+    margin-top: 25px;
+    margin-bottom:  15px;
+  }
+
+}
+
+.dossier-list {
+  @include clearfix;
+  margin: 0 -10px;
+}
+
+.dossier {
+  position: relative;
+  width: 285px;
+  float: left;
+  padding: 15px 20px 20px;
+  margin:10px;
+
+  background-color: hsl(0, 0%, 94%);
+  border-bottom:  2px solid $vert_sombre;
+  border-radius: 2px;
+
+  transition: background-color .4s ease-out, transform .4s ease-out;;
+
+  &:hover {
+    background-color: hsl(0, 0%, 98%);
+  }
+
+  h6 {
+    color: #999;
+    margin: 0;
+    margin-bottom: 15px;
+  }
+
+  &_newconfform {
+    background-color: transparent;
+    border: 2px solid hsl(0, 0%, 94%);
+
+    .introduction {
+      display: block !important;
+    }
+
+  }
+
+  .index{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: $vert_sombre;
+    color: #fff;
+    font-size: 15px;
+    line-height: 16px;
+    text-align: center;
+    padding: 2px;
+    font-weight: 300;
+    width: 20px;
+    height: 20px;
+  }
+
+  .title {
+    font-size:  2rem;
+    margin-bottom:  30px;
+    color: $vert_sombre;
+    font-weight:  400;
+    transition: color .6s;
+
+    &:hover {
+      color: darken($vert_sombre, 10%);
+    }
+  }
+
+  // still shaky
+  .introduction {
+    display: none;
+  }
+  .meta-data {
+    color: #999;
+    >* {
+      margin-bottom:  5px;
+    }
+    h4 {
+      font-weight:  400;
+      display: inline-block;
+      margin: 0;
+    }
+
+    span {
+      font-weight:  600;
+      margin-left:  5px;
+    }
+
+  }
+
+  input, textarea {
+    width:  100%;
+    padding:5px;
+    border:2px solid #eee;
+    &:focus {
+      outline: 2px solid $vert_sombre;
+    }
+  }
+
+  input[type="submit"] {
+    @extend button;
+      width: auto;
+      float: right;
+      margin-top: 15px;
+  }
+}
+
+
+/********************************************************************
+              POPUP
+********************************************************************/
+.module--popup {
+  position: fixed;
+  top:15px;
+  right: 15px;
+  width: 260px;
+
+  max-height: 100vh;
+  overflow: scroll;
+
+  display: none;
+  z-index:  999;
+
+  .module--popup--textContent {
+    position: relative;
+    background-color: fade-out(#D1DF98, 0);
+    border-radius: 4px;
+    padding: 10px;
+    margin: 4px;
+    font-size:  .8em;
+
+    transition: padding .6s ease-out, font-size .4s;
+
+    p {
+      margin: 0;
+    }
+
+    .module--popup--closePopup {
+      @include small_button;
+      background-color: darken(#D1DF98, 10%);
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
+
+/*
+  &:hover  {
+    > .module--popup--textContent {
+      font-size:  .8em;
+      opacity: 1;
+    }
+  }
+*/
+}
+
+
+
+// conf
+
+body[data-page='conf']::after {
+//   content: '.';
+  margin-top: 100vh;
+  display: block;
+}
+
+.module--stackIntro {
+  @include container;
+  width: 80%;
+  max-width: 1200px;
+  min-height: 40vh;
+  padding-bottom:   40px;
+  font-size: 1.8em;
+  line-height: 2;
+
+  .titre {
+    margin-top:140px;
+    margin-bottom: 0px;
+    font-size:  1.2em;
+    letter-spacing: -0.02em;
+    line-height:  1.2;
+  }
+
+  .meta {
+    font-weight:  600;
+    span {
+      margin-right: 15px;
+      &::before {
+        content:'•';
+        color: $vert_sombre;
+        margin-right: 8px;
+      }
+
+      &:empty {
+        display: none;
+      }
+    }
+  }
+
+  .introduction {
+    margin-top: 80px;
+    margin-bottom: 80px;
+
+    h2 {
+      margin-top:20px;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      text-transform: uppercase;
+      font-size:  .8em;
+      & + p {
+        margin-top: 0;
+      }
+    }
+
+    hr {
+      margin-top: 140px;
+      margin-bottom: 140px;
+    }
+
+    ul,ol {
+      padding-left: 0;  margin-left: 0;
+      list-style: none;
+      li {
+
+        padding-left: 0;  margin-left: 0;
+  			&::before {
+          content:'—';
+          color: $vert_sombre;
+  				display: inline-block;
+  				margin-right: 10px;
+  			}
+      }
+
+    }
+
+
+  }
+
+}
+
+
+#upload-input {
+  display: none;
+}
+
+.drop-files-container{
+	position:fixed;
+  top: 0; left: 0;  right: 0; bottom: 0;
+  background-color: $vert_sombre;
+  opacity: 0;
+  z-index:  -1;
+  transition: opacity .4s ease-out;
+
+  &.is--visible {
+    opacity: 1;
+    z-index:  1500;
+  }
+}
+
+
+.instructions {
+  display: block;
+  margin: 0 auto;
+  max-width: 570px;
+  width: 80%;
+  color: white;
+  line-height: 1.5;
+  font-size: 2em;
+  font-weight: 200;
+  padding: 40px;
+  background-color: rgba(255,255,255,.1);
+  border-radius: 15px;
+  margin-top: 30vh;
+  text-align: center;
+
+  pointer-events: none;
+}
+
+.slides-list {
+  position: relative;
+  margin-bottom:  20vh;
+
+  body.is--debug & {
+/*
+    counter-reset: section;
+
+    .slide--item::before {
+      counter-increment: section;
+      content: "Section " counter(section) ": ";
+      display: block;
+      color: $bleuvert;
+      position: absolute;
+    }
+*/
+  }
+}
+
+
+
+.slide {
+
+  position: relative;
+  z-index:  1;
+  width:  100%;
+  width:  100vw;
+  height: 56.25vw;
+/*
+  height:   0%;
+  padding-bottom:   56.25%;
+*/
+  -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+  pointer-events: none;
+  background-color: transparent;
+
+  // that delay for opacity is made to increase responsivity when pinning a slide
+  transition: background-color .3s ease, opacity .3s .3s;
+
+
+
+  .slide--item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: auto;
+//     padding: 10px;
+//  problématique (marge sur les côtés)
+    background-color: transparent;
+
+    outline: 1px solid #ccc;
+
+    &_iframe {
+      background-color: #dedcdc;
+
+      .slide--item--navbar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height:   30px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      iframe {
+        pointer-events: none;
+        background-color: transparent;
+        transition: background-color .8s ease-out;
+      }
+      &.is--iframeOn iframe {
+        pointer-events: auto;
+        background-color: #fff;
+      }
+
+      .slide--item--navbar::before {
+        content: '...';
+        font-size: 70px;
+        line-height: 0;
+        display: block;
+        width: 80px;
+        height: 40px;
+        margin-left: 10px;
+        color: #cccbcb;
+      }
+
+      .pageUrlField {
+        margin: 20px;
+        width: calc(100% - 60px - 170px);
+        overflow: hidden;
+        margin: 10px;
+        background: #fff;
+        border-radius: 4px;
+        padding: 5px 5px 5px 10px;
+        color: $vert_sombre;
+        flex: auto;
+
+        .pageUrl {
+          display: block;
+          font-weight: 300;
+          line-height: 20px;
+          font-size: 20px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
+    }
+
+    .toggleIframe {
+      @extend button;
+
+      &.is--active {
+        background-color: #ff2719;
+      }
+    }
+
+    .iframeNewTab {
+      @extend button;
+      border: none;
+      padding: 10px 15px;
+      font-size: .8em;
+    }
+  }
+
+  img {
+    pointer-events: none;
+  }
+
+  iframe {
+    width: calc(100% - 16px);
+    height: calc(100% - 16px - 40px);
+    margin:8px;
+    margin-top: 0;
+    border: none;
+    background-color: #fff;
+    border-top: 1px solid #bbb;
+    pointer-events: none;
+  }
+
+  .shadowed {
+    box-shadow: 0px 0px 50px rgba(0,0,0,0.5);
+  }
+
+  &.is--dragged {
+    background-color: fade-out($vert_sombre,0.70);
+  }
+
+
+
+  &.is--pinned > .slide--item {
+    position: fixed;
+  }
+
+  &.is--far {
+    opacity: 0;
+  }
+
+
+}
+
+
+.module-popover {
+	position:fixed;
+  top: 0; left: 0;  right: 0; bottom: 0;
+  background-color: $vert_sombre;
+  z-index:  1001;
+  transition: opacity .4s ease-out;
+  pointer-events: none;
+
+  display: none;
+
+  &.is--open {
+    display: block;
+    pointer-events: auto;
+  }
+
+  &.module-popover_upload {
+
+    .progress-bar {
+      display: none;
+    }
+  }
+
+  &.module-popover_cameraFeed {
+    overflow-y: scroll;
+
+    .cameraFeed {
+      width: 100%;
+      height: 100%;
+
+      video {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 4;
+        background-color: fade-out(#000, .8);
+      }
+    }
+
+    .feedSettings--scrollWindow {
+      position: relative;
+      z-index:  5;
+      max-width: 280px;
+      margin: 0 auto;
+      margin-right: 0;
+      padding: 20px;
+      border-radius: 5px 0 0 0;
+
+      background-color: $vert_sombre;
+      color: white;
+      font-size:  80%;
+      font-weight: 300;
+
+      .btn_openSettings {
+        position: absolute;
+        bottom: 100%;
+        right: 0;
+        padding: 10px;
+        margin: 0;
+        background-color: $vert_sombre;
+        border-radius: 5px 0 0 0;
+      }
+      .sourceSelector {
+        .selectField {
+          display: block;
+          width:  100%;
+          margin-bottom:  10px;
+
+          label {
+            margin-right: 20px;
+            margin-bottom: 10px;
+            display: block;
+          }
+        }
+
+
+        // not using sound sources for now
+        .audioSource, .audioOutput {
+          display: none;
+        }
+
+      }
+
+      .resolutionSelector {
+        margin-top: 20px;
+
+        fieldset {
+          margin: 10px 0;
+          padding: 15px;
+          border-radius: 5px;
+        }
+
+        input {
+          margin: 0;
+          margin-right: 10px;
+        }
+
+        label {
+          letter-spacing: .3px;
+        }
+
+        input:checked + label {
+          font-weight:  600;
+        }
+      }
+    }
+  }
+
+}
+
+.js--interactevents {
+  background-color: #f9f9f9;
+}
+
+
+.js--templates {
+  display: none;
+}

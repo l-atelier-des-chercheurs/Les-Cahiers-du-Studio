@@ -1,0 +1,204 @@
+.navbar-container {
+  width: 100%;
+  min-height:  $t-navbarheight;
+
+  font-size:  1.1rem;
+  font-weight: 400;
+
+  body.index & {
+    .logo {
+      pointer-events: none;
+    }
+
+    &.is--opened {
+      .navbar {
+        background-color: transparent;
+        padding: 60px;
+        padding-bottom:   20px;
+        box-shadow: none;
+
+        .logo {
+          width:  100%;
+          height:   22vh;
+
+          &::after {
+            opacity: 0;
+          }
+        }
+
+        .item {
+
+        }
+
+
+      }
+    }
+  }
+
+
+  .navbar {
+
+    position: relative;
+    width:   100%;
+    min-height: $t-navbarheight;
+    padding:10px;
+    height:   auto;
+    background-color: #fff;
+    z-index:  1000;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+    transition: height .6s ease-out, padding .45s ease-out, background-color .3s ease-out;
+
+    @include clearfix;
+
+    .logo{
+      margin:auto;
+      height: 50px;
+      float:left;
+
+      padding: 5px;
+      margin-right: 10px;
+
+      transition: height .6s ease-out;
+
+      position: relative;
+
+      svg {
+        height: 100%;
+        min-width: 0;
+        width: auto;
+        margin: 0 auto;
+        height:100%;
+
+        circle, rect, polyline {
+          opacity: .8;
+          transition: opacity .4s;
+        }
+
+        &:hover {
+          circle, rect, polyline {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    .item {
+      float:left;
+      height: 50px;
+      position: relative;
+
+      .button-wrapper {
+        display: block;
+        margin: 0;
+        height:   100%;
+        border-radius: 0;
+        background-color: transparent;
+
+        color: white;
+
+        padding: 10px;
+
+        padding-left: 15px;
+        transition: color .2s;
+
+        .btn.icon + span {
+          left:   65px;
+        }
+
+        // si un deuxième lien derrière le premier, on les colle
+        + .button-wrapper {
+          &::after {
+            left: -10px;  right: 0;
+          }
+        }
+
+        $transparentize: 0;
+
+        &::after {
+          content: ' ';
+          position: absolute;
+          left: 5px;
+          right: 0px;
+          top:      3px;
+          bottom:  5px;
+          -webkit-transition: all .1s;
+          transition: all .1s;
+          z-index: -1;
+          -webkit-transform: skewX(-20deg) skewY(0);
+          -ms-transform: skewX(-20deg) skewY(0);
+          -o-transform: skewX(-20deg) skewY(0);
+          transform: skewX(-20deg) skewY(0);
+
+           border-radius: 4px;
+          background-color: transparentize( $c-projet, $transparentize);
+
+          transition: background-color .2s;
+        }
+
+
+        &:hover {
+          color: $c-projet;
+          &::after {
+            background-color: transparent;
+          }
+        }
+
+        &_dossier {
+          .btn.icon {
+            padding: 12px;
+            margin-top:   -8px;
+          }
+          &::after {
+            background-color: transparentize( $c-dossier, $transparentize);
+          }
+
+          &:hover {
+            color: $c-dossier;
+          }
+
+
+        }
+
+
+        &_bibli {
+          &::after {
+            background-color: transparentize( $c-bibli, $transparentize);
+          }
+          &:hover {
+            color: $c-bibli;
+          }
+        }
+
+        &_capture {
+          &::after {
+            background-color: $c-images;
+            background-color: transparentize( $c-images, $transparentize);
+          }
+
+          &:hover {
+            color: $c-images;
+          }
+        }
+
+        &_projet {
+
+        }
+      }
+    }
+
+
+    > .button-wrapper {
+      float:right;
+      margin: 5px 5px;
+      position: relative;
+
+      // buttons that are not wrapped in items are in float:right in the navbar. So the first of type is actually on the right
+      &:nth-of-type(1) {
+        margin-right: 15px;
+      }
+
+
+    }
+  }
+}
