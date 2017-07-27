@@ -15,11 +15,8 @@ module.exports = (function() {
   function setLang(codeLang) {
     // detect fr, fr-BE, fr-CA, etc.
     console.log('codelang ' + codeLang);
-    if(codeLang.indexOf('fr') === 0) {
-      currentCodeLang = 'fr';
-    } else {
-      currentCodeLang = 'en';
-    }
+    if(codeLang.indexOf('fr') === 0) { currentCodeLang = 'fr'; }
+    else { currentCodeLang = 'en'; }
     init();
   }
 

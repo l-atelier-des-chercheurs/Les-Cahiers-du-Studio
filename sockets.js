@@ -60,14 +60,14 @@ module.exports = (function() {
     switch (d.scope) {
       case 'all':
         file.getFolder().then(function(foldersData) {
-          sendEventWithContent('listFolder', foldersData, io, socket);
+          api.sendEventWithContent('listFolder', foldersData, io, socket);
         }, function(error) {
           dev.error(`Failed to list folders! Error: ${error}`);
         });
         break;
       case 'folder':
         file.getFolder(d.slug).then(function(foldersData) {
-          sendEventWithContent('listFolder', foldersData, io, socket);
+          api.sendEventWithContent('listFolder', foldersData, io, socket);
         }, function(error) {
           dev.error(`Failed to list folders! Error: ${error}`);
         });

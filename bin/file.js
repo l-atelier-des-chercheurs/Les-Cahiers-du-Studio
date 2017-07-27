@@ -5,6 +5,7 @@ const
 
 const
   local  = require('../local'),
+  api  = require('./api'),
   dev = require('./dev-log')
 ;
 
@@ -20,15 +21,15 @@ module.exports = (function() {
 
   function getFolderPath(slugFolderName = '') {
     dev.logfunction(`COMMON — getFolderPath: ${slugFolderName}`);
-    return path.join(getUserPath(), local.settings().contentDirname, slugFolderName);
+    return path.join(getUserPath(), slugFolderName);
   }
   function getUserPath() {
     return global.pathToUserContent;
   }
 
   function getMetaFileOfFolder(slugFolderName) {
-    let path = getFolderPath(slugFolderName);
-    let metaPath = path.join(path, local.settings().folderMetafilename + local.settings().metaFileext);
+    let folderPath = getFolderPath(slugFolderName);
+    let metaPath = path.join(folderPath, local.settings().folderMetafilename + local.settings().metaFileext);
     return metaPath;
   }
 
@@ -44,26 +45,29 @@ module.exports = (function() {
   function readMetaFile(metaPath){
     dev.logfunction(`COMMON — readMetaFile: ${metaPath}`);
     var metaFileContent = fs.readFileSync(metaPath, local.settings().textEncoding);
-    var metaFileContentParsed = parseData( metaFileContent);
+    var metaFileContentParsed = api.parseData( metaFileContent);
     return metaFileContentParsed;
   }
 
   function getFolder(slugFolderName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — getFolder: ${slugFolderName}`);
+      let mainFolderPath = getFolderPath();
+      dev.logverbose(`Main folder path: ${mainFolderPath}`);
       // on cherche tous les dossiers du dossier de contenu
-      fs.readdir(getFolderPath(), function (err, filenames) {
-        if(err) { dev.error(`Couldn't read content dir : ${err}`); reject(err); }
+      fs.readdir(mainFolderPath, function (err, filenames) {
+        dev.logverbose(`Found filenames: ${filenames}`);
+        if(err) { dev.error(`Couldn't read content dir: ${err}`); reject(err); }
+        if(filenames === undefined) { dev.error(`No folder found: ${err}`); reject(err); }
 
         // only get folders
-        var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.settings().regexpMatchFolderNames, 'i').test( slugFolderName); });
-        dev.logverbose(`Number of folders in ${getFolderPath()} = ${folders.length}. Folders are ${folders}`);
+        var folders = filenames.filter( function(slugFolderName){ return new RegExp( local.settings().regexpMatchFolderNames, 'i').test(slugFolderName); });
+        dev.logverbose(`Number of folders in ${getFolderPath()} = ${folders.length}. Folder(s) is(are) ${folders}`);
 
         var foldersProcessed = 0;
         var allFoldersData = [];
         folders.forEach(function(slugFolderName) {
-
-          if( new RegExp( dodoc.settings().regexpMatchFolderNames, 'i').test( slugFolderName) && slugFolderName.indexOf(dodoc.settings().deletedPrefix)){
+          if( new RegExp( local.settings().regexpMatchFolderNames, 'i').test( slugFolderName) && slugFolderName.indexOf(local.settings().deletedPrefix)){
             var fmeta = readFolderMeta(slugFolderName);
             fmeta.slugFolderName = slugFolderName;
             allFoldersData.push(fmeta);
@@ -71,9 +75,9 @@ module.exports = (function() {
 
           foldersProcessed++;
 
-          if( foldersProcessed === folders.length && allFoldersData.length > 0) {
+          if(foldersProcessed === folders.length && allFoldersData.length > 0) {
             dev.logverbose(`- - - - all folders meta have been processed`);
-            resolve( allFoldersData);
+            resolve(allFoldersData);
           }
         });
       });
