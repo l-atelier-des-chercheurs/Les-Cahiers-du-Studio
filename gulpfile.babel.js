@@ -29,6 +29,14 @@ var components = [
   'client/js/components/*.vue'
 ];
 
+var nodeScripts = [
+  'main.js',
+  'server.js',
+  'router.js',
+  'sockets.js',
+  'bin/*.js'
+]
+
 var localDevUrl = 'https://localhost:8080/';
 
 // Compile Our Sass
@@ -58,7 +66,7 @@ gulp.task('css-prod', function() {
 
 // Lint Task
 gulp.task('lint', function() {
-  return gulp.src(userScripts)
+  return gulp.src(nodeScripts.concat(userScripts))
     .pipe(jshint({
       esversion: 6
     }))
@@ -122,7 +130,7 @@ gulp.task('dev-watch-sync', ['init-live-reload', 'watch']);
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-  gulp.watch([userScripts, components], ['lint', 'script-plugins', 'scripts']);
+  gulp.watch([userScripts, components, nodeScripts], ['lint', 'script-plugins', 'scripts']);
   gulp.watch('client/sass/*.scss', ['sass', 'css-prod']);
 });
 

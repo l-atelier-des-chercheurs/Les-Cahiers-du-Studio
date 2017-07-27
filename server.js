@@ -1,8 +1,6 @@
-var express = require("express");
-var http = require('http');
+var express = require('express');
 var https = require('https');
 var fs = require('fs');
-var io = require('socket.io');
 var path = require('path');
 var dev = require('./bin/dev-log');
 
@@ -10,8 +8,7 @@ var dev = require('./bin/dev-log');
 // var ngrok = require('ngrok');
 
 const
-  config = require('./config.json'),
-  local = require('./local')
+  config = require('./config.json')
 ;
 
 module.exports = function(electronApp) {
@@ -23,11 +20,8 @@ module.exports = function(electronApp) {
   const certificate = fs.readFileSync(path.join(__dirname, 'ssl', 'file.crt'), 'utf8');
   const options = { key: privateKey, cert: certificate };
 
-  if( config.protocol === 'http')
-    var server = http.createServer(app);
-  else if( config.protocol === 'https')
-    var server = https.createServer(options, app);
 
+  let server = https.createServer(options, app);
   var io = require('socket.io').listen(server);
   dev.logverbose('Starting server 2');
 
@@ -40,11 +34,11 @@ module.exports = function(electronApp) {
   expressSettings(app, express);
   router(app, io, m);
 
-  server.listen(app.get("port"), function() {
+  server.listen(app.get('port'), function() {
     dev.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
     dev.log(` `);
     process.on('unhandledRejection', function(reason, p) {
-      dev.error("Unhandled Rejection at: Promise ", p, " reason: ", reason);
+      dev.error(`Unhandled Rejection at: Promise ${p}, reason: ${reason}`);
     });
   });
-}
+};

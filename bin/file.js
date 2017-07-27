@@ -1,7 +1,5 @@
 const
   path = require('path'),
-	moment = require('moment'),
-  parsedown = require('dodoc-parsedown'),
   fs = require('fs-extra')
 ;
 
@@ -13,15 +11,14 @@ const
 module.exports = (function() {
 
   const API = {
-    getFolderPath          : (slugFolderName = '') => { return getFolderPath(slugFolderName) },
-    getFolder              : (slugFolderName = '') => { return getFolder(slugFolderName) },
+    getFolderPath          : (slugFolderName = '') => { return getFolderPath(slugFolderName); },
+    getFolder              : (slugFolderName = '') => { return getFolder(slugFolderName); },
     getMetaFileOfFolder    : (slugFolderName) => { return getMetaFileOfFolder(slugFolderName); },
-    readFolderMeta         : (slugFolderName) => { return readFolderMeta(slugFolderName); },
 
     createMediaMeta        : (path, mediaFileName, metaFileName = '') => { return createMediaMeta(path, mediaFileName, metaFileName); }
   };
 
-  function getFolderPath(slugFolderName) {
+  function getFolderPath(slugFolderName = '') {
     dev.logfunction(`COMMON — getFolderPath: ${slugFolderName}`);
     return path.join(getUserPath(), local.settings().contentDirname, slugFolderName);
   }
@@ -53,29 +50,29 @@ module.exports = (function() {
 
   function getFolder(slugFolderName) {
     return new Promise(function(resolve, reject) {
-
+      dev.logfunction(`COMMON — getFolder: ${slugFolderName}`);
       // on cherche tous les dossiers du dossier de contenu
-
       fs.readdir(getFolderPath(), function (err, filenames) {
-        if (err) return console.log( 'Couldn\'t read content dir : ' + err);
+        if(err) { dev.error(`Couldn't read content dir : ${err}`); reject(err); }
 
-        var folders = filenames.filter( function(slugFolderName){ return new RegExp("^([^.]+)$", 'i').test( slugFolderName); });
-        dev.logverbose( "Number of folders in " + getFolderPath() + " = " + folders.length + ". Folders are " + folders);
+        // only get folders
+        var folders = filenames.filter( function(slugFolderName){ return new RegExp( dodoc.settings().regexpMatchFolderNames, 'i').test( slugFolderName); });
+        dev.logverbose(`Number of folders in ${getFolderPath()} = ${folders.length}. Folders are ${folders}`);
 
         var foldersProcessed = 0;
         var allFoldersData = [];
-        folders.forEach( function( slugFolderName) {
+        folders.forEach(function(slugFolderName) {
 
-          if( new RegExp("^([^.]+)$", 'i').test( slugFolderName)
-          && slugFolderName.indexOf( local.settings().deletedPrefix)){
-            var fmeta = getFolderMeta( slugFolderName);
+          if( new RegExp( dodoc.settings().regexpMatchFolderNames, 'i').test( slugFolderName) && slugFolderName.indexOf(dodoc.settings().deletedPrefix)){
+            var fmeta = readFolderMeta(slugFolderName);
             fmeta.slugFolderName = slugFolderName;
-            allFoldersData.push( fmeta);
+            allFoldersData.push(fmeta);
           }
 
           foldersProcessed++;
+
           if( foldersProcessed === folders.length && allFoldersData.length > 0) {
-            console.log( "- - - - all folders JSON have been processed.");
+            dev.logverbose(`- - - - all folders meta have been processed`);
             resolve( allFoldersData);
           }
         });
@@ -83,9 +80,9 @@ module.exports = (function() {
     });
   }
 
-  function createMediaMeta(path, mediaFileName, metaFileName) {
+  function createMediaMeta(atPath, mediaFileName, metaFileName) {
     return new Promise(function(resolve, reject) {
-      dev.logverbose(`Will create a new meta file for media ${mediaFileName} for conf ${path}`);
+      dev.logverbose(`Will create a new meta file for media ${mediaFileName} for folder ${atPath}`);
 
       // If no metaFileName, we will deduce metaFileName from mediaFileName
       if(metaFileName === '') {
@@ -94,38 +91,30 @@ module.exports = (function() {
       }
 
       // check that a meta with this name doesn't exist already
-      api.findFirstFilenameNotTaken(path, metaFileName).then(function(metaFileName) {
+      api.findFirstFilenameNotTaken(atPath, metaFileName).then(function(metaFileName) {
 
-        var newPathToMeta = path.join(path, metaFileName);
-        var newPathToMedia = path.join(path, mediaFileName);
-
-        try {
-          var dimension = sizeOf(newPathToMedia);
-          if(typeof dimension !== undefined)
-            var mediaRatio = dimension.height / dimension.width;
-        } catch(err) {}
+        var newPathToMeta = path.join(atPath, metaFileName);
 
         var mdata =
         {
-          "name" : mediaFileName,
-          "created" : api.getCurrentDate(),
-          "modified" : api.getCurrentDate(),
+          name : mediaFileName,
+          created : api.getCurrentDate(),
+          modified : api.getCurrentDate(),
         };
         if(mediaRatio !== undefined) {
           mdata['ratio'] = mediaRatio;
         }
 
-        dev.logverbose("Saving JSON string " + JSON.stringify(mdata, null, 4));
+        dev.logverbose(`Saving JSON string ${JSON.stringify(mdata, null, 4)}`);
         api.storeData( newPathToMeta, mdata, 'create').then(function( meta) {
-          console.log( "New media meta file created at path " + newPathToMeta + " with meta : " + meta);
+          console.log(`New media meta file created at path: ${newPathToMeta} with meta: ${meta}`);
           resolve(meta);
         }, function(err) {
-          console.log(gutil.colors.red('--> Couldn\'t create media meta.'));
-          reject( 'Couldn\'t create media meta ' + err);
+          console.log(gutil.colors.red(`--> Couldn’t create media meta.`));
+          reject(`Couldn't create media meta : ${err}`);
         });
       }, function(err) {
-        console.log(gutil.colors.red('--> Couldn\'t find meta filename to use.'));
-        reject( 'Couldn\'t find meta filename to use ' + err);
+        reject(err);
       });
     });
   }

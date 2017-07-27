@@ -11,14 +11,14 @@ const server = require('./server');
 const
   local  = require('./local'),
   config = require('./config.json'),
-  dev = require('./bin/dev-log'),
-  api = require('./bin/api')
+  dev = require('./bin/dev-log')
 ;
 
 let win;
 
 app.commandLine.appendSwitch('--ignore-certificate-errors');
-app.commandLine.appendSwitch('--disable-http-cache')
+app.commandLine.appendSwitch('--disable-http-cache');
+
 
 function createWindow() {
 
@@ -110,15 +110,16 @@ function createWindow() {
     // and load the base url of the app.
     win.loadURL(global.homeURL);
 
-    if(dev.isDebug() || global.nodeStorage.getItem('logToFile'))
+    if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
       win.webContents.openDevTools();
+    }
 
     // Emitted when the window is closed.
     win.on('closed', () => {
       // Dereference the window object, usually you would store windows
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.
-      win = null
+      win = null;
     });
 
     win.on('ready-to-show', function() {
@@ -130,30 +131,7 @@ function createWindow() {
     dev.error( 'Failed to check existing content folder : ' + err);
   });
 
-
 }
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
-
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  // if (process.platform !== 'darwin') {
-    app.quit();
-  // }
-});
-
-app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (win === null) {
-    createWindow();
-  }
-});
 
 function setApplicationMenu() {
   // Create the Application's main menu
@@ -281,7 +259,6 @@ function setApplicationMenu() {
   menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 }
-
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
 
@@ -301,7 +278,7 @@ function copyAndRenameUserFolder() {
       try {
         userDirPath = dialog.showOpenDialog({
           title: 'Sélectionnez le dossier qui contiendra le contenu de stv doc',
-          defaultPath: app.getPath("documents"),
+          defaultPath: app.getPath('documents'),
           properties: ['openDirectory']
         })[0];
         dev.log('A path was picked: ' + userDirPath);
@@ -346,3 +323,26 @@ function copyAndRenameUserFolder() {
     });
   });
 }
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', createWindow);
+
+// Quit when all windows are closed.
+app.on('window-all-closed', () => {
+  // On macOS it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  // if (process.platform !== 'darwin') {
+    app.quit();
+  // }
+});
+
+app.on('activate', () => {
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (win === null) {
+    createWindow();
+  }
+});
+

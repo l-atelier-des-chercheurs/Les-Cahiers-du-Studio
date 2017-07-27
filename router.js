@@ -1,16 +1,11 @@
 const
   path = require('path'),
   fs = require('fs-extra'),
-  formidable = require('formidable'),
-  gutil = require('gulp-util'),
-  sizeOf = require('image-size'),
-  mm = require('marky-mark'),
-  slugg = require('slugg')
+  formidable = require('formidable')
 ;
 
 const
   local = require('./local'),
-  main = require('./sockets'),
   dev = require('./bin/dev-log'),
   api = require('./bin/api'),
   file = require('./bin/file')
@@ -21,8 +16,7 @@ module.exports = function(app,io,m){
   /**
   * routing event
   */
-  app.get('/', getIndex);
-  app.get('/:folder', getFolder);
+  app.get('/', showIndex);
   app.post('/:folder/file-upload', postFile2);
 
   /**
@@ -47,24 +41,6 @@ module.exports = function(app,io,m){
       pageDataJSON.lang = local.lang();
       pageDataJSON.logToFile = global.nodeStorage.getItem('logToFile');
 
-      let slugFolderName = req.param('folder');
-      if(slugFolderName !== undefined) {
-        file.readFolderMeta(slugFolderName).then(function(folderData) {
-          pageDataJSON.slugFolderName = slugFolderName;
-          pageDataJSON.pageTitle += " | " + folderData.name;
-          api.getLocalIP().then(function(localNetworkInfos) {
-            pageDataJSON.localNetworkInfos = localNetworkInfos;
-            resolve(pageDataJSON);
-          }, function(err, p) {
-            dev.error(`Failed to get IP: ${err}`);
-            reject(err);
-          });
-        }, function(err, p) {
-          dev.error(`Failed to read folder ${slugFolderName} meta: ${err}`);
-          reject(err);
-        });
-      }
-
       api.getLocalIP().then(function(localNetworkInfos) {
         pageDataJSON.localNetworkInfos = localNetworkInfos;
         resolve(pageDataJSON);
@@ -77,7 +53,7 @@ module.exports = function(app,io,m){
   }
 
   // GET
-  function getIndex(req, res) {
+  function showIndex(req, res) {
     generatePageData(req).then(function(pageData) {
       res.render('index', pageData);
     }, function(err) {
@@ -85,18 +61,9 @@ module.exports = function(app,io,m){
     });
   }
 
-  function getFolder(req, res) {
-    generatePageData(req).then(function(pageData) {
-      res.render('folder', pageData);
-    }, function(err) {
-      dev.error(`Err while getting index data: ${err}`);
-    });
-  }
-
-
   function postFile2(req, res){
-    console.log('Will add new media for folder ' + req.param('folder'));
-    var slugFolderName = req.param('folder');
+    let slugFolderName = req.param('folder');
+    dev.logverbose(`Will add new media for folder ${slugFolderName}`);
 
     // create an incoming form object
     var form = new formidable.IncomingForm();
@@ -108,9 +75,6 @@ module.exports = function(app,io,m){
     form.uploadDir = file.getFolderPath(slugFolderName);
 
     var allFilesMeta = [];
-    var allIframeMeta = [];
-    var index = 0;
-    var processed;
 
     form.on('field', function(name, value) {
       console.log('Name: ' + name);
@@ -143,7 +107,7 @@ module.exports = function(app,io,m){
         // rename the new media if necessary to it's original name prepended by a number
         Promise.all(m).then((filesToAddToMeta) => {
           let msg = {};
-          msg.msg = "success",
+          msg.msg = 'success';
           msg.medias = JSON.stringify(allFilesMeta);
           res.end(JSON.stringify(msg));
         });
@@ -162,11 +126,9 @@ module.exports = function(app,io,m){
         file.createMediaMeta(uploadDir, newFileName).then(function(fileMeta){
           resolve(newFileName);
         }, function(err) {
-          console.log('fail createMediaMeta ' + err);
           reject(err);
         });
       }, function(err) {
-        console.log('fail findFirstFilenameNotTaken ' + err);
         reject(err);
       });
     });

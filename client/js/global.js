@@ -8,14 +8,14 @@ window.$ = window.jQuery = jQuery;
 /***********
    STOREJS
 ***********/
+
 window.store = {
-  debug:true
+  debug:true,
   el: '#vue',
   state: {
     folders: {}
   }
 };
-
 
 /***********
   SOCKETIO
@@ -26,22 +26,23 @@ window.store = {
   function onSocketConnect() {
     	let sessionId = socket.io.engine.id;
     	console.log(`Connected as ${sessionId}`);
-    	socket.emit('listFolders');
+
+    	// change scope depending on page/subpage
+    	socket.emit('listFolders', { scope: 'all' });
   }
   function onSocketError(reason) {
     	console.log('Unable to connect to server', reason);
   	}
   	socket.on('connect', onSocketConnect);
   socket.on('error', onSocketError);
-  socket.on('error', onSocketError);
 
+  socket.on('listFolders', function (data){ onListFolders(socket); });
 })();
-
-
 
 /***********
   UTILS
 ***********/
+
 $.extend($.easing,{
   easeInOutQuint: function (x, t, b, c, d) {
     if ((t/=d/2) < 1) { return c/2*t*t*t*t*t + b; }

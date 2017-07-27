@@ -48,27 +48,46 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 window.$ = window.jQuery = _jquery2.default;
 
-window.store = {};
+/***********
+   STOREJS
+***********/
+
+window.store = {
+  debug: true,
+  el: '#vue',
+  state: {
+    folders: {}
+  }
+};
 
 /***********
   SOCKETIO
 ***********/
 
-var socket = _socket2.default.connect();
-function onSocketConnect() {
-  var sessionId = socket.io.engine.id;
-  console.log('Connected as ' + sessionId);
-  socket.emit('listFolders');
-}
-function onSocketError(reason) {
-  console.log('Unable to connect to server', reason);
-}
-socket.on('connect', onSocketConnect);
-socket.on('error', onSocketError);
+(function initSocketIO() {
+  var socket = _socket2.default.connect();
+  function onSocketConnect() {
+    var sessionId = socket.io.engine.id;
+    console.log('Connected as ' + sessionId);
+
+    // change scope depending on page/subpage
+    socket.emit('listFolders', { scope: 'all' });
+  }
+  function onSocketError(reason) {
+    console.log('Unable to connect to server', reason);
+  }
+  socket.on('connect', onSocketConnect);
+  socket.on('error', onSocketError);
+
+  socket.on('listFolders', function (data) {
+    onListFolders(socket);
+  });
+})();
 
 /***********
   UTILS
 ***********/
+
 $.extend($.easing, {
   easeInOutQuint: function easeInOutQuint(x, t, b, c, d) {
     if ((t /= d / 2) < 1) {

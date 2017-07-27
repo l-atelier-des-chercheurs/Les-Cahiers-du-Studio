@@ -1,17 +1,4 @@
-"use strict";
-
 const
-  fs = require('fs-extra'),
-  glob = require('glob'),
-  path = require('path'),
-  mm = require('marky-mark'),
-  exec = require('child_process').exec,
-  gutil = require('gulp-util'),
-  gm = require('gm').subClass({imageMagick: true})
-;
-
-const
-  local  = require('./local'),
   dev = require('./bin/dev-log'),
   api = require('./bin/api')
 ;
@@ -26,7 +13,7 @@ module.exports = (function() {
   let electronApp;
 
   const API = {
-    init          : (app, io, electronApp)   => { return init(app, io, electronApp) }
+    init          : (app, io, electronApp)   => { return init(app, io, electronApp); }
   };
 
   function init(thisApp, thisIO, thisElectronApp) {
@@ -36,27 +23,19 @@ module.exports = (function() {
     io = thisIO;
     electronApp = thisElectronApp;
 
-    io.on("connection", function(socket){
+    io.on('connection', function(socket){
       var onevent = socket.onevent;
       socket.onevent = function (packet) {
           var args = packet.data || [];
           onevent.call (this, packet);    // original call
-          packet.data = ["*"].concat(args);
+          packet.data = ['*'].concat(args);
           onevent.call(this, packet);      // additional call to catch-all
       };
-      socket.on("*",function(event,data) {
-        dev.log('RECEIVED EVENT : ' + event);
+      socket.on('*',function(event,data) {
+        dev.log(`RECEIVED EVENT: ${event}`);
       });
 
-      // I N D E X
-/*
-      socket.on('newConf', onNewConf);
-      socket.on('listConf', function (data){ onListConf(socket); });
-      socket.on('listSlides', function (data){ onListSlides(socket, data); });
-*/
-
       socket.on('listFolders', function (data){ onListFolders(socket,data); });
-
     });
   }
 
@@ -73,22 +52,26 @@ module.exports = (function() {
       => get this timeline meta + medias and meta
   */
   function onListFolders(socket, d) {
-    dev.logfunction( "EVENT - onRemoveUserDirPath");
+    dev.logfunction(`EVENT - onListFolders with data: ${JSON.stringify(d, null, 4)}`);
+    if(!d || !d.scope) {
+      dev.error(`Missing arg/instruction for listing folders`);
+    }
 
-    if(!d) {
-
-      file.getFolder().then(function(foldersData) {
-        sendEventWithContent('listFolder', foldersData, io, socket);
-      }, function(error) {
-        console.error("Failed to list folders! Error: ", error);
-      });
-
-    } else if(d.scope === "folder") {
-      file.getFolder(d.slug).then(function(foldersData) {
-        sendEventWithContent('listFolder', foldersData, io, socket);
-      }, function(error) {
-        console.error("Failed to list folders! Error: ", error);
-      });
+    switch (d.scope) {
+      case 'all':
+        file.getFolder().then(function(foldersData) {
+          sendEventWithContent('listFolder', foldersData, io, socket);
+        }, function(error) {
+          dev.error(`Failed to list folders! Error: ${error}`);
+        });
+        break;
+      case 'folder':
+        file.getFolder(d.slug).then(function(foldersData) {
+          sendEventWithContent('listFolder', foldersData, io, socket);
+        }, function(error) {
+          dev.error(`Failed to list folders! Error: ${error}`);
+        });
+        break;
     }
   }
 

@@ -9,7 +9,7 @@ var dev = (function() {
   logger.transports.console = false;
 
   const API = {
-    init        : (isDebug, isVerbose)   => { return initModule(isDebug, isVerbose) },
+    init        : (isDebug, isVerbose)   => { return initModule(isDebug, isVerbose); },
     log         : log,
     logverbose  : logverbose,
     logpackets  : logpackets,
@@ -51,28 +51,22 @@ var dev = (function() {
     var args = Array.prototype.slice.call(arguments);
     var logArgs = '- '.concat(args);
 
-    if(logToFile)
-      _sendToLogFile(logArgs);
-    if(isDebugMode && isVerboseMode)
-      _sendToConsole(logArgs, gutil.colors.gray);
+    if(logToFile) { _sendToLogFile(logArgs); }
+    if(isDebugMode && isVerboseMode) { _sendToConsole(logArgs, gutil.colors.gray); }
   }
   function logpackets() { // green
     var args = Array.prototype.slice.call(arguments);
     var logArgs = '* '.concat(args);
 
-    if(logToFile)
-      _sendToLogFile(logArgs);
-    if(isDebugMode)
-      _sendToConsole(logArgs, gutil.colors.green);
+    if(logToFile) { _sendToLogFile(logArgs); }
+    if(isDebugMode) { _sendToConsole(logArgs, gutil.colors.green); }
   }
   function logfunction() { // magenta
     var args = Array.prototype.slice.call(arguments);
     var logArgs = '~ '.concat(args);
 
-    if(logToFile)
-      _sendToLogFile(logArgs);
-    if(isDebugMode)
-      _sendToConsole(logArgs, gutil.colors.magenta);
+    if(logToFile) { _sendToLogFile(logArgs); }
+    if(isDebugMode) { _sendToConsole(logArgs, gutil.colors.magenta); }
   }
   function error() { // red
     var args = Array.prototype.slice.call(arguments);
