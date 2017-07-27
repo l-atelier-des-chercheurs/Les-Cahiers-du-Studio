@@ -55,7 +55,7 @@ module.exports = function(app,io,m){
           if(pageTitle !== undefined)
             pageDataJSON.pageTitle = pageTitle;
 
-          getLocalIP().then(function(localNetworkInfos) {
+          api.getLocalIP().then(function(localNetworkInfos) {
             pageDataJSON.localNetworkInfos = localNetworkInfos;
             resolve(pageDataJSON);
           }, function(err, p) {
@@ -71,7 +71,7 @@ module.exports = function(app,io,m){
         pageDataJSON.currentUserDirPath = file.getFolderPath(slugFolderName);
       }
 
-      getLocalIP().then(function(localNetworkInfos) {
+      api.getLocalIP().then(function(localNetworkInfos) {
         pageDataJSON.localNetworkInfos = localNetworkInfos;
         resolve(pageDataJSON);
       }, function(err, p) {

@@ -2,7 +2,8 @@ const path = require('path'),
 	moment = require('moment'),
   parsedown = require('dodoc-parsedown'),
   fs = require('fs-extra'),
-  slugg = require('slugg')
+  slugg = require('slugg'),
+  os = require('os')
 ;
 
 const
@@ -10,7 +11,7 @@ const
   dev = require('./dev-log')
 ;
 
-var api = (function() {
+module.exports = (function() {
 
   const API = {
     getCurrentDate              : (f = local.settings().metaDateFormat)  => { return getCurrentDate(f) },
@@ -20,6 +21,7 @@ var api = (function() {
     parseData                   : (d) => { return parseData(d); },
     eventAndContent             : (sendEvent, objectJson) =>     { return eventAndContent(sendEvent, objectJson) },
     sendEventWithContent        : (sendEvent, objectContent, io, socket) => { return sendEventWithContent(sendEvent, objectContent, io, socket) },
+    getLocalIP                  : () => { return getLocalIP() }
   }
 
   function getCurrentDate(f) {
@@ -109,7 +111,22 @@ var api = (function() {
     dev.logpackets("packet sent");
   }
 
+  // from http://stackoverflow.com/a/8440736
+  function getLocalIP() {
+    return new Promise(function(resolve, reject) {
+      var ifaces = os.networkInterfaces();
+      var networkInfo = {};
+      Object.keys(ifaces).forEach(function (ifname) {
+        var alias = 0;
+        ifaces[ifname].forEach(function (iface) {
+          if ('IPv4' === iface.family && iface.internal === false) {
+            networkInfo[ifname] = iface.address;
+          }
+        });
+      });
+      resolve(networkInfo);
+    });
+  }
+
   return API;
 })();
-
-module.exports = api;

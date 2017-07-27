@@ -1,4 +1,5 @@
-const path = require('path'),
+const
+  path = require('path'),
 	moment = require('moment'),
   parsedown = require('woods-parsedown'),
   fs = require('fs-extra')
@@ -15,8 +16,8 @@ module.exports = (function() {
     getFolderPath          : (slugFolderName = '') => { return getFolderPath(slugFolderName) },
     getFolder              : (slug = '') => { return getFolder(slug) },
     getMetaFileOfFolder    : (slugFolderName) => { return getMetaFileOfFolder(slugFolderName); },
-    readFolderMeta         : (slugFolderName) => { return readFolderMeta(slugFolderName); },
-  }
+    readFolderMeta         : (slugFolderName) => { return readFolderMeta(slugFolderName); }
+  };
 
   function getFolderPath(slugFolderName) {
     dev.logfunction( "COMMON — getFolderPath : " + slugFolderName);
@@ -36,12 +37,8 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction( "COMMON — readConfMeta: " + slugFolderName);
       var metaFolderPath = getMetaFileOfFolder(slugFolderName);
-
-      readMetaFile(metaFolderPath);
-      var folderData = fs.readFileSync(metaFolderPath, );
-      var folderMetadata = parseData(folderData);
-
-      resolve(folderMetadata);
+      var folderData = readMetaFile(metaFolderPath);
+      resolve(folderData);
     });
   }
 
