@@ -1,19 +1,15 @@
 doctype html
 html
   include snippets/head
-
-  body(data-page='conf' class=isDebug && 'is--debug')
-
+  body
     .drop-files-container
       .instructions déposez ici les slides à ajouter
     input(id="upload-input" type="file" name="uploads[]" multiple="multiple")
 
     a.btn.btn_retour(href="/")
       | ←
-    a.btn.btn_openCloseCamera.js--openCloseCamera(href="#" title="Règlages media" )
-      | !{settings.lang.openCamera}
 
-
+<!--
     .module--stackIntro
       .titre
         h1 #{confMeta.confName}
@@ -66,29 +62,9 @@ html
             label(for="fhd")
               | 1920×1080
 
-
-
     .slides-list
 
-
-    .js--templates
-      .slide.js--fixedslide.js--imageSlide
-        .slide--item.slide--item_image.js--interactevents
-          img.shadowed
-      .slide.js--fixedslide.js--videoSlide
-        .slide--item.slide--item_video.js--interactevents
-          video(controls).shadowed
-            source()
-      .slide.js--fixedslide.js--iframeSlide
-        .slide--item.slide--item_iframe.js--interactevents.shadowed
-          .slide--item--navbar
-            .pageUrlField
-              h6.pageUrl
-            button.toggleIframe.js--startIframe on&nbsp;/&nbsp;off
-            a.iframeNewTab.js--openInBrowser(target="_blank") ↗
-          iframe
-
-
+-->
 
     include snippets/footer
     script( src='/js/pages/conf.js')

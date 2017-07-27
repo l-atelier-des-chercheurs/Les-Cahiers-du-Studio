@@ -1,17 +1,13 @@
-.module--popup.js--popup
-
 script
   | if (typeof module === 'object') {window.module = module; module = undefined;}
 
-script(src='/socket.io/socket.io.js')
 script
   | var app = {};
   | app.slugFolderName = "#{slugFolderName}";
   | app.folderPath = "#{folderPath}";
-  | app.local = function() { return !{JSON.stringify(lang)} };
-script( src='/development/plugins.js')
-script moment.locale("#{settings.codelang}");
-script( src='/development/main.js')
+  | app.lang = function() { return !{JSON.stringify(lang)} };
+
+script(src='/development/main.js')
 
 script
   | if (window.module) module = window.module;

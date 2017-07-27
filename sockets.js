@@ -18,14 +18,9 @@ const
 
 const file = require('./bin/file');
 
-
-
 module.exports = (function() {
 
-  console.log("Main module initialized");
-  console.log(api.getCurrentDate('X'));
-  console.log(api.getCurrentDate());
-
+  dev.log(`Main module initialized at ${api.getCurrentDate()}`);
   let app;
   let io;
   let electronApp;
@@ -35,7 +30,7 @@ module.exports = (function() {
   };
 
   function init(thisApp, thisIO, thisElectronApp) {
-    dev.log("Initializing socket module");
+    dev.log(`Initializing socket module`);
 
     app = thisApp;
     io = thisIO;

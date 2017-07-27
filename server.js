@@ -32,11 +32,8 @@ module.exports = function(electronApp) {
   dev.logverbose('Starting server 2');
 
   var sockets = require('./sockets');
-  dev.logverbose('Starting server 2');
   var expressSettings = require('./express-settings');
-  dev.logverbose('Starting server 2');
   var router = require('./router');
-  dev.logverbose('Starting server 2');
 
   var m = sockets.init(app, io, electronApp);
 

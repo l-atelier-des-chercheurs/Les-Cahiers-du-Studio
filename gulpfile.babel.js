@@ -1,6 +1,5 @@
 // Include gulp
-var gulp = require('gulp');
-
+var gulp = require('gulp')
 // Include Our Plugins
 var concat = require('gulp-concat');
 var minifyCss = require('gulp-minify-css');
@@ -11,18 +10,25 @@ var jshint       = require('gulp-jshint');
 var browserSync  = require('browser-sync').create();
 var uglify       = require('gulp-uglify');
 
+var fs   = require('fs');
+var browserify   = require('browserify')
+var vueify       = require('vueify')
+var babelify     = require('babelify')
+
+import source from "vinyl-source-stream";
+import buffer from "vinyl-buffer";
+import gutil from "gulp-util";
+
 var pluginsScripts = [
   'client/bower_components/jquery/dist/jquery.js',
-  'client/bower_components/moment/min/moment-with-locales.js',
-  'client/bower_components/store-js/store.min.js',
-  'client/bower_components/interact/dist/interact.js',
-  'client/bower_components/recordrtc/RecordRTC.min.js',
 ];
 var userScripts = [
-  'client/js/_fixedSlideEngine.js',
-  'client/js/_currentStream.js',
-  'client/js/_global.js'
+  'client/js/global.js'
 ];
+var components = [
+  'client/js/components/*.vue'
+];
+
 var localDevUrl = 'https://localhost:8080/';
 
 // Compile Our Sass
@@ -52,8 +58,10 @@ gulp.task('css-prod', function() {
 
 // Lint Task
 gulp.task('lint', function() {
-  return gulp.src( userScripts)
-    .pipe(jshint())
+  return gulp.src(userScripts)
+    .pipe(jshint({
+      esversion: 6
+    }))
     .pipe(jshint.reporter('default'));
 });
 
@@ -66,12 +74,32 @@ gulp.task('script-plugins', function() {
     .pipe(browserSync.stream());
 });
 
+gulp.task('scripts', ['script-plugins'], function () {
+  return browserify(userScripts)
+  .transform(babelify, { presets: ['es2015'], plugins: ['transform-runtime'] })
+  .transform(vueify)
+  .bundle()
+  .on('error', function(err) {
+    gutil.log(
+      gutil.colors.red('Browserify compile error:'),
+      err.message
+    );
+    gutil.beep();
+    this.emit('end'); // Ends the task
+  })
+  .pipe(source('main.js'))
+  .pipe(buffer())
+  .pipe(gulp.dest('client/development'))
+});
+
 // Concatenate user scripts and minify them.
+/*
 gulp.task('scripts', ['script-plugins'], function (done) {
   return gulp.src(userScripts)
     .pipe(concat('main.js'))
     .pipe(gulp.dest('client/development'))
 });
+*/
 
 // Concatenate user scripts and minify them.
 gulp.task('scripts-prod', ['scripts'], function (done) {
@@ -94,7 +122,7 @@ gulp.task('dev-watch-sync', ['init-live-reload', 'watch']);
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-  gulp.watch( userScripts, ['lint', 'script-plugins', 'scripts']);
+  gulp.watch([userScripts, components], ['lint', 'script-plugins', 'scripts']);
   gulp.watch('client/sass/*.scss', ['sass', 'css-prod']);
 });
 

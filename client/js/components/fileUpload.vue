@@ -1,61 +1,14 @@
+<template>
 
 
-/***************************************************************************
-                  Timeline logic
-***************************************************************************/
+</template>
 
-/* VARIABLES */
-var socket = io.connect();
-var zIndex = 0;
-var $allSlides = $();
+<script>
 
-/* sockets */
-socket.on('connect', onSocketConnect);
-socket.on('error', onSocketError);
-
-function onSocketConnect() {
-  sessionId = socket.io.engine.id;
-  console.log('Connected ' + sessionId);
-};
-
-function onSocketError(reason) {
-  console.log('Unable to connect to server', reason);
-};
-
-// socket.on('listAllSlides', onListAllSlides);
-
-// listTimelines
-
-
-
-/***
-
-
-***/
-
-var resizeTimer;
-$(window).on('resize', function(e) {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(function() {
-    console.log('event: resize end');
-    // resize timeout
-  }, 250);
-});
-
-function init(){
-  // lister les médias
-}
-
-
-/***************************************************************************
-                  UPLOAD FORM
-***************************************************************************/
-
+/*
 function uploadFormData(formData) {
-
   var $popoverUpload = $('.js--popover_upload');
   $popoverUpload.addClass('is--open');
-
   $.ajax({
     url: './file-upload',
     type: 'POST',
@@ -85,6 +38,19 @@ function uploadFormData(formData) {
       return xhr;
     }
   });
+}
+*/
+
+export default {
+  name: 'roomSize'
+
+
+
+
+
 
 }
+</script>
 
+<style>
+</style>

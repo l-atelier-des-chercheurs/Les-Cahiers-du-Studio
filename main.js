@@ -8,9 +8,12 @@ const {dialog} = require('electron');
 const JSONStorage = require('node-localstorage').JSONStorage;
 const server = require('./server');
 
-const dev = require('./bin/dev-log');
-const config = require('./config.json');
-const settings  = require('./settings');
+const
+  local  = require('./local'),
+  config = require('./config.json'),
+  dev = require('./bin/dev-log'),
+  api = require('./bin/api')
+;
 
 let win;
 
@@ -31,6 +34,12 @@ function createWindow() {
   dev.init(debug, verbose);
 
   dev.log('——— Starting stv-doc app v' + process.env.npm_package_version);
+
+  // checkout which langage to load
+  var envLang = app.getLocale();
+  local.setCurrentCodeLang(envLang);
+  dev.log(`Environment lang is ${local.getCurrentCodeLang()}`);
+  local.init();
 
   global.homeURL = `${config.protocol}://${config.host}:${config.port}`;
 
