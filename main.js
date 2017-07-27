@@ -95,7 +95,7 @@ function createWindow() {
       app.server = server(app);
     }
     catch (e) {
-      dev.error('Couldn’t load app:', e);
+      dev.error('Couldn’t load app: ', e);
     }
 
     // and load the base url of the app.

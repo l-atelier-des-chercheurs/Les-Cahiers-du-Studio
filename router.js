@@ -1,6 +1,6 @@
 const
   path = require('path'),
-  fs = require('fs-extra');
+  fs = require('fs-extra'),
   formidable = require('formidable'),
   gutil = require('gulp-util'),
   sizeOf = require('image-size'),
@@ -90,7 +90,7 @@ module.exports = function(app,io,m){
     }, function(err) {
       dev.error('Err while getting index data: ' + err);
     });
-  };
+  }
 
   function getConf(req, res) {
     var slugFolderName = req.param('conf');
@@ -118,7 +118,7 @@ module.exports = function(app,io,m){
       });
 
     });
-  };
+  }
 
   function postFile2(req, res){
     console.log('Will add new media for conf ' + req.param('conf'));

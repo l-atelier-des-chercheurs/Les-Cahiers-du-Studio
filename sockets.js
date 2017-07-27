@@ -1,6 +1,7 @@
 "use strict";
 
-const fs = require('fs-extra'),
+const
+  fs = require('fs-extra'),
   glob = require('glob'),
   path = require('path'),
   mm = require('marky-mark'),

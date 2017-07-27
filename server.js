@@ -37,27 +37,14 @@ module.exports = function(electronApp) {
 
   var m = sockets.init(app, io, electronApp);
 
-  /*
-  * Server config
-  */
   expressSettings(app, express);
-
-  /**
-  * Server routing and io events
-  */
   router(app, io, m);
 
-  /**
-  * Start the http server at port and IP defined before
-  */
-  server.listen(
-    app.get("port"), function() {
-      dev.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
-      dev.log(` `);
-      process.on('unhandledRejection', function(reason, p) {
-        dev.error("Unhandled Rejection at: Promise ", p, " reason: ", reason);
-          // application specific logging, throwing an error, or other logic here
-      });
-    }
-  );
+  server.listen(app.get("port"), function() {
+    dev.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
+    dev.log(` `);
+    process.on('unhandledRejection', function(reason, p) {
+      dev.error("Unhandled Rejection at: Promise ", p, " reason: ", reason);
+    });
+  });
 }
