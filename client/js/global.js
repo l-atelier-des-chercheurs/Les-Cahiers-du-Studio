@@ -1,6 +1,7 @@
 import Vue from 'vue/dist/vue';
 import io from 'socket.io-client';
 import fileUpload from './components/fileUpload.vue';
+import folder from './components/folder.vue';
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
 
@@ -11,11 +12,11 @@ window.$ = window.jQuery = jQuery;
 
 window.store = {
   debug:true,
-  el: '#vue',
   state: {
-    folders: {}
   }
 };
+
+window.store.state = app.data;
 
 /***********
   SOCKETIO
@@ -26,9 +27,6 @@ window.store = {
   function onSocketConnect() {
     	let sessionId = socket.io.engine.id;
     	console.log(`Connected as ${sessionId}`);
-
-    	// change scope depending on page/subpage
-    	socket.emit('listFolders', { scope: 'all' });
   }
   function onSocketError(reason) {
     	console.log('Unable to connect to server', reason);
@@ -62,9 +60,25 @@ $('body').on('click', '.js--openInBrowser', function() {
 });
 
 /***********
-  SOCKETIO
+  VUE
 ***********/
 
+window.vueapp = new Vue({ // eslint-disable-line no-new
+  el: '#vue',
+  data: {
+    store: window.store.state,
+    settings: {
+    },
+  },
+  components: {
+    fileUpload,
+    folder
+  },
+  methods: {
+  },
+  watch: {
+  }
+});
 
 
 

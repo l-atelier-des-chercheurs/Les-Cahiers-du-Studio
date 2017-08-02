@@ -12,9 +12,13 @@ const
 module.exports = (function() {
 
   const API = {
+
     getFolderPath          : (slugFolderName = '') => { return getFolderPath(slugFolderName); },
     getFolder              : (slugFolderName = '') => { return getFolder(slugFolderName); },
     getMetaFileOfFolder    : (slugFolderName) => { return getMetaFileOfFolder(slugFolderName); },
+
+    getMedia               : (slugFolderName, slugMediaName) => { return getMedia(slugFolderName, slugMediaName); },
+
 
     createMediaMeta        : (path, mediaFileName, metaFileName = '') => { return createMediaMeta(path, mediaFileName, metaFileName); }
   };
@@ -26,7 +30,6 @@ module.exports = (function() {
   function getUserPath() {
     return global.pathToUserContent;
   }
-
   function getMetaFileOfFolder(slugFolderName) {
     let folderPath = getFolderPath(slugFolderName);
     let metaPath = path.join(folderPath, local.settings().folderMetafilename + local.settings().metaFileext);
@@ -62,24 +65,94 @@ module.exports = (function() {
 
         // only get folders
         var folders = filenames.filter( function(slugFolderName){ return new RegExp( local.settings().regexpMatchFolderNames, 'i').test(slugFolderName); });
-        dev.logverbose(`Number of folders in ${getFolderPath()} = ${folders.length}. Folder(s) is(are) ${folders}`);
+        dev.logverbose(`Number of folders in ${mainFolderPath} = ${folders.length}. Folder(s) is(are) ${folders}`);
 
-        var foldersProcessed = 0;
         var allFoldersData = [];
-        folders.forEach(function(slugFolderName) {
+        folders.forEach((slugFolderName) => {
           if( new RegExp( local.settings().regexpMatchFolderNames, 'i').test( slugFolderName) && slugFolderName.indexOf(local.settings().deletedPrefix)){
-            var fmeta = readFolderMeta(slugFolderName);
-            fmeta.slugFolderName = slugFolderName;
+            let fmeta = new Promise((resolve, reject) => {
+              readFolderMeta(slugFolderName).then((meta) => {
+                meta.slugFolderName = slugFolderName;
+                resolve(meta);
+              });
+            });
             allFoldersData.push(fmeta);
           }
-
-          foldersProcessed++;
-
-          if(foldersProcessed === folders.length && allFoldersData.length > 0) {
-            dev.logverbose(`- - - - all folders meta have been processed`);
-            resolve(allFoldersData);
-          }
         });
+        Promise.all(allFoldersData).then((allFoldersData) => {
+          dev.logverbose(`All folders meta have been processed`, JSON.stringify(allFoldersData, null, 4));
+          // reunite array items as a single big object
+          let flatObjFoldersData = {};
+          allFoldersData.forEach((fmeta) => {
+            flatObjFoldersData[fmeta.slugFolderName] = fmeta;
+          });
+          resolve(flatObjFoldersData);
+        });
+      });
+    });
+  }
+
+  function getMedia(slugFolderName, slugMediaName) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(`COMMON — getMedia`);
+      if(slugFolderName === undefined) {
+        dev.error(`Missing slugFolderName to read medias from.`);
+        reject();
+      }
+      if(slugMediaName === undefined) {
+        dev.logverbose(`Missing slugMediaName to read medias from ${slugFolderName}. Reading all medias instead.`);
+      }
+      dev.logverbose(`COMMON — getMedia — folder: ${slugFolderName}`);
+
+      let slugFolderPath = getFolderPath(slugFolderName);
+      // on cherche tous les dossiers du dossier de contenu
+      fs.readdir(slugFolderPath, function (err, filenames) {
+        if(err) { dev.error(`Couldn't read content dir: ${err}`); reject(err); }
+        if(filenames === undefined) { dev.error(`No medias for folder found: ${err}`); resolve(); }
+
+        dev.logverbose(`Found filenames: ${filenames}`);
+        // pour chaque item qui n'est ni le fichier meta, ni un autre dossier, ni un fichier txt (méta)
+        let medias = filenames.filter(function(slugFolderName){
+          return
+          // not a folder
+          !new RegExp( local.settings().regexpMatchFolderNames, 'i').test(slugFolderName)
+          // not meta
+          && slugFolderName !== local.settings().folderMetafilename + local.settings().metaFileext
+          // not
+          && new RegExp( local.settings().regexpGetFileExtension, 'i').exec(slugFolderName)[0] !== '.txt';
+        });
+        dev.logverbose(`Number of actual medias in ${slugFolderPath} = ${medias.length}. Media(s) is(are) ${medias}`);
+
+        if(medias.length === 0) {
+          dev.logverbose(`Since no medias is in this folder, let’s abort right there.`)
+          resolve(`No medias in this folder.`);
+        } else {
+          // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
+
+          // si oui, on le lis et ces métas sont renvoyés dans l’autre sens
+
+          // si non, on lit la date de création et modification et on retourne
+
+
+          var allMediasData = [];
+          medias.forEach(function(slugFolderName) {
+            if( new RegExp( local.settings().regexpMatchFolderNames, 'i').test( slugFolderName) && slugFolderName.indexOf(local.settings().deletedPrefix)){
+              let fmeta = new Promise((resolve, reject) => {
+                readFolderMeta(slugFolderName).then((meta) => {
+                  let metaWithKey = {};
+                  metaWithKey[slugFolderName] = meta;
+                  resolve(metaWithKey);
+                });
+              });
+              allMediasData.push(fmeta);
+            }
+          });
+          Promise.all(allFoldersData).then((allMediasData) => {
+            dev.logverbose(`All folders meta have been processed`, JSON.stringify(allMediasData, null, 4));
+            resolve(allFoldersData);
+          });
+        }
+
       });
     });
   }

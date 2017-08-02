@@ -51,6 +51,7 @@ module.exports = (function() {
         slug: compagnie-3-6-30
       => get this timeline meta + medias and meta
   */
+/*
   function onListFolders(socket, d) {
     dev.logfunction(`EVENT - onListFolders with data: ${JSON.stringify(d, null, 4)}`);
     if(!d || !d.scope) {
@@ -74,6 +75,7 @@ module.exports = (function() {
         break;
     }
   }
+*/
 
   return API;
 })();

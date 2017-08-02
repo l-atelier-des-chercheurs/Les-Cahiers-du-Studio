@@ -17,6 +17,7 @@ module.exports = function(app,io,m){
   * routing event
   */
   app.get('/', showIndex);
+  app.get('/:folder', showFolder);
   app.post('/:folder/file-upload', postFile2);
 
   /**
@@ -43,19 +44,61 @@ module.exports = function(app,io,m){
 
       api.getLocalIP().then(function(localNetworkInfos) {
         pageDataJSON.localNetworkInfos = localNetworkInfos;
-        resolve(pageDataJSON);
+
+        // if index page, get all folders data
+        if(req.params.folder === undefined) {
+          file.getFolder().then(function(foldersData) {
+            pageDataJSON.data = foldersData;
+            resolve(pageDataJSON);
+          }, function(err, p) {
+            dev.error(`Failed to get folder data for ${slugFolderName}: ${err}`);
+            reject(err);
+          });
+
+        // if folder page, get that folder meta and all media meta
+        } else {
+          let slugFolderName = req.params.folder;
+
+          file.getFolder(slugFolderName).then(function(folderData) {
+            pageDataJSON.data = folderData;
+
+            // get all of that folder's medias
+            file.getMedia(slugFolderName).then(function(mediasData) {
+              dev.logverbose(JSON.stringify(pageDataJSON.data[slugFolderName], null, 4));
+//               pageDataJSON.data[slugFolderName].medias = mediasData;
+            }, function(err, p) {
+              dev.error(`Failed to get folder’s media data for ${slugFolderName}: ${err}`);
+              reject(err);
+            });
+
+          }, function(err, p) {
+            dev.error(`Failed to get folder data for ${slugFolderName}: ${err}`);
+            reject(err);
+          });
+        }
       }, function(err, p) {
         dev.error(`Failed to get IP: ${err}`);
         reject(err);
       });
 
+
     });
   }
 
   // GET
-  function showIndex(req, res) {
+  function showIndex(req,res) {
     generatePageData(req).then(function(pageData) {
+      dev.logpackets(`Rendering index with data `, JSON.stringify(pageData, null, 4));
       res.render('index', pageData);
+    }, function(err) {
+      dev.error(`Err while getting index data: ${err}`);
+    });
+  }
+
+  function showFolder(req,res) {
+    generatePageData(req).then(function(pageData) {
+      dev.logpackets(`Rendering folder with data `, JSON.stringify(pageData, null, 4));
+      res.render('folder', pageData);
     }, function(err) {
       dev.error(`Err while getting index data: ${err}`);
     });
