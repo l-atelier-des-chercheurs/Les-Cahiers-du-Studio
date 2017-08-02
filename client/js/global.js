@@ -57,7 +57,7 @@ let socketio = (function() {
     let slugFolderName = Object.keys(mdata)[0];
     let createdMediaMeta = mdata[slugFolderName].medias;
     let mediaKey = Object.keys(createdMediaMeta)[0];
-    window.store.state.folders[slugFolderName].medias[mediaKey] = createdMediaMeta[mediaKey];
+    window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, createdMediaMeta);
     return;
   }
 
