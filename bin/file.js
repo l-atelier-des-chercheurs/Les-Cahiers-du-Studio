@@ -59,7 +59,6 @@ module.exports = (function() {
           createMediaMeta(slugFolderName, slugMediaName).then(function(mediaData) {
             resolve(mediaData);
           });
-
         } else {
           dev.logverbose(`Found meta for this media.`);
           let mediaData = readMetaFile(potentialMetaFile);
@@ -136,7 +135,7 @@ module.exports = (function() {
       if(slugMediaName === undefined) {
         dev.logverbose(`Missing slugMediaName to read medias from ${slugFolderName}. Reading all medias instead.`);
       }
-      dev.logverbose(`COMMON — getMedia — folder: ${slugFolderName}`);
+      dev.logverbose(`COMMON — getMedia — folder: ${slugFolderName} — media: ${slugMediaName}`);
 
       let slugFolderPath = getFolderPath(slugFolderName);
       // on cherche tous les dossiers du dossier de contenu
@@ -155,7 +154,9 @@ module.exports = (function() {
             // not deleted
             thisSlugMediaName.indexOf(local.settings().deletedPrefix) &&
             // not a dotfile
-            thisSlugMediaName.indexOf('.') !== 0
+            thisSlugMediaName.indexOf('.') !== 0 &&
+            // if has slugMediaName, only if it matches
+            (slugMediaName !== undefined ? thisSlugMediaName === slugMediaName : true)
             ;
         });
         dev.logverbose(`Number of actual medias in ${slugFolderPath} = ${medias.length}. Media(s) is(are) ${medias}`);
@@ -221,7 +222,7 @@ module.exports = (function() {
             dev.error(`Failed to get size of media. Error: ${err}`);
           }
 
-          let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(mediaPath)[0];
+          let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(slugMediaName)[0];
           dev.logverbose(`Trying to guess filetype from extension: ${mediaFileExtension}`);
           switch(mediaFileExtension.toLowerCase()) {
             case '.mp4':
@@ -236,7 +237,7 @@ module.exports = (function() {
 
           dev.logverbose(`Saving JSON string ${JSON.stringify(mdata, null, 4)}`);
           api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
-            dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${meta}`);
+            dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);
             resolve(meta);
           }, function(err) {
             reject(`Couldn't create media meta : ${err}`);

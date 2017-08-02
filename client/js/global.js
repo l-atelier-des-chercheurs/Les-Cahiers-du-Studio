@@ -13,36 +13,61 @@ import folder from './components/folder.vue';
 
 window.store = {
   debug:true,
-  state: {}
+  state: {},
 };
 window.store.state.folders = JSON.parse(JSON.stringify(locals.data));
-
-setTimeout(() => {
-//   window.store.state.folders['compagnie-3-6-30'].created = '';
-}, 1000);
 
 /***********
   SOCKETIO
 ***********/
 
-(function initSocketIO() {
-  var socket = io.connect();
-  function onSocketConnect() {
+let socketio = (function() {
+  let socket;
+
+  const API = {
+    init        : () => { return init(); },
+    listMedias  : (slugFolderName) => { return listMedias(slugFolderName); },
+  };
+
+  function init() {
+    socket = io.connect();
+    	socket.on('connect', _onSocketConnect);
+    socket.on('error', _onSocketError);
+    	socket.on('listMedias', _onListMedias);
+    	socket.on('mediaCreated', _onMediaCreated);
+  }
+
+  function listMedias(slugFolderName) {
+    socket.emit('listMedias', { slugFolderName });
+  }
+
+  function _onSocketConnect() {
     	let sessionId = socket.io.engine.id;
     	console.log(`Connected as ${sessionId}`);
-
-    // à déplacer
-    socket.emit('listMedias', { slugFolderName : 'compagnie-3-6-30' });
   }
-  function onSocketError(reason) {
-    	console.log('Unable to connect to server', reason);
+  function _onSocketError(reason) {
+    	console.log(`Unable to connect to server: ${reason}`);
   	}
-  	socket.on('connect', onSocketConnect);
-  socket.on('error', onSocketError);
+  function _onListMedias(mdata) {
+    let slugFolderName = Object.keys(mdata)[0];
+    window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
+    return;
+  }
+  function _onMediaCreated(mdata) {
+    let slugFolderName = Object.keys(mdata)[0];
+    let createdMediaMeta = mdata[slugFolderName].medias;
+    let mediaKey = Object.keys(createdMediaMeta)[0];
+    window.store.state.folders[slugFolderName].medias[mediaKey] = createdMediaMeta[mediaKey];
+    return;
+  }
 
-  	socket.on('listMedias', onListMedias);
-
+  return API;
 })();
+socketio.init();
+
+setTimeout(() => {
+  socketio.listMedias('compagnie-3-6-30');
+}, 500);
 
 /***********
   UTILS
@@ -69,6 +94,8 @@ $('body').on('click', '.js--openInBrowser', function() {
 /***********
   VUE
 ***********/
+Vue.config.silent = false;
+Vue.config.devtools = true;
 
 window.vueapp = new Vue({ // eslint-disable-line no-new
   el: '#vue',
@@ -87,9 +114,3 @@ window.vueapp = new Vue({ // eslint-disable-line no-new
   }
 });
 
-
-function onListMedias(mdata) {
-  let slugFolderName = Object.keys(mdata)[0];
-  window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
-  return;
-}

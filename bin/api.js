@@ -33,37 +33,38 @@ module.exports = (function() {
     return moment(date).format(f);
   }
 
-  // check whether fileName (such as 'hello-world.mp4') already exists in the folder
+  // check whether media (such as 'hello-world.mp4') already exists in the folder
   function findFirstFilenameNotTaken(thisPath, fileName) {
     return new Promise(function(resolve, reject) {
       // let's find the extension if it exists
-      var fileExtension = new RegExp( local.settings().regexpGetFileExtension, 'i').exec( fileName)[0];
-      var fileNameWithoutExtension = new RegExp( local.settings().regexpRemoveFileExtension, 'i').exec( fileName)[1];
+      var fileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(fileName)[0];
+      // remove extension
+      var fileNameWithoutExtension = new RegExp(local.settings().regexpRemoveFileExtension, 'i').exec(fileName)[1];
+      // slug the rest of the name
       fileNameWithoutExtension = slugg(fileNameWithoutExtension);
-      dev.logverbose(`Looking for existing file with name: ${fileNameWithoutExtension} in path: ${thisPath}`);
+
+      let
+        newFileName = `${fileNameWithoutExtension}${fileExtension}`,
+        newMetaFileName = `${newFileName}${local.settings().metaFileext}`,
+        newPathToFile = path.join(thisPath, newFileName),
+        newPathToMeta = path.join(thisPath, newMetaFileName),
+        index = 0;
+
+      dev.logverbose(`2. about to look for existing files.`);
       try {
-        var newFileName = fileNameWithoutExtension + fileExtension;
-        var newMetaFileName = fileNameWithoutExtension + local.settings().metaFileext;
-        var index = 0;
-        var newPathToFile = path.join(thisPath, newFileName);
-        var newPathToMeta = path.join(thisPath, newMetaFileName);
-        dev.logverbose(`2. about to look for existing files.`);
-        // check si le nom du fichier et le nom du fichier méta sont déjà pris
-        while( (!fs.accessSync( newPathToFile, fs.F_OK) && !fs.accessSync( newPathToMeta, fs.F_OK))){
+        while((!fs.accessSync(newPathToFile, fs.F_OK) && !fs.accessSync(newPathToMeta, fs.F_OK))){
           dev.logverbose(`- - following path is already taken : newPathToFile = ${newPathToFile} or newPathToMeta = ${newPathToMeta}`);
           index++;
-
           newFileName = `${fileNameWithoutExtension}-${index}${fileExtension}`;
-          newMetaFileName = `${fileNameWithoutExtension}-${index}${local.settings().metaFileext}`;
+          newMetaFileName = `${newFileName}${local.settings().metaFileext}`;
           newPathToFile = path.join(thisPath, newFileName);
           newPathToMeta = path.join(thisPath, newMetaFileName);
-          dev.logverbose(`3. this filename is not taken : ${newFileName}`);
-          resolve(newFileName);
         }
       } catch(err) {
-        dev.error(`Failed to find filename not taken! Error: ${err}`);
-        reject(err);
+        // no file of this name has been found
       }
+      dev.logverbose(`3. this filename is not taken : ${newFileName}`);
+      resolve(newFileName);
     });
   }
 

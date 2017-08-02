@@ -6,6 +6,7 @@ const
 
 const
   local = require('./local'),
+  sockets = require('./sockets'),
   dev = require('./bin/dev-log'),
   api = require('./bin/api'),
   file = require('./bin/file')
@@ -125,10 +126,10 @@ module.exports = function(app,io,m){
         }
 
         // rename the new media if necessary to it's original name prepended by a number
-        Promise.all(m).then((filesToAddToMeta) => {
+        Promise.all(m).then(() => {
           let msg = {};
           msg.msg = 'success';
-          msg.medias = JSON.stringify(allFilesMeta);
+//           msg.medias = JSON.stringify(allFilesMeta);
           res.end(JSON.stringify(msg));
         });
       }
@@ -140,22 +141,16 @@ module.exports = function(app,io,m){
 
   function renameMediaAndCreateMeta(uploadDir, slugFolderName, file) {
     return new Promise(function(resolve, reject) {
-      api.findFirstFilenameNotTaken( uploadDir, file.name).then(function(newFileName){
-        var newPathToNewFileName = path.join(uploadDir, newFileName);
-        fs.rename(file.path, newPathToNewFileName);
-        dev.error(`TODO`);
-/*
-        file.createMediaMeta(uploadDir, newFileName).then(function(fileMeta){
-          resolve(newFileName);
-        }, function(err) {
-          reject(err);
-        });
-*/
+      api.findFirstFilenameNotTaken(uploadDir, file.name).then(function(newFileName){
+        dev.logverbose(`Following filename is available: ${newFileName}`);
+        let newPathToNewFileName = path.join(uploadDir, newFileName);
+        fs.renameSync(file.path, newPathToNewFileName);
+        sockets.createMediaMeta(slugFolderName,newFileName);
+        resolve();
       }, function(err) {
         reject(err);
       });
     });
   }
-
 
 };

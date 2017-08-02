@@ -1,56 +1,33 @@
 <template>
-
-
+  <dropzone :id="uniqueDropzoneID" :url="uriToUploadMedia" v-on:vdropzone-success="showSuccess">
+      <input type="hidden" name="token" value="xxx">
+  </dropzone>
 </template>
-
 <script>
-
-/*
-function uploadFormData(formData) {
-  var $popoverUpload = $('.js--popover_upload');
-  $popoverUpload.addClass('is--open');
-  $.ajax({
-    url: './file-upload',
-    type: 'POST',
-    data: formData,
-    datatype: 'json', // expecting JSON to be returned
-    processData: false,
-    contentType: false,
-    success: function(data){
-      console.log('upload successful!\n' + data);
-    },
-    xhr: function() {
-      // create an XMLHttpRequest
-      var xhr = new XMLHttpRequest();
-
-      // listen to the 'progress' event
-      xhr.upload.addEventListener('progress', function(evt) {
-        if (evt.lengthComputable) {
-          // calculate the percentage of upload completed
-          var percentComplete = evt.loaded / evt.total;
-          percentComplete = parseInt(percentComplete * 100);
-
-          // update the Bootstrap progress bar with the new percentage
-          $popoverUpload.find('.progress-bar').text(percentComplete + '%');
-          $popoverUpload.find('.progress-bar').width(percentComplete + '%');
-        }
-      }, false);
-      return xhr;
-    }
-  });
-}
-*/
+import Dropzone from 'vue2-dropzone'
 
 export default {
-  name: 'roomSize'
-
-
-
-
-
-
+  name: 'MainApp',
+  components: {
+    Dropzone
+  },
+  computed: {
+    uniqueDropzoneID: () => {
+      return 'myVueDropzone_' + Math.ceil((Math.random() * 1000));
+    },
+    uriToUploadMedia: function() {
+      return this.$parent._props.slug + '/file-upload';
+    },
+  },
+  methods: {
+    'showSuccess': function (file) {
+      console.log('A file was successfully uploaded')
+    }
+  }
 }
-</script>
 
-<style>
+
+
+</script>
+<style scoped>
 </style>
