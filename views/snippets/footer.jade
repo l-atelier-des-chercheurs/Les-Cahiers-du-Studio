@@ -5,8 +5,8 @@ script
   | var app = {};
   | app.slugFolderName = "#{slugFolderName}";
   | app.folderPath = "#{folderPath}";
-  | app.lang = !{JSON.stringify(lang)};
-  | app.data = !{JSON.stringify(data)};
+  | app.data = !{JSON.stringify(data, null, 4)};
+  | app.lang = !{JSON.stringify(lang, null, 4)};
 script(src='/development/main.js')
 
 script

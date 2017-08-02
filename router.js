@@ -59,13 +59,13 @@ module.exports = function(app,io,m){
         } else {
           let slugFolderName = req.params.folder;
 
-          file.getFolder(slugFolderName).then(function(folderData) {
+          file.getFolder(slugFolderName).then(folderData => {
             pageDataJSON.data = folderData;
 
             // get all of that folder's medias
-            file.getMedia(slugFolderName).then(function(mediasData) {
-              dev.logverbose(JSON.stringify(pageDataJSON.data[slugFolderName], null, 4));
-//               pageDataJSON.data[slugFolderName].medias = mediasData;
+            file.getMedia(slugFolderName).then(mediasData => {
+              pageDataJSON.data[slugFolderName].medias = mediasData;
+              resolve(pageDataJSON);
             }, function(err, p) {
               dev.error(`Failed to get folder’s media data for ${slugFolderName}: ${err}`);
               reject(err);
@@ -166,11 +166,14 @@ module.exports = function(app,io,m){
       api.findFirstFilenameNotTaken( uploadDir, file.name).then(function(newFileName){
         var newPathToNewFileName = path.join(uploadDir, newFileName);
         fs.rename(file.path, newPathToNewFileName);
+        dev.error(`TODO`);
+/*
         file.createMediaMeta(uploadDir, newFileName).then(function(fileMeta){
           resolve(newFileName);
         }, function(err) {
           reject(err);
         });
+*/
       }, function(err) {
         reject(err);
       });

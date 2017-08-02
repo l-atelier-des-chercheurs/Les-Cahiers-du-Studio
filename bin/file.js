@@ -1,6 +1,7 @@
 const
   path = require('path'),
-  fs = require('fs-extra')
+  fs = require('fs-extra'),
+  imageSize = require('image-size')
 ;
 
 const
@@ -18,9 +19,7 @@ module.exports = (function() {
     getMetaFileOfFolder    : (slugFolderName) => { return getMetaFileOfFolder(slugFolderName); },
 
     getMedia               : (slugFolderName, slugMediaName) => { return getMedia(slugFolderName, slugMediaName); },
-
-
-    createMediaMeta        : (path, mediaFileName, metaFileName = '') => { return createMediaMeta(path, mediaFileName, metaFileName); }
+    createMediaMeta        : (slugFolderName, mediaFileName) => { return createMediaMeta(slugFolderName, mediaFileName); }
   };
 
   function getFolderPath(slugFolderName = '') {
@@ -44,11 +43,39 @@ module.exports = (function() {
       resolve(folderData);
     });
   }
+  function readMediaMeta(slugFolderName,slugMediaName) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(`COMMON — readMediaMeta: slugFolderName = ${slugFolderName} & slugMediaName = ${slugMediaName}`);
+
+      // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
+      let mediaPath = path.join(getFolderPath(slugFolderName), slugMediaName);
+      let potentialMetaFile = mediaPath + local.settings().metaFileext;
+
+      fs.access(potentialMetaFile, fs.F_OK, function(err) {
+        // if there's nothing at path
+        if(err) {
+          dev.logverbose(`No meta for this media: ${err}`);
+          // let’s get creation date and modification date, guess the type, and return this whole thing afterwards
+          createMediaMeta(slugFolderName, slugMediaName).then(function(mediaData) {
+            resolve(mediaData);
+          });
+
+        } else {
+          dev.logverbose(`Found meta for this media.`);
+          let mediaData = readMetaFile(potentialMetaFile);
+          resolve(mediaData);
+        }
+      });
+
+
+    });
+  }
+
 
   function readMetaFile(metaPath){
     dev.logfunction(`COMMON — readMetaFile: ${metaPath}`);
     var metaFileContent = fs.readFileSync(metaPath, local.settings().textEncoding);
-    var metaFileContentParsed = api.parseData( metaFileContent);
+    var metaFileContentParsed = api.parseData(metaFileContent);
     return metaFileContentParsed;
   }
 
@@ -63,27 +90,34 @@ module.exports = (function() {
         if(err) { dev.error(`Couldn't read content dir: ${err}`); reject(err); }
         if(filenames === undefined) { dev.error(`No folder found: ${err}`); reject(err); }
 
-        // only get folders
-        var folders = filenames.filter( function(slugFolderName){ return new RegExp( local.settings().regexpMatchFolderNames, 'i').test(slugFolderName); });
+        var folders = filenames.filter(function(thisSlugFolderName){
+          dev.logverbose(`Checking ${thisSlugFolderName}`);
+          dev.logverbose(`Results ${new RegExp(local.settings().regexpMatchFolderNames, 'i').test(thisSlugFolderName)}`);
+            // is a folder
+          return new RegExp(local.settings().regexpMatchFolderNames, 'i').test(thisSlugFolderName) &&
+            // if slugFolderName isset, filter to get only requested folder
+            (slugFolderName !== '' ? thisSlugFolderName === slugFolderName : true) &&
+            slugFolderName.indexOf(local.settings().deletedPrefix)
+          ;
+        });
+
         dev.logverbose(`Number of folders in ${mainFolderPath} = ${folders.length}. Folder(s) is(are) ${folders}`);
 
         var allFoldersData = [];
         folders.forEach((slugFolderName) => {
-          if( new RegExp( local.settings().regexpMatchFolderNames, 'i').test( slugFolderName) && slugFolderName.indexOf(local.settings().deletedPrefix)){
-            let fmeta = new Promise((resolve, reject) => {
-              readFolderMeta(slugFolderName).then((meta) => {
-                meta.slugFolderName = slugFolderName;
-                resolve(meta);
-              });
+          let fmeta = new Promise((resolve, reject) => {
+            readFolderMeta(slugFolderName).then((meta) => {
+              meta.slugFolderName = slugFolderName;
+              resolve(meta);
             });
-            allFoldersData.push(fmeta);
-          }
+          });
+          allFoldersData.push(fmeta);
         });
-        Promise.all(allFoldersData).then((allFoldersData) => {
-          dev.logverbose(`All folders meta have been processed`, JSON.stringify(allFoldersData, null, 4));
+        Promise.all(allFoldersData).then((parsedFoldersData) => {
+          dev.logverbose(`All folders meta have been processed`, JSON.stringify(parsedFoldersData, null, 4));
           // reunite array items as a single big object
           let flatObjFoldersData = {};
-          allFoldersData.forEach((fmeta) => {
+          parsedFoldersData.forEach((fmeta) => {
             flatObjFoldersData[fmeta.slugFolderName] = fmeta;
           });
           resolve(flatObjFoldersData);
@@ -110,46 +144,46 @@ module.exports = (function() {
         if(err) { dev.error(`Couldn't read content dir: ${err}`); reject(err); }
         if(filenames === undefined) { dev.error(`No medias for folder found: ${err}`); resolve(); }
 
-        dev.logverbose(`Found filenames: ${filenames}`);
-        // pour chaque item qui n'est ni le fichier meta, ni un autre dossier, ni un fichier txt (méta)
-        let medias = filenames.filter(function(slugFolderName){
-          return
-          // not a folder
-          !new RegExp( local.settings().regexpMatchFolderNames, 'i').test(slugFolderName)
-          // not meta
-          && slugFolderName !== local.settings().folderMetafilename + local.settings().metaFileext
-          // not
-          && new RegExp( local.settings().regexpGetFileExtension, 'i').exec(slugFolderName)[0] !== '.txt';
+        dev.logverbose(`Found this many (${filenames.length}) filenames: ${filenames}`);
+        let medias = filenames.filter(function(thisSlugMediaName){
+            // not a folder
+          return !new RegExp( local.settings().regexpMatchFolderNames, 'i').test(thisSlugMediaName) &&
+            // not meta.txt
+            thisSlugMediaName !== local.settings().folderMetafilename + local.settings().metaFileext &&
+            // not a text file
+            new RegExp( local.settings().regexpGetFileExtension, 'i').exec(thisSlugMediaName)[0] !== '.txt' &&
+            // not deleted
+            thisSlugMediaName.indexOf(local.settings().deletedPrefix) &&
+            // not a dotfile
+            thisSlugMediaName.indexOf('.') !== 0
+
+            ;
         });
         dev.logverbose(`Number of actual medias in ${slugFolderPath} = ${medias.length}. Media(s) is(are) ${medias}`);
 
         if(medias.length === 0) {
-          dev.logverbose(`Since no medias is in this folder, let’s abort right there.`)
+          dev.logverbose(`Since no medias is in this folder, let’s abort right there.`);
           resolve(`No medias in this folder.`);
         } else {
-          // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
-
-          // si oui, on le lis et ces métas sont renvoyés dans l’autre sens
-
-          // si non, on lit la date de création et modification et on retourne
-
-
           var allMediasData = [];
-          medias.forEach(function(slugFolderName) {
-            if( new RegExp( local.settings().regexpMatchFolderNames, 'i').test( slugFolderName) && slugFolderName.indexOf(local.settings().deletedPrefix)){
-              let fmeta = new Promise((resolve, reject) => {
-                readFolderMeta(slugFolderName).then((meta) => {
-                  let metaWithKey = {};
-                  metaWithKey[slugFolderName] = meta;
-                  resolve(metaWithKey);
-                });
+          medias.forEach(function(slugMediaName) {
+            let fmeta = new Promise((resolve, reject) => {
+              readMediaMeta(slugFolderName,slugMediaName).then((meta) => {
+                meta.slugMediaName = slugMediaName;
+                resolve(meta);
               });
-              allMediasData.push(fmeta);
-            }
+            });
+            allMediasData.push(fmeta);
           });
-          Promise.all(allFoldersData).then((allMediasData) => {
-            dev.logverbose(`All folders meta have been processed`, JSON.stringify(allMediasData, null, 4));
-            resolve(allFoldersData);
+
+          Promise.all(allMediasData).then((parsedMediasData) => {
+            dev.logverbose(`All medias meta have been processed`, JSON.stringify(parsedMediasData, null, 4));
+            // reunite array items as a single big object
+            let flatObjMediasData = {};
+            parsedMediasData.forEach((fmeta) => {
+              flatObjMediasData[fmeta.slugMediaName] = fmeta;
+            });
+            resolve(flatObjMediasData);
           });
         }
 
@@ -157,42 +191,52 @@ module.exports = (function() {
     });
   }
 
-  function createMediaMeta(atPath, mediaFileName, metaFileName) {
+  function createMediaMeta(slugFolderName, slugMediaName) {
     return new Promise(function(resolve, reject) {
-      dev.logverbose(`Will create a new meta file for media ${mediaFileName} for folder ${atPath}`);
+      dev.logfunction(`COMMON — createMediaMeta : will create a new meta file for media ${slugMediaName} in folder ${slugFolderName}`);
 
-      // If no metaFileName, we will deduce metaFileName from mediaFileName
-      if(metaFileName === '') {
-        var fileNameWithoutExtension = new RegExp( local.settings().regexpRemoveFileExtension, 'i').exec( mediaFileName)[1];
-        metaFileName = fileNameWithoutExtension + local.settings().metaFileext;
-      }
+      let mediaPath = path.join(getFolderPath(slugFolderName), slugMediaName);
+      let potentialMetaFile = mediaPath + local.settings().metaFileext;
 
       // check that a meta with this name doesn't exist already
-      api.findFirstFilenameNotTaken(atPath, metaFileName).then(function(metaFileName) {
+      fs.access(potentialMetaFile, fs.F_OK, function(err) {
+        // if there's nothing at path, we’re all good
+        if(err) {
 
-        var newPathToMeta = path.join(atPath, metaFileName);
+          // TODO : créer le thumb
+          let stats = fs.statSync(mediaPath);
+          let birthtime = api.convertDate(new Date(stats.birthtime));
+          let mtime = api.convertDate(new Date(stats.mtime));
 
-        var mdata =
-        {
-          name : mediaFileName,
-          created : api.getCurrentDate(),
-          modified : api.getCurrentDate(),
-        };
-        if(mediaRatio !== undefined) {
-          mdata['ratio'] = mediaRatio;
+          let mdata = {
+            created : birthtime,
+            modified : mtime,
+            public: false,
+          };
+
+          try {
+            let dimension = imageSize(mediaPath);
+            let mediaRatio = typeof dimension !== undefined ? dimension.height / dimension.width : undefined;
+            if(mediaRatio !== undefined) { mdata.ratio = mediaRatio; }
+          } catch(err) {
+            dev.error(`Failed to get size of media. Error: ${err}`);
+          }
+
+          dev.logverbose(`Saving JSON string ${JSON.stringify(mdata, null, 4)}`);
+          api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
+            dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${meta}`);
+            resolve(meta);
+          }, function(err) {
+            reject(`Couldn't create media meta : ${err}`);
+          });
+
+        } else {
+          // otherwise, something’s weird
+          dev.error(`Found existing meta! Weird.`);
+          reject();
         }
-
-        dev.logverbose(`Saving JSON string ${JSON.stringify(mdata, null, 4)}`);
-        api.storeData( newPathToMeta, mdata, 'create').then(function( meta) {
-          console.log(`New media meta file created at path: ${newPathToMeta} with meta: ${meta}`);
-          resolve(meta);
-        }, function(err) {
-          console.log(gutil.colors.red(`--> Couldn’t create media meta.`));
-          reject(`Couldn't create media meta : ${err}`);
-        });
-      }, function(err) {
-        reject(err);
       });
+
     });
   }
 

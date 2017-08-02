@@ -25,7 +25,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.rerender("data-v-bf743e40", __vue__options__)
   }
 })()}
-},{"vue":58,"vue-hot-reload-api":56}],2:[function(require,module,exports){
+},{"vue":59,"vue-hot-reload-api":57}],2:[function(require,module,exports){
 ;(function(){
 'use strict';
 
@@ -56,7 +56,38 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.rerender("data-v-035397b1", __vue__options__)
   }
 })()}
-},{"vue":58,"vue-hot-reload-api":56}],3:[function(require,module,exports){
+},{"vue":59,"vue-hot-reload-api":57}],3:[function(require,module,exports){
+;(function(){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  props: ['media', 'slug'],
+  data: function data() {
+    return {};
+  },
+
+  computed: {}
+};
+})()
+if (module.exports.__esModule) module.exports = module.exports.default
+var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._v("\n  "+_vm._s(_vm.media.name)+"\n")])}
+__vue__options__.staticRenderFns = []
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-68ec811e", __vue__options__)
+  } else {
+    hotAPI.rerender("data-v-68ec811e", __vue__options__)
+  }
+})()}
+},{"vue":59,"vue-hot-reload-api":57}],4:[function(require,module,exports){
 'use strict';
 
 var _vue = require('vue/dist/vue');
@@ -67,6 +98,10 @@ var _socket = require('socket.io-client');
 
 var _socket2 = _interopRequireDefault(_socket);
 
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 var _fileUpload = require('./components/fileUpload.vue');
 
 var _fileUpload2 = _interopRequireDefault(_fileUpload);
@@ -75,9 +110,9 @@ var _folder = require('./components/folder.vue');
 
 var _folder2 = _interopRequireDefault(_folder);
 
-var _jquery = require('jquery');
+var _media = require('./components/media.vue');
 
-var _jquery2 = _interopRequireDefault(_jquery);
+var _media2 = _interopRequireDefault(_media);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -151,13 +186,14 @@ window.vueapp = new _vue2.default({ // eslint-disable-line no-new
   },
   components: {
     fileUpload: _fileUpload2.default,
-    folder: _folder2.default
+    folder: _folder2.default,
+    media: _media2.default
   },
   methods: {},
   watch: {}
 });
 
-},{"./components/fileUpload.vue":1,"./components/folder.vue":2,"jquery":33,"socket.io-client":39,"vue/dist/vue":57}],4:[function(require,module,exports){
+},{"./components/fileUpload.vue":1,"./components/folder.vue":2,"./components/media.vue":3,"jquery":34,"socket.io-client":40,"vue/dist/vue":58}],5:[function(require,module,exports){
 module.exports = after
 
 function after(count, callback, err_cb) {
@@ -187,7 +223,7 @@ function after(count, callback, err_cb) {
 
 function noop() {}
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * An abstraction for slicing an arraybuffer even when
  * ArrayBuffer.prototype.slice is not supported
@@ -218,7 +254,7 @@ module.exports = function(arraybuffer, start, end) {
   return result.buffer;
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -305,7 +341,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /*
  * base64-arraybuffer
  * https://github.com/niklasvh/base64-arraybuffer
@@ -374,7 +410,7 @@ Backoff.prototype.setJitter = function(jitter){
   };
 })();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (global){
 /**
  * Create a blob builder even when vendor prefixes exist
@@ -474,9 +510,9 @@ module.exports = (function() {
 })();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],9:[function(require,module,exports){
-
 },{}],10:[function(require,module,exports){
+
+},{}],11:[function(require,module,exports){
 /**
  * Slice reference.
  */
@@ -501,7 +537,7 @@ module.exports = function(obj, fn){
   }
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -667,7 +703,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 
 module.exports = function(a, b){
   var fn = function(){};
@@ -675,11 +711,11 @@ module.exports = function(a, b){
   a.prototype = new fn;
   a.prototype.constructor = a;
 };
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 module.exports = require('./lib/index');
 
-},{"./lib/index":14}],14:[function(require,module,exports){
+},{"./lib/index":15}],15:[function(require,module,exports){
 
 module.exports = require('./socket');
 
@@ -691,7 +727,7 @@ module.exports = require('./socket');
  */
 module.exports.parser = require('engine.io-parser');
 
-},{"./socket":15,"engine.io-parser":27}],15:[function(require,module,exports){
+},{"./socket":16,"engine.io-parser":28}],16:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -1433,7 +1469,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":16,"./transports/index":17,"component-emitter":23,"debug":24,"engine.io-parser":27,"indexof":32,"parsejson":35,"parseqs":36,"parseuri":37}],16:[function(require,module,exports){
+},{"./transport":17,"./transports/index":18,"component-emitter":24,"debug":25,"engine.io-parser":28,"indexof":33,"parsejson":36,"parseqs":37,"parseuri":38}],17:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -1592,7 +1628,7 @@ Transport.prototype.onClose = function () {
   this.emit('close');
 };
 
-},{"component-emitter":23,"engine.io-parser":27}],17:[function(require,module,exports){
+},{"component-emitter":24,"engine.io-parser":28}],18:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies
@@ -1649,7 +1685,7 @@ function polling (opts) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling-jsonp":18,"./polling-xhr":19,"./websocket":21,"xmlhttprequest-ssl":22}],18:[function(require,module,exports){
+},{"./polling-jsonp":19,"./polling-xhr":20,"./websocket":22,"xmlhttprequest-ssl":23}],19:[function(require,module,exports){
 (function (global){
 
 /**
@@ -1884,7 +1920,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":20,"component-inherit":12}],19:[function(require,module,exports){
+},{"./polling":21,"component-inherit":13}],20:[function(require,module,exports){
 (function (global){
 /**
  * Module requirements.
@@ -2312,7 +2348,7 @@ function unloadHandler () {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":20,"component-emitter":23,"component-inherit":12,"debug":24,"xmlhttprequest-ssl":22}],20:[function(require,module,exports){
+},{"./polling":21,"component-emitter":24,"component-inherit":13,"debug":25,"xmlhttprequest-ssl":23}],21:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -2559,7 +2595,7 @@ Polling.prototype.uri = function () {
   return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
 };
 
-},{"../transport":16,"component-inherit":12,"debug":24,"engine.io-parser":27,"parseqs":36,"xmlhttprequest-ssl":22,"yeast":60}],21:[function(require,module,exports){
+},{"../transport":17,"component-inherit":13,"debug":25,"engine.io-parser":28,"parseqs":37,"xmlhttprequest-ssl":23,"yeast":61}],22:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -2848,7 +2884,7 @@ WS.prototype.check = function () {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../transport":16,"component-inherit":12,"debug":24,"engine.io-parser":27,"parseqs":36,"ws":9,"yeast":60}],22:[function(require,module,exports){
+},{"../transport":17,"component-inherit":13,"debug":25,"engine.io-parser":28,"parseqs":37,"ws":10,"yeast":61}],23:[function(require,module,exports){
 (function (global){
 // browser shim for xmlhttprequest module
 
@@ -2889,7 +2925,7 @@ module.exports = function (opts) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"has-cors":31}],23:[function(require,module,exports){
+},{"has-cors":32}],24:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -3054,7 +3090,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 (function (process){
 
 /**
@@ -3235,7 +3271,7 @@ function localstorage(){
 }
 
 }).call(this,require('_process'))
-},{"./debug":25,"_process":38}],25:[function(require,module,exports){
+},{"./debug":26,"_process":39}],26:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -3437,7 +3473,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":26}],26:[function(require,module,exports){
+},{"ms":27}],27:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -3588,7 +3624,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's'
 }
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -4201,7 +4237,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":28,"after":4,"arraybuffer.slice":5,"base64-arraybuffer":7,"blob":8,"has-binary":29,"wtf-8":59}],28:[function(require,module,exports){
+},{"./keys":29,"after":5,"arraybuffer.slice":6,"base64-arraybuffer":8,"blob":9,"has-binary":30,"wtf-8":60}],29:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -4222,7 +4258,7 @@ module.exports = Object.keys || function keys (obj){
   return arr;
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 (function (global){
 
 /*
@@ -4285,12 +4321,12 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":30}],30:[function(require,module,exports){
+},{"isarray":31}],31:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -4309,7 +4345,7 @@ try {
   module.exports = false;
 }
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -4320,7 +4356,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v3.2.1
  * https://jquery.com/
@@ -14575,7 +14611,7 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (global){
 /*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
 ;(function () {
@@ -15481,7 +15517,7 @@ return jQuery;
 }).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 (function (global){
 /**
  * JSON parse.
@@ -15516,7 +15552,7 @@ module.exports = function parsejson(data) {
   }
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -15555,7 +15591,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -15596,7 +15632,7 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -15782,7 +15818,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -15893,7 +15929,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":40,"./socket":42,"./url":43,"debug":45,"socket.io-parser":49}],40:[function(require,module,exports){
+},{"./manager":41,"./socket":43,"./url":44,"debug":46,"socket.io-parser":50}],41:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -16455,7 +16491,7 @@ Manager.prototype.onreconnect = function () {
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":41,"./socket":42,"backo2":6,"component-bind":10,"component-emitter":44,"debug":45,"engine.io-client":13,"indexof":32,"socket.io-parser":49}],41:[function(require,module,exports){
+},{"./on":42,"./socket":43,"backo2":7,"component-bind":11,"component-emitter":45,"debug":46,"engine.io-client":14,"indexof":33,"socket.io-parser":50}],42:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -16481,7 +16517,7 @@ function on (obj, ev, fn) {
   };
 }
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -16902,7 +16938,7 @@ Socket.prototype.compress = function (compress) {
   return this;
 };
 
-},{"./on":41,"component-bind":10,"component-emitter":44,"debug":45,"has-binary":29,"socket.io-parser":49,"to-array":55}],43:[function(require,module,exports){
+},{"./on":42,"component-bind":11,"component-emitter":45,"debug":46,"has-binary":30,"socket.io-parser":50,"to-array":56}],44:[function(require,module,exports){
 (function (global){
 
 /**
@@ -16981,15 +17017,15 @@ function url (uri, loc) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":45,"parseuri":37}],44:[function(require,module,exports){
-arguments[4][23][0].apply(exports,arguments)
-},{"dup":23}],45:[function(require,module,exports){
+},{"debug":46,"parseuri":38}],45:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"./debug":46,"_process":38,"dup":24}],46:[function(require,module,exports){
+},{"dup":24}],46:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"dup":25,"ms":47}],47:[function(require,module,exports){
+},{"./debug":47,"_process":39,"dup":25}],47:[function(require,module,exports){
 arguments[4][26][0].apply(exports,arguments)
-},{"dup":26}],48:[function(require,module,exports){
+},{"dup":26,"ms":48}],48:[function(require,module,exports){
+arguments[4][27][0].apply(exports,arguments)
+},{"dup":27}],49:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -17134,7 +17170,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":50,"isarray":53}],49:[function(require,module,exports){
+},{"./is-buffer":51,"isarray":54}],50:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -17540,7 +17576,7 @@ function error(data){
   };
 }
 
-},{"./binary":48,"./is-buffer":50,"component-emitter":11,"debug":51,"json3":34}],50:[function(require,module,exports){
+},{"./binary":49,"./is-buffer":51,"component-emitter":12,"debug":52,"json3":35}],51:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -17557,7 +17593,7 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -17727,7 +17763,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-},{"./debug":52}],52:[function(require,module,exports){
+},{"./debug":53}],53:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -17926,9 +17962,9 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":54}],53:[function(require,module,exports){
-arguments[4][30][0].apply(exports,arguments)
-},{"dup":30}],54:[function(require,module,exports){
+},{"ms":55}],54:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"dup":31}],55:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -18055,7 +18091,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {
@@ -18070,7 +18106,7 @@ function toArray(list, index) {
     return array
 }
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 var Vue // late bind
 var version
 var map = window.__VUE_HOT_MAP__ = Object.create(null)
@@ -18216,7 +18252,7 @@ exports.reload = tryWrap(function (id, options) {
   })
 })
 
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 (function (global){
 /*!
  * Vue.js v2.4.2
@@ -28298,7 +28334,7 @@ return Vue$3;
 })));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v2.4.2
@@ -35731,7 +35767,7 @@ setTimeout(function () {
 module.exports = Vue$3;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":38}],59:[function(require,module,exports){
+},{"_process":39}],60:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/wtf8 v1.0.0 by @mathias */
 ;(function(root) {
@@ -35969,7 +36005,7 @@ module.exports = Vue$3;
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -36039,4 +36075,4 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}]},{},[3]);
+},{}]},{},[4]);

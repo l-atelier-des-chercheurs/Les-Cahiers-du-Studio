@@ -17,6 +17,7 @@ module.exports = (function() {
   const API = {
     findFirstFilenameNotTaken   : (thisPath, fileName) => { return findFirstFilenameNotTaken(thisPath, fileName); },
     getCurrentDate              : (format = local.settings().metaDateFormat) => { return getCurrentDate(format); },
+    convertDate                 : (date, format = local.settings().metaDateFormat) => { return convertDate(date, format); },
     storeData                   : (mpath, d, e) => { return storeData( mpath, d, e); },
     parseData                   : (d) => { return parseData(d); },
     eventAndContent             : (sendEvent, objectJson) =>     { return eventAndContent(sendEvent, objectJson); },
@@ -26,6 +27,10 @@ module.exports = (function() {
 
   function getCurrentDate(f) {
     return moment().format(f);
+  }
+
+  function convertDate(date, f) {
+    return moment(date).format(f);
   }
 
   // check whether fileName (such as 'hello-world.mp4') already exists in the folder
@@ -71,7 +76,7 @@ module.exports = (function() {
   function storeData( mpath, d, e) {
     return new Promise(function(resolve, reject) {
       dev.logfunction('COMMON — storeData');
-      var textd = textifyObj(d);
+      var textd = parsedown.textify(d);
       if( e === 'create') {
         fs.appendFile( mpath, textd, function(err) {
           if(err){ reject( err); }

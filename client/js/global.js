@@ -1,9 +1,11 @@
 import Vue from 'vue/dist/vue';
 import io from 'socket.io-client';
-import fileUpload from './components/fileUpload.vue';
-import folder from './components/folder.vue';
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
+
+import fileUpload from './components/fileUpload.vue';
+import folder from './components/folder.vue';
+import media from './components/media.vue';
 
 
 /***********
@@ -72,7 +74,8 @@ window.vueapp = new Vue({ // eslint-disable-line no-new
   },
   components: {
     fileUpload,
-    folder
+    folder,
+    media
   },
   methods: {
   },
