@@ -1,6 +1,6 @@
 <template>
   <div>
-    {{ media.name }}
+    {{ slug }}
   </div>
 </template>
 <script>

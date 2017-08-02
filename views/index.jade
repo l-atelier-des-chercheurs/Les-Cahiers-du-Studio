@@ -9,8 +9,7 @@ html
 
     #vue
       h2 Vue
-      <folder v-for='(folder, index) in store' :key='index' :slug='index' :folder='folder'>
+      <folder v-for='(folder, index) in store.folders' :key='index' :slug='index' :folder='folder'>
       </folder>
 
     include snippets/footer
-

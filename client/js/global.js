@@ -5,7 +5,6 @@ window.$ = window.jQuery = jQuery;
 
 import fileUpload from './components/fileUpload.vue';
 import folder from './components/folder.vue';
-import media from './components/media.vue';
 
 
 /***********
@@ -14,11 +13,13 @@ import media from './components/media.vue';
 
 window.store = {
   debug:true,
-  state: {
-  }
+  state: {}
 };
+window.store.state.folders = JSON.parse(JSON.stringify(locals.data));
 
-window.store.state = app.data;
+setTimeout(() => {
+//   window.store.state.folders['compagnie-3-6-30'].created = '';
+}, 1000);
 
 /***********
   SOCKETIO
@@ -29,6 +30,9 @@ window.store.state = app.data;
   function onSocketConnect() {
     	let sessionId = socket.io.engine.id;
     	console.log(`Connected as ${sessionId}`);
+
+    // à déplacer
+    socket.emit('listMedias', { slugFolderName : 'compagnie-3-6-30' });
   }
   function onSocketError(reason) {
     	console.log('Unable to connect to server', reason);
@@ -36,7 +40,8 @@ window.store.state = app.data;
   	socket.on('connect', onSocketConnect);
   socket.on('error', onSocketError);
 
-  socket.on('listFolders', function (data){ onListFolders(socket); });
+  	socket.on('listMedias', onListMedias);
+
 })();
 
 /***********
@@ -74,8 +79,7 @@ window.vueapp = new Vue({ // eslint-disable-line no-new
   },
   components: {
     fileUpload,
-    folder,
-    media
+    folder
   },
   methods: {
   },
@@ -84,5 +88,8 @@ window.vueapp = new Vue({ // eslint-disable-line no-new
 });
 
 
-
-
+function onListMedias(mdata) {
+  let slugFolderName = Object.keys(mdata)[0];
+  window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
+  return;
+}

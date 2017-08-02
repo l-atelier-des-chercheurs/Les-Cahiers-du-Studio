@@ -26,21 +26,29 @@ module.exports = (function() {
     io.on('connection', function(socket){
       var onevent = socket.onevent;
       socket.onevent = function (packet) {
-          var args = packet.data || [];
-          onevent.call (this, packet);    // original call
-          packet.data = ['*'].concat(args);
-          onevent.call(this, packet);      // additional call to catch-all
+        var args = packet.data || [];
+        onevent.call (this, packet);    // original call
+        packet.data = ['*'].concat(args);
+        onevent.call(this, packet);      // additional call to catch-all
       };
       socket.on('*',function(event,data) {
         dev.log(`RECEIVED EVENT: ${event}`);
       });
-
-      socket.on('listFolders', function (data){ onListFolders(socket,data); });
+      socket.on('listMedias', function (data){ onListMedias(socket,data); });
     });
   }
 
 // ------------- F U N C T I O N S -------------------
 
+
+  function onListMedias(socket, d) {
+    dev.logfunction(`EVENT - onListMedias : ${JSON.stringify( d, null, 4)}`);
+    file.getMedia(d.slugFolderName).then(mediasData => {
+      api.sendEventWithContent('listMedias', {[d.slugFolderName]: {medias: mediasData} }, io, socket);
+    }, function(err) {
+      dev.error(`Failed to list medias! Error: ${err}`);
+    });
+  }
 
   /*
     onListFolders : sans argument = retourne toutes les timelines avec tout leurs contenus (médias avec leurs méta)

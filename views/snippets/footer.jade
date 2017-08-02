@@ -2,11 +2,11 @@ script
   | if (typeof module === 'object') {window.module = module; module = undefined;}
 
 script
-  | var app = {};
-  | app.slugFolderName = "#{slugFolderName}";
-  | app.folderPath = "#{folderPath}";
-  | app.data = !{JSON.stringify(data, null, 4)};
-  | app.lang = !{JSON.stringify(lang, null, 4)};
+  | var locals = {};
+  | locals.slugFolderName = "#{slugFolderName}";
+  | locals.folderPath = "#{folderPath}";
+  | locals.data = !{JSON.stringify(data, null, 4)};
+  | locals.lang = !{JSON.stringify(lang, null, 4)};
 script(src='/development/main.js')
 
 script

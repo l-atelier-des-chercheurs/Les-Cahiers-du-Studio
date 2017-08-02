@@ -156,7 +156,6 @@ module.exports = (function() {
             thisSlugMediaName.indexOf(local.settings().deletedPrefix) &&
             // not a dotfile
             thisSlugMediaName.indexOf('.') !== 0
-
             ;
         });
         dev.logverbose(`Number of actual medias in ${slugFolderPath} = ${medias.length}. Media(s) is(are) ${medias}`);
@@ -220,6 +219,19 @@ module.exports = (function() {
             if(mediaRatio !== undefined) { mdata.ratio = mediaRatio; }
           } catch(err) {
             dev.error(`Failed to get size of media. Error: ${err}`);
+          }
+
+          let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(mediaPath)[0];
+          dev.logverbose(`Trying to guess filetype from extension: ${mediaFileExtension}`);
+          switch(mediaFileExtension.toLowerCase()) {
+            case '.mp4':
+              mdata.type = 'video';
+              break;
+            case '.mp3':
+              mdata.type = 'audio';
+              break;
+            default:
+              mdata.type = 'image';
           }
 
           dev.logverbose(`Saving JSON string ${JSON.stringify(mdata, null, 4)}`);

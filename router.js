@@ -45,37 +45,14 @@ module.exports = function(app,io,m){
       api.getLocalIP().then(function(localNetworkInfos) {
         pageDataJSON.localNetworkInfos = localNetworkInfos;
 
-        // if index page, get all folders data
-        if(req.params.folder === undefined) {
-          file.getFolder().then(function(foldersData) {
-            pageDataJSON.data = foldersData;
-            resolve(pageDataJSON);
-          }, function(err, p) {
-            dev.error(`Failed to get folder data for ${slugFolderName}: ${err}`);
-            reject(err);
-          });
+        file.getFolder().then(function(foldersData) {
+          pageDataJSON.data = foldersData;
+          resolve(pageDataJSON);
+        }, function(err, p) {
+          dev.error(`Failed to get folder data for ${slugFolderName}: ${err}`);
+          reject(err);
+        });
 
-        // if folder page, get that folder meta and all media meta
-        } else {
-          let slugFolderName = req.params.folder;
-
-          file.getFolder(slugFolderName).then(folderData => {
-            pageDataJSON.data = folderData;
-
-            // get all of that folder's medias
-            file.getMedia(slugFolderName).then(mediasData => {
-              pageDataJSON.data[slugFolderName].medias = mediasData;
-              resolve(pageDataJSON);
-            }, function(err, p) {
-              dev.error(`Failed to get folder’s media data for ${slugFolderName}: ${err}`);
-              reject(err);
-            });
-
-          }, function(err, p) {
-            dev.error(`Failed to get folder data for ${slugFolderName}: ${err}`);
-            reject(err);
-          });
-        }
       }, function(err, p) {
         dev.error(`Failed to get IP: ${err}`);
         reject(err);
