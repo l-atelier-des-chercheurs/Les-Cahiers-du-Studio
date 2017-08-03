@@ -6,10 +6,8 @@
   "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",
   "deletedPrefix" : "x_",
-  "thumbSuffix" : "_thumb",
+  "thumbFolderName" : "_thumbs",
 
-  "mediaThumbWidth" : 320,
-  "mediaThumbHeight" : 240,
   "mediaThumbQuality" : 60,
 
   "_comment" : "// see http://regexr.com/3d4t8",

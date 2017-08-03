@@ -8,7 +8,7 @@ html
       h1 stv-doc
 
     #vue
-      <folder v-for='(folder, index) in store.folders' :key='index' :slug='index' :folder='folder'>
+      <folder v-for='(folder, index) in store.folders' :key='index' :slugfoldername='index' :folder='folder' @openfolder='openfolder'>
       </folder>
 
     include snippets/footer

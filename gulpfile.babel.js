@@ -19,9 +19,6 @@ import source from "vinyl-source-stream";
 import buffer from "vinyl-buffer";
 import gutil from "gulp-util";
 
-var pluginsScripts = [
-  'client/bower_components/jquery/dist/jquery.js',
-];
 var userScripts = [
   'client/js/global.js'
 ];
@@ -73,16 +70,7 @@ gulp.task('lint', function() {
     .pipe(jshint.reporter('default'));
 });
 
-// Concatenate JS plugin
-gulp.task('script-plugins', function() {
-  return gulp.src(pluginsScripts)
-    .pipe(concat('plugins.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest('client/development'))
-    .pipe(browserSync.stream());
-});
-
-gulp.task('scripts', ['script-plugins'], function () {
+gulp.task('scripts', function () {
   return browserify(userScripts)
   .transform(babelify, { presets: ['es2015'], plugins: ['transform-runtime'] })
   .transform(vueify)
@@ -99,15 +87,6 @@ gulp.task('scripts', ['script-plugins'], function () {
   .pipe(buffer())
   .pipe(gulp.dest('client/development'))
 });
-
-// Concatenate user scripts and minify them.
-/*
-gulp.task('scripts', ['script-plugins'], function (done) {
-  return gulp.src(userScripts)
-    .pipe(concat('main.js'))
-    .pipe(gulp.dest('client/development'))
-});
-*/
 
 // Concatenate user scripts and minify them.
 gulp.task('scripts-prod', ['scripts'], function (done) {
@@ -130,9 +109,9 @@ gulp.task('dev-watch-sync', ['init-live-reload', 'watch']);
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-  gulp.watch([userScripts, components, nodeScripts], ['lint', 'script-plugins', 'scripts']);
+  gulp.watch([userScripts, components, nodeScripts], ['lint', 'scripts']);
   gulp.watch('client/sass/*.scss', ['sass', 'css-prod']);
 });
 
 // Default Task
-gulp.task('default', ['sass', 'css-prod', 'lint', 'script-plugins', 'scripts', 'scripts-prod', 'watch']);
+gulp.task('default', ['sass', 'css-prod', 'lint', 'scripts', 'scripts-prod', 'watch']);

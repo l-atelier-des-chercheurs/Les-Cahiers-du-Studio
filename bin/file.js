@@ -1,7 +1,9 @@
 const
   path = require('path'),
   fs = require('fs-extra'),
-  imageSize = require('image-size')
+  imageSize = require('image-size'),
+  sharp = require('sharp'),
+  mkdirp = require('mkdirp')
 ;
 
 const
@@ -13,7 +15,6 @@ const
 module.exports = (function() {
 
   const API = {
-
     getFolderPath          : (slugFolderName = '') => { return getFolderPath(slugFolderName); },
     getFolder              : (slugFolderName = '') => { return getFolder(slugFolderName); },
     getMetaFileOfFolder    : (slugFolderName) => { return getMetaFileOfFolder(slugFolderName); },
@@ -107,6 +108,7 @@ module.exports = (function() {
           let fmeta = new Promise((resolve, reject) => {
             readFolderMeta(slugFolderName).then((meta) => {
               meta.slugFolderName = slugFolderName;
+              meta.medias = {};
               resolve(meta);
             });
           });
@@ -203,7 +205,6 @@ module.exports = (function() {
         // if there's nothing at path, we’re all good
         if(err) {
 
-          // TODO : créer le thumb
           let stats = fs.statSync(mediaPath);
           let birthtime = api.convertDate(new Date(stats.birthtime));
           let mtime = api.convertDate(new Date(stats.mtime));
@@ -235,13 +236,38 @@ module.exports = (function() {
               mdata.type = 'image';
           }
 
-          dev.logverbose(`Saving JSON string ${JSON.stringify(mdata, null, 4)}`);
-          api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
-            dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);
-            resolve(meta);
-          }, function(err) {
-            reject(`Couldn't create media meta : ${err}`);
+          // attempt to create a thumb file
+          let makeThumbs = [];
+
+          if(mdata.type === 'image') {
+            let thumbResolutions = [200,600,1800];
+            thumbResolutions.forEach((thumbRes) => {
+              let makeThumb = new Promise((resolve, reject) => {
+                _makeImageThumb(mediaPath, slugFolderName, slugMediaName, thumbRes)(slugFolderName).then((thumbPath) => {
+                  let thumbMeta = {
+                    path: thumbPath,
+                    size: thumbRes
+                  };
+                  resolve(thumbMeta);
+                });
+              });
+              makeThumbs.push(makeThumb);
+            });
+          }
+
+
+          Promise.all(makeThumbs).then((thumbData) => {
+            mdata.thumb = thumbData;
+            dev.logverbose(`Saving JSON string ${JSON.stringify(mdata, null, 4)}`);
+
+            api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
+              dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);
+              resolve(meta);
+            }, function(err) {
+              reject(`Couldn't create media meta : ${err}`);
+            });
           });
+
 
         } else {
           // otherwise, something’s weird
@@ -249,6 +275,38 @@ module.exports = (function() {
           reject();
         }
       });
+
+    });
+  }
+
+  function _makeImageThumb(source, slugFolderName, slugMediaName, resolution) {
+    return new Promise(function(resolve, reject) {
+      dev.logverbose(`Making a thumb for ${source}`);
+
+      // create dest folder
+      // vérifier/créer que le dossier _thumb existe
+
+      let thumbFolderPath = getFolderPath(local.settings().thumbFolderName, slugFolderName);
+
+      mkdirp(thumbFolderPath, function(err) {
+        let thumbPath = path.join(thumbFolderPath, slugMediaName + '.jpeg');
+
+        sharp(source)
+          .rotate()
+          .resize(resolution, resolution)
+          .max()
+          .withoutEnlargement()
+          .withMetadata()
+          .toFormat('jpeg')
+          .quality(local.settings().mediaThumbQuality)
+          .toFile(thumbPath)
+          .then(function() {
+            resolve();
+          });
+      });
+
+      // vérifier/créer le dossier slugFolderName existe
+      // créer un aperçu à cet endroit là
 
     });
   }

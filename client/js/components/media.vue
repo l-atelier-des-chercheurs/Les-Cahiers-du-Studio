@@ -14,14 +14,14 @@
 <script>
 
 export default {
-  props: ['folderSlug', 'media', 'slug'],
+  props: ['slugFolderName', 'slugMediaName', 'media'],
   data() {
     return {
     }
   },
   computed: {
     linkToMedia: function() {
-        return this.folderSlug + '/' + this.slug;
+        return this.slugFolderName + '/' + this.slugMediaName;
     },
   }
 }

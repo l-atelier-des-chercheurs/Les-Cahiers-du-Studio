@@ -1,3 +1,9 @@
+-for(var prop in localNetworkInfos)
+  p.txt-small_info
+    | !{lang.toconnectwithanotherdevice}
+    a.js--openInBrowser(href="https://#{localNetworkInfos[prop]}:8080" target="_blank")
+      | https://#{localNetworkInfos[prop]}:8080
+
 script
   | var locals = {};
   | locals.slugFolderName = "#{slugFolderName}";

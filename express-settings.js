@@ -5,6 +5,7 @@ var settings  = require('./settings');
 var config = require('./config.json');
 var dev = require('./bin/dev-log');
 
+
 module.exports = function(app, express) {
   dev.logverbose('Starting express-settings');
 

@@ -18,9 +18,11 @@ module.exports = function(app,io,m){
   * routing event
   */
   app.get('/', showIndex);
-  app.get('/:folder', showFolder);
   app.post('/:folder/file-upload', postFile2);
 
+  app.all('*', function(req, res) {
+    res.redirect('/');
+  });
   /**
   * routing functions
   */
@@ -68,15 +70,6 @@ module.exports = function(app,io,m){
     generatePageData(req).then(function(pageData) {
       dev.logpackets(`Rendering index with data `, JSON.stringify(pageData, null, 4));
       res.render('index', pageData);
-    }, function(err) {
-      dev.error(`Err while getting index data: ${err}`);
-    });
-  }
-
-  function showFolder(req,res) {
-    generatePageData(req).then(function(pageData) {
-      dev.logpackets(`Rendering folder with data `, JSON.stringify(pageData, null, 4));
-      res.render('folder', pageData);
     }, function(err) {
       dev.error(`Err while getting index data: ${err}`);
     });

@@ -22,7 +22,7 @@ module.exports = (function() {
     parseData                   : (d) => { return parseData(d); },
     eventAndContent             : (sendEvent, objectJson) =>     { return eventAndContent(sendEvent, objectJson); },
     sendEventWithContent        : (sendEvent, objectContent, io, socket) => { return sendEventWithContent(sendEvent, objectContent, io, socket); },
-    getLocalIP                  : () => { return getLocalIP(); }
+    getLocalIP                  : () => { return getLocalIP(); },
   };
 
   function getCurrentDate(f) {

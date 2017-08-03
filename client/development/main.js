@@ -13,7 +13,7 @@ var _vue2Dropzone2 = _interopRequireDefault(_vue2Dropzone);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-  name: 'MainApp',
+  props: ['slugFolderName'],
   components: {
     Dropzone: _vue2Dropzone2.default
   },
@@ -22,7 +22,7 @@ exports.default = {
       return 'myVueDropzone_' + Math.ceil(Math.random() * 1000);
     },
     uriToUploadMedia: function uriToUploadMedia() {
-      return this.$parent._props.slug + '/file-upload';
+      return this.slugFolderName + '/file-upload';
     }
   },
   methods: {
@@ -66,8 +66,10 @@ var _fileUpload2 = _interopRequireDefault(_fileUpload);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = {
-  props: ['folder', 'slug'],
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+exports.default = _defineProperty({
+  props: ['folder', 'slugfoldername'],
   components: {
     media: _media2.default,
     fileUpload: _fileUpload2.default
@@ -76,13 +78,22 @@ exports.default = {
     return {};
   },
 
-  computed: {}
-};
+  computed: {},
+  methods: {
+    openfolder: function openfolder() {
+      if (window.store.debug) {
+        console.log('EVENT: openfolder ' + this.slugfoldername);
+      }
+      this.$emit('openfolder', this.slugfoldername);
+    }
+  }
+
+}, 'computed', {});
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('h2',[_vm._v("\n    "+_vm._s(_vm.folder.name)+"\n  ")]),_vm._v(" "),_c('fileUpload'),_vm._v(" "),_vm._l((_vm.folder.medias),function(media,index){return _c('media',{key:index,attrs:{"folderSlug":_vm.slug,"slug":index,"media":media}})})],2)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('h2',[_vm._v("\n    "+_vm._s(_vm.folder.name)+"\n  ")]),_vm._v(" "),_c('button',{on:{"click":function($event){_vm.openfolder()}}},[_vm._v("\n    Open/close\n  ")]),_vm._v(" "),(this.$root.settings.folder_currently_opened === _vm.slugfoldername)?[_c('fileUpload',{attrs:{"slugFolderName":_vm.slugfoldername}}),_vm._v(" "),_vm._l((_vm.folder.medias),function(media,index){return _c('media',{key:index,attrs:{"slugFolderName":_vm.slugfoldername,"slugMediaName":index,"media":media}})})]:_vm._e(),_vm._v(" "),_c('hr')],2)}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -102,14 +113,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
-  props: ['folderSlug', 'media', 'slug'],
+  props: ['slugFolderName', 'slugMediaName', 'media'],
   data: function data() {
     return {};
   },
 
   computed: {
     linkToMedia: function linkToMedia() {
-      return this.folderSlug + '/' + this.slug;
+      return this.slugFolderName + '/' + this.slugMediaName;
     }
   }
 };
@@ -221,7 +232,7 @@ var socketio = function () {
   function _onMediaCreated(mdata) {
     var slugFolderName = (0, _keys2.default)(mdata)[0];
     var createdMediaMeta = mdata[slugFolderName].medias;
-    var mediaKey = (0, _keys2.default)(createdMediaMeta)[0];
+    // to get Vue to detect that medias has a new key, we need to rewrite medias itself
     window.store.state.folders[slugFolderName].medias = (0, _assign2.default)({}, window.store.state.folders[slugFolderName].medias, createdMediaMeta);
     return;
   }
@@ -229,10 +240,6 @@ var socketio = function () {
   return API;
 }();
 socketio.init();
-
-setTimeout(function () {
-  socketio.listMedias('compagnie-3-6-30');
-}, 500);
 
 /***********
   UTILS
@@ -268,13 +275,23 @@ window.vueapp = new _vue2.default({ // eslint-disable-line no-new
   el: '#vue',
   data: {
     store: window.store.state,
-    settings: {}
+    settings: {
+      folder_currently_opened: ''
+    }
   },
   components: {
     fileUpload: _fileUpload2.default,
     folder: _folder2.default
   },
-  methods: {},
+  methods: {
+    openfolder: function openfolder(slugFolderName) {
+      if (window.store.debug) {
+        console.log('ROOT EVENT: openfolder: ' + slugFolderName);
+      }
+      socketio.listMedias(slugFolderName);
+      this.settings.folder_currently_opened = slugFolderName;
+    }
+  },
   watch: {}
 });
 

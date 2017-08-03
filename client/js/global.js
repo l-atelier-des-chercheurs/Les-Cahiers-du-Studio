@@ -56,7 +56,7 @@ let socketio = (function() {
   function _onMediaCreated(mdata) {
     let slugFolderName = Object.keys(mdata)[0];
     let createdMediaMeta = mdata[slugFolderName].medias;
-    let mediaKey = Object.keys(createdMediaMeta)[0];
+    // to get Vue to detect that medias has a new key, we need to rewrite medias itself
     window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, createdMediaMeta);
     return;
   }
@@ -64,10 +64,6 @@ let socketio = (function() {
   return API;
 })();
 socketio.init();
-
-setTimeout(() => {
-  socketio.listMedias('compagnie-3-6-30');
-}, 500);
 
 /***********
   UTILS
@@ -102,6 +98,7 @@ window.vueapp = new Vue({ // eslint-disable-line no-new
   data: {
     store: window.store.state,
     settings: {
+      folder_currently_opened: ''
     },
   },
   components: {
@@ -109,6 +106,11 @@ window.vueapp = new Vue({ // eslint-disable-line no-new
     folder
   },
   methods: {
+    openfolder: function(slugFolderName) {
+      if(window.store.debug) { console.log(`ROOT EVENT: openfolder: ${slugFolderName}`); }
+      socketio.listMedias(slugFolderName);
+      this.settings.folder_currently_opened = slugFolderName;
+    }
   },
   watch: {
   }
