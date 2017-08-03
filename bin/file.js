@@ -97,7 +97,10 @@ module.exports = (function() {
           return new RegExp(local.settings().regexpMatchFolderNames, 'i').test(thisSlugFolderName) &&
             // if slugFolderName isset, filter to get only requested folder
             (slugFolderName !== '' ? thisSlugFolderName === slugFolderName : true) &&
-            slugFolderName.indexOf(local.settings().deletedPrefix)
+            // if not deleted
+            thisSlugFolderName.indexOf(local.settings().deletedPrefix) &&
+            // if not local.settings().thumbFolderName
+            thisSlugFolderName !== local.settings().thumbFolderName
           ;
         });
 
@@ -243,7 +246,7 @@ module.exports = (function() {
             let thumbResolutions = [200,600,1800];
             thumbResolutions.forEach((thumbRes) => {
               let makeThumb = new Promise((resolve, reject) => {
-                _makeImageThumb(mediaPath, slugFolderName, slugMediaName, thumbRes)(slugFolderName).then((thumbPath) => {
+                _makeImageThumb(mediaPath, slugFolderName, slugMediaName, thumbRes).then((thumbPath) => {
                   let thumbMeta = {
                     path: thumbPath,
                     size: thumbRes
@@ -281,15 +284,13 @@ module.exports = (function() {
 
   function _makeImageThumb(source, slugFolderName, slugMediaName, resolution) {
     return new Promise(function(resolve, reject) {
-      dev.logverbose(`Making a thumb for ${source}`);
+      dev.logverbose(`Making a thumb for ${source} with slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and resolution = ${resolution}`);
 
-      // create dest folder
-      // vérifier/créer que le dossier _thumb existe
+      let thumbFolderPath = path.join(local.settings().thumbFolderName, slugFolderName);
 
-      let thumbFolderPath = getFolderPath(local.settings().thumbFolderName, slugFolderName);
-
-      mkdirp(thumbFolderPath, function(err) {
-        let thumbPath = path.join(thumbFolderPath, slugMediaName + '.jpeg');
+      mkdirp(getFolderPath(thumbFolderPath), function(err) {
+        let thumbName = `${slugMediaName}.${resolution}.jpeg`;
+        let thumbPath = path.join(thumbFolderPath, thumbName);
 
         sharp(source)
           .rotate()
@@ -297,11 +298,12 @@ module.exports = (function() {
           .max()
           .withoutEnlargement()
           .withMetadata()
-          .toFormat('jpeg')
-          .quality(local.settings().mediaThumbQuality)
-          .toFile(thumbPath)
+          .toFormat('jpeg', {
+            quality: local.settings().mediaThumbQuality
+          })
+          .toFile(getFolderPath(thumbPath))
           .then(function() {
-            resolve();
+            resolve(thumbPath);
           });
       });
 

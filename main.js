@@ -22,6 +22,8 @@ app.commandLine.appendSwitch('--disable-http-cache');
 
 function createWindow() {
 
+  console.log(process.versions);
+
   var storageLocation = app.getPath('userData');
   global.nodeStorage = new JSONStorage(storageLocation);
 

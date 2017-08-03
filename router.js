@@ -20,9 +20,6 @@ module.exports = function(app,io,m){
   app.get('/', showIndex);
   app.post('/:folder/file-upload', postFile2);
 
-  app.all('*', function(req, res) {
-    res.redirect('/');
-  });
   /**
   * routing functions
   */

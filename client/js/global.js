@@ -2,6 +2,8 @@ import Vue from 'vue/dist/vue';
 import io from 'socket.io-client';
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
+import _ from 'underscore';
+
 
 import fileUpload from './components/fileUpload.vue';
 import folder from './components/folder.vue';
