@@ -77,6 +77,7 @@
     "gulp-uglify": "^3.0.0",
     "jquery": "^3.2.1",
     "jshint": "^2.9.3",
+    "shoelace-css": "^1.0.0-beta7",
     "underscore": "^1.8.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",

@@ -1,6 +1,6 @@
 // I M P O R T
 
-@import "_normalize.scss";
+@import "_shoelace.scss";
 @import "_variables.scss";
 @import "_fonts.scss";
 
@@ -10,6 +10,12 @@
 ::selection {
     background: rgba(151, 151, 151,0.25);
 }
+
+:root {
+  --body-color: red;
+  --body-bg-color: black;
+}
+
 html {
 	margin:0;
 }

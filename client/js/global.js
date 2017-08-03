@@ -110,8 +110,12 @@ window.vueapp = new Vue({ // eslint-disable-line no-new
   methods: {
     openfolder: function(slugFolderName) {
       if(window.store.debug) { console.log(`ROOT EVENT: openfolder: ${slugFolderName}`); }
-      socketio.listMedias(slugFolderName);
-      this.settings.folder_currently_opened = slugFolderName;
+      if(this.settings.folder_currently_opened !== slugFolderName) {
+        socketio.listMedias(slugFolderName);
+        this.settings.folder_currently_opened = slugFolderName;
+      } else {
+        this.settings.folder_currently_opened = '';
+      }
     }
   },
   watch: {

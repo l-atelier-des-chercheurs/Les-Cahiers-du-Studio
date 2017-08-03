@@ -93,7 +93,7 @@ exports.default = _defineProperty({
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('h2',[_vm._v("\n    "+_vm._s(_vm.folder.name)+"\n  ")]),_vm._v(" "),_c('button',{on:{"click":function($event){_vm.openfolder()}}},[_vm._v("\n    Open/close\n  ")]),_vm._v(" "),(this.$root.settings.folder_currently_opened === _vm.slugfoldername)?[_c('fileUpload',{attrs:{"slugFolderName":_vm.slugfoldername}}),_vm._v(" "),_vm._l((_vm.folder.medias),function(media,index){return _c('media',{key:index,attrs:{"slugFolderName":_vm.slugfoldername,"slugMediaName":index,"media":media}})})]:_vm._e(),_vm._v(" "),_c('hr')],2)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('h2',[_vm._v("\n    "+_vm._s(_vm.folder.name)+"\n  ")]),_vm._v(" "),_c('button',{staticClass:"button-small",attrs:{"type":"button"},on:{"click":function($event){_vm.openfolder()}}},[_vm._v("\n    Open/close\n  ")]),_vm._v(" "),(this.$root.settings.folder_currently_opened === _vm.slugfoldername)?[_c('fileUpload',{attrs:{"slugFolderName":_vm.slugfoldername}}),_vm._v(" "),_vm._l((_vm.folder.medias),function(media,index){return _c('media',{key:index,attrs:{"slugFolderName":_vm.slugfoldername,"slugMediaName":index,"media":media}})})]:_vm._e(),_vm._v(" "),_c('hr')],2)}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -304,8 +304,12 @@ window.vueapp = new _vue2.default({ // eslint-disable-line no-new
       if (window.store.debug) {
         console.log('ROOT EVENT: openfolder: ' + slugFolderName);
       }
-      socketio.listMedias(slugFolderName);
-      this.settings.folder_currently_opened = slugFolderName;
+      if (this.settings.folder_currently_opened !== slugFolderName) {
+        socketio.listMedias(slugFolderName);
+        this.settings.folder_currently_opened = slugFolderName;
+      } else {
+        this.settings.folder_currently_opened = '';
+      }
     }
   },
   watch: {}

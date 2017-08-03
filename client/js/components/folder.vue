@@ -3,21 +3,21 @@
     <h2>
       {{ folder.name }}
     </h2>
-    <button @click='openfolder()'>
+    <button type="button" class="button-small" @click="openfolder()">
       Open/close
     </button>
 
-    <template v-if='this.$root.settings.folder_currently_opened === slugfoldername'>
+    <template v-if="this.$root.settings.folder_currently_opened === slugfoldername">
       <fileUpload
-        :slugFolderName='slugfoldername'
+        :slugFolderName="slugfoldername"
       >
       </fileUpload>
       <media
-        v-for='(media, index) in folder.medias'
-        :key='index'
-        :slugFolderName='slugfoldername'
-        :slugMediaName='index'
-        :media='media'
+        v-for="(media, index) in folder.medias"
+        :key="index"
+        :slugFolderName="slugfoldername"
+        :slugMediaName="index"
+        :media="media"
       >
       </media>
     </template>
