@@ -8,6 +8,10 @@ html
       h1 stv-doc
 
     #vue
+
+      <createFolder>
+      </createFolder>
+
       <folder v-for='(folder, index) in store.folders' :key='index' :slugfoldername='index' :folder='folder' @openfolder='openfolder'>
       </folder>
 

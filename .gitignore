@@ -36,3 +36,5 @@ Temporary Items
 
 dist/
 client/development/
+
+client/development/main.js

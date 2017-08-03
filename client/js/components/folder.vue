@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <h2>
+  <div class="clearfix">
+    <h2 class="margin-small">
       {{ folder.name }}
     </h2>
-    <button type="button" class="button-small" @click="openfolder()">
+    <button type="button" class="button-small margin-small" @click="openfolder()">
       Open/close
     </button>
 

@@ -3,8 +3,9 @@
     :id="uniqueDropzoneID"
     :url="uriToUploadMedia"
     v-on:vdropzone-success="showSuccess"
+    class="width-25 margin-small"
   >
-      <input type="hidden" name="token" value="xxx">
+      <input type="hidden" name="token" :value="slugFolderName">
   </dropzone>
 </template>
 <script>
@@ -20,7 +21,7 @@ export default {
       return 'myVueDropzone_' + Math.ceil((Math.random() * 1000));
     },
     uriToUploadMedia: function() {
-      return this.slugFolderName + '/file-upload';
+      return '/file-upload';
     },
   },
   methods: {

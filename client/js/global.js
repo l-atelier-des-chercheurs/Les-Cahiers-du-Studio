@@ -2,12 +2,13 @@ import Vue from 'vue/dist/vue';
 import io from 'socket.io-client';
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
-import _ from 'underscore';
+import VModal from 'vue-js-modal';
+Vue.use(VModal);
 
 
 import fileUpload from './components/fileUpload.vue';
 import folder from './components/folder.vue';
-
+import createFolder from './components/createFolder.vue';
 
 /***********
    STOREJS
@@ -105,7 +106,8 @@ window.vueapp = new Vue({ // eslint-disable-line no-new
   },
   components: {
     fileUpload,
-    folder
+    folder,
+    createFolder
   },
   methods: {
     openfolder: function(slugFolderName) {

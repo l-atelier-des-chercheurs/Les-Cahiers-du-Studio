@@ -1,6 +1,7 @@
 <template>
-  <div style="width:270px; display: inline-block; margin:5px;">
+  <div class="width-25 padding-small float-left">
     <pre>
+      {{ slugMediaName }}
     </pre>
     <template v-if="media.type === 'image'">
       <img :src="linkToThumb">
