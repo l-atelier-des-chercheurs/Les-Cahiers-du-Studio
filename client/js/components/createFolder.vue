@@ -1,15 +1,21 @@
 <template>
-  <button type="button" class="button margin-small" @click="openModal">
-    Create Folder
-  </button>
+  <div>
+    <button type="button" class="button margin-small" @click="openModal">
+      Create Folder
+    </button>
+  </div>
 </template>
 <script>
+// import SweetModal from '../../../node_modules/sweet-modal-vue/src/components/SweetModal.vue'
+import SweetModal from './subcomponents/SweetModal.vue';
 
 export default {
   props: [],
+	components: {
+		SweetModal
+	},
   data() {
     return {
-      is_open: false
     }
   },
   components: {
@@ -17,11 +23,13 @@ export default {
   computed: {
   },
   methods: {
+    openModal: function() {
+      this.$refs.createFolderModal.open();
+    }
   }
 }
 
-
-
 </script>
-<style scoped>
+<style>
+
 </style>
