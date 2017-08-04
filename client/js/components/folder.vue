@@ -7,7 +7,7 @@
       Open/close
     </button>
 
-    <template v-if="this.$root.settings.folder_currently_opened === slugfoldername">
+    <template v-if="this.$parent.settings.folder_currently_opened === slugFolderName">
       <fileUpload
         :slugFolderName="slugfoldername"
       >
@@ -25,8 +25,8 @@
   </div>
 </template>
 <script>
-import media from './media.vue';
-import fileUpload from './fileUpload.vue';
+import Media from './Media.vue';
+import FileUpload from './FileUpload.vue';
 
 /*
   WARNING : since index compiles to an HTML file, we have to use lowercase variables there
@@ -34,10 +34,10 @@ import fileUpload from './fileUpload.vue';
 */
 
 export default {
-  props: ['folder', 'slugfoldername'],
+  props: ['folder', 'slugFolderName'],
   components: {
-    media,
-    fileUpload
+    Media,
+    FileUpload
   },
   data() {
     return {
@@ -47,8 +47,8 @@ export default {
   },
   methods: {
     openfolder() {
-      if(window.store.debug) { console.log('EVENT: openfolder ' + this.slugfoldername); }
-      this.$emit('openfolder', this.slugfoldername);
+      if(window.store.debug) { console.log('EVENT: openfolder ' + this.slugFolderName); }
+      this.$emit('openfolder', this.slugFolderName);
     }
   },
 

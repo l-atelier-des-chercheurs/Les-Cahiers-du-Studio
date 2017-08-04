@@ -20,10 +20,12 @@ import buffer from "vinyl-buffer";
 import gutil from "gulp-util";
 
 var userScripts = [
-  'client/js/global.js'
+  'client/js/main.js'
 ];
 var components = [
-  'client/js/components/*.vue'
+  'client/js/*.vue',
+  'client/js/components/*.vue',
+  'client/js/components/subcomponents/*.vue'
 ];
 
 var nodeScripts = [

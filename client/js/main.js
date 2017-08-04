@@ -1,11 +1,8 @@
 import Vue from 'vue/dist/vue';
+
 import io from 'socket.io-client';
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
-
-import fileUpload from './components/fileUpload.vue';
-import folder from './components/folder.vue';
-import createfolder from './components/createFolder.vue';
 
 /***********
    STOREJS
@@ -21,7 +18,7 @@ window.store.state.folders = JSON.parse(JSON.stringify(locals.data));
   SOCKETIO
 ***********/
 
-let socketio = (function() {
+window.socketio = (function() {
   let socket;
 
   const API = {
@@ -92,32 +89,12 @@ $('body').on('click', '.js--openInBrowser', function() {
 ***********/
 Vue.config.silent = false;
 Vue.config.devtools = true;
+import App from './App.vue';
 
-window.vueapp = new Vue({ // eslint-disable-line no-new
-  el: '#vue',
-  data: {
-    store: window.store.state,
-    settings: {
-      folder_currently_opened: ''
-    },
-  },
-  components: {
-    fileUpload,
-    folder,
-    createfolder
-  },
-  methods: {
-    openfolder: function(slugFolderName) {
-      if(window.store.debug) { console.log(`ROOT EVENT: openfolder: ${slugFolderName}`); }
-      if(this.settings.folder_currently_opened !== slugFolderName) {
-        socketio.listMedias(slugFolderName);
-        this.settings.folder_currently_opened = slugFolderName;
-      } else {
-        this.settings.folder_currently_opened = '';
-      }
-    }
-  },
-  watch: {
-  }
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  template: '<App/>',
+  components: { App }
 });
 

@@ -53,7 +53,7 @@
     "sharp": "^0.18.2",
     "slugg": "^1.0.0",
     "socket.io": "^2.0.3",
-    "sweet-modal-vue": "^1.1.2",
+    "vue": "^2.4.2",
     "vue2-dropzone": "^2.3.5"
   },
   "devDependencies": {
@@ -82,7 +82,6 @@
     "underscore": "^1.8.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "vueify": "^9.4.1",
-    "vuejs": "^1.0.29"
+    "vueify": "^9.4.1"
   }
 }
