@@ -5,7 +5,7 @@ window.$ = window.jQuery = jQuery;
 
 import fileUpload from './components/fileUpload.vue';
 import folder from './components/folder.vue';
-import createFolder from './components/createFolder.vue';
+import createfolder from './components/createFolder.vue';
 
 /***********
    STOREJS
@@ -104,7 +104,7 @@ window.vueapp = new Vue({ // eslint-disable-line no-new
   components: {
     fileUpload,
     folder,
-    createFolder
+    createfolder
   },
   methods: {
     openfolder: function(slugFolderName) {

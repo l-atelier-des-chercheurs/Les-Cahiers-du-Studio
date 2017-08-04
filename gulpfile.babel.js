@@ -72,8 +72,8 @@ gulp.task('lint', function() {
 
 gulp.task('scripts', function () {
   return browserify(userScripts)
-  .transform(babelify, { presets: ['es2015'], plugins: ['transform-runtime'] })
   .transform(vueify)
+  .transform(babelify, { presets: ['es2015'], plugins: ['transform-runtime'] })
   .bundle()
   .on('error', function(err) {
     gutil.log(
