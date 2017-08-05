@@ -2,7 +2,7 @@
   <transition name="modal">
     <div class="modal-mask">
       <div class="modal-wrapper">
-        <div class="modal-container">
+        <div class="modal-container padding-small">
 
           <div class="modal-header">
             <slot name="header">
@@ -49,7 +49,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, .5);
+  background-color: rgba(255,255,255, .7);
   display: table;
   transition: opacity .3s ease;
 }
@@ -60,9 +60,11 @@ export default {
 }
 
 .modal-container {
-  width: 300px;
+  width: 380px;
+  max-height: 100vh;
+  overflow-y: scroll;
+
   margin: 0px auto;
-  padding: 20px 30px;
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);

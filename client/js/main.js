@@ -24,6 +24,7 @@ window.socketio = (function() {
   const API = {
     init        : () => { return init(); },
     listMedias  : (slugFolderName) => { return listMedias(slugFolderName); },
+    createFolder: (fdata) => { return createFolder(fdata); },
   };
 
   function init() {
@@ -31,11 +32,15 @@ window.socketio = (function() {
     	socket.on('connect', _onSocketConnect);
     socket.on('error', _onSocketError);
     	socket.on('listMedias', _onListMedias);
+    	socket.on('listFolder', _onListFolder);
     	socket.on('mediaCreated', _onMediaCreated);
   }
 
   function listMedias(slugFolderName) {
     socket.emit('listMedias', { slugFolderName });
+  }
+  function createFolder(fdata) {
+    socket.emit('createFolder', fdata);
   }
 
   function _onSocketConnect() {
@@ -48,7 +53,9 @@ window.socketio = (function() {
   function _onListMedias(mdata) {
     let slugFolderName = Object.keys(mdata)[0];
     window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
-    return;
+  }
+  function _onListFolder(fdata) {
+    window.store.state.folders = Object.assign({}, window.store.state.folders, fdata);
   }
   function _onMediaCreated(mdata) {
     let slugFolderName = Object.keys(mdata)[0];

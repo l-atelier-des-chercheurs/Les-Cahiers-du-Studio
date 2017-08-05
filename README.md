@@ -25,5 +25,3 @@ Now run stvdoc by writing
 To tweak and write some new SASS or client-side JS, you need to run the gulp task:
 
 * `gulp`
-
-To add a library, go to the `client` folder and use bower commands (such as `bower install isotope --save`).

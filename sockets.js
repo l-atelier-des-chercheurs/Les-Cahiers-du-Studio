@@ -34,6 +34,7 @@ module.exports = (function() {
       };
       socket.on('*',function(event,data) { dev.log(`RECEIVED EVENT: ${event}`); });
       socket.on('listMedias', function (data){ onListMedias(socket,data); });
+      socket.on('createFolder', function (data){ onCreateFolder(socket,data); });
     });
   }
 
@@ -43,6 +44,19 @@ module.exports = (function() {
     file.getMedia(d.slugFolderName).then(mediasData => {
       // TODO : check client permissions, send public or all medias depending on this
       api.sendEventWithContent('listMedias', {[d.slugFolderName]: {medias: mediasData} }, io, socket);
+    }, function(err) {
+      dev.error(`Failed to list medias! Error: ${err}`);
+    });
+  }
+  function onCreateFolder(socket, d) {
+    dev.logfunction(`EVENT - onCreateFolder for ${d.name}`);
+    file.createFolder(d).then(slugFolderName => {
+      file.getFolder(slugFolderName).then(function(foldersData) {
+        api.sendEventWithContent('listFolder', foldersData, io);
+      }, function(err, p) {
+        dev.error(`Failed to get folder data: ${err}`);
+        reject(err);
+      });
     }, function(err) {
       dev.error(`Failed to list medias! Error: ${err}`);
     });

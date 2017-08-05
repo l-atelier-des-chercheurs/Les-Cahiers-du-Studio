@@ -3,7 +3,7 @@
     <h2 class="margin-small">
       {{ folder.name }}
     </h2>
-    <button type="button" class="button-small margin-small" @click="openfolder()">
+    <button type="button" class="button-small margin-small" @click="openFolder()">
       Open/close
     </button>
 
@@ -44,11 +44,11 @@ export default {
     }
   },
   computed: {
+
   },
   methods: {
-    openfolder() {
-      if(window.store.debug) { console.log('EVENT: openfolder ' + this.slugFolderName); }
-      this.$emit('openfolder', this.slugFolderName);
+    openFolder() {
+      this.$emit('openFolder', this.slugFolderName);
     }
   },
 

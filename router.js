@@ -29,7 +29,6 @@ module.exports = function(app,io,m){
       let fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
       dev.log(`••• the following page has been requested: ${fullUrl} •••`);
 
-
       let pageDataJSON = {};
 
       pageDataJSON.pageTitle = 'stv-doc';
@@ -135,6 +134,8 @@ module.exports = function(app,io,m){
         dev.logverbose(`Following filename is available: ${newFileName}`);
         let newPathToNewFileName = path.join(uploadDir, newFileName);
         fs.renameSync(file.path, newPathToNewFileName);
+
+        // TODO: replace with file.createMediaMeta, sockets should only contain packets logic
         sockets.createMediaMeta(slugFolderName,newFileName);
         resolve();
       }, function(err) {

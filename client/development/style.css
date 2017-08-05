@@ -1488,3 +1488,9 @@ img, video, audio, svg {
   display: block;
   min-width: 100%;
   width: 100%; }
+
+input:required {
+  background-size: 16px 16px;
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-image: radial-gradient(transparent 10%, #FF3E51 18%, transparent 25%); }

@@ -1,10 +1,10 @@
 <template>
   <div id="app">
 
-    <CreateFolder>
+    <CreateFolder @createFolder="createFolder">
     </CreateFolder>
 
-    <Folder v-for='(folder, index) in store.folders' :key='index' :slugFolderName='index' :folder='folder' @openfolder='openfolder'>
+    <Folder v-for="(folder, index) in store.folders" :key="index" :slugFolderName="index" :folder="folder" @openFolder="openFolder">
     </Folder>
   </div>
 </template>
@@ -30,8 +30,8 @@ export default {
     CreateFolder
   },
   methods: {
-    openfolder: function(slugFolderName) {
-      if(window.store.debug) { console.log(`ROOT EVENT: openfolder: ${slugFolderName}`); }
+    openFolder: function(slugFolderName) {
+      if(window.store.debug) { console.log(`ROOT EVENT: openFolder: ${slugFolderName}`); }
 
       if(this.settings.folder_currently_opened !== slugFolderName) {
         window.socketio.listMedias(slugFolderName);
@@ -39,7 +39,13 @@ export default {
       } else {
         this.settings.folder_currently_opened = '';
       }
-    }
+    },
+    createFolder: function(fdata) {
+      if(window.store.debug) { console.log(`ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`); }
+      window.socketio.createFolder(fdata);
+    },
+
+
   },
   watch: {
   }

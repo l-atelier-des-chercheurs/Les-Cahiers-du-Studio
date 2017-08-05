@@ -23,6 +23,7 @@ module.exports = (function() {
     eventAndContent             : (sendEvent, objectJson) =>     { return eventAndContent(sendEvent, objectJson); },
     sendEventWithContent        : (sendEvent, objectContent, io, socket) => { return sendEventWithContent(sendEvent, objectContent, io, socket); },
     getLocalIP                  : () => { return getLocalIP(); },
+    slug                        : (term) => { return slug(term); }
   };
 
   function getCurrentDate(f) {
@@ -41,17 +42,17 @@ module.exports = (function() {
       // remove extension
       var fileNameWithoutExtension = new RegExp(local.settings().regexpRemoveFileExtension, 'i').exec(fileName)[1];
       // slug the rest of the name
-      fileNameWithoutExtension = slugg(fileNameWithoutExtension);
+      fileNameWithoutExtension = slug(fileNameWithoutExtension);
 
-      let
-        newFileName = `${fileNameWithoutExtension}${fileExtension}`,
-        newMetaFileName = `${newFileName}${local.settings().metaFileext}`,
-        newPathToFile = path.join(thisPath, newFileName),
-        newPathToMeta = path.join(thisPath, newMetaFileName),
-        index = 0;
+      let newFileName = `${fileNameWithoutExtension}${fileExtension}`;
+      let newMetaFileName = `${newFileName}${local.settings().metaFileext}`;
+      let newPathToFile = path.join(thisPath, newFileName);
+      let newPathToMeta = path.join(thisPath, newMetaFileName);
+      let index = 0;
 
       dev.logverbose(`2. about to look for existing files.`);
       try {
+        // OPTIMIZATION : make an array of filenames instead, and use that as the condition
         while((!fs.accessSync(newPathToFile, fs.F_OK) && !fs.accessSync(newPathToMeta, fs.F_OK))){
           dev.logverbose(`- - following path is already taken : newPathToFile = ${newPathToFile} or newPathToMeta = ${newPathToMeta}`);
           index++;
@@ -129,6 +130,10 @@ module.exports = (function() {
       });
       resolve(networkInfo);
     });
+  }
+
+  function slug(term) {
+    return slugg(term);
   }
 
   return API;
