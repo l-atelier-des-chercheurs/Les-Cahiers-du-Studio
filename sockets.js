@@ -36,6 +36,7 @@ module.exports = (function() {
       socket.on('listMedias', function (data){ onListMedias(socket,data); });
       socket.on('createFolder', function (data){ onCreateFolder(socket,data); });
       socket.on('removeFolder', function (data){ onRemoveFolder(socket,data); });
+      socket.on('editFolder', function (data){ onEditFolder(socket,data); });
     });
   }
 
@@ -60,6 +61,18 @@ module.exports = (function() {
       });
     }, function(err) {
       dev.error(`Failed to list medias! Error: ${err}`);
+    });
+  }
+  function onEditFolder(socket,d) {
+    dev.logfunction(`EVENT - onEditFolder for ${d.slugFolderName}`);
+    let slugFolderName = d.slugFolderName;
+    file.editFolder(d).then(slugFolderName => {
+      file.getFolder(slugFolderName).then(foldersData => {
+        api.sendEventWithContent('listFolder', foldersData, io);
+      }, function(err, p) {
+        dev.error(`Failed to get folder data: ${err}`);
+        reject(err);
+      });
     });
   }
   function onRemoveFolder(socket, slugFolderName) {

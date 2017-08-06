@@ -134,7 +134,7 @@ export default {
       }
 
       // if it's all good, collect everything and send over socketio
-      this.$root.$emit('createFolder', values);
+      this.$root.createFolder(values);
 
       // then close that popover
       this.$emit('close', this.slugFolderName);

@@ -36,7 +36,7 @@
       </button>
     </div>
 
-    <EditFolder v-if="showEditFolderModal" :folder="folder" @close="showEditFolderModal = false">
+    <EditFolder v-if="showEditFolderModal" :folder="folder" :slugFolderName="slugFolderName" @close="showEditFolderModal = false">
     </EditFolder>
 
     <template v-if="$root.settings.folder_currently_opened === slugFolderName">
@@ -84,11 +84,11 @@ export default {
   },
   methods: {
     loadFolderMedias() {
-      this.$root.$emit('loadFolderMedias', this.slugFolderName);
+      this.$root.loadFolderMedias(this.slugFolderName);
     },
     removeFolder() {
       if(window.confirm(locals.lang.modal.sureToRemoveFolder)) {
-        this.$root.$emit('removeFolder', this.slugFolderName);
+        this.$root.removeFolder(this.slugFolderName);
       }
     }
   },

@@ -25,6 +25,7 @@ window.socketio = (function() {
     init        : () => { return init(); },
     listMedias  : (slugFolderName) => { return listMedias(slugFolderName); },
     createFolder: (fdata) => { return createFolder(fdata); },
+    editFolder  : (fdata) => { return editFolder(fdata); },
     removeFolder: (slugFolderName) => { return removeFolder(slugFolderName); },
   };
 
@@ -43,6 +44,9 @@ window.socketio = (function() {
   }
   function createFolder(fdata) {
     socket.emit('createFolder', fdata);
+  }
+  function editFolder(fdata) {
+    socket.emit('editFolder', fdata);
   }
   function removeFolder(slugFolderName) {
     socket.emit('removeFolder', slugFolderName);
@@ -133,7 +137,7 @@ new Vue({
       window.socketio.createFolder(fdata);
     },
     editFolder: function(fdata) {
-      if(window.store.debug) { console.log(`ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`); }
+      if(window.store.debug) { console.log(`ROOT EVENT: editFolder: ${JSON.stringify(fdata, null, 4)}`); }
       window.socketio.editFolder(fdata);
     },
     removeFolder: function(slugFolderName) {

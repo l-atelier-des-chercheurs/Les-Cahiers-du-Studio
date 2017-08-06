@@ -83,7 +83,7 @@ import moment from 'moment';
 import alertify from 'alertify.js';
 
 export default {
-  props: ['folder'],
+  props: ['slugFolderName', 'folder'],
   components: {
     Modal
   },
@@ -106,11 +106,14 @@ export default {
         authors: this.$refs.authors.value,
       }
 
-      function getAllFolderNames () {
+      let thisFolderName = this.folder.name;
+      function getAllFolderNames() {
         let allFoldersName = [];
         for (let slugFolderName in window.store.state.folders) {
           let foldersName = window.store.state.folders[slugFolderName].name;
-          allFoldersName.push(foldersName);
+          if(foldersName !== thisFolderName) {
+            allFoldersName.push(foldersName);
+          }
         }
         return allFoldersName;
       }
@@ -128,8 +131,10 @@ export default {
         return false;
       }
 
+      values.slugFolderName = this.slugFolderName;
+
       // if it's all good, collect everything and send over socketio
-      this.$root.$emit('editFolder', values);
+      this.$root.editFolder(values);
 
       // then close that popover
       this.$emit('close', '');
@@ -138,6 +143,16 @@ export default {
   mounted() {
     this.$refs.name.value = this.folder.name;
     // TODO : separate start and end date into date and time fields
+    if(this.folder.start) {
+      // cut a date such as 20170701_140000 to 2017-07-01 and 14:00
+      this.$refs.startdate.value = moment(this.folder.start, 'YYYYMMDD_HHmmss').format('YYYY-MM-DD');
+      this.$refs.starttime.value = moment(this.folder.start, 'YYYYMMDD_HHmmss').format('HH:mm');
+    }
+/*
+        start: this.$refs.startdate.value + 'T' + this.$refs.starttime.value,
+        end: this.$refs.enddate !== undefined ? (this.$refs.enddate.value + 'T' + this.$refs.endtime.value) : '',
+*/
+
     if(this.folder.authors) {
       this.$refs.authors.value = this.folder.authors;
     }
