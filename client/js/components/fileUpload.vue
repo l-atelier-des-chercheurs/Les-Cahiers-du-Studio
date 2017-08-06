@@ -21,7 +21,7 @@ export default {
       return 'myVueDropzone_' + Math.ceil((Math.random() * 1000));
     },
     uriToUploadMedia: function() {
-      return '/file-upload';
+      return this.slugFolderName + '/file-upload';
     },
   },
   methods: {

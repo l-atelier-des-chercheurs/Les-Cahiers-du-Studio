@@ -169,7 +169,7 @@ module.exports = (function() {
 
         if(medias.length === 0) {
           dev.logverbose(`Since no medias is in this folder, let’s abort right there.`);
-          resolve(`No medias in this folder.`);
+          resolve();
         } else {
           var allMediasData = [];
           medias.forEach(function(slugMediaName) {
@@ -361,7 +361,7 @@ module.exports = (function() {
       dev.logfunction(`COMMON — editFolder : will edit folder: ${JSON.stringify(fdata, null, 4)}`);
       // remove slugFolderKey
       let slugFolderName = fdata.slugFolderName;
-/*       delete fdata['slugFolderName']; */
+      delete fdata['slugFolderName'];
 
       makeFolderMeta(slugFolderName, fdata).then((mdata) => {
         let folderMetaPath = getMetaFileOfFolder(slugFolderName);

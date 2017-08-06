@@ -65,7 +65,6 @@ module.exports = (function() {
   }
   function onEditFolder(socket,d) {
     dev.logfunction(`EVENT - onEditFolder for ${d.slugFolderName}`);
-    let slugFolderName = d.slugFolderName;
     file.editFolder(d).then(slugFolderName => {
       file.getFolder(slugFolderName).then(foldersData => {
         api.sendEventWithContent('listFolder', foldersData, io);
