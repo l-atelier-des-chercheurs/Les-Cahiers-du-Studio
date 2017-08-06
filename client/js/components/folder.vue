@@ -59,7 +59,7 @@
 <script>
 import Media from './Media.vue';
 import FileUpload from './FileUpload.vue';
-import EditFolder from './modals/EditFolder2.vue';
+import EditFolder from './modals/EditFolder.vue';
 
 /*
   WARNING : since index compiles to an HTML file, we have to use lowercase variables there

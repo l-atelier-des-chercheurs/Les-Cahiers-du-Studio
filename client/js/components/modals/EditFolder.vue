@@ -77,9 +77,10 @@
 
   </Modal>
 </template>
+<script>
+import Modal from './Modal.vue';
 import moment from 'moment';
 import alertify from 'alertify.js';
-import Modal from './Modal.vue';
 
 export default {
   components: {
