@@ -1,5 +1,5 @@
 <template>
-  <Modal>
+  <Modal @close="$emit('close')">
     <h3 slot="header">
       Create a folder
     </h3>
@@ -148,7 +148,6 @@ export default {
 
 </script>
 <style>
-
 .two-column {
   column-count: 2;
   column-gap: 1rem;

@@ -134,8 +134,7 @@ new Vue({
     },
     editFolder: function(fdata) {
       if(window.store.debug) { console.log(`ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`); }
-      debugger;
-//       window.socketio.createFolder(fdata);
+      window.socketio.editFolder(fdata);
     },
     removeFolder: function(slugFolderName) {
       window.socketio.removeFolder(slugFolderName);

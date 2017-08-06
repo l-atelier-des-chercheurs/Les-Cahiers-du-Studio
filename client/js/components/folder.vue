@@ -36,7 +36,7 @@
       </button>
     </div>
 
-    <EditFolder v-if="showEditFolderModal" @close="showEditFolderModal = false">
+    <EditFolder v-if="showEditFolderModal" :folder="folder" @close="showEditFolderModal = false">
     </EditFolder>
 
     <template v-if="$root.settings.folder_currently_opened === slugFolderName">

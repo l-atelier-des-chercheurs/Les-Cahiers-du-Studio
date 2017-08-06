@@ -1,5 +1,5 @@
 <template>
-  <Modal>
+  <Modal @close="$emit('close')">
     <h3 slot="header">
       Edit a folder
     </h3>
@@ -83,6 +83,7 @@ import moment from 'moment';
 import alertify from 'alertify.js';
 
 export default {
+  props: ['folder'],
   components: {
     Modal
   },
@@ -94,7 +95,7 @@ export default {
   },
   methods: {
     editThisFolder: function (event) {
-      console.log('editThisFolder')
+      console.log('editThisFolder');
 
       // check if required are filled
       let values = {
@@ -134,6 +135,13 @@ export default {
       this.$emit('close', '');
     }
   },
+  mounted() {
+    this.$refs.name.value = this.folder.name;
+    // TODO : separate start and end date into date and time fields
+    if(this.folder.authors) {
+      this.$refs.authors.value = this.folder.authors;
+    }
+  }
 }
 
 </script>
