@@ -3,11 +3,43 @@
     <h2 class="margin-small">
       {{ folder.name }}
     </h2>
-    <button type="button" class="button-small margin-small" @click="openFolder()">
-      Open/close
-    </button>
 
-    <template v-if="this.$parent.settings.folder_currently_opened === slugFolderName">
+    <table v-if="debugFolderContent" class="table-striped margin-small">
+      <thead>
+        <tr>
+          <th>Prop</th>
+          <th>Values</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template v-for="(item, key) in folder">
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{ item }}</td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+
+    <div class="clearfix">
+      <button type="button" class="button-small margin-small float-left" @click="loadFolderMedias()">
+        Open/close
+      </button>
+      <button type="button" class="button-small margin-small float-left" @click="debugFolderContent = !debugFolderContent">
+        Debug view
+      </button>
+      <button type="button" class="button-small margin-small float-left" @click="showEditFolderModal = !showEditFolderModal">
+        Edit
+      </button>
+      <button type="button" class="button-small margin-small float-left" @click="removeFolder()">
+        Remove
+      </button>
+    </div>
+
+    <EditFolder v-if="showEditFolderModal" @close="showEditFolderModal = false">
+    </EditFolder>
+
+    <template v-if="$root.settings.folder_currently_opened === slugFolderName">
       <fileUpload
         :slugFolderName="slugfoldername"
       >
@@ -27,6 +59,7 @@
 <script>
 import Media from './Media.vue';
 import FileUpload from './FileUpload.vue';
+import EditFolder from './modals/EditFolder2.vue';
 
 /*
   WARNING : since index compiles to an HTML file, we have to use lowercase variables there
@@ -37,18 +70,26 @@ export default {
   props: ['folder', 'slugFolderName'],
   components: {
     Media,
-    FileUpload
+    FileUpload,
+    EditFolder
   },
   data() {
     return {
+      debugFolderContent: false,
+      showEditFolderModal: false
     }
   },
   computed: {
 
   },
   methods: {
-    openFolder() {
-      this.$emit('openFolder', this.slugFolderName);
+    loadFolderMedias() {
+      this.$root.$emit('loadFolderMedias', this.slugFolderName);
+    },
+    removeFolder() {
+      if(window.confirm(locals.lang.modal.sureToRemoveFolder)) {
+        this.$root.$emit('removeFolder', this.slugFolderName);
+      }
     }
   },
 

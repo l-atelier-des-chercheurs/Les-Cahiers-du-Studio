@@ -14,6 +14,7 @@
 :root {
   --body-color: black;
   --body-bg-color: #f2f2f2;
+  --table-stripe-bg-color: #eee;
 }
 
 /******************
@@ -41,4 +42,8 @@ input:required {
   background-position: top right;
   background-repeat: no-repeat;
   background-image: radial-gradient(transparent 10%,#FF3E51 18%,transparent 25%);
+}
+
+.alertify-logs {
+  z-index: 10000;
 }

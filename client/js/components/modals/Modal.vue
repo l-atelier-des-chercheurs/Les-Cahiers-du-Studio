@@ -1,8 +1,8 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask">
+    <div class="modal-mask" @click="$emit('close')" v-on:keyup.esc="$emit('close')">
       <div class="modal-wrapper">
-        <div class="modal-container padding-small">
+        <div class="modal-container padding-small" @click.stop>
 
           <div class="modal-header">
             <slot name="header">
@@ -31,13 +31,12 @@
 </template>
 
 <script>
-
 export default {
+  name: "Modal",
   data() {
     return {
-
     }
-  }
+  },
 }
 </script>
 

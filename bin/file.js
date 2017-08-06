@@ -19,10 +19,10 @@ module.exports = (function() {
     getFolderPath       : (slugFolderName = '') => { return getFolderPath(slugFolderName); },
     getFolder           : (slugFolderName) => { return getFolder(slugFolderName); },
     getMetaFileOfFolder : (slugFolderName) => { return getMetaFileOfFolder(slugFolderName); },
-
     getMedia            : (slugFolderName, slugMediaName) => { return getMedia(slugFolderName, slugMediaName); },
     createMediaMeta     : (slugFolderName, mediaFileName) => { return createMediaMeta(slugFolderName, mediaFileName); },
-    createFolder        : (fdata) => { return createFolder(fdata); }
+    createFolder        : (fdata) => { return createFolder(fdata); },
+    removeFolder        : (slugFolderName) => { return removeFolder(slugFolderName); }
   };
 
   function getFolderPath(slugFolderName = '') {
@@ -318,9 +318,6 @@ module.exports = (function() {
         let allFoldersSlug = Object.keys(foldersData).map(function(obj) {
           return obj.slugFolderName;
         });
-        dev.logverbose(`BLAH: ${JSON.stringify(fdata, null, 4)}`);
-        dev.logverbose(`BLAH: ${fdata.name}`);
-
         // créer un slug
         let slugFolderName = api.slug(fdata.name);
         dev.logverbose(`Proposed slug: ${slugFolderName}`);
@@ -348,6 +345,21 @@ module.exports = (function() {
       }, function(err, p) {
         dev.error(`Failed to get folders data: ${err}`);
         reject(err);
+      });
+    });
+  }
+
+  function removeFolder(slugFolderName) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(`COMMON — removeFolder : will remove folder: ${slugFolderName}`);
+
+      var folderPath = getFolderPath(slugFolderName);
+      var deletedFolderName = local.settings().deletedPrefix + slugFolderName + '_' + api.getCurrentDate();
+      var deletedFolderPath = getFolderPath(deletedFolderName);
+
+      fs.rename(folderPath, deletedFolderPath, (err) => {
+        if (err) { reject( err); }
+        resolve();
       });
     });
   }

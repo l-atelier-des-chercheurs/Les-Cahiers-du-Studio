@@ -35,6 +35,7 @@ module.exports = (function() {
       socket.on('*',function(event,data) { dev.log(`RECEIVED EVENT: ${event}`); });
       socket.on('listMedias', function (data){ onListMedias(socket,data); });
       socket.on('createFolder', function (data){ onCreateFolder(socket,data); });
+      socket.on('removeFolder', function (data){ onRemoveFolder(socket,data); });
     });
   }
 
@@ -51,7 +52,7 @@ module.exports = (function() {
   function onCreateFolder(socket, d) {
     dev.logfunction(`EVENT - onCreateFolder for ${d.name}`);
     file.createFolder(d).then(slugFolderName => {
-      file.getFolder(slugFolderName).then(function(foldersData) {
+      file.getFolder(slugFolderName).then(foldersData => {
         api.sendEventWithContent('listFolder', foldersData, io);
       }, function(err, p) {
         dev.error(`Failed to get folder data: ${err}`);
@@ -59,6 +60,20 @@ module.exports = (function() {
       });
     }, function(err) {
       dev.error(`Failed to list medias! Error: ${err}`);
+    });
+  }
+  function onRemoveFolder(socket, slugFolderName) {
+    dev.logfunction(`EVENT - onRemoveFolder for ${slugFolderName}`);
+    file.removeFolder(slugFolderName).then(() => {
+      file.getFolder().then(foldersData => {
+        api.sendEventWithContent('listFolders', foldersData, io);
+      }, function(err, p) {
+        dev.error(`Failed to get all folders data: ${err}`);
+        reject(err);
+      });
+    }, function(err, p) {
+      dev.error(`Failed to remove folder: ${err}`);
+      reject(err);
     });
   }
 

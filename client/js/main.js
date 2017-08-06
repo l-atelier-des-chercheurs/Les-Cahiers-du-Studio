@@ -25,6 +25,7 @@ window.socketio = (function() {
     init        : () => { return init(); },
     listMedias  : (slugFolderName) => { return listMedias(slugFolderName); },
     createFolder: (fdata) => { return createFolder(fdata); },
+    removeFolder: (slugFolderName) => { return removeFolder(slugFolderName); },
   };
 
   function init() {
@@ -33,6 +34,7 @@ window.socketio = (function() {
     socket.on('error', _onSocketError);
     	socket.on('listMedias', _onListMedias);
     	socket.on('listFolder', _onListFolder);
+    	socket.on('listFolders', _onListFolders);
     	socket.on('mediaCreated', _onMediaCreated);
   }
 
@@ -41,6 +43,9 @@ window.socketio = (function() {
   }
   function createFolder(fdata) {
     socket.emit('createFolder', fdata);
+  }
+  function removeFolder(slugFolderName) {
+    socket.emit('removeFolder', slugFolderName);
   }
 
   function _onSocketConnect() {
@@ -56,6 +61,9 @@ window.socketio = (function() {
   }
   function _onListFolder(fdata) {
     window.store.state.folders = Object.assign({}, window.store.state.folders, fdata);
+  }
+  function _onListFolders(fdata) {
+    window.store.state.folders = fdata;
   }
   function _onMediaCreated(mdata) {
     let slugFolderName = Object.keys(mdata)[0];
@@ -102,6 +110,36 @@ import App from './App.vue';
 new Vue({
   el: '#app',
   template: '<App/>',
-  components: { App }
+  components: { App },
+  data: {
+    store: window.store.state,
+    settings: {
+      folder_currently_opened: '',
+    },
+  },
+  methods: {
+    loadFolderMedias: function(slugFolderName) {
+      if(window.store.debug) { console.log(`ROOT EVENT: loadFolderMedias: ${slugFolderName}`); }
+
+      if(this.settings.folder_currently_opened !== slugFolderName) {
+        window.socketio.listMedias(slugFolderName);
+        this.settings.folder_currently_opened = slugFolderName;
+      } else {
+        this.settings.folder_currently_opened = '';
+      }
+    },
+    createFolder: function(fdata) {
+      if(window.store.debug) { console.log(`ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`); }
+      window.socketio.createFolder(fdata);
+    },
+    editFolder: function(fdata) {
+      if(window.store.debug) { console.log(`ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`); }
+      debugger;
+//       window.socketio.createFolder(fdata);
+    },
+    removeFolder: function(slugFolderName) {
+      window.socketio.removeFolder(slugFolderName);
+    },
+  },
 });
 

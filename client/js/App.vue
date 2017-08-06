@@ -1,27 +1,29 @@
 <template>
   <div id="app">
 
-    <CreateFolder @createFolder="createFolder">
+    <button type="button" class="button margin-small" @click="showCreateFolderModal = !showCreateFolderModal">
+      Create Folder
+    </button>
+
+    <CreateFolder v-if="showCreateFolderModal" @close="showCreateFolderModal = false">
     </CreateFolder>
 
-    <Folder v-for="(folder, index) in store.folders" :key="index" :slugFolderName="index" :folder="folder" @openFolder="openFolder">
+    <Folder v-for="slugFolderName in sortedFoldersSlug" :key="slugFolderName" :slugFolderName="slugFolderName" :folder="$root.store.folders[slugFolderName]">
     </Folder>
+
   </div>
 </template>
 
 <script>
 import FileUpload from './components/FileUpload.vue';
 import Folder from './components/Folder.vue';
-import CreateFolder from './components/CreateFolder.vue';
+import CreateFolder from './components/modals/CreateFolder.vue';
 
 export default {
   name: 'app',
   data () {
     return {
-      store: window.store.state,
-      settings: {
-        folder_currently_opened: ''
-      },
+      showCreateFolderModal: false
     }
   },
   components: {
@@ -29,23 +31,14 @@ export default {
     Folder,
     CreateFolder
   },
-  methods: {
-    openFolder: function(slugFolderName) {
-      if(window.store.debug) { console.log(`ROOT EVENT: openFolder: ${slugFolderName}`); }
-
-      if(this.settings.folder_currently_opened !== slugFolderName) {
-        window.socketio.listMedias(slugFolderName);
-        this.settings.folder_currently_opened = slugFolderName;
-      } else {
-        this.settings.folder_currently_opened = '';
+  computed: {
+    sortedFoldersSlug() {
+      var sortable = [];
+      for (let folder in this.$root.store.folders) {
+        sortable.push(folder);
       }
-    },
-    createFolder: function(fdata) {
-      if(window.store.debug) { console.log(`ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`); }
-      window.socketio.createFolder(fdata);
-    },
-
-
+      return sortable.sort();
+    }
   },
   watch: {
   }

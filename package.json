@@ -30,6 +30,7 @@
     }
   },
   "dependencies": {
+    "alertify.js": "^1.0.12",
     "body-parser": "^1.15.0",
     "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master",
     "electron": "^1.6.11",
