@@ -62,11 +62,11 @@
 
       <div>
         <button class="modal-default-button button-success" type="submit">
-          Valider
+          Update
         </button>
         <!-- pressing enter presses the first button… need fix to place this button somewhere else -->
         <button class="modal-default-button" @click="$emit('close')">
-          Annuler
+          Cancel
         </button>
       </div>
 
@@ -78,7 +78,7 @@
   </Modal>
 </template>
 <script>
-import Modal from './Modal.vue';
+import Modal from './BaseModal.vue';
 import moment from 'moment';
 import alertify from 'alertify.js';
 

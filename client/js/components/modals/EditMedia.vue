@@ -1,74 +1,47 @@
 <template>
   <Modal @close="$emit('close')">
     <h3 slot="header">
-      Create a folder
+      Edit media <i>{{ slugMediaName }}</i>
     </h3>
 
-    <form slot="body" v-on:submit.prevent="newFolder">
+    <div style="width: 250px;">
+      <MediaContent
+        :slugFolderName="slugFolderName"
+        :slugMediaName="index"
+        :media="media"
+      >
+      </MediaContent>
+    </div>
 
-<!-- Human name -->
+    <form slot="body" v-on:submit.prevent="editThisMedia">
+
+<!-- Creation date (stored in meta file, overrides file date) -->
       <div class="input-single">
-        <label>Name</label>
+        <label>Creation date</label>
         <p>
           <input type="text" ref="name" required>
         </p>
       </div>
 
-<!-- Start date -->
-      <div>
-        <label>Beginning</label>
-        <div class="two-column">
-          <p>
-            <input type="date" ref="startdate">
-          </p>
-          <p>
-            <input type="time" ref="starttime">
-          </p>
-        </div>
-      </div>
+<!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
 
-<!-- End date -->
-      <div>
-        <label>End</label>
-        <div class="two-column">
-          <p>
-            <input type="date" ref="enddate">
-          </p>
-          <p>
-            <input type="time" ref="endtime">
-          </p>
-        </div>
-      </div>
-
-<!-- Password -->
-      <div class="input-single">
-        <label>Password</label><br>
-        <input type="password" ref="password">
-        <small>If there is one, only user with this password will be able to edit this folder</small>
-      </div>
+<!-- Keywords (separated with a comma) -->
 
 <!-- Author(s) -->
-      <div class="input-single">
-        <label>Author(s)</label><br>
-        <small>One per line</small>
-        <textarea ref="authors">
-        </textarea>
-      </div>
 
-      <small>
-        fields with a * are required<br>
-        they can be edited at all time
-      </small>
+<!-- Public or private -->
+
 
       <div>
         <button class="modal-default-button button-success" type="submit">
-          Create
+          Update
         </button>
         <!-- pressing enter presses the first button… need fix to place this button somewhere else -->
         <button class="modal-default-button" @click="$emit('close')">
           Cancel
         </button>
       </div>
+
 
     </form>
 
@@ -82,13 +55,8 @@ import Modal from './BaseModal.vue';
 import moment from 'moment';
 import alertify from 'alertify.js';
 
-Date.prototype.toDateInputValue = (function() {
-    var local = new Date(this);
-    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
-    return local.toJSON().slice(0,10);
-});
-
 export default {
+  props: ['slugFolderName', 'slugMediaName', 'media'],
   components: {
     Modal
   },
@@ -99,8 +67,8 @@ export default {
   computed: {
   },
   methods: {
-    newFolder: function (event) {
-      console.log('newFolder')
+    editThisMedia: function (event) {
+      console.log('editThisMedia');
 
       // check if required are filled
       let values = {
@@ -111,11 +79,14 @@ export default {
         authors: this.$refs.authors.value,
       }
 
-      function getAllFolderNames () {
+      let thisFolderName = this.folder.name;
+      function getAllFolderNames() {
         let allFoldersName = [];
         for (let slugFolderName in window.store.state.folders) {
           let foldersName = window.store.state.folders[slugFolderName].name;
-          allFoldersName.push(foldersName);
+          if(foldersName !== thisFolderName) {
+            allFoldersName.push(foldersName);
+          }
         }
         return allFoldersName;
       }
@@ -133,21 +104,37 @@ export default {
         return false;
       }
 
+      values.slugFolderName = this.slugFolderName;
+
       // if it's all good, collect everything and send over socketio
-      this.$root.createFolder(values);
+      this.$root.editFolder(values);
 
       // then close that popover
-      this.$emit('close', this.slugFolderName);
+      this.$emit('close', '');
     }
   },
   mounted() {
-    this.$refs.startdate.value = new Date().toDateInputValue();
-    this.$refs.starttime.value = moment().format('HH:mm');
+    this.$refs.name.value = this.folder.name;
+    // TODO : separate start and end date into date and time fields
+    if(this.folder.start) {
+      // cut a date such as 20170701_140000 to 2017-07-01 and 14:00
+      this.$refs.startdate.value = moment(this.folder.start, 'YYYYMMDD_HHmmss').format('YYYY-MM-DD');
+      this.$refs.starttime.value = moment(this.folder.start, 'YYYYMMDD_HHmmss').format('HH:mm');
+    }
+/*
+        start: this.$refs.startdate.value + 'T' + this.$refs.starttime.value,
+        end: this.$refs.enddate !== undefined ? (this.$refs.enddate.value + 'T' + this.$refs.endtime.value) : '',
+*/
+
+    if(this.folder.authors) {
+      this.$refs.authors.value = this.folder.authors;
+    }
   }
 }
 
 </script>
 <style>
+
 .two-column {
   column-count: 2;
   column-gap: 1rem;
@@ -159,5 +146,4 @@ export default {
     column-gap: 0;
   }
 }
-
 </style>

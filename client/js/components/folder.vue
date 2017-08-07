@@ -36,7 +36,12 @@
       </button>
     </div>
 
-    <EditFolder v-if="showEditFolderModal" :folder="folder" :slugFolderName="slugFolderName" @close="showEditFolderModal = false">
+    <EditFolder
+      v-if="showEditFolderModal"
+      :folder="folder"
+      :slugFolderName="slugFolderName"
+      @close="showEditFolderModal = false"
+    >
     </EditFolder>
 
     <template v-if="$root.settings.folder_currently_opened === slugFolderName">
@@ -47,7 +52,7 @@
       <media
         v-for="(media, index) in folder.medias"
         :key="index"
-        :slugFolderName="slugfoldername"
+        :slugFolderName="slugFolderName"
         :slugMediaName="index"
         :media="media"
       >
