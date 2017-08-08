@@ -17,15 +17,19 @@
 <!-- Start date -->
       <div>
         <label>Beginning</label>
-        <DateTime v-model="folderdata.start">
-        </DateTime>
+        <div class="two-column">
+          <DateTime v-model="folderdata.start">
+          </DateTime>
+        </div>
       </div>
 
 <!-- End date -->
       <div>
         <label>End</label>
-        <DateTime v-model="folderdata.end">
-        </DateTime>
+        <div class="two-column">
+          <DateTime v-model="folderdata.end">
+          </DateTime>
+        </div>
       </div>
 
 <!-- Password -->
@@ -68,7 +72,6 @@
 <script>
 import Modal from './BaseModal.vue';
 import DateTime from '../subcomponents/DateTime.vue';
-import moment from 'moment';
 import alertify from 'alertify.js';
 
 export default {
@@ -131,6 +134,9 @@ export default {
       this.$emit('close', '');
     }
   },
+  mounted() {
+    debugger;
+  }
 }
 
 </script>

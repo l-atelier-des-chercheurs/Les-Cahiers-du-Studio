@@ -10,7 +10,7 @@
       <div class="input-single">
         <label>Name</label>
         <p>
-          <input type="text" ref="name" required>
+          <input type="text" v-model="folderdata.name" required>
         </p>
       </div>
 
@@ -18,12 +18,8 @@
       <div>
         <label>Beginning</label>
         <div class="two-column">
-          <p>
-            <input type="date" ref="startdate">
-          </p>
-          <p>
-            <input type="time" ref="starttime">
-          </p>
+          <DateTime v-model="folderdata.start">
+          </DateTime>
         </div>
       </div>
 
@@ -31,19 +27,16 @@
       <div>
         <label>End</label>
         <div class="two-column">
-          <p>
-            <input type="date" ref="enddate">
-          </p>
-          <p>
-            <input type="time" ref="endtime">
-          </p>
+          <DateTime v-model="folderdata.end">
+          </DateTime>
         </div>
+
       </div>
 
 <!-- Password -->
       <div class="input-single">
         <label>Password</label><br>
-        <input type="password" ref="password">
+        <input type="password" v-model="folderdata.password">
         <small>If there is one, only user with this password will be able to edit this folder</small>
       </div>
 
@@ -51,7 +44,7 @@
       <div class="input-single">
         <label>Author(s)</label><br>
         <small>One per line</small>
-        <textarea ref="authors">
+        <textarea v-model="folderdata.authors">
         </textarea>
       </div>
 
@@ -79,39 +72,33 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
+import DateTime from '../subcomponents/DateTime.vue';
 import moment from 'moment';
 import alertify from 'alertify.js';
 
-Date.prototype.toDateInputValue = (function() {
-    var local = new Date(this);
-    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
-    return local.toJSON().slice(0,10);
-});
-
 export default {
   components: {
-    Modal
+    Modal,
+    DateTime
   },
   data() {
     return {
+      folderdata: {
+        name: '',
+        start: moment().format('YYYYMMDD_HHmmss'),
+        end: '',
+        password: '',
+        authors: ''
+      }
     }
   },
   computed: {
   },
   methods: {
     newFolder: function (event) {
-      console.log('newFolder')
+      console.log('newFolder');
 
-      // check if required are filled
-      let values = {
-        name: this.$refs.name.value.trim(),
-        start: this.$refs.startdate.value + 'T' + this.$refs.starttime.value,
-        end: this.$refs.enddate !== undefined ? (this.$refs.enddate.value + 'T' + this.$refs.endtime.value) : '',
-        password: this.$refs.password.value.trim(),
-        authors: this.$refs.authors.value,
-      }
-
-      function getAllFolderNames () {
+      function getAllFolderNames() {
         let allFoldersName = [];
         for (let slugFolderName in window.store.state.folders) {
           let foldersName = window.store.state.folders[slugFolderName].name;
@@ -122,7 +109,7 @@ export default {
       let allFoldersName = getAllFolderNames();
 
       // check if folder name (not slug) already exists
-      if(allFoldersName.indexOf(values.name) >= 0) {
+      if(allFoldersName.indexOf(this.folderdata.name) >= 0) {
         // invalidate if it does
         alertify
           .closeLogOnClick(true)
@@ -133,21 +120,22 @@ export default {
         return false;
       }
 
+      // copy all values
+      let values = this.folderdata;
+      values.slugFolderName = this.slugFolderName;
+
       // if it's all good, collect everything and send over socketio
       this.$root.createFolder(values);
 
       // then close that popover
-      this.$emit('close', this.slugFolderName);
+      this.$emit('close', '');
     }
   },
-  mounted() {
-    this.$refs.startdate.value = new Date().toDateInputValue();
-    this.$refs.starttime.value = moment().format('HH:mm');
-  }
 }
 
 </script>
 <style>
+
 .two-column {
   column-count: 2;
   column-gap: 1rem;
@@ -159,5 +147,4 @@ export default {
     column-gap: 0;
   }
 }
-
 </style>
