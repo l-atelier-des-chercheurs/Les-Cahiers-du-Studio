@@ -4,10 +4,10 @@
       Edit media <i>{{ slugMediaName }}</i>
     </h3>
 
-    <div slot="body" style="width: 800px;">
+    <div slot="body" style="width: 300px;">
       <MediaContent
         :slugFolderName="slugFolderName"
-        :slugMediaName="index"
+        :slugMediaName="slugMediaName"
         :media="media"
         :size="1800"
       >
@@ -130,7 +130,6 @@ export default {
 
 </script>
 <style>
-
 .two-column {
   column-count: 2;
   column-gap: 1rem;

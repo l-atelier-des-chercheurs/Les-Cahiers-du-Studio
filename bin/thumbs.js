@@ -1,7 +1,8 @@
 const
   sharp = require('sharp'),
   path = require('path'),
-  mkdirp = require('mkdirp')
+  mkdirp = require('mkdirp'),
+  fs = require('fs-extra')
 ;
 
 const
@@ -77,21 +78,26 @@ module.exports = (function() {
       let fullThumbPath = _getFolderPath(thumbPath);
 
       // check first if it exists, resolve if it does
-      // fullThumbPath
-
-      sharp(mediaPath)
-        .rotate()
-        .resize(thumbRes, thumbRes)
-        .max()
-        .withoutEnlargement()
-        .withMetadata()
-        .toFormat('jpeg', {
-          quality: local.settings().mediaThumbQuality
-        })
-        .toFile(fullThumbPath)
-        .then(function() {
+      fs.access(fullThumbPath, fs.F_OK, function(err) {
+        // if userDir folder doesn't exist yet at destination
+        if(err) {
+          sharp(mediaPath)
+            .rotate()
+            .resize(thumbRes, thumbRes)
+            .max()
+            .withoutEnlargement()
+            .withMetadata()
+            .toFormat('jpeg', {
+              quality: local.settings().mediaThumbQuality
+            })
+            .toFile(fullThumbPath)
+            .then(function() {
+              resolve(thumbPath);
+            });
+        } else {
           resolve(thumbPath);
-        });
+        }
+      });
     });
   }
   return API;

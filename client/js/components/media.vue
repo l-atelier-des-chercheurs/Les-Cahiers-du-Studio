@@ -26,7 +26,7 @@
 
     <MediaContent
       :slugFolderName="slugFolderName"
-      :slugMediaName="index"
+      :slugMediaName="slugMediaName"
       :media="media"
     >
     </MediaContent>
