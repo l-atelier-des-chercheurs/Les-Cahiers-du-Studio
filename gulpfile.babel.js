@@ -25,7 +25,8 @@ var userScripts = [
 var components = [
   'client/js/*.vue',
   'client/js/components/*.vue',
-  'client/js/components/modals/*.vue'
+  'client/js/components/modals/*.vue',
+  'client/js/components/subcomponents/*.vue'
 ];
 
 var nodeScripts = [

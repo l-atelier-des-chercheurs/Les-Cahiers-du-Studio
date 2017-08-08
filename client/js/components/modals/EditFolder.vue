@@ -10,40 +10,28 @@
       <div class="input-single">
         <label>Name</label>
         <p>
-          <input type="text" ref="name" required>
+          <input type="text" v-model="folderdata.name" required>
         </p>
       </div>
 
 <!-- Start date -->
       <div>
         <label>Beginning</label>
-        <div class="two-column">
-          <p>
-            <input type="date" ref="startdate">
-          </p>
-          <p>
-            <input type="time" ref="starttime">
-          </p>
-        </div>
+        <DateTime v-model="folderdata.start">
+        </DateTime>
       </div>
 
 <!-- End date -->
       <div>
         <label>End</label>
-        <div class="two-column">
-          <p>
-            <input type="date" ref="enddate">
-          </p>
-          <p>
-            <input type="time" ref="endtime">
-          </p>
-        </div>
+        <DateTime v-model="folderdata.end">
+        </DateTime>
       </div>
 
 <!-- Password -->
       <div class="input-single">
         <label>Password</label><br>
-        <input type="password" ref="password">
+        <input type="password" v-model="folderdata.password">
         <small>If there is one, only user with this password will be able to edit this folder</small>
       </div>
 
@@ -51,7 +39,7 @@
       <div class="input-single">
         <label>Author(s)</label><br>
         <small>One per line</small>
-        <textarea ref="authors">
+        <textarea v-model="folderdata.authors">
         </textarea>
       </div>
 
@@ -79,16 +67,25 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
+import DateTime from '../subcomponents/DateTime.vue';
 import moment from 'moment';
 import alertify from 'alertify.js';
 
 export default {
   props: ['slugFolderName', 'folder'],
   components: {
-    Modal
+    Modal,
+    DateTime
   },
   data() {
     return {
+      folderdata: {
+        name: this.folder.name,
+        start: this.folder.start,
+        end: this.folder.end,
+        password: this.folder.password,
+        authors: this.folder.authors
+      }
     }
   },
   computed: {
@@ -97,21 +94,12 @@ export default {
     editThisFolder: function (event) {
       console.log('editThisFolder');
 
-      // check if required are filled
-      let values = {
-        name: this.$refs.name.value.trim(),
-        start: this.$refs.startdate.value + 'T' + this.$refs.starttime.value,
-        end: this.$refs.enddate !== undefined ? (this.$refs.enddate.value + 'T' + this.$refs.endtime.value) : '',
-        password: this.$refs.password.value.trim(),
-        authors: this.$refs.authors.value,
-      }
-
-      let thisFolderName = this.folder.name;
+      let thisNewFolderName = this.folderdata.name;
       function getAllFolderNames() {
         let allFoldersName = [];
         for (let slugFolderName in window.store.state.folders) {
           let foldersName = window.store.state.folders[slugFolderName].name;
-          if(foldersName !== thisFolderName) {
+          if(foldersName !== thisNewFolderName) {
             allFoldersName.push(foldersName);
           }
         }
@@ -120,7 +108,7 @@ export default {
       let allFoldersName = getAllFolderNames();
 
       // check if folder name (not slug) already exists
-      if(allFoldersName.indexOf(values.name) >= 0) {
+      if(allFoldersName.indexOf(this.folder.name) >= 0) {
         // invalidate if it does
         alertify
           .closeLogOnClick(true)
@@ -131,6 +119,9 @@ export default {
         return false;
       }
 
+      // copy all values
+      let values = this.folderdata;
+
       values.slugFolderName = this.slugFolderName;
 
       // if it's all good, collect everything and send over socketio
@@ -140,28 +131,6 @@ export default {
       this.$emit('close', '');
     }
   },
-  mounted() {
-    this.$refs.name.value = this.folder.name;
-    // TODO : separate start and end date into date and time fields
-    if(this.folder.start) {
-      // cut a date such as 20170701_140000 to 2017-07-01 and 14:00
-      this.$refs.startdate.value = moment(this.folder.start, 'YYYYMMDD_HHmmss').format('YYYY-MM-DD');
-      this.$refs.starttime.value = moment(this.folder.start, 'YYYYMMDD_HHmmss').format('HH:mm');
-    }
-    if(this.folder.end) {
-      // cut a date such as 20170701_140000 to 2017-07-01 and 14:00
-      this.$refs.enddate.value = moment(this.folder.end, 'YYYYMMDD_HHmmss').format('YYYY-MM-DD');
-      this.$refs.endtime.value = moment(this.folder.end, 'YYYYMMDD_HHmmss').format('HH:mm');
-    }
-/*
-        start: this.$refs.startdate.value + 'T' + this.$refs.starttime.value,
-        end: this.$refs.enddate !== undefined ? (this.$refs.enddate.value + 'T' + this.$refs.endtime.value) : '',
-*/
-
-    if(this.folder.authors) {
-      this.$refs.authors.value = this.folder.authors;
-    }
-  }
 }
 
 </script>

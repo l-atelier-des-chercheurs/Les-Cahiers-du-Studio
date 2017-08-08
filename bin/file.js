@@ -435,7 +435,7 @@ module.exports = (function() {
 
   function editMedia (mdata) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`COMMON — editMedia : will edit folder: ${JSON.stringify(mdata, null, 4)}`);
+      dev.logfunction(`COMMON — editMedia : will edit media with ${JSON.stringify(mdata, null, 4)}`);
 
       let slugFolderName = mdata.slugFolderName;
       let slugMediaName = mdata.slugMediaName;
@@ -445,10 +445,7 @@ module.exports = (function() {
       if(mdata.hasOwnProperty('type'))    {  newMediaData.type = validator.escape(mdata.type); }
       if(mdata.hasOwnProperty('keywords')){  newMediaData.keywords = validator.escape(mdata.keywords); }
       if(mdata.hasOwnProperty('authors')) {  newMediaData.authors = validator.escape(mdata.authors); }
-      if(mdata.hasOwnProperty('public'))  {
-        /*jshint eqeqeq:false */
-        newMediaData.public = (mdata.public == 'true');
-      }
+      if(mdata.hasOwnProperty('public') && typeof mdata.public === 'boolean')  { newMediaData.public = mdata.public; }
 
       newMediaData.modified = api.getCurrentDate();
 

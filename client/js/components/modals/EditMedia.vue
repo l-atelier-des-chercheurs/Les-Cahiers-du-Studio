@@ -19,12 +19,8 @@
       <div>
         <label>Creation date</label>
         <div class="two-column">
-          <p>
-            <input type="date" v-model="mediadata.createddate">
-          </p>
-          <p>
-            <input type="time" v-model="mediadata.createdtime">
-          </p>
+          <DateTime v-model="mediadata.created">
+          </DateTime>
         </div>
       </div>
 
@@ -55,8 +51,12 @@
 
 <!-- Public or private -->
       <div class="input-single">
-        <label>Public</label><br>
-        <input type="checkbox" v-model="mediadata.public">
+        <span class="switch">
+          <input type="checkbox" class="switch" id="publicswitch" v-model="mediadata.public">
+          <label for="publicswitch">
+            Public
+          </label>
+        </span>
       </div>
 
       <div>
@@ -78,9 +78,9 @@
 </template>
 <script>
 import Modal from './BaseModal.vue';
-import moment from 'moment';
 import alertify from 'alertify.js';
 import MediaContent from '../subcomponents/MediaContent.vue';
+import DateTime from '../subcomponents/DateTime.vue';
 
 // creation
 // type
@@ -91,13 +91,14 @@ import MediaContent from '../subcomponents/MediaContent.vue';
 export default {
   props: ['slugFolderName', 'slugMediaName', 'media'],
   components: {
-    Modal
+    Modal,
+    DateTime,
+    MediaContent
   },
   data() {
     return {
       mediadata: {
-        createddate: moment(this.media.created, 'YYYYMMDD_HHmmss').format('YYYY-MM-DD'),
-        createdtime: moment(this.media.created, 'YYYYMMDD_HHmmss').format('HH:mm'),
+        created: this.media.created,
         type: this.media.type,
         authors: this.media.authors,
         keywords: this.media.keywords,
@@ -114,13 +115,8 @@ export default {
       // copy all values
       let values = this.mediadata;
 
-      values.created = values.createddate + 'T' + values.createdtime;
-      delete values.createddate; delete values.createdtime;
-
       values.slugFolderName = this.slugFolderName;
       values.slugMediaName = this.slugMediaName;
-
-      debugger;
 
       // if it's all good, collect everything and send over socketio
       this.$root.editMedia(values);

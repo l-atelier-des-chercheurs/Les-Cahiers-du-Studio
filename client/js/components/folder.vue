@@ -45,18 +45,23 @@
     </EditFolder>
 
     <template v-if="$root.settings.folder_currently_opened === slugFolderName">
-      <fileUpload
-        :slugFolderName="slugFolderName"
-      >
-      </fileUpload>
-      <media
-        v-for="(media, index) in folder.medias"
-        :key="index"
-        :slugFolderName="slugFolderName"
-        :slugMediaName="index"
-        :media="media"
-      >
-      </media>
+      <template v-if="loading_folder_medias">
+        <span class="loader"></span>
+      </template>
+      <template v-else>
+        <fileUpload
+          :slugFolderName="slugFolderName"
+        >
+        </fileUpload>
+        <media
+          v-for="(media, index) in folder.medias"
+          :key="index"
+          :slugFolderName="slugFolderName"
+          :slugMediaName="index"
+          :media="media"
+        >
+        </media>
+      </template>
     </template>
     <hr>
   </div>
@@ -81,7 +86,8 @@ export default {
   data() {
     return {
       debugFolderContent: false,
-      showEditFolderModal: false
+      showEditFolderModal: false,
+      loading_folder_medias: false
     }
   },
   computed: {
@@ -90,12 +96,19 @@ export default {
   methods: {
     loadFolderMedias() {
       this.$root.loadFolderMedias(this.slugFolderName);
+      this.loading_folder_medias = true;
     },
     removeFolder() {
       if(window.confirm(locals.lang.modal.sureToRemoveFolder)) {
         this.$root.removeFolder(this.slugFolderName);
       }
     }
+  },
+  watch: {
+    'folder.medias': function() {
+      if(this.loading_folder_medias) { this.loading_folder_medias = false; }
+    }
+
   },
 
   computed: {
