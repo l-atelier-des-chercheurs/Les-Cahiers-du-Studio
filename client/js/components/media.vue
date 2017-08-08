@@ -6,9 +6,14 @@
       </small>
     </p>
 
-    <button type="button" class="button" @click="showMediaModal = true">
-      Edit Media
-    </button>
+    <div class="clearfix">
+      <button type="button" class="button-small margin-small float-left" @click="showMediaModal = true">
+        Edit Media
+      </button>
+      <button type="button" class="button-small margin-small float-left" @click="removeMedia()">
+        Remove Media
+      </button>
+    </div>
 
     <EditMedia
       v-if="showMediaModal"
@@ -44,6 +49,13 @@ export default {
     }
   },
   computed: {
+  },
+  methods: {
+    removeMedia() {
+      if(window.confirm(locals.lang.modal.sureToRemoveMedia)) {
+        this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
+      }
+    }
   }
 }
 </script>

@@ -24,8 +24,9 @@ module.exports = (function() {
     removeFolder        : (slugFolderName) => { return removeFolder(slugFolderName); },
 
     getMedia            : (slugFolderName, slugMediaName) => { return getMedia(slugFolderName, slugMediaName); },
-    createMediaMeta     : (slugFolderName, mediaFileName) => { return createMediaMeta(slugFolderName, mediaFileName); },
+    createMediaMeta     : (slugFolderName, slugMediaName) => { return createMediaMeta(slugFolderName, slugMediaName); },
     editMedia           : (mdata) => { return editMedia(mdata); },
+    removeMedia         : (slugFolderName, slugMediaName) => { return removeMedia(slugFolderName, slugMediaName); },
   };
 
   function getFolderPath(slugFolderName = '') {
@@ -467,6 +468,32 @@ module.exports = (function() {
         });
       });
     });
+  }
+
+  function removeMedia (slugFolderName, slugMediaName) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(`COMMON — removeMedia : will remove media at path: ${slugFolderName}/${slugMediaName}`);
+
+      let mediaPath = path.join(getFolderPath(slugFolderName), slugMediaName);
+      let movedMediaPath = path.join(getFolderPath(slugFolderName), 'bin', slugMediaName);
+
+      let mediaMetaPath = mediaPath + local.settings().metaFileext;
+      let movedMediaMetaPath = movedMediaPath + local.settings().metaFileext;
+
+
+      fs.move(mediaPath, movedMediaPath)
+      .then(() => {
+        return fs.move(mediaMetaPath, movedMediaMetaPath);
+      })
+      .then(() => {
+        resolve();
+      })
+      .catch(err => {
+        reject(err);
+      });
+
+    });
+
   }
 
 

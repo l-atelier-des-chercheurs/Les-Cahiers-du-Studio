@@ -23,11 +23,14 @@ window.socketio = (function() {
 
   const API = {
     init        : () => { return init(); },
+
     createFolder: (fdata) => { return createFolder(fdata); },
     editFolder  : (fdata) => { return editFolder(fdata); },
     removeFolder: (slugFolderName) => { return removeFolder(slugFolderName); },
+
     listMedias  : (slugFolderName) => { return listMedias(slugFolderName); },
     editMedia   : (mdata) => { return editMedia(mdata); },
+    removeMedia : (slugFolderName, slugMediaName) => { return removeMedia(slugFolderName, slugMediaName); },
   };
 
   function init() {
@@ -54,6 +57,9 @@ window.socketio = (function() {
   }
   function editMedia(mdata) {
     socket.emit('editMedia', mdata);
+  }
+  function removeMedia(slugFolderName, slugMediaName) {
+    socket.emit('removeMedia', { slugFolderName, slugMediaName });
   }
 
   function _onSocketConnect() {
@@ -145,7 +151,12 @@ new Vue({
       window.socketio.editFolder(fdata);
     },
     removeFolder: function(slugFolderName) {
+      if(window.store.debug) { console.log(`ROOT EVENT: removeFolder: ${slugFolderName}`); }
       window.socketio.removeFolder(slugFolderName);
+    },
+    removeMedia: function(slugFolderName, slugMediaName) {
+      if(window.store.debug) { console.log(`ROOT EVENT: removeMedia: ${slugFolderName}/${slugMediaName}`); }
+      window.socketio.removeMedia(slugFolderName, slugMediaName);
     },
     editMedia: function(mdata) {
       if(window.store.debug) { console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`); }

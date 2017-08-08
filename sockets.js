@@ -33,24 +33,17 @@ module.exports = (function() {
         onevent.call(this, packet);      // additional call to catch-all
       };
       socket.on('*',function(event,data) { dev.log(`RECEIVED EVENT: ${event}`); });
-      socket.on('listMedias', function (data){ onListMedias(socket,data); });
       socket.on('createFolder', function (data){ onCreateFolder(socket,data); });
       socket.on('removeFolder', function (data){ onRemoveFolder(socket,data); });
       socket.on('editFolder', function (data){ onEditFolder(socket,data); });
+
+      socket.on('listMedias', function (data){ onListMedias(socket,data); });
       socket.on('editMedia', function (data){ onEditMedia(socket,data); });
+      socket.on('removeMedia', function (data){ onRemoveMedia(socket,data); });
     });
   }
 
-  // ------------- F U N C T I O N S -------------------
-  function onListMedias(socket, d) {
-    dev.logfunction(`EVENT - onListMedias : ${JSON.stringify( d, null, 4)}`);
-    file.getMedia(d.slugFolderName).then(mediasData => {
-      // TODO : check client permissions, send public or all medias depending on this
-      api.sendEventWithContent('listMedias', {[d.slugFolderName]: {medias: mediasData} }, io, socket);
-    }, function(err) {
-      dev.error(`Failed to list medias! Error: ${err}`);
-    });
-  }
+  /**************************************************************** FOLDER ********************************/
   function onCreateFolder(socket, d) {
     dev.logfunction(`EVENT - onCreateFolder for ${d.name}`);
     file.createFolder(d).then(slugFolderName => {
@@ -90,6 +83,18 @@ module.exports = (function() {
     });
   }
 
+  /**************************************************************** MEDIA ********************************/
+
+  function createMediaMeta(slugFolderName, slugMediaName) {
+    dev.logfunction(`EVENT - createMediaMeta for ${slugFolderName} with media ${slugMediaName}`);
+    file.getMedia(slugFolderName, slugMediaName).then(mediasData => {
+      // TODO : only send to authorized clients
+      api.sendEventWithContent('mediaCreated', {[slugFolderName]: {medias: mediasData} }, io);
+    }, function(err) {
+      dev.error(`Failed to list medias! Error: ${err}`);
+    });
+  }
+
   function onEditMedia(socket,d) {
     dev.logfunction(`EVENT - onEditMedia for ${d.slugFolderName}/${d.slugMediaName}`);
     file.editMedia(d).then(slugFolderName => {
@@ -102,15 +107,33 @@ module.exports = (function() {
     });
   }
 
-  function createMediaMeta(slugFolderName, slugMediaName) {
-    dev.logfunction(`EVENT - createMediaMeta for ${slugFolderName} with media ${slugMediaName}`);
-    file.getMedia(slugFolderName, slugMediaName).then(mediasData => {
-      // TODO : only send to authorized clients
-      api.sendEventWithContent('mediaCreated', {[slugFolderName]: {medias: mediasData} }, io);
+  function onListMedias(socket, d) {
+    dev.logfunction(`EVENT - onListMedias : ${JSON.stringify( d, null, 4)}`);
+    file.getMedia(d.slugFolderName).then(mediasData => {
+      // TODO : check client permissions, send public or all medias depending on this
+      api.sendEventWithContent('listMedias', {[d.slugFolderName]: {medias: mediasData} }, io, socket);
     }, function(err) {
       dev.error(`Failed to list medias! Error: ${err}`);
     });
   }
+
+  function onRemoveMedia(socket, d) {
+    dev.logfunction(`EVENT - onRemoveMedia for ${d.slugFoldername} and ${d.slugMediaName}`);
+    let slugFolderName = d.slugFolderName;
+    let slugMediaName = d.slugMediaName;
+    file.removeMedia(slugFolderName, slugMediaName).then(() => {
+      file.getMedia(slugFolderName).then(mediasData => {
+        // TODO : check client permissions, send public or all medias depending on this
+        api.sendEventWithContent('listMedias', {[slugFolderName]: {medias: mediasData} }, io);
+      }, function(err) {
+        dev.error(`Failed to list medias! Error: ${err}`);
+      });
+    }, function(err, p) {
+      dev.error(`Failed to remove folder: ${err}`);
+      reject(err);
+    });
+  }
+
 
   return API;
 })();
