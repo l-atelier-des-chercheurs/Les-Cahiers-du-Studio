@@ -33,8 +33,7 @@ export default {
       return this.slugFolderName + '/' + this.slugMediaName;
     },
     linkToThumb: function() {
-      debugger;
-      let pathToSmallestThumb = _.findWhere(this.media.thumb, { size: this.size }).path;
+      let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: this.size }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : linkToMedia();
     },
   }

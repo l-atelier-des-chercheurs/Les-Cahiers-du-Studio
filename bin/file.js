@@ -2,15 +2,15 @@ const
   path = require('path'),
   fs = require('fs-extra'),
   imageSize = require('image-size'),
-  sharp = require('sharp'),
   mkdirp = require('mkdirp'),
   validator = require('validator')
 ;
 
 const
   local  = require('../local'),
+  dev = require('./dev-log'),
   api  = require('./api'),
-  dev = require('./dev-log')
+  thumbs = require('./thumbs')
 ;
 
 module.exports = (function() {
@@ -67,13 +67,21 @@ module.exports = (function() {
         if(err) {
           dev.logverbose(`No meta for this media: ${err}`);
           // let’s get creation date and modification date, guess the type, and return this whole thing afterwards
-          createMediaMeta(slugFolderName, slugMediaName).then(function(mediaData) {
-            resolve(mediaData);
+          createMediaMeta(slugFolderName, slugMediaName).then((mediaData) => {
+            // let’s find or create thumbs
+            thumbs.makeMediaThumbs(slugFolderName, slugMediaName, mediaData).then((thumbData) => {
+              mediaData.thumbs = thumbData;
+              resolve(mediaData);
+            });
           });
         } else {
           dev.logverbose(`Found meta for this media.`);
           let mediaData = readMetaFile(potentialMetaFile);
-          resolve(mediaData);
+          thumbs.makeMediaThumbs(slugFolderName, slugMediaName, mediaData).then((thumbData) => {
+            dev.logverbose(`Thumbs meta = ${thumbData}`);
+            mediaData.thumbs = thumbData;
+            resolve(mediaData);
+          });
         }
       });
 
@@ -367,35 +375,12 @@ module.exports = (function() {
               mdata.type = 'image';
           }
 
-          // attempt to create a thumb file
-          let makeThumbs = [];
-
-          if(mdata.type === 'image') {
-            let thumbResolutions = [200,600,1800];
-            thumbResolutions.forEach((thumbRes) => {
-              let makeThumb = new Promise((resolve, reject) => {
-                _makeImageThumb(mediaPath, slugFolderName, slugMediaName, thumbRes).then((thumbPath) => {
-                  let thumbMeta = {
-                    path: thumbPath,
-                    size: thumbRes
-                  };
-                  resolve(thumbMeta);
-                });
-              });
-              makeThumbs.push(makeThumb);
-            });
-          }
-
-          Promise.all(makeThumbs).then((thumbData) => {
-            mdata.thumb = thumbData;
-            api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
-              dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);
-              resolve(meta);
-            }, function(err) {
-              reject(`Couldn't create media meta : ${err}`);
-            });
+          api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
+            dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);
+            resolve(meta);
+          }, function(err) {
+            reject(`Couldn't create media meta : ${err}`);
           });
-
 
         } else {
           // otherwise, something’s weird
@@ -403,37 +388,6 @@ module.exports = (function() {
           reject();
         }
       });
-
-    });
-  }
-
-  function _makeImageThumb(source, slugFolderName, slugMediaName, resolution) {
-    return new Promise(function(resolve, reject) {
-      dev.logverbose(`Making a thumb for ${source} with slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and resolution = ${resolution}`);
-
-      let thumbFolderPath = path.join(local.settings().thumbFolderName, slugFolderName);
-
-      mkdirp(getFolderPath(thumbFolderPath), function(err) {
-        let thumbName = `${slugMediaName}.${resolution}.jpeg`;
-        let thumbPath = path.join(thumbFolderPath, thumbName);
-
-        sharp(source)
-          .rotate()
-          .resize(resolution, resolution)
-          .max()
-          .withoutEnlargement()
-          .withMetadata()
-          .toFormat('jpeg', {
-            quality: local.settings().mediaThumbQuality
-          })
-          .toFile(getFolderPath(thumbPath))
-          .then(function() {
-            resolve(thumbPath);
-          });
-      });
-
-      // vérifier/créer le dossier slugFolderName existe
-      // créer un aperçu à cet endroit là
 
     });
   }
@@ -495,7 +449,6 @@ module.exports = (function() {
     });
 
   }
-
 
   return API;
 })();

@@ -4,7 +4,7 @@
       Edit media <i>{{ slugMediaName }}</i>
     </h3>
 
-    <div slot="body" style="width: 250px;">
+    <div slot="body" style="width: 800px;">
       <MediaContent
         :slugFolderName="slugFolderName"
         :slugMediaName="index"
