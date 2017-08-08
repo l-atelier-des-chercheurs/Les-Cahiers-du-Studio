@@ -129,6 +129,7 @@ new Vue({
     store: window.store.state,
     settings: {
       folder_currently_opened: '',
+      has_modal_opened: false
     },
   },
   methods: {
@@ -163,5 +164,16 @@ new Vue({
       window.socketio.editMedia(mdata);
     },
   },
+  watch: {
+    has_modal_opened: function() {
+      if(window.store.debug) { console.log(`ROOT EVENT: var has changed: has_modal_opened: ${this.has_modal_opened}`); }
+      if(this.has_modal_opened){
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+
+    }
+  }
 });
 

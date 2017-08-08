@@ -4,16 +4,17 @@
       Edit media <i>{{ slugMediaName }}</i>
     </h3>
 
-    <div style="width: 250px;">
+    <div slot="body" style="width: 250px;">
       <MediaContent
         :slugFolderName="slugFolderName"
         :slugMediaName="index"
         :media="media"
+        :size="1800"
       >
       </MediaContent>
     </div>
 
-    <form slot="body" v-on:submit.prevent="editThisMedia">
+    <form slot="footer" v-on:submit.prevent="editThisMedia">
 
 <!-- Creation date (stored in meta file, overrides file date) -->
       <div>
@@ -71,9 +72,6 @@
       </div>
 
     </form>
-
-    <div slot="footer">
-    </div>
 
   </Modal>
 </template>

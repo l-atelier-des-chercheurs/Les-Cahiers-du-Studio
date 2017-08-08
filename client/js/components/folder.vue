@@ -28,7 +28,7 @@
       <button type="button" class="button-small margin-small float-left" @click="debugFolderContent = !debugFolderContent">
         Debug view
       </button>
-      <button type="button" class="button-small margin-small float-left" @click="showEditFolderModal = !showEditFolderModal">
+      <button type="button" class="button-small margin-small float-left" @click="showEditFolderModal = true">
         Edit
       </button>
       <button type="button" class="button-small margin-small float-left" @click="removeFolder()">
@@ -107,8 +107,10 @@ export default {
   watch: {
     'folder.medias': function() {
       if(this.loading_folder_medias) { this.loading_folder_medias = false; }
+    },
+    showEditFolderModal: function() {
+      this.$root.has_modal_opened = this.showEditFolderModal;
     }
-
   },
 
   computed: {

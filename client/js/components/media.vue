@@ -50,6 +50,11 @@ export default {
   },
   computed: {
   },
+  watch: {
+    showMediaModal: function() {
+      this.$root.has_modal_opened = this.showMediaModal;
+    }
+  },
   methods: {
     removeMedia() {
       if(window.confirm(locals.lang.modal.sureToRemoveMedia)) {

@@ -23,8 +23,7 @@ export default {
   name: 'app',
   data () {
     return {
-      showCreateFolderModal: false,
-      value3:''
+      showCreateFolderModal: false
     }
   },
   components: {

@@ -15,7 +15,15 @@ import _ from 'underscore';
 // is loaded by Media and by EditMedia
 
 export default {
-  props: ['slugFolderName', 'slugMediaName', 'media'],
+  props: {
+    slugFolderName: String,
+    slugMediaName: String,
+    media: Object,
+    size: {
+      type: Number,
+      default: 600
+    }
+  },
   data() {
     return {
     }
@@ -25,7 +33,8 @@ export default {
       return this.slugFolderName + '/' + this.slugMediaName;
     },
     linkToThumb: function() {
-      let pathToSmallestThumb = _.findWhere(this.media.thumb, {size: "200"}).path;
+      debugger;
+      let pathToSmallestThumb = _.findWhere(this.media.thumb, { size: this.size }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : linkToMedia();
     },
   }
