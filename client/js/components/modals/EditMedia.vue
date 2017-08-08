@@ -26,6 +26,7 @@
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
       <div class="input-single">
+        <label>Type</label>
         <select ref="type" v-model="mediadata.type">
           <option v-for="mediaType in ['image', 'video']">
             {{ mediaType }}
@@ -36,7 +37,7 @@
 <!-- Keywords -->
       <div class="input-single">
         <label>Keyword(s)</label><br>
-        <small>One per line</small>
+        <small>one per line</small>
         <textarea v-model="mediadata.keywords">
         </textarea>
       </div>
@@ -44,7 +45,7 @@
 <!-- Author(s) -->
       <div class="input-single">
         <label>Author(s)</label><br>
-        <small>One per line</small>
+        <small>one per line</small>
         <textarea v-model="mediadata.authors">
         </textarea>
       </div>
