@@ -300,7 +300,7 @@ module.exports = (function() {
 
         if(medias.length === 0) {
           dev.logverbose(`Since no medias is in this folder, let’s abort right there.`);
-          resolve();
+          resolve({});
         } else {
           var allMediasData = [];
           medias.forEach(function(slugMediaName) {
