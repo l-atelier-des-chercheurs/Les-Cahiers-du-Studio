@@ -37,6 +37,7 @@ module.exports = (function() {
       socket.on('createFolder', function (data){ onCreateFolder(socket,data); });
       socket.on('removeFolder', function (data){ onRemoveFolder(socket,data); });
       socket.on('editFolder', function (data){ onEditFolder(socket,data); });
+      socket.on('editMedia', function (data){ onEditMedia(socket,data); });
     });
   }
 
@@ -86,6 +87,18 @@ module.exports = (function() {
     }, function(err, p) {
       dev.error(`Failed to remove folder: ${err}`);
       reject(err);
+    });
+  }
+
+  function onEditMedia(socket,d) {
+    dev.logfunction(`EVENT - onEditMedia for ${d.slugFolderName}/${d.slugMediaName}`);
+    file.editMedia(d).then(slugFolderName => {
+      file.getMedia(slugFolderName).then(mediasData => {
+        // TODO : check client permissions, send public or all medias depending on this
+        api.sendEventWithContent('listMedias', {[slugFolderName]: {medias: mediasData} }, io);
+      }, function(err) {
+        dev.error(`Failed to list medias! Error: ${err}`);
+      });
     });
   }
 

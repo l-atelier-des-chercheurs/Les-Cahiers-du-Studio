@@ -56,7 +56,7 @@
       </div>
 
       <small>
-        fields with a * are required<br>
+        fields with a <sup>o</sup> are required<br>
         they can be edited at all time
       </small>
 
@@ -147,6 +147,11 @@ export default {
       // cut a date such as 20170701_140000 to 2017-07-01 and 14:00
       this.$refs.startdate.value = moment(this.folder.start, 'YYYYMMDD_HHmmss').format('YYYY-MM-DD');
       this.$refs.starttime.value = moment(this.folder.start, 'YYYYMMDD_HHmmss').format('HH:mm');
+    }
+    if(this.folder.end) {
+      // cut a date such as 20170701_140000 to 2017-07-01 and 14:00
+      this.$refs.enddate.value = moment(this.folder.end, 'YYYYMMDD_HHmmss').format('YYYY-MM-DD');
+      this.$refs.endtime.value = moment(this.folder.end, 'YYYYMMDD_HHmmss').format('HH:mm');
     }
 /*
         start: this.$refs.startdate.value + 'T' + this.$refs.starttime.value,

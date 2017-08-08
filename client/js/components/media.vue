@@ -30,7 +30,7 @@
 </template>
 <script>
 import EditMedia from './modals/EditMedia.vue';
-import MediaContent from './MediaContent.vue';
+import MediaContent from './subcomponents/MediaContent.vue';
 
 export default {
   props: ['slugFolderName', 'slugMediaName', 'media'],

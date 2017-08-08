@@ -46,7 +46,7 @@
 
     <template v-if="$root.settings.folder_currently_opened === slugFolderName">
       <fileUpload
-        :slugFolderName="slugfoldername"
+        :slugFolderName="slugFolderName"
       >
       </fileUpload>
       <media

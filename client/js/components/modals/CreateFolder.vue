@@ -56,7 +56,7 @@
       </div>
 
       <small>
-        fields with a * are required<br>
+        fields with a <sup>o</sup> are required<br>
         they can be edited at all time
       </small>
 

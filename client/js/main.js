@@ -23,10 +23,11 @@ window.socketio = (function() {
 
   const API = {
     init        : () => { return init(); },
-    listMedias  : (slugFolderName) => { return listMedias(slugFolderName); },
     createFolder: (fdata) => { return createFolder(fdata); },
     editFolder  : (fdata) => { return editFolder(fdata); },
     removeFolder: (slugFolderName) => { return removeFolder(slugFolderName); },
+    listMedias  : (slugFolderName) => { return listMedias(slugFolderName); },
+    editMedia   : (mdata) => { return editMedia(mdata); },
   };
 
   function init() {
@@ -50,6 +51,9 @@ window.socketio = (function() {
   }
   function removeFolder(slugFolderName) {
     socket.emit('removeFolder', slugFolderName);
+  }
+  function editMedia(mdata) {
+    socket.emit('editMedia', mdata);
   }
 
   function _onSocketConnect() {
@@ -142,6 +146,10 @@ new Vue({
     },
     removeFolder: function(slugFolderName) {
       window.socketio.removeFolder(slugFolderName);
+    },
+    editMedia: function(mdata) {
+      if(window.store.debug) { console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`); }
+      window.socketio.editMedia(mdata);
     },
   },
 });

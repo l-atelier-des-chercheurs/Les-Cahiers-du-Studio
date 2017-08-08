@@ -16,21 +16,48 @@
     <form slot="body" v-on:submit.prevent="editThisMedia">
 
 <!-- Creation date (stored in meta file, overrides file date) -->
-      <div class="input-single">
+      <div>
         <label>Creation date</label>
-        <p>
-          <input type="text" ref="name" required>
-        </p>
+        <div class="two-column">
+          <p>
+            <input type="date" v-model="mediadata.createddate">
+          </p>
+          <p>
+            <input type="time" v-model="mediadata.createdtime">
+          </p>
+        </div>
       </div>
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
+      <div class="input-single">
+        <select ref="type" v-model="mediadata.type">
+          <option v-for="mediaType in ['image', 'video']">
+            {{ mediaType }}
+          </option>
+        </select>
+      </div>
 
-<!-- Keywords (separated with a comma) -->
+<!-- Keywords -->
+      <div class="input-single">
+        <label>Keyword(s)</label><br>
+        <small>One per line</small>
+        <textarea v-model="mediadata.keywords">
+        </textarea>
+      </div>
 
 <!-- Author(s) -->
+      <div class="input-single">
+        <label>Author(s)</label><br>
+        <small>One per line</small>
+        <textarea v-model="mediadata.authors">
+        </textarea>
+      </div>
 
 <!-- Public or private -->
-
+      <div class="input-single">
+        <label>Public</label><br>
+        <input type="checkbox" v-model="mediadata.public">
+      </div>
 
       <div>
         <button class="modal-default-button button-success" type="submit">
@@ -41,7 +68,6 @@
           Cancel
         </button>
       </div>
-
 
     </form>
 
@@ -54,6 +80,13 @@
 import Modal from './BaseModal.vue';
 import moment from 'moment';
 import alertify from 'alertify.js';
+import MediaContent from '../subcomponents/MediaContent.vue';
+
+// creation
+// type
+// keywords
+// authors
+// public/private
 
 export default {
   props: ['slugFolderName', 'slugMediaName', 'media'],
@@ -62,6 +95,14 @@ export default {
   },
   data() {
     return {
+      mediadata: {
+        createddate: moment(this.media.created, 'YYYYMMDD_HHmmss').format('YYYY-MM-DD'),
+        createdtime: moment(this.media.created, 'YYYYMMDD_HHmmss').format('HH:mm'),
+        type: this.media.type,
+        authors: this.media.authors,
+        keywords: this.media.keywords,
+        public: (this.media.public == 'true')
+      }
     }
   },
   computed: {
@@ -70,65 +111,25 @@ export default {
     editThisMedia: function (event) {
       console.log('editThisMedia');
 
-      // check if required are filled
-      let values = {
-        name: this.$refs.name.value.trim(),
-        start: this.$refs.startdate.value + 'T' + this.$refs.starttime.value,
-        end: this.$refs.enddate !== undefined ? (this.$refs.enddate.value + 'T' + this.$refs.endtime.value) : '',
-        password: this.$refs.password.value.trim(),
-        authors: this.$refs.authors.value,
-      }
+      // copy all values
+      let values = this.mediadata;
 
-      let thisFolderName = this.folder.name;
-      function getAllFolderNames() {
-        let allFoldersName = [];
-        for (let slugFolderName in window.store.state.folders) {
-          let foldersName = window.store.state.folders[slugFolderName].name;
-          if(foldersName !== thisFolderName) {
-            allFoldersName.push(foldersName);
-          }
-        }
-        return allFoldersName;
-      }
-      let allFoldersName = getAllFolderNames();
-
-      // check if folder name (not slug) already exists
-      if(allFoldersName.indexOf(values.name) >= 0) {
-        // invalidate if it does
-        alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error('Folder name already exists. Please use another.')
-          ;
-
-        return false;
-      }
+      values.created = values.createddate + 'T' + values.createdtime;
+      delete values.createddate; delete values.createdtime;
 
       values.slugFolderName = this.slugFolderName;
+      values.slugMediaName = this.slugMediaName;
+
+      debugger;
 
       // if it's all good, collect everything and send over socketio
-      this.$root.editFolder(values);
+      this.$root.editMedia(values);
 
       // then close that popover
       this.$emit('close', '');
     }
   },
   mounted() {
-    this.$refs.name.value = this.folder.name;
-    // TODO : separate start and end date into date and time fields
-    if(this.folder.start) {
-      // cut a date such as 20170701_140000 to 2017-07-01 and 14:00
-      this.$refs.startdate.value = moment(this.folder.start, 'YYYYMMDD_HHmmss').format('YYYY-MM-DD');
-      this.$refs.starttime.value = moment(this.folder.start, 'YYYYMMDD_HHmmss').format('HH:mm');
-    }
-/*
-        start: this.$refs.startdate.value + 'T' + this.$refs.starttime.value,
-        end: this.$refs.enddate !== undefined ? (this.$refs.enddate.value + 'T' + this.$refs.endtime.value) : '',
-*/
-
-    if(this.folder.authors) {
-      this.$refs.authors.value = this.folder.authors;
-    }
   }
 }
 
