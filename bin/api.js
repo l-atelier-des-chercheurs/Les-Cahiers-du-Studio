@@ -18,6 +18,7 @@ module.exports = (function() {
     findFirstFilenameNotTaken   : (thisPath, fileName) => { return findFirstFilenameNotTaken(thisPath, fileName); },
     getCurrentDate              : (format = local.settings().metaDateFormat) => { return getCurrentDate(format); },
     convertDate                 : (date, format = local.settings().metaDateFormat) => { return convertDate(date, format); },
+    parseDate                   : (date, format = local.settings().metaDateFormat) => { return parseDate(date, format); },
     storeData                   : (mpath, d, e) => { return storeData( mpath, d, e); },
     parseData                   : (d) => { return parseData(d); },
     eventAndContent             : (sendEvent, objectJson) =>     { return eventAndContent(sendEvent, objectJson); },
@@ -32,6 +33,10 @@ module.exports = (function() {
 
   function convertDate(date, f) {
     return moment(date).format(f);
+  }
+
+  function parseDate(date, f) {
+    return moment(date, f).format('YYYY-MM-DD HH:mm');
   }
 
   // check whether media (such as 'hello-world.mp4') already exists in the folder

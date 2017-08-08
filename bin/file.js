@@ -119,6 +119,9 @@ module.exports = (function() {
             readFolderMeta(slugFolderName).then((meta) => {
               meta.slugFolderName = slugFolderName;
               meta.medias = {};
+              meta.created = api.parseDate(meta.created);
+              meta.start = api.parseDate(meta.start);
+              meta.end = api.parseDate(meta.end);
               resolve(meta);
             });
           });
@@ -233,7 +236,7 @@ module.exports = (function() {
         authors: ''
       };
 
-      // parse start
+      // convert date to local format
       let start = api.convertDate(additionalMeta.start);
       if (start) { mdata.start = start; }
       // parse end
@@ -295,6 +298,7 @@ module.exports = (function() {
             let fmeta = new Promise((resolve, reject) => {
               readMediaMeta(slugFolderName,slugMediaName).then((meta) => {
                 meta.slugMediaName = slugMediaName;
+                meta.created = api.parseDate(meta.created);
                 resolve(meta);
               });
             });

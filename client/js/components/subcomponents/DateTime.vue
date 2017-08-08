@@ -15,8 +15,8 @@ export default {
   props: ['value'],
   data() {
     return {
-      date: moment(this.value, 'YYYYMMDD_HHmmss').format('YYYY-MM-DD'),
-      time: moment(this.value, 'YYYYMMDD_HHmmss').format('HH:mm')
+      date: moment(this.value).format('YYYY-MM-DD'),
+      time: moment(this.value).format('HH:mm')
     }
   },
   methods: {

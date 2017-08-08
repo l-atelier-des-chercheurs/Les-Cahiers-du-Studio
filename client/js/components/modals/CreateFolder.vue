@@ -85,7 +85,7 @@ export default {
     return {
       folderdata: {
         name: '',
-        start: moment().format('YYYYMMDD_HHmmss'),
+        start: moment(),
         end: '',
         password: '',
         authors: ''

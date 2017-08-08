@@ -97,29 +97,29 @@ export default {
     editThisFolder: function (event) {
       console.log('editThisFolder');
 
-      let thisNewFolderName = this.folderdata.name;
-      function getAllFolderNames() {
-        let allFoldersName = [];
-        for (let slugFolderName in window.store.state.folders) {
-          let foldersName = window.store.state.folders[slugFolderName].name;
-          if(foldersName !== thisNewFolderName) {
+      // only if user changed the name of this folder
+      if(this.folderdata.name !== this.folder.name) {
+        function getAllFolderNames() {
+          let allFoldersName = [];
+          for (let slugFolderName in window.store.state.folders) {
+            let foldersName = window.store.state.folders[slugFolderName].name;
             allFoldersName.push(foldersName);
           }
+          return allFoldersName;
         }
-        return allFoldersName;
-      }
-      let allFoldersName = getAllFolderNames();
+        let allFoldersName = getAllFolderNames();
 
-      // check if folder name (not slug) already exists
-      if(allFoldersName.indexOf(this.folder.name) >= 0) {
-        // invalidate if it does
-        alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error('Folder name already exists. Please use another.')
-          ;
+        // check if folder name (not slug) already exists
+        if(allFoldersName.indexOf(this.folderdata.name) >= 0) {
+          // invalidate if it does
+          alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error('Folder name already exists. Please use another.')
+            ;
 
-        return false;
+          return false;
+        }
       }
 
       // copy all values
