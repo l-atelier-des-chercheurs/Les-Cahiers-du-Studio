@@ -109,13 +109,14 @@ module.exports = (function() {
   }
 
   function sendEventWithContent(sendEvent, objectContent, io, socket) {
-    var eventAndContentJson = eventAndContent( sendEvent, objectContent);
-    dev.logpackets('eventAndContentJson ', JSON.stringify(eventAndContentJson, null, 4));
+    var eventAndContentJson = eventAndContent(sendEvent, objectContent);
     if(socket) {
       // content sent only to one user
+      dev.logpackets(`eventAndContentJson for user ${socket.id} = ${JSON.stringify(eventAndContentJson, null, 4)}`);
       socket.emit( eventAndContentJson['socketevent'], eventAndContentJson['content']);
     } else {
       // content broadcasted to all connected users
+      dev.logpackets(`eventAndContentJson for all users = ${JSON.stringify(eventAndContentJson, null, 4)}`);
       io.sockets.emit( eventAndContentJson['socketevent'], eventAndContentJson['content']);
     }
     dev.logpackets('packet sent');

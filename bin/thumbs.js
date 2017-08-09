@@ -68,7 +68,6 @@ module.exports = (function() {
     return global.pathToUserContent;
   }
 
-
   function _makeImageThumb(mediaPath, thumbFolderPath, slugMediaName, thumbRes) {
     return new Promise(function(resolve, reject) {
       dev.logverbose(`Making an image thumb for ${mediaPath} and resolution = ${thumbRes}`);

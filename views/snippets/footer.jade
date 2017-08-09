@@ -6,8 +6,6 @@
 
 script
   | var locals = {};
-  | locals.slugFolderName = "#{slugFolderName}";
   | locals.folderPath = "#{folderPath}";
-  | locals.data = !{JSON.stringify(data, null, 4)};
   | locals.lang = !{JSON.stringify(lang, null, 4)};
 script(src='/development/main.js')

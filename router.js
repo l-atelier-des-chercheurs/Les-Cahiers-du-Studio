@@ -43,15 +43,7 @@ module.exports = function(app,io,m){
 
       api.getLocalIP().then(function(localNetworkInfos) {
         pageDataJSON.localNetworkInfos = localNetworkInfos;
-
-        file.getFolder().then(function(foldersData) {
-          pageDataJSON.data = foldersData;
-          resolve(pageDataJSON);
-        }, function(err, p) {
-          dev.error(`Failed to get folder data for ${slugFolderName}: ${err}`);
-          reject(err);
-        });
-
+        resolve(pageDataJSON);
       }, function(err, p) {
         dev.error(`Failed to get IP: ${err}`);
         reject(err);

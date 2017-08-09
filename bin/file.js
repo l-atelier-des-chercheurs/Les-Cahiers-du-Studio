@@ -112,7 +112,7 @@ module.exports = (function() {
             // is a folder
           return new RegExp(local.settings().regexpMatchFolderNames, 'i').test(thisSlugFolderName) &&
             // if slugFolderName isset, filter to get only requested folder
-            (slugFolderName !== undefined ? thisSlugFolderName === slugFolderName : true) &&
+            (slugFolderName ? thisSlugFolderName === slugFolderName : true) &&
             // if not deleted
             thisSlugFolderName.indexOf(local.settings().deletedPrefix) !== 0 &&
             // if not local.settings().thumbFolderName
@@ -120,7 +120,7 @@ module.exports = (function() {
           ;
         });
 
-        dev.logverbose(`Number of folders in ${mainFolderPath} = ${folders.length}. Folder(s) is(are) ${folders}`);
+        dev.logverbose(`Number of folders that match in ${mainFolderPath} = ${folders.length}. Folder(s) is(are) ${folders}`);
 
         var allFoldersData = [];
         folders.forEach((slugFolderName) => {
@@ -269,7 +269,7 @@ module.exports = (function() {
         dev.error(`Missing slugFolderName to read medias from.`);
         reject();
       }
-      if(slugMediaName === undefined) {
+      if(!slugMediaName) {
         dev.logverbose(`Missing slugMediaName to read medias from ${slugFolderName}. Reading all medias instead.`);
       }
       dev.logverbose(`COMMON — getMedia — folder: ${slugFolderName} — media: ${slugMediaName}`);
@@ -293,10 +293,10 @@ module.exports = (function() {
             // not a dotfile
             thisSlugMediaName.indexOf('.') !== 0 &&
             // if has slugMediaName, only if it matches
-            (slugMediaName !== undefined ? thisSlugMediaName === slugMediaName : true)
+            (slugMediaName ? thisSlugMediaName === slugMediaName : true)
             ;
         });
-        dev.logverbose(`Number of actual medias in ${slugFolderPath} = ${medias.length}. Media(s) is(are) ${medias}`);
+        dev.logverbose(`Number of medias that match in ${slugFolderPath} = ${medias.length}. Media(s) is(are) ${medias}`);
 
         if(medias.length === 0) {
           dev.logverbose(`Since no medias is in this folder, let’s abort right there.`);
@@ -315,7 +315,6 @@ module.exports = (function() {
           });
 
           Promise.all(allMediasData).then((parsedMediasData) => {
-            dev.logverbose(`All medias meta have been processed`, JSON.stringify(parsedMediasData, null, 4));
             // reunite array items as a single big object
             let flatObjMediasData = {};
             parsedMediasData.forEach((fmeta) => {
@@ -323,6 +322,7 @@ module.exports = (function() {
               delete fmeta.slugMediaName;
               flatObjMediasData[slugMediaName] = fmeta;
             });
+            dev.logverbose(`All medias meta have been processed`, JSON.stringify(flatObjMediasData, null, 4));
             resolve(flatObjMediasData);
           });
         }

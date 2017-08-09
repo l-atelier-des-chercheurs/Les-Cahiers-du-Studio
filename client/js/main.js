@@ -6,11 +6,12 @@ window.$ = window.jQuery = jQuery;
 
 import localstore from 'store';
 
+/*
 let admin_access = {
   'compagnie-3-6-30': 'monsupermotdepasse'
 };
-
 localstore.set('admin_access', admin_access);
+*/
 
 /***********
    STOREJS
@@ -18,9 +19,11 @@ localstore.set('admin_access', admin_access);
 
 window.store = {
   debug:true,
-  state: {},
+  state: {
+    folders: {}
+  },
 };
-window.store.state.folders = JSON.parse(JSON.stringify(locals.data));
+// window.store.state.folders = JSON.parse(JSON.stringify(locals.data));
 
 /***********
   SOCKETIO
@@ -45,7 +48,8 @@ window.socketio = (function() {
     socket = io.connect();
     	socket.on('connect', _onSocketConnect);
     socket.on('error', _onSocketError);
-    	socket.on('adminAccess', _adminAccess);
+    	socket.on('authentificated', _authentificated);
+    	socket.on('listMedia', _onListMedia);
     	socket.on('listMedias', _onListMedias);
     	socket.on('listFolder', _onListFolder);
     	socket.on('listFolders', _onListFolders);
@@ -57,28 +61,50 @@ window.socketio = (function() {
     	console.log(`Connected as ${sessionId}`);
 
     	let getAccessKeys = localstore.get('admin_access');
+    	// if has any key, we'll send those over to check if they are valid and the user is indeed authorized
     	if(Object.getOwnPropertyNames(getAccessKeys).length > 0) {
       	let authData = {
         	admin_access: getAccessKeys,
       };
+      console.log(`Trying to auth with ${JSON.stringify(authData, null, 4)}`);
       socket.emit('authenticate', authData);
+    	} else {
+      listFolders();
     	}
   }
   function _onSocketError(reason) {
     	console.log(`Unable to connect to server: ${reason}`);
   	}
-  function _adminAccess(authorizedFolders) {
-    let listAuthorizedFolders = {}
-    authorizedFolders.forEach(slugFolderName => {
-      if(window.store.state.folders[slugFolderName] !== undefined) {
-        listAuthorizedFolders[slugFolderName] = {};
-        listAuthorizedFolders[slugFolderName].authorized = true;
-      }
-    });
-    window.store.state.folders = Object.assign({}, window.store.state.folders, listAuthorizedFolders);
+  function _authentificated() {
+    listFolders();
   }
-  function listMedias(slugFolderName) {
-    socket.emit('listMedias', { slugFolderName });
+
+  function _onListMedia(mdata) {
+    let slugFolderName = Object.keys(mdata)[0];
+    window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, mdata[slugFolderName].medias);
+  }
+  function _onListMedias(mdata) {
+    let slugFolderName = Object.keys(mdata)[0];
+    window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
+  }
+  function _onListFolder(fdata) {
+    window.store.state.folders = Object.assign({}, window.store.state.folders, fdata);
+  }
+  function _onListFolders(fdata) {
+    window.store.state.folders = Object.assign({}, fdata);
+  }
+  function _onMediaCreated(mdata) {
+    let slugFolderName = Object.keys(mdata)[0];
+    let createdMediaMeta = mdata[slugFolderName].medias;
+    // to get Vue to detect that medias has a new key, we need to rewrite medias itself
+    window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, createdMediaMeta);
+    return;
+  }
+
+
+
+  function listFolders() {
+    socket.emit('listFolders');
   }
   function createFolder(fdata) {
     socket.emit('createFolder', fdata);
@@ -89,29 +115,17 @@ window.socketio = (function() {
   function removeFolder(slugFolderName) {
     socket.emit('removeFolder', slugFolderName);
   }
+
+  function listMedias(slugFolderName) {
+    socket.emit('listMedias', { slugFolderName });
+  }
   function editMedia(mdata) {
     socket.emit('editMedia', mdata);
   }
   function removeMedia(slugFolderName, slugMediaName) {
     socket.emit('removeMedia', { slugFolderName, slugMediaName });
   }
-  function _onListMedias(mdata) {
-    let slugFolderName = Object.keys(mdata)[0];
-    window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
-  }
-  function _onListFolder(fdata) {
-    window.store.state.folders = Object.assign({}, window.store.state.folders, fdata);
-  }
-  function _onListFolders(fdata) {
-    window.store.state.folders = fdata;
-  }
-  function _onMediaCreated(mdata) {
-    let slugFolderName = Object.keys(mdata)[0];
-    let createdMediaMeta = mdata[slugFolderName].medias;
-    // to get Vue to detect that medias has a new key, we need to rewrite medias itself
-    window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, createdMediaMeta);
-    return;
-  }
+
 
   return API;
 })();
