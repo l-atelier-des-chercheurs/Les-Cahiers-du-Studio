@@ -4,6 +4,10 @@
       {{ folder.name }}
     </h2>
 
+    <p>
+      authorized ? {{ folder.authorized }}
+    </p>
+
     <table v-if="debugFolderContent" class="table-striped margin-small">
       <thead>
         <tr>

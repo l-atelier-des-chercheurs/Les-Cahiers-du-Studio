@@ -4,6 +4,14 @@ import io from 'socket.io-client';
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
 
+import localstore from 'store';
+
+let admin_access = {
+  'compagnie-3-6-30': 'monsupermotdepasse'
+};
+
+localstore.set('admin_access', admin_access);
+
 /***********
    STOREJS
 ***********/
@@ -37,12 +45,38 @@ window.socketio = (function() {
     socket = io.connect();
     	socket.on('connect', _onSocketConnect);
     socket.on('error', _onSocketError);
+    	socket.on('adminAccess', _adminAccess);
     	socket.on('listMedias', _onListMedias);
     	socket.on('listFolder', _onListFolder);
     	socket.on('listFolders', _onListFolders);
     	socket.on('mediaCreated', _onMediaCreated);
   }
 
+  function _onSocketConnect() {
+    	let sessionId = socket.io.engine.id;
+    	console.log(`Connected as ${sessionId}`);
+
+    	let getAccessKeys = localstore.get('admin_access');
+    	if(Object.getOwnPropertyNames(getAccessKeys).length > 0) {
+      	let authData = {
+        	admin_access: getAccessKeys,
+      };
+      socket.emit('authenticate', authData);
+    	}
+  }
+  function _onSocketError(reason) {
+    	console.log(`Unable to connect to server: ${reason}`);
+  	}
+  function _adminAccess(authorizedFolders) {
+    let listAuthorizedFolders = {}
+    authorizedFolders.forEach(slugFolderName => {
+      if(window.store.state.folders[slugFolderName] !== undefined) {
+        listAuthorizedFolders[slugFolderName] = {};
+        listAuthorizedFolders[slugFolderName].authorized = true;
+      }
+    });
+    window.store.state.folders = Object.assign({}, window.store.state.folders, listAuthorizedFolders);
+  }
   function listMedias(slugFolderName) {
     socket.emit('listMedias', { slugFolderName });
   }
@@ -61,14 +95,6 @@ window.socketio = (function() {
   function removeMedia(slugFolderName, slugMediaName) {
     socket.emit('removeMedia', { slugFolderName, slugMediaName });
   }
-
-  function _onSocketConnect() {
-    	let sessionId = socket.io.engine.id;
-    	console.log(`Connected as ${sessionId}`);
-  }
-  function _onSocketError(reason) {
-    	console.log(`Unable to connect to server: ${reason}`);
-  	}
   function _onListMedias(mdata) {
     let slugFolderName = Object.keys(mdata)[0];
     window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;

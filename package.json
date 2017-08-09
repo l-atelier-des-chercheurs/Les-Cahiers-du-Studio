@@ -54,6 +54,7 @@
     "sharp": "^0.18.2",
     "slugg": "^1.0.0",
     "socket.io": "^2.0.3",
+    "store": "^2.0.12",
     "validator": "^8.0.0",
     "vue": "^2.4.2",
     "vue2-dropzone": "^2.3.5"

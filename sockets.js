@@ -12,6 +12,9 @@ module.exports = (function() {
   let io;
   let electronApp;
 
+  // This var stores all session ID and the folder they are authorized to edit
+  let usersAuthorizations = {};
+
   const API = {
     init          : (app, io, electronApp)   => { return init(app, io, electronApp); },
     createMediaMeta : (slugFolderName, slugMediaName) => { return createMediaMeta(slugFolderName, slugMediaName); },
@@ -33,6 +36,9 @@ module.exports = (function() {
         onevent.call(this, packet);      // additional call to catch-all
       };
       socket.on('*',function(event,data) { dev.log(`RECEIVED EVENT: ${event}`); });
+
+      socket.on('authenticate', function(data) { onAuthenticate(socket, data); });
+
       socket.on('createFolder', function (data){ onCreateFolder(socket,data); });
       socket.on('removeFolder', function (data){ onRemoveFolder(socket,data); });
       socket.on('editFolder', function (data){ onEditFolder(socket,data); });
@@ -41,6 +47,38 @@ module.exports = (function() {
       socket.on('editMedia', function (data){ onEditMedia(socket,data); });
       socket.on('removeMedia', function (data){ onRemoveMedia(socket,data); });
     });
+  }
+
+  /**************************************************************** AUTH ********************************/
+  function onAuthenticate(socket, d) {
+    dev.logfunction(`EVENT - onAuthenticate for ${JSON.stringify(d, null, 4)}`);
+    if(d.admin_access !== undefined) {
+      // get all folders slugs and passwords
+      file.getFolder().then(foldersData => {
+        // compare with data we received
+        let userListOfFolder = d.admin_access;
+        let sessionId = socket.id;
+
+        for(let slugFolderName in userListOfFolder) {
+          // if the slug match, and the hashed password matches as well
+          if(foldersData[slugFolderName] !== undefined && userListOfFolder[slugFolderName] === foldersData[slugFolderName].password) {
+
+            // add a key "sessionId" in usersAuthorizations and push slugFolderName as a value
+            if(!usersAuthorizations.hasOwnProperty(sessionId)) {
+              usersAuthorizations[sessionId] = [];
+            }
+            usersAuthorizations[sessionId].push(slugFolderName);
+          }
+        }
+        // reply to user on which folder auth worked
+        api.sendEventWithContent('adminAccess', usersAuthorizations[sessionId], io, socket);
+      }, function(err, p) {
+        dev.error(`Failed to get folder data: ${err}`);
+        reject(err);
+      });
+    } else {
+      dev.error(`Auth: no access data to parse.`);
+    }
   }
 
   /**************************************************************** FOLDER ********************************/
