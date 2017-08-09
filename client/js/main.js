@@ -6,12 +6,45 @@ window.$ = window.jQuery = jQuery;
 
 import localstore from 'store';
 
-/*
-let admin_access = {
-  'compagnie-3-6-30': 'monsupermotdepasse'
-};
-localstore.set('admin_access', admin_access);
-*/
+
+
+/***********
+   AUTH
+***********/
+
+window.auth = (function() {
+  let admin_access;
+
+  const API = {
+    init        : () =>init(),
+    updateAdminAccess : folderPass => updateAdminAccess(folderPass),
+    removeKey : slugFolderName => removeKey(slugFolderName),
+    getAdminAccess : () => getAdminAccess()
+  };
+
+  function init() {
+    admin_access = localstore.get('admin_access');
+  }
+
+  function updateAdminAccess(folderPass) {
+    for(let slugFolderName in folderPass) {
+      admin_access[slugFolderName] = folderPass[slugFolderName];
+    }
+    localstore.set('admin_access', admin_access);
+  }
+
+  function removeKey(slugFolderName) {
+    delete admin_access[slugFolderName];
+    localstore.set('admin_access', admin_access);
+  }
+
+  function getAdminAccess() {
+    return admin_access;
+  }
+
+  return API;
+})();
+auth.init();
 
 /***********
    STOREJS
@@ -28,12 +61,15 @@ window.store = {
 /***********
   SOCKETIO
 ***********/
+import alertify from 'alertify.js';
 
 window.socketio = (function() {
   let socket;
 
   const API = {
     init        : () => { return init(); },
+
+    sendAuth    : () => sendAuth(),
 
     createFolder: (fdata) => { return createFolder(fdata); },
     editFolder  : (fdata) => { return editFolder(fdata); },
@@ -59,23 +95,37 @@ window.socketio = (function() {
   function _onSocketConnect() {
     	let sessionId = socket.io.engine.id;
     	console.log(`Connected as ${sessionId}`);
-
-    	let getAccessKeys = localstore.get('admin_access');
-    	// if has any key, we'll send those over to check if they are valid and the user is indeed authorized
-    	if(Object.getOwnPropertyNames(getAccessKeys).length > 0) {
-      	let authData = {
-        	admin_access: getAccessKeys,
-      };
-      console.log(`Trying to auth with ${JSON.stringify(authData, null, 4)}`);
-      socket.emit('authenticate', authData);
-    	} else {
-      listFolders();
-    	}
+    	sendAuth();
   }
+
+  function sendAuth() {
+    let admin_access = auth.getAdminAccess();
+    	console.log(`Asking for auth with ${JSON.stringify(admin_access, null, 4)}`);
+    socket.emit('authenticate', {admin_access});
+  }
+
   function _onSocketError(reason) {
     	console.log(`Unable to connect to server: ${reason}`);
   	}
-  function _authentificated() {
+  function _authentificated(list_admin_folders) {
+    	console.log(`Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`);
+
+    // compare local store and answer from server
+    // for each key that is not in the answer, let’s send and alert to notify that the password is most likely wrong or the folder name has changed
+    let admin_access = Object.keys(auth.getAdminAccess());
+
+    admin_access.forEach(slugFolderName => {
+      if(list_admin_folders.indexOf(slugFolderName) === -1) {
+        alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(`Wrong password or inexistent folder for ${slugFolderName}`)
+          ;
+        auth.removeKey(slugFolderName);
+      } else {
+
+      }
+    });
     listFolders();
   }
 

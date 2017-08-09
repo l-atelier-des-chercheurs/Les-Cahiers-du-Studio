@@ -9,31 +9,34 @@ module.exports = (function() {
   let users_auth = {};
 
   const API = {
-    setAuthenticate   : (sessionId, admin_access) => { return setAuthenticate(sessionId, admin_access); },
-    filterFolders     : (sid, foldersData) => { return filterFolders(sid, foldersData); },
-    filterMedias      : (sessionId, slugFolderName, mediasData) => { return filterMedias(sessionId, slugFolderName, mediasData); }
+    setAuthenticate   : (sessionId, admin_access) => setAuthenticate(sessionId, admin_access),
+    hasFolderAuth     : (socket,foldersData,slugFolderName) => hasFolderAuth(socket,foldersData,slugFolderName),
+    filterFolders     : (sid, foldersData) => filterFolders(sid, foldersData),
+    filterMedias      : (sessionId, foldersData, slugFolderName, mediasData) => filterMedias(sessionId, foldersData, slugFolderName, mediasData)
   };
 
   function setAuthenticate(sessionId, admin_access) {
     return new Promise(function(resolve, reject) {
-
+      dev.logverbose(`setAuthenticate for ${sessionId}.`);
+      users_auth[sessionId] = [];
       // get all folders slugs and passwords
       file.getFolder().then(foldersData => {
         // compare with data we received
-        for(let slugFolderName in admin_access) {
-          // if the slug match, and the hashed password matches as well
-          if(foldersData[slugFolderName] !== undefined &&
-          admin_access[slugFolderName] === foldersData[slugFolderName].password) {
-            // add a key "sessionId" in users_auth and push slugFolderName as a value
-            if(!users_auth.hasOwnProperty(sessionId)) {
-              users_auth[sessionId] = [];
-            }
-            users_auth[sessionId].push(slugFolderName);
-          }
-        }
+        for(let slugFolderName in foldersData) {
 
-        dev.log(`Authentificated a new user ${sessionId}, can edit ${users_auth[sessionId].join()}`);
-        resolve();
+          if(admin_access[slugFolderName]) {
+            if(admin_access[slugFolderName] === foldersData[slugFolderName].password) {
+              dev.logverbose(`Password fit for ${slugFolderName}.`);
+              users_auth[sessionId].push(slugFolderName);
+            } else {
+              dev.logverbose(`Password is wrong for ${slugFolderName}.`);
+            }
+          }
+
+        }
+        dev.log(`Authentificated a new user ${sessionId}.`);
+        dev.log(`She can edit ${users_auth[sessionId] ? users_auth[sessionId].join():''}`);
+        resolve(users_auth[sessionId]);
       }, function(err, p) {
         dev.error(`Failed to get folder data: ${err}`);
         reject(err);
@@ -41,11 +44,22 @@ module.exports = (function() {
     });
   }
 
+  function hasFolderAuth(sessionId,foldersData,slugFolderName) {
+    if(
+      (users_auth[sessionId] !== undefined && users_auth[sessionId].indexOf(slugFolderName)) >= 0 ||
+      !foldersData[slugFolderName].hasOwnProperty('password') ||
+      foldersData[slugFolderName].password === ''
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   function filterFolders(sessionId, foldersData) {
-    dev.logverbose(`Filtering folders data for ${sessionId}.`);
+    dev.logverbose(`Filtering folders data for ${sessionId} and users_auth ${users_auth[sessionId]}.`);
     for (let slugFolderName in foldersData) {
       // find if sessionID has this folder
-      if(users_auth[sessionId] !== undefined && users_auth[sessionId].indexOf(slugFolderName) >= 0) {
+      if(hasFolderAuth(sessionId,foldersData,slugFolderName)) {
         dev.logverbose(`For ${sessionId}, admin access authorized for ${slugFolderName}.`);
         foldersData[slugFolderName].authorized = true;
       } else {
@@ -56,17 +70,14 @@ module.exports = (function() {
     return foldersData;
   }
 
-  function filterMedias(sessionId, slugFolderName, mediasData) {
+  function filterMedias(sessionId, foldersData, slugFolderName, mediasData) {
     dev.logverbose(`Filtering medias data for ${sessionId}.`);
 
-    if(users_auth[sessionId] !== undefined && users_auth[sessionId].indexOf(slugFolderName) >= 0) {
-      // if is admin, do nothing
-    } else {
+    if(!hasFolderAuth(sessionId,foldersData,slugFolderName)) {
       // is public user (remove all non-public medias)
       for(let slugMediaName in mediasData) {
-        dev.logverbose(`Meta : ${JSON.stringify(mediasData[slugMediaName], null, 4)}`);
         if(!mediasData[slugMediaName].hasOwnProperty('public') ||
-        !(mediasData[slugMediaName].public === true || mediasData[slugMediaName].public == 'true')) {
+        !(mediasData[slugMediaName].public === true || mediasData[slugMediaName].public === 'true')) {
           dev.logverbose(`Removing media ${slugMediaName} for public user`);
           delete mediasData[slugMediaName];
         }
@@ -74,6 +85,8 @@ module.exports = (function() {
     }
     return mediasData;
   }
+
+
 
   return API;
 })();

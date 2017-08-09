@@ -1,6 +1,6 @@
 <template>
-  <div class="media width-25 padding-small float-left">
-    <p>
+  <div class="media margin-small">
+    <p class="margin-small">
       <small>
         {{ slugMediaName }}
       </small>
@@ -24,12 +24,14 @@
     >
     </EditMedia>
 
-    <MediaContent
-      :slugFolderName="slugFolderName"
-      :slugMediaName="slugMediaName"
-      :media="media"
-    >
-    </MediaContent>
+    <div class="mediaContent">
+      <MediaContent
+        :slugFolderName="slugFolderName"
+        :slugMediaName="slugMediaName"
+        :media="media"
+      >
+      </MediaContent>
+    </div>
 
   </div>
 </template>
@@ -64,10 +66,25 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
+
 .media {
-  border:1px solid #eee;
+  width:250px;
+  float:left;
+  border:2px solid #eee;
   background: white;
+}
+
+.mediaContent {
+  width:100%;
+  height:200px;
+  border:2px solid #fff;
+}
+
+.mediaContent img, .mediaContent video {
+  width:100%;
+  height:100%;
+  object-fit: contain;
 }
 
 </style>

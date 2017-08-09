@@ -30,7 +30,6 @@ module.exports = (function() {
   };
 
   function getFolderPath(slugFolderName = '') {
-    dev.logfunction(`COMMON — getFolderPath: ${slugFolderName}`);
     return path.join(getUserPath(), slugFolderName);
   }
   function getUserPath() {
@@ -100,15 +99,13 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — getFolder: ${slugFolderName}`);
       let mainFolderPath = getFolderPath();
-      dev.logverbose(`Main folder path: ${mainFolderPath}`);
       // on cherche tous les dossiers du dossier de contenu
       fs.readdir(mainFolderPath, function (err, filenames) {
-        dev.logverbose(`Found filenames: ${filenames}`);
+//         dev.logverbose(`Found filenames: ${filenames}`);
         if(err) { dev.error(`Couldn't read content dir: ${err}`); reject(err); }
         if(filenames === undefined) { dev.error(`No folder found: ${err}`); reject(err); }
 
         var folders = filenames.filter(function(thisSlugFolderName){
-          dev.logverbose(`Checking ${thisSlugFolderName}`);
             // is a folder
           return new RegExp(local.settings().regexpMatchFolderNames, 'i').test(thisSlugFolderName) &&
             // if slugFolderName isset, filter to get only requested folder

@@ -16,6 +16,7 @@ module.exports = (function() {
   const API = {
     init          : (app, io, electronApp)   => { return init(app, io, electronApp); },
     createMediaMeta : (slugFolderName, slugMediaName) => { return createMediaMeta(slugFolderName, slugMediaName); },
+    pushMessage   : (msg)    => pushMessage(msg)
   };
 
   function init(thisApp, thisIO, thisElectronApp) {
@@ -48,16 +49,21 @@ module.exports = (function() {
     });
   }
 
-  /**************************************************************** AUTH ********************************/
+  /**************************************************************** UTIL ********************************/
   function onAuthenticate(socket, d) {
     dev.logfunction(`EVENT - onAuthenticate for ${JSON.stringify(d, null, 4)}`);
     if(d.admin_access !== undefined) {
-      auth.setAuthenticate(socket.id, d.admin_access).then(() => {
-        api.sendEventWithContent('authentificated', '', io, socket);
+      auth.setAuthenticate(socket.id, d.admin_access).then((list_admin_folders) => {
+        api.sendEventWithContent('authentificated', list_admin_folders, io, socket);
       });
     } else {
       dev.error(`Auth: no access data to parse.`);
     }
+  }
+
+  function pushMessage(msg) {
+    dev.logfunction(`EVENT - pushMessage ${msg}`);
+    api.sendEventWithContent('authentificated', {}, io, socket);
   }
 
   /**************************************************************** FOLDER ********************************/
@@ -75,14 +81,26 @@ module.exports = (function() {
   }
   function onEditFolder(socket,d) {
     dev.logfunction(`EVENT - onEditFolder for ${d.slugFolderName}`);
-    file.editFolder(d).then(slugFolderName => {
-      sendFolders(slugFolderName);
+    // check if allowed
+    file.getFolder(d.slugFolderName).then(foldersData => {
+      if(!auth.hasFolderAuth(socket.id,foldersData,d.slugFolderName)) { return; }
+      file.editFolder(d).then(slugFolderName => {
+        sendFolders(slugFolderName);
+      });
     });
   }
   function onRemoveFolder(socket, slugFolderName) {
     dev.logfunction(`EVENT - onRemoveFolder for ${slugFolderName}`);
-    file.removeFolder(slugFolderName).then(() => {
-      sendFolders();
+    // check if allowed
+    file.getFolder(slugFolderName).then(foldersData => {
+      if(!auth.hasFolderAuth(socket.id,foldersData,d.slugFolderName)) { return; }
+
+      file.removeFolder(slugFolderName).then(() => {
+        sendFolders();
+      }, function(err, p) {
+        dev.error(`Failed to remove folder: ${err}`);
+        reject(err);
+      });
     }, function(err, p) {
       dev.error(`Failed to remove folder: ${err}`);
       reject(err);
@@ -92,12 +110,12 @@ module.exports = (function() {
   /**************************************************************** MEDIA ********************************/
 
   function onListMedias(socket, d) {
-    dev.logfunction(`EVENT - onListMedias : ${JSON.stringify( d, null, 4)}`);
+    dev.logfunction(`EVENT - onListMedias : ${JSON.stringify(d, null, 4)}`);
     sendMedias(d.slugFolderName, '', socket);
   }
 
   function createMediaMeta(slugFolderName, slugMediaName) {
-    dev.logfunction(`EVENT - createMediaMeta for ${slugFolderName} with media ${slugMediaName}`);
+    dev.logfunction(`EVENT - createMediaMeta for ${slugFolderName}/${slugMediaName}`);
     sendMedias(slugFolderName, slugMediaName);
   }
 
@@ -109,13 +127,13 @@ module.exports = (function() {
   }
 
   function onRemoveMedia(socket, d) {
-    dev.logfunction(`EVENT - onRemoveMedia for ${d.slugFoldername} and ${d.slugMediaName}`);
+    dev.logfunction(`EVENT - onRemoveMedia for ${d.slugFoldername}/${d.slugMediaName}`);
     let slugFolderName = d.slugFolderName;
     let slugMediaName = d.slugMediaName;
     file.removeMedia(slugFolderName, slugMediaName).then(() => {
       sendMedias(slugFolderName, '');
     }, function(err, p) {
-      dev.error(`Failed to remove folder: ${err}`);
+      dev.error(`Failed to remove media: ${err}`);
       reject(err);
     });
   }
@@ -124,27 +142,32 @@ module.exports = (function() {
   function sendMedias(slugFolderName, slugMediaName, socket) {
     dev.logfunction(`COMMON - sendMedias for ${slugFolderName}`);
 
-    file.getMedia(slugFolderName, slugMediaName).then(mediasData => {
+    file.getFolder(slugFolderName).then(foldersData => {
+      file.getMedia(slugFolderName, slugMediaName).then(mediasData => {
 
-      Object.keys(io.sockets.connected).forEach(sid => {
-        if(socket) {
-          if(socket.id !== sid) {
-            return;
+        Object.keys(io.sockets.connected).forEach(sid => {
+          if(socket) {
+            if(socket.id !== sid) {
+              return;
+            }
           }
-        }
-        let thisSocket = socket || io.sockets.connected[sid];
-        let filteredMediasData = {[slugFolderName]: {medias: auth.filterMedias(sid, slugFolderName, mediasData)}};
+          let thisSocket = socket || io.sockets.connected[sid];
+          let filteredMediasData = {[slugFolderName]: {medias: auth.filterMedias(sid, foldersData, slugFolderName, mediasData)}};
 
-        if(slugMediaName) {
-          api.sendEventWithContent('listMedia',  filteredMediasData, io, thisSocket);
-        } else {
-          api.sendEventWithContent('listMedias',  filteredMediasData, io, thisSocket);
-        }
+          if(slugMediaName) {
+            api.sendEventWithContent('listMedia',  filteredMediasData, io, thisSocket);
+          } else {
+            api.sendEventWithContent('listMedias',  filteredMediasData, io, thisSocket);
+          }
+        });
+
+        // TODO : check client permissions, send public or all medias depending on this
+      }, function(err) {
+        dev.error(`Failed to list medias! Error: ${err}`);
       });
-
-      // TODO : check client permissions, send public or all medias depending on this
-    }, function(err) {
-      dev.error(`Failed to list medias! Error: ${err}`);
+    }, function(err, p) {
+      dev.error(`Failed to get folders data: ${err}`);
+      reject(err);
     });
   }
 
@@ -162,6 +185,7 @@ module.exports = (function() {
         }
         let thisSocket = socket || io.sockets.connected[sid];
         let filteredFoldersData = auth.filterFolders(sid, foldersData);
+        for(let k in filteredFoldersData) { delete filteredFoldersData[k].password; }
         if(slugFolderName) {
           api.sendEventWithContent('listFolder', filteredFoldersData, io, thisSocket);
         } else {

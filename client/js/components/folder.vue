@@ -1,12 +1,8 @@
 <template>
-  <div class="clearfix">
+  <div class="clearfix folder">
     <h2 class="margin-small">
       {{ folder.name }}
     </h2>
-
-    <p>
-      authorized ? {{ folder.authorized }}
-    </p>
 
     <table v-if="debugFolderContent" class="table-striped margin-small">
       <thead>
@@ -27,15 +23,24 @@
 
     <div class="clearfix">
       <button type="button" class="button-small margin-small float-left" @click="loadFolderMedias()">
-        Open/close
+        Show/hide medias
       </button>
-      <button type="button" class="button-small margin-small float-left" @click="debugFolderContent = !debugFolderContent">
+      <button v-if="!folder.authorized" type="button" class="button-small margin-small float-left" @click="showInputPasswordField = !showInputPasswordField">
+        Input password
+      </button>
+
+      <div v-if="showInputPasswordField" class="input-group" style="width: 250px;">
+        <input type="password" ref="passwordField">
+        <button type="button" class="button" @click="submitPassword">Submit</button>
+      </div>
+
+      <button v-if="folder.authorized" type="button" class="button-small margin-small float-left" @click="debugFolderContent = !debugFolderContent">
         Debug view
       </button>
-      <button type="button" class="button-small margin-small float-left" @click="showEditFolderModal = true">
+      <button v-if="folder.authorized" type="button" class="button-small margin-small float-left" @click="showEditFolderModal = true">
         Edit
       </button>
-      <button type="button" class="button-small margin-small float-left" @click="removeFolder()">
+      <button v-if="folder.authorized" type="button" class="button-small margin-small float-left" @click="removeFolder()">
         Remove
       </button>
     </div>
@@ -50,7 +55,7 @@
 
     <template v-if="$root.settings.folder_currently_opened === slugFolderName">
       <template v-if="loading_folder_medias">
-        <span class="loader"></span>
+        <span class="loader margin-small"></span>
       </template>
       <template v-else>
         <fileUpload
@@ -67,7 +72,6 @@
         </media>
       </template>
     </template>
-    <hr>
   </div>
 </template>
 <script>
@@ -91,7 +95,8 @@ export default {
     return {
       debugFolderContent: false,
       showEditFolderModal: false,
-      loading_folder_medias: false
+      loading_folder_medias: false,
+      showInputPasswordField: false
     }
   },
   computed: {
@@ -106,6 +111,11 @@ export default {
       if(window.confirm(locals.lang.modal.sureToRemoveFolder)) {
         this.$root.removeFolder(this.slugFolderName);
       }
+    },
+    submitPassword() {
+      auth.updateAdminAccess({ [this.slugFolderName]: this.$refs.passwordField.value });
+      window.socketio.sendAuth();
+      this.showInputPasswordField = false;
     }
   },
   watch: {
@@ -121,5 +131,13 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
+.folder {
+  background-color: #f2f2f2;
+  border: 0px solid #eee;
+  border-top-width:1px;
+  border-bottom-width: 1px;
+  padding: 25px 0;
+  margin: 25px 0;
+}
 </style>
