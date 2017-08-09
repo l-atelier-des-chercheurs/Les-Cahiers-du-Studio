@@ -5,7 +5,7 @@
     v-on:vdropzone-success="showSuccess"
     class="width-25 margin-small"
   >
-      <input type="hidden" name="token" :value="slugFolderName">
+    <input type="hidden" name="token" :value="slugFolderName">
   </dropzone>
 </template>
 <script>

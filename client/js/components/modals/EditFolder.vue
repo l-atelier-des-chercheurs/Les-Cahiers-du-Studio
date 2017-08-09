@@ -117,7 +117,6 @@ export default {
             .delay(4000)
             .error('Folder name already exists. Please use another.')
             ;
-
           return false;
         }
       }

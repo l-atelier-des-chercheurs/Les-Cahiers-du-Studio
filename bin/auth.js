@@ -23,7 +23,6 @@ module.exports = (function() {
       file.getFolder().then(foldersData => {
         // compare with data we received
         for(let slugFolderName in foldersData) {
-
           if(admin_access[slugFolderName]) {
             if(admin_access[slugFolderName] === foldersData[slugFolderName].password) {
               dev.logverbose(`Password fit for ${slugFolderName}.`);
@@ -32,7 +31,6 @@ module.exports = (function() {
               dev.logverbose(`Password is wrong for ${slugFolderName}.`);
             }
           }
-
         }
         dev.log(`Authentificated a new user ${sessionId}.`);
         dev.log(`She can edit ${users_auth[sessionId] ? users_auth[sessionId].join():''}`);
@@ -45,18 +43,20 @@ module.exports = (function() {
   }
 
   function hasFolderAuth(sessionId,foldersData,slugFolderName) {
+    dev.logfunction(`AUTH — hasFolderAuth: ${JSON.stringify(users_auth, null, 4)} & ${foldersData[slugFolderName].password}`);
     if(
-      (users_auth[sessionId] !== undefined && users_auth[sessionId].indexOf(slugFolderName)) >= 0 ||
-      !foldersData[slugFolderName].hasOwnProperty('password') ||
-      foldersData[slugFolderName].password === ''
+      (users_auth[sessionId] !== undefined && users_auth[sessionId].indexOf(slugFolderName) >= 0) ||
+      (foldersData[slugFolderName].hasOwnProperty('password') && foldersData[slugFolderName].password === '')
     ) {
+      dev.logverbose(`AUTH — hasFolderAuth: accepted`);
       return true;
     }
+    dev.logverbose(`AUTH — hasFolderAuth: refused`);
     return false;
   }
 
   function filterFolders(sessionId, foldersData) {
-    dev.logverbose(`Filtering folders data for ${sessionId} and users_auth ${users_auth[sessionId]}.`);
+    dev.logfunction(`AUTH — filtering folders data for ${sessionId} and users_auth ${users_auth[sessionId]}.`);
     for (let slugFolderName in foldersData) {
       // find if sessionID has this folder
       if(hasFolderAuth(sessionId,foldersData,slugFolderName)) {
@@ -71,7 +71,7 @@ module.exports = (function() {
   }
 
   function filterMedias(sessionId, foldersData, slugFolderName, mediasData) {
-    dev.logverbose(`Filtering medias data for ${sessionId}.`);
+    dev.logfunction(`AUTH — filtering medias data for ${sessionId}.`);
 
     if(!hasFolderAuth(sessionId,foldersData,slugFolderName)) {
       // is public user (remove all non-public medias)

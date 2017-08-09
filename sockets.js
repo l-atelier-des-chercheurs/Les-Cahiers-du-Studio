@@ -93,7 +93,7 @@ module.exports = (function() {
     dev.logfunction(`EVENT - onRemoveFolder for ${slugFolderName}`);
     // check if allowed
     file.getFolder(slugFolderName).then(foldersData => {
-      if(!auth.hasFolderAuth(socket.id,foldersData,d.slugFolderName)) { return; }
+      if(!auth.hasFolderAuth(socket.id,foldersData,slugFolderName)) { return; }
 
       file.removeFolder(slugFolderName).then(() => {
         sendFolders();
@@ -122,7 +122,7 @@ module.exports = (function() {
   function onEditMedia(socket,d) {
     dev.logfunction(`EVENT - onEditMedia for ${d.slugFolderName}/${d.slugMediaName}`);
     file.editMedia(d).then(slugFolderName => {
-      sendMedias(slugFolderName, '');
+      sendMedias(slugFolderName, d.slugMediaName);
     });
   }
 
@@ -138,6 +138,8 @@ module.exports = (function() {
     });
   }
 
+
+  /**************************************************************** GENERAL ********************************/
 
   function sendMedias(slugFolderName, slugMediaName, socket) {
     dev.logfunction(`COMMON - sendMedias for ${slugFolderName}`);

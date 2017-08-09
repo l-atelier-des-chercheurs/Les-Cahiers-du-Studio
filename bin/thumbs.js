@@ -21,7 +21,7 @@ module.exports = (function() {
   // this way, if thumbs are deleted or moved while the app is running, they will be recreated next time they are required
   function makeMediaThumbs(slugFolderName, slugMediaName, meta) {
     return new Promise(function(resolve, reject) {
-      dev.logverbose(`Making thumbs for media with meta: ${JSON.stringify(meta, null, 4)}`);
+      dev.logfunction(`THUMBS — Making thumbs for media with meta: ${JSON.stringify(meta, null, 4)}`);
 
       let thumbFolderPath = path.join(local.settings().thumbFolderName, slugFolderName);
       let mediaPath = path.join(_getFolderPath(slugFolderName), slugMediaName);
@@ -61,7 +61,6 @@ module.exports = (function() {
   }
 
   function _getFolderPath(slugFolderName = '') {
-    dev.logfunction(`COMMON — getFolderPath: ${slugFolderName}`);
     return path.join(_getUserPath(), slugFolderName);
   }
   function _getUserPath() {
