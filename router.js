@@ -81,9 +81,6 @@ module.exports = function(app,io,m){
     form.on('field', function(name, value) {
       console.log('Name: ' + name);
       console.log('Value: ' + value);
-      if(name === 'iframe[]') {
-        allIframeMeta.push(value);
-      }
     });
 
     // every time a file has been uploaded successfully,
