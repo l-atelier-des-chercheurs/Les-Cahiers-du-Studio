@@ -40,8 +40,8 @@
 
     <hr>
 
-    <Footer>
-    </Footer>
+    <BottomFooter>
+    </BottomFooter>
   </div>
 </template>
 
@@ -49,10 +49,16 @@
 import FileUpload from './components/FileUpload.vue';
 import Folder from './components/Folder.vue';
 import CreateFolder from './components/modals/CreateFolder.vue';
-import Footer from './components/Footer.vue';
+import BottomFooter from './components/BottomFooter.vue';
 
 export default {
   name: 'app',
+  components: {
+    FileUpload,
+    Folder,
+    CreateFolder,
+    BottomFooter
+  },
   data () {
     return {
       showCreateFolderModal: false,
@@ -62,12 +68,6 @@ export default {
         order: 'descending'
       }
     }
-  },
-  components: {
-    FileUpload,
-    Folder,
-    CreateFolder,
-    Footer
   },
   computed: {
     sortedFoldersSlug() {

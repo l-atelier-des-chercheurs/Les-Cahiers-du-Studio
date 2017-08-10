@@ -152,7 +152,5 @@ export default {
   border: 0px solid #eee;
   border-top-width:1px;
   border-bottom-width: 1px;
-  padding: 25px 0;
-  margin: 25px 0;
 }
 </style>
