@@ -1,6 +1,6 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask" @click="$emit('close')" v-on:keyup.esc="$emit('close')">
+    <div class="modal-mask" @click="$emit('close')">
       <div class="modal-wrapper">
         <div class="modal-container padding-small" @click.stop>
 
@@ -31,11 +31,28 @@
 </template>
 
 <script>
+let className = 'is_unscrollable';
+
 export default {
   name: "Modal",
   data() {
     return {
     }
+  },
+  methods: {
+    escapeKeyListener: function(evt) {
+      if (evt.keyCode === 27) {
+        this.$emit('close');
+      }
+    }
+  },
+  created: function () {
+    window.addEventListener('keyup', this.escapeKeyListener);
+    document.body.classList.add(className);
+  },
+  destroyed: function() {
+    document.removeEventListener('keyup', this.escapeKeyListener);
+    document.body.classList.remove(className);
   },
 }
 </script>

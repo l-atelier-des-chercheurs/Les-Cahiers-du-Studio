@@ -43,6 +43,9 @@ module.exports = (function() {
                   size: thumbRes
                 };
                 resolve(thumbMeta);
+              })
+              .catch(err => {
+                resolve();
               });
             });
             makeThumbs.push(makeThumb);
@@ -91,7 +94,9 @@ module.exports = (function() {
             .toFile(fullThumbPath)
             .then(function() {
               resolve(thumbPath);
-            });
+            })
+            .catch(err => reject());
+
         } else {
           resolve(thumbPath);
         }

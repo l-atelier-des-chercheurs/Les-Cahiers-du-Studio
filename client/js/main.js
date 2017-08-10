@@ -6,12 +6,9 @@ window.$ = window.jQuery = jQuery;
 
 import localstore from 'store';
 
-
-
 /***********
    AUTH
 ***********/
-
 window.auth = (function() {
   let admin_access;
 
@@ -53,7 +50,9 @@ auth.init();
 window.store = {
   debug:true,
   state: {
-    folders: {}
+    folders: {},
+    networkInfos: locals.networkInfos,
+    lang: locals.lang
   },
 };
 // window.store.state.folders = JSON.parse(JSON.stringify(locals.data));
@@ -81,7 +80,7 @@ window.socketio = (function() {
   };
 
   function init() {
-    socket = io.connect();
+    socket = io.connect({ transports: ['websocket', 'polling'] });
     	socket.on('connect', _onSocketConnect);
     socket.on('error', _onSocketError);
     	socket.on('authentificated', _authentificated);

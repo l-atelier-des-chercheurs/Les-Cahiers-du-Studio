@@ -1,5 +1,5 @@
 <template>
-  <div class="media margin-small">
+  <div class="media margin-right-small margin-bottom-small">
     <p class="margin-small">
       <small>
         {{ slugMediaName }}
@@ -69,22 +69,19 @@ export default {
 <style scoped>
 
 .media {
-  width:250px;
+  width:16em;
   float:left;
   border:2px solid #eee;
   background: white;
 }
 
 .mediaContent {
-  width:100%;
-  height:200px;
-  border:2px solid #fff;
-}
-
-.mediaContent img, .mediaContent video {
-  width:100%;
-  height:100%;
-  object-fit: contain;
+  width:16em;
+  height:12em;
+  background-color: #ddd;
+  display: flex;
+  align-items:center;
+  justify-content:center;
 }
 
 </style>

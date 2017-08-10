@@ -1476,7 +1476,8 @@ table.table-bordered td {
 :root {
   --body-color: black;
   --body-bg-color: #fff;
-  --table-stripe-bg-color: #eee; }
+  --table-stripe-bg-color: #eee;
+  --color-primary: #666; }
 
 /******************
   Mixins
@@ -1484,6 +1485,8 @@ table.table-bordered td {
 body {
   margin: 0;
   font-family: 'Fira Sans', sans-serif; }
+  body.is_unscrollable {
+    overflow: hidden; }
 
 img, video, audio, svg {
   display: block;
@@ -1498,3 +1501,24 @@ input:required {
 
 .alertify-logs {
   z-index: 10000; }
+
+/* -----
+SVG Icons - svgicons.sparkk.fr
+----- */
+.svg-icon {
+  width: 1em;
+  height: 1em; }
+
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+  fill: #4691f6; }
+
+.svg-icon circle {
+  stroke: #4691f6;
+  stroke-width: 1; }
+
+#app {
+  max-width: 72em;
+  width: 100%;
+  margin: 0 auto; }

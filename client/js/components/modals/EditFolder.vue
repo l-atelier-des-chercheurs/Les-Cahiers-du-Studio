@@ -33,11 +33,13 @@
       </div>
 
 <!-- Password -->
+<!--
       <div class="input-single">
         <label>Password</label><br>
         <input type="password" v-model="folderdata.password">
         <small>If there is one, only user with this password will be able to edit this folder</small>
       </div>
+ -->
 
 <!-- Author(s) -->
       <div class="input-single">
@@ -73,6 +75,7 @@
 import Modal from './BaseModal.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import alertify from 'alertify.js';
+import slug from 'slugg';
 
 export default {
   props: ['slugFolderName', 'folder'],
@@ -86,7 +89,6 @@ export default {
         name: this.folder.name,
         start: this.folder.start,
         end: this.folder.end,
-        password: this.folder.password,
         authors: this.folder.authors
       }
     }
@@ -118,6 +120,14 @@ export default {
             .error('Folder name already exists. Please use another.')
             ;
           return false;
+        }
+
+        if(slug(this.folderdata.name).length === 0) {
+          alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error('Folder name needs to contain alphanumeric characters.')
+            ;
         }
       }
 

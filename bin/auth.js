@@ -43,7 +43,7 @@ module.exports = (function() {
   }
 
   function hasFolderAuth(sessionId,foldersData,slugFolderName) {
-    dev.logfunction(`AUTH — hasFolderAuth: ${JSON.stringify(users_auth, null, 4)} & ${foldersData[slugFolderName].password}`);
+//     dev.logfunction(`AUTH — hasFolderAuth: ${JSON.stringify(users_auth, null, 4)} & ${foldersData[slugFolderName].password}`);
     if(
       (users_auth[sessionId] !== undefined && users_auth[sessionId].indexOf(slugFolderName) >= 0) ||
       (foldersData[slugFolderName].hasOwnProperty('password') && foldersData[slugFolderName].password === '')

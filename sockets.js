@@ -84,7 +84,8 @@ module.exports = (function() {
     // check if allowed
     file.getFolder(d.slugFolderName).then(foldersData => {
       if(!auth.hasFolderAuth(socket.id,foldersData,d.slugFolderName)) { return; }
-      file.editFolder(d).then(slugFolderName => {
+
+      file.editFolder(foldersData, d).then(slugFolderName => {
         sendFolders(slugFolderName);
       });
     });
@@ -187,7 +188,12 @@ module.exports = (function() {
         }
         let thisSocket = socket || io.sockets.connected[sid];
         let filteredFoldersData = auth.filterFolders(sid, foldersData);
-        for(let k in filteredFoldersData) { delete filteredFoldersData[k].password; }
+        for(let k in filteredFoldersData) {
+          // check if there is any password, if there is then send a placeholder
+          if(filteredFoldersData[k].password && filteredFoldersData[k].password !== '') {
+            filteredFoldersData[k].password = 'has_pass';
+          }
+        }
         if(slugFolderName) {
           api.sendEventWithContent('listFolder', filteredFoldersData, io, thisSocket);
         } else {

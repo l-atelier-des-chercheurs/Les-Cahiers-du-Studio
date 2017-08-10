@@ -3,7 +3,7 @@
     :id="uniqueDropzoneID"
     :url="uriToUploadMedia"
     v-on:vdropzone-success="showSuccess"
-    class="width-25 margin-small"
+    class="dropzone margin-right-small margin-bottom-small"
   >
     <input type="hidden" name="token" :value="slugFolderName">
   </dropzone>
@@ -35,4 +35,7 @@ export default {
 
 </script>
 <style scoped>
+.dropzone {
+
+}
 </style>

@@ -16,17 +16,17 @@ const
 module.exports = (function() {
 
   const API = {
-    getFolderPath       : (slugFolderName = '') => { return getFolderPath(slugFolderName); },
-    getFolder           : (slugFolderName) => { return getFolder(slugFolderName); },
-    getMetaFileOfFolder : (slugFolderName) => { return getMetaFileOfFolder(slugFolderName); },
-    createFolder        : (fdata) => { return createFolder(fdata); },
-    editFolder          : (fdata) => { return editFolder(fdata); },
-    removeFolder        : (slugFolderName) => { return removeFolder(slugFolderName); },
+    getFolderPath       : (slugFolderName = '') => getFolderPath(slugFolderName),
+    getFolder           : (slugFolderName) => getFolder(slugFolderName),
+    getMetaFileOfFolder : (slugFolderName) => getMetaFileOfFolder(slugFolderName),
+    createFolder        : (fdata) => createFolder(fdata),
+    editFolder          : (foldersData, fdata) => editFolder(foldersData, fdata),
+    removeFolder        : (slugFolderName) => removeFolder(slugFolderName),
 
-    getMedia            : (slugFolderName, slugMediaName) => { return getMedia(slugFolderName, slugMediaName); },
-    createMediaMeta     : (slugFolderName, slugMediaName) => { return createMediaMeta(slugFolderName, slugMediaName); },
-    editMedia           : (mdata) => { return editMedia(mdata); },
-    removeMedia         : (slugFolderName, slugMediaName) => { return removeMedia(slugFolderName, slugMediaName); },
+    getMedia            : (slugFolderName, slugMediaName) => getMedia(slugFolderName, slugMediaName),
+    createMediaMeta     : (slugFolderName, slugMediaName) => createMediaMeta(slugFolderName, slugMediaName),
+    editMedia           : (mdata) => editMedia(mdata),
+    removeMedia         : (slugFolderName, slugMediaName) => removeMedia(slugFolderName, slugMediaName),
   };
 
   function getFolderPath(slugFolderName = '') {
@@ -151,12 +151,12 @@ module.exports = (function() {
       dev.logfunction(`COMMON — createFolder : will create a new folder with: ${JSON.stringify(fdata, null, 4)}`);
 
       getFolder().then(foldersData => {
-        let allFoldersSlug = Object.keys(foldersData).map(function(obj) {
-          return obj.slugFolderName;
-        });
+        let allFoldersSlug = Object.keys(foldersData);
         // créer un slug
         let slugFolderName = api.slug(fdata.name);
-        dev.logverbose(`Proposed slug: ${slugFolderName}`);
+        if(slugFolderName.length <= 0) {
+          slugFolderName = api.slug('Untitled Folder');
+        }
 
         let index = 0;
         let newSlugFolderName = slugFolderName;
@@ -165,6 +165,8 @@ module.exports = (function() {
           newSlugFolderName = `${newSlugFolderName}-${index}`;
         }
         slugFolderName = newSlugFolderName;
+        dev.logverbose(`All slugs: ${allFoldersSlug.join()}`);
+        dev.logverbose(`Proposed slug: ${slugFolderName}`);
 
         // créer un fichier meta avec : nom humain, date de création, date de début, date de fin, mot de passe hashé, nom des auteurs
         dev.logverbose(`Making a new folder at path ${getFolderPath(slugFolderName)}`);
@@ -191,14 +193,18 @@ module.exports = (function() {
     });
   }
 
-  function editFolder (fdata) {
+  function editFolder (foldersData, fdata) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`COMMON — editFolder : will edit folder: ${JSON.stringify(fdata, null, 4)}`);
+      dev.logfunction(`COMMON — editFolder : will edit folder: ${JSON.stringify(fdata, null, 4)} with existing data ${JSON.stringify(foldersData, null, 4)}`);
       // remove slugFolderKey
       let slugFolderName = fdata.slugFolderName;
+      let existingPassword = foldersData[slugFolderName].password;
       delete fdata['slugFolderName'];
 
       makeFolderMeta(slugFolderName, fdata).then((mdata) => {
+        // replace password key by original (since password can’t be edited client-side)
+        mdata.password = existingPassword;
+
         let folderMetaPath = getMetaFileOfFolder(slugFolderName);
         api.storeData(folderMetaPath, mdata, 'update').then(function(meta) {
           dev.logverbose(`Update folder meta file at path: ${folderMetaPath} with meta: ${JSON.stringify(meta, null, 4)}`);
@@ -369,7 +375,7 @@ module.exports = (function() {
               mdata.type = 'audio';
               break;
             default:
-              mdata.type = 'image';
+              mdata.type = 'other';
           }
 
           api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {

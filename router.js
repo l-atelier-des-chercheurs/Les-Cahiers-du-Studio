@@ -41,8 +41,8 @@ module.exports = function(app,io,m){
       pageDataJSON.lang = local.lang();
       pageDataJSON.logToFile = global.nodeStorage.getItem('logToFile');
 
-      api.getLocalIP().then(function(localNetworkInfos) {
-        pageDataJSON.localNetworkInfos = localNetworkInfos;
+      api.getLocalIP().then(networkInfos => {
+        pageDataJSON.networkInfos = networkInfos;
         resolve(pageDataJSON);
       }, function(err, p) {
         dev.error(`Failed to get IP: ${err}`);

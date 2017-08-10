@@ -1,12 +1,16 @@
 doctype html
 html
-  include snippets/head
+  head
+    meta(charset='utf-8')
+    link(rel='stylesheet', href='/development/style.css')
+    title #{pageTitle}
+
   body
-    include snippets/header
-
-    #intro
-      h1.margin-small stv-doc
-
     #app
 
-    include snippets/footer
+    script
+      | window.locals = {};
+      | locals.folderPath = "#{folderPath}";
+      | locals.networkInfos = !{JSON.stringify(networkInfos, null, 4)};
+      | locals.lang = !{JSON.stringify(lang, null, 4)};
+    script(src='/development/main.js')

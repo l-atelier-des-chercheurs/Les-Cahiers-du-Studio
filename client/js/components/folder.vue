@@ -1,8 +1,25 @@
 <template>
-  <div class="clearfix folder">
+  <div class="clearfix folder margin-small">
     <h2 class="margin-small">
       {{ folder.name }}
+      <mark class="text-small" v-if="folder.password === 'has_pass'">
+        password-protected
+      </mark>
     </h2>
+
+    <div class="margin-small">
+      <table class="table-bordered text-small">
+        <tbody>
+          <tr>
+            <td>Created: {{ formatDateToHuman(folder.created) }}</td>
+            <td>Start: {{ formatDateToHuman(folder.start) }}</td>
+            <td>End: {{ formatDateToHuman(folder.end) }}</td>
+            <td>Authors: {{ folder.authors }}</td>
+            <td>Folder name: {{ folder.slugFolderName }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <table v-if="debugFolderContent" class="table-striped margin-small">
       <thead>
@@ -30,7 +47,7 @@
       </button>
 
       <div v-if="showInputPasswordField" class="input-group" style="width: 250px;">
-        <input type="password" ref="passwordField">
+        <input type="password" ref="passwordField" @keyup.enter="submitPassword">
         <button type="button" class="button" @click="submitPassword">Submit</button>
       </div>
 
@@ -53,7 +70,7 @@
     >
     </EditFolder>
 
-    <template v-if="$root.settings.folder_currently_opened === slugFolderName">
+    <div v-if="$root.settings.folder_currently_opened === slugFolderName" class="margin-left-small margin-bottom-small">
       <template v-if="loading_folder_medias">
         <span class="loader margin-small"></span>
       </template>
@@ -71,13 +88,14 @@
         >
         </media>
       </template>
-    </template>
+    </div>
   </div>
 </template>
 <script>
 import Media from './Media.vue';
 import FileUpload from './FileUpload.vue';
 import EditFolder from './modals/EditFolder.vue';
+import moment from 'moment';
 
 /*
   WARNING : since index compiles to an HTML file, we have to use lowercase variables there
@@ -99,10 +117,10 @@ export default {
       showInputPasswordField: false
     }
   },
-  computed: {
-
-  },
   methods: {
+    formatDateToHuman(date) {
+      return moment(date).calendar();
+    },
     loadFolderMedias() {
       this.$root.loadFolderMedias(this.slugFolderName);
       this.loading_folder_medias = true;
@@ -126,9 +144,6 @@ export default {
       this.$root.has_modal_opened = this.showEditFolderModal;
     }
   },
-
-  computed: {
-  }
 }
 </script>
 <style scoped>
