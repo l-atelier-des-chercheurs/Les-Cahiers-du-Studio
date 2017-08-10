@@ -73,7 +73,8 @@ module.exports = (function() {
               reject(err.message);
             })
             .screenshots({
-              count: 4,
+              count: 1,
+              timemarks: ['00:00:00'],
               filename: `${slugMediaName}.%s.jpeg`,
               folder: _getFolderPath(thumbFolderPath)
             });
