@@ -3,6 +3,7 @@
     :id="uniqueDropzoneID"
     :url="uriToUploadMedia"
     v-on:vdropzone-success="showSuccess"
+    :maxFileSizeInMB="50"
     class="dropzone margin-right-small margin-bottom-small"
   >
     <input type="hidden" name="token" :value="slugFolderName">

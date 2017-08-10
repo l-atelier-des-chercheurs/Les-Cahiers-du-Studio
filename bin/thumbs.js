@@ -1,7 +1,9 @@
 const
   sharp = require('sharp'),
   path = require('path'),
-  fs = require('fs-extra')
+  fs = require('fs-extra'),
+  ffmpegstatic = require('ffmpeg-static'),
+  ffmpeg = require('fluent-ffmpeg')
 ;
 
 const
@@ -9,6 +11,8 @@ const
   dev = require('./dev-log')
 ;
 
+ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfprobePath(ffmpegstatic.path);
 
 module.exports = (function() {
 
@@ -52,7 +56,27 @@ module.exports = (function() {
         }
 
         if(meta.type === 'video') {
-
+          ffmpeg(mediaPath)
+            // setup event handlers
+            .on('end', function(files) {
+              dev.logverbose(`Screenshots were saved : ${JSON.stringify(files,null,4)}`);
+/*
+              let thumbMeta = {
+                path: thumbPath,
+                size: thumbRes
+              };
+              resolve(thumbMeta);
+*/
+            })
+            .on('error', function(err) {
+              dev.error(`An error happened: ${err.message}`);
+              reject(err.message);
+            })
+            .screenshots({
+              count: 4,
+              filename: `${slugMediaName}.%s.jpeg`,
+              folder: _getFolderPath(thumbFolderPath)
+            });
         }
 
         Promise.all(makeThumbs).then((thumbData) => {
