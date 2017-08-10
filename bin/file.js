@@ -2,7 +2,6 @@ const
   path = require('path'),
   fs = require('fs-extra'),
   imageSize = require('image-size'),
-  mkdirp = require('mkdirp'),
   validator = require('validator')
 ;
 
@@ -170,7 +169,7 @@ module.exports = (function() {
 
         // créer un fichier meta avec : nom humain, date de création, date de début, date de fin, mot de passe hashé, nom des auteurs
         dev.logverbose(`Making a new folder at path ${getFolderPath(slugFolderName)}`);
-        mkdirp(getFolderPath(slugFolderName), function(err) {
+        fs.mkdirp(getFolderPath(slugFolderName), function(err) {
           makeFolderMeta(slugFolderName, fdata).then((mdata) => {
             let folderMetaPath = getMetaFileOfFolder(slugFolderName);
             api.storeData(folderMetaPath, mdata, 'create').then(function(meta) {
@@ -357,18 +356,19 @@ module.exports = (function() {
             public: false,
           };
 
-          try {
-            let dimension = imageSize(mediaPath);
-            let mediaRatio = typeof dimension !== undefined ? dimension.height / dimension.width : undefined;
-            if(mediaRatio !== undefined) { mdata.ratio = mediaRatio; }
-          } catch(err) {
-            dev.error(`Failed to get size of media. Error: ${err}`);
-          }
-
           let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(slugMediaName)[0];
           dev.logverbose(`Trying to guess filetype from extension: ${mediaFileExtension}`);
           switch(mediaFileExtension.toLowerCase()) {
+            case '.jpeg':
+            case '.jpg':
+            case '.png':
+            case '.gif':
+            case 'tiff':
+              mdata.type = 'image';
+              break;
             case '.mp4':
+            case '.mov':
+            case '.webm':
               mdata.type = 'video';
               break;
             case '.mp3':
@@ -376,6 +376,16 @@ module.exports = (function() {
               break;
             default:
               mdata.type = 'other';
+          }
+
+          if(mdata.type === 'image') {
+            try {
+              let dimension = imageSize(mediaPath);
+              let mediaRatio = typeof dimension !== undefined ? dimension.height / dimension.width : undefined;
+              if(mediaRatio !== undefined) { mdata.ratio = mediaRatio; }
+            } catch(err) {
+              dev.error(`Failed to get size of media. Error: ${err}`);
+            }
           }
 
           api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
@@ -438,9 +448,9 @@ module.exports = (function() {
       let movedMediaMetaPath = movedMediaPath + local.settings().metaFileext;
 
 
-      fs.move(mediaPath, movedMediaPath)
+      fs.move(mediaPath, movedMediaPath, { overwrite: true })
       .then(() => {
-        return fs.move(mediaMetaPath, movedMediaMetaPath);
+        return fs.move(mediaMetaPath, movedMediaMetaPath, { overwrite: true });
       })
       .then(() => {
         resolve();

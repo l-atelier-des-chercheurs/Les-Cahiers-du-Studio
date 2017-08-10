@@ -52,13 +52,12 @@ module.exports = (function() {
   /**************************************************************** UTIL ********************************/
   function onAuthenticate(socket, d) {
     dev.logfunction(`EVENT - onAuthenticate for ${JSON.stringify(d, null, 4)}`);
-    if(d.admin_access !== undefined) {
-      auth.setAuthenticate(socket.id, d.admin_access).then((list_admin_folders) => {
-        api.sendEventWithContent('authentificated', list_admin_folders, io, socket);
-      });
-    } else {
-      dev.error(`Auth: no access data to parse.`);
-    }
+    auth.setAuthenticate(socket.id, d.admin_access).then((list_admin_folders) => {
+      api.sendEventWithContent('authentificated', list_admin_folders, io, socket);
+    })
+    .catch(err => {
+      api.sendEventWithContent('authentificated', {}, io, socket);
+    });
   }
 
   function pushMessage(msg) {

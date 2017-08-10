@@ -19,26 +19,32 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logverbose(`setAuthenticate for ${sessionId}.`);
       users_auth[sessionId] = [];
-      // get all folders slugs and passwords
-      file.getFolder().then(foldersData => {
-        // compare with data we received
-        for(let slugFolderName in foldersData) {
-          if(admin_access[slugFolderName]) {
-            if(admin_access[slugFolderName] === foldersData[slugFolderName].password) {
-              dev.logverbose(`Password fit for ${slugFolderName}.`);
-              users_auth[sessionId].push(slugFolderName);
-            } else {
-              dev.logverbose(`Password is wrong for ${slugFolderName}.`);
+
+      if(admin_access === undefined || admin_access === {}) {
+        dev.logverbose(`No admin data, resolving immediately.`);
+        reject();
+      } else {
+        // get all folders slugs and passwords
+        file.getFolder().then(foldersData => {
+          // compare with data we received
+          for(let slugFolderName in foldersData) {
+            if(admin_access[slugFolderName]) {
+              if(admin_access[slugFolderName] === foldersData[slugFolderName].password) {
+                dev.logverbose(`Password fit for ${slugFolderName}.`);
+                users_auth[sessionId].push(slugFolderName);
+              } else {
+                dev.logverbose(`Password is wrong for ${slugFolderName}.`);
+              }
             }
           }
-        }
-        dev.log(`Authentificated a new user ${sessionId}.`);
-        dev.log(`She can edit ${users_auth[sessionId] ? users_auth[sessionId].join():''}`);
-        resolve(users_auth[sessionId]);
-      }, function(err, p) {
-        dev.error(`Failed to get folder data: ${err}`);
-        reject(err);
-      });
+          dev.log(`Authentificated a new user ${sessionId}.`);
+          dev.log(`She can edit ${users_auth[sessionId] ? users_auth[sessionId].join():''}`);
+          resolve(users_auth[sessionId]);
+        }, function(err, p) {
+          dev.error(`Failed to get folder data: ${err}`);
+          reject(err);
+        });
+      }
     });
   }
 

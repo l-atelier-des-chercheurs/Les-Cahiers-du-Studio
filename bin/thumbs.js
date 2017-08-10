@@ -1,7 +1,6 @@
 const
   sharp = require('sharp'),
   path = require('path'),
-  mkdirp = require('mkdirp'),
   fs = require('fs-extra')
 ;
 
@@ -27,7 +26,7 @@ module.exports = (function() {
       let mediaPath = path.join(_getFolderPath(slugFolderName), slugMediaName);
 
       // let’s make sure that our thumb folder exists first
-      mkdirp(_getFolderPath(thumbFolderPath), function (err) {
+      fs.mkdirp(_getFolderPath(thumbFolderPath), function (err) {
         if (err) { reject(err); }
 
         // regroup all thumbs promises so they can happen as fast as possible

@@ -20,7 +20,7 @@ window.auth = (function() {
   };
 
   function init() {
-    admin_access = localstore.get('admin_access');
+    admin_access = localstore.get('admin_access') || {};
   }
 
   function updateAdminAccess(folderPass) {
@@ -111,20 +111,20 @@ window.socketio = (function() {
 
     // compare local store and answer from server
     // for each key that is not in the answer, let’s send and alert to notify that the password is most likely wrong or the folder name has changed
-    let admin_access = Object.keys(auth.getAdminAccess());
-
-    admin_access.forEach(slugFolderName => {
-      if(list_admin_folders.indexOf(slugFolderName) === -1) {
-        alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(`Wrong password or inexistent folder for ${slugFolderName}`)
-          ;
-        auth.removeKey(slugFolderName);
-      } else {
-
-      }
-    });
+    if(auth.getAdminAccess() !== undefined) {
+      let admin_access = Object.keys(auth.getAdminAccess());
+      admin_access.forEach(slugFolderName => {
+        if(list_admin_folders === undefined || list_admin_folders.indexOf(slugFolderName) === -1) {
+          alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(`Wrong password or inexistent folder for ${slugFolderName}`)
+            ;
+          auth.removeKey(slugFolderName);
+        } else {
+        }
+      });
+    }
     listFolders();
   }
 
@@ -149,7 +149,6 @@ window.socketio = (function() {
     window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, createdMediaMeta);
     return;
   }
-
 
 
   function listFolders() {
