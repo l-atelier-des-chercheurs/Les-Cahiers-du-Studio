@@ -39,7 +39,7 @@
     </table>
 
     <div class="clearfix margin-small">
-      <button type="button" class="button-small" @click="loadFolderMedias()">
+      <button type="button" class="button-small" @click="openFolder()">
         Show/hide medias
       </button>
 
@@ -70,7 +70,7 @@
     >
     </EditFolder>
 
-    <div v-if="showFolderMedia" class="margin-left-small margin-bottom-small">
+    <div v-if="this.$root.settings.currentlyOpenedFolder === slugFolderName" class="margin-left-small margin-bottom-small">
       <template v-if="loading_folder_medias">
         <span class="loader margin-small"></span>
       </template>
@@ -128,20 +128,18 @@ export default {
       debugFolderContent: false,
       showEditFolderModal: false,
       loading_folder_medias: false,
-      showInputPasswordField: false,
-      showFolderMedia: false
+      showInputPasswordField: false
     }
   },
   methods: {
     formatDateToHuman(date) {
       return moment(date).calendar();
     },
-    loadFolderMedias() {
-      this.showFolderMedia = !this.showFolderMedia;
-      if(this.showFolderMedia) {
-        this.loading_folder_medias = true;
-        window.socketio.listMedias(this.slugFolderName);
-      }
+    openFolder() {
+      this.$root.openFolder(this.slugFolderName);
+    },
+    closeFolder() {
+      this.$root.closeFolder();
     },
     removeFolder() {
       if(window.confirm(locals.lang.modal.sureToRemoveFolder)) {
@@ -158,9 +156,6 @@ export default {
     'folder.medias': function() {
       if(this.loading_folder_medias) { this.loading_folder_medias = false; }
     },
-    showEditFolderModal: function() {
-      this.$root.has_modal_opened = this.showEditFolderModal;
-    }
   },
 }
 </script>

@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <h1 class="margin-small">
-      Documentation boilerplate
-    </h1>
+
+    <Navbar :folder="$root.store.folders[$root.store.currentlyOpenedFolder]">
+    </Navbar>
 
     <button type="button" class="button margin-small" @click="showCreateFolderModal = true">
       Create Folder
@@ -35,7 +35,12 @@
 
     <hr>
 
-    <Folder v-for="sortedFolder in sortedFoldersSlug" :key="sortedFolder.slugFolderName" :slugFolderName="sortedFolder.slugFolderName" :folder="$root.store.folders[sortedFolder.slugFolderName]">
+    <Folder
+      v-for="sortedFolder in sortedFoldersSlug"
+      :key="sortedFolder.slugFolderName"
+      :slugFolderName="sortedFolder.slugFolderName"
+      :folder="$root.store.folders[sortedFolder.slugFolderName]"
+    >
     </Folder>
 
     <hr>
@@ -46,6 +51,7 @@
 </template>
 
 <script>
+import Navbar from './components/Navbar.vue';
 import FileUpload from './components/FileUpload.vue';
 import Folder from './components/Folder.vue';
 import CreateFolder from './components/modals/CreateFolder.vue';
@@ -54,6 +60,7 @@ import BottomFooter from './components/BottomFooter.vue';
 export default {
   name: 'app',
   components: {
+    Navbar,
     FileUpload,
     Folder,
     CreateFolder,

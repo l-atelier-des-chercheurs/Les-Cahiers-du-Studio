@@ -49,10 +49,12 @@ export default {
   created: function () {
     window.addEventListener('keyup', this.escapeKeyListener);
     document.body.classList.add(className);
+    this.$root.has_modal_opened = true;
   },
   destroyed: function() {
     document.removeEventListener('keyup', this.escapeKeyListener);
     document.body.classList.remove(className);
+    this.$root.has_modal_opened = false;
   },
 }
 </script>

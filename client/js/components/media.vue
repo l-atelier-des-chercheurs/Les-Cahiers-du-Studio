@@ -53,9 +53,6 @@ export default {
   computed: {
   },
   watch: {
-    showMediaModal: function() {
-      this.$root.has_modal_opened = this.showMediaModal;
-    }
   },
   methods: {
     removeMedia() {

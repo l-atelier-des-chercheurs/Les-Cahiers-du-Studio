@@ -216,7 +216,8 @@ new Vue({
   data: {
     store: window.store.state,
     settings: {
-      has_modal_opened: false
+      has_modal_opened: false,
+      currentlyOpenedFolder: ''
     },
   },
   methods: {
@@ -240,6 +241,15 @@ new Vue({
       if(window.store.debug) { console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`); }
       window.socketio.editMedia(mdata);
     },
+
+    openFolder: function(slugFolderName) {
+      if(window.store.debug) { console.log(`ROOT EVENT: openFolder: ${slugFolderName}`); }
+      this.settings.currentlyOpenedFolder = slugFolderName;
+      window.socketio.listMedias(slugFolderName);
+    },
+    closeFolder: function() {
+      this.settings.currentlyOpenedFolder = '';
+    }
   },
   watch: {
     has_modal_opened: function() {
