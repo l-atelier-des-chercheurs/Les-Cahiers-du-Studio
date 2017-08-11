@@ -279,7 +279,7 @@ function copyAndRenameUserFolder() {
       dev.log('Missing path to content folder');
       try {
         userDirPath = dialog.showOpenDialog({
-          title: 'Sélectionnez le dossier qui contiendra le contenu de stv doc',
+          title: 'Select the folder which will contain all the medias and the informations added.',
           defaultPath: app.getPath('documents'),
           properties: ['openDirectory']
         })[0];

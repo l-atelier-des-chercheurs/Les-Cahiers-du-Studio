@@ -117,4 +117,4 @@ gulp.task('watch', function() {
 });
 
 // Default Task
-gulp.task('default', ['sass', 'css-prod', 'lint', 'scripts', 'scripts-prod', 'watch']);
+gulp.task('default', ['sass', 'css-prod', 'lint', 'scripts', 'scripts-prod']);

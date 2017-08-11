@@ -23,7 +23,7 @@
   },
   "build": {
     "electronVersion": "1.7.5",
-    "appId": "stv-doc",
+    "appId": "documentation-boilerplate",
     "asar": false,
     "mac": {
       "category": "public.app-category.education"
@@ -33,7 +33,6 @@
     "alertify.js": "^1.0.12",
     "body-parser": "^1.15.0",
     "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master",
-    "electron": "1.7.5",
     "electron-log": "^2.2.7",
     "exif-reader": "^1.0.2",
     "express": "4.15.4",
@@ -68,8 +67,8 @@
     "browser-sync": "^2.14.0",
     "browserify": "^14.4.0",
     "electron-builder": "^19.20.0",
+    "electron": "1.7.5",
     "electron-prebuilt": "^1.4.13",
-    "electron-rebuild": "^1.6.0",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-jshint": "^2.0.1",
