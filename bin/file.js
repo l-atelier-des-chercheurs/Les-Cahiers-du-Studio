@@ -372,6 +372,8 @@ module.exports = (function() {
         // if there's nothing at path, we’re all good
         if(err) {
 
+          let tasks = [];
+
           // works with files copied directly in the folder
           let stats = fs.statSync(mediaPath);
           let birthtime = api.convertDate(new Date(stats.birthtime));
@@ -382,14 +384,7 @@ module.exports = (function() {
 
           // in the case of files uploaded through the interface, there should be an additionalMeta object
           if(additionalMeta !== undefined) {
-            birthtime = additionalMeta.fileCreationDate;
-          }
-
-          // if EXIF, override this data
-          let exifobj = thumbs.readEXIFData(mediaPath);
-          dev.log(`exifobj : ${JSON.stringify(exifobj,null,4)}`);
-          if(exifobj) {
-
+            birthtime = api.convertDate(additionalMeta.fileCreationDate);
           }
 
           let mdata = {
@@ -430,16 +425,32 @@ module.exports = (function() {
             }
           }
 
-          api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
-            dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);
-            resolve(meta);
-          }, function(err) {
-            reject(`Couldn't create media meta : ${err}`);
+          // if EXIF, override this data
+          let useEXIFdata = new Promise((resolve, reject) => {
+            thumbs.getEXIFTimestamp(mediaPath).then(ts => {
+              dev.log(`getEXIFTimestamp : ${JSON.stringify(ts)}`);
+              mdata.created = api.convertDate(ts);
+              resolve();
+            })
+            .catch((err) => {
+              dev.error(`Error while trying to read EXIF : ${err}`);
+              resolve();
+            });
+          });
+          tasks.push(useEXIFdata);
+
+          Promise.all(tasks).then(() => {
+            api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
+              dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);
+              resolve(meta);
+            }, function(err) {
+              reject(`Couldn't create media meta : ${err}`);
+            });
           });
 
         } else {
           // otherwise, something’s weird
-          dev.error(`Found existing meta! Weird.`);
+          dev.error(`Found existing meta! Aborting`);
           reject();
         }
       });

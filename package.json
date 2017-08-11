@@ -35,6 +35,7 @@
     "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master",
     "electron": "1.7.5",
     "electron-log": "^2.2.7",
+    "exif-reader": "^1.0.2",
     "express": "4.15.4",
     "ffmpeg-static": "^2.0.0",
     "flags": "^0.1.3",

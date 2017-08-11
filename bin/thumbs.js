@@ -3,7 +3,8 @@ const
   path = require('path'),
   fs = require('fs-extra'),
   ffmpegstatic = require('ffmpeg-static'),
-  ffmpeg = require('fluent-ffmpeg')
+  ffmpeg = require('fluent-ffmpeg'),
+  exifReader = require('exif-reader')
 ;
 
 const
@@ -17,8 +18,8 @@ ffmpeg.setFfprobePath(ffmpegstatic.path);
 module.exports = (function() {
 
   const API = {
-    makeMediaThumbs : (slugFolderName, slugMediaName, meta) => makeMediaThumbs(slugFolderName, slugMediaName, meta),
-    readEXIFData    : mediaPath => readEXIFData(mediaPath)
+    makeMediaThumbs   : (slugFolderName, slugMediaName, meta) => makeMediaThumbs(slugFolderName, slugMediaName, meta),
+    getEXIFTimestamp  : (mediaPath) => getEXIFTimestamp(mediaPath)
   };
 
   // this function is used both when creating a media and everything media are listed.
@@ -88,16 +89,44 @@ module.exports = (function() {
     });
   }
 
-  function readEXIFData(mediaPath) {
+  function getEXIFTimestamp(mediaPath) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`THUMBS — readEXIFData — for: ${JSON.stringify(mediaPath, null, 4)}`);
+      dev.logfunction(`THUMBS — readEXIFData — for: ${mediaPath}`);
 
       sharp(mediaPath)
         .metadata()
-        .then((metadata) => resolve(metadata))
-        ;
+        .then(metadata => {
+          dev.logverbose(`Gotten metadata`);
+          let ts = _extractImageTimestamp(metadata);
+          resolve(ts);
+        })
+        .catch(err => reject());
     });
   }
+
+  // from https://github.com/pchaussalet/photo_triage/blob/61f5d53d697c3db102e91ad7f674f61c72f4c4bf/lib/maintenance.js
+  function _extractImageTimestamp(metadata) {
+      var timestamp = Date.now();
+      if (metadata.exif) {
+          var parsedMetadata = exifReader(metadata.exif);
+          if (parsedMetadata) {
+              if (parsedMetadata.exif && (parsedMetadata.exif.DateTimeOriginal || parsedMetadata.exif.DateTimeDigitized)) {
+                  var exif = parsedMetadata.exif;
+                  if (exif.DateTimeOriginal) {
+                      timestamp = exif.DateTimeOriginal.getTime();
+                  } else {
+                      timestamp = exif.DateTimeDigitized.getTime();
+                  }
+              } else {
+                  if (parsedMetadata.image && parsedMetadata.image.ModifyDate) {
+                      timestamp = parsedMetadata.image.ModifyDate.getTime();
+                  }
+              }
+          }
+      }
+      return timestamp;
+  }
+
 
   function _getFolderPath(slugFolderName = '') {
     return path.join(_getUserPath(), slugFolderName);

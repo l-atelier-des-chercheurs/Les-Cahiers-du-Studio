@@ -14,9 +14,9 @@ module.exports = (function() {
   let electronApp;
 
   const API = {
-    init          : (app, io, electronApp)   => { return init(app, io, electronApp); },
-    createMediaMeta : (slugFolderName, slugMediaName) => { return createMediaMeta(slugFolderName, slugMediaName); },
-    pushMessage   : (msg)    => pushMessage(msg)
+    init            : (app, io, electronApp)   => init(app, io, electronApp),
+    createMediaMeta : (slugFolderName, slugMediaName, additionalMeta) => createMediaMeta(slugFolderName, slugMediaName, additionalMeta),
+    pushMessage     : (msg)    => pushMessage(msg)
   };
 
   function init(thisApp, thisIO, thisElectronApp) {
@@ -116,12 +116,12 @@ module.exports = (function() {
 
   function createMediaMeta(slugFolderName, slugMediaName, additionalMeta) {
     dev.logfunction(`EVENT - createMediaMeta for ${slugFolderName}/${slugMediaName}`);
-    createMediaMeta(slugFolderName, slugMediaName, additionalMeta).then(() => {
+    dev.logverbose(`Has additional meta: ${JSON.stringify(additionalMeta,null,4)}`);
+    file.createMediaMeta(slugFolderName, slugMediaName, additionalMeta).then(() => {
       sendMedias(slugFolderName, slugMediaName);
     }, function(err) {
       dev.error(`Failed to list medias! Error: ${err}`);
     });
-
   }
 
   function onEditMedia(socket,d) {

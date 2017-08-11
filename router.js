@@ -95,17 +95,16 @@ module.exports = function(app,io,m){
       let newFile = file;
       for(let fileName in fieldValues) {
         if(fileName === file.name) {
-          dev.logverbose(`Found matching filenames, will merge with : ${JSON.stringify(fieldValues[fileName], null, 4)}`);
           newFile = Object.assign({}, file, { additionalMeta: fieldValues[fileName] });
         }
       }
-      dev.logverbose(`Found matching filenames, new meta file is: ${JSON.stringify(newFile,null,4)}`);
+//       dev.logverbose(`Found matching filenames, new meta file is: ${JSON.stringify(newFile,null,4)}`);
       allFilesMeta.push(newFile);
     });
 
     // log any errors that occur
     form.on('error', function(err) {
-      console.log('An error has occured: \n' + err);
+      console.log(`An error has happened: ${err}`);
     });
 
     // once all the files have been uploaded
@@ -128,14 +127,14 @@ module.exports = function(app,io,m){
     form.parse(req);
   }
 
-  function renameMediaAndCreateMeta(uploadDir, slugFolderName, file) {
+  function renameMediaAndCreateMeta(uploadDir, slugFolderName, fileMeta) {
     return new Promise(function(resolve, reject) {
-      api.findFirstFilenameNotTaken(uploadDir, file.name).then(function(newFileName){
+      api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(function(newFileName){
         dev.logverbose(`Following filename is available: ${newFileName}`);
+        dev.logverbose(`Has additional meta: ${JSON.stringify(fileMeta.additionalMeta, null, 4)}`);
         let newPathToNewFileName = path.join(uploadDir, newFileName);
-        fs.renameSync(file.path, newPathToNewFileName);
-
-        sockets.createMediaMeta(slugFolderName,newFileName,file.additionalMeta);
+        fs.renameSync(fileMeta.path, newPathToNewFileName);
+        sockets.createMediaMeta(slugFolderName, newFileName, fileMeta.additionalMeta);
         resolve();
       }, function(err) {
         reject(err);
