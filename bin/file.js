@@ -400,7 +400,9 @@ module.exports = (function() {
             case '.jpg':
             case '.png':
             case '.gif':
-            case 'tiff':
+            case '.tiff':
+            case '.tif':
+            case '.dng':
               mdata.type = 'image';
               break;
             case '.mp4':

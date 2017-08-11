@@ -216,21 +216,10 @@ new Vue({
   data: {
     store: window.store.state,
     settings: {
-      folder_currently_opened: '',
       has_modal_opened: false
     },
   },
   methods: {
-    loadFolderMedias: function(slugFolderName) {
-      if(window.store.debug) { console.log(`ROOT EVENT: loadFolderMedias: ${slugFolderName}`); }
-
-      if(this.settings.folder_currently_opened !== slugFolderName) {
-        window.socketio.listMedias(slugFolderName);
-        this.settings.folder_currently_opened = slugFolderName;
-      } else {
-        this.settings.folder_currently_opened = '';
-      }
-    },
     createFolder: function(fdata) {
       if(window.store.debug) { console.log(`ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`); }
       window.socketio.createFolder(fdata);

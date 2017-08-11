@@ -4,7 +4,7 @@
       Documentation boilerplate
     </h1>
 
-    <button type="button" class="button margin-small" @click="showCreateFolderModal = !showCreateFolderModal">
+    <button type="button" class="button margin-small" @click="showCreateFolderModal = true">
       Create Folder
     </button>
     <CreateFolder v-if="showCreateFolderModal" @close="showCreateFolderModal = false">

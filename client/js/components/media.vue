@@ -71,17 +71,18 @@ export default {
 .media {
   width:16em;
   float:left;
-  border:2px solid #eee;
   background: white;
+  border:2px solid #eee;
 }
 
 .mediaContent {
-  width:16em;
+  width:100%;
   height:12em;
   background-color: #ddd;
   display: flex;
   align-items:center;
   justify-content:center;
+  overflow: hidden;
 }
 
 </style>

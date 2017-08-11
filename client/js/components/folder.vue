@@ -70,7 +70,7 @@
     >
     </EditFolder>
 
-    <div v-if="$root.settings.folder_currently_opened === slugFolderName" class="margin-left-small margin-bottom-small">
+    <div v-if="showFolderMedia" class="margin-left-small margin-bottom-small">
       <template v-if="loading_folder_medias">
         <span class="loader margin-small"></span>
       </template>
@@ -128,7 +128,8 @@ export default {
       debugFolderContent: false,
       showEditFolderModal: false,
       loading_folder_medias: false,
-      showInputPasswordField: false
+      showInputPasswordField: false,
+      showFolderMedia: false
     }
   },
   methods: {
@@ -136,8 +137,11 @@ export default {
       return moment(date).calendar();
     },
     loadFolderMedias() {
-      this.$root.loadFolderMedias(this.slugFolderName);
-      this.loading_folder_medias = true;
+      this.showFolderMedia = !this.showFolderMedia;
+      if(this.showFolderMedia) {
+        this.loading_folder_medias = true;
+        window.socketio.listMedias(this.slugFolderName);
+      }
     },
     removeFolder() {
       if(window.confirm(locals.lang.modal.sureToRemoveFolder)) {
