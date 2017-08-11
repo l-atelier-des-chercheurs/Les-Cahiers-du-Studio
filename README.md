@@ -1,4 +1,14 @@
-**todo**
+# Documentation Boilerplate
+
+## A starting point for media documentation tools
+
+Features: 
+- accepts images and videos
+- uses a folder/media structure, with text files to store informations
+- can be made into a native app for window/linux/mac
+- creates a server where other devices on the same local network can connect, for example a smartphone connected via wifi can browse and send information
+- folders are protected with passwords
+- no password means a folder is public, and can be edited by anyone
 
 ## How to install
 
