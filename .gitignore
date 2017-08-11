@@ -38,3 +38,7 @@ dist/
 client/development/
 
 client/development/main.js
+
+client/production/all.min.css
+
+client/production/all.min.js

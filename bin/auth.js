@@ -63,21 +63,27 @@ module.exports = (function() {
 
   function filterFolders(sessionId, foldersData) {
     dev.logfunction(`AUTH — filtering folders data for ${sessionId} and users_auth ${users_auth[sessionId]}.`);
-    for (let slugFolderName in foldersData) {
+    // we do this in order not to touch the original foldersData
+    let filteredFoldersData = JSON.parse(JSON.stringify(foldersData));
+
+    for (let slugFolderName in filteredFoldersData) {
       // find if sessionID has this folder
-      if(hasFolderAuth(sessionId,foldersData,slugFolderName)) {
+      if(hasFolderAuth(sessionId,filteredFoldersData,slugFolderName)) {
         dev.logverbose(`For ${sessionId}, admin access authorized for ${slugFolderName}.`);
-        foldersData[slugFolderName].authorized = true;
+        filteredFoldersData[slugFolderName].authorized = true;
       } else {
         dev.logverbose(`For ${sessionId}, admin access refused for ${slugFolderName}.`);
-        foldersData[slugFolderName].authorized = false;
+        filteredFoldersData[slugFolderName].authorized = false;
       }
     }
-    return foldersData;
+    return filteredFoldersData;
   }
 
   function filterMedias(sessionId, foldersData, slugFolderName, mediasData) {
     dev.logfunction(`AUTH — filtering medias data for ${sessionId}.`);
+
+    // we do this in order not to touch the original mediasData
+    let filteredMediasData = JSON.parse(JSON.stringify(mediasData));
 
     if(!hasFolderAuth(sessionId,foldersData,slugFolderName)) {
       // is public user (remove all non-public medias)
@@ -85,11 +91,11 @@ module.exports = (function() {
         if(!mediasData[slugMediaName].hasOwnProperty('public') ||
         !(mediasData[slugMediaName].public === true || mediasData[slugMediaName].public === 'true')) {
           dev.logverbose(`Removing media ${slugMediaName} for public user`);
-          delete mediasData[slugMediaName];
+          delete filteredMediasData[slugMediaName];
         }
       }
     }
-    return mediasData;
+    return filteredMediasData;
   }
 
 
