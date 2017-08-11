@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <h1 class="margin-small">
-      Documentation platform
+      Documentation boilerplate
     </h1>
 
     <button type="button" class="button margin-small" @click="showCreateFolderModal = !showCreateFolderModal">
