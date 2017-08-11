@@ -76,17 +76,31 @@ module.exports = function(app,io,m){
     // store all uploads in the folder directory
     form.uploadDir = file.getFolderPath(slugFolderName);
 
-    var allFilesMeta = [];
+    let allFilesMeta = [];
 
+    let fieldValues = {};
     form.on('field', function(name, value) {
-      console.log('Name: ' + name);
-      console.log('Value: ' + value);
+      console.log(`Got field with name = ${name} and value = ${value}.`);
+      try {
+        fieldValues[name] = JSON.parse(value);
+      } catch(e) {
+        // didn’t get an object as additional meta
+      }
     });
 
     // every time a file has been uploaded successfully,
     form.on('file', function(field, file) {
-      dev.logverbose(`File uploaded:\nfield: ${JSON.stringify(field)}\nfile: ${JSON.stringify(file)}.`);
-      allFilesMeta.push(file);
+      dev.logverbose(`File uploaded:\nfield: ${field}\nfile: ${JSON.stringify(file, null, 4)}.`);
+      // add addiontal meta from 'field' to the array
+      let newFile = file;
+      for(let fileName in fieldValues) {
+        if(fileName === file.name) {
+          dev.logverbose(`Found matching filenames, will merge with : ${JSON.stringify(fieldValues[fileName], null, 4)}`);
+          newFile = Object.assign({}, file, { additionalMeta: fieldValues[fileName] });
+        }
+      }
+      dev.logverbose(`Found matching filenames, new meta file is: ${JSON.stringify(newFile,null,4)}`);
+      allFilesMeta.push(newFile);
     });
 
     // log any errors that occur
@@ -94,16 +108,13 @@ module.exports = function(app,io,m){
       console.log('An error has occured: \n' + err);
     });
 
-    // once all the files have been uploaded, send a response to the client
+    // once all the files have been uploaded
     form.on('end', function() {
-
       if(allFilesMeta.length > 0) {
         var m = [];
         for(var i in allFilesMeta) {
           m.push(renameMediaAndCreateMeta(form.uploadDir, slugFolderName, allFilesMeta[i]));
         }
-
-        // rename the new media if necessary to it's original name prepended by a number
         Promise.all(m).then(() => {
           let msg = {};
           msg.msg = 'success';
@@ -124,8 +135,7 @@ module.exports = function(app,io,m){
         let newPathToNewFileName = path.join(uploadDir, newFileName);
         fs.renameSync(file.path, newPathToNewFileName);
 
-        // TODO: replace with file.createMediaMeta, sockets should only contain packets logic
-        sockets.createMediaMeta(slugFolderName,newFileName);
+        sockets.createMediaMeta(slugFolderName,newFileName,file.additionalMeta);
         resolve();
       }, function(err) {
         reject(err);

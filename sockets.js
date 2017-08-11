@@ -114,9 +114,14 @@ module.exports = (function() {
     sendMedias(d.slugFolderName, '', socket);
   }
 
-  function createMediaMeta(slugFolderName, slugMediaName) {
+  function createMediaMeta(slugFolderName, slugMediaName, additionalMeta) {
     dev.logfunction(`EVENT - createMediaMeta for ${slugFolderName}/${slugMediaName}`);
-    sendMedias(slugFolderName, slugMediaName);
+    createMediaMeta(slugFolderName, slugMediaName, additionalMeta).then(() => {
+      sendMedias(slugFolderName, slugMediaName);
+    }, function(err) {
+      dev.error(`Failed to list medias! Error: ${err}`);
+    });
+
   }
 
   function onEditMedia(socket,d) {

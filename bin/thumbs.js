@@ -17,14 +17,15 @@ ffmpeg.setFfprobePath(ffmpegstatic.path);
 module.exports = (function() {
 
   const API = {
-    makeMediaThumbs     : (slugFolderName, slugMediaName, meta) => { return makeMediaThumbs(slugFolderName, slugMediaName, meta); }
+    makeMediaThumbs : (slugFolderName, slugMediaName, meta) => makeMediaThumbs(slugFolderName, slugMediaName, meta),
+    readEXIFData    : mediaPath => readEXIFData(mediaPath)
   };
 
   // this function is used both when creating a media and everything media are listed.
   // this way, if thumbs are deleted or moved while the app is running, they will be recreated next time they are required
   function makeMediaThumbs(slugFolderName, slugMediaName, meta) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`THUMBS — Making thumbs for media with meta: ${JSON.stringify(meta, null, 4)}`);
+      dev.logfunction(`THUMBS — makeMediaThumbs — Making thumbs for media with meta: ${JSON.stringify(meta, null, 4)}`);
 
       let thumbFolderPath = path.join(local.settings().thumbFolderName, slugFolderName);
       let mediaPath = path.join(_getFolderPath(slugFolderName), slugMediaName);
@@ -84,6 +85,17 @@ module.exports = (function() {
           resolve(thumbData);
         });
       });
+    });
+  }
+
+  function readEXIFData(mediaPath) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(`THUMBS — readEXIFData — for: ${JSON.stringify(mediaPath, null, 4)}`);
+
+      sharp(mediaPath)
+        .metadata()
+        .then((metadata) => resolve(metadata))
+        ;
     });
   }
 
