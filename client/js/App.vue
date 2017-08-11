@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 
-    <Navbar :folder="$root.store.folders[$root.store.currentlyOpenedFolder]">
+    <Navbar :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]">
     </Navbar>
 
     <button type="button" class="button margin-small" @click="showCreateFolderModal = true">

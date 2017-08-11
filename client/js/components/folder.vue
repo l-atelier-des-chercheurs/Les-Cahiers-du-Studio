@@ -40,7 +40,7 @@
 
     <div class="clearfix margin-small">
       <button type="button" class="button-small" @click="openFolder()">
-        Show/hide medias
+        Open
       </button>
 
       <button v-if="!folder.authorized" type="button" class="button-small" @click="showInputPasswordField = !showInputPasswordField">
@@ -70,45 +70,25 @@
     >
     </EditFolder>
 
-    <div v-if="this.$root.settings.currentlyOpenedFolder === slugFolderName" class="margin-left-small margin-bottom-small">
-      <template v-if="loading_folder_medias">
-        <span class="loader margin-small"></span>
-      </template>
-      <template v-else>
-        <fileUpload v-if="(folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass'" :slugFolderName="slugFolderName">
-        </fileUpload>
+    <FileUpload v-if="(folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass'" :slugFolderName="slugFolderName">
+      <slot>
+        Upload a media
+      </slot>
+    </FileUpload>
 
-        <template v-if="Object.keys(folder.medias).length > 0">
-          <media
-            v-for="(media, index) in folder.medias"
-            :key="index"
-            :slugFolderName="slugFolderName"
-            :slugMediaName="index"
-            :media="media"
-          >
-          </media>
-        </template>
-        <template v-else>
-          <p>
-            <code>
-              <template v-if="folder.authorized">
-                No medias in this folder.
-              </template>
-              <template v-else>
-                No public medias in this folder
-              </template>
-            </code>
-          </p>
-        </template>
+    <TimeLine
+      :slugFolderName="slugFolderName"
+      :folder="folder"
+      :loading_folder_medias="loading_folder_medias"
+    >
+    </TimeLine>
 
-      </template>
-    </div>
   </div>
 </template>
 <script>
-import Media from './Media.vue';
 import FileUpload from './FileUpload.vue';
 import EditFolder from './modals/EditFolder.vue';
+import TimeLine from './TimeLine.vue';
 import moment from 'moment';
 
 /*
@@ -119,9 +99,9 @@ import moment from 'moment';
 export default {
   props: ['folder', 'slugFolderName'],
   components: {
-    Media,
     FileUpload,
-    EditFolder
+    EditFolder,
+    TimeLine
   },
   data() {
     return {
