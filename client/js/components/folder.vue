@@ -39,7 +39,7 @@
     </table>
 
     <div class="clearfix margin-small">
-      <button type="button" class="button-small" @click="openFolder()">
+      <button type="button" class="button-small" @click="$root.openFolder(slugFolderName)">
         Open
       </button>
 
@@ -50,7 +50,6 @@
         <input type="password" ref="passwordField" @keyup.enter="submitPassword">
         <button type="button" class="button" @click="submitPassword">Submit</button>
       </div>
-
       <button v-if="folder.authorized" type="button" class="button-small" @click="debugFolderContent = !debugFolderContent">
         Debug view
       </button>
@@ -69,51 +68,27 @@
       @close="showEditFolderModal = false"
     >
     </EditFolder>
-
-    <FileUpload v-if="(folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass'" :slugFolderName="slugFolderName">
-      <slot>
-        Upload a media
-      </slot>
-    </FileUpload>
-
-    <TimeLine
-      :slugFolderName="slugFolderName"
-      :folder="folder"
-      :loading_folder_medias="loading_folder_medias"
-    >
-    </TimeLine>
-
   </div>
 </template>
 <script>
-import FileUpload from './FileUpload.vue';
 import EditFolder from './modals/EditFolder.vue';
-import TimeLine from './TimeLine.vue';
 import moment from 'moment';
-
-/*
-  WARNING : since index compiles to an HTML file, we have to use lowercase variables there
-  --> which means slugfoldername becomes slugFolderName but only in this file
-*/
 
 export default {
   props: ['folder', 'slugFolderName'],
   components: {
-    FileUpload,
     EditFolder,
-    TimeLine
   },
   data() {
     return {
       debugFolderContent: false,
       showEditFolderModal: false,
-      loading_folder_medias: false,
       showInputPasswordField: false
     }
   },
   methods: {
     formatDateToHuman(date) {
-      return moment(date).calendar();
+      return moment(date, 'YYYY-MM-DD HH:mm').calendar();
     },
     openFolder() {
       this.$root.openFolder(this.slugFolderName);
@@ -133,9 +108,6 @@ export default {
     }
   },
   watch: {
-    'folder.medias': function() {
-      if(this.loading_folder_medias) { this.loading_folder_medias = false; }
-    },
   },
 }
 </script>

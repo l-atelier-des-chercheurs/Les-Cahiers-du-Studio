@@ -1,18 +1,16 @@
 <template>
   <dropzone
     :id="uniqueDropzoneID"
+    ref="dropzone"
     :url="uriToUploadMedia"
     v-on:vdropzone-success="showSuccess"
     v-on:vdropzone-sending="addMeta"
-    v-bind:preview-template="template"
-
-    useCustomDropzoneOptions=true
+    :preview-template="template"
+    :use-custom-dropzone-options=true
     :dropzone-options="customOptionsObject"
 
     :maxFileSizeInMB="50"
     class="dropzone margin-right-small margin-bottom-small"
-    thumbnailHeight=150
-    thumbnailWidth=150
   >
     <input type="hidden">
   </dropzone>
@@ -29,6 +27,8 @@ export default {
   data(){
     return {
       customOptionsObject: {
+        thumbnailHeight: 150,
+        thumbnailWidth: 150,
         language: {
           dictDefaultMessage : 'Upload medias',
         }
@@ -42,6 +42,17 @@ export default {
     uriToUploadMedia: function() {
       return this.slugFolderName + '/file-upload';
     },
+  },
+  created: function() {
+    document.removeEventListener('dragover', function(e){
+//       this.$refs.dropzone
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    });
+  },
+  destroyed: function() {
+
   },
   methods: {
     showSuccess: function (file) {

@@ -4,109 +4,47 @@
     <Navbar :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]">
     </Navbar>
 
-    <button type="button" class="button margin-small" @click="showCreateFolderModal = true">
-      Create Folder
-    </button>
-    <CreateFolder v-if="showCreateFolderModal" @close="showCreateFolderModal = false">
-    </CreateFolder>
+    <transition name="component-fade" mode="out-in">
+      <component
+        :is="view"
+        :slugFolderName="$root.settings.currentlyOpenedFolder"
+        :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
+      ></component>
+    </transition>
 
-    <div class="margin-small">
-      <h4 class="">order by</h4>
-      <div class="input-group clearfix">
-        <button type="button" class="" @click="sort.type = 'date', sort.field = 'created'">
-          by creation date
-        </button>
-        <button type="button" class="" @click="sort.type = 'date', sort.field = 'start'">
-          by start date
-        </button>
-        <button type="button" class="" @click="sort.type = 'alph', sort.field = 'name'">
-          by name
-        </button>
-      </div>
-      <div class="input-group clearfix">
-        <button type="button" class="" @click="sort.order = 'ascending'">
-          ascending
-        </button>
-        <button type="button" class="" @click="sort.order = 'descending'">
-          descending
-        </button>
-      </div>
-    </div>
-
-    <hr>
-
-    <Folder
-      v-for="sortedFolder in sortedFoldersSlug"
-      :key="sortedFolder.slugFolderName"
-      :slugFolderName="sortedFolder.slugFolderName"
-      :folder="$root.store.folders[sortedFolder.slugFolderName]"
-    >
-    </Folder>
-
-    <hr>
-
-    <BottomFooter>
-    </BottomFooter>
+    <template>
+      <BottomFooter v-if="$root.settings.currentlyOpenedFolder === ''">
+      </BottomFooter>
+    </template>
   </div>
 </template>
 
 <script>
 import Navbar from './components/Navbar.vue';
-import FileUpload from './components/FileUpload.vue';
-import Folder from './components/Folder.vue';
-import CreateFolder from './components/modals/CreateFolder.vue';
+import ListView from './ListView.vue'
+import TimeLine from './TimeLine.vue';
 import BottomFooter from './components/BottomFooter.vue';
 
 export default {
   name: 'app',
   components: {
     Navbar,
-    FileUpload,
-    Folder,
-    CreateFolder,
-    BottomFooter
+    ListView,
+    TimeLine,
+    BottomFooter,
   },
   data () {
     return {
-      showCreateFolderModal: false,
-      sort: {
-        type: 'date',
-        field: 'created',
-        order: 'descending'
-      }
+      view: 'ListView',
     }
   },
   computed: {
-    sortedFoldersSlug() {
-      var sortable = [];
-      for (let slugFolderName in this.$root.store.folders) {
-        let orderBy;
-
-        if (this.sort.type ==='date') {
-          orderBy = + new Date(this.$root.store.folders[slugFolderName][this.sort.field]);
-        } else if (this.sort.type ==='alph') {
-          orderBy = this.$root.store.folders[slugFolderName][this.sort.field];
-        }
-
-        sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
-      }
-      let sortedSortable = sortable.sort(function(a, b) {
-          return a.orderBy - b.orderBy;
-      });
-      if(this.sort.order === 'descending') {
-        sortedSortable.reverse();
-      }
-      return sortedSortable;
-    }
-  },
-  methods: {
-    getURLToApp(ninfos) {
-      return `https://${ninfos}:8080`;
-    }
   },
   watch: {
-    sort: function() {
-
+    '$root.settings.currentlyOpenedFolder' : function() {
+      if(this.$root.settings.currentlyOpenedFolder !== '') {
+        this.view = 'TimeLine';
+      }
     }
   }
 }

@@ -1763,3 +1763,10 @@ SVG Icons - svgicons.sparkk.fr
   max-width: 72em;
   width: 100%;
   margin: 0 auto; }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s, max-height; }
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+  max-height: 0; }
