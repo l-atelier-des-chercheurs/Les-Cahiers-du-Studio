@@ -209,7 +209,7 @@ Vue.config.devtools = true;
 import App from './App.vue';
 
 /* eslint-disable no-new */
-new Vue({
+let vm = new Vue({
   el: '#app',
   template: `<App/>`,
   components: { App },
@@ -264,3 +264,6 @@ new Vue({
   }
 });
 
+setTimeout(() => {
+//   vm.openFolder('plotter-twitter');
+}, 500);

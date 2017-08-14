@@ -1,12 +1,7 @@
 <template>
-  <div class="media margin-right-small margin-bottom-small">
-    <p class="margin-small">
-      <small>
-        {{ slugMediaName }}
-      </small>
-    </p>
+  <div class="media" :style="getMediaSize(media)">
 
-    <div class="clearfix">
+    <div class="buttons clearfix">
       <button type="button" class="button-small margin-small float-left" @click="showMediaModal = true">
         Edit Media
       </button>
@@ -47,7 +42,10 @@ export default {
   },
   data() {
     return {
-      showMediaModal: false
+      showMediaModal: false,
+      mediaStyles: {
+        ratio: this.media.ratio,
+      }
     }
   },
   computed: {
@@ -59,27 +57,45 @@ export default {
       if(window.confirm(locals.lang.modal.sureToRemoveMedia)) {
         this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
       }
+    },
+    getMediaSize(media) {
+      if(!this.mediaStyles.ratio) {
+        return {
+          width:  `18vh`,
+          height: `12vh`
+        }
+      }
+      let r = this.mediaStyles.ratio;
+      let w = 18;
+      let h = w * r;
+      return {
+        width: `${w}vh`,
+        height: `${h}vh`
+      }
     }
   }
 }
 </script>
 <style scoped>
-
 .media {
+  position: relative;
   width:16em;
-  float:left;
-  background: white;
-  border:2px solid #eee;
 }
 
 .mediaContent {
   width:100%;
-  height:12em;
+  height:100%;
   background-color: #ddd;
   display: flex;
   align-items:center;
   justify-content:center;
   overflow: hidden;
+}
+
+.buttons {
+  position: absolute;
+  right: 0;
+
 }
 
 </style>
