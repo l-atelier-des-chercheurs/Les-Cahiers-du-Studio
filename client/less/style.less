@@ -8,17 +8,6 @@
     background: rgba(151, 151, 151,0.25);
 }
 
-:root {
-  --body-color: black;
-  --body-bg-color: #fff;
-  --table-stripe-bg-color: #eee;
-  --color-primary: #666;
-  --font-family: 'STVitry';
-  --font-size: 1.1rem; /* Most browsers use a default font size of 16px */
-  --input-font-size: 1rem;
-  --font-weight-bold: 400;
-}
-
 /******************
   Mixins
   ********************/
@@ -28,12 +17,29 @@
   &:after { clear: both; }
 }
 
+
+html {
+  font-size:1.1rem;
+}
+
 body {
   margin: 0;
   font-family: 'STVitry', monospace;
 
   &.is_unscrollable {
     overflow: hidden;
+  }
+}
+
+button {
+  margin: @t-skipline/2;
+  cursor: pointer;
+}
+
+.input-group {
+  button {
+    margin-left: 2px;
+    margin-right: 2px;
   }
 }
 
@@ -54,36 +60,15 @@ input:required {
   z-index: 10000;
 }
 
-/* -----
-SVG Icons - svgicons.sparkk.fr
------ */
+/************************************************************************
 
-.svg-icon {
-  width: 1em;
-  height: 1em;
-}
+      APP
 
-.svg-icon path,
-.svg-icon polygon,
-.svg-icon rect {
-  fill: #4691f6;
-}
-
-.svg-icon circle {
-  stroke: #4691f6;
-  stroke-width: 1;
-}
-
+************************************************************************/
 
 #app {
   width: 100%;
   margin: 0 auto;
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s, max-height
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-  max-height: 0;
-}
+
