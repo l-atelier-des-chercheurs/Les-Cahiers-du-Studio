@@ -41,28 +41,28 @@
       </tbody>
     </table>
 
-    <div class="clearfix margin-small">
-      <button type="button" class="button-small" @click="$root.openFolder(slugFolderName)">
+    <div class="input-group">
+      <button type="button" class="button_small" @click="$root.openFolder(slugFolderName)">
         Open
       </button>
 
-      <button v-if="!folder.authorized" type="button" class="button-small" @click="showInputPasswordField = !showInputPasswordField">
+      <button v-if="!folder.authorized" type="button" class="button_small" @click="showInputPasswordField = !showInputPasswordField">
         Input password
       </button>
+      <button v-if="folder.authorized" type="button" class="button_small" @click="debugFolderContent = !debugFolderContent">
+        Debug view
+      </button>
+      <button v-if="folder.authorized" type="button" class="button_small" @click="showEditFolderModal = true">
+        Edit
+      </button>
+      <button v-if="folder.authorized" type="button" class="button_small" @click="removeFolder()">
+        Remove
+      </button>
+    </div>
       <div v-show="showInputPasswordField" class="input-group" style="width: 250px;">
         <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus>
         <button type="button" class="button" @click="submitPassword">Submit</button>
       </div>
-      <button v-if="folder.authorized" type="button" class="button-small" @click="debugFolderContent = !debugFolderContent">
-        Debug view
-      </button>
-      <button v-if="folder.authorized" type="button" class="button-small" @click="showEditFolderModal = true">
-        Edit
-      </button>
-      <button v-if="folder.authorized" type="button" class="button-small" @click="removeFolder()">
-        Remove
-      </button>
-    </div>
 
     <EditFolder
       v-if="showEditFolderModal"
@@ -115,10 +115,4 @@ export default {
 }
 </script>
 <style scoped>
-.folder {
-  border:2px solid white;
-}
-.is--active {
-  color: #ff0000;
-}
 </style>

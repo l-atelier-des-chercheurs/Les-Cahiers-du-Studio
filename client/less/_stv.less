@@ -62,6 +62,16 @@ a {
   color: inherit;
 }
 
+.is--active {
+  color: #512b1c;
+}
+
+hr {
+  border:none;
+  border-top: 1px solid #000;
+  margin: @t-skipline 0 ;
+}
+
 table {
   border:2px solid white;
 }
@@ -75,22 +85,49 @@ button {
   background-color: white;
   display: inline-block;
 
-  margin: @t-skipline;
+  margin: 0;
   cursor: pointer;
+
+  min-height: @t-skipline*2;
+
+  padding: 0 @t-skipline/2;
+  border-radius: 0.2em;
+
+  &.is--active {
+    font-style: italic;
+  }
+
+  &.button_small {
+    font-size:0.8em;
+    padding: @t-skipline/4;
+  }
 }
 
-.input-group {
-  margin-bottom:  @t-skipline/2;
 
+.button--repli {
+  margin: @t-skipline  0;
+}
+
+
+
+.input-group {
+  width: 100%;
+  display: flex;
+  margin-bottom:  @t-skipline/2;
   button {
-    margin: 0;
-    margin-right:  @t-skipline/2;
-    margin-bottom:  @t-skipline/2;
-    + button {
+    margin: @t-skipline/4;
+    margin-top:0;
+    margin-left: 0;
+
+    & + button {
+      margin-left:  2px;
     }
   }
 }
 
+.input-group, .input-single {
+  margin-bottom:  @t-skipline;
+}
 
 h1,h2,h3,h4,p,ul,ol,table,video, figure, blockquote {
   margin: @t-skipline*1 0;
@@ -112,19 +149,6 @@ figcaption {
 
   }
 }
-
-button {
-  padding: @t-skipline/2;
-  border-radius: 0.2em;
-  &.is--active {
-    font-style: italic;
-  }
-}
-
-.button--repli {
-  margin: @t-skipline  0;
-}
-
 
 * > * {
 //   background-color: rgba(255,0,0,.02);

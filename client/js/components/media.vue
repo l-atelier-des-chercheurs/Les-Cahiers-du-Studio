@@ -4,10 +4,10 @@
 
 <!--
     <div class="buttons clearfix">
-      <button type="button" class="button-small" @click="showMediaModal = true">
+      <button type="button" class="button_small" @click="showMediaModal = true">
         Edit
       </button>
-      <button type="button" class="button-small" @click="removeMedia()">
+      <button type="button" class="button_small" @click="removeMedia()">
         Remove
       </button>
     </div>

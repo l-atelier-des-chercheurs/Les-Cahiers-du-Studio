@@ -12,54 +12,66 @@
     <div class="row">
       <div class="col-md-offset-5 col-md-8">
         <p>
-          La liste ci-dessous contient tous les temps capturés.
+          La liste ci-dessous contient tous les temps capturés. Certains d’entre eux sont /publics/ et tous leurs contenus peuvent être consultés. Vous pouvez également y contribuer, en • ajoutant des médias ou • en en annotant d’autres. Les dossiers protégés par mot de passe sont par contre uniquement consultables.
         </p>
 
-        <button type="button" class="button margin-left-none" @click="showCreateFolderModal = true">
-          Créer un dossier
-        </button>
+        <div class="input-single">
+          <button type="button" class="button margin-left-none" @click="showCreateFolderModal = true">
+            Créer un dossier
+          </button>
+        </div>
 
         <CreateFolder v-if="showCreateFolderModal" @close="showCreateFolderModal = false">
         </CreateFolder>
-
-        <div class="row">
-          <div class="input-group col-md-7">
-            <h4 class="">order by</h4>
-            <button type="button" @click="sort.type = 'date', sort.field = 'created'">
-              creation date
-            </button>
-            <button type="button" class="" @click="sort.type = 'date', sort.field = 'start'">
-              start date
-            </button>
-            <button type="button" class="" @click="sort.type = 'alph', sort.field = 'name'">
-              name
-            </button>
-          </div>
-
-          <div class="input-group col-md-7">
-            <h4 class="">in</h4>
-            <button type="button" class="" @click="sort.order = 'ascending'">
-              ascending
-            </button>
-            <button type="button" class="" @click="sort.order = 'descending'">
-              descending
-            </button>
-          </div>
-        </div>
       </div>
     </div>
 
     <div class="row">
-      <transition-group name="folder-list" tag="Folder">
-        <template v-for="(sortedFolder, index) in sortedFoldersSlug">
+      <div class="col-md-7">
+        <label>Organiser par&nbsp;:</label>
+        <div class="input-group">
+          <button type="button" class="" @click="sort.type = 'alph', sort.field = 'name'">
+            nom
+          </button>
+          <button type="button" @click="sort.type = 'date', sort.field = 'created'">
+            date de création
+          </button>
+          <button type="button" class="" @click="sort.type = 'date', sort.field = 'start'">
+            date de début
+          </button>
+          <button type="button" class="" @click="sort.type = 'date', sort.field = 'end'">
+            date de fin
+          </button>
+        </div>
+      </div>
+      <div class="col-md-7">
+        <label>dans l’ordre&nbsp;</label>
+        <div class="input-group">
+          <button type="button" class="" @click="sort.order = 'ascending'">
+            croissant
+          </button>
+          <button type="button" class="" @click="sort.order = 'descending'">
+            décroissant
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row card_folder_container">
+      <transition-group name="folder-list" tag="div">
+        <div
+          v-for="(sortedFolder, index) in sortedFoldersSlug"
+          :key="sortedFolder.slugFolderName"
+          class="card_folder col-md-4"
+        >
           <Folder
-            class="card_folder col-md-4"
-            :key="sortedFolder.slugFolderName"
             :slugFolderName="sortedFolder.slugFolderName"
             :folder="$root.store.folders[sortedFolder.slugFolderName]"
           >
           </Folder>
-        </template>
+        </div>
       </transition-group>
     </div>
   </div>
@@ -81,7 +93,7 @@ export default {
         type: 'date',
         field: 'created',
         order: 'descending'
-      }
+      },
     }
   },
   computed: {

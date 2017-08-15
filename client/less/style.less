@@ -51,6 +51,71 @@ input:required {
   margin: 0 auto;
 }
 
+.navbar_top {
+  position: relative;
+  width: 100%;
+
+  & > .wrapper {
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 60px;
+    z-index: 1000;
+    background-color: #f2f2f2; // @c-gris_light
+    border-bottom: 1px solid black;
+  }
+  .container {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+
+    display:flex;
+    flex-flow: row wrap;
+    align-items: stretch;
+  }
+
+  .menu_icon {
+    flex: 0 0 60px;
+    height: 100%;
+    padding: 12px;
+  }
+  .menu_icon svg {
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
+  .svg-icon path,
+  .svg-icon polygon,
+  .svg-icon rect {
+    fill: #000;
+    stroke: transparent;
+    stroke-width: 1;
+  }
+
+  .breadcrumb {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .breadcrumb > li {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 50px;
+    padding: 3px;
+  }
+  .breadcrumb > li + li:before {
+    content: "/";
+    padding-right:6px;
+  }
+}
+
+
 h1 {
   text-decoration: underline;
   color: @c-vert;
@@ -59,19 +124,52 @@ h1 {
 
 main {
 
-
-  >*:first-child {
+  > *:first-child {
     margin-top: 0;
   }
+}
+
+.card_folder_container {
+  margin-top: @t-skipline;
 }
 
 .card_folder {
   margin-bottom:  @t-skipline*2;
 
+  .folder {
+    min-height: @t-skipline * 8;
+    border:2px solid white;
+  }
+
+  h2 {
+    margin-top: 0;
+  }
+
+  > * {
+    padding: @t-skipline/2;
+  }
   &:nth-child(3n+1) {
     clear:left;
-    .make-md-column-offset(1);
+//     .make-md-column-offset(1);
   }
 }
+
+
+
+.m_timeline {
+  position: relative;
+
+
+}
+.mediaWrap {
+  position: absolute;
+}
+
+.m_fileupload {
+  position: fixed;
+  bottom:0;
+  right: 5vw;
+}
+
 
 

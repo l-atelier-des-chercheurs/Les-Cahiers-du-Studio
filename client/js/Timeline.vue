@@ -89,25 +89,6 @@ export default {
 </script>
 
 <style scoped lang="sass">
-.m_timeline {
-  position: relative;
-}
-.mediaWrap {
-  position: absolute;
-}
-
-.m_fileupload {
-  position: fixed;
-  bottom:0;
-  right: 5vw;
-}
-
-
-
-</style>
-
-
-<style scoped lang="sass">
 $artboard-grid-px: 20px !default;
 $artboard-grid-color: rgba(0, 0, 0, .25) !default;
 $artboard-divider-interval: 10 !default;
