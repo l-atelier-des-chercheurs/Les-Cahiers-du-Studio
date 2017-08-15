@@ -1014,7 +1014,7 @@ html {
   font-size: 100%;
 }
 body {
-  font-family: 'STVitry';
+  font-family: 'STVitry', monospace;
   font-weight: 400;
   margin: 0;
   font-size: 1em;
@@ -1057,6 +1057,9 @@ h4 {
 a {
   color: inherit;
 }
+table {
+  border: 2px solid white;
+}
 button {
   text-decoration: none;
   background-color: transparent;
@@ -1065,6 +1068,18 @@ button {
   font-family: inherit;
   background-color: white;
   display: inline-block;
+  margin: 1.25em;
+  cursor: pointer;
+}
+.input-group {
+  margin-bottom: 0.625em;
+}
+.input-group button {
+  margin: 0;
+}
+.input-group button + button {
+  margin-left: 0.625em;
+  margin-bottom: 0.625em;
 }
 h1,
 h2,
@@ -1183,13 +1198,16 @@ body.is--debug .m_bs-grid {
   height: 2em;
   padding: 5px;
 }
+.margin-left-none {
+  margin-left: 0 !important;
+}
 main {
   position: relative;
   min-height: 1px;
   padding-left: 8px;
   padding-right: 8px;
   margin-top: 6.25em;
-  min-height: 25em;
+  min-height: 12.5em;
 }
 @media (min-width: 992px) {
   main {
@@ -1346,6 +1364,9 @@ main {
   bottom: 0;
   border: 2px solid white;
 }
+.with_arrow::before {
+  content: '→ ';
+}
 .m_footer {
   margin: 7.5em 0 5em;
   color: #89898c;
@@ -1401,23 +1422,8 @@ main {
     clear: both;
   }
 }
-html {
-  font-size: 1.1rem;
-}
-body {
-  margin: 0;
-  font-family: 'STVitry', monospace;
-}
 body.is_unscrollable {
   overflow: hidden;
-}
-button {
-  margin: 0.625em;
-  cursor: pointer;
-}
-.input-group button {
-  margin-left: 2px;
-  margin-right: 2px;
 }
 img,
 video,
@@ -1445,4 +1451,12 @@ input:required {
 #app {
   width: 100%;
   margin: 0 auto;
+}
+h1 {
+  text-decoration: underline;
+  color: #00ad41;
+  font-style: italic;
+}
+main > *:first-child {
+  margin-top: 0;
 }

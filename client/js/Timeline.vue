@@ -1,11 +1,9 @@
 <template>
-  <div class="timeline" :style="timelineStyles">
-<!--
+  <div class="m_timeline" :style="timelineStyles">
     <template v-if="loading_folder_medias">
       <span class="loader margin-small"></span>
     </template>
     <template v-else>
--->
       <AddMediaButton v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass')">
       </AddMediaButton>
 
@@ -43,10 +41,7 @@
       </template>
 
       <div class="artboard-overlay"></div>
-
-<!--
     </template>
--->
   </div>
 </template>
 <script>
@@ -67,7 +62,7 @@ export default {
   },
   data() {
     return {
-//       loading_folder_medias: true,
+      loading_folder_medias: false,
       timelineStyles: {
         width: '1024px',
         height: '768px'
@@ -94,7 +89,7 @@ export default {
 </script>
 
 <style scoped lang="sass">
-.timeline {
+.m_timeline {
   position: relative;
 }
 .mediaWrap {

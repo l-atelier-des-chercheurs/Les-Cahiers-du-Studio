@@ -1,14 +1,15 @@
 <template>
-  <div class="clearfix folder margin-small">
-    <h2 class="margin-small">
+  <div class="folder">
+    <h2 class="">
       {{ folder.name }}
-      <mark class="text-small" v-if="folder.password === 'has_pass'">
+      <br>
+      <mark class="" v-if="folder.password === 'has_pass'">
         password-protected
       </mark>
     </h2>
 
-    <div class="margin-small">
-      <table class="table-bordered text-small">
+    <div class="">
+      <table class="">
         <tbody>
           <tr>
             <td :class="{ 'is--active' : $parent.sort.field === 'created' }">Created: {{ formatDateToHuman(folder.created) }}</td>
@@ -21,7 +22,7 @@
       </table>
     </div>
 
-    <table v-if="debugFolderContent" class="table-striped margin-small">
+    <table v-if="debugFolderContent" class="">
       <thead>
         <tr>
           <th>Prop</th>
@@ -113,13 +114,9 @@ export default {
 </script>
 <style scoped>
 .folder {
-  background-color: #f2f2f2;
-  border: 0px solid #eee;
-  border-top-width:1px;
-  border-bottom-width: 1px;
+  border:2px solid white;
 }
-
 .is--active {
-  font-weight: bold;
+  color: #ff0000;
 }
 </style>

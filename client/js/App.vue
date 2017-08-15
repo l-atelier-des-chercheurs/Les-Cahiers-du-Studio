@@ -1,21 +1,42 @@
 <template>
   <div id="app">
 
-    <Navbar :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]">
-    </Navbar>
+    <div class="container">
+      <div class="row">
 
-    <transition name="component-fade" mode="out-in">
-      <component
-        :is="view"
-        :slugFolderName="$root.settings.currentlyOpenedFolder"
-        :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
-      ></component>
-    </transition>
+        <Navbar :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]">
+        </Navbar>
 
-    <template>
-      <BottomFooter v-if="$root.settings.currentlyOpenedFolder === ''">
-      </BottomFooter>
-    </template>
+        <main v-if="$root.settings.currentlyOpenedFolder === ''">
+          <h1>
+            la plate-forme du studio-théâtre de Vitry
+          </h1>
+          <p>Ici une présentation de la plate-forme en elle-même. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme en elle-même. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme […].</p>
+          <p>
+            <a class="with_arrow" href="">plus d’informations</a>
+          </p>
+        </main>
+      </div>
+    </div>
+
+    <div class="container">
+      <transition name="component-fade" mode="out-in">
+        <component
+          :is="view"
+          :slugFolderName="$root.settings.currentlyOpenedFolder"
+          :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
+        ></component>
+      </transition>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <template>
+          <BottomFooter v-if="$root.settings.currentlyOpenedFolder === ''">
+          </BottomFooter>
+        </template>
+      </div>
+    </div>
   </div>
 </template>
 

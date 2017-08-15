@@ -201,6 +201,13 @@ $('body').on('click', '.js--openInBrowser', function() {
 */
 });
 
+document.addEventListener('keydown', function(event) {
+  if(event.keyCode === 37) {
+    $('body').toggleClass('is--debug');
+  }
+});
+
+
 /***********
   VUE
 ***********/
@@ -209,7 +216,7 @@ Vue.config.devtools = true;
 import App from './App.vue';
 
 /* eslint-disable no-new */
-let vm = new Vue({
+new Vue({
   el: '#app',
   template: `<App/>`,
   components: { App },

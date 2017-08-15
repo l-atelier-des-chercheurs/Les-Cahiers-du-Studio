@@ -17,29 +17,9 @@
   &:after { clear: both; }
 }
 
-
-html {
-  font-size:1.1rem;
-}
-
 body {
-  margin: 0;
-  font-family: 'STVitry', monospace;
-
   &.is_unscrollable {
     overflow: hidden;
-  }
-}
-
-button {
-  margin: @t-skipline/2;
-  cursor: pointer;
-}
-
-.input-group {
-  button {
-    margin-left: 2px;
-    margin-right: 2px;
   }
 }
 
@@ -71,4 +51,17 @@ input:required {
   margin: 0 auto;
 }
 
+h1 {
+  text-decoration: underline;
+  color: @c-vert;
+  font-style: italic;
+}
+
+main {
+
+
+  >*:first-child {
+    margin-top: 0;
+  }
+}
 

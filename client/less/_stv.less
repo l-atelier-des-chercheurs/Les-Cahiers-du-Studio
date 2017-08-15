@@ -19,7 +19,7 @@ html {
 }
 
 body {
-  font-family: 'STVitry';
+  font-family: 'STVitry', monospace;
   font-weight: 400;
   margin: 0;
 
@@ -62,6 +62,10 @@ a {
   color: inherit;
 }
 
+table {
+  border:2px solid white;
+}
+
 button {
   text-decoration: none;
   background-color: transparent;
@@ -70,6 +74,21 @@ button {
   font-family: inherit;
   background-color: white;
   display: inline-block;
+
+  margin: @t-skipline;
+  cursor: pointer;
+}
+
+.input-group {
+  margin-bottom:  @t-skipline/2;
+
+  button {
+    margin: 0;
+    + button {
+      margin-left:  @t-skipline/2;
+      margin-bottom:  @t-skipline/2;
+    }
+  }
 }
 
 
@@ -194,17 +213,19 @@ button {
   }
 }
 
+.margin-left-none {
+  margin-left: 0 !important;
+}
 
 main {
   .make-md-column-offset(1);
   .make-md-column(9);
   margin-top:   @t-skipline * 5;
-  min-height: @t-skipline * 20;
+  min-height: @t-skipline * 10;
 
   .m_breadcrumb, h1, h2 {
     .make-md-column-offset(-1.55);
   }
-
 
 }
 
@@ -366,7 +387,11 @@ main {
   }
 }
 
-
+.with_arrow {
+  &::before {
+    content: '→ ';
+  }
+}
 
 .m_footer {
   margin: @t-skipline*6 0 @t-skipline*4;
