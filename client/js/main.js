@@ -80,7 +80,7 @@ window.socketio = (function() {
   };
 
   function init() {
-    socket = io.connect({ transports: ['websocket', 'polling'] });
+    socket = io.connect({ transports: ['polling','websocket'] });
     	socket.on('connect', _onSocketConnect);
     socket.on('error', _onSocketError);
     	socket.on('authentificated', _authentificated);
