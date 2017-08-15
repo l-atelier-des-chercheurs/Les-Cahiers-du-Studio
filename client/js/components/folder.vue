@@ -8,6 +8,7 @@
       </mark>
     </h2>
 
+<!--
     <div class="">
       <table class="">
         <tbody>
@@ -21,6 +22,7 @@
         </tbody>
       </table>
     </div>
+-->
 
     <table v-if="debugFolderContent" class="">
       <thead>

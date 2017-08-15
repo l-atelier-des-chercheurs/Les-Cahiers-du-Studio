@@ -1076,9 +1076,7 @@ button {
 }
 .input-group button {
   margin: 0;
-}
-.input-group button + button {
-  margin-left: 0.625em;
+  margin-right: 0.625em;
   margin-bottom: 0.625em;
 }
 h1,
@@ -1142,8 +1140,8 @@ body.is--debug .m_bs-grid {
 }
 @media (max-width: 991px) {
   .m_bs-grid {
-    margin-left: 1.25em;
-    margin-right: 1.25em;
+    padding-left: 1.25em;
+    padding-right: 1.25em;
   }
 }
 /************************************************************************
@@ -1459,4 +1457,15 @@ h1 {
 }
 main > *:first-child {
   margin-top: 0;
+}
+.card_folder {
+  margin-bottom: 2.5em;
+}
+.card_folder:nth-child(3n+1) {
+  clear: left;
+}
+@media (min-width: 992px) {
+  .card_folder:nth-child(3n+1) {
+    margin-left: 7.14285714%;
+  }
 }

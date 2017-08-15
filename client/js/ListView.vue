@@ -50,14 +50,17 @@
     </div>
 
     <div class="row">
-      <div class="col-md-3" v-for="sortedFolder in sortedFoldersSlug">
-        <Folder
-          :key="sortedFolder.slugFolderName"
-          :slugFolderName="sortedFolder.slugFolderName"
-          :folder="$root.store.folders[sortedFolder.slugFolderName]"
-        >
-        </Folder>
-      </div>
+      <transition-group name="folder-list" tag="Folder">
+        <template v-for="(sortedFolder, index) in sortedFoldersSlug">
+          <Folder
+            class="card_folder col-md-4"
+            :key="sortedFolder.slugFolderName"
+            :slugFolderName="sortedFolder.slugFolderName"
+            :folder="$root.store.folders[sortedFolder.slugFolderName]"
+          >
+          </Folder>
+        </template>
+      </transition-group>
     </div>
   </div>
 </template>
@@ -106,3 +109,5 @@ export default {
   }
 }
 </script>
+<style>
+</style>
