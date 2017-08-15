@@ -4,13 +4,28 @@ html
     meta(charset='utf-8')
     link(rel='stylesheet', href='/development/style.css')
     title #{pageTitle}
+    style.
+      @font-face {
+        font-family: 'STVitry';
+        font-style: normal;
+        font-weight: 400;
+        src: local('•'), local('•'), url('STVitry-Regular-web.woff2') format('woff2'), url('STVitry-Regular-web.woff') format('woff');
+      }
+      @font-face {
+        font-family: 'STVitry';
+        font-style: italic;
+        font-weight: 400;
+        src: local('•'), local('•'),
+             url('STVitry-Italic-web.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+             url('STVitry-Italic-web.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+      }
 
   body
     #app
 
-    script
-      | window.locals = {};
-      | locals.folderPath = "#{folderPath}";
-      | locals.networkInfos = !{JSON.stringify(networkInfos, null, 4)};
-      | locals.lang = !{JSON.stringify(lang, null, 4)};
+    script.
+      window.locals = {};
+      locals.folderPath = "#{folderPath}";
+      locals.networkInfos = !{JSON.stringify(networkInfos, null, 4)};
+      locals.lang = !{JSON.stringify(lang, null, 4)};
     script(src='/development/main.js')
