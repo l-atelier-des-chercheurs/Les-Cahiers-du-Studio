@@ -9,7 +9,7 @@
     <div class="margin-small">
       <h4 class="">order by</h4>
       <div class="input-group clearfix">
-        <button type="button" class="" @click="sort.type = 'date', sort.field = 'created'">
+        <button type="button" @click="sort.type = 'date', sort.field = 'created'">
           by creation date
         </button>
         <button type="button" class="" @click="sort.type = 'date', sort.field = 'start'">

@@ -1,0 +1,386 @@
+@import "bootstrap-grid-only-master/grid.css.less";
+
+@t-fontsize: 1em;
+@t-lineheight: 1.25;
+
+@t-skipline: @t-fontsize * @t-lineheight;
+
+@c-gris: #89898c;
+@c-vert: #00ad41;
+
+@c-gris_light: #f2f2f2;
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  font-family: 'STVitry';
+  font-weight: 400;
+  margin: 0;
+
+  font-size: @t-fontsize;
+  line-height: @t-lineheight;
+  color: black;
+  background-color: @c-gris_light;
+
+  padding-top: 0.3em;
+  margin-top: @t-skipline * 4;
+
+  &.is--debug {
+    background-image: url(//basehold.it/i/20); // 20px baseline
+  }
+
+  @media (max-width: @screen-sm-max) {
+    margin-left: @t-skipline;
+    margin-right:   @t-skipline;
+  }
+}
+
+::-moz-selection { background: rgba(161,161,161,.3); }
+::selection { background: rgba(161,161,161,.3); }
+
+strong,b {
+  font-weight: inherit;
+}
+
+h1,h2,h3,h4 {
+  font-weight: 400;
+  font-size: 1em;
+  margin: 0;
+}
+
+:focus {
+    outline-color: rgba(161,161,161,.3);
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  text-decoration: none;
+  background-color: transparent;
+  border:none;
+  font-size: inherit;
+  font-family: inherit;
+  background-color: white;
+}
+
+
+h1,h2,h3,h4,p,ul,ol,table,video, figure, blockquote {
+  margin: @t-skipline*1 0;
+}
+
+img {
+	max-width: 100%;
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+figcaption {
+  color: @c-gris;
+
+  > p {
+    margin:0;
+    margin-top:   @t-skipline/2;
+
+  }
+}
+
+button {
+  padding: @t-skipline/2;
+  border-radius: 0.2em;
+  &.is--active {
+    font-style: italic;
+  }
+}
+
+.button--repli {
+  margin: @t-skipline  0;
+}
+
+
+* > * {
+//   background-color: rgba(255,0,0,.02);
+}
+
+.m_bs-grid {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+
+  display: none;
+
+  body.is--debug & {
+    display: block;
+  }
+
+  .col {
+    height: 100vh;
+    &::after {
+        content: '';
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border: 1px solid fade(#ff00ff, 20%);
+    }
+  }
+  @media (max-width: @screen-sm-max) {
+    margin-left: @t-skipline;
+    margin-right:   @t-skipline;
+  }
+}
+
+
+/************************************************************************
+
+                                START
+
+************************************************************************/
+
+
+
+.navbar_left {
+  .make-md-column(3);
+  .make-md-column-offset(1);
+
+  ul, ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-transform: lowercase;
+  }
+  a {
+    text-decoration: none;
+  }
+
+  .m_logo {
+    margin-bottom:  @t-skipline * 1;
+    & > * {
+      margin: 0;
+      font-size: 1em;
+    }
+
+  }
+
+  .m_navigation {
+  }
+
+  .pictosociaux {
+    margin-top: @t-skipline*1;
+    height: @t-skipline*2;
+
+    >a {
+      display: inline-block;
+      vertical-align:super;
+    }
+
+    svg {
+      width: @t-fontsize*2;
+      height: @t-fontsize*2;
+      padding:5px;
+    }
+  }
+}
+
+
+main {
+  .make-md-column-offset(1);
+  .make-md-column(9);
+  margin-top:   @t-skipline * 5;
+  min-height: @t-skipline * 20;
+
+  .m_breadcrumb, h1, h2 {
+    .make-md-column-offset(-1.55);
+  }
+
+
+}
+
+.m_breadcrumb {
+  margin-top: 0;
+  font-style: italic;
+  text-transform: lowercase;
+  color: @c-vert;
+
+  a {
+    text-decoration: none;
+  }
+
+  > * {
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .separator {
+      font-style: normal;
+    }
+
+    &:last-child {
+      .separator {
+        display: none;
+      }
+    }
+  }
+
+  > *:last-child {
+    text-decoration: underline;
+
+    &::after {
+      display: none;
+    }
+  }
+}
+
+.text_labeur {
+
+  h1,h2,p,ul,ol {
+    max-width: 66ch;
+  }
+
+  ul,ol {
+    padding: 0;
+  }
+  ul {
+    list-style: none;
+    li {
+      position: relative;
+
+      &::before {
+        content: "•";
+        position: absolute;
+        right: 100%;
+        color: @c-vert;
+        margin-right: @grid-gutter-width/1;
+      }
+    }
+  }
+
+  ol {
+    list-style: none;
+    li {
+      position: relative;
+      counter-increment: item;
+
+      &::before {
+        content: counter(item);
+        position: absolute;
+        right: 100%;
+        color: @c-vert;
+        margin-right: @grid-gutter-width/1;
+      }
+    }
+  }
+
+  blockquote {
+    margin-left: @t-skipline*3.5;
+    padding-left:   @t-skipline*.5;
+    border-left: 4px solid white;
+
+    &::before {
+      content:'';
+      width: 4px;
+      height: 100%;
+      background-color: red;
+    }
+  }
+
+  .hr {
+    margin:  0;
+    display: block;
+    width: 100%;
+    height: @t-skipline;
+    margin: @t-skipline 0;
+        color: @c-gris;
+
+    hr {
+      opacity: 0;
+    }
+
+    &::before {
+      content: '————';
+    }
+  }
+
+  @media (min-width: @screen-md-min) {
+    .media-image {
+      &.FigureImage--alignLeft.largeur--1\/2:nth-child(2n+1) {
+        border-right: @grid-gutter-width/2 solid transparent;
+
+        + .FigureImage--alignLeft.largeur--1\/2 {
+          border-left: @grid-gutter-width/2 solid transparent;
+        }
+      }
+    }
+  }
+}
+
+
+.m_titlemenu {
+  margin-top:   @t-skipline*3;
+
+  a {
+    display: block;
+    position: relative;
+    text-decoration: none;
+
+    .make-xs-column(14/2);
+    .make-md-column(4.66666667);
+
+    margin-bottom:  @t-skipline;
+
+    .link_box {
+      position: relative;
+      width: 100%;
+      height: 0;
+
+      margin-top: -0.4em;
+      padding-top:  0.45em;
+      padding-bottom: @t-skipline*6;
+
+      padding-left: @t-skipline/2;
+
+      &::before {
+        content: '→';
+      }
+
+      &::after {
+        content:'';
+        display: block;
+        position: absolute;
+        top:0; left: 0;  right: 0; bottom: 0;
+        border:2px solid white;
+      }
+    }
+  }
+}
+
+
+
+.m_footer {
+  margin: @t-skipline*6 0 @t-skipline*4;
+  color: @c-gris;
+  .clearfix;
+  width: 100%;
+
+  > * {
+  }
+
+  .footercol_gauche {
+    .make-md-column-offset(2);
+    .make-md-column(6);
+  }
+  .footercol_droite {
+    .make-md-column(6);
+  }
+}

@@ -1,8 +1,5 @@
 // I M P O R T
-
-@import "_shoelace.scss";
-@import "_variables.scss";
-@import "_fonts.scss";
+@import "_stv.less";
 
 ::-moz-selection {
     background: rgba(151, 151, 151,0.25);
@@ -19,6 +16,7 @@
   --font-family: 'STVitry';
   --font-size: 1.1rem; /* Most browsers use a default font size of 16px */
   --input-font-size: 1rem;
+  --font-weight-bold: 400;
 }
 
 /******************
@@ -32,6 +30,7 @@
 
 body {
   margin: 0;
+  font-family: 'STVitry', monospace;
 
   &.is_unscrollable {
     overflow: hidden;

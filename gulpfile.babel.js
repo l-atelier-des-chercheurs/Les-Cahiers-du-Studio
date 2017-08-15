@@ -5,7 +5,7 @@ var concat = require('gulp-concat');
 var minifyCss = require('gulp-minify-css');
 var plumber = require('gulp-plumber');
 var rename = require('gulp-rename');
-var sass = require('gulp-sass');
+var less         = require('gulp-less');
 var jshint       = require('gulp-jshint');
 var browserSync  = require('browser-sync').create();
 var uglify       = require('gulp-uglify');
@@ -39,16 +39,20 @@ var nodeScripts = [
 
 var localDevUrl = 'https://localhost:8080/';
 
-// Compile Our Sass
-gulp.task('sass', function() {
-  return gulp.src('client/sass/*.scss')
+// Compile Our Less
+gulp.task('less', function() {
+  return gulp.src('client/less/*.less')
     .pipe(plumber({
         errorHandler: function (err) {
-            console.log(err);
+            console.log(err.message);
             this.emit('end');
         }
     }))
-    .pipe(sass())
+    .pipe(less())
+    .pipe(autoprefixer({
+      browsers: ['last 3 versions'],
+      cascade: false
+    }))
     .pipe(gulp.dest('client/development'))
     .pipe(browserSync.stream());
 });
@@ -113,8 +117,8 @@ gulp.task('dev-watch-sync', ['init-live-reload', 'watch']);
 // Watch Files For Changes
 gulp.task('watch', function() {
   gulp.watch([userScripts, components, nodeScripts], ['lint', 'scripts']);
-  gulp.watch('client/sass/*.scss', ['sass', 'css-prod']);
+  gulp.watch('client/less/*.less', ['less', 'css-prod']);
 });
 
 // Default Task
-gulp.task('default', ['sass', 'css-prod', 'lint', 'scripts', 'scripts-prod']);
+gulp.task('default', ['less', 'css-prod', 'lint', 'scripts', 'scripts-prod']);
