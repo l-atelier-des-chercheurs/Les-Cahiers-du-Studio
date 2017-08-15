@@ -12,7 +12,9 @@
 
         <ol class="breadcrumb">
           <li>
-            studio-théâtre.<i>vitry</i>
+            <a href="" @click.prevent="$root.closeFolder()">
+              studio-théâtre.<i>vitry</i>
+            </a>
           </li>
           <li v-if="typeof folder !== 'undefined'">
             <template>{{ folder.name }}</template>
@@ -40,12 +42,12 @@ export default {
   left:0;
   width: 100%;
   height: 60px;
+  z-index: 1000;
   background-color: white;
   border-bottom: 1px solid black;
 
 }
 .container {
-  max-width: 72em;
   width: 100%;
   height: 100%;
   margin: 0 auto;

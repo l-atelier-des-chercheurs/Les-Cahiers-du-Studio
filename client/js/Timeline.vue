@@ -1,5 +1,5 @@
 <template>
-  <div class="timeline margin-left-small margin-bottom-small" :style="timelineStyles">
+  <div class="timeline" :style="timelineStyles">
 <!--
     <template v-if="loading_folder_medias">
       <span class="loader margin-small"></span>
@@ -39,6 +39,8 @@
         </p>
       </template>
 
+      <div class="artboard-overlay"></div>
+
 <!--
     </template>
 -->
@@ -50,7 +52,10 @@ import FileUpload from './components/FileUpload.vue';
 import moment from 'moment';
 
 export default {
-  props: ['slugFolderName', 'folder'],
+  props: {
+    slugFolderName: String,
+    folder: Object
+  },
   components: {
     Media,
     FileUpload
@@ -84,7 +89,8 @@ export default {
   }
 }
 </script>
-<style scoped>
+
+<style scoped lang="sass">
 .timeline {
   position: relative;
 }
@@ -98,4 +104,69 @@ export default {
   right: 5vw;
 }
 
+
+
 </style>
+
+
+<style scoped lang="sass">
+$artboard-grid-px: 20px !default;
+$artboard-grid-color: rgba(0, 0, 0, .25) !default;
+$artboard-divider-interval: 10 !default;
+$artboard-divider-color: rgba(0, 0, 0, .5) !default;
+$artboard-overlay-opacity: .5 !default;
+
+// Private
+
+@function line-background-image($degrees, $size, $color) {
+  $line-start: $size - 1;
+  $line-end: $size;
+  @return repeating-linear-gradient($degrees, transparent, transparent $line-start, $line-start, $color $line-end);
+}
+
+@function horizontal-line-background-image($size, $color) {
+  @return line-background-image(0deg, $size, $color);
+}
+
+@function vertical-line-background-image($size, $color) {
+  @return line-background-image(-90deg, $size, $color);
+}
+
+@function grid-background-images($size, $color) {
+  @return horizontal-line-background-image($size, $color), vertical-line-background-image($size, $color)
+}
+
+// Public
+
+@mixin artboard-grid($grid-px: $artboard-grid-px, $grid-color: $artboard-grid-color, $divider-interval: $artboard-divider-interval, $divider-color: $artboard-divider-color) {
+  // Blocks
+  $grid-background-images: grid-background-images($grid-px, $grid-color);
+  // Dividers
+  $divider-px: $grid-px * $divider-interval;
+  $divider-background-images: grid-background-images($divider-px, $divider-color);
+  // Blocks & Dividers
+  $background-images: join($divider-background-images, $grid-background-images);
+  background-image: $background-images;
+  background-size: $divider-px $divider-px;
+}
+
+@mixin artboard-overlay($opacity: $artboard-overlay-opacity, $grid-px: $artboard-grid-px, $grid-color: $artboard-grid-color, $divider-interval: $artboard-divider-interval, $divider-color: $artboard-divider-color) {
+  @include artboard-grid($grid-px, $grid-color, $divider-interval, $divider-color);
+  opacity: $opacity;
+  height: 100%;
+  left: 0;
+//   position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.artboard-grid {
+  @include artboard-grid($artboard-grid-px, $artboard-grid-color, $artboard-divider-interval, $artboard-divider-color);
+}
+
+.artboard-overlay {
+  @include artboard-overlay();
+}
+</style>
+

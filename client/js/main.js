@@ -248,6 +248,7 @@ let vm = new Vue({
       window.socketio.listMedias(slugFolderName);
     },
     closeFolder: function() {
+      if(window.store.debug) { console.log(`ROOT EVENT: closeFolder`); }
       this.settings.currentlyOpenedFolder = '';
     }
   },

@@ -46,8 +46,8 @@
       <button v-if="!folder.authorized" type="button" class="button-small" @click="showInputPasswordField = !showInputPasswordField">
         Input password
       </button>
-      <div v-if="showInputPasswordField" class="input-group" style="width: 250px;">
-        <input type="password" ref="passwordField" @keyup.enter="submitPassword">
+      <div v-show="showInputPasswordField" class="input-group" style="width: 250px;">
+        <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus>
         <button type="button" class="button" @click="submitPassword">Submit</button>
       </div>
       <button v-if="folder.authorized" type="button" class="button-small" @click="debugFolderContent = !debugFolderContent">

@@ -15,10 +15,11 @@ module.exports = function(electronApp) {
   dev.logverbose('Starting server 1');
 
   var app = express();
-  // works without asking for a certificate
-  const privateKey  = fs.readFileSync(path.join(__dirname, 'ssl', 'file.pem'), 'utf8');
-  const certificate = fs.readFileSync(path.join(__dirname, 'ssl', 'file.crt'), 'utf8');
-  const options = { key: privateKey, cert: certificate };
+
+  const options = {
+    key: fs.readFileSync(path.join(__dirname, 'ssl', 'key.pem'), 'utf8'),
+    cert: fs.readFileSync(path.join(__dirname, 'ssl', 'cert.pem'), 'utf8')
+  };
 
 
   let server = https.createServer(options, app);
