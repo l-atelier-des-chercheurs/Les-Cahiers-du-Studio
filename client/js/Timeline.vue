@@ -6,9 +6,12 @@
     </template>
     <template v-else>
 -->
-      <div class="m_fileupload">
+      <AddMediaButton v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass')">
+      </AddMediaButton>
+
+      <div class="m_fileupload"
+      >
         <FileUpload
-          v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass')"
           :slugFolderName="slugFolderName">
         </FileUpload>
       </div>
@@ -49,6 +52,7 @@
 <script>
 import Media from './components/Media.vue';
 import FileUpload from './components/FileUpload.vue';
+import AddMediaButton from './components/AddMediaButton.vue';
 import moment from 'moment';
 
 export default {
@@ -58,14 +62,15 @@ export default {
   },
   components: {
     Media,
-    FileUpload
+    FileUpload,
+    AddMediaButton
   },
   data() {
     return {
 //       loading_folder_medias: true,
       timelineStyles: {
-        width: '500vh',
-        height: '100vh'
+        width: '1024px',
+        height: '768px'
       },
       timelineInfos: {
         start: moment(this.folder.start,'YYYY-MM-DD HH:mm'),
@@ -82,8 +87,6 @@ export default {
         top: Math.random()*80 + '%'
       };
     },
-
-
   },
   watch: {
   }
@@ -155,10 +158,11 @@ $artboard-overlay-opacity: .5 !default;
   opacity: $opacity;
   height: 100%;
   left: 0;
-//   position: fixed;
+  position: absolute;
   top: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: -1;
+  pointer-events:none;
 }
 
 .artboard-grid {

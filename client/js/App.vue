@@ -42,7 +42,6 @@ export default {
   },
   watch: {
     '$root.settings.currentlyOpenedFolder' : function() {
-      debugger;
       if(this.$root.settings.currentlyOpenedFolder !== '') {
         this.view = 'TimeLine';
       } else {

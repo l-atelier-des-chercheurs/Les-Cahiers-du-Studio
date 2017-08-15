@@ -1,14 +1,17 @@
 <template>
   <div class="media" :style="getMediaSize(media)">
 
+
+<!--
     <div class="buttons clearfix">
-      <button type="button" class="button-small margin-small float-left" @click="showMediaModal = true">
-        Edit Media
+      <button type="button" class="button-small" @click="showMediaModal = true">
+        Edit
       </button>
-      <button type="button" class="button-small margin-small float-left" @click="removeMedia()">
-        Remove Media
+      <button type="button" class="button-small" @click="removeMedia()">
+        Remove
       </button>
     </div>
+-->
 
     <EditMedia
       v-if="showMediaModal"
@@ -59,18 +62,21 @@ export default {
       }
     },
     getMediaSize(media) {
+      let defWidth = 180;
+      let defHeight = 120;
+
       if(!this.mediaStyles.ratio) {
         return {
-          width:  `18vh`,
-          height: `12vh`
+          width:  `${defWidth}px`,
+          height: `${defHeight}px`
         }
       }
       let r = this.mediaStyles.ratio;
-      let w = 18;
+      let w = defWidth;
       let h = w * r;
       return {
-        width: `${w}vh`,
-        height: `${h}vh`
+        width: `${w}px`,
+        height: `${h}px`
       }
     }
   }
