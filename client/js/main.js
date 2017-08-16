@@ -60,6 +60,24 @@ window.store = {
 /***********
   SOCKETIO
 ***********/
+
+function isChrome() {
+  var isChromium = window.chrome,
+    winNav = window.navigator,
+    vendorName = winNav.vendor,
+    isOpera = winNav.userAgent.indexOf('OPR') > -1,
+    isIEedge = winNav.userAgent.indexOf('Edge') > -1,
+    isIOSChrome = winNav.userAgent.match('CriOS');
+
+  if(isIOSChrome){
+    return false;
+  } else if(isChromium !== null && isChromium !== undefined && vendorName === 'Google Inc.' && isOpera === false && isIEedge === false) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 import alertify from 'alertify.js';
 
 window.socketio = (function() {
@@ -80,7 +98,15 @@ window.socketio = (function() {
   };
 
   function init() {
-    socket = io.connect({ transports: ['polling','websocket'] });
+    if(true) {
+      socket = io.connect({
+        transports: ['polling','websocket'],
+      });
+    } else {
+      socket = io.connect({
+        transports: ['websocket','polling'],
+      });
+    }
     	socket.on('connect', _onSocketConnect);
     socket.on('error', _onSocketError);
     	socket.on('authentificated', _authentificated);
@@ -202,7 +228,8 @@ $('body').on('click', '.js--openInBrowser', function() {
 });
 
 document.addEventListener('keydown', function(event) {
-  if(event.keyCode === 37) {
+  // letter G
+  if(event.keyCode === 71) {
     $('body').toggleClass('is--debug');
   }
 });
@@ -216,7 +243,7 @@ Vue.config.devtools = true;
 import App from './App.vue';
 
 /* eslint-disable no-new */
-new Vue({
+let vm = new Vue({
   el: '#app',
   template: `<App/>`,
   components: { App },
@@ -251,6 +278,10 @@ new Vue({
 
     openFolder: function(slugFolderName) {
       if(window.store.debug) { console.log(`ROOT EVENT: openFolder: ${slugFolderName}`); }
+      if(!this.store.folders.hasOwnProperty(slugFolderName)) {
+        console.log(`Missing folder key on the page, aborting.`);
+        return false;
+      }
       this.settings.currentlyOpenedFolder = slugFolderName;
       window.socketio.listMedias(slugFolderName);
     },
@@ -273,5 +304,5 @@ new Vue({
 });
 
 setTimeout(() => {
-//   vm.openFolder('plotter-twitter');
+  vm.openFolder('plotter-twitter');
 }, 500);

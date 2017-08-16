@@ -1,18 +1,13 @@
 <template>
-  <div class="text_labeur m_listview">
-
-    <div class="row">
-      <div class="col-md-offset-4 col-md-9">
-        <h1 class="">
-          liste des temps
-        </h1>
-      </div>
-    </div>
+  <div class="container text_labeur m_listview">
 
     <div class="row">
       <div class="col-md-offset-5 col-md-8">
+        <h1 class="">
+          liste des temps
+        </h1>
         <p>
-          La liste ci-dessous contient tous les temps capturés. Certains d’entre eux sont /publics/ et tous leurs contenus peuvent être consultés. Vous pouvez également y contribuer, en • ajoutant des médias ou • en en annotant d’autres. Les dossiers protégés par mot de passe sont par contre uniquement consultables.
+          La liste ci-dessous contient tous les temps capturés. Certains d’entre eux sont publics et tous leurs contenus peuvent être consultés. Vous pouvez également y contribuer, soit en <span class="c_vert">#</span>ajoutant<span class="c_vert">#</span> des médias, soit en en <span class="c_vert">#</span>annotant<span class="c_vert">#</span> d’autres. Les dossiers protégés par mot de passe sont par contre uniquement consultables.
         </p>
 
         <div class="input-single">
@@ -57,14 +52,12 @@
       </div>
     </div>
 
-    <hr>
-
     <div class="row card_folder_container">
       <transition-group name="folder-list" tag="div">
         <div
           v-for="(sortedFolder, index) in sortedFoldersSlug"
           :key="sortedFolder.slugFolderName"
-          class="card_folder col-md-4"
+          class="card_folder"
         >
           <Folder
             :slugFolderName="sortedFolder.slugFolderName"

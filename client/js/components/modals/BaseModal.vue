@@ -2,7 +2,7 @@
   <transition name="modal">
     <div class="modal-mask" @click="$emit('close')">
       <div class="modal-wrapper">
-        <div class="modal-container padding-small" @click.stop>
+        <div class="modal-container padding-medium" @click.stop>
 
           <div class="modal-header">
             <slot name="header">
@@ -59,7 +59,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -89,7 +89,7 @@ export default {
   transition: all .3s ease;
 }
 
-.modal-header h3 {
+.modal-header > * {
   margin-top: 0;
   color: #42b983;
 }

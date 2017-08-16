@@ -32,6 +32,7 @@
   "dependencies": {
     "alertify.js": "^1.0.12",
     "body-parser": "^1.15.0",
+    "debounce": "^1.0.2",
     "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master",
     "electron-log": "^2.2.7",
     "exif-reader": "^1.0.2",

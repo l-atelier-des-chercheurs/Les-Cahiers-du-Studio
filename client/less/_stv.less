@@ -48,6 +48,28 @@ strong,b {
   font-weight: inherit;
 }
 
+.c_vert {
+  color: @c-vert;
+}
+
+.margin-medium {
+  margin: @t-skipline;
+}
+.margin-small {
+  margin: @t-skipline/2;
+}
+
+.margin-left-none {
+  margin-left: 0;
+}
+
+.padding-medium {
+  padding: @t-skipline;
+}
+.padding-small {
+  padding: @t-skipline/2;
+}
+
 h1,h2,h3,h4 {
   font-weight: 400;
   font-size: 1em;
@@ -250,7 +272,6 @@ main {
   .m_breadcrumb, h1, h2 {
     .make-md-column-offset(-1.55);
   }
-
 }
 
 .m_breadcrumb {
@@ -292,6 +313,10 @@ main {
 
   h1,h2,p,ul,ol {
     max-width: 66ch;
+  }
+
+  h1 {
+    .make-md-column-offset(-1.55);
   }
 
   ul,ol {

@@ -1,4 +1,6 @@
 // I M P O R T
+@import (inline) "shoelace/variables.css";
+@import (inline) "shoelace/forms.css";
 @import "_stv.less";
 
 ::-moz-selection {
@@ -7,6 +9,19 @@
 ::selection {
     background: rgba(151, 151, 151,0.25);
 }
+
+:root {
+  --body-color: black;
+  --body-bg-color: #fff;
+  --table-stripe-bg-color: #eee;
+  --color-primary: #666;
+  --font-family: 'STVitry';
+  --font-size: 1rem; /* Most browsers use a default font size of 16px */
+  --input-font-size: 1rem;
+}
+
+
+@t-navbarheight: 60px;
 
 /******************
   Mixins
@@ -18,6 +33,7 @@
 }
 
 body {
+  margin-top: 0;
   &.is_unscrollable {
     overflow: hidden;
   }
@@ -60,12 +76,12 @@ input:required {
     top:0;
     left:0;
     width: 100%;
-    height: 60px;
+    height: @t-navbarheight;
     z-index: 1000;
     background-color: #f2f2f2; // @c-gris_light
     border-bottom: 1px solid black;
   }
-  .container {
+  .bloccontainer {
     width: 100%;
     height: 100%;
     margin: 0 auto;
@@ -76,9 +92,9 @@ input:required {
   }
 
   .menu_icon {
-    flex: 0 0 60px;
+    flex: 0 0 @t-navbarheight;
     height: 100%;
-    padding: 12px;
+    padding: 20px;
   }
   .menu_icon svg {
     height: 100%;
@@ -122,6 +138,14 @@ h1 {
   font-style: italic;
 }
 
+.pushContentDown {
+  height: @t-skipline * 4;
+  margin-top: -0.3em;
+  transition: height 1s ease-out;
+  &.is--collapsed {
+    height: @t-navbarheight;
+  }
+}
 main {
 
   > *:first-child {
@@ -134,11 +158,12 @@ main {
 }
 
 .card_folder {
+  .make-md-column(14/3);
   margin-bottom:  @t-skipline*2;
 
   .folder {
-    min-height: @t-skipline * 8;
-    border:2px solid white;
+    min-height: @t-skipline * 6;
+    border-left:2px solid white;
   }
 
   h2 {
@@ -149,8 +174,8 @@ main {
     padding: @t-skipline/2;
   }
   &:nth-child(3n+1) {
-    clear:left;
 //     .make-md-column-offset(1);
+    clear:left;
   }
 }
 
@@ -159,17 +184,62 @@ main {
 .m_timeline {
   position: relative;
 
-
+  .m_timeline-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
 }
 .mediaWrap {
   position: absolute;
+  width: 1px; height: 1px;
+
+  .media {
+
+  }
+
+  @t-anchor: 30px;
+
+  .media {
+    position: relative;
+    width:16em;
+    border: 1px solid #eee;
+
+    &::before {
+      content: '';
+      width: @t-anchor;
+      height: @t-anchor;
+      display: block;
+      position: absolute;
+      top: -@t-anchor/2;
+      right: -@t-anchor/2;
+      border-radius: 50%;
+      background-color: #f2f2f2;
+      border: 1px solid #eee;
+    }
+  }
+
+  .mediaContent {
+    width:100%;
+    height:100%;
+    background-color: #ddd;
+    display: flex;
+    align-items:center;
+    justify-content:center;
+    overflow: hidden;
+  }
 }
 
 .m_fileupload {
   position: fixed;
   bottom:0;
-  right: 5vw;
+  right: @t-skipline*5;
 }
 
 
-
+.component-fade-enter-active, .component-fade-leave-active {
+  transition: opacity 0.6s ease;
+}
+.component-fade-enter, .component-fade-leave-to {
+  opacity: 0;
+}

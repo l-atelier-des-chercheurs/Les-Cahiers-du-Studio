@@ -9,27 +9,21 @@
 <!-- Human name -->
       <div class="input-single">
         <label>Name</label>
-        <p>
-          <input type="text" v-model="folderdata.name" required>
-        </p>
+        <input type="text" v-model="folderdata.name" required>
       </div>
 
 <!-- Start date -->
-      <div>
+      <div class="input-single">
         <label>Beginning</label>
-        <div class="two-column">
-          <DateTime v-model="folderdata.start">
-          </DateTime>
-        </div>
+        <DateTime v-model="folderdata.start">
+        </DateTime>
       </div>
 
 <!-- End date -->
-      <div>
+      <div class="input-single">
         <label>End</label>
-        <div class="two-column">
-          <DateTime v-model="folderdata.end">
-          </DateTime>
-        </div>
+        <DateTime v-model="folderdata.end">
+        </DateTime>
       </div>
 
 <!-- Password -->

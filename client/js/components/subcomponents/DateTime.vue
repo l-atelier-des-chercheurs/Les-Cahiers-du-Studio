@@ -1,11 +1,7 @@
 <template>
-  <div>
-    <p>
-      <input type="date" v-model="date" @input="updateDate()">
-    </p>
-    <p>
-      <input type="time" v-model="time" @input="updateDate()">
-    </p>
+  <div class="input-group">
+    <input type="date" v-model="date" @input="updateDate()">
+    <input type="time" v-model="time" @input="updateDate()">
   </div>
 </template>
 <script>

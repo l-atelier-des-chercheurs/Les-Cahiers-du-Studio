@@ -4,25 +4,13 @@
       {{ folder.name }}
       <br>
       <mark class="" v-if="folder.password === 'has_pass'">
-        password-protected
+        protégé par mot de passe
       </mark>
     </h2>
 
-<!--
-    <div class="">
-      <table class="">
-        <tbody>
-          <tr>
-            <td :class="{ 'is--active' : $parent.sort.field === 'created' }">Created: {{ formatDateToHuman(folder.created) }}</td>
-            <td :class="{ 'is--active' : $parent.sort.field === 'start' }">Start: {{ formatDateToHuman(folder.start) }}</td>
-            <td :class="{ 'is--active' : $parent.sort.field === 'end' }">End: {{ formatDateToHuman(folder.end) }}</td>
-            <td>Authors: {{ folder.authors }}</td>
-            <td>Folder name: {{ folder.slugFolderName }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="folder_metapreview margin-medium margin-left-none">
+      Créé {{ formatDateToHuman(folder.created) }}
     </div>
--->
 
     <table v-if="debugFolderContent" class="">
       <thead>
@@ -76,6 +64,7 @@
 <script>
 import EditFolder from './modals/EditFolder.vue';
 import moment from 'moment';
+require('moment/locale/fr')
 
 export default {
   props: ['folder', 'slugFolderName'],

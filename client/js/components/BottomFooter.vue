@@ -1,8 +1,9 @@
 <template>
-  <footer>
+  <footer class="m_footer">
     <template v-for="ninfos in $root.store.networkInfos">
       <p class="text-center centered text-small">
-        {{ $root.store.lang.toconnectwithanotherdevice }}
+        <span v-html="$root.store.lang.toconnectwithanotherdevice">
+        </span>
         <a :href="getURLToApp(ninfos)" class="js--openInBrowser" target="_blank">
           {{ getURLToApp(ninfos) }}
         </a>

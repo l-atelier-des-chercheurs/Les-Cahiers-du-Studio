@@ -82,26 +82,5 @@ export default {
   }
 }
 </script>
-<style scoped>
-.media {
-  position: relative;
-  width:16em;
-}
-
-.mediaContent {
-  width:100%;
-  height:100%;
-  background-color: #ddd;
-  display: flex;
-  align-items:center;
-  justify-content:center;
-  overflow: hidden;
-}
-
-.buttons {
-  position: absolute;
-  right: 0;
-
-}
-
+<style scoped lang="sass">
 </style>
