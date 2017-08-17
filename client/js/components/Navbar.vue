@@ -14,7 +14,7 @@
 
             <ol class="breadcrumb">
               <li>
-                <a href="" @click.prevent="$root.closeFolder()">
+                <a href="/" @click.prevent="$root.closeFolder()">
                   studio-théâtre.<i>vitry</i>
                 </a>
               </li>
@@ -27,7 +27,7 @@
       </nav>
       <div v-else class="navbar_left">
         <header class="m_logo">
-          <a href="home">
+          <a href="/">
             <p>
               studio-<br>
               théâtre<br>
@@ -41,22 +41,10 @@
               <a href="//localhost:3000/pw/2017-studiotheatre.fr">Accueil</a>
             </li>
             <li class="menu-item">
-              <a href="//localhost:3000/pw/2017-studiotheatre.fr/calendrier">Calendrier</a>
+              <a href="//localhost:3000/pw/2017-studiotheatre.fr/calendrier">À propos</a>
             </li>
             <li class="menu-item">
-              <a href="//localhost:3000/pw/2017-studiotheatre.fr/le-studio-theatre">Le studio-th&eacute;&acirc;tre</a>
-            </li>
-            <li class="menu-item">
-              <a href="//localhost:3000/pw/2017-studiotheatre.fr/en-creation">En cr&eacute;ation</a>
-            </li>
-            <li class="menu-item">
-              <a href="//localhost:3000/pw/2017-studiotheatre.fr/en-recherche">En recherche</a>
-            </li>
-            <li class="menu-item">
-              <a href="//localhost:3000/pw/2017-studiotheatre.fr/ateliers">Ateliers</a>
-            </li>
-            <li class="menu-item">
-              <a href="//localhost:3000/pw/2017-studiotheatre.fr/en-pratique">En Pratique</a>
+              <a href="//localhost:3000/pw/2017-studiotheatre.fr/calendrier">Contact</a>
             </li>
           </ul>
         </nav>

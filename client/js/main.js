@@ -153,20 +153,27 @@ window.socketio = (function() {
   }
 
   function _onListMedia(mdata) {
+    	console.log(`Received _onListMedia packet.`);
     let slugFolderName = Object.keys(mdata)[0];
+    	console.log(`Media data is for ${slugFolderName}.`);
     window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, mdata[slugFolderName].medias);
   }
   function _onListMedias(mdata) {
+    	console.log(`Received _onListMedias packet.`);
     let slugFolderName = Object.keys(mdata)[0];
+    	console.log(`Media data is for ${slugFolderName}.`);
     window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
   }
   function _onListFolder(fdata) {
+    	console.log(`Received _onListFolder packet.`);
     window.store.state.folders = Object.assign({}, window.store.state.folders, fdata);
   }
   function _onListFolders(fdata) {
+    	console.log(`Received _onListFolders packet.`);
     window.store.state.folders = Object.assign({}, fdata);
   }
   function _onMediaCreated(mdata) {
+    	console.log(`Received _onMediaCreated packet.`);
     let slugFolderName = Object.keys(mdata)[0];
     let createdMediaMeta = mdata[slugFolderName].medias;
     // to get Vue to detect that medias has a new key, we need to rewrite medias itself

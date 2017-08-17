@@ -9,6 +9,11 @@
 
         <div class="timeline_track">
         </div>
+        <!-- GRID -->
+        <div class="simple_grid_overlay">
+          <div class="horizontal" v-html="generateHorizontalGrid()">
+          </div>
+        </div>
 
         <!-- MEDIAS -->
         <div v-if="Object.keys(folder.medias).length > 0">
@@ -39,11 +44,6 @@
           </p>
         </template>
 
-        <!-- GRID -->
-        <div class="simple_grid_overlay">
-          <div class="horizontal" v-html="generateHorizontalGrid()">
-          </div>
-        </div>
 
       </div>
 
@@ -57,7 +57,7 @@
     <div class="input-single padding-medium" style="position: fixed; left: 0;
     top: 20%; width: 200px; background-color: white; z-index:1001;">
       <label>Timeline Width</label>
-      <input type="range" v-model="timelineStyles.width" min="6" max="200">
+      <input type="range" v-model="timelineStyles.width" min="1" max="200">
     </div>
 
   </div>
@@ -82,17 +82,31 @@ export default {
       loading_folder_medias: false,
       windowHeight: window.innerHeight,
       timelineStyles: {
-        width: 50,
+        width: 5,
         height: 1
       },
       topNavbarHeight: 70,
       timelinetrackHeight: 50,
       timelineInfos: {
-        start: moment(this.folder.start,'YYYY-MM-DD HH:mm'),
-        end:   moment(this.folder.end,'YYYY-MM-DD HH:mm'),
+        start: moment(),
+        end:   moment(),
       }
     }
   },
+  created() {
+    window.addEventListener('resize', debounce(this.onResize, 300));
+
+    if(this.folder.start && moment(this.folder.start,'YYYY-MM-DD HH:mm', true).isValid()) {
+      this.timelineInfos.start = moment(this.folder.start,'YYYY-MM-DD HH:mm');
+    }
+    if(this.folder.end && moment(this.folder.end,'YYYY-MM-DD HH:mm', true).isValid()) {
+      this.timelineInfos.end = moment(this.folder.end,'YYYY-MM-DD HH:mm');
+    }
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', debounce(this.onResize, 300))
+  },
+
   methods: {
     getVH(val) {
       let winHeight = this.windowHeight - this.topNavbarHeight;
@@ -107,23 +121,21 @@ export default {
       let timeEllapsed = this.timelineInfos.end - this.timelineInfos.start;
       let html = '';
 
-      let firstDay = moment(moment(this.timelineInfos.start).format('YYYY-MM-DD 00:00'));
-      for(var d = 86400000; d < timeEllapsed; d += 86400000) {
-        let currentDay = firstDay + d;
+      // make DAY ticks
+      let createDayTick = (currentDay) => {
         let xPos = this.getXPosition(currentDay);
-        let momentDay = moment(currentDay).calendar(null,{
-            lastDay : '[Yesterday]',
-            sameDay : '[Today]',
-            nextDay : '[Tomorrow]',
-            lastWeek : 'dddd [dernier]',
-            nextWeek : 'dddd',
-            sameElse : 'L'
-        });
-
-
+        let momentDay = moment(currentDay).format('YYYY-MM-DD');
         html += `<div class="gridItem gridItem_isday" style="transform:translate(${xPos}px, 0px)" data-caption="${momentDay}"></div>`;
       }
 
+      createDayTick(this.timelineInfos.start);
+      let firstDay = moment(moment(this.timelineInfos.start).format('YYYY-MM-DD 00:00'));
+      for(var d = 86400000; d < timeEllapsed; d += 86400000) {
+        let currentDay = firstDay + d;
+        createDayTick(currentDay);
+      }
+
+      // make HOUR ticks
       let createHourTick = (currentHour) => {
         let xPos = this.getXPosition(currentHour);
         let momentHour = moment(currentHour).format('HH:mm');
@@ -137,6 +149,19 @@ export default {
         createHourTick(currentHour);
       }
 
+      // make 10 MINUTES ticks
+      let createMinuteTick = (currentMinute) => {
+        let xPos = this.getXPosition(currentMinute);
+        let momentMinute = moment(currentMinute).format('HH:mm');
+        html += `<div class="gridItem gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${momentMinute}"></div>`;
+      }
+
+      let firstMinute = moment(moment(this.timelineInfos.start).format('YYYY-MM-DD HH:mm'));
+      for(var m = 60000; m < timeEllapsed; m +=  60000) {
+        let currentMinute = firstMinute + m;
+        createMinuteTick(currentMinute);
+      }
+
       return html;
     },
     getMediaPosition(media) {
@@ -148,6 +173,7 @@ export default {
       };
     },
     getXPosition(timestamp) {
+      if(!this.timelineInfos.start || !this.timelineInfos.end) { console.log(`Error with getXPosition`); }
       let msSinceStart = timestamp - this.timelineInfos.start;
       let pc = msSinceStart/(this.timelineInfos.end - this.timelineInfos.start);
       let posX = this.getVH(this.timelineStyles.width * pc);
@@ -157,12 +183,6 @@ export default {
       this.windowHeight = window.innerHeight;
     }
   },
-  created() {
-    window.addEventListener('resize', debounce(this.onResize, 300));
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', debounce(this.onResize, 300))
-  },
   watch: {
   }
 }
@@ -171,7 +191,7 @@ export default {
 <style lang="sass">
 
 .timeline_track {
-  position: relative;
+  position: absolute;
   height: 50px;
   width:100%;
   border-bottom: 1px solid black;
@@ -181,12 +201,14 @@ export default {
 .simple_grid_overlay {
   height: 100%;
   left: 0;
+  padding-top:50px;
   position: absolute;
   width: 100%;
   z-index: -1;
   pointer-events:none;
 
   .horizontal {
+    position:relative;
     height: 100%;
   }
 
@@ -228,80 +250,27 @@ export default {
         font-style: 0.9em;
       }
     }
+
+    &.gridItem_isminute {
+      color: #999;
+      border-left: 1px solid #d9d9d9;
+      z-index:10;
+
+      &:nth-child(10n) {
+        &::before {
+          content: attr(data-caption);
+          display: block;
+          width: 150px;
+          transform: rotate(-15deg);
+          transform-origin: left top;
+          margin-left: 4px;
+          font-style: italic;
+          margin-top: -30px;
+          font-style: 0.9em;
+        }
+      }
+    }
+
   }
-
-
-}
-
-
-
-
-
-
-
-
-
-</style>
-
-<style scoped lang="sass">
-$artboard-grid-px: 10px !default;
-$artboard-grid-color: rgba(0, 0, 0, .25) !default;
-$artboard-divider-interval: 10 !default;
-$artboard-divider-color: rgba(0, 0, 0, .5) !default;
-$artboard-overlay-opacity: .5 !default;
-
-// Private
-
-@function line-background-image($degrees, $size, $color) {
-  $line-start: $size - 1;
-  $line-end: $size;
-  @return repeating-linear-gradient($degrees, transparent, transparent $line-start, $line-start, $color $line-end);
-}
-
-@function horizontal-line-background-image($size, $color) {
-  @return line-background-image(0deg, $size, $color);
-}
-
-@function vertical-line-background-image($size, $color) {
-  @return line-background-image(-90deg, $size, $color);
-}
-
-@function grid-background-images($size, $color) {
-  @return horizontal-line-background-image($size, $color), vertical-line-background-image($size, $color)
-}
-
-// Public
-
-@mixin artboard-grid($grid-px: $artboard-grid-px, $grid-color: $artboard-grid-color, $divider-interval: $artboard-divider-interval, $divider-color: $artboard-divider-color) {
-  // Blocks
-  $grid-background-images: grid-background-images($grid-px, $grid-color);
-  // Dividers
-  $divider-px: $grid-px * $divider-interval;
-  $divider-background-images: grid-background-images($divider-px, $divider-color);
-  // Blocks & Dividers
-  $background-images: join($divider-background-images, $grid-background-images);
-  background-image: $background-images;
-  background-size: $divider-px $divider-px;
-}
-
-@mixin artboard-overlay($opacity: $artboard-overlay-opacity, $grid-px: $artboard-grid-px, $grid-color: $artboard-grid-color, $divider-interval: $artboard-divider-interval, $divider-color: $artboard-divider-color) {
-  @include artboard-grid($grid-px, $grid-color, $divider-interval, $divider-color);
-  opacity: $opacity;
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: -1;
-  pointer-events:none;
-}
-
-.artboard-grid {
-  @include artboard-grid($artboard-grid-px, $artboard-grid-color, $artboard-divider-interval, $artboard-divider-color);
-}
-
-.artboard-overlay {
-  @include artboard-overlay();
 }
 </style>
-
