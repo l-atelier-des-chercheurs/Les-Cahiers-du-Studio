@@ -74,7 +74,7 @@ gulp.task('css-prod', function() {
 
 // Lint Task
 gulp.task('lint', function() {
-  return gulp.src(nodeScripts.concat(userScripts))
+  return gulp.src(nodeScripts.concat(userScripts, vueMain))
     .pipe(jshint({
       esversion: 6
     }))
@@ -137,7 +137,7 @@ gulp.task('dev-watch-sync', ['init-live-reload', 'watch']);
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-  gulp.watch([userScripts, components, nodeScripts], ['lint', 'vue', 'scripts']);
+  gulp.watch([userScripts, vueMain, components, nodeScripts], ['lint', 'vue', 'scripts']);
   gulp.watch('client/less/*.less', ['less', 'css-prod']);
 });
 
