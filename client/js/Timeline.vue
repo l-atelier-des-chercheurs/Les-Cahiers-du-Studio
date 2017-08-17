@@ -224,7 +224,7 @@ export default {
         transform-origin: left top;
         margin-left: 4px;
         font-style: italic;
-        margin-top: -20px;
+        margin-top: -30px;
         font-style: 0.9em;
       }
     }

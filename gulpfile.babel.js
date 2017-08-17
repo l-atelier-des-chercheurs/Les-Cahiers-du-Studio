@@ -23,6 +23,9 @@ import gutil from "gulp-util";
 var userScripts = [
   'client/js/main.js'
 ];
+var vueMain = [
+  'client/js/app.js'
+];
 var components = [
   'client/js/*.vue',
   'client/js/components/*.vue',
@@ -78,9 +81,26 @@ gulp.task('lint', function() {
     .pipe(jshint.reporter('default'));
 });
 
+gulp.task('vue', function() {
+  return browserify(vueMain)
+  .transform(vueify)
+  .transform(babelify, { presets: ['es2015'], plugins: ['transform-runtime'] })
+  .bundle()
+  .on('error', function(err) {
+    gutil.log(
+      gutil.colors.red('Browserify compile error:'),
+      err.message
+    );
+    gutil.beep();
+    this.emit('end'); // Ends the task
+  })
+  .pipe(source('vue.js'))
+  .pipe(buffer())
+  .pipe(gulp.dest('client/development'))
+});
+
 gulp.task('scripts', function () {
   return browserify(userScripts)
-  .transform(vueify)
   .transform(babelify, { presets: ['es2015'], plugins: ['transform-runtime'] })
   .bundle()
   .on('error', function(err) {
@@ -97,7 +117,7 @@ gulp.task('scripts', function () {
 });
 
 // Concatenate user scripts and minify them.
-gulp.task('scripts-prod', ['scripts'], function (done) {
+gulp.task('scripts-prod', ['vue', 'scripts'], function (done) {
   return gulp.src('client/development/*.js')
     .pipe(concat('all.min.js'))
     .pipe(gulp.dest('client/production'))
@@ -117,9 +137,9 @@ gulp.task('dev-watch-sync', ['init-live-reload', 'watch']);
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-  gulp.watch([userScripts, components, nodeScripts], ['lint', 'scripts']);
+  gulp.watch([userScripts, components, nodeScripts], ['lint', 'vue', 'scripts']);
   gulp.watch('client/less/*.less', ['less', 'css-prod']);
 });
 
 // Default Task
-gulp.task('default', ['less', 'css-prod', 'lint', 'scripts', 'scripts-prod']);
+gulp.task('default', ['less', 'css-prod', 'lint', 'vue', 'scripts', 'scripts-prod']);
