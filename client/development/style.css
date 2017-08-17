@@ -2264,6 +2264,11 @@ main > *:first-child {
   position: absolute;
   width: 1px;
   height: 1px;
+  -webkit-transition: -webkit-transform 1.2s ease-in-out;
+  transition: -webkit-transform 1.2s ease-in-out;
+  -o-transition: transform 1.2s ease-in-out;
+  transition: transform 1.2s ease-in-out;
+  transition: transform 1.2s ease-in-out, -webkit-transform 1.2s ease-in-out;
 }
 .mediaWrap .media {
   position: relative;

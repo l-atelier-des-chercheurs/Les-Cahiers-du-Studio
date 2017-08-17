@@ -36,7 +36,11 @@ module.exports = (function() {
   }
 
   function parseDate(date, f) {
-    return moment(date, f).format('YYYY-MM-DD HH:mm');
+    if(moment(date, f, true).isValid()) {
+      return moment(date, f).format('YYYY-MM-DD HH:mm');
+    } else {
+      return '';
+    }
   }
 
   // check whether media (such as 'hello-world.mp4') already exists in the folder

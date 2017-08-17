@@ -22,7 +22,7 @@
     >
     </EditMedia>
 
-    <div class="mediaContent">
+    <div class="mediaContent" @click="showMediaModal = true">
       <MediaContent
         :slugFolderName="slugFolderName"
         :slugMediaName="slugMediaName"

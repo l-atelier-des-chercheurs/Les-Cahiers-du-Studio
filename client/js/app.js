@@ -70,5 +70,5 @@ let vm = new Vue({
 });
 
 setTimeout(() => {
-//   vm.openFolder('plotter-twitter');
+  vm.openFolder('test-temps-reel');
 }, 500);

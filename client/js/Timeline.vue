@@ -54,12 +54,13 @@
 
     </template>
 
+<!--
     <div class="input-single padding-medium" style="position: fixed; left: 0;
     top: 20%; width: 200px; background-color: white; z-index:1001;">
       <label>Timeline Width</label>
       <input type="range" v-model="timelineStyles.width" min="1" max="200">
     </div>
-
+-->
   </div>
 </template>
 <script>
@@ -81,40 +82,74 @@ export default {
     return {
       loading_folder_medias: false,
       windowHeight: window.innerHeight,
-      timelineStyles: {
-        width: 5,
-        height: 1
-      },
       topNavbarHeight: 70,
       timelinetrackHeight: 50,
       timelineInfos: {
-        start: moment(),
-        end:   moment(),
+        start: 10,
+        end:   40
+      },
+      timelineStyles: {
+        width: 1,
+        height: 1
       }
     }
   },
+  watch: {
+    'folder.start':  function() {
+      debugger;
+      this.setTimelineStart(this.folder.start);
+    },
+    'folder.end':  function() {
+      debugger;
+      this.setTimelineEnd(this.folder.end);
+    }
+  },
   created() {
+    console.log(`Created component timeline`);
+    debugger;
     window.addEventListener('resize', debounce(this.onResize, 300));
-
-    if(this.folder.start && moment(this.folder.start,'YYYY-MM-DD HH:mm', true).isValid()) {
-      this.timelineInfos.start = moment(this.folder.start,'YYYY-MM-DD HH:mm');
-    }
-    if(this.folder.end && moment(this.folder.end,'YYYY-MM-DD HH:mm', true).isValid()) {
-      this.timelineInfos.end = moment(this.folder.end,'YYYY-MM-DD HH:mm');
-    }
+    this.setTimelineStart(this.folder.start);
+    this.setTimelineEnd(this.folder.end);
   },
   beforeDestroy() {
     window.removeEventListener('resize', debounce(this.onResize, 300))
   },
 
   methods: {
+    // retourne une valeure en pixel qui dépend de la hauteur de la timeline
+    setTimelineStart(ts) {
+      if(ts && moment(ts,'YYYY-MM-DD HH:mm', true).isValid()) {
+        this.timelineInfos.start = moment(ts,'YYYY-MM-DD HH:mm');
+      } else {
+        console.log(`WARNING: no timeline start. This can’t work.`);
+        throw `Missing timeline start`;
+      }
+    },
+    setTimelineEnd(ts) {
+      if(ts && moment(ts,'YYYY-MM-DD HH:mm', true).isValid()) {
+        this.timelineInfos.end = moment(ts,'YYYY-MM-DD HH:mm');
+      } else {
+        this.timelineInfos.end = moment();
+      }
+    },
+
     getVH(val) {
       let winHeight = this.windowHeight - this.topNavbarHeight;
       return val*winHeight;
     },
     setTimeline() {
-      let w = this.getVH(this.timelineStyles.width);
-      let h = this.getVH(this.timelineStyles.height);
+      // récupérer la longueur de la timeline en TS
+      let timeEllapsed = this.timelineInfos.end - this.timelineInfos.start;
+      // décomposer en secondes
+      let secondsEllapsed = timeEllapsed/1000;
+      // on passe au rapport 1 hauteur = 60 secondes
+
+      let w = secondsEllapsed;
+      let h = this.getVH(1);
+
+      this.timelineStyles.width = w;
+      this.timelineStyles.height = h;
+
       return `width: ${w}px; height: ${h}px;`;
     },
     generateHorizontalGrid() {
@@ -156,7 +191,7 @@ export default {
         html += `<div class="gridItem gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${momentMinute}"></div>`;
       }
 
-      let firstMinute = moment(moment(this.timelineInfos.start).format('YYYY-MM-DD HH:mm'));
+      let firstMinute = moment(this.timelineInfos.start);
       for(var m = 60000; m < timeEllapsed; m +=  60000) {
         let currentMinute = firstMinute + m;
         createMinuteTick(currentMinute);
@@ -176,15 +211,14 @@ export default {
       if(!this.timelineInfos.start || !this.timelineInfos.end) { console.log(`Error with getXPosition`); }
       let msSinceStart = timestamp - this.timelineInfos.start;
       let pc = msSinceStart/(this.timelineInfos.end - this.timelineInfos.start);
-      let posX = this.getVH(this.timelineStyles.width * pc);
+      pc = Math.min(Math.max(parseFloat(pc), 0), 1);
+      let posX = this.timelineStyles.width * pc;
       return Math.floor(posX);
     },
     onResize() {
       this.windowHeight = window.innerHeight;
     }
   },
-  watch: {
-  }
 }
 </script>
 
@@ -235,7 +269,7 @@ export default {
     }
     &.gridItem_ishour {
       color: #00ad41;
-      border-left: 1px solid fade-out(#00ad41, 0.9);
+      border-left: 1px solid fade-out(#00ad41, 0);
       z-index:10;
 
       &::before {
@@ -246,7 +280,7 @@ export default {
         transform-origin: left top;
         margin-left: 4px;
         font-style: italic;
-        margin-top: -30px;
+        margin-top: -25px;
         font-style: 0.9em;
       }
     }
@@ -254,9 +288,10 @@ export default {
     &.gridItem_isminute {
       color: #999;
       border-left: 1px solid #d9d9d9;
-      z-index:10;
+      z-index:1;
 
-      &:nth-child(10n) {
+      &:nth-of-type(10n) {
+        color: #333;
         &::before {
           content: attr(data-caption);
           display: block;
@@ -265,7 +300,7 @@ export default {
           transform-origin: left top;
           margin-left: 4px;
           font-style: italic;
-          margin-top: -30px;
+          margin-top: -25px;
           font-style: 0.9em;
         }
       }

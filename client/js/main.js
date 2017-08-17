@@ -59,23 +59,6 @@ window.store = {
   SOCKETIO
 ***********/
 
-function isChrome() {
-  var isChromium = window.chrome,
-    winNav = window.navigator,
-    vendorName = winNav.vendor,
-    isOpera = winNav.userAgent.indexOf('OPR') > -1,
-    isIEedge = winNav.userAgent.indexOf('Edge') > -1,
-    isIOSChrome = winNav.userAgent.match('CriOS');
-
-  if(isIOSChrome){
-    return false;
-  } else if(isChromium !== null && isChromium !== undefined && vendorName === 'Google Inc.' && isOpera === false && isIEedge === false) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 import alertify from 'alertify.js';
 
 window.socketio = (function() {
@@ -96,14 +79,11 @@ window.socketio = (function() {
   };
 
   function init() {
-    if(true) {
-      socket = io.connect({
-        transports: ['polling','websocket'],
-      });
+    var userAgent = window.navigator.userAgent;
+    if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
+      socket = io.connect({ transports: ['polling','websocket'] });
     } else {
-      socket = io.connect({
-        transports: ['websocket','polling'],
-      });
+      socket = io.connect({ transports: ['websocket','polling'] });
     }
     	socket.on('connect', _onSocketConnect);
     socket.on('error', _onSocketError);
@@ -166,10 +146,22 @@ window.socketio = (function() {
   }
   function _onListFolder(fdata) {
     	console.log(`Received _onListFolder packet.`);
+    	// to prevent override of fully formed medias
+    for(let slugFolderName in fdata) {
+      if(window.store.state.folders.hasOwnProperty(slugFolderName)) {
+        fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
+      }
+    }
     window.store.state.folders = Object.assign({}, window.store.state.folders, fdata);
   }
   function _onListFolders(fdata) {
     	console.log(`Received _onListFolders packet.`);
+    	// to prevent override of fully formed medias
+    for(let slugFolderName in fdata) {
+      if(window.store.state.folders.hasOwnProperty(slugFolderName)) {
+        fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
+      }
+    }
     window.store.state.folders = Object.assign({}, fdata);
   }
   function _onMediaCreated(mdata) {
