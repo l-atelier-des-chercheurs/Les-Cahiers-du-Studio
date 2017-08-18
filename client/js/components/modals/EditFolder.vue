@@ -1,8 +1,8 @@
 <template>
   <Modal @close="$emit('close')">
-    <h3 slot="header">
+    <div slot="header">
       Edit a folder
-    </h3>
+    </div>
 
     <form slot="body" v-on:submit.prevent="editThisFolder">
 

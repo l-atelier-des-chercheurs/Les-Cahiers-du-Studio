@@ -10,6 +10,7 @@
     background: rgba(151, 151, 151,0.25);
 }
 
+
 :root {
   --body-color: black;
   --body-bg-color: #fff;
@@ -34,6 +35,7 @@
 
 body {
   margin-top: 0;
+  padding-top: 0em;
   &.is_unscrollable {
     overflow: hidden;
   }
@@ -56,6 +58,22 @@ input:required {
   z-index: 10000;
 }
 
+.scroll-handle {
+  position: absolute;
+  bottom: 0px;
+  width: 100px;
+  height: 20px;
+  background: #ff0000;
+  z-index: 10000;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+
+  .grabbed {
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+  }
+}
+
 /************************************************************************
 
       APP
@@ -72,12 +90,8 @@ input:required {
   width: 100%;
 
   & > .wrapper {
-    position: fixed;
-    top:0;
-    left:0;
     width: 100%;
     height: @t-navbarheight;
-    z-index: 1000;
     background-color: #f2f2f2; // @c-gris_light
     border-bottom: 1px solid black;
   }
@@ -140,9 +154,9 @@ h1 {
 
 .pushContentDown {
   height: @t-skipline * 4;
-  margin-top: -0.3em;
+  margin-top: 0.3em;
   &.is--collapsed {
-    height: @t-navbarheight;
+    display: none;
   }
 }
 main {
@@ -182,6 +196,23 @@ main {
 
 .m_timeline {
   position: relative;
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+      width: 80px;
+      height: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+      -webkit-box-shadow: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+  }
+//   margin-right:   50px;
 
   .m_timeline-container {
     position: relative;
@@ -189,6 +220,11 @@ main {
     width: 100%;
     min-width: 500px;
     margin-left: 25vw;
+    padding-right:   25px;
+
+    &.is--realtime {
+      border-right: 4px solid @c-rouge;
+    }
   }
 }
 .mediaWrap {
@@ -196,13 +232,13 @@ main {
   width: 1px; height: 1px;
   transition: transform 1.2s ease-in-out;
 
-  @t-anchor: 30px;
+  @t-anchor: 10px;
 
   .media {
     position: absolute;
     right:0;
     width:16em;
-    border: 1px solid #eee;
+    border: 1px solid #000;
     cursor: pointer;
 
     &::before {
@@ -214,8 +250,7 @@ main {
       top: -@t-anchor/2;
       right: -@t-anchor/2;
       border-radius: 50%;
-      background-color: #f2f2f2;
-      border: 2px solid #fff;
+      background-color: #000;
     }
   }
 
@@ -232,8 +267,8 @@ main {
 
 .m_fileupload {
   position: fixed;
-  bottom:0;
-  right: @t-skipline*5;
+  bottom:@t-skipline*2;
+  right:0;
 }
 
 

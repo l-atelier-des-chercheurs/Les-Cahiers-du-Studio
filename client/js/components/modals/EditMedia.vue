@@ -113,6 +113,8 @@ export default {
     removeMedia: function() {
       if(window.confirm(locals.lang.modal.sureToRemoveMedia)) {
         this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
+        // then close that popover
+        this.$emit('close', '');
       }
     },
     editThisMedia: function (event) {

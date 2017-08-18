@@ -6,13 +6,14 @@
       class="pushContentDown">
     </div>
 
-    <div class="container">
+
+    <div v-if="view === 'ListView'" class="container">
       <div class="row">
 
-        <Navbar :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]">
-        </Navbar>
+        <NavbarLeft v-if="view === 'ListView'">
+        </NavbarLeft>
 
-        <main v-if="view === 'ListView'">
+        <main>
           <h1>
             la plate-forme du studio-théâtre de Vitry
           </h1>
@@ -20,18 +21,24 @@
           <p>
             <a class="with_arrow" href="http://www.studiotheatre.fr/" target="_blank">plus d’informations sur le site du studio-théâtre</a>
           </p>
-        </main>
-      </div>
 
-      <ListView
-        v-if="view === 'ListView'"
-        :slugFolderName="$root.settings.currentlyOpenedFolder"
-        :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
-      >
-      </ListView>
+        </main>
+
+        <ListView
+          v-if="view === 'ListView'"
+          :slugFolderName="$root.settings.currentlyOpenedFolder"
+          :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
+        >
+        </ListView>
+
+      </div>
 
     </div>
     <div v-if="view === 'TimeLine'">
+
+      <NavbarTop :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]">
+      </NavbarTop>
+
       <TimeLine
         :slugFolderName="$root.settings.currentlyOpenedFolder"
         :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
@@ -53,7 +60,8 @@
 </template>
 
 <script>
-import Navbar from './components/Navbar.vue';
+import NavbarTop from './components/NavbarTop.vue';
+import NavbarLeft from './components/NavbarLeft.vue';
 import ListView from './ListView.vue';
 import TimeLine from './TimeLine.vue';
 import BottomFooter from './components/BottomFooter.vue';
@@ -61,7 +69,8 @@ import BottomFooter from './components/BottomFooter.vue';
 export default {
   name: 'app',
   components: {
-    Navbar,
+    NavbarTop,
+    NavbarLeft,
     ListView,
     TimeLine,
     BottomFooter

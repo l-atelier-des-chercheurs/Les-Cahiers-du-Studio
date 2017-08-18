@@ -37,7 +37,7 @@ module.exports = (function() {
 
   function parseDate(date, f) {
     if(moment(date, f, true).isValid()) {
-      return moment(date, f).format('YYYY-MM-DD HH:mm');
+      return moment(date, f).format('YYYY-MM-DD HH:mm:ss');
     } else {
       return '';
     }

@@ -1,10 +1,11 @@
 <template>
-  <div class="m_timeline">
+  <div class="m_timeline" ref="timeline">
 
-    <div class="m_timeline-container" :style="setTimeline()">
+    <div class="m_timeline-container" :style="setTimeline()" :class="{ 'is--realtime' : isRealtime }">
 
       <div class="timeline_track">
       </div>
+
       <!-- GRID -->
       <div class="simple_grid_overlay">
         <div class="horizontal" v-html="generateHorizontalGrid()">
@@ -24,17 +25,8 @@
           >
           </media>
         </div>
-
-        <EditMedia
-          v-if="showMediaModalFor !== ''"
-          :slugFolderName="slugFolderName"
-          :slugMediaName="showMediaModalFor"
-          :media="medias[showMediaModalFor]"
-          @close="showMediaModalFor = ''"
-        >
-        </EditMedia>
-
       </div>
+
       <template v-else>
         <p>
           <code>
@@ -47,6 +39,7 @@
           </code>
         </p>
       </template>
+
     </div>
 
     <AddMediaButton
@@ -54,16 +47,26 @@
       :slugFolderName="slugFolderName">
     </AddMediaButton>
 
-    <div class="input-single padding-medium" style="position: fixed; left: 0;
-    bottom: 0%; width: 200px; background-color: white; z-index:1001;">
-      <label>Timeline scale (1 pixel = X seconds)</label>
-      <input type="range" v-model="timelineInfos.scale" min="1" max="20">
-    </div>
+    <EditTimeline
+      v-if="showTimelineEditModal"
+    >
+    </EditTimeline>
+
+    <EditMedia
+      v-if="showMediaModalFor !== ''"
+      :slugFolderName="slugFolderName"
+      :slugMediaName="showMediaModalFor"
+      :media="medias[showMediaModalFor]"
+      @close="showMediaModalFor = ''"
+    >
+    </EditMedia>
+
   </div>
 </template>
 <script>
 import Media from './components/Media.vue';
 import EditMedia from './components/modals/EditMedia.vue';
+import EditTimeline from './components/modals/EditTimeline.vue';
 import AddMediaButton from './components/AddMediaButton.vue';
 import moment from 'moment';
 import debounce from 'debounce';
@@ -77,37 +80,52 @@ export default {
   components: {
     Media,
     EditMedia,
+    EditTimeline,
     AddMediaButton
   },
   data() {
     return {
       windowHeight: window.innerHeight,
-      topNavbarHeight: 70,
+      topNavbarHeight: 60,
+      bottomScrollBar: 20,
       showMediaModalFor: '',
       timelinetrackHeight: 50,
+      isRealtime: false,
       timelineInfos: {
         start: 10,
         end:   40,
-        scale: 1
+        scale: 1,
+        autoscroll: false
       },
       timelineStyles: {
         width: 1,
         height: 1
       }
+      showTimelineEditModal: false
     }
   },
   watch: {
     folder:  function() {
-      debugger;
-      this.setTimelineStart(this.folder.start);
-      this.setTimelineEnd(this.folder.end);
+      this.init();
     },
   },
   created() {
     console.log(`Created component timeline`);
+
     window.addEventListener('resize', debounce(this.onResize, 300));
-    this.setTimelineStart(this.folder.start);
-    this.setTimelineEnd(this.folder.end);
+    this.init();
+
+    // let msTillNextMinute = moment().endOf("minute").diff(moment());
+
+    setInterval(() => {
+      this.init();
+      this.setTimeline();
+      if(this.timelineInfos.autoscroll) {
+        setTimeout(() => {
+          this.$refs.timeline.scrollLeft = this.timelineStyles.width;
+        }, 10);
+      }
+    }, 1000);
   },
   beforeDestroy() {
     window.removeEventListener('resize', debounce(this.onResize, 300))
@@ -115,26 +133,31 @@ export default {
   computed: {
   },
   methods: {
+    init() {
+      this.setTimelineStart(this.folder.start);
+      this.setTimelineEnd(this.folder.end);
+    },
     // retourne une valeure en pixel qui dépend de la hauteur de la timeline
     setTimelineStart(ts) {
-      if(ts && moment(ts,'YYYY-MM-DD HH:mm', true).isValid()) {
-        this.timelineInfos.start = moment(ts,'YYYY-MM-DD HH:mm');
+      if(ts && moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+        this.timelineInfos.start = moment(ts,'YYYY-MM-DD HH:mm:ss');
       } else {
         console.log(`WARNING: no timeline start. This can’t work.`);
         throw `Missing timeline start`;
       }
     },
     setTimelineEnd(ts) {
-      if(ts && moment(ts,'YYYY-MM-DD HH:mm', true).isValid()) {
-        this.timelineInfos.end = moment(ts,'YYYY-MM-DD HH:mm');
+      if(ts && moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+        this.timelineInfos.end = moment(ts,'YYYY-MM-DD HH:mm:ss');
+        this.isRealtime = false;
       } else {
         // set end to current time
         this.timelineInfos.end = moment();
+        this.isRealtime = true;
       }
     },
-
     getVH(val) {
-      let winHeight = this.windowHeight - this.topNavbarHeight;
+      let winHeight = this.windowHeight - this.topNavbarHeight - this.bottomScrollBar;
       return val*winHeight;
     },
     setTimeline() {
@@ -200,7 +223,7 @@ export default {
       return html;
     },
     getMediaPosition(media) {
-      let createdTS = moment(media.created,'YYYY-MM-DD HH:mm')
+      let createdTS = moment(media.created,'YYYY-MM-DD HH:mm:ss')
       let posX = this.getXPosition(createdTS);
       let posY = this.getVH(createdTS.format('mm')/100);
       return {
@@ -286,7 +309,7 @@ export default {
         transform-origin: left top;
         margin-left: 4px;
         font-style: italic;
-        margin-top: -25px;
+        margin-top: -30px;
         font-style: 0.9em;
       }
     }
@@ -306,7 +329,7 @@ export default {
           transform-origin: left top;
           margin-left: 4px;
           font-style: italic;
-          margin-top: -25px;
+          margin-top: -30px;
           font-style: 0.9em;
         }
       }

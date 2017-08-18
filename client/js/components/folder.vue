@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     formatDateToHuman(date) {
-      return moment(date, 'YYYY-MM-DD HH:mm').calendar();
+      return moment(date, 'YYYY-MM-DD HH:mm:ss').calendar();
     },
     openFolder() {
       this.$root.openFolder(this.slugFolderName);

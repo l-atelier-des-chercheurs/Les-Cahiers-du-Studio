@@ -34,10 +34,10 @@ module.exports = function(electronApp) {
   expressSettings(app, express);
   router(app, io, m);
 
-  server.listen(app.get('port'), function() {
+  server.listen(app.get('port'), () => {
     dev.log(`Server up and running. Go to ${config.protocol}://${config.host}:${config.port}`);
     dev.log(` `);
-    process.on('unhandledRejection', function(reason, p) {
+    process.on('unhandledRejection', (reason, p) => {
       dev.error(`Unhandled Rejection at: Promise ${p}, reason: ${reason}`);
     });
   });
