@@ -4,6 +4,10 @@
       <div class="modal-wrapper">
         <div class="modal-container padding-medium" @click.stop>
 
+          <button class="close_button" @click="$emit('close')">
+            ✕
+          </button>
+
           <div class="modal-header">
             <slot name="header">
               default header
@@ -24,6 +28,7 @@
               </button>
             </slot>
           </div>
+
         </div>
       </div>
     </div>
@@ -59,7 +64,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="sass">
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -78,6 +83,7 @@ export default {
 }
 
 .modal-container {
+  position: relative;
   width: 380px;
   max-height: 100vh;
   overflow-y: scroll;
@@ -89,9 +95,19 @@ export default {
   transition: all .3s ease;
 }
 
-.modal-header > * {
+.close_button {
+  position: absolute;
+  top:0;
+  right:0;
+}
+
+.modal-header {
   margin-top: 0;
   color: #42b983;
+
+  :first-child {
+    margin-top: 0;
+  }
 }
 
 .modal-body {

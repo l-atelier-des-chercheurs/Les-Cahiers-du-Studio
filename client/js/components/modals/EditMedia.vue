@@ -1,8 +1,8 @@
 <template>
   <Modal @close="$emit('close')">
-    <h3 slot="header">
+    <div slot="header">
       Edit media <i>{{ slugMediaName }}</i>
-    </h3>
+    </div>
 
     <div slot="body" style="width: 300px;">
       <MediaContent
@@ -17,12 +17,10 @@
     <form slot="footer" v-on:submit.prevent="editThisMedia">
 
 <!-- Creation date (stored in meta file, overrides file date) -->
-      <div>
+      <div class="input-single">
         <label>Creation date</label>
-        <div class="two-column">
-          <DateTime v-model="mediadata.created">
-          </DateTime>
-        </div>
+        <DateTime v-model="mediadata.created">
+        </DateTime>
       </div>
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -60,6 +58,10 @@
           </label>
         </span>
       </div>
+
+      <button type="button" class="button_small" @click="removeMedia()">
+        Remove
+      </button>
 
       <div>
         <button class="modal-default-button button-success" type="submit">
@@ -108,12 +110,16 @@ export default {
   computed: {
   },
   methods: {
+    removeMedia: function() {
+      if(window.confirm(locals.lang.modal.sureToRemoveMedia)) {
+        this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
+      }
+    },
     editThisMedia: function (event) {
       console.log('editThisMedia');
 
       // copy all values
       let values = this.mediadata;
-
       values.slugFolderName = this.slugFolderName;
       values.slugMediaName = this.slugMediaName;
 

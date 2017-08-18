@@ -6,33 +6,44 @@
       class="pushContentDown">
     </div>
 
-    <div class="container">
-      <div class="row">
+    {{ view }}
 
-        <Navbar :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]">
-        </Navbar>
+    <div v-if="view === 'ListView'">
+      <div class="container">
+        <div class="row">
 
-        <transition name="component-fade">
-          <main v-if="$root.settings.currentlyOpenedFolder === ''">
-            <h1>
-              la plate-forme du studio-théâtre de Vitry
-            </h1>
-            <p>Ici une présentation de la plate-forme en elle-même. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme en elle-même. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme […].</p>
-            <p>
-              <a class="with_arrow" href="http://www.studiotheatre.fr/" target="_blank">plus d’informations sur le site du studio-théâtre</a>
-            </p>
-          </main>
-        </transition>
+          <Navbar :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]">
+          </Navbar>
+
+          <transition name="component-fade">
+            <main v-if="$root.settings.currentlyOpenedFolder === ''">
+              <h1>
+                la plate-forme du studio-théâtre de Vitry
+              </h1>
+              <p>Ici une présentation de la plate-forme en elle-même. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme en elle-même. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme […].</p>
+              <p>
+                <a class="with_arrow" href="http://www.studiotheatre.fr/" target="_blank">plus d’informations sur le site du studio-théâtre</a>
+              </p>
+            </main>
+          </transition>
+        </div>
       </div>
-    </div>
 
-    <transition name="component-fade" mode="out-in">
-      <component
-        :is="view"
+      <ListView
         :slugFolderName="$root.settings.currentlyOpenedFolder"
         :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
-      ></component>
-    </transition>
+      >
+      </ListView>
+
+    </div>
+    <div v-if="view === 'TimeLine'">
+      PLIP {{ $root.settings.currentlyOpenedFolder }}
+      <TimeLine
+        :slugFolderName="$root.settings.currentlyOpenedFolder"
+        :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
+      </TimeLine>
+    </div>
+
 
     <div class="container">
       <div class="row">
@@ -47,7 +58,7 @@
 
 <script>
 import Navbar from './components/Navbar.vue';
-import ListView from './ListView.vue'
+import ListView from './ListView.vue';
 import TimeLine from './TimeLine.vue';
 import BottomFooter from './components/BottomFooter.vue';
 
@@ -57,7 +68,7 @@ export default {
     Navbar,
     ListView,
     TimeLine,
-    BottomFooter,
+    BottomFooter
   },
   data () {
     return {
