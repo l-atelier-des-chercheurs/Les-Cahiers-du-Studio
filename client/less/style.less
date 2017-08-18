@@ -3,6 +3,9 @@
 @import (inline) "shoelace/forms.css";
 @import "_stv.less";
 
+@import "../../node_modules/vue2-animate/src/vue2-animate.less";
+
+
 ::-moz-selection {
     background: rgba(151, 151, 151,0.25);
 }
@@ -226,7 +229,18 @@ main {
     height: 100%;
     width: 100%;
     margin-left: 25vw;
-    padding-right:   25px;
+    padding-right:   50px;
+
+    // stupid trick to add some space to the right of this div without affecting its width
+    &::after {
+      content:'';
+      display: block;
+      position: absolute;
+      right: -50px;
+      width: 1px;
+      height: 1px;
+    }
+
 
     &.is--realtime {
       border-right: 4px solid @c-rouge;

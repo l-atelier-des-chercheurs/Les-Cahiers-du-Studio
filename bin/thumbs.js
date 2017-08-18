@@ -4,8 +4,7 @@ const
   fs = require('fs-extra'),
   ffmpegstatic = require('ffmpeg-static'),
   ffmpeg = require('fluent-ffmpeg'),
-  exifReader = require('exif-reader'),
-  moment = require('moment')
+  exifReader = require('exif-reader')
 ;
 
 const
@@ -100,7 +99,6 @@ module.exports = (function() {
           dev.logverbose(`Gotten metadata.` );
           let ts = _extractImageTimestamp(metadata);
           dev.logverbose(`TS is ${ts}`);
-          let localTS = moment.utc(ts);
           resolve(ts);
         })
         .catch(err => reject());

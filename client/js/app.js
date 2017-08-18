@@ -9,6 +9,7 @@ Vue.config.devtools = true;
 import App from './App.vue';
 
 /* eslint-disable no-new */
+/* exported vm */
 let vm = new Vue({
   el: '#app',
   template: `<App/>`,

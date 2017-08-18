@@ -13,18 +13,23 @@
       </div>
 
       <div v-if="Object.keys(medias).length > 0">
-        <div class="mediaWrap" v-for="(media, index) in medias"
-          :style="getMediaPosition(media)"
-          @click="openMediaModal(index)"
-        >
-          <media
-            :key="index"
-            :slugFolderName="slugFolderName"
-            :slugMediaName="index"
-            :media="media"
+
+        <transition-group name="fadeLeft">
+
+          <div class="mediaWrap" v-for="(media, index) in medias"
+            :style="getMediaPosition(media)"
+            @click="openMediaModal(index)"
+            v-bind:key="index"
           >
-          </media>
-        </div>
+            <media
+              :key="index"
+              :slugFolderName="slugFolderName"
+              :slugMediaName="index"
+              :media="media"
+            >
+            </media>
+          </div>
+        </transition-group>
       </div>
 
       <template v-else>
@@ -230,7 +235,7 @@ export default {
         html += `<div class="gridItem gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${momentMinute}"></div>`;
       }
 
-      let firstMinute = moment(this.timelineInfos.start);
+      let firstMinute = moment(moment(this.timelineInfos.start).format('YYYY-MM-DD HH:mm:00'));
       for(var m = 60000; m < timeEllapsed; m +=  60000) {
         let currentMinute = firstMinute + m;
         createMinuteTick(currentMinute);
