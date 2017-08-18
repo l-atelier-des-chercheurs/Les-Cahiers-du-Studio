@@ -2213,9 +2213,6 @@ h1 {
 .pushContentDown {
   height: 5em;
   margin-top: -0.3em;
-  -webkit-transition: height 1s ease-out;
-  -o-transition: height 1s ease-out;
-  transition: height 1s ease-out;
 }
 .pushContentDown.is--collapsed {
   height: 60px;
@@ -2260,6 +2257,7 @@ main > *:first-child {
   height: 100%;
   width: 100%;
   min-width: 500px;
+  margin-left: 25vw;
 }
 .mediaWrap {
   position: absolute;
@@ -2272,9 +2270,11 @@ main > *:first-child {
   transition: transform 1.2s ease-in-out, -webkit-transform 1.2s ease-in-out;
 }
 .mediaWrap .media {
-  position: relative;
+  position: absolute;
+  right: 0;
   width: 16em;
   border: 1px solid #eee;
+  cursor: pointer;
 }
 .mediaWrap .media::before {
   content: '';
@@ -2286,7 +2286,7 @@ main > *:first-child {
   right: -15px;
   border-radius: 50%;
   background-color: #f2f2f2;
-  border: 1px solid #eee;
+  border: 2px solid #fff;
 }
 .mediaWrap .mediaContent {
   width: 100%;

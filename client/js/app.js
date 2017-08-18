@@ -48,18 +48,8 @@ let vm = new Vue({
         console.log(`Missing folder key on the page, aborting.`);
         return false;
       }
-      // we check if this folder already is tracking medias
-      if(this.store.folders[slugFolderName].hasOwnProperty('medias')) {
-        this.settings.currentlyOpenedFolder = slugFolderName;
-
-      } else {
-        // if its not, we create an empty medias object,
-        this.store.folders[slugFolderName].medias = {};
-        this.store.folders[slugFolderName].loading_medias = true;
-        this.settings.currentlyOpenedFolder = slugFolderName;
-        window.socketio.listMedias(slugFolderName);
-      }
-
+      this.settings.currentlyOpenedFolder = slugFolderName;
+      window.socketio.listMedias(slugFolderName);
     },
     closeFolder: function() {
       if(window.store.debug) { console.log(`ROOT EVENT: closeFolder`); }
@@ -80,5 +70,5 @@ let vm = new Vue({
 });
 
 setTimeout(() => {
-  vm.openFolder('test-temps-reel');
+//   vm.openFolder('ouip');
 }, 500);

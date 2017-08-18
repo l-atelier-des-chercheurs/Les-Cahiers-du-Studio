@@ -141,7 +141,6 @@ h1 {
 .pushContentDown {
   height: @t-skipline * 4;
   margin-top: -0.3em;
-  transition: height 1s ease-out;
   &.is--collapsed {
     height: @t-navbarheight;
   }
@@ -189,6 +188,7 @@ main {
     height: 100%;
     width: 100%;
     min-width: 500px;
+    margin-left: 25vw;
   }
 }
 .mediaWrap {
@@ -196,16 +196,14 @@ main {
   width: 1px; height: 1px;
   transition: transform 1.2s ease-in-out;
 
-  .media {
-
-  }
-
   @t-anchor: 30px;
 
   .media {
-    position: relative;
+    position: absolute;
+    right:0;
     width:16em;
     border: 1px solid #eee;
+    cursor: pointer;
 
     &::before {
       content: '';
@@ -217,7 +215,7 @@ main {
       right: -@t-anchor/2;
       border-radius: 50%;
       background-color: #f2f2f2;
-      border: 1px solid #eee;
+      border: 2px solid #fff;
     }
   }
 

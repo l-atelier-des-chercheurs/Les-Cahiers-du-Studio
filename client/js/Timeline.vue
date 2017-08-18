@@ -1,70 +1,69 @@
 <template>
   <div class="m_timeline">
-    <template v-if="loading_folder_medias">
-      <span class="loader margin-small"></span>
-    </template>
-    <template v-else>
 
-      <div class="m_timeline-container" :style="setTimeline()">
+    <div class="m_timeline-container" :style="setTimeline()">
 
-        <div class="timeline_track">
+      <div class="timeline_track">
+      </div>
+      <!-- GRID -->
+      <div class="simple_grid_overlay">
+        <div class="horizontal" v-html="generateHorizontalGrid()">
         </div>
-        <!-- GRID -->
-        <div class="simple_grid_overlay">
-          <div class="horizontal" v-html="generateHorizontalGrid()">
-          </div>
-        </div>
-
-        <!-- MEDIAS -->
-        <div v-if="Object.keys(folder.medias).length > 0">
-          <div class="mediaWrap" v-for="(media, index) in folder.medias"
-            :style="getMediaPosition(media)"
-          >
-            <media
-              :key="index"
-              :slugFolderName="slugFolderName"
-              :slugMediaName="index"
-              :media="media"
-            >
-            </media>
-          </div>
-        </div>
-
-        <!-- NO MEDIAS -->
-        <template v-else>
-          <p>
-            <code>
-              <template v-if="folder.authorized">
-                Aucun média dans ce dossier.
-              </template>
-              <template v-else>
-                Aucun média public dans ce dossier.
-              </template>
-            </code>
-          </p>
-        </template>
-
-
       </div>
 
-      <AddMediaButton
-        v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass')"
-        :slugFolderName="slugFolderName">
-      </AddMediaButton>
+      <div v-if="Object.keys(medias).length > 0">
+        <div class="mediaWrap" v-for="(media, index) in medias"
+          :style="getMediaPosition(media)"
+          @click="openMediaModal(index)"
+        >
+          <media
+            :key="index"
+            :slugFolderName="slugFolderName"
+            :slugMediaName="index"
+            :media="media"
+          >
+          </media>
+        </div>
 
-    </template>
+        <EditMedia
+          v-if="showMediaModalFor !== ''"
+          :slugFolderName="slugFolderName"
+          :slugMediaName="showMediaModalFor"
+          :media="medias[showMediaModalFor]"
+          @close="showMediaModalFor = ''"
+        >
+        </EditMedia>
 
-<!--
-    <div class="input-single padding-medium" style="position: fixed; left: 0;
-    top: 20%; width: 200px; background-color: white; z-index:1001;">
-      <label>Timeline Width</label>
-      <input type="range" v-model="timelineStyles.width" min="1" max="200">
+      </div>
+      <template v-else>
+        <p>
+          <code>
+            <template v-if="folder.authorized">
+              Aucun média dans ce dossier.
+            </template>
+            <template v-else>
+              Aucun média public dans ce dossier.
+            </template>
+          </code>
+        </p>
+      </template>
     </div>
--->
+
+    <AddMediaButton
+      v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass')"
+      :slugFolderName="slugFolderName">
+    </AddMediaButton>
+
+    <div class="input-single padding-medium" style="position: fixed; left: 0;
+    bottom: 0%; width: 200px; background-color: white; z-index:1001;">
+      <label>Timeline scale (1 pixel = X seconds)</label>
+      <input type="range" v-model="timelineInfos.scale" min="1" max="20">
+    </div>
   </div>
 </template>
 <script>
 import Media from './components/Media.vue';
+import EditMedia from './components/modals/EditMedia.vue';
 import AddMediaButton from './components/AddMediaButton.vue';
 import moment from 'moment';
 import debounce from 'debounce';
@@ -72,21 +71,24 @@ import debounce from 'debounce';
 export default {
   props: {
     slugFolderName: String,
-    folder: Object
+    folder: Object,
+    medias: Object
   },
   components: {
     Media,
+    EditMedia,
     AddMediaButton
   },
   data() {
     return {
-      loading_folder_medias: false,
       windowHeight: window.innerHeight,
       topNavbarHeight: 70,
+      showMediaModalFor: '',
       timelinetrackHeight: 50,
       timelineInfos: {
         start: 10,
-        end:   40
+        end:   40,
+        scale: 1
       },
       timelineStyles: {
         width: 1,
@@ -95,18 +97,14 @@ export default {
     }
   },
   watch: {
-    'folder.start':  function() {
+    folder:  function() {
       debugger;
       this.setTimelineStart(this.folder.start);
-    },
-    'folder.end':  function() {
-      debugger;
       this.setTimelineEnd(this.folder.end);
-    }
+    },
   },
   created() {
     console.log(`Created component timeline`);
-    debugger;
     window.addEventListener('resize', debounce(this.onResize, 300));
     this.setTimelineStart(this.folder.start);
     this.setTimelineEnd(this.folder.end);
@@ -114,7 +112,8 @@ export default {
   beforeDestroy() {
     window.removeEventListener('resize', debounce(this.onResize, 300))
   },
-
+  computed: {
+  },
   methods: {
     // retourne une valeure en pixel qui dépend de la hauteur de la timeline
     setTimelineStart(ts) {
@@ -129,6 +128,7 @@ export default {
       if(ts && moment(ts,'YYYY-MM-DD HH:mm', true).isValid()) {
         this.timelineInfos.end = moment(ts,'YYYY-MM-DD HH:mm');
       } else {
+        // set end to current time
         this.timelineInfos.end = moment();
       }
     },
@@ -142,10 +142,10 @@ export default {
       let timeEllapsed = this.timelineInfos.end - this.timelineInfos.start;
       // décomposer en secondes
       let secondsEllapsed = timeEllapsed/1000;
-      // on passe au rapport 1 hauteur = 60 secondes
 
-      let w = secondsEllapsed;
-      let h = this.getVH(1);
+      // 1 pixel = 1 second
+      let w = Math.floor(secondsEllapsed/this.timelineInfos.scale);
+      let h = Math.floor(this.getVH(1));
 
       this.timelineStyles.width = w;
       this.timelineStyles.height = h;
@@ -217,6 +217,12 @@ export default {
     },
     onResize() {
       this.windowHeight = window.innerHeight;
+    },
+    openMediaModal(slugMediaName) {
+      this.showMediaModalFor = slugMediaName;
+    },
+    closeMediaModal() {
+      this.showMediaModalFor = '';
     }
   },
 }
@@ -227,7 +233,7 @@ export default {
 .timeline_track {
   position: absolute;
   height: 50px;
-  width:100%;
+  width: 100%;
   border-bottom: 1px solid black;
 }
 

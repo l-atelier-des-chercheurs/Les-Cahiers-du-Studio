@@ -124,7 +124,7 @@ module.exports = (function() {
 
             let prepareFolderMetaForClient = (slugFolderName, meta) => {
               meta.slugFolderName = slugFolderName;
-//               meta.medias = {};
+              meta.medias = {};
               meta.created = api.parseDate(meta.created);
               meta.start = api.parseDate(meta.start);
               meta.end = api.parseDate(meta.end);

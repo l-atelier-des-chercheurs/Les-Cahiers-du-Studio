@@ -70,6 +70,7 @@ import Modal from './BaseModal.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import alertify from 'alertify.js';
 import slug from 'slugg';
+import moment from 'moment';
 
 export default {
   props: ['slugFolderName', 'folder'],
@@ -81,8 +82,8 @@ export default {
     return {
       folderdata: {
         name: this.folder.name,
-        start: this.folder.start,
-        end: this.folder.end,
+        start: moment(this.folder.start).isValid() ? this.folder.start:'',
+        end: moment(this.folder.end).isValid() ? this.folder.end:'',
         authors: this.folder.authors
       }
     }

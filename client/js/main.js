@@ -79,11 +79,10 @@ window.socketio = (function() {
   };
 
   function init() {
-    var userAgent = window.navigator.userAgent;
-    if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
-      socket = io.connect({ transports: ['polling','websocket'] });
-    } else {
+    if (window.navigator.userAgent.indexOf('Chrome') > -1) {
       socket = io.connect({ transports: ['websocket','polling'] });
+    } else {
+      socket = io.connect({ transports: ['polling','websocket'] });
     }
     	socket.on('connect', _onSocketConnect);
     socket.on('error', _onSocketError);
@@ -132,19 +131,10 @@ window.socketio = (function() {
     listFolders();
   }
 
-  /*
-    MEDIAS logic : instead of sending the folders data with all its medias components, the server only sends folders data without any medias (not even the medias property). Which means unopened folders don't have medias.
-    We only create "medias" for folders that are opened. When a medias is added or updated, we only update it if the medias prop is present for that folder. In a way, opening a folder means that we "track this folder".
-  */
-  function _isTrackingFolderMedias(slugFolderName) {
-    return window.store.state.folders[slugFolderName].hasOwnProperty('medias');
-  }
-
   function _onListMedia(mdata) {
     	console.log(`Received _onListMedia packet.`);
     let slugFolderName = Object.keys(mdata)[0];
     	console.log(`Media data is for ${slugFolderName}.`);
-    if(!_isTrackingFolderMedias(slugFolderName)) { console.log(`Media is for folder not tracked. Returning.`); return; }
 
     window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, mdata[slugFolderName].medias);
   }
@@ -152,9 +142,7 @@ window.socketio = (function() {
     	console.log(`Received _onListMedias packet.`);
     let slugFolderName = Object.keys(mdata)[0];
     	console.log(`Media data is for ${slugFolderName}.`);
-    if(!_isTrackingFolderMedias(slugFolderName)) { console.log(`Media is for folder not tracked. Returning.`); return; }
 
-    window.store.state.folders[slugFolderName].loading_medias = false;
     window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
   }
   function _onListFolder(fdata) {
@@ -163,10 +151,7 @@ window.socketio = (function() {
     	// to prevent override of fully formed medias, we copy back the ones we have already
     for(let slugFolderName in fdata) {
       if(window.store.state.folders.hasOwnProperty(slugFolderName)) {
-
-        if(_isTrackingFolderMedias(slugFolderName)) {
-          fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
-        }
+        fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
       }
     }
     window.store.state.folders = Object.assign({}, window.store.state.folders, fdata);
@@ -177,10 +162,7 @@ window.socketio = (function() {
     	// to prevent override of fully formed medias, we copy back the ones we have already
     	for(let slugFolderName in fdata) {
       if(window.store.state.folders.hasOwnProperty(slugFolderName)) {
-
-        if(_isTrackingFolderMedias(slugFolderName)) {
-          fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
-        }
+        fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
       }
     }
     window.store.state.folders = Object.assign({}, fdata);
@@ -188,7 +170,6 @@ window.socketio = (function() {
   function _onMediaCreated(mdata) {
     	console.log(`Received _onMediaCreated packet.`);
     let slugFolderName = Object.keys(mdata)[0];
-    if(!_isTrackingFolderMedias(slugFolderName)) { return; }
 
     let createdMediaMeta = mdata[slugFolderName].medias;
     // to get Vue to detect that medias has a new key, we need to rewrite medias itself
