@@ -15,16 +15,19 @@ const
 module.exports = (function() {
 
   const API = {
-    findFirstFilenameNotTaken   : (thisPath, fileName) => { return findFirstFilenameNotTaken(thisPath, fileName); },
-    getCurrentDate              : (format = local.settings().metaDateFormat) => { return getCurrentDate(format); },
-    convertDate                 : (date, format = local.settings().metaDateFormat) => { return convertDate(date, format); },
-    parseDate                   : (date, format = local.settings().metaDateFormat) => { return parseDate(date, format); },
-    storeData                   : (mpath, d, e) => { return storeData( mpath, d, e); },
-    parseData                   : (d) => { return parseData(d); },
-    eventAndContent             : (sendEvent, objectJson) =>     { return eventAndContent(sendEvent, objectJson); },
-    sendEventWithContent        : (sendEvent, objectContent, io, socket) => { return sendEventWithContent(sendEvent, objectContent, io, socket); },
-    getLocalIP                  : () => { return getLocalIP(); },
-    slug                        : (term) => { return slug(term); }
+    getFolderPath       : (slugFolderName = '') => getFolderPath(slugFolderName),
+
+    findFirstFilenameNotTaken   : (thisPath, fileName) => findFirstFilenameNotTaken(thisPath, fileName),
+    getCurrentDate              : (format = local.settings().metaDateFormat) => getCurrentDate(format),
+    convertDate                 : (date, format = local.settings().metaDateFormat) => convertDate(date, format),
+    parseUTCDate                : (date) => parseUTCDate(date),
+    parseDate                   : (date, format = local.settings().metaDateFormat) => parseDate(date, format),
+    storeData                   : (mpath, d, e) => storeData( mpath, d, e),
+    parseData                   : (d) => parseData(d),
+    eventAndContent             : (sendEvent, objectJson) => eventAndContent(sendEvent, objectJson),
+    sendEventWithContent        : (sendEvent, objectContent, io, socket) => sendEventWithContent(sendEvent, objectContent, io, socket),
+    getLocalIP                  : () => getLocalIP(),
+    slug                        : (term) => slug(term)
   };
 
   function getCurrentDate(f) {
@@ -33,6 +36,9 @@ module.exports = (function() {
 
   function convertDate(date, f) {
     return moment(date).format(f);
+  }
+  function parseUTCDate(date) {
+    return moment.utc(date);
   }
 
   function parseDate(date, f) {

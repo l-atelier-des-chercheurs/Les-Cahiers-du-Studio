@@ -2263,24 +2263,28 @@ main > *:first-child {
 .m_timeline {
   position: relative;
   overflow-x: scroll;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
 }
 .m_timeline::-webkit-scrollbar {
   width: 80px;
   height: 20px;
 }
+.m_timeline::-webkit-scrollbar:hover {
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+}
 .m_timeline::-webkit-scrollbar-track {
   -webkit-box-shadow: none;
 }
 .m_timeline::-webkit-scrollbar-thumb {
-  background-color: darkgrey;
-  outline: 1px solid slategrey;
+  background-color: #00ad41;
+  outline: 1px solid #00ad41;
 }
 .m_timeline .m_timeline-container {
   position: relative;
   height: 100%;
   width: 100%;
-  min-width: 500px;
   margin-left: 25vw;
   padding-right: 25px;
 }

@@ -431,7 +431,8 @@ module.exports = (function() {
           let useEXIFdata = new Promise((resolve, reject) => {
             thumbs.getEXIFTimestamp(mediaPath).then(ts => {
               dev.log(`getEXIFTimestamp : ${JSON.stringify(ts)}`);
-              mdata.created = api.convertDate(ts);
+              let localTS = api.parseUTCDate(ts)
+              mdata.created = api.convertDate(localTS);
               resolve();
             })
             .catch((err) => {

@@ -4,7 +4,8 @@ const
   fs = require('fs-extra'),
   ffmpegstatic = require('ffmpeg-static'),
   ffmpeg = require('fluent-ffmpeg'),
-  exifReader = require('exif-reader')
+  exifReader = require('exif-reader'),
+  moment = require('moment')
 ;
 
 const
@@ -96,8 +97,10 @@ module.exports = (function() {
       sharp(mediaPath)
         .metadata()
         .then(metadata => {
-          dev.logverbose(`Gotten metadata`);
+          dev.logverbose(`Gotten metadata.` );
           let ts = _extractImageTimestamp(metadata);
+          dev.logverbose(`TS is ${ts}`);
+          let localTS = moment.utc(ts);
           resolve(ts);
         })
         .catch(err => reject());

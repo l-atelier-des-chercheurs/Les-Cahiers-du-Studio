@@ -197,20 +197,27 @@ main {
 .m_timeline {
   position: relative;
   overflow-x: scroll;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {
-      width: 80px;
-      height: 20px;
+    width: 80px;
+    height: 20px;
+
+    &:hover {
+      cursor: -webkit-grab;
+      cursor: -moz-grab;
+    }
   }
 
   &::-webkit-scrollbar-track {
-      -webkit-box-shadow: none;
+    -webkit-box-shadow: none;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: darkgrey;
-    outline: 1px solid slategrey;
+    background-color: @c-vert;
+    outline: 1px solid @c-vert;
+
   }
 //   margin-right:   50px;
 
@@ -218,7 +225,6 @@ main {
     position: relative;
     height: 100%;
     width: 100%;
-    min-width: 500px;
     margin-left: 25vw;
     padding-right:   25px;
 

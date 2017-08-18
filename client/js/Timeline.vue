@@ -47,10 +47,24 @@
       :slugFolderName="slugFolderName">
     </AddMediaButton>
 
-    <EditTimeline
-      v-if="showTimelineEditModal"
-    >
-    </EditTimeline>
+
+    <div class="padding-medium" style="position: fixed; right: 0%;
+    bottom: 200px; width: auto; background-color: white; z-index:1001;">
+      <button class="button_small" @click="showTimelineOptions = !showTimelineOptions">
+        options
+      </button>
+
+      <div v-if="showTimelineOptions" style="width:200px">
+        <div class="input-single">
+          <label>Échelle :<br>1 pixel de large = {{ timelineInfos.scale }}  secondes</label>
+          <input type="range" v-model="timelineInfos.scale" min="0.1" max="20">
+        </div>
+        <div class="input-single" v-if="isRealtime">
+          <label>Défiler automatiquement</label>
+          <input type="checkbox" v-model="timelineInfos.autoscroll">
+        </div>
+      </div>
+    </div>
 
     <EditMedia
       v-if="showMediaModalFor !== ''"
@@ -66,10 +80,10 @@
 <script>
 import Media from './components/Media.vue';
 import EditMedia from './components/modals/EditMedia.vue';
-import EditTimeline from './components/modals/EditTimeline.vue';
 import AddMediaButton from './components/AddMediaButton.vue';
 import moment from 'moment';
 import debounce from 'debounce';
+
 
 export default {
   props: {
@@ -80,16 +94,19 @@ export default {
   components: {
     Media,
     EditMedia,
-    EditTimeline,
     AddMediaButton
   },
   data() {
     return {
       windowHeight: window.innerHeight,
+
       topNavbarHeight: 60,
-      bottomScrollBar: 20,
-      showMediaModalFor: '',
       timelinetrackHeight: 50,
+      bottomScrollBar: 20,
+
+      showMediaModalFor: '',
+      showTimelineOptions: false,
+
       isRealtime: false,
       timelineInfos: {
         start: 10,
@@ -101,7 +118,6 @@ export default {
         width: 1,
         height: 1
       }
-      showTimelineEditModal: false
     }
   },
   watch: {
@@ -225,7 +241,7 @@ export default {
     getMediaPosition(media) {
       let createdTS = moment(media.created,'YYYY-MM-DD HH:mm:ss')
       let posX = this.getXPosition(createdTS);
-      let posY = this.getVH(createdTS.format('mm')/100);
+      let posY = this.getVH(createdTS.format('ssmm')/10000) + this.timelinetrackHeight;
       return {
         transform: `translate(${posX}px, ${posY}px)`
       };
