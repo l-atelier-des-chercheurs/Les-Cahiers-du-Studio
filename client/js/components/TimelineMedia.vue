@@ -44,6 +44,11 @@ export default {
       let r = this.mediaStyles.ratio;
       let w = defWidth;
       let h = w * r;
+
+      if(media.type === 'video') {
+        debugger
+      }
+
       return {
         width: `${w}px`,
         height: `${h}px`

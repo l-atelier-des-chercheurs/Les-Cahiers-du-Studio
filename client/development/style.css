@@ -4299,6 +4299,11 @@ body {
 body.is_unscrollable {
   overflow: hidden;
 }
+@media (max-width: 990px) {
+  body {
+    margin: 0;
+  }
+}
 img,
 video,
 audio,
@@ -4373,8 +4378,8 @@ input:required {
   padding: 20px;
 }
 .navbar_top .menu_icon svg {
-  height: 100%;
-  width: 100%;
+  height: 20px;
+  width: 20px;
   position: relative;
 }
 .navbar_top .svg-icon path,

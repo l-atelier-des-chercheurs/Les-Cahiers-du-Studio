@@ -14,8 +14,6 @@
 
       <div v-if="Object.keys(medias).length > 0">
 
-        <transition-group name="fadeLeft">
-
           <div class="mediaWrap" v-for="(media, index) in medias"
             :style="getMediaPosition(media)"
             @click="openMediaModal(index)"
@@ -29,7 +27,7 @@
             >
             </media>
           </div>
-        </transition-group>
+
       </div>
 
       <template v-else>
@@ -83,7 +81,7 @@
   </div>
 </template>
 <script>
-import Media from './components/Media.vue';
+import Media from './components/TimelineMedia.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 import AddMediaButton from './components/AddMediaButton.vue';
 import moment from 'moment';
