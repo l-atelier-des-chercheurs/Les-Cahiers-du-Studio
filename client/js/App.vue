@@ -36,7 +36,10 @@
     </div>
     <div v-if="view === 'TimeLine'">
 
-      <NavbarTop :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]">
+      <NavbarTop
+        :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
+        :slugFolderName="$root.settings.currentlyOpenedFolder"
+        >
       </NavbarTop>
 
       <TimeLine

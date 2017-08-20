@@ -4484,6 +4484,7 @@ main > *:first-child {
   width: 100%;
   margin-left: 25vw;
   padding-right: 50px;
+  border-right: 1px solid black;
 }
 .m_timeline .m_timeline-container::after {
   content: '';

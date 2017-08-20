@@ -80,6 +80,10 @@ module.exports = (function() {
   }
   function onEditFolder(socket,d) {
     dev.logfunction(`EVENT - onEditFolder for ${d.slugFolderName}`);
+    if(!d.hasOwnProperty('slugFolderName')) {
+      dev.error(`Missing slugFoldername for edit event.`);
+    }
+
     // check if allowed
     file.getFolder(d.slugFolderName).then(foldersData => {
       if(!auth.hasFolderAuth(socket.id,foldersData,d.slugFolderName)) { return; }

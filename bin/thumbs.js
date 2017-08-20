@@ -107,25 +107,25 @@ module.exports = (function() {
 
   // from https://github.com/pchaussalet/photo_triage/blob/61f5d53d697c3db102e91ad7f674f61c72f4c4bf/lib/maintenance.js
   function _extractImageTimestamp(metadata) {
-      var timestamp = Date.now();
-      if (metadata.exif) {
-          var parsedMetadata = exifReader(metadata.exif);
-          if (parsedMetadata) {
-              if (parsedMetadata.exif && (parsedMetadata.exif.DateTimeOriginal || parsedMetadata.exif.DateTimeDigitized)) {
-                  var exif = parsedMetadata.exif;
-                  if (exif.DateTimeOriginal) {
-                      timestamp = exif.DateTimeOriginal.getTime();
-                  } else {
-                      timestamp = exif.DateTimeDigitized.getTime();
-                  }
-              } else {
-                  if (parsedMetadata.image && parsedMetadata.image.ModifyDate) {
-                      timestamp = parsedMetadata.image.ModifyDate.getTime();
-                  }
-              }
+    let timestamp;
+    if (metadata.exif) {
+      var parsedMetadata = exifReader(metadata.exif);
+      if (parsedMetadata) {
+        if (parsedMetadata.exif && (parsedMetadata.exif.DateTimeOriginal || parsedMetadata.exif.DateTimeDigitized)) {
+          var exif = parsedMetadata.exif;
+          if (exif.DateTimeOriginal) {
+            timestamp = exif.DateTimeOriginal.getTime();
+          } else {
+            timestamp = exif.DateTimeDigitized.getTime();
           }
+        } else {
+          if (parsedMetadata.image && parsedMetadata.image.ModifyDate) {
+            timestamp = parsedMetadata.image.ModifyDate.getTime();
+          }
+        }
       }
-      return timestamp;
+    }
+    return timestamp !== undefined ? timestamp : false;
   }
 
 

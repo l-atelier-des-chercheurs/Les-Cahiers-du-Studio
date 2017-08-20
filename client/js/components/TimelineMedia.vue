@@ -35,6 +35,15 @@ export default {
       let defWidth = 180;
       let defHeight = 120;
 
+      if(media.type === 'video') {
+        // TODO : set width to duration
+
+        return {
+          width:  `${defWidth}px`,
+          height: `${defHeight}px`
+        }
+      }
+
       if(!this.mediaStyles.ratio) {
         return {
           width:  `${defWidth}px`,
@@ -44,10 +53,6 @@ export default {
       let r = this.mediaStyles.ratio;
       let w = defWidth;
       let h = w * r;
-
-      if(media.type === 'video') {
-        debugger
-      }
 
       return {
         width: `${w}px`,

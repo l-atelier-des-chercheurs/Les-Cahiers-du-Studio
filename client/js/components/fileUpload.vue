@@ -1,20 +1,25 @@
 <template>
-  <dropzone
-    :id="uniqueDropzoneID"
-    ref="dropzone"
-    :url="uriToUploadMedia"
-    v-on:vdropzone-success="showSuccess"
-    v-on:vdropzone-sending="addMeta"
-    :preview-template="template"
-    :use-custom-dropzone-options=true
-    :dropzone-options="customOptionsObject"
+  <div>
+    <dropzone
+      :id="uniqueDropzoneID"
+      ref="dropzone"
+      :url="uriToUploadMedia"
+      v-on:vdropzone-success="showSuccess"
+      v-on:vdropzone-sending="addMeta"
+      :preview-template="template"
+      :use-custom-dropzone-options=true
+      :dropzone-options="customOptionsObject"
 
-    :maxFileSizeInMB="50"
-    :maxNumberOfFiles="50"
-    class="dropzone margin-right-small margin-bottom-small"
-  >
-    <input type="hidden">
-  </dropzone>
+      :maxFileSizeInMB="50"
+      :maxNumberOfFiles="50"
+      class="dropzone margin-right-small margin-bottom-small"
+    >
+      <input type="hidden">
+    </dropzone>
+
+    <div class="dropzone_overlay">
+    </div>
+  </div>
 </template>
 <script>
 import Dropzone from 'vue2-dropzone';
@@ -28,10 +33,8 @@ export default {
   data(){
     return {
       customOptionsObject: {
-        thumbnailHeight: 150,
-        thumbnailWidth: 150,
         language: {
-          dictDefaultMessage : 'Upload medias',
+          dictDefaultMessage : 'Envoyer un média',
         }
       }
     }
@@ -45,17 +48,27 @@ export default {
     },
   },
   created: function() {
-    document.removeEventListener('dragover', function(e){
-//       this.$refs.dropzone
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
-    });
+    document.addEventListener('dragover', this.enhanceDropzone);
+    document.addEventListener('dragleave', this.unenhanceDropzone);
   },
   destroyed: function() {
-
+    document.removeEventListener('dragover', this.enhanceDropzone);
+    document.removeEventListener('dragleave', this.unenhanceDropzone);
   },
   methods: {
+    enhanceDropzone: function(evt) {
+      $(this.$refs.dropzone.$el).addClass('is--bigger');
+      debugger;
+      evt.preventDefault();
+      evt.stopPropagation();
+      return false;
+    },
+    unenhanceDropzone: function(evt) {
+      $(this.$refs.dropzone.$el).removeClass('is--bigger');
+      evt.preventDefault();
+      evt.stopPropagation();
+      return false;
+    },
     showSuccess: function (file) {
       alertify
         .closeLogOnClick(true)
@@ -83,41 +96,104 @@ export default {
     },
     'template':function() {
         return `
-                <div class="dz-preview dz-file-preview">
-                    <div class="dz-image" style="width: 200px;height: 200px">
-                        <img data-dz-thumbnail /></div>
-                    <div class="dz-details">
-                      <div class="dz-size"><span data-dz-size></span></div>
-                      <div class="dz-filename"><span data-dz-name></span></div>
-                    </div>
-                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-                    <div class="dz-error-message"><span data-dz-errormessage></span></div>
-                    <div class="dz-success-mark"><i class="fa fa-check"></i></div>
-                    <div class="dz-error-mark"><i class="fa fa-close"></i></div>
-                </div>
+          <div class="dz-preview dz-file-preview">
+              <div class="dz-image" style="width: 50px;height: 50px">
+                  <img data-dz-thumbnail /></div>
+              <div class="dz-details">
+                <div class="dz-size"><span data-dz-size></span></div>
+                <div class="dz-filename"><span data-dz-name></span></div>
+              </div>
+              <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+              <div class="dz-error-message"><span data-dz-errormessage></span></div>
+              <div class="dz-success-mark"><i class="fa fa-check"></i></div>
+              <div class="dz-error-mark"><i class="fa fa-close"></i></div>
+          </div>
             `;
     }
 
   }
 }
 </script>
-<style>
+<style lang="sass">
 .material-icons {
   display: none;
 }
 
+
+
+.vue-dropzone.vue-dropzone {
+  width: 100vw;
+  font-family: inherit;
+
+  min-width: 150px;
+  max-width: 300px;
+  min-height: 100px;
+  max-height: 250px;
+
+  margin:0;
+  padding: 1em;
+
+  overflow-y: scroll;
+
+  transition: all .4s ease-out;
+
+  &.is--bigger {
+    max-width: 50vw;
+    max-height:50vh;
+  }
+
+  .dz-message {
+    display: block !important;
+    border: 3px dashed #89898c;
+    margin: 0px 0;
+    padding: 25px;
+  }
+
+  .dz-preview {
+    width: 100%;
+    min-height: 50px;
+    color:  #000;
+    background-color: #eee;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0.5em;
+    margin: 0.5em 0;
+    background-color: fade-out(#89898c, 0.80) !important;
+
+    .dz-details {
+        position: relative;
+        opacity: 1;
+        height: auto;
+        width: auto;
+        min-width: 0;
+        background-color: transparent;
+        padding: 0;
+        color: black;
+
+
+      .dz-size {
+          margin-bottom: 0;
+      }
+    }
+
+    .dz-remove {
+        opacity: 1;
+        position: relative;
+        padding: 0;
+        font-family: inherit;
+        text-transform: initial;
+        color: black;
+        border: none;
+        font-weight: normal;
+        bottom: 0;
+    }
+  }
+}
+
 .vue-dropzone {
-    border: 2px solid #000000;
-    font-family: 'Arial', sans-serif;
-    letter-spacing: 0.2px;
-    color: #777;
-    transition: background-color .2s linear;
-    &:hover {
-        background-color: #F6F6F6;
-    }
-    i {
-        color: #CCC;
-    }
+/*
     .dz-preview {
         .dz-image {
             border-radius: 1;
@@ -182,5 +258,6 @@ export default {
             }
         }
     }
+*/
 }
 </style>

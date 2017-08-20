@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="m_fileupload">
       <FileUpload
         :slugFolderName="slugFolderName">

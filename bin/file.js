@@ -430,13 +430,18 @@ module.exports = (function() {
           // if EXIF, override this data
           let useEXIFdata = new Promise((resolve, reject) => {
             thumbs.getEXIFTimestamp(mediaPath).then(ts => {
-              dev.log(`getEXIFTimestamp : ${JSON.stringify(ts)}`);
-              let localTS = api.parseUTCDate(ts);
-              mdata.created = api.convertDate(localTS);
-              resolve();
+              if(ts === false) {
+                dev.log(`No timestamp found in EXIF.`);
+                resolve();
+              } else {
+                dev.log(`getEXIFTimestamp : ${JSON.stringify(ts)}`);
+                let localTS = api.parseUTCDate(ts);
+                mdata.created = api.convertDate(localTS);
+                resolve();
+              }
             })
             .catch((err) => {
-              dev.error(`Error while trying to read EXIF : ${err}`);
+              dev.error(`No EXIF data to read from: ${err}`);
               resolve();
             });
           });

@@ -20,16 +20,40 @@
             <li v-if="typeof folder !== 'undefined'">
               <template>{{ folder.name }}</template>
             </li>
+            <li v-if="folder.authorized">
+              <button type="button" class="button_small" @click="showEditFolderModal = true">
+                Edit
+              </button>
+            </li>
           </ol>
         </div>
       </div>
     </nav>
+
+    <EditFolder
+      v-if="showEditFolderModal"
+      :folder="folder"
+      :slugFolderName="slugFolderName"
+      @close="showEditFolderModal = false"
+    >
+    </EditFolder>
+
   </div>
 </div>
 </template>
 <script>
+import EditFolder from './modals/EditFolder.vue';
+
 export default {
-  props: ['folder']
+  props: ['folder', 'slugFolderName'],
+  components: {
+    EditFolder
+  },
+  data () {
+    return {
+      showEditFolderModal: false
+    }
+  }
 }
 </script>
 <style scoped lang="less">
