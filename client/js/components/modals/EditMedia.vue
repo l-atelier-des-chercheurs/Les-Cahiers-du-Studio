@@ -60,7 +60,13 @@
       </div>
 
       <button type="button" class="button_small" @click="removeMedia()">
-        Remove
+        Supprimer
+      </button>
+
+      <button type="button" class="button_small">
+        <a download :href="mediaURL" title="slugMediaName">
+          Télécharger
+        </a>
       </button>
 
       <div>
@@ -104,7 +110,8 @@ export default {
         authors: this.media.authors,
         keywords: this.media.keywords,
         public: (this.media.public == 'true')
-      }
+      },
+      mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
     }
   },
   computed: {

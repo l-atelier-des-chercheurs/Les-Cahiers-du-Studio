@@ -4364,8 +4364,8 @@ input:required {
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -ms-flex-flow: row wrap;
-  flex-flow: row wrap;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
   -webkit-box-align: stretch;
   -ms-flex-align: stretch;
   align-items: stretch;

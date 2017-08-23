@@ -87,7 +87,6 @@ export default {
     mousedown() {
       console.log('mousedown');
       this.mediaStyles.y += 50;
-      debugger;
       this.mediaStyles.y = this.mediaStyles.y%(this.timelineHeight - 70);
 /*
       this.is_dragged = true;
