@@ -3,6 +3,7 @@ const
   path = require('path'),
   fs = require('fs-extra'),
   ffmpegstatic = require('ffmpeg-static'),
+  ffprobestatic = require('ffprobe-static'),
   ffmpeg = require('fluent-ffmpeg'),
   exifReader = require('exif-reader')
 ;
@@ -13,13 +14,14 @@ const
 ;
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
-ffmpeg.setFfprobePath(ffmpegstatic.path);
+ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
 
   const API = {
     makeMediaThumbs   : (slugFolderName, slugMediaName, meta) => makeMediaThumbs(slugFolderName, slugMediaName, meta),
-    getEXIFTimestamp  : (mediaPath) => getEXIFTimestamp(mediaPath)
+    getEXIFTimestamp  : (mediaPath) => getEXIFTimestamp(mediaPath),
+    getMediaDuration  : (mediaPath) => getMediaDuration(mediaPath)
   };
 
   // this function is used both when creating a media and everything media are listed.
@@ -138,7 +140,7 @@ module.exports = (function() {
 
   function _makeImageThumb(mediaPath, thumbFolderPath, slugMediaName, thumbRes) {
     return new Promise(function(resolve, reject) {
-      dev.logverbose(`Making an image thumb for ${mediaPath} and resolution = ${thumbRes}`);
+//       dev.logverbose(`Looking for an image thumb for ${mediaPath} and resolution = ${thumbRes}`);
 
       let thumbName = `${slugMediaName}.${thumbRes}.jpeg`;
       let thumbPath = path.join(thumbFolderPath, thumbName);
@@ -169,5 +171,17 @@ module.exports = (function() {
       });
     });
   }
+
+  function getMediaDuration(mediaPath) {
+    return new Promise(function(resolve, reject) {
+      dev.logverbose(`START: ${mediaPath}`);
+
+      ffmpeg.ffprobe(mediaPath,function(err, metadata) {
+        resolve(metadata.format.duration);
+      });
+
+    });
+  }
+
   return API;
 })();

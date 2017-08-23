@@ -9,8 +9,7 @@
       :preview-template="template"
       :use-custom-dropzone-options=true
       :dropzone-options="customOptionsObject"
-
-      :maxFileSizeInMB="50"
+      :maxFileSizeInMB="200"
       :maxNumberOfFiles="50"
       class="dropzone margin-right-small margin-bottom-small"
     >
@@ -58,7 +57,6 @@ export default {
   methods: {
     enhanceDropzone: function(evt) {
       $(this.$refs.dropzone.$el).addClass('is--bigger');
-      debugger;
       evt.preventDefault();
       evt.stopPropagation();
       return false;

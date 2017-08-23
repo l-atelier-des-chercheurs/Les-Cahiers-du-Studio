@@ -73,10 +73,8 @@ module.exports = (function() {
             });
           });
         } else {
-          dev.logverbose(`Found meta for this media.`);
           let mediaData = readMetaFile(potentialMetaFile);
           thumbs.makeMediaThumbs(slugFolderName, slugMediaName, mediaData).then((thumbData) => {
-            dev.logverbose(`Thumbs meta = ${thumbData}`);
             mediaData.thumbs = thumbData;
             resolve(mediaData);
           });
@@ -411,11 +409,13 @@ module.exports = (function() {
               mdata.type = 'video';
               break;
             case '.mp3':
+            case '.wav':
               mdata.type = 'audio';
               break;
             default:
               mdata.type = 'other';
           }
+          dev.logverbose(`Type determined to be: ${mdata.type}`);
 
           if(mdata.type === 'image') {
             try {
@@ -425,27 +425,42 @@ module.exports = (function() {
             } catch(err) {
               dev.error(`Failed to get size of media. Error: ${err}`);
             }
+
+            // if EXIF, override the time data
+            let useEXIFdata = new Promise((resolve, reject) => {
+              thumbs.getEXIFTimestamp(mediaPath).then(ts => {
+                if(ts === false) {
+                  dev.log(`No timestamp found in EXIF.`);
+                  resolve();
+                } else {
+                  dev.log(`getEXIFTimestamp : ${JSON.stringify(ts)}`);
+                  let localTS = api.parseUTCDate(ts);
+                  mdata.created = api.convertDate(localTS);
+                  resolve();
+                }
+              })
+              .catch((err) => {
+                dev.error(`No EXIF data to read from: ${err}`);
+                resolve();
+              });
+            });
+            tasks.push(useEXIFdata);
           }
 
-          // if EXIF, override this data
-          let useEXIFdata = new Promise((resolve, reject) => {
-            thumbs.getEXIFTimestamp(mediaPath).then(ts => {
-              if(ts === false) {
-                dev.log(`No timestamp found in EXIF.`);
+          if(mdata.type === 'video' || mdata.type === 'audio') {
+            // get video or audio duration
+            let getMediaDuration = new Promise((resolve, reject) => {
+              dev.logverbose(`Will attempt to get media duration.`);
+              thumbs.getMediaDuration(mediaPath).then(duration => {
+                dev.log(`getMediaDuration: ${duration}`);
+                if(duration) {
+                  mdata.duration = duration;
+                }
                 resolve();
-              } else {
-                dev.log(`getEXIFTimestamp : ${JSON.stringify(ts)}`);
-                let localTS = api.parseUTCDate(ts);
-                mdata.created = api.convertDate(localTS);
-                resolve();
-              }
-            })
-            .catch((err) => {
-              dev.error(`No EXIF data to read from: ${err}`);
-              resolve();
+              });
             });
-          });
-          tasks.push(useEXIFdata);
+            tasks.push(getMediaDuration);
+          }
 
           Promise.all(tasks).then(() => {
             api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {

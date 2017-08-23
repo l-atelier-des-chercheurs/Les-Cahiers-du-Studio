@@ -4501,29 +4501,58 @@ main > *:first-child {
   position: absolute;
   width: 1px;
   height: 1px;
-  -webkit-transition: -webkit-transform 1.2s ease-in-out;
-  transition: -webkit-transform 1.2s ease-in-out;
-  -o-transition: transform 1.2s ease-in-out;
-  transition: transform 1.2s ease-in-out;
-  transition: transform 1.2s ease-in-out, -webkit-transform 1.2s ease-in-out;
+  -webkit-transition: -webkit-transform 0.7s ease-in-out;
+  transition: -webkit-transform 0.7s ease-in-out;
+  -o-transition: transform 0.7s ease-in-out;
+  transition: transform 0.7s ease-in-out;
+  transition: transform 0.7s ease-in-out, -webkit-transform 0.7s ease-in-out;
 }
 .mediaWrap .media {
   position: absolute;
   right: 0;
   width: 16em;
   border: 1px solid #000;
-  cursor: pointer;
+  /*
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+*/
+  cursor: move;
 }
-.mediaWrap .media::before {
-  content: '';
+.mediaWrap .media::before,
+.mediaWrap .media::after {
   width: 10px;
   height: 10px;
   display: block;
   position: absolute;
   top: -5px;
-  right: -5px;
   border-radius: 50%;
   background-color: #000;
+}
+.mediaWrap .media::before {
+  content: '';
+  right: -5px;
+}
+.mediaWrap .media.has--duration::after {
+  content: '';
+  right: -5px;
+}
+.mediaWrap .media .button_openmedia {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 0.625em;
+  background-color: rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  -webkit-transition: opacity 0.4s ease-out;
+  -o-transition: opacity 0.4s ease-out;
+  transition: opacity 0.4s ease-out;
+}
+.mediaWrap .media.is--dragged {
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+}
+.mediaWrap .media.is--hovered .button_openmedia {
+  opacity: 1;
 }
 .mediaWrap .mediaContent {
   width: 100%;

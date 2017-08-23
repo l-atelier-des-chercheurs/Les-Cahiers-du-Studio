@@ -13,21 +13,17 @@
       </div>
 
       <div v-if="Object.keys(medias).length > 0">
-
-          <div class="mediaWrap" v-for="(media, index) in medias"
-            :style="getMediaPosition(media)"
-            @click="openMediaModal(index)"
-            v-bind:key="index"
-          >
-            <media
-              :key="index"
-              :slugFolderName="slugFolderName"
-              :slugMediaName="index"
-              :media="media"
-            >
-            </media>
-          </div>
-
+        <media v-for="(media, index) in medias"
+          v-bind:key="index"
+          :slugFolderName="slugFolderName"
+          :slugMediaName="index"
+          :media="media"
+          :timelineScale="timelineInfos.scale"
+          :timelineHeight="getVH(1)"
+          :posX="getMediaPosX(media)"
+          @open="openMediaModal(index)"
+        >
+        </media>
       </div>
 
       <template v-else>
@@ -60,7 +56,7 @@
       <div v-if="showTimelineOptions" style="width:200px">
         <div class="input-single">
           <label>Échelle :<br>1 pixel de large = {{ timelineInfos.scale }}  secondes</label>
-          <input type="range" v-model="timelineInfos.scale" min="0.1" max="20">
+          <input type="range" v-model="timelineInfos.scale" min="0.1" max="100">
         </div>
         <div class="input-single" v-if="isRealtime">
           <label>Défiler automatiquement</label>
@@ -86,7 +82,6 @@ import EditMedia from './components/modals/EditMedia.vue';
 import AddMediaButton from './components/AddMediaButton.vue';
 import moment from 'moment';
 import debounce from 'debounce';
-
 
 export default {
   props: {
@@ -185,7 +180,6 @@ export default {
       // décomposer en secondes
       let secondsEllapsed = timeEllapsed/1000;
 
-      // 1 pixel = 1 second
       let w = Math.floor(secondsEllapsed/this.timelineInfos.scale);
       let h = Math.floor(this.getVH(1));
 
@@ -193,6 +187,11 @@ export default {
       this.timelineStyles.height = h;
 
       return `width: ${w}px; height: ${h}px;`;
+    },
+    getMediaPosX(media) {
+      let createdTS = moment(media.created,'YYYY-MM-DD HH:mm:ss')
+      let posX = this.getXPosition(createdTS);
+      return posX;
     },
     generateHorizontalGrid() {
       let timeEllapsed = this.timelineInfos.end - this.timelineInfos.start;
@@ -212,6 +211,8 @@ export default {
         createDayTick(currentDay);
       }
 
+      if(this.timelineInfos.scale > 30) { return html; }
+
       // make HOUR ticks
       let createHourTick = (currentHour) => {
         let xPos = this.getXPosition(currentHour);
@@ -225,6 +226,8 @@ export default {
         let currentHour = firstHour + h;
         createHourTick(currentHour);
       }
+
+      if(this.timelineInfos.scale > 10) { return html; }
 
       // make 10 MINUTES ticks
       let createMinuteTick = (currentMinute) => {
@@ -241,14 +244,6 @@ export default {
 
       return html;
     },
-    getMediaPosition(media) {
-      let createdTS = moment(media.created,'YYYY-MM-DD HH:mm:ss')
-      let posX = this.getXPosition(createdTS);
-      let posY = this.getVH(createdTS.format('ssmm')/10000) + this.timelinetrackHeight;
-      return {
-        transform: `translate(${posX}px, ${posY}px)`
-      };
-    },
     getXPosition(timestamp) {
       if(!this.timelineInfos.start || !this.timelineInfos.end) { console.log(`Error with getXPosition`); }
       let msSinceStart = timestamp - this.timelineInfos.start;
@@ -258,7 +253,7 @@ export default {
       return Math.floor(posX);
     },
     onResize() {
-      this.windowHeight = window.innerHeight;
+//       this.windowHeight = window.innerHeight;
     },
     openMediaModal(slugMediaName) {
       this.showMediaModalFor = slugMediaName;
