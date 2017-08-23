@@ -56,7 +56,7 @@
       <div v-if="showTimelineOptions" style="width:200px">
         <div class="input-single">
           <label>Échelle :<br>1 pixel de large = {{ timelineInfos.scale }}  secondes</label>
-          <input type="range" v-model="timelineInfos.scale" min="0.1" max="100">
+          <input type="range" v-model="timelineInfos.scale" min="0.1" max="140">
         </div>
         <div class="input-single" v-if="isRealtime">
           <label>Défiler automatiquement</label>
@@ -135,9 +135,7 @@ export default {
       this.init();
       this.setTimeline();
       if(this.timelineInfos.autoscroll) {
-        setTimeout(() => {
-          this.$refs.timeline.scrollLeft = this.timelineStyles.width;
-        }, 10);
+        this.$refs.timeline.scrollLeft = this.timelineStyles.width;
       }
     }, 1000);
   },
