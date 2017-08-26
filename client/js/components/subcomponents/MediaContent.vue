@@ -25,7 +25,7 @@ export default {
     media: Object,
     size: {
       type: Number,
-      default: 600
+      default: 200
     }
   },
   data() {
