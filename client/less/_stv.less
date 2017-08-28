@@ -91,8 +91,8 @@ a {
 
 hr {
   border:none;
-  border-top: 1px solid #000;
-  margin: @t-skipline 0 ;
+  border-top: 1px solid @c-gris;
+  margin: @t-skipline*2 0 ;
 }
 
 table {
@@ -131,7 +131,13 @@ button {
   margin: @t-skipline  0;
 }
 
-
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 2.25rem;
+  line-height: 2.25rem;
+  vertical-align: middle;
+}
 
 .input-group {
   width: 100%;
@@ -175,6 +181,11 @@ figcaption {
 
 * > * {
 //   background-color: rgba(255,0,0,.02);
+}
+
+code {
+  font-family: inherit;
+
 }
 
 .m_bs-grid {

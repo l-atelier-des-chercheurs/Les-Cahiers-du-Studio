@@ -1,6 +1,6 @@
 <template>
   <div class="folder">
-    <h2 class="">
+    <h2 class="margin-small margin-left-none">
       {{ folder.name }}
       <br>
       <mark class="" v-if="folder.password === 'has_pass'">
@@ -8,8 +8,8 @@
       </mark>
     </h2>
 
-    <div class="folder_metapreview margin-medium margin-left-none">
-      Créé {{ formatDateToHuman(folder.created) }}
+    <div class="folder_metapreview margin-small margin-left-none">
+      Création&nbsp;: {{ formatDateToHuman(folder.created) }}
     </div>
 
     <table v-if="debugFolderContent" class="">
@@ -31,25 +31,25 @@
 
     <div class="input-group">
       <button type="button" class="button_small" @click="$root.openFolder(slugFolderName)">
-        Open
+        Ouvrir
       </button>
 
       <button v-if="!folder.authorized" type="button" class="button_small" @click="showInputPasswordField = !showInputPasswordField">
-        Input password
+        Entrer un mot de passe
       </button>
       <button v-if="folder.authorized" type="button" class="button_small" @click="debugFolderContent = !debugFolderContent">
-        Debug view
+        Vue de debug
       </button>
       <button v-if="folder.authorized" type="button" class="button_small" @click="showEditFolderModal = true">
-        Edit
+        Éditer
       </button>
       <button v-if="folder.authorized" type="button" class="button_small" @click="removeFolder()">
-        Remove
+        Supprimer
       </button>
     </div>
-      <div v-show="showInputPasswordField" class="input-group" style="width: 250px;">
+      <div v-if="showInputPasswordField" class="input-group">
         <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus>
-        <button type="button" class="button" @click="submitPassword">Submit</button>
+        <button type="button" class="button_small" @click="submitPassword">Envoyer</button>
       </div>
 
     <EditFolder

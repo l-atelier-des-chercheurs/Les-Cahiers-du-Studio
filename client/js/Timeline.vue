@@ -27,7 +27,7 @@
       </div>
 
       <template v-else>
-        <p>
+        <div class="nomediainfo">
           <code>
             <template v-if="folder.authorized">
               Aucun média dans ce dossier.
@@ -36,7 +36,7 @@
               Aucun média public dans ce dossier.
             </template>
           </code>
-        </p>
+        </div>
       </template>
 
     </div>
@@ -47,13 +47,12 @@
     </AddMediaButton>
 
 
-    <div class="padding-medium" style="position: fixed; right: 0%;
-    bottom: 200px; width: auto; background-color: white; z-index:1001;">
-      <button class="button_small" @click="showTimelineOptions = !showTimelineOptions">
+    <div class="options_panel" >
+      <button class="button_small padding-medium" @click="showTimelineOptions = !showTimelineOptions">
         options
       </button>
 
-      <div v-if="showTimelineOptions" style="width:200px">
+      <div v-if="showTimelineOptions" class="padding-small" style="width:200px">
         <div class="input-single">
           <label>Échelle :<br>1 pixel de large = {{ timelineInfos.scale }}  secondes</label>
           <input type="range" v-model="timelineInfos.scale" min="0.1" max="140">
@@ -272,6 +271,22 @@ export default {
   border-bottom: 1px solid black;
 }
 
+.nomediainfo {
+  position: fixed;
+  left: 100px;
+  bottom: 100px;
+  background: white;
+  padding: 15px;
+}
+
+.options_panel {
+  position: fixed;
+  right: 0%;
+  bottom: 200px;
+  width: auto;
+  background-color: white;
+  z-index: 1001;
+}
 
 .simple_grid_overlay {
   height: 100%;

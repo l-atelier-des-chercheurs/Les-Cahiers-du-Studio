@@ -183,12 +183,17 @@ main {
   margin-bottom:  @t-skipline*2;
 
   .folder {
-    min-height: @t-skipline * 6;
-    border-left:2px solid white;
+    min-height: @t-skipline * 3;
+    border:4px solid white;
+
+    > *:last-child {
+      margin-bottom: 0;
+    }
   }
 
   h2 {
     margin-top: 0;
+    margin-bottom: 0;
   }
 
   > * {
@@ -198,6 +203,7 @@ main {
 //     .make-md-column-offset(1);
     clear:left;
   }
+
 }
 
 

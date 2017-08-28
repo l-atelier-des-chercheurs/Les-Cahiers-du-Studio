@@ -2,25 +2,25 @@
   <transition name="modal">
     <div class="modal-mask" @click="$emit('close')">
       <div class="modal-wrapper">
-        <div class="modal-container padding-medium" @click.stop>
+        <div class="modal-container padding-small" @click.stop :class="{ 'is--large' : size === 'large' }">
 
-          <button class="close_button" @click="$emit('close')">
+          <button class="close_button padding-medium" @click="$emit('close')">
             ✕
           </button>
 
-          <div class="modal-header">
+          <div class="modal-header padding-small">
             <slot name="header">
               default header
             </slot>
           </div>
 
-          <div class="modal-body">
+          <div class="modal-body padding-small">
             <slot name="body">
               default body
             </slot>
           </div>
 
-          <div class="modal-footer">
+          <div class="modal-footer padding-small">
             <slot name="footer">
               default footer
               <button class="modal-default-button" @click="$emit('close')">
@@ -39,7 +39,8 @@
 let className = 'is_unscrollable';
 
 export default {
-  name: "Modal",
+  name: 'BaseModal',
+  props: ['size'],
   data() {
     return {
     }
@@ -84,15 +85,32 @@ export default {
 
 .modal-container {
   position: relative;
-  width: 380px;
   max-height: 100vh;
   overflow-y: scroll;
+  width: 380px;
 
   margin: 0px auto;
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   transition: all .3s ease;
+
+  display: flex;
+  flex-flow: row wrap;
+
+  .modal-header {
+    flex: 1 100%;
+  }
+  .modal-body {
+    flex: 3 60%;
+  }
+  .modal-footer {
+    flex: 1 auto;
+  }
+
+  &.is--large {
+    width: 100vw;
+  }
 }
 
 .close_button {

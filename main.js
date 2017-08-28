@@ -35,7 +35,7 @@ function createWindow() {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
-  dev.log('——— Starting doc-boilerplate app v' + process.env.npm_package_version);
+  dev.log('——— Starting stv-doc app v' + process.env.npm_package_version);
 
   // checkout which langage to load
   var envLang = app.getLocale();

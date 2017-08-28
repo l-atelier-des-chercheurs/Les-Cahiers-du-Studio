@@ -1,6 +1,6 @@
 <template>
   <div>
-    <dropzone
+    <Dropzone
       :id="uniqueDropzoneID"
       ref="dropzone"
       :url="uriToUploadMedia"
@@ -14,7 +14,7 @@
       class="dropzone margin-right-small margin-bottom-small"
     >
       <input type="hidden">
-    </dropzone>
+    </Dropzone>
 
     <div class="dropzone_overlay">
     </div>
@@ -71,7 +71,7 @@ export default {
       alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .log('A file was successfully uploaded.')
+        .log('Le fichier a été envoyé.')
         ;
     },
     addMeta: function (file, xhr, formData) {

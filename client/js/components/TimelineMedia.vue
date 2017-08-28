@@ -107,11 +107,9 @@ export default {
     },
 
     mouseover() {
-      console.log('mouseover');
       this.is_hovered = true;
     },
     mouseleave() {
-      console.log('mouseleave');
       this.is_hovered = false;
     }
   }

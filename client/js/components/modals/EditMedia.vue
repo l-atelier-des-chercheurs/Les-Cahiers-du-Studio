@@ -1,10 +1,10 @@
 <template>
-  <Modal @close="$emit('close')">
+  <BaseModal :size="'large'" @close="$emit('close')" >
     <div slot="header">
       Edit media <i>{{ slugMediaName }}</i>
     </div>
 
-    <div slot="body" style="width: 300px;">
+    <div slot="body">
       <MediaContent
         :slugFolderName="slugFolderName"
         :slugMediaName="slugMediaName"
@@ -81,10 +81,10 @@
 
     </form>
 
-  </Modal>
+  </BaseModal>
 </template>
 <script>
-import Modal from './BaseModal.vue';
+import BaseModal from './BaseModal.vue';
 import alertify from 'alertify.js';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
@@ -98,7 +98,7 @@ import DateTime from '../subcomponents/DateTime.vue';
 export default {
   props: ['slugFolderName', 'slugMediaName', 'media'],
   components: {
-    Modal,
+    BaseModal,
     DateTime,
     MediaContent
   },

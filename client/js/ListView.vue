@@ -16,6 +16,8 @@
           </button>
         </div>
 
+        <hr>
+
         <CreateFolder v-if="showCreateFolderModal" @close="showCreateFolderModal = false">
         </CreateFolder>
       </div>
