@@ -14,11 +14,12 @@
 
       <div v-if="Object.keys(medias).length > 0">
         <media v-for="(media, index) in medias"
+          v-if="getMediaPosX(media) !== false"
           v-bind:key="index"
           :slugFolderName="slugFolderName"
           :slugMediaName="index"
           :media="media"
-          :timelineScale="timelineInfos.scale"
+          :timelineScale="timelineViewport.scale"
           :timelineHeight="getVH(1)"
           :posX="getMediaPosX(media)"
           @open="openMediaModal(index)"
@@ -52,15 +53,28 @@
         options
       </button>
 
-      <div v-if="showTimelineOptions" class="padding-small" style="width:200px">
+      <div v-if="showTimelineOptions" class="padding-small" style="width:400px">
         <div class="input-single">
-          <label>Échelle :<br>1 pixel de large = {{ timelineInfos.scale }}  secondes</label>
-          <input type="range" v-model="timelineInfos.scale" min="0.1" max="140">
+          <label>Échelle :<br>1 pixel de large = {{ timelineViewport.scale }}  secondes</label>
+          <input type="range" v-model="timelineViewport.scale" min="0.1" max="140">
         </div>
         <div class="input-single" v-if="isRealtime">
           <label>Défiler automatiquement</label>
-          <input type="checkbox" v-model="timelineInfos.autoscroll">
+          <input type="checkbox" v-model="timelineViewport.autoscroll">
         </div>
+        <div class="input-single">
+          <label>Afficher la timeline entre :</label>
+          <DateTime v-model.number="timelineViewport.start" :twowaybinding="true">
+          </DateTime>
+          <label>et</label>
+          <DateTime v-model.number="timelineViewport.end" :twowaybinding="true">
+          </DateTime>
+        </div>
+
+        <div class="input-single" v-if="false">
+          <input type="range" v-model.number="timelineViewport.start" :min.number="+timelineInfos.start" :max.number="+timelineInfos.end">
+        </div>
+
       </div>
     </div>
 
@@ -79,6 +93,7 @@
 import Media from './components/TimelineMedia.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 import AddMediaButton from './components/AddMediaButton.vue';
+import DateTime from './components/subcomponents/DateTime.vue';
 import moment from 'moment';
 import debounce from 'debounce';
 
@@ -91,7 +106,8 @@ export default {
   components: {
     Media,
     EditMedia,
-    AddMediaButton
+    AddMediaButton,
+    DateTime
   },
   data() {
     return {
@@ -108,32 +124,50 @@ export default {
       timelineInfos: {
         start: 0,
         end:   0,
-        scale: 1,
-        autoscroll: false
       },
       timelineStyles: {
         width: 1,
         height: 1
+      },
+
+
+      timelineViewport: {
+        start: 0,
+        end: 0,
+        scale: 10,
+        autoscroll: false,
+        longestIntervalTS: 86400000,
       }
     }
   },
   watch: {
     folder:  function() {
-      this.init();
+      console.log('WATCH : folder');
+      this.setTimelineBounds();
+    },
+    'timelineViewport.start': function() {
+      console.log('WATCH : timelineViewport.start');
+      this.updateTimelineEnd();
+    },
+    'timelineViewport.end': function() {
+      console.log('WATCH : timelineViewport.start');
+      this.updateTimelineStart();
     },
   },
   created() {
     console.log(`Created component timeline`);
 
     window.addEventListener('resize', debounce(this.onResize, 300));
-    this.init();
+    this.setTimelineBounds();
+    this.setTimelineView();
+    this.updateTimelineEnd();
 
     // let msTillNextMinute = moment().endOf("minute").diff(moment());
 
     setInterval(() => {
-      this.init();
+      this.setTimelineBounds();
       this.setTimeline();
-      if(this.timelineInfos.autoscroll) {
+      if(this.timelineViewport.autoscroll) {
         this.$refs.timeline.scrollLeft = this.timelineStyles.width;
       }
     }, 1000);
@@ -144,28 +178,40 @@ export default {
   computed: {
   },
   methods: {
-    init() {
-      this.setTimelineStart(this.folder.start);
-      this.setTimelineEnd(this.folder.end);
+    setTimelineBounds() {
+      this.timelineInfos.start = this.getTimelineStart(this.folder.start);
+      this.timelineInfos.end = this.getTimelineEnd(this.folder.end);
+    },
+    setTimelineView() {
+      this.timelineViewport.start = this.timelineInfos.start;
+      this.timelineViewport.end = this.timelineInfos.end;
+    },
+    updateTimelineEnd() {
+      this.timelineViewport.end = Math.min(this.timelineViewport.start+this.timelineViewport.longestIntervalTS, this.timelineInfos.end);
+    },
+    updateTimelineStart() {
+      this.timelineViewport.start = Math.max(this.timelineViewport.end-this.timelineViewport.longestIntervalTS, this.timelineInfos.start);
     },
     // retourne une valeure en pixel qui dépend de la hauteur de la timeline
-    setTimelineStart(ts) {
+    getTimelineStart(ts) {
       if(ts && moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-        this.timelineInfos.start = moment(ts,'YYYY-MM-DD HH:mm:ss');
+        return moment(ts,'YYYY-MM-DD HH:mm:ss');
       } else {
         console.log(`WARNING: no timeline start. This can’t work.`);
         throw `Missing timeline start`;
       }
+      return;
     },
-    setTimelineEnd(ts) {
+    getTimelineEnd(ts) {
       if(ts && moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-        this.timelineInfos.end = moment(ts,'YYYY-MM-DD HH:mm:ss');
         this.isRealtime = false;
+        return moment(ts,'YYYY-MM-DD HH:mm:ss');
       } else {
         // set end to current time
-        this.timelineInfos.end = moment();
         this.isRealtime = true;
+        return moment();
       }
+
     },
     getVH(val) {
       let winHeight = this.windowHeight - this.topNavbarHeight - this.bottomScrollBar;
@@ -173,11 +219,11 @@ export default {
     },
     setTimeline() {
       // récupérer la longueur de la timeline en TS
-      let timeEllapsed = this.timelineInfos.end - this.timelineInfos.start;
+      let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
       // décomposer en secondes
       let secondsEllapsed = timeEllapsed/1000;
 
-      let w = Math.floor(secondsEllapsed/this.timelineInfos.scale);
+      let w = Math.floor(secondsEllapsed/this.timelineViewport.scale);
       let h = Math.floor(this.getVH(1));
 
       this.timelineStyles.width = w;
@@ -191,24 +237,31 @@ export default {
       return posX;
     },
     generateHorizontalGrid() {
-      let timeEllapsed = this.timelineInfos.end - this.timelineInfos.start;
+      let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
       let html = '';
 
-      // make DAY ticks
+      /************************
+              make DAY ticks
+      ******************************/
+
       let createDayTick = (currentDay) => {
         let xPos = this.getXPosition(currentDay);
         let momentDay = moment(currentDay).format('YYYY-MM-DD');
         html += `<div class="gridItem gridItem_isday" style="transform:translate(${xPos}px, 0px)" data-caption="${momentDay}"></div>`;
       }
 
-      createDayTick(this.timelineInfos.start);
-      let firstDay = moment(moment(this.timelineInfos.start).format('YYYY-MM-DD 00:00'));
+      createDayTick(this.timelineViewport.start);
+      let firstDay = moment(moment(this.timelineViewport.start).format('YYYY-MM-DD 00:00'));
       for(var d = 86400000; d < timeEllapsed; d += 86400000) {
         let currentDay = firstDay + d;
         createDayTick(currentDay);
       }
 
-      if(this.timelineInfos.scale > 30) { return html; }
+//       if(this.timelineViewport.scale > 30) { return html; }
+
+      /************************
+              make HOUR ticks
+      ******************************/
 
       // make HOUR ticks
       let createHourTick = (currentHour) => {
@@ -217,24 +270,32 @@ export default {
         html += `<div class="gridItem gridItem_ishour" style="transform:translate(${xPos}px, 0px)" data-caption="${momentHour}"></div>`;
       }
 
-      createHourTick(this.timelineInfos.start);
-      let firstHour = moment(moment(this.timelineInfos.start).format('YYYY-MM-DD HH:00'));
+//       createHourTick(this.timelineViewport.start);
+      let firstHour = moment(moment(this.timelineViewport.start).format('YYYY-MM-DD HH:00'));
       for(var h = 3600000; h < timeEllapsed; h +=  3600000) {
         let currentHour = firstHour + h;
         createHourTick(currentHour);
       }
 
-      if(this.timelineInfos.scale > 10) { return html; }
+      if(this.timelineViewport.scale > 10) { return html; }
 
-      // make 10 MINUTES ticks
+      /************************
+              make MINUTES ticks
+      ******************************/
+
+      // make MINUTES ticks
       let createMinuteTick = (currentMinute) => {
         let xPos = this.getXPosition(currentMinute);
-        let momentMinute = moment(currentMinute).format('HH:mm');
-        html += `<div class="gridItem gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${momentMinute}"></div>`;
+        if(moment(currentMinute).minute()%10 === 0) {
+          let momentMinute = moment(currentMinute).format('HH:mm');
+          html += `<div class="gridItem gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${momentMinute}"></div>`;
+        } else {
+          html += `<div class="gridItem gridItem_isminute" style="transform:translate(${xPos}px, 0px)"></div>`;
+        }
       }
 
-      let firstMinute = moment(moment(this.timelineInfos.start).format('YYYY-MM-DD HH:mm:00'));
-      for(var m = 60000; m < timeEllapsed; m +=  60000) {
+      let firstMinute = moment(moment(this.timelineViewport.start).format('YYYY-MM-DD HH:mm:00'));
+      for(var m = 0; m < timeEllapsed; m += 60000) {
         let currentMinute = firstMinute + m;
         createMinuteTick(currentMinute);
       }
@@ -242,15 +303,18 @@ export default {
       return html;
     },
     getXPosition(timestamp) {
-      if(!this.timelineInfos.start || !this.timelineInfos.end) { console.log(`Error with getXPosition`); }
-      let msSinceStart = timestamp - this.timelineInfos.start;
-      let pc = msSinceStart/(this.timelineInfos.end - this.timelineInfos.start);
+      if(!this.timelineViewport.start || !this.timelineViewport.end) { console.log(`Error with getXPosition`); }
+      let msSinceStart = timestamp - this.timelineViewport.start;
+      let pc = msSinceStart/(this.timelineViewport.end - this.timelineViewport.start);
+
+      if(pc < 0 || pc > 1) { return false; }
+
       pc = Math.min(Math.max(parseFloat(pc), 0), 1);
       let posX = this.timelineStyles.width * pc;
       return Math.floor(posX);
     },
     onResize() {
-//       this.windowHeight = window.innerHeight;
+      this.windowHeight = window.innerHeight;
     },
     openMediaModal(slugMediaName) {
       this.showMediaModalFor = slugMediaName;
@@ -267,6 +331,14 @@ export default {
 .timeline_track {
   position: absolute;
   height: 50px;
+  width: 100%;
+  border-bottom: 1px solid black;
+}
+
+.timeline_overview {
+  position: absolute;
+  top:50px;
+  height: 10px;
   width: 100%;
   border-bottom: 1px solid black;
 }
@@ -346,7 +418,7 @@ export default {
       border-left: 1px solid #d9d9d9;
       z-index:1;
 
-      &:nth-of-type(10n) {
+      &[data-caption] {
         color: #333;
         &::before {
           content: attr(data-caption);

@@ -71,5 +71,5 @@ let vm = new Vue({
 });
 
 setTimeout(() => {
-//   vm.openFolder('ouip');
+  vm.openFolder('rencontres-de-lure-2017');
 }, 500);

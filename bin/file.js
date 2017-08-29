@@ -16,15 +16,15 @@ module.exports = (function() {
 
   const API = {
     getFolderPath       : (slugFolderName = '') => getFolderPath(slugFolderName),
-    getFolder           : (slugFolderName) => getFolder(slugFolderName),
-    getMetaFileOfFolder : (slugFolderName) => getMetaFileOfFolder(slugFolderName),
-    createFolder        : (fdata) => createFolder(fdata),
-    editFolder          : (foldersData, fdata) => editFolder(foldersData, fdata),
-    removeFolder        : (slugFolderName) => removeFolder(slugFolderName),
+    getFolder           : (slugFolderName)      => getFolder(slugFolderName),
+    getMetaFileOfFolder : (slugFolderName)      => getMetaFileOfFolder(slugFolderName),
+    createFolder        : (fdata)               => createFolder(fdata),
+    editFolder          : (foldersData, fdata)  => editFolder(foldersData, fdata),
+    removeFolder        : (slugFolderName)      => removeFolder(slugFolderName),
 
     getMedia            : (slugFolderName, slugMediaName) => getMedia(slugFolderName, slugMediaName),
     createMediaMeta     : (slugFolderName, slugMediaName, additionalMeta) => createMediaMeta(slugFolderName, slugMediaName, additionalMeta),
-    editMedia           : (mdata) => editMedia(mdata),
+    editMedia           : (mdata)               => editMedia(mdata),
     removeMedia         : (slugFolderName, slugMediaName) => removeMedia(slugFolderName, slugMediaName),
   };
 

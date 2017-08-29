@@ -8,16 +8,23 @@
 import moment from 'moment';
 
 export default {
-  props: ['value'],
+  props: ['value', 'twowaybinding'],
   data() {
     return {
       date: moment(this.value).format('YYYY-MM-DD'),
       time: moment(this.value).format('HH:mm:ss')
     }
   },
+  watch: {
+    value:  function() {
+      if(this.twowaybinding !== true) { return; }
+      this.date = moment(this.value).format('YYYY-MM-DD'),
+      this.time = moment(this.value).format('HH:mm:ss')
+    }
+  },
   methods: {
     updateDate() {
-      this.$emit('input', this.date + 'T' + this.time);
+      this.$emit('input', moment(this.date + 'T' + this.time));
     }
   }
 };
