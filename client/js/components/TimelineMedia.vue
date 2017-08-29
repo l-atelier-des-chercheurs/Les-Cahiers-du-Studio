@@ -2,25 +2,34 @@
   <div class="mediaWrap"
     :style="getMediaPosition(media)">
     <div class="media"
-      :style="getMediaSize(media)"
-      :class="{ 'has--duration' : media.duration !== undefined, 'is--hovered' : is_hovered, 'is--dragged' : is_dragged }"
-      @mousedown="mousedown"
-      @mousemove="mousemove"
-      @mouseup="mouseup"
-      @mouseover="mouseover"
-      @mouseleave="mouseleave"
+      :class="{
+        'has--duration' : media.duration !== undefined,
+        'is--hovered'   : is_hovered,
+        'is--dragged'   : is_dragged,
+        'is--collapsed' : media.is_collapsed
+      }"
     >
-      <div class="mediaContent">
+      <button class="accroche accroche_gauche" @click="toggleCollapseMedia"></button>
+      <button class="accroche accroche_droite" @click="toggleCollapseMedia"></button>
+
+      <div class="mediaContent"
+        @mousedown="mousedown"
+        @mousemove="mousemove"
+        @mouseup="mouseup"
+        @mouseover="mouseover"
+        @mouseleave="mouseleave"
+        :style="getMediaSize(media)"
+      >
         <MediaContent
           :slugFolderName="slugFolderName"
           :slugMediaName="slugMediaName"
           :media="media"
         >
         </MediaContent>
+        <button class="button button_small button_openmedia"  @mousedown.stop="$emit('open')">
+          Ouvrir
+        </button>
       </div>
-      <button class="button button_small button_openmedia"  @mousedown.stop="$emit('open')">
-        Ouvrir
-      </button>
     </div>
   </div>
 </template>
@@ -36,6 +45,7 @@ export default {
     return {
       is_dragged: false,
       is_hovered: false,
+      is_collapsed: this.media.is_collapsed,
       initialMousePos: {
         x: '',
         y: ''
@@ -49,6 +59,10 @@ export default {
   computed: {
   },
   watch: {
+    'this.media.is_collapsed': function() {
+      debugger;
+      this.is_collapsed = this.media.is_collapsed;
+    },
   },
   methods: {
     getMediaPosition() {
@@ -111,6 +125,19 @@ export default {
     },
     mouseleave() {
       this.is_hovered = false;
+    },
+
+    toggleCollapseMedia() {
+      this.is_collapsed = !this.is_collapsed;
+
+      // copy all values
+      let values = { is_collapsed: this.is_collapsed };
+      values.slugFolderName = this.slugFolderName;
+      values.slugMediaName = this.slugMediaName;
+
+      // if it's all good, collect everything and send over socketio
+      this.$root.editMedia(values);
+
     }
   }
 }

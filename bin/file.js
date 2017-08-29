@@ -489,11 +489,16 @@ module.exports = (function() {
       let slugMediaName = mdata.slugMediaName;
 
       let newMediaData = {};
+
+      /**************************************************************************
+        list here all possible edit properties and how to validate them
+      **************************************************************************/
       if(mdata.hasOwnProperty('created')) {  newMediaData.created = api.convertDate(mdata.created); }
       if(mdata.hasOwnProperty('type'))    {  newMediaData.type = validator.escape(mdata.type); }
       if(mdata.hasOwnProperty('keywords')){  newMediaData.keywords = validator.escape(mdata.keywords); }
       if(mdata.hasOwnProperty('authors')) {  newMediaData.authors = validator.escape(mdata.authors); }
       if(mdata.hasOwnProperty('public') && typeof mdata.public === 'boolean')  { newMediaData.public = mdata.public; }
+      if(mdata.hasOwnProperty('collapsed') && typeof mdata.collapsed === 'boolean')  { newMediaData.collapsed = mdata.collapsed; }
 
       newMediaData.modified = api.getCurrentDate();
 

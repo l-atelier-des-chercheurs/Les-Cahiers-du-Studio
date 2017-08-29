@@ -268,34 +268,33 @@ main {
   .media {
     position: absolute;
     right:0;
-    width:16em;
-    border: 1px solid #000;
-/*
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-*/
-    cursor: move;
+    pointer-events: none;
 
-    @t-anchor: 10px;
-    &::before, &::after {
+    @t-anchor: 20px;
+    .accroche {
       width: @t-anchor;
       height: @t-anchor;
-      display: block;
       position: absolute;
+      z-index: 10;
       top: -@t-anchor/2;
       border-radius: 50%;
-      background-color: #000;
+      background-color: white;
+      min-height: 0;
+      display: none;
+      pointer-events: auto;
+
+      box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
     }
 
-    &::before {
-      content:'';
+    .accroche_droite {
+      display: block;
       right: -@t-anchor/2;
     }
 
     &.has--duration {
-      &::after {
-        content:'';
-        right: -@t-anchor/2;
+      .accroche_gauche {
+        display: block;
+        left: -@t-anchor/2;
       }
     }
 
@@ -303,16 +302,18 @@ main {
       position: absolute;
       bottom: 0;
       right: 0;
+      z-index: 1;
+
       margin: @t-skipline/2;
-      background-color: rgba(255,255,255,.6);
+      background-color: rgba(255,255,255,1);
 
       opacity: 0;
 
-      transition: opacity 0.4s ease-out;
+      transition: opacity 0.3s ease-out;
     }
   }
 
-  .media.is--dragged {
+  .media.is--dragged .mediaContent {
     cursor: -webkit-grabbing;
     cursor: -moz-grabbing;
   }
@@ -331,7 +332,27 @@ main {
     align-items:center;
     justify-content:center;
     overflow: hidden;
+    transform-origin: top right;
+    pointer-events: auto;
+/*
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+*/
+    cursor: move;
+
+    border: 2px solid #fff;
+    box-shadow: 0 3px 3px -2px rgba(0,0,0,.2), 0 3px 4px 0 rgba(0,0,0,.14), 0 1px 8px 0 rgba(0,0,0,.12);
+
+    transition: transform .2s ease-out;
   }
+
+  .media.is--collapsed .mediaContent {
+    transform: scale(0);
+  }
+  .media.has--duration.is--collapsed .mediaContent {
+    transform: scaleY(0);
+  }
+
 }
 
 .m_fileupload {
