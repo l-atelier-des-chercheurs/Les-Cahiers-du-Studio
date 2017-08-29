@@ -31,7 +31,7 @@ module.exports = function(app,io,m){
 
       let pageDataJSON = {};
 
-      pageDataJSON.pageTitle = 'documentation-boilerplate';
+      pageDataJSON.pageTitle = 'stv-doc';
       pageDataJSON.slugFolderName = '';
       // full path on the storage space, as displayed in the footer
       pageDataJSON.folderPath = file.getFolderPath();

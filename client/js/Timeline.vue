@@ -106,8 +106,8 @@ export default {
 
       isRealtime: false,
       timelineInfos: {
-        start: 10,
-        end:   40,
+        start: 0,
+        end:   0,
         scale: 1,
         autoscroll: false
       },

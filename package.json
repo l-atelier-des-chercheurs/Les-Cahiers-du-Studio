@@ -1,7 +1,7 @@
 {
-  "name": "documentation-boilerplate",
+  "name": "stv-doc",
   "version": "0.1.0",
-  "description": "A documentation platform boilerplate.",
+  "description": "A documentation platform for studio-théâtre vitry.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/louis-ev/stv-documentation",
   "license": "CC-BY-NC-SA-4.0",
@@ -23,7 +23,7 @@
   },
   "build": {
     "electronVersion": "1.7.5",
-    "appId": "documentation-boilerplate",
+    "appId": "stv-doc",
     "asar": false,
     "mac": {
       "category": "public.app-category.education"
