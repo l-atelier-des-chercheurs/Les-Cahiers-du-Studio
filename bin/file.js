@@ -388,7 +388,7 @@ module.exports = (function() {
           let mdata = {
             created : birthtime,
             modified : mtime,
-            public: false,
+            public: false
           };
 
           let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(slugMediaName)[0];

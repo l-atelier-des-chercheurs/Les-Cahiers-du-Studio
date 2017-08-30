@@ -13,7 +13,7 @@
       </div>
 
       <div v-if="Object.keys(medias).length > 0">
-        <media v-for="(media, index) in medias"
+        <Media v-for="(media, index) in medias"
           v-if="getMediaPosX(media) !== false"
           v-bind:key="index"
           :slugFolderName="slugFolderName"
@@ -24,7 +24,7 @@
           :posX="getMediaPosX(media)"
           @open="openMediaModal(index)"
         >
-        </media>
+        </Media>
       </div>
 
       <template v-else>

@@ -6,7 +6,7 @@
         'has--duration' : media.duration !== undefined,
         'is--hovered'   : is_hovered,
         'is--dragged'   : is_dragged,
-        'is--collapsed' : media.is_collapsed
+        'is--collapsed' : is_collapsed
       }"
     >
       <button class="accroche accroche_gauche" @click="toggleCollapseMedia"></button>
@@ -45,23 +45,25 @@ export default {
     return {
       is_dragged: false,
       is_hovered: false,
-      is_collapsed: this.media.is_collapsed,
+      is_collapsed: (this.media.collapsed == 'true'),
       initialMousePos: {
         x: '',
         y: ''
       },
       mediaStyles: {
         ratio: this.media.ratio,
-        y: Math.random() * this.timelineHeight + 70
+        y: 150
       }
     }
   },
   computed: {
   },
   watch: {
-    'this.media.is_collapsed': function() {
+    media: function() {
+    },
+    'media.collapsed': function() {
       debugger;
-      this.is_collapsed = this.media.is_collapsed;
+      this.is_collapsed = (this.media.collapsed == 'true');
     },
   },
   methods: {
@@ -131,7 +133,7 @@ export default {
       this.is_collapsed = !this.is_collapsed;
 
       // copy all values
-      let values = { is_collapsed: this.is_collapsed };
+      let values = { collapsed: this.is_collapsed };
       values.slugFolderName = this.slugFolderName;
       values.slugMediaName = this.slugMediaName;
 

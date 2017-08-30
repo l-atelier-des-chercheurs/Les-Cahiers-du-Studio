@@ -156,6 +156,22 @@ module.exports = (function() {
     file.getFolder(slugFolderName).then(foldersData => {
       file.getMedia(slugFolderName, slugMediaName).then(mediasData => {
 
+        const defaultMediaMeta = {
+          created: '',
+          modified: '',
+          type: '',
+          authors: '',
+          keywords: '',
+          public: false,
+          collapsed: false
+        };
+
+        // sanitize each media (make sure they have all the fields when sent, even if their meta file doesn’t
+        for(let slugMediaName in mediasData) {
+          Object.assign(defaultMediaMeta, mediasData[slugMediaName]);
+        }
+
+
         Object.keys(io.sockets.connected).forEach(sid => {
           if(socket) {
             if(socket.id !== sid) {
