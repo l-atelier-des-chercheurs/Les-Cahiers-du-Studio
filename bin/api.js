@@ -27,7 +27,8 @@ module.exports = (function() {
     eventAndContent             : (sendEvent, objectJson) => eventAndContent(sendEvent, objectJson),
     sendEventWithContent        : (sendEvent, objectContent, io, socket) => sendEventWithContent(sendEvent, objectContent, io, socket),
     getLocalIP                  : () => getLocalIP(),
-    slug                        : (term) => slug(term)
+    slug                        : (term) => slug(term),
+    clip                        : (value, min, max) => clip(value, min, max)
   };
 
   function getCurrentDate(f) {
@@ -150,6 +151,10 @@ module.exports = (function() {
 
   function slug(term) {
     return slugg(term);
+  }
+
+  function clip(value, min, max) {
+    return Math.max(min, Math.min(value, max));
   }
 
   return API;
