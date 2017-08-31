@@ -13,8 +13,8 @@
       </div>
 
       <div v-if="Object.keys(medias).length > 0">
+<!--           v-if="getMediaPosX(media) !== false" -->
         <Media v-for="(media, index) in medias"
-          v-if="getMediaPosX(media) !== false"
           v-bind:key="index"
           :slugFolderName="slugFolderName"
           :slugMediaName="index"

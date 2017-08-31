@@ -4540,6 +4540,9 @@ main > *:first-child {
   -webkit-box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 }
+.mediaWrap .media .accroche:focus {
+  outline: none;
+}
 .mediaWrap .media .accroche_droite {
   display: block;
   right: -10px;
@@ -4559,10 +4562,6 @@ main > *:first-child {
   -webkit-transition: opacity 0.3s ease-out;
   -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
-}
-.mediaWrap .media.is--dragged .mediaContent {
-  cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
 }
 .mediaWrap .media.is--hovered .button_openmedia {
   opacity: 1;
@@ -4585,11 +4584,8 @@ main > *:first-child {
   -ms-transform-origin: top right;
   transform-origin: top right;
   pointer-events: auto;
-  /*
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-*/
-  cursor: move;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
   border: 2px solid #fff;
   -webkit-box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
@@ -4608,6 +4604,19 @@ main > *:first-child {
   -webkit-transform: scaleY(0);
   -ms-transform: scaleY(0);
   transform: scaleY(0);
+}
+.mediaWrap .media.is--hovered .mediaContent {
+  -webkit-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+.mediaWrap .media.is--dragged .mediaContent {
+  border: 2px solid blue;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  -webkit-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 .m_fileupload {
   position: fixed;

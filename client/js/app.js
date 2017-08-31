@@ -71,5 +71,5 @@ let vm = new Vue({
 });
 
 setTimeout(() => {
-  vm.openFolder('rencontres-de-lure-2017');
+  vm.openFolder('dossier-de-test');
 }, 500);

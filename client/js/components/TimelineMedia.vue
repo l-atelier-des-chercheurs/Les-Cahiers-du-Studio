@@ -13,9 +13,7 @@
       <button class="accroche accroche_droite" @click="toggleCollapseMedia"></button>
 
       <div class="mediaContent"
-        @mousedown="mousedown"
-        @mousemove="mousemove"
-        @mouseup="mouseup"
+        @mousedown.prevent="mousedown"
         @mouseover="mouseover"
         @mouseleave="mouseleave"
         :style="getMediaSize(media)"
@@ -46,13 +44,17 @@ export default {
       is_dragged: false,
       is_hovered: false,
       is_collapsed: (this.media.collapsed == 'true'),
-      initialMousePos: {
+      dragOffset: {
+        x: '',
+        y: ''
+      },
+      mediaStylesOld: {
         x: '',
         y: ''
       },
       mediaStyles: {
         ratio: this.media.ratio,
-        y: 150
+        y: this.getPosY()
       }
     }
   },
@@ -62,11 +64,21 @@ export default {
     media: function() {
     },
     'media.collapsed': function() {
-      debugger;
       this.is_collapsed = (this.media.collapsed == 'true');
     },
+    'media.y': function() {
+      this.mediaStyles.y = this.getPosY();
+    },
+  },
+  created() {
+  },
+  beforeDestroy() {
+    window.removeEventListener('mouseup', this.mouseup);
   },
   methods: {
+    getPosY() {
+      return this.media.y * this.timelineHeight;
+    },
     getMediaPosition() {
       return {
         transform: `translate(${this.posX}px, ${this.mediaStyles.y}px)`
@@ -102,28 +114,44 @@ export default {
     },
     mousedown() {
       console.log('mousedown');
-      this.mediaStyles.y += 50;
-      this.mediaStyles.y = this.mediaStyles.y%(this.timelineHeight - 70);
-/*
+
       this.is_dragged = true;
-      this.initialMousePos.y = event.pageY;
-*/
+      this.dragOffset.y = event.pageY;
+      this.mediaStylesOld.y = this.mediaStyles.y;
+
+      window.addEventListener('mousemove', this.mousemove);
+      window.addEventListener('mouseup', this.mouseup);
     },
     mousemove() {
       console.log('mousemove');
-/*
       if(this.is_dragged) {
-        this.mediaStyles.y += event.pageY - this.initialMousePos.y;
+        this.mediaStyles.y = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
       }
-*/
     },
     mouseup() {
-      // see created
-//       this.is_dragged = false;
+      console.log('mouseup');
+      if(this.is_dragged) {
+        this.mediaStyles.y = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
+
+        let getHeightInPercent = this.mediaStyles.y / this.timelineHeight;
+        let values = { y: getHeightInPercent };
+        values.slugFolderName = this.slugFolderName;
+        values.slugMediaName = this.slugMediaName;
+
+        // if it's all good, collect everything and send over socketio
+        this.$root.editMedia(values);
+
+        this.is_dragged = false;
+      }
+
+
+      window.removeEventListener('mousemove', this.mousemove);
+      window.removeEventListener('mouseup', this.mouseup);
     },
 
     mouseover() {
       this.is_hovered = true;
+
     },
     mouseleave() {
       this.is_hovered = false;

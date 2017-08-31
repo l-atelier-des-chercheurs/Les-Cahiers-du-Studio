@@ -163,12 +163,13 @@ module.exports = (function() {
           authors: '',
           keywords: '',
           public: false,
-          collapsed: false
+          collapsed: false,
+          y: 0
         };
 
         // sanitize each media (make sure they have all the fields when sent, even if their meta file doesn’t
         for(let slugMediaName in mediasData) {
-          Object.assign(defaultMediaMeta, mediasData[slugMediaName]);
+          mediasData[slugMediaName] = Object.assign({}, defaultMediaMeta, mediasData[slugMediaName]);
         }
 
 

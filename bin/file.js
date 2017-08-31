@@ -388,7 +388,8 @@ module.exports = (function() {
           let mdata = {
             created : birthtime,
             modified : mtime,
-            public: false
+            public: false,
+            y: Math.random() * 0.8
           };
 
           let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(slugMediaName)[0];
@@ -493,12 +494,26 @@ module.exports = (function() {
       /**************************************************************************
         list here all possible edit properties and how to validate them
       **************************************************************************/
-      if(mdata.hasOwnProperty('created')) {  newMediaData.created = api.convertDate(mdata.created); }
-      if(mdata.hasOwnProperty('type'))    {  newMediaData.type = validator.escape(mdata.type); }
-      if(mdata.hasOwnProperty('keywords')){  newMediaData.keywords = validator.escape(mdata.keywords); }
-      if(mdata.hasOwnProperty('authors')) {  newMediaData.authors = validator.escape(mdata.authors); }
-      if(mdata.hasOwnProperty('public') && typeof mdata.public === 'boolean')  { newMediaData.public = mdata.public; }
-      if(mdata.hasOwnProperty('collapsed') && typeof mdata.collapsed === 'boolean')  { newMediaData.collapsed = mdata.collapsed; }
+      if(mdata.hasOwnProperty('created')) {
+        newMediaData.created = api.convertDate(mdata.created); }
+
+      if(mdata.hasOwnProperty('type'))    {
+        newMediaData.type = validator.escape(mdata.type); }
+
+      if(mdata.hasOwnProperty('keywords')){
+        newMediaData.keywords = validator.escape(mdata.keywords); }
+
+      if(mdata.hasOwnProperty('authors')) {
+        newMediaData.authors = validator.escape(mdata.authors); }
+
+      if(mdata.hasOwnProperty('public') && typeof mdata.public === 'boolean')  {
+        newMediaData.public = mdata.public; }
+
+      if(mdata.hasOwnProperty('collapsed') && typeof mdata.collapsed === 'boolean')  {
+        newMediaData.collapsed = mdata.collapsed; }
+
+      if(mdata.hasOwnProperty('y') && typeof mdata.y === 'number')  {
+        newMediaData.y = mdata.y; }
 
       newMediaData.modified = api.getCurrentDate();
 
