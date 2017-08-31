@@ -389,7 +389,7 @@ module.exports = (function() {
             created : birthtime,
             modified : mtime,
             public: false,
-            y: Math.random() * 0.8
+            y: Math.random() * 0.5
           };
 
           let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(slugMediaName)[0];

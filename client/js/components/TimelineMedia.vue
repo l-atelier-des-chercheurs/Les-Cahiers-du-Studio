@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     getPosY() {
-      return this.media.y * this.timelineHeight;
+      return parseFloat(this.media.y) * this.timelineHeight;
     },
     getMediaPosition() {
       return {
@@ -123,13 +123,11 @@ export default {
       window.addEventListener('mouseup', this.mouseup);
     },
     mousemove() {
-      console.log('mousemove');
       if(this.is_dragged) {
         this.mediaStyles.y = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
       }
     },
     mouseup() {
-      console.log('mouseup');
       if(this.is_dragged) {
         this.mediaStyles.y = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
 

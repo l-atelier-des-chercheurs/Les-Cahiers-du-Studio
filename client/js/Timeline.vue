@@ -159,13 +159,11 @@ export default {
 
     window.addEventListener('resize', debounce(this.onResize, 300));
     this.setTimelineBounds();
-    this.setTimelineView();
     this.updateTimelineEnd();
-
-    // let msTillNextMinute = moment().endOf("minute").diff(moment());
 
     setInterval(() => {
       this.setTimelineBounds();
+      this.updateTimelineEnd();
       this.setTimeline();
       if(this.timelineViewport.autoscroll) {
         this.$refs.timeline.scrollLeft = this.timelineStyles.width;
@@ -246,7 +244,7 @@ export default {
 
       let createDayTick = (currentDay) => {
         let xPos = this.getXPosition(currentDay);
-        let momentDay = moment(currentDay).format('YYYY-MM-DD');
+        let momentDay = moment(currentDay).format('YYYY-MM-DD HH:mm:ss');
         html += `<div class="gridItem gridItem_isday" style="transform:translate(${xPos}px, 0px)" data-caption="${momentDay}"></div>`;
       }
 
@@ -267,10 +265,14 @@ export default {
       let createHourTick = (currentHour) => {
         let xPos = this.getXPosition(currentHour);
         let momentHour = moment(currentHour).format('HH:mm');
-        html += `<div class="gridItem gridItem_ishour" style="transform:translate(${xPos}px, 0px)" data-caption="${momentHour}"></div>`;
+
+        if(this.timelineViewport.scale < 70) {
+          html += `<div class="gridItem gridItem_ishour" style="transform:translate(${xPos}px, 0px)" data-caption="${momentHour}"></div>`;
+        } else {
+          html += `<div class="gridItem gridItem_ishour" style="transform:translate(${xPos}px, 0px)"></div>`;
+        }
       }
 
-//       createHourTick(this.timelineViewport.start);
       let firstHour = moment(moment(this.timelineViewport.start).format('YYYY-MM-DD HH:00'));
       for(var h = 3600000; h < timeEllapsed; h +=  3600000) {
         let currentHour = firstHour + h;
@@ -286,6 +288,9 @@ export default {
       // make MINUTES ticks
       let createMinuteTick = (currentMinute) => {
         let xPos = this.getXPosition(currentMinute);
+        if(moment(currentMinute).minute() === 0) {
+          return;
+        }
         if(moment(currentMinute).minute()%10 === 0) {
           let momentMinute = moment(currentMinute).format('HH:mm');
           html += `<div class="gridItem gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${momentMinute}"></div>`;
@@ -303,7 +308,7 @@ export default {
       return html;
     },
     getXPosition(timestamp) {
-      if(!this.timelineViewport.start || !this.timelineViewport.end) { console.log(`Error with getXPosition`); }
+      if(this.timelineViewport.start < 0 || !this.timelineViewport.end < 0) { console.log(`Error with getXPosition`); }
       let msSinceStart = timestamp - this.timelineViewport.start;
       let pc = msSinceStart/(this.timelineViewport.end - this.timelineViewport.start);
 
@@ -396,8 +401,8 @@ export default {
       }
     }
     &.gridItem_ishour {
-      color: #00ad41;
-      border-left: 1px solid fade-out(#00ad41, 0);
+//       color: #00ad41;
+      border-left: 1px solid fade-out(black, 0.5);
       z-index:10;
 
       &::before {
@@ -415,7 +420,7 @@ export default {
 
     &.gridItem_isminute {
       color: #999;
-      border-left: 1px solid #d9d9d9;
+      border-left: 1px solid fade-out(black, 0.9);
       z-index:1;
 
       &[data-caption] {

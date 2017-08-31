@@ -172,7 +172,6 @@ module.exports = (function() {
           mediasData[slugMediaName] = Object.assign({}, defaultMediaMeta, mediasData[slugMediaName]);
         }
 
-
         Object.keys(io.sockets.connected).forEach(sid => {
           if(socket) {
             if(socket.id !== sid) {
