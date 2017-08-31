@@ -513,7 +513,7 @@ module.exports = (function() {
         newMediaData.collapsed = mdata.collapsed; }
 
       if(mdata.hasOwnProperty('y') && typeof mdata.y === 'number')  {
-        newMediaData.y = api.clip(mdata.y, 0, 1); }
+        newMediaData.y = api.clip(mdata.y, 0.1, 0.8); }
 
       newMediaData.modified = api.getCurrentDate();
 
