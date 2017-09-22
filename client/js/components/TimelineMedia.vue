@@ -7,15 +7,15 @@
       'is--dragged'   : is_dragged,
       'is--collapsed' : is_collapsed
     }"
+    @mousedown.prevent="mousedown"
+    @mouseover="mouseover"
+    @mouseleave="mouseleave"
   >
     <div class="media">
       <button class="accroche accroche_gauche" @click="toggleCollapseMedia"></button>
       <button class="accroche accroche_droite" @click="toggleCollapseMedia"></button>
 
       <div class="mediaContent"
-        @mousedown.prevent="mousedown"
-        @mouseover="mouseover"
-        @mouseleave="mouseleave"
         :style="getMediaSize(media)"
       >
         <MediaContent

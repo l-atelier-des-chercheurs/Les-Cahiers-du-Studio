@@ -85,5 +85,5 @@ let vm = new Vue({
 });
 
 setTimeout(() => {
-  vm.openFolder('dossier-de-test');
+  vm.openFolder('rencontres-de-lure');
 }, 500);
