@@ -19,7 +19,7 @@
           </h1>
           <p>Ici une présentation de la plate-forme en elle-même. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme en elle-même. Ici une présentation de la plate-forme. Ici une présentation de la plate-forme […].</p>
           <p>
-            <a class="with_arrow" href="http://www.studiotheatre.fr/" target="_blank">plus d’informations sur le site du studio-théâtre</a>
+            <a class="with_arrow js--openInBrowser" href="https://www.studiotheatre.fr/" target="_blank">plus d’informations sur le site du studio-théâtre</a>
           </p>
 
         </main>

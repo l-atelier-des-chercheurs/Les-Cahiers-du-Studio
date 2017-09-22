@@ -233,5 +233,3 @@ document.addEventListener('keydown', function(event) {
     $('body').toggleClass('is--debug');
   }
 });
-
-
