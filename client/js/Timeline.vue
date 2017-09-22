@@ -56,7 +56,7 @@
       <div v-if="showTimelineOptions" class="padding-small" style="width:400px">
         <div class="input-single">
           <label>Échelle :<br>1 pixel de large = {{ timelineViewport.scale }}  secondes</label>
-          <input type="range" v-model="timelineViewport.scale" min="0.5" max="140">
+          <input type="range" v-model.number="timelineViewport.scale" min="0.5" max="140">
         </div>
         <div class="input-single" v-if="isRealtime">
           <label>Défiler automatiquement</label>
@@ -134,14 +134,14 @@ export default {
       timelineViewport: {
         start: 0,
         end: 0,
-        scale: 10,
+        scale: this.$root.getProjectScale(this.slugFolderName),
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
       }
     }
   },
   watch: {
-    folder:  function() {
+    folder: function() {
       console.log('WATCH : folder');
       this.setTimelineBounds();
     },
@@ -152,6 +152,10 @@ export default {
     'timelineViewport.end': function() {
       console.log('WATCH : timelineViewport.start');
       this.updateTimelineStart();
+    },
+    'timelineViewport.scale': function() {
+      console.log('WATCH : timelineViewport.scale');
+      this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
     },
   },
   created() {

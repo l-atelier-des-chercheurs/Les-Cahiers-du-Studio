@@ -3,6 +3,7 @@
 ***********/
 
 import Vue from 'vue/dist/vue';
+import localstore from 'store';
 
 Vue.config.silent = false;
 Vue.config.devtools = true;
@@ -42,7 +43,6 @@ let vm = new Vue({
       if(window.store.debug) { console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`); }
       window.socketio.editMedia(mdata);
     },
-
     openFolder: function(slugFolderName) {
       if(window.store.debug) { console.log(`ROOT EVENT: openFolder: ${slugFolderName}`); }
       if(!this.store.folders.hasOwnProperty(slugFolderName)) {
@@ -55,6 +55,20 @@ let vm = new Vue({
     closeFolder: function() {
       if(window.store.debug) { console.log(`ROOT EVENT: closeFolder`); }
       this.settings.currentlyOpenedFolder = '';
+    },
+    updateProjectScale: function(slugFolderName, timelineViewport_scale) {
+      if(window.store.debug) { console.log(`ROOT EVENT: updateProjectScale`); }
+      let viewportScale = localstore.get('viewport_scale') || {};
+      viewportScale[slugFolderName] = timelineViewport_scale;
+      localstore.set('viewport_scale', viewportScale);
+    },
+    getProjectScale: function(slugFolderName) {
+      if(window.store.debug) { console.log(`ROOT EVENT: getProjectScale`); }
+      let viewportScale = localstore.get('viewport_scale') || {};
+      if(viewportScale !== undefined && viewportScale[slugFolderName] !== undefined) {
+        return viewportScale[slugFolderName];
+      }
+      return 10;
     }
   },
   watch: {
