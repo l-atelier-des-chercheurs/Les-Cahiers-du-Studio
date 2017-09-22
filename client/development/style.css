@@ -1672,6 +1672,12 @@ b {
 .c_vert {
   color: #00ad41;
 }
+.c_bleu {
+  color: #0096FF;
+}
+.c_rouge {
+  color: #ea0028;
+}
 .margin-medium {
   margin: 1.25em;
 }
@@ -1905,7 +1911,7 @@ main {
   margin-top: 0;
   font-style: italic;
   text-transform: lowercase;
-  color: #00ad41;
+  color: #0096FF;
 }
 .m_breadcrumb a {
   text-decoration: none;
@@ -1951,7 +1957,7 @@ main {
   content: "•";
   position: absolute;
   right: 100%;
-  color: #00ad41;
+  color: #0096FF;
   margin-right: 16px;
 }
 .text_labeur ol {
@@ -1965,7 +1971,7 @@ main {
   content: counter(item);
   position: absolute;
   right: 100%;
-  color: #00ad41;
+  color: #0096FF;
   margin-right: 16px;
 }
 .text_labeur blockquote {
@@ -4326,8 +4332,8 @@ input:required {
   background-size: 16px 16px;
   background-position: top right;
   background-repeat: no-repeat;
-  background-image: -o-radial-gradient(transparent 10%, #FF3E51 18%, transparent 25%);
-  background-image: radial-gradient(transparent 10%, #FF3E51 18%, transparent 25%);
+  background-image: -o-radial-gradient(transparent 10%, #ea0028 18%, transparent 25%);
+  background-image: radial-gradient(transparent 10%, #ea0028 18%, transparent 25%);
 }
 .alertify-logs {
   z-index: 10000;
@@ -4425,7 +4431,7 @@ input:required {
 }
 h1 {
   text-decoration: underline;
-  color: #00ad41;
+  color: #0096FF;
   font-style: italic;
 }
 .pushContentDown {
@@ -4489,8 +4495,8 @@ main > *:first-child {
   -webkit-box-shadow: none;
 }
 .m_timeline::-webkit-scrollbar-thumb {
-  background-color: #00ad41;
-  outline: 1px solid #00ad41;
+  background-color: #0096FF;
+  outline: 1px solid #0096FF;
 }
 .m_timeline .m_timeline-container {
   position: relative;
@@ -4563,6 +4569,9 @@ main > *:first-child {
   -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
 }
+.mediaWrap.is--hovered .accroche {
+  background-color: #0096FF;
+}
 .mediaWrap.is--hovered .button_openmedia {
   opacity: 1;
 }
@@ -4605,18 +4614,13 @@ main > *:first-child {
   -ms-transform: scaleY(0);
   transform: scaleY(0);
 }
-.mediaWrap.is--hovered .mediaContent {
-  -webkit-transition: none;
-  -o-transition: none;
-  transition: none;
-}
 .mediaWrap.is--dragged {
   -webkit-transition: none;
   -o-transition: none;
   transition: none;
 }
 .mediaWrap.is--dragged .mediaContent {
-  border: 2px solid #00ad41;
+  border: 2px solid #0096FF;
   cursor: -webkit-grabbing;
   cursor: -moz-grabbing;
 }

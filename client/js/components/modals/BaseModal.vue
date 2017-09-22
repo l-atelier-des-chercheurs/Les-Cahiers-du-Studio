@@ -65,7 +65,7 @@ export default {
 }
 </script>
 
-<style scoped lang="sass">
+<style lang="sass">
 .modal-mask {
   position: fixed;
   z-index: 10001;
@@ -111,12 +111,14 @@ export default {
   &.is--large {
     width: 100vw;
   }
-}
 
-.close_button {
-  position: absolute;
-  top:0;
-  right:0;
+  .close_button {
+    position: absolute;
+    top:0;
+    right:0;
+  }
+
+
 }
 
 .modal-header {
@@ -130,6 +132,18 @@ export default {
 
 .modal-default-button {
   float: right;
+}
+
+@media print {
+  .m_timeline-container {
+    display: none;
+  }
+  .modal-header {
+    display: none;
+  }
+  .modal-footer {
+    display: none;
+  }
 }
 
 /*
@@ -151,7 +165,7 @@ export default {
 
 .modal-enter .modal-container,
 .modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+  -webkit-transform: scale(1.06);
+  transform: scale(1.06);
 }
 </style>

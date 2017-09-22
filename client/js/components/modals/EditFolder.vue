@@ -1,27 +1,27 @@
 <template>
   <Modal @close="$emit('close')">
     <div slot="header">
-      Edit a folder
+      Éditer un dossier
     </div>
 
     <form slot="body" v-on:submit.prevent="editThisFolder">
 
 <!-- Human name -->
       <div class="input-single">
-        <label>Name</label>
+        <label>Nom</label>
         <input type="text" v-model="folderdata.name" required>
       </div>
 
 <!-- Start date -->
       <div class="input-single">
-        <label>Beginning</label>
+        <label>Début</label>
         <DateTime v-model="folderdata.start">
         </DateTime>
       </div>
 
 <!-- End date -->
       <div class="input-single">
-        <label>End</label>
+        <label>Fin</label>
         <DateTime v-model="folderdata.end">
         </DateTime>
       </div>
@@ -29,32 +29,32 @@
 <!-- Password -->
 <!--
       <div class="input-single">
-        <label>Password</label><br>
+        <label>Mot de passe</label><br>
         <input type="password" v-model="folderdata.password">
-        <small>If there is one, only user with this password will be able to edit this folder</small>
+        <small>Si existant, seul les utilisateurs possédant ce mot de passe pourront modifier ce dossier.</small>
       </div>
  -->
 
 <!-- Author(s) -->
       <div class="input-single">
-        <label>Author(s)</label><br>
-        <small>One per line</small>
+        <label>Auteur(s)</label><br>
+        <small>Un par ligne</small>
         <textarea v-model="folderdata.authors">
         </textarea>
       </div>
 
       <small>
-        fields with a <sup>o</sup> are required<br>
-        they can be edited at all time
+        les champs comportant un <sup class="c_rouge">o</sup> sont requis<br>
+        ils peuvent aussi être édités plus tard
       </small>
 
       <div>
         <button class="modal-default-button button-success" type="submit">
-          Update
+          Mettre à jour
         </button>
         <!-- pressing enter presses the first button… need fix to place this button somewhere else -->
-        <button class="modal-default-button" @click="$emit('close')">
-          Cancel
+        <button class="modal-default-button c_bleu" @click="$emit('close')">
+          Annuler
         </button>
       </div>
 

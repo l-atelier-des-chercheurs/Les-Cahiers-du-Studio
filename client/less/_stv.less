@@ -7,6 +7,7 @@
 
 @c-gris: #89898c;
 @c-vert: #00ad41;
+@c-bleu: #0096FF;
 @c-rouge: #ea0028;
 
 @c-gris_light: #f2f2f2;
@@ -51,6 +52,14 @@ strong,b {
 
 .c_vert {
   color: @c-vert;
+}
+
+.c_bleu {
+  color: @c-bleu;
+}
+
+.c_rouge {
+  color: @c-rouge;
 }
 
 .margin-medium {
@@ -290,7 +299,7 @@ main {
   margin-top: 0;
   font-style: italic;
   text-transform: lowercase;
-  color: @c-vert;
+  color: @c-bleu;
 
   a {
     text-decoration: none;
@@ -343,7 +352,7 @@ main {
         content: "•";
         position: absolute;
         right: 100%;
-        color: @c-vert;
+        color: @c-bleu;
         margin-right: @grid-gutter-width/1;
       }
     }
@@ -359,7 +368,7 @@ main {
         content: counter(item);
         position: absolute;
         right: 100%;
-        color: @c-vert;
+        color: @c-bleu;
         margin-right: @grid-gutter-width/1;
       }
     }

@@ -57,7 +57,7 @@ input:required {
   background-size: 16px 16px;
   background-position: top right;
   background-repeat: no-repeat;
-  background-image: radial-gradient(transparent 10%,#FF3E51 18%,transparent 25%);
+  background-image: radial-gradient(transparent 10%, @c-rouge 18%,transparent 25%);
 }
 
 
@@ -156,7 +156,7 @@ input:required {
 
 h1 {
   text-decoration: underline;
-  color: @c-vert;
+  color: @c-bleu;
   font-style: italic;
 }
 
@@ -229,8 +229,8 @@ main {
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: @c-vert;
-    outline: 1px solid @c-vert;
+    background-color: @c-bleu;
+    outline: 1px solid @c-bleu;
 
   }
 //   margin-right:   50px;
@@ -271,6 +271,7 @@ main {
     pointer-events: none;
 
     @t-anchor: 20px;
+
     .accroche {
       width: @t-anchor;
       height: @t-anchor;
@@ -318,6 +319,10 @@ main {
   }
 
   &.is--hovered {
+    .accroche {
+      background-color: @c-bleu;
+    }
+
     .button_openmedia {
       opacity: 1;
     }
@@ -349,13 +354,10 @@ main {
   &.has--duration.is--collapsed .mediaContent {
     transform: scaleY(0);
   }
-  &.is--hovered .mediaContent {
-    transition: none;
-  }
   &.is--dragged {
     transition: none;
     .mediaContent {
-      border: 2px solid @c-vert;
+      border: 2px solid @c-bleu;
       cursor: -webkit-grabbing;
       cursor: -moz-grabbing;
     }

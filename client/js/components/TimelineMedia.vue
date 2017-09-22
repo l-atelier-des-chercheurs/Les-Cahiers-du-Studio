@@ -12,8 +12,8 @@
     @mouseleave="mouseleave"
   >
     <div class="media">
-      <button class="accroche accroche_gauche" @click="toggleCollapseMedia"></button>
-      <button class="accroche accroche_droite" @click="toggleCollapseMedia"></button>
+      <button class="accroche accroche_gauche" @mouseup="toggleCollapseMedia"></button>
+      <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
 
       <div class="mediaContent"
         :style="getMediaSize(media)"
@@ -113,21 +113,26 @@ export default {
       }
     },
     mousedown() {
-      console.log('mousedown');
-
-      this.is_dragged = true;
-      this.dragOffset.y = event.pageY;
-      this.mediaStylesOld.y = this.mediaStyles.y;
+      console.log(`MEDIA EVENT: mousedown`);
 
       window.addEventListener('mousemove', this.mousemove);
       window.addEventListener('mouseup', this.mouseup);
     },
     mousemove() {
-      if(this.is_dragged) {
-        this.mediaStyles.y = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
+      console.log(`MEDIA EVENT: mousemove`);
+      if(!this.is_dragged) {
+        this.is_dragged = true;
+
+        this.dragOffset.y = event.pageY;
+        this.mediaStylesOld.y = this.mediaStyles.y;
+
+      } else {
+        let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
+        this.mediaStyles.y = Math.max(70, Math.min(this.timelineHeight - 100, newY));
       }
     },
     mouseup() {
+      console.log(`MEDIA EVENT: mouseup`);
       if(this.is_dragged) {
         this.mediaStyles.y = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
 
@@ -142,8 +147,12 @@ export default {
         this.is_dragged = false;
       }
 
+      event.stopPropagation();
+
       window.removeEventListener('mousemove', this.mousemove);
       window.removeEventListener('mouseup', this.mouseup);
+
+      return false;
     },
 
     mouseover() {
@@ -155,6 +164,10 @@ export default {
     },
 
     toggleCollapseMedia() {
+      if(this.is_dragged) {
+        return;
+      }
+
       this.is_collapsed = !this.is_collapsed;
 
       // copy all values

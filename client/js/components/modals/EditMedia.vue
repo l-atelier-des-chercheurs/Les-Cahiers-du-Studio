@@ -2,6 +2,12 @@
   <BaseModal :size="'large'" @close="$emit('close')" >
     <div slot="header">
       Edit media <i>{{ slugMediaName }}</i>
+
+      <span>
+        <button type="button" class="button_small" @click.prevent="printMedia">
+          Print
+        </button>
+      </span>
     </div>
 
     <div slot="body">
@@ -117,6 +123,9 @@ export default {
   computed: {
   },
   methods: {
+    printMedia: function() {
+      window.print();
+    },
     removeMedia: function() {
       if(window.confirm(locals.lang.modal.sureToRemoveMedia)) {
         this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
