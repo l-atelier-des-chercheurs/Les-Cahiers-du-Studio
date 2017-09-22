@@ -102,7 +102,7 @@ export default {
     flex: 1 100%;
   }
   .modal-body {
-    flex: 3 60%;
+    flex: 3 70%;
   }
   .modal-footer {
     flex: 1 auto;

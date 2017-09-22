@@ -142,7 +142,6 @@ export default {
         this.is_dragged = false;
       }
 
-
       window.removeEventListener('mousemove', this.mousemove);
       window.removeEventListener('mouseup', this.mouseup);
     },
