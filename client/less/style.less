@@ -295,7 +295,7 @@ main {
       right: -@t-anchor/2;
     }
 
-    &.has--duration {
+    .has--duration& {
       .accroche_gauche {
         display: block;
         left: -@t-anchor/2;
@@ -317,7 +317,7 @@ main {
     }
   }
 
-  .media.is--hovered {
+  &.is--hovered {
     .button_openmedia {
       opacity: 1;
     }
@@ -343,22 +343,23 @@ main {
     transition: transform .2s ease-out;
   }
 
-  .media.is--collapsed .mediaContent {
+  &.is--collapsed .mediaContent {
     transform: scale(0);
   }
-  .media.has--duration.is--collapsed .mediaContent {
+  &.has--duration.is--collapsed .mediaContent {
     transform: scaleY(0);
   }
-  .media.is--hovered .mediaContent {
+  &.is--hovered .mediaContent {
     transition: none;
   }
-  .media.is--dragged .mediaContent {
-    border: 2px solid @c-vert;
-    cursor: -webkit-grabbing;
-    cursor: -moz-grabbing;
+  &.is--dragged {
     transition: none;
+    .mediaContent {
+      border: 2px solid @c-vert;
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+    }
   }
-
 
 }
 

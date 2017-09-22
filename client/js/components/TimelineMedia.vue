@@ -1,14 +1,14 @@
 <template>
   <div class="mediaWrap"
-    :style="getMediaPosition(media)">
-    <div class="media"
-      :class="{
-        'has--duration' : media.duration !== undefined,
-        'is--hovered'   : is_hovered,
-        'is--dragged'   : is_dragged,
-        'is--collapsed' : is_collapsed
-      }"
-    >
+    :style="getMediaPosition(media)"
+    :class="{
+      'has--duration' : media.duration !== undefined,
+      'is--hovered'   : is_hovered,
+      'is--dragged'   : is_dragged,
+      'is--collapsed' : is_collapsed
+    }"
+  >
+    <div class="media">
       <button class="accroche accroche_gauche" @click="toggleCollapseMedia"></button>
       <button class="accroche accroche_droite" @click="toggleCollapseMedia"></button>
 

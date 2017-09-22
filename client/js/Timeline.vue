@@ -406,7 +406,7 @@ export default {
     }
     &.gridItem_ishour {
 //       color: #00ad41;
-      border-left: 1px solid fade-out(black, 0.5);
+      border-left: 1px solid fade-out(black, 0.7);
       z-index:10;
 
       &::before {

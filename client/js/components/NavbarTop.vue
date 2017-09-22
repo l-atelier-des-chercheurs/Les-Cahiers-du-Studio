@@ -19,11 +19,13 @@
             </li>
             <li v-if="typeof folder !== 'undefined'">
               <template>{{ folder.name }}</template>
-            </li>
-            <li v-if="folder.authorized">
-              <button type="button" class="button_small" @click="showEditFolderModal = true">
-                Edit
-              </button>
+
+              <span v-if="folder.authorized">
+                <button type="button" class="button_small" @click="showEditFolderModal = true">
+                  Edit
+                </button>
+              </span>
+
             </li>
           </ol>
         </div>

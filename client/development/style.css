@@ -4547,7 +4547,7 @@ main > *:first-child {
   display: block;
   right: -10px;
 }
-.mediaWrap .media.has--duration .accroche_gauche {
+.has--duration.mediaWrap .media .accroche_gauche {
   display: block;
   left: -10px;
 }
@@ -4563,7 +4563,7 @@ main > *:first-child {
   -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
 }
-.mediaWrap .media.is--hovered .button_openmedia {
+.mediaWrap.is--hovered .button_openmedia {
   opacity: 1;
 }
 .mediaWrap .mediaContent {
@@ -4595,28 +4595,30 @@ main > *:first-child {
   transition: transform 0.2s ease-out;
   transition: transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
 }
-.mediaWrap .media.is--collapsed .mediaContent {
+.mediaWrap.is--collapsed .mediaContent {
   -webkit-transform: scale(0);
   -ms-transform: scale(0);
   transform: scale(0);
 }
-.mediaWrap .media.has--duration.is--collapsed .mediaContent {
+.mediaWrap.has--duration.is--collapsed .mediaContent {
   -webkit-transform: scaleY(0);
   -ms-transform: scaleY(0);
   transform: scaleY(0);
 }
-.mediaWrap .media.is--hovered .mediaContent {
+.mediaWrap.is--hovered .mediaContent {
   -webkit-transition: none;
   -o-transition: none;
   transition: none;
 }
-.mediaWrap .media.is--dragged .mediaContent {
-  border: 2px solid #00ad41;
-  cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
+.mediaWrap.is--dragged {
   -webkit-transition: none;
   -o-transition: none;
   transition: none;
+}
+.mediaWrap.is--dragged .mediaContent {
+  border: 2px solid #00ad41;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
 }
 .m_fileupload {
   position: fixed;
