@@ -72,8 +72,8 @@ let vm = new Vue({
     }
   },
   watch: {
-    has_modal_opened: function() {
-      if(window.store.debug) { console.log(`ROOT EVENT: var has changed: has_modal_opened: ${this.has_modal_opened}`); }
+    'settings.has_modal_opened': function() {
+      if(window.store.debug) { console.log(`ROOT EVENT: var has changed: has_modal_opened: ${this.settings.has_modal_opened}`); }
       if(this.has_modal_opened){
         document.body.style.overflow = 'hidden';
       } else {
