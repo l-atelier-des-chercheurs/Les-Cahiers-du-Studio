@@ -38,7 +38,7 @@
 <!-- Author(s) -->
       <div class="input-single">
         <label>Auteur(s)</label><br>
-        <small>Un par ligne</small>
+        <small>un par ligne</small>
         <textarea v-model="folderdata.authors">
         </textarea>
       </div>

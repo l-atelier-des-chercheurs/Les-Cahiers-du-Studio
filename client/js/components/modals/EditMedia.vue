@@ -77,11 +77,11 @@
 
       <div>
         <button class="modal-default-button button-success" type="submit">
-          Update
+          Mettre à jour
         </button>
         <!-- pressing enter presses the first button… need fix to place this button somewhere else -->
         <button class="modal-default-button" @click="$emit('close')">
-          Cancel
+          Annuler
         </button>
       </div>
 
