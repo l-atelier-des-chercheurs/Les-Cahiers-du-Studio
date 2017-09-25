@@ -1,11 +1,11 @@
 <template>
   <BaseModal :size="'large'" @close="$emit('close')" >
     <div slot="header">
-      Edit media <i>{{ slugMediaName }}</i>
+      Editer le media <i>{{ slugMediaName }}</i>
 
       <span>
         <button type="button" class="button_small" @click.prevent="printMedia">
-          Print
+          Imprimer
         </button>
       </span>
     </div>
@@ -24,7 +24,7 @@
 
 <!-- Creation date (stored in meta file, overrides file date) -->
       <div class="input-single">
-        <label>Creation date</label>
+        <label>Date de création</label>
         <DateTime v-model="mediadata.created">
         </DateTime>
       </div>
@@ -41,16 +41,16 @@
 
 <!-- Keywords -->
       <div class="input-single">
-        <label>Keyword(s)</label><br>
-        <small>one per line</small>
+        <label>Mot-clé(s)</label><br>
+        <small>un par ligne</small>
         <textarea v-model="mediadata.keywords">
         </textarea>
       </div>
 
 <!-- Author(s) -->
       <div class="input-single">
-        <label>Author(s)</label><br>
-        <small>one per line</small>
+        <label>Auteur(s)</label><br>
+        <small>un par ligne</small>
         <textarea v-model="mediadata.authors">
         </textarea>
       </div>
@@ -70,7 +70,7 @@
       </button>
 
       <button type="button" class="button_small">
-        <a download :href="mediaURL" title="slugMediaName">
+        <a download :href="mediaURL" title="slugMediaName" target="_blank">
           Télécharger
         </a>
       </button>
