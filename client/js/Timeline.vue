@@ -130,11 +130,11 @@ export default {
         height: 1
       },
 
-
       timelineViewport: {
         start: 0,
         end: 0,
         scale: this.$root.getProjectScale(this.slugFolderName),
+        scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
       }
@@ -157,6 +157,10 @@ export default {
       console.log('WATCH : timelineViewport.scale');
       this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
     },
+    'timelineViewport.scrollLeft': function() {
+      console.log('WATCH : timelineViewport.scrollLeft');
+      this.$root.updateProjectScrollLeft(this.slugFolderName, this.timelineViewport.scrollLeft);
+    },
   },
   created() {
     console.log(`Created component timeline`);
@@ -164,14 +168,25 @@ export default {
     window.addEventListener('resize', debounce(this.onResize, 300));
     this.setTimelineBounds();
     this.updateTimelineEnd();
+    this.setTimeline();
+  },
+  mounted() {
+    // set scrollLeft to match timelineViewport.scrollLeft
+    this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
+    if(this.timelineViewport.autoscroll) {
+      this.$refs.timeline.scrollLeft = this.timelineStyles.width;
+    }
 
     setInterval(() => {
+      console.log('plip');
       this.setTimelineBounds();
       this.updateTimelineEnd();
       this.setTimeline();
       if(this.timelineViewport.autoscroll) {
         this.$refs.timeline.scrollLeft = this.timelineStyles.width;
       }
+      debugger;
+      this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
     }, 1000);
   },
   beforeDestroy() {
