@@ -115,7 +115,7 @@ export default {
 
       topNavbarHeight: 60,
       timelinetrackHeight: 50,
-      bottomScrollBar: 20,
+      bottomScrollBar: 0,
 
       showMediaModalFor: '',
       showTimelineOptions: false,
@@ -178,7 +178,6 @@ export default {
     }
 
     setInterval(() => {
-      console.log('plip');
       this.setTimelineBounds();
       this.updateTimelineEnd();
       this.setTimeline();

@@ -4480,6 +4480,7 @@ main > *:first-child {
 .m_timeline {
   position: relative;
   overflow-x: scroll;
+  overflow-x: overlay;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
 }
@@ -4490,6 +4491,9 @@ main > *:first-child {
 .m_timeline::-webkit-scrollbar:hover {
   cursor: -webkit-grab;
   cursor: -moz-grab;
+}
+.m_timeline::-webkit-scrollbar * {
+  background-color: transparent;
 }
 .m_timeline::-webkit-scrollbar-track {
   -webkit-box-shadow: none;
@@ -4647,8 +4651,8 @@ main > *:first-child {
 }
 .m_fileupload {
   position: fixed;
-  bottom: 2.5em;
-  right: 0;
+  bottom: 0;
+  right: 2.5em;
 }
 .component-fade-enter-active,
 .component-fade-leave-active {

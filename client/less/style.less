@@ -211,6 +211,7 @@ main {
 .m_timeline {
   position: relative;
   overflow-x: scroll;
+  overflow-x: overlay;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
 
@@ -222,6 +223,10 @@ main {
       cursor: -webkit-grab;
       cursor: -moz-grab;
     }
+
+    * {
+      background-color: transparent;
+    }
   }
 
   &::-webkit-scrollbar-track {
@@ -231,7 +236,6 @@ main {
   &::-webkit-scrollbar-thumb {
     background-color: @c-bleu;
     outline: 1px solid @c-bleu;
-
   }
 //   margin-right:   50px;
 
@@ -376,8 +380,8 @@ main {
 
 .m_fileupload {
   position: fixed;
-  bottom:@t-skipline*2;
-  right:0;
+  bottom:0;
+  right: @t-skipline*2;
 }
 
 

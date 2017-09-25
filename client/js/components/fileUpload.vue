@@ -33,7 +33,9 @@ export default {
     return {
       customOptionsObject: {
         language: {
-          dictDefaultMessage : 'Envoyer un média',
+          dictDefaultMessage : '+',
+          dictCancelUpload : 'Annuler l’upload',
+          dictRemoveFile: 'Masquer'
         }
       }
     }
@@ -98,8 +100,8 @@ export default {
               <div class="dz-image" style="width: 50px;height: 50px">
                   <img data-dz-thumbnail /></div>
               <div class="dz-details">
-                <div class="dz-size"><span data-dz-size></span></div>
                 <div class="dz-filename"><span data-dz-name></span></div>
+                <div class="dz-size"><span data-dz-size></span></div>
               </div>
               <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
               <div class="dz-error-message"><span data-dz-errormessage></span></div>
@@ -126,12 +128,17 @@ export default {
   min-width: 150px;
   max-width: 300px;
   min-height: 100px;
-  max-height: 250px;
+  max-height: 40vh;
 
   margin:0;
   padding: 1em;
+  padding-bottom: 2.5em;
 
-  overflow-y: scroll;
+  background-color: transparent;
+  border: none;
+
+  overflow-y: auto;
+  pointer-events: none;
 
   transition: all .4s ease-out;
 
@@ -140,11 +147,26 @@ export default {
     max-height:50vh;
   }
 
+  &:hover {
+    background-color: transparent;
+  }
+
   .dz-message {
-    display: block !important;
-    border: 3px dashed #89898c;
-    margin: 0px 0;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    margin: 5px 0 0 auto;
     padding: 25px;
+    border: none;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    font-size: 50px;
+    pointer-events: auto;
+
+    background-color: #ea0028;
+    color: white;
   }
 
   .dz-preview {
@@ -158,34 +180,46 @@ export default {
     justify-content: flex-start;
     padding: 0.5em;
     margin: 0.5em 0;
-    background-color: fade-out(#89898c, 0.80) !important;
+    background-color: #fff !important;
+    pointer-events: auto;
+
+    &:hover .dz-image img {
+      filter: unset;
+      transform: none;
+    }
+
+    .dz-image {
+      flex-shrink: 0;
+    }
 
     .dz-details {
-        position: relative;
-        opacity: 1;
-        height: auto;
-        width: auto;
-        min-width: 0;
-        background-color: transparent;
-        padding: 0;
-        color: black;
-
+      position: relative;
+      opacity: 1;
+      height: auto;
+      width: auto;
+      min-width: 0;
+      background-color: transparent;
+      padding: 0 .5em;
+      color: black;
 
       .dz-size {
           margin-bottom: 0;
+          font-size: 1em;
       }
     }
 
     .dz-remove {
-        opacity: 1;
-        position: relative;
-        padding: 0;
-        font-family: inherit;
-        text-transform: initial;
-        color: black;
-        border: none;
-        font-weight: normal;
-        bottom: 0;
+      opacity: 1;
+      position: relative;
+      padding: 0;
+      font-family: inherit;
+      text-transform: initial;
+      color: black;
+      border: none;
+      font-weight: normal;
+      bottom: 0;
+      margin-left: auto;
+      margin-right: 0;
     }
   }
 }
