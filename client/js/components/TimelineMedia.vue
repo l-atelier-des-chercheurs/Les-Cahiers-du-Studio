@@ -100,7 +100,7 @@ export default {
     },
     getMediaSize() {
       if(this.media.duration !== undefined) {
-        this.mediaStyles.w = Math.max(120, this.getMediaWidthFromDuration());
+        this.mediaStyles.w = Math.max(180, this.getMediaWidthFromDuration());
       } else {
         if(this.mediaStyles.ratio) {
           let r = this.mediaStyles.ratio;
