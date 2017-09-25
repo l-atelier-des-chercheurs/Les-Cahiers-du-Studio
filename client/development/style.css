@@ -4530,18 +4530,40 @@ main > *:first-child {
 .mediaWrap .media {
   position: absolute;
   right: 0;
+  top: -1px;
   pointer-events: none;
+}
+.mediaWrap .media .mediaScrubber {
+  position: absolute;
+  height: 20px;
+  text-align: right;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
 .mediaWrap .media .accroche {
   width: 20px;
   height: 20px;
-  position: absolute;
+  position: relative;
   z-index: 10;
-  top: -10px;
   border-radius: 50%;
-  background-color: white;
+  color: white;
+  background-color: currentcolor;
   min-height: 0;
-  display: none;
+  display: block;
   pointer-events: auto;
   -webkit-box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
@@ -4549,13 +4571,10 @@ main > *:first-child {
 .mediaWrap .media .accroche:focus {
   outline: none;
 }
-.mediaWrap .media .accroche_droite {
-  display: block;
-  right: -10px;
-}
-.has--duration.mediaWrap .media .accroche_gauche {
-  display: block;
-  left: -10px;
+.mediaWrap .media .accrocheDurationLine {
+  height: 4px;
+  background-color: #0096FF;
+  z-index: 150;
 }
 .mediaWrap .media .button_openmedia {
   position: absolute;
@@ -4569,10 +4588,12 @@ main > *:first-child {
   -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
 }
-.mediaWrap.is--hovered .accroche {
-  background-color: #0096FF;
+.mediaWrap.is--hovered .accroche,
+.mediaWrap .is--dragged .accroche {
+  color: #0096FF;
 }
-.mediaWrap.is--hovered .button_openmedia {
+.mediaWrap.is--hovered .button_openmedia,
+.mediaWrap .is--dragged .button_openmedia {
   opacity: 1;
 }
 .mediaWrap .mediaContent {

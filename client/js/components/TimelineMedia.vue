@@ -1,6 +1,6 @@
 <template>
   <div class="mediaWrap"
-    :style="getMediaPosition(media)"
+    :style="getMediaPosition()"
     :class="{
       'has--duration' : media.duration !== undefined,
       'is--hovered'   : is_hovered,
@@ -12,8 +12,16 @@
     @mouseleave="mouseleave"
   >
     <div class="media">
-      <button class="accroche accroche_gauche" @mouseup="toggleCollapseMedia"></button>
-      <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
+
+      <div class="mediaScrubber">
+        <!-- play media on click -->
+        <template v-if="media.duration !== undefined">
+          <button class="accroche accroche_gauche" @mouseup=""></button>
+          <div class="accrocheDurationLine" :style="{ width: getMediaWidthFromDuration() + 'px' }"></div>
+        </template>
+        <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
+      </div>
+
 
       <div class="mediaContent"
         :style="getMediaSize(media)"
@@ -54,7 +62,9 @@ export default {
       },
       mediaStyles: {
         ratio: this.media.ratio,
-        y: this.getPosY()
+        y: this.getPosY(),
+        w: 180,
+        h: 120
       }
     }
   },
@@ -80,41 +90,30 @@ export default {
       return parseFloat(this.media.y) * this.timelineHeight;
     },
     getMediaPosition() {
+      let posX = this.posX !== false ? this.posX : 0;
       return {
-        transform: `translate(${this.posX}px, ${this.mediaStyles.y}px)`
+        transform: `translate(${posX}px, ${this.mediaStyles.y}px)`
       };
     },
+    getMediaWidthFromDuration() {
+      return this.media.duration/this.timelineScale;
+    },
     getMediaSize() {
-      let defWidth = 180;
-      let defHeight = 120;
-
-      if(this.media.type === 'video') {
-        defWidth = Math.max(120, this.media.duration / this.timelineScale);
-        return {
-          width:  `${defWidth}px`,
-          height: `${defHeight}px`
+      if(this.media.duration !== undefined) {
+        this.mediaStyles.w = Math.max(120, this.getMediaWidthFromDuration());
+      } else {
+        if(this.mediaStyles.ratio) {
+          let r = this.mediaStyles.ratio;
+          this.mediaStyles.h = this.mediaStyles.w * r;
         }
       }
-
-      if(!this.mediaStyles.ratio) {
-        return {
-          width:  `${defWidth}px`,
-          height: `${defHeight}px`
-        }
-      }
-
-      let r = this.mediaStyles.ratio;
-      let w = defWidth;
-      let h = w * r;
-
       return {
-        width: `${w}px`,
-        height: `${h}px`
+        width: `${this.mediaStyles.w}px`,
+        height: `${this.mediaStyles.h}px`
       }
     },
     mousedown() {
       console.log(`MEDIA EVENT: mousedown`);
-
       window.addEventListener('mousemove', this.mousemove);
       window.addEventListener('mouseup', this.mouseup);
     },
@@ -128,13 +127,14 @@ export default {
 
       } else {
         let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
-        this.mediaStyles.y = Math.max(70, Math.min(this.timelineHeight - 100, newY));
+        this.mediaStyles.y = Math.max(50, Math.min(this.timelineHeight - 100, newY));
       }
     },
     mouseup() {
       console.log(`MEDIA EVENT: mouseup`);
       if(this.is_dragged) {
-        this.mediaStyles.y = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
+        let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
+        this.mediaStyles.y = Math.max(50, Math.min(this.timelineHeight - 100, newY));
 
         let getHeightInPercent = this.mediaStyles.y / this.timelineHeight;
         let values = { y: getHeightInPercent };

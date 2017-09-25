@@ -264,24 +264,39 @@ main {
   width: 1px; height: 1px;
   transition: transform .7s ease-in-out;
 
-
   .media {
     position: absolute;
     right:0;
+    top: -1px;
     pointer-events: none;
 
     @t-anchor: 20px;
 
+    .mediaScrubber {
+      position: absolute;
+      height: @t-anchor;
+      text-align: right;
+      top: -@t-anchor/2;
+      left: -@t-anchor/2;
+      right: -@t-anchor/2;
+
+
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
     .accroche {
       width: @t-anchor;
       height: @t-anchor;
-      position: absolute;
+      position: relative;
       z-index: 10;
-      top: -@t-anchor/2;
       border-radius: 50%;
-      background-color: white;
+      color: white;
+      background-color: currentcolor;
       min-height: 0;
-      display: none;
+      display: block;
       pointer-events: auto;
 
       box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
@@ -291,16 +306,10 @@ main {
       }
     }
 
-    .accroche_droite {
-      display: block;
-      right: -@t-anchor/2;
-    }
-
-    .has--duration& {
-      .accroche_gauche {
-        display: block;
-        left: -@t-anchor/2;
-      }
+    .accrocheDurationLine {
+      height: 4px;
+      background-color: @c-bleu;
+      z-index: 150;
     }
 
     .button_openmedia {
@@ -318,9 +327,9 @@ main {
     }
   }
 
-  &.is--hovered {
+  &.is--hovered, .is--dragged {
     .accroche {
-      background-color: @c-bleu;
+      color: @c-bleu;
     }
 
     .button_openmedia {

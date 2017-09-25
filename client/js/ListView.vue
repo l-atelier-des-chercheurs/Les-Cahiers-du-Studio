@@ -7,7 +7,7 @@
           liste des temps
         </h1>
         <p>
-          La liste ci-dessous contient tous les temps capturés. Certains d’entre eux sont publics et tous leurs contenus peuvent être consultés. Vous pouvez également y contribuer, soit en <span class="c_vert">#</span>ajoutant<span class="c_vert">#</span> des médias, soit en en <span class="c_vert">#</span>annotant<span class="c_vert">#</span> d’autres. Les dossiers protégés par mot de passe sont par contre uniquement consultables.
+          La liste ci-dessous contient tous les temps capturés. Certains d’entre eux sont publics et tous leurs contenus peuvent être consultés. Vous pouvez également y contribuer, soit en <span class="c_bleu">#</span>ajoutant<span class="c_bleu">#</span> des médias, soit en en <span class="c_bleu">#</span>annotant<span class="c_bleu">#</span> d’autres. Les dossiers protégés par mot de passe sont par contre uniquement consultables.
         </p>
 
         <div class="input-single">
