@@ -121,6 +121,7 @@ export default {
       showTimelineOptions: false,
 
       isRealtime: false,
+      timelineUpdateRoutine: '',
       timelineInfos: {
         start: 0,
         end:   0,
@@ -138,6 +139,7 @@ export default {
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
       }
+
     }
   },
   watch: {
@@ -177,7 +179,7 @@ export default {
       this.$refs.timeline.scrollLeft = this.timelineStyles.width;
     }
 
-    setInterval(() => {
+    this.timelineUpdateRoutine = setInterval(() => {
       this.setTimelineBounds();
       this.updateTimelineEnd();
       this.setTimeline();
@@ -188,7 +190,8 @@ export default {
     }, 1000);
   },
   beforeDestroy() {
-    window.removeEventListener('resize', debounce(this.onResize, 300))
+    window.removeEventListener('resize', debounce(this.onResize, 300));
+    clearInterval(this.timelineUpdateRoutine);
   },
   computed: {
   },

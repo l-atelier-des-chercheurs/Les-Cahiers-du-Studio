@@ -34,7 +34,7 @@
       </div>
 
     </div>
-    <div v-if="view === 'TimeLine'">
+    <div v-if="view === 'TimeLineView'">
 
       <NavbarTop
         :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
@@ -42,12 +42,12 @@
         >
       </NavbarTop>
 
-      <TimeLine
+      <TimeLineView
         :slugFolderName="$root.settings.currentlyOpenedFolder"
         :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
         :medias="$root.store.folders[$root.settings.currentlyOpenedFolder].medias"
       >
-      </TimeLine>
+      </TimeLineView>
     </div>
 
 
@@ -66,7 +66,7 @@
 import NavbarTop from './components/NavbarTop.vue';
 import NavbarLeft from './components/NavbarLeft.vue';
 import ListView from './ListView.vue';
-import TimeLine from './TimeLine.vue';
+import TimeLineView from './TimeLineView.vue';
 import BottomFooter from './components/BottomFooter.vue';
 
 export default {
@@ -75,7 +75,7 @@ export default {
     NavbarTop,
     NavbarLeft,
     ListView,
-    TimeLine,
+    TimeLineView,
     BottomFooter
   },
   data () {
@@ -88,7 +88,7 @@ export default {
   watch: {
     '$root.settings.currentlyOpenedFolder' : function() {
       if(this.$root.settings.currentlyOpenedFolder !== '') {
-        this.view = 'TimeLine';
+        this.view = 'TimeLineView';
       } else {
         this.view = 'ListView';
       }

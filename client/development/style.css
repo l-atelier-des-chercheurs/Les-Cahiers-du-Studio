@@ -4462,7 +4462,7 @@ main > *:first-child {
 }
 .card_folder .folder {
   min-height: 3.75em;
-  border: 4px solid white;
+  background-color: white;
 }
 .card_folder .folder > *:last-child {
   margin-bottom: 0;
@@ -4653,6 +4653,7 @@ main > *:first-child {
   position: fixed;
   bottom: 0;
   right: 2.5em;
+  pointer-events: none;
 }
 .component-fade-enter-active,
 .component-fade-leave-active {

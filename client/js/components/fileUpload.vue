@@ -14,10 +14,12 @@
       class="dropzone margin-right-small margin-bottom-small"
     >
       <input type="hidden">
+<!--
+      <div class="dropzone_overlay" ref="dropzoneoverlay">
+      </div>
+-->
     </Dropzone>
 
-    <div class="dropzone_overlay">
-    </div>
   </div>
 </template>
 <script>
@@ -48,13 +50,15 @@ export default {
       return this.slugFolderName + '/file-upload';
     },
   },
-  created: function() {
+  mounted: function() {
     document.addEventListener('dragover', this.enhanceDropzone);
-    document.addEventListener('dragleave', this.unenhanceDropzone);
+    $(this.$refs.dropzoneoverlay)
+      .on('dragleave', this.unenhanceDropzone)
+      .on('drop', this.unenhanceDropzone)
+      ;
   },
   destroyed: function() {
     document.removeEventListener('dragover', this.enhanceDropzone);
-    document.removeEventListener('dragleave', this.unenhanceDropzone);
   },
   methods: {
     enhanceDropzone: function(evt) {
@@ -122,9 +126,9 @@ export default {
 
 
 .vue-dropzone.vue-dropzone {
-  width: 100vw;
   font-family: inherit;
 
+  width: 100vw;
   min-width: 150px;
   max-width: 300px;
   min-height: 100px;
@@ -135,20 +139,35 @@ export default {
   padding-bottom: 2.5em;
 
   background-color: transparent;
-  border: none;
-
+  border: none !important;
   overflow-y: auto;
-  pointer-events: none;
 
   transition: all .4s ease-out;
 
   &.is--bigger {
-    max-width: 50vw;
-    max-height:50vh;
+//     overflow: visible;
+    .dz-message {
+    }
   }
 
   &:hover {
     background-color: transparent;
+  }
+
+  .dropzone_overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index:10;
+    pointer-events: none;
+    background-color: #ea0028;
+    opacity: 0;
+  }
+  &.is--bigger .dropzone_overlay {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .dz-message {
@@ -164,9 +183,12 @@ export default {
     height: 70px;
     font-size: 50px;
     pointer-events: auto;
+    z-index:100;
 
     background-color: #ea0028;
     color: white;
+  }
+  &.is--bigger .dz-message {
   }
 
   .dz-preview {
