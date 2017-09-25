@@ -1,7 +1,6 @@
 const
   path = require('path'),
   fs = require('fs-extra'),
-  imageSize = require('image-size'),
   validator = require('validator')
 ;
 
@@ -419,26 +418,23 @@ module.exports = (function() {
           dev.logverbose(`Type determined to be: ${mdata.type}`);
 
           if(mdata.type === 'image') {
-            try {
-              let dimension = imageSize(mediaPath);
-              let mediaRatio = typeof dimension !== undefined ? dimension.height / dimension.width : undefined;
-              if(mediaRatio !== undefined) { mdata.ratio = mediaRatio; }
-            } catch(err) {
-              dev.error(`Failed to get size of media. Error: ${err}`);
-            }
-
-            // if EXIF, override the time data
+            // if EXIF
             let useEXIFdata = new Promise((resolve, reject) => {
-              thumbs.getEXIFTimestamp(mediaPath).then(ts => {
+              thumbs.getEXIFData(mediaPath).then(({ ts, mediaRatio }) => {
                 if(ts === false) {
                   dev.log(`No timestamp found in EXIF.`);
-                  resolve();
                 } else {
-                  dev.log(`getEXIFTimestamp : ${JSON.stringify(ts)}`);
+                  dev.log(`getEXIFData timestamp : ${ts}`);
                   let localTS = api.parseUTCDate(ts);
                   mdata.created = api.convertDate(localTS);
-                  resolve();
                 }
+
+                dev.log(`getEXIFData mediaRatio : ${mediaRatio}`);
+                if(mediaRatio !== undefined) {
+                  mdata.ratio = mediaRatio;
+                }
+
+                resolve();
               })
               .catch((err) => {
                 dev.error(`No EXIF data to read from: ${err}`);

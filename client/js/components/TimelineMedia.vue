@@ -104,7 +104,7 @@ export default {
       } else {
         if(this.mediaStyles.ratio) {
           let r = this.mediaStyles.ratio;
-          this.mediaStyles.h = this.mediaStyles.w * r;
+          this.mediaStyles.w = this.mediaStyles.h / r;
         }
       }
       return {
@@ -167,7 +167,6 @@ export default {
       if(this.is_dragged) {
         return;
       }
-
       this.is_collapsed = !this.is_collapsed;
 
       // copy all values

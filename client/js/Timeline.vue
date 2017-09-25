@@ -185,7 +185,6 @@ export default {
       if(this.timelineViewport.autoscroll) {
         this.$refs.timeline.scrollLeft = this.timelineStyles.width;
       }
-      debugger;
       this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
     }, 1000);
   },

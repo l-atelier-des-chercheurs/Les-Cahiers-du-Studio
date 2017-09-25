@@ -20,8 +20,8 @@ module.exports = (function() {
 
   const API = {
     makeMediaThumbs   : (slugFolderName, slugMediaName, meta) => makeMediaThumbs(slugFolderName, slugMediaName, meta),
-    getEXIFTimestamp  : (mediaPath) => getEXIFTimestamp(mediaPath),
-    getMediaDuration  : (mediaPath) => getMediaDuration(mediaPath)
+    getEXIFData       : (mediaPath) => getEXIFData(mediaPath),
+    getMediaDuration  : (mediaPath) => getMediaDuration(mediaPath),
   };
 
   // this function is used both when creating a media and everything media are listed.
@@ -91,17 +91,28 @@ module.exports = (function() {
     });
   }
 
-  function getEXIFTimestamp(mediaPath) {
+  function getEXIFData(mediaPath) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`THUMBS — readEXIFData — for: ${mediaPath}`);
 
       sharp(mediaPath)
         .metadata()
         .then(metadata => {
-          dev.logverbose(`Gotten metadata.` );
+          if(typeof metadata === 'undefined') {
+            reject();
+          }
+
+          dev.logverbose(`Gotten metadata.`);
           let ts = _extractImageTimestamp(metadata);
           dev.logverbose(`TS is ${ts}`);
-          resolve(ts);
+
+          let mediaRatio;
+          mediaRatio = metadata.height / metadata.width;
+          if(metadata.orientation && (metadata.orientation === 8 || metadata.orientation === 6)) {
+            dev.log(`Media is portrait. Inverting ratio`);
+            mediaRatio = 1/mediaRatio;
+          }
+          resolve({ ts, mediaRatio });
         })
         .catch(err => reject());
     });
