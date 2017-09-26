@@ -4592,12 +4592,16 @@ main > *:first-child {
   -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
 }
+.mediaWrap.is--hovered,
+.mediaWrap.is--dragged {
+  z-index: 1000;
+}
 .mediaWrap.is--hovered .accroche,
-.mediaWrap .is--dragged .accroche {
+.mediaWrap.is--dragged .accroche {
   color: #0096FF;
 }
 .mediaWrap.is--hovered .button_openmedia,
-.mediaWrap .is--dragged .button_openmedia {
+.mediaWrap.is--dragged .button_openmedia {
   opacity: 1;
 }
 .mediaWrap .mediaContent {

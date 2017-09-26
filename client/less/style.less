@@ -331,7 +331,8 @@ main {
     }
   }
 
-  &.is--hovered, .is--dragged {
+  &.is--hovered, &.is--dragged {
+    z-index: 1000;
     .accroche {
       color: @c-bleu;
     }

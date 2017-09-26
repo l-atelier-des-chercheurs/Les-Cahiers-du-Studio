@@ -123,8 +123,6 @@ export default {
   display: none;
 }
 
-
-
 .vue-dropzone.vue-dropzone {
   font-family: inherit;
 
