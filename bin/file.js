@@ -397,28 +397,37 @@ module.exports = (function() {
         // if there's nothing at path, we’re all good
         if(err) {
 
-          let tasks = [];
-
-          // works with files copied directly in the folder
-          let stats = fs.statSync(mediaPath);
-          let birthtime = api.convertDate(new Date(stats.birthtime));
-          let mtime = api.convertDate(new Date(stats.mtime));
-
-          // replace mtime with meta creation date
-          mtime = api.getCurrentDate();
-
-          // in the case of files uploaded through the interface, there should be an additionalMeta object
-          if(additionalMeta !== undefined) {
-            birthtime = api.convertDate(additionalMeta.fileCreationDate);
-          }
-
+          // default media data
           let mdata = {
-            created : birthtime,
-            modified : mtime,
+            created : api.getCurrentDate(),
+            modified : api.getCurrentDate(),
             public: false,
             y: Math.random() * 0.5,
             color: 'white'
           };
+
+
+          let tasks = [];
+
+          // works with files copied directly in the folder
+          let getFileCreationDate = new Promise((resolve, reject) => {
+            fs.stat(mediaPath, function(err, stats) {
+              if(err) { resolve(); }
+              mdata.created = api.convertDate(new Date(stats.birthtime));
+              resolve();
+            });
+          });
+          tasks.push(getFileCreationDate);
+
+          // in the case of files uploaded through the interface, there should be an additionalMeta object
+          if(additionalMeta !== undefined) {
+            if(additionalMeta.hasOwnProperty('fileCreationDate')) {
+              mdata.created = api.convertDate(additionalMeta.fileCreationDate);
+            }
+            if(additionalMeta.hasOwnProperty('color')) {
+              mdata.color = validator.escape(additionalMeta.color);
+            }
+          }
 
           let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(slugMediaName)[0];
           dev.logverbose(`Trying to guess filetype from extension: ${mediaFileExtension}`);
@@ -612,10 +621,9 @@ module.exports = (function() {
 
   function createTextMedia(mdata) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`COMMON — createTextMedia : will create text media at path: ${slugFolderName}`);
+      dev.logfunction(`COMMON — createTextMedia : will create text media at path: ${mdata.slugFolderName}`);
 
       let slugFolderName = mdata.slugFolderName;
-
       let timeCreated;
       if(mdata.hasOwnProperty('created')) {
         timeCreated = api.convertDate(mdata.created);
@@ -623,23 +631,18 @@ module.exports = (function() {
         timeCreated = api.getCurrentDate();
       }
 
-      let mediaColor;
-      if(mdata.hasOwnProperty('color')) {
-        mediaColor = validator.escape(mdata.color);
-      } else {
-        mediaColor = 'white';
-      }
-
       let textMediaName = timeCreated + '.md';
       let pathToTextMedia = path.join(api.getFolderPath(slugFolderName), textMediaName);
 
-      api.storeData(pathToTextMedia, '', 'create').then(function(meta) {
-        resolve({
+      api.storeData(pathToTextMedia, '', 'create').then(() => {
+        let newMediaInfos = {
           slugMediaName: textMediaName,
           additionalMeta: {
             fileCreationDate: api.parseDate(timeCreated)
           }
-        });
+        };
+        if(mdata.hasOwnProperty('color')) { newMediaInfos.additionalMeta['color'] = mdata.color; }
+        resolve(newMediaInfos);
       }, function(err) {
         dev.error(`Failed to storeData for textmedia`);
         reject(`${err}`);
