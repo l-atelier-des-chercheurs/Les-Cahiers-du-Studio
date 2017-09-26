@@ -111,5 +111,5 @@ let vm = new Vue({
 });
 
 setTimeout(() => {
-  vm.openFolder('demo');
+  vm.openFolder('howdy');
 }, 500);

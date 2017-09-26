@@ -15,8 +15,7 @@ const
 module.exports = (function() {
 
   const API = {
-    getFolderPath       : (slugFolderName = '') => getFolderPath(slugFolderName),
-
+    getFolderPath               : (slugFolderName = '') => getFolderPath(slugFolderName),
     findFirstFilenameNotTaken   : (thisPath, fileName) => findFirstFilenameNotTaken(thisPath, fileName),
     getCurrentDate              : (format = local.settings().metaDateFormat) => getCurrentDate(format),
     convertDate                 : (date, format = local.settings().metaDateFormat) => convertDate(date, format),
@@ -30,6 +29,15 @@ module.exports = (function() {
     slug                        : (term) => slug(term),
     clip                        : (value, min, max) => clip(value, min, max)
   };
+
+
+  function _getUserPath() {
+    return global.pathToUserContent;
+  }
+
+  function getFolderPath(slugFolderName = '') {
+    return path.join(_getUserPath(), slugFolderName);
+  }
 
   function getCurrentDate(f) {
     return moment().format(f);

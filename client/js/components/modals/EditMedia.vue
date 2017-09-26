@@ -41,16 +41,15 @@
 
 <!-- Keywords -->
       <div class="input-single">
-        <label>Mot-clé(s)</label><br>
-        <small>un par ligne</small>
+        <label>Mot-clé(s) <small>un par ligne</small></label><br>
         <textarea v-model="mediadata.keywords">
         </textarea>
       </div>
 
 <!-- Author(s) -->
       <div class="input-single">
-        <label>Auteur(s)</label><br>
-        <small>un par ligne</small>
+        <label>Auteur•e(s) <small>un•e par ligne</small></label><br>
+
         <textarea v-model="mediadata.authors">
         </textarea>
       </div>
@@ -140,6 +139,9 @@ export default {
       let values = this.mediadata;
       values.slugFolderName = this.slugFolderName;
       values.slugMediaName = this.slugMediaName;
+
+      // if this is a textmedia, we also grab the content of the textarea
+
 
       // if it's all good, collect everything and send over socketio
       this.$root.editMedia(values);

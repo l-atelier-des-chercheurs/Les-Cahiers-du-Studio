@@ -10,7 +10,8 @@ const
 
 const
   local  = require('../local'),
-  dev = require('./dev-log')
+  dev = require('./dev-log'),
+  api = require('./api')
 ;
 
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
@@ -31,10 +32,10 @@ module.exports = (function() {
       dev.logfunction(`THUMBS — makeMediaThumbs — Making thumbs for media with meta: ${JSON.stringify(meta, null, 4)}`);
 
       let thumbFolderPath = path.join(local.settings().thumbFolderName, slugFolderName);
-      let mediaPath = path.join(_getFolderPath(slugFolderName), slugMediaName);
+      let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
 
       // let’s make sure that our thumb folder exists first
-      fs.mkdirp(_getFolderPath(thumbFolderPath), function (err) {
+      fs.mkdirp(api.getFolderPath(thumbFolderPath), function (err) {
         if (err) { reject(err); }
 
         // regroup all thumbs promises so they can happen as fast as possible
@@ -80,7 +81,7 @@ module.exports = (function() {
               count: 1,
               timemarks: ['00:00:00'],
               filename: `${slugMediaName}.%s.jpeg`,
-              folder: _getFolderPath(thumbFolderPath)
+              folder: api.getFolderPath(thumbFolderPath)
             });
         }
 
@@ -141,21 +142,13 @@ module.exports = (function() {
     return timestamp !== undefined ? timestamp : false;
   }
 
-
-  function _getFolderPath(slugFolderName = '') {
-    return path.join(_getUserPath(), slugFolderName);
-  }
-  function _getUserPath() {
-    return global.pathToUserContent;
-  }
-
   function _makeImageThumb(mediaPath, thumbFolderPath, slugMediaName, thumbRes) {
     return new Promise(function(resolve, reject) {
 //       dev.logverbose(`Looking for an image thumb for ${mediaPath} and resolution = ${thumbRes}`);
 
       let thumbName = `${slugMediaName}.${thumbRes}.jpeg`;
       let thumbPath = path.join(thumbFolderPath, thumbName);
-      let fullThumbPath = _getFolderPath(thumbPath);
+      let fullThumbPath = api.getFolderPath(thumbPath);
 
       // check first if it exists, resolve if it does
       fs.access(fullThumbPath, fs.F_OK, function(err) {

@@ -7,6 +7,11 @@
       <video controls :src="linkToMedia">
       </video>
     </template>
+    <template v-else-if="media.type === 'text'">
+      <textarea placeholder="Texte à remplir ici.">
+        {{ textMediaContent }}
+      </textarea>
+    </template>
     <template v-else-if="media.type === 'other'">
       {{ this.slugMediaName }}
     </template>
@@ -32,6 +37,9 @@ export default {
     }
   },
   computed: {
+    textMediaContent: function() {
+      return this.media.content;
+    },
     linkToMedia: function() {
       return this.slugFolderName + '/' + this.slugMediaName;
     },

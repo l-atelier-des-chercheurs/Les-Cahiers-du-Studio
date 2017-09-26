@@ -177,7 +177,8 @@ module.exports = (function() {
           keywords: '',
           public: false,
           collapsed: false,
-          y: 0
+          y: 0,
+          content: ''
         };
 
         // sanitize each media (make sure they have all the fields when sent, even if their meta file doesn’t

@@ -14,7 +14,6 @@ const
 module.exports = (function() {
 
   const API = {
-    getFolderPath       : (slugFolderName = '') => getFolderPath(slugFolderName),
     getFolder           : (slugFolderName)      => getFolder(slugFolderName),
     getMetaFileOfFolder : (slugFolderName)      => getMetaFileOfFolder(slugFolderName),
     createFolder        : (fdata)               => createFolder(fdata),
@@ -29,19 +28,13 @@ module.exports = (function() {
     createTextMedia     : (slugFolderName)      => createTextMedia(slugFolderName)
   };
 
-  function getFolderPath(slugFolderName = '') {
-    return path.join(getUserPath(), slugFolderName);
-  }
-  function getUserPath() {
-    return global.pathToUserContent;
-  }
   function getMetaFileOfFolder(slugFolderName) {
-    let folderPath = getFolderPath(slugFolderName);
+    let folderPath = api.getFolderPath(slugFolderName);
     let metaPath = path.join(folderPath, local.settings().folderMetafilename + local.settings().metaFileext);
     return metaPath;
   }
   function getMetaFileOfMedia(slugFolderName, slugMediaName) {
-    let mediaPath = path.join(getFolderPath(slugFolderName), slugMediaName);
+    let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
     let mediaMetaPath = mediaPath + local.settings().metaFileext;
     return mediaMetaPath;
   }
@@ -54,35 +47,64 @@ module.exports = (function() {
       resolve(folderData);
     });
   }
-  function readMediaMeta(slugFolderName,slugMediaName) {
+  function readMedia(slugFolderName,slugMediaName) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`COMMON — readMediaMeta: slugFolderName = ${slugFolderName} & slugMediaName = ${slugMediaName}`);
+      dev.logfunction(`COMMON — readMedia: slugFolderName = ${slugFolderName} & slugMediaName = ${slugMediaName}`);
 
-      // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
-      let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
 
-      fs.access(potentialMetaFile, fs.F_OK, function(err) {
-        // if there's nothing at path
-        if(err) {
-          dev.logverbose(`No meta for this media: ${err}`);
-          // let’s get creation date and modification date, guess the type, and return this whole thing afterwards
-          createMediaMeta(slugFolderName, slugMediaName).then((mediaData) => {
-            // let’s find or create thumbs
-            thumbs.makeMediaThumbs(slugFolderName, slugMediaName, mediaData).then((thumbData) => {
-              mediaData.thumbs = thumbData;
+      let tasks = [];
+
+      let readOrCreateMediaMeta = new Promise((resolve, reject) => {
+        // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
+        let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
+        fs.access(potentialMetaFile, fs.F_OK, function(err) {
+          // if there's nothing at path
+          if(err) {
+            dev.logverbose(`No meta for this media: ${err}`);
+            // let’s get creation date and modification date, guess the type, and return this whole thing afterwards
+            createMediaMeta(slugFolderName, slugMediaName).then(mediaData => {
+//               mediaData = Object.assign({}, defaultMediaMeta, mediasData[slugMediaName]);
+              delete mediaData.content;
               resolve(mediaData);
             });
+          } else {
+            let mediaData = readMetaFile(potentialMetaFile);
+            delete mediaData.content;
+            resolve(mediaData);
+          }
+        });
+      });
+      tasks.push(readOrCreateMediaMeta);
+
+      Promise.all(tasks).then(mediaData => {
+        mediaData = mediaData[0];
+        dev.log(`mediaData : ${JSON.stringify(mediaData, null, 4)}`);
+
+        let tasks = [];
+
+        if(mediaData.type === 'text') {
+          // get text content
+          let getMediaContent = new Promise((resolve, reject) => {
+            let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
+            mediaData.content = fs.readFileSync(mediaPath, local.settings().textEncoding);
+            resolve();
           });
-        } else {
-          let mediaData = readMetaFile(potentialMetaFile);
+          tasks.push(getMediaContent);
+        }
+
+        // let’s find or create thumbs
+        let getMediaThumbs = new Promise((resolve, reject) => {
           thumbs.makeMediaThumbs(slugFolderName, slugMediaName, mediaData).then((thumbData) => {
             mediaData.thumbs = thumbData;
-            resolve(mediaData);
+            resolve();
           });
-        }
+        });
+        tasks.push(getMediaThumbs);
+
+        Promise.all(tasks).then(() => {
+          resolve(mediaData);
+        });
       });
-
-
     });
   }
 
@@ -96,7 +118,7 @@ module.exports = (function() {
   function getFolder(slugFolderName) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — getFolder: ${slugFolderName}`);
-      let mainFolderPath = getFolderPath();
+      let mainFolderPath = api.getFolderPath();
       // on cherche tous les dossiers du dossier de contenu
       fs.readdir(mainFolderPath, function (err, filenames) {
 //         dev.logverbose(`Found filenames: ${filenames}`);
@@ -186,8 +208,8 @@ module.exports = (function() {
         dev.logverbose(`Proposed slug: ${slugFolderName}`);
 
         // créer un fichier meta avec : nom humain, date de création, date de début, date de fin, mot de passe hashé, nom des auteurs
-        dev.logverbose(`Making a new folder at path ${getFolderPath(slugFolderName)}`);
-        fs.mkdirp(getFolderPath(slugFolderName), function(err) {
+        dev.logverbose(`Making a new folder at path ${api.getFolderPath(slugFolderName)}`);
+        fs.mkdirp(api.getFolderPath(slugFolderName), function(err) {
           _makeFolderMeta(slugFolderName, fdata).then((mdata) => {
             let folderMetaPath = getMetaFileOfFolder(slugFolderName);
             api.storeData(folderMetaPath, mdata, 'create').then(function(meta) {
@@ -238,8 +260,8 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — removeFolder : will remove folder: ${slugFolderName}`);
 
-      let folderPath = getFolderPath(slugFolderName);
-      let movedFolderPath = path.join(getFolderPath(), local.settings().deletedFolderName, slugFolderName);
+      let folderPath = api.getFolderPath(slugFolderName);
+      let movedFolderPath = path.join(api.getFolderPath(), local.settings().deletedFolderName, slugFolderName);
 
       fs.move(folderPath, movedFolderPath, { overwrite: true })
       .then(() => {
@@ -303,7 +325,7 @@ module.exports = (function() {
       }
       dev.logverbose(`COMMON — getMedia — folder: ${slugFolderName} — media: ${slugMediaName}`);
 
-      let slugFolderPath = getFolderPath(slugFolderName);
+      let slugFolderPath = api.getFolderPath(slugFolderName);
       fs.readdir(slugFolderPath, function (err, filenames) {
         if(err) { dev.error(`Couldn't read content dir: ${err}`); reject(err); }
         if(filenames === undefined) { dev.error(`No medias for folder found: ${err}`); resolve(); }
@@ -333,7 +355,7 @@ module.exports = (function() {
           var allMediasData = [];
           medias.forEach(function(slugMediaName) {
             let fmeta = new Promise((resolve, reject) => {
-              readMediaMeta(slugFolderName,slugMediaName).then((meta) => {
+              readMedia(slugFolderName,slugMediaName).then((meta) => {
                 meta.slugMediaName = slugMediaName;
                 meta.created = api.parseDate(meta.created);
                 resolve(meta);
@@ -366,7 +388,7 @@ module.exports = (function() {
         dev.logverbose(`Has additional meta: ${JSON.stringify(additionalMeta,null,4)}`);
       }
 
-      let mediaPath = path.join(getFolderPath(slugFolderName), slugMediaName);
+      let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
       let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
 
       // check that a meta with this name doesn't exist already
@@ -524,7 +546,7 @@ module.exports = (function() {
 
       dev.logverbose(`Following datas will replace existing data for this media: ${JSON.stringify(newMediaData, null, 4)}`);
 
-      readMediaMeta(slugFolderName,slugMediaName).then((meta) => {
+      readMedia(slugFolderName,slugMediaName).then((meta) => {
         // overwrite stored obj with new informations
         Object.assign(meta, newMediaData);
         let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
@@ -542,8 +564,8 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — removeMedia : will remove media at path: ${slugFolderName}/${slugMediaName}`);
 
-      let mediaPath = path.join(getFolderPath(slugFolderName), slugMediaName);
-      let movedMediaPath = path.join(getFolderPath(slugFolderName), local.settings().deletedFolderName, slugMediaName);
+      let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
+      let movedMediaPath = path.join(api.getFolderPath(slugFolderName), local.settings().deletedFolderName, slugMediaName);
 
       let mediaMetaPath = mediaPath + local.settings().metaFileext;
       let movedMediaMetaPath = movedMediaPath + local.settings().metaFileext;
@@ -568,7 +590,7 @@ module.exports = (function() {
 
       let timeCreated = api.getCurrentDate();
       let textMediaName = timeCreated + '.md';
-      let pathToTextMedia = path.join(getFolderPath(slugFolderName), textMediaName);
+      let pathToTextMedia = path.join(api.getFolderPath(slugFolderName), textMediaName);
 
       api.storeData(pathToTextMedia, {}, 'create')
       .then(() => {

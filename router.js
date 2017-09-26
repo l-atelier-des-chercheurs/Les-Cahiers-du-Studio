@@ -8,8 +8,7 @@ const
   local = require('./local'),
   sockets = require('./sockets'),
   dev = require('./bin/dev-log'),
-  api = require('./bin/api'),
-  file = require('./bin/file')
+  api = require('./bin/api')
 ;
 
 module.exports = function(app,io,m){
@@ -34,7 +33,7 @@ module.exports = function(app,io,m){
       pageDataJSON.pageTitle = 'stv-doc';
       pageDataJSON.slugFolderName = '';
       // full path on the storage space, as displayed in the footer
-      pageDataJSON.folderPath = file.getFolderPath();
+      pageDataJSON.folderPath = api.getFolderPath();
 
       pageDataJSON.url = req.path;
       pageDataJSON.isHttps = req.connection.encrypted;
@@ -74,7 +73,7 @@ module.exports = function(app,io,m){
     form.multiples = false;
 
     // store all uploads in the folder directory
-    form.uploadDir = file.getFolderPath(slugFolderName);
+    form.uploadDir = api.getFolderPath(slugFolderName);
 
     let allFilesMeta = [];
 
