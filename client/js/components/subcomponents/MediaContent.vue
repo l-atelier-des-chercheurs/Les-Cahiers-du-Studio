@@ -8,8 +8,11 @@
       </video>
     </template>
     <template v-else-if="media.type === 'text'">
-      <textarea placeholder="Texte à remplir ici.">
-        {{ textMediaContent }}
+      <textarea
+        placeholder="Champ de texte…"
+        :value="value"
+        @input="$emit('input', $event.target.value)"
+      >
       </textarea>
     </template>
     <template v-else-if="media.type === 'other'">
@@ -30,6 +33,10 @@ export default {
     size: {
       type: Number,
       default: 200
+    },
+    value: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -37,9 +44,6 @@ export default {
     }
   },
   computed: {
-    textMediaContent: function() {
-      return this.media.content;
-    },
     linkToMedia: function() {
       return this.slugFolderName + '/' + this.slugMediaName;
     },

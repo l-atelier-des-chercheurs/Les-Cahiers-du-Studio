@@ -30,6 +30,7 @@
           :slugFolderName="slugFolderName"
           :slugMediaName="slugMediaName"
           :media="media"
+          v-model="media.content"
         >
         </MediaContent>
         <button class="button button_small button_openmedia"  @mousedown.stop="$emit('open')">

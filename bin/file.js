@@ -78,7 +78,7 @@ module.exports = (function() {
 
       Promise.all(tasks).then(mediaData => {
         mediaData = mediaData[0];
-        dev.log(`mediaData : ${JSON.stringify(mediaData, null, 4)}`);
+        dev.log(`Current mediameta : ${JSON.stringify(mediaData, null, 4)}`);
 
         let tasks = [];
 
@@ -86,7 +86,8 @@ module.exports = (function() {
           // get text content
           let getMediaContent = new Promise((resolve, reject) => {
             let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
-            mediaData.content = fs.readFileSync(mediaPath, local.settings().textEncoding);
+            mediaData.content = validator.unescape(fs.readFileSync(mediaPath, local.settings().textEncoding));
+            dev.log(`Got mediaData.content : ${mediaData.content}`);
             resolve();
           });
           tasks.push(getMediaContent);
@@ -544,19 +545,40 @@ module.exports = (function() {
 
       newMediaData.modified = api.getCurrentDate();
 
-      dev.logverbose(`Following datas will replace existing data for this media: ${JSON.stringify(newMediaData, null, 4)}`);
-
+      dev.logverbose(`Following datas will replace existing data for this media meta: ${JSON.stringify(newMediaData, null, 4)}`);
       readMedia(slugFolderName,slugMediaName).then((meta) => {
         // overwrite stored obj with new informations
         Object.assign(meta, newMediaData);
-        let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
-        api.storeData(potentialMetaFile, meta, 'update').then(function(meta) {
-          dev.logverbose(`Update media meta file at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);
+        let tasks = [];
+
+        let updateMediaMeta = new Promise((resolve, reject) => {
+          let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
+          api.storeData(potentialMetaFile, meta, 'update').then((meta) => {
+            dev.logverbose(`Updated media meta file at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);
+            resolve();
+          }, function(err) {
+            reject(`Couldn't update folder meta : ${err}`);
+          });
+        });
+        tasks.push(updateMediaMeta);
+
+        if(meta.type === 'text' && mdata.hasOwnProperty('content')) {
+          let updateTextMedia = new Promise((resolve, reject) => {
+            let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
+            let content = validator.escape(mdata.content);
+            api.storeData(mediaPath, content, 'update').then(() => {
+              dev.logverbose(`Updated media file at path: ${mediaPath} with meta: ${content}`);
+              resolve();
+            });
+          });
+          tasks.push(updateTextMedia);
+        }
+
+        Promise.all(tasks).then(() => {
           resolve(slugFolderName);
-        }, function(err) {
-          reject(`Couldn't update folder meta : ${err}`);
         });
       });
+
     });
   }
 
@@ -592,17 +614,16 @@ module.exports = (function() {
       let textMediaName = timeCreated + '.md';
       let pathToTextMedia = path.join(api.getFolderPath(slugFolderName), textMediaName);
 
-      api.storeData(pathToTextMedia, {}, 'create')
-      .then(() => {
+      api.storeData(pathToTextMedia, '', 'create').then(function(meta) {
         resolve({
           slugMediaName: textMediaName,
           additionalMeta: {
             fileCreationDate: api.parseDate(timeCreated)
           }
         });
-      })
-      .catch(err => {
-        reject(err);
+      }, function(err) {
+        dev.error(`Failed to storeData for textmedia`);
+        reject(`${err}`);
       });
     });
   }

@@ -124,11 +124,17 @@ module.exports = (function() {
     // this function is only called to create texts and markers
     file.createTextMedia(d.slugFolderName)
       .then(textMediaMeta => {
-        createMediaMeta(d.slugFolderName, textMediaMeta.slugMediaName, textMediaMeta.additionalMeta)
+        file.createMediaMeta(d.slugFolderName, textMediaMeta.slugMediaName, textMediaMeta.additionalMeta)
           .then(() => sendMedias(d.slugFolderName, textMediaMeta.slugMediaName))
-          .catch(err => { dev.error(`Couldn’t create text createMediaMeta: ${err}`); reject(err); });
+          .catch(err => {
+            dev.error(`Couldn’t create text media meta: ${err}`);
+            reject(err);
+          });
       })
-      .catch(err => { dev.error(`Couldn’t create text media: ${err}`); reject(err); });
+      .catch(err => {
+        dev.error(`Couldn’t create text media: ${err}`);
+        reject(err);
+      });
   }
 
   function createMediaMeta(slugFolderName, slugMediaName, additionalMeta) {

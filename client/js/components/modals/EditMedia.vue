@@ -16,6 +16,7 @@
         :slugMediaName="slugMediaName"
         :media="media"
         :size="1800"
+        v-model="mediadata.content"
       >
       </MediaContent>
     </div>
@@ -24,7 +25,7 @@
 
 <!-- Creation date (stored in meta file, overrides file date) -->
       <div class="input-single">
-        <label>Date de création</label>
+        <label>Date de création <small>utilisée pour le placement sur l’axe horizontal</small></label>
         <DateTime v-model="mediadata.created">
         </DateTime>
       </div>
@@ -48,7 +49,7 @@
 
 <!-- Author(s) -->
       <div class="input-single">
-        <label>Auteur•e(s) <small>un•e par ligne</small></label><br>
+        <label>Auteur-e(s) <small>un-e par ligne</small></label><br>
 
         <textarea v-model="mediadata.authors">
         </textarea>
@@ -114,7 +115,8 @@ export default {
         type: this.media.type,
         authors: this.media.authors,
         keywords: this.media.keywords,
-        public: (this.media.public == 'true')
+        public: (this.media.public == 'true'),
+        content: this.media.content
       },
       mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
     }
@@ -139,9 +141,6 @@ export default {
       let values = this.mediadata;
       values.slugFolderName = this.slugFolderName;
       values.slugMediaName = this.slugMediaName;
-
-      // if this is a textmedia, we also grab the content of the textarea
-
 
       // if it's all good, collect everything and send over socketio
       this.$root.editMedia(values);
