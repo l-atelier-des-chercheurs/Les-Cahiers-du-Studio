@@ -102,14 +102,18 @@ export default {
     flex: 1 100%;
   }
   .modal-body {
-    flex: 3 70%;
+    flex: 3 1 70%;
+
+    textarea {
+      min-height: 60vh;
+    }
   }
   .modal-footer {
-    flex: 1 auto;
+    flex: 1 0 350px;
   }
 
   &.is--large {
-    width: 100vw;
+    width: 90vw;
   }
 
   .close_button {

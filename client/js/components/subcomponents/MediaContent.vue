@@ -55,16 +55,22 @@ export default {
 }
 
 </script>
-<style scoped>
+<style scoped lang="sass">
 .mediaContainer {
 }
 
 .mediaContainer img {
 }
 
-.mediaContainer.type-other {
-  padding:10px;
-  align-self: flex-start;
+.mediaContainer {
+  &.type-text {
+    align-self: flex-start;
+  }
+  &.type-other {
+    padding:10px;
+    align-self: flex-start;
+  }
+
 }
 
 </style>

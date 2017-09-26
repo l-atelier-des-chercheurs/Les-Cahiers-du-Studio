@@ -4607,7 +4607,7 @@ main > *:first-child {
 .mediaWrap.is--dragged .button_openmedia {
   opacity: 1;
 }
-.mediaWrap .mediaContent {
+.mediaWrap .timelineMediaContent {
   width: 100%;
   height: 100%;
   background-color: #ddd;
@@ -4635,6 +4635,12 @@ main > *:first-child {
   -o-transition: transform 0.2s ease-out;
   transition: transform 0.2s ease-out;
   transition: transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
+}
+.mediaWrap .timelineMediaContent .mediaContainer {
+  pointer-events: none;
+}
+.mediaWrap .timelineMediaContent textarea {
+  min-height: 120px;
 }
 .mediaWrap.is--collapsed .mediaContent {
   -webkit-transform: scale(0);

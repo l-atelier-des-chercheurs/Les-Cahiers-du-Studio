@@ -23,7 +23,7 @@
       </div>
 
 
-      <div class="mediaContent"
+      <div class="timelineMediaContent"
         :style="getMediaSize(media)"
       >
         <MediaContent
@@ -182,5 +182,5 @@ export default {
   }
 }
 </script>
-<style scoped lang="sass">
+<style lang="sass">
 </style>

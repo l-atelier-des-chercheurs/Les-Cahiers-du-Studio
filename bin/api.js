@@ -102,7 +102,10 @@ module.exports = (function() {
   function storeData(mpath, d, e) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — storeData at path ${mpath}`);
-      var textd = parsedown.textify(d);
+      let textd;
+      if(typeof d === 'object') { textd = parsedown.textify(d); }
+      else { textd = d; }
+
       if( e === 'create') {
         fs.appendFile( mpath, textd, function(err) {
           if(err){ reject( err); }
