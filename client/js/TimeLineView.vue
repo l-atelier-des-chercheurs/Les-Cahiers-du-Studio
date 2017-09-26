@@ -331,9 +331,7 @@ export default {
       if(this.timelineViewport.start < 0 || !this.timelineViewport.end < 0) { console.log(`Error with getXPosition`); }
       let msSinceStart = timestamp - this.timelineViewport.start;
       let pc = msSinceStart/(this.timelineViewport.end - this.timelineViewport.start);
-
 //       if(pc < 0 || pc > 1) { return false; }
-
       pc = Math.min(Math.max(parseFloat(pc), 0), 1);
       let posX = this.timelineStyles.width * pc;
       return Math.floor(posX);

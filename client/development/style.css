@@ -4642,12 +4642,12 @@ main > *:first-child {
 .mediaWrap .timelineMediaContent textarea {
   min-height: 120px;
 }
-.mediaWrap.is--collapsed .mediaContent {
+.mediaWrap.is--collapsed .timelineMediaContent {
   -webkit-transform: scale(0);
   -ms-transform: scale(0);
   transform: scale(0);
 }
-.mediaWrap.has--duration.is--collapsed .mediaContent {
+.mediaWrap.has--duration.is--collapsed .timelineMediaContent {
   -webkit-transform: scaleY(0);
   -ms-transform: scaleY(0);
   transform: scaleY(0);
@@ -4657,7 +4657,7 @@ main > *:first-child {
   -o-transition: none;
   transition: none;
 }
-.mediaWrap.is--dragged .mediaContent {
+.mediaWrap.is--dragged .timelineMediaContent {
   border: 2px solid #0096FF;
   cursor: -webkit-grabbing;
   cursor: -moz-grabbing;
