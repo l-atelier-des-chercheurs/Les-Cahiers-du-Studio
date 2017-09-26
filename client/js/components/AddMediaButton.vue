@@ -1,6 +1,13 @@
 <template>
   <div>
-    <div class="m_fileupload">
+    <div class="m_addMedia">
+      <button type="button" class="button_small margin-bottom-small button_addText" @click="addText">
+        Ajouter du texte
+      </button>
+      <button type="button" class="button_small margin-bottom-small button_addMarker" @click="addMarker">
+        Ajouter un marqueur
+      </button>
+
       <FileUpload
         :slugFolderName="slugFolderName">
       </FileUpload>
@@ -15,6 +22,14 @@ export default {
   props: ['slugFolderName'],
   components: {
     FileUpload
+  },
+  methods: {
+    addText() {
+      this.$root.createMedia({ slugFolderName: this.slugFolderName });
+    },
+    addMarker() {
+
+    }
   }
 }
 </script>

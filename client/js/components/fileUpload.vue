@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="dropzone margin-bottom-small">
     <Dropzone
       :id="uniqueDropzoneID"
       ref="dropzone"
@@ -11,7 +11,6 @@
       :dropzone-options="customOptionsObject"
       :maxFileSizeInMB="1024"
       :maxNumberOfFiles="50"
-      class="dropzone margin-right-small margin-bottom-small"
     >
       <input type="hidden">
 <!--
@@ -123,6 +122,14 @@ export default {
   display: none;
 }
 
+.dropzone.dropzone {
+  pointer-events:none;
+  background-color: transparent;
+  min-height: 0;
+  border: none;
+  padding:0;
+}
+
 .vue-dropzone.vue-dropzone {
   font-family: inherit;
 
@@ -173,8 +180,9 @@ export default {
     align-items: center;
     justify-content: center;
     background-color: white;
-    margin: 5px 0 0 auto;
+    margin: 0 0 0 auto;
     padding: 25px;
+    padding-top: 28px;
     border: none;
     border-radius: 50%;
     width: 70px;

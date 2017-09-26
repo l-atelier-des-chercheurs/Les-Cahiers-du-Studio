@@ -379,11 +379,16 @@ main {
 
 }
 
-.m_fileupload {
+.m_addMedia {
   position: fixed;
   bottom:0;
   right: @t-skipline*2;
-  pointer-events: none;
+  display: flex;
+  flex-flow: column wrap;
+
+  > * {
+    flex: 0 0 auto;
+  }
 }
 
 

@@ -69,13 +69,14 @@ window.socketio = (function() {
 
     sendAuth    : () => sendAuth(),
 
-    createFolder: (fdata) => { return createFolder(fdata); },
-    editFolder  : (fdata) => { return editFolder(fdata); },
-    removeFolder: (slugFolderName) => { return removeFolder(slugFolderName); },
+    createFolder: (fdata) => createFolder(fdata),
+    editFolder  : (fdata) => editFolder(fdata),
+    removeFolder: (slugFolderName) => removeFolder(slugFolderName),
 
-    listMedias  : (slugFolderName) => { return listMedias(slugFolderName); },
-    editMedia   : (mdata) => { return editMedia(mdata); },
-    removeMedia : (slugFolderName, slugMediaName) => { return removeMedia(slugFolderName, slugMediaName); },
+    listMedias  : (slugFolderName) => listMedias(slugFolderName),
+    createMedia : (mdata) =>          createMedia(mdata),
+    editMedia   : (mdata) =>          editMedia(mdata),
+    removeMedia : (slugFolderName, slugMediaName) => removeMedia(slugFolderName, slugMediaName),
   };
 
   function init() {
@@ -194,6 +195,9 @@ window.socketio = (function() {
 
   function listMedias(slugFolderName) {
     socket.emit('listMedias', { slugFolderName });
+  }
+  function createMedia(mdata) {
+    socket.emit('createMedia', mdata);
   }
   function editMedia(mdata) {
     socket.emit('editMedia', mdata);

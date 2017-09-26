@@ -35,6 +35,11 @@ let vm = new Vue({
       if(window.store.debug) { console.log(`ROOT EVENT: removeFolder: ${slugFolderName}`); }
       window.socketio.removeFolder(slugFolderName);
     },
+
+    createMedia: function(mdata) {
+      if(window.store.debug) { console.log(`ROOT EVENT: createMedia: ${JSON.stringify(mdata, null, 4)}`); }
+      window.socketio.createMedia(mdata);
+    },
     removeMedia: function(slugFolderName, slugMediaName) {
       if(window.store.debug) { console.log(`ROOT EVENT: removeMedia: ${slugFolderName}/${slugMediaName}`); }
       window.socketio.removeMedia(slugFolderName, slugMediaName);
@@ -43,6 +48,7 @@ let vm = new Vue({
       if(window.store.debug) { console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`); }
       window.socketio.editMedia(mdata);
     },
+
     openFolder: function(slugFolderName) {
       if(window.store.debug) { console.log(`ROOT EVENT: openFolder: ${slugFolderName}`); }
       if(!this.store.folders.hasOwnProperty(slugFolderName)) {

@@ -7,6 +7,7 @@
   "textEncoding" : "UTF-8",
   "deletedPrefix" : "x_",
   "thumbFolderName" : "_thumbs",
+  "deletedFolderName" : "_bin",
 
   "mediaThumbQuality" : 60,
 

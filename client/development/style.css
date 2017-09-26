@@ -1684,6 +1684,9 @@ b {
 .margin-small {
   margin: 0.625em;
 }
+.margin-bottom-small {
+  margin-bottom: 0.625em;
+}
 .margin-left-none {
   margin-left: 0;
 }
@@ -4653,11 +4656,22 @@ main > *:first-child {
   cursor: -webkit-grabbing;
   cursor: -moz-grabbing;
 }
-.m_fileupload {
+.m_addMedia {
   position: fixed;
   bottom: 0;
   right: 2.5em;
-  pointer-events: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: column wrap;
+  flex-flow: column wrap;
+}
+.m_addMedia > * {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 .component-fade-enter-active,
 .component-fade-leave-active {

@@ -91,7 +91,7 @@ module.exports = (function() {
     	return parsed;
   }
 
-  function storeData( mpath, d, e) {
+  function storeData(mpath, d, e) {
     return new Promise(function(resolve, reject) {
       dev.logfunction('COMMON — storeData');
       var textd = parsedown.textify(d);

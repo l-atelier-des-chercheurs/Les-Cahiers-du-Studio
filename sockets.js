@@ -44,6 +44,7 @@ module.exports = (function() {
       socket.on('editFolder', function (data){ onEditFolder(socket,data); });
 
       socket.on('listMedias', function (data){ onListMedias(socket,data); });
+      socket.on('createMedia', function (data){ onCreateMedia(socket,data); });
       socket.on('editMedia', function (data){ onEditMedia(socket,data); });
       socket.on('removeMedia', function (data){ onRemoveMedia(socket,data); });
     });
@@ -116,6 +117,18 @@ module.exports = (function() {
   function onListMedias(socket, d) {
     dev.logfunction(`EVENT - onListMedias : ${JSON.stringify(d, null, 4)}`);
     sendMedias(d.slugFolderName, '', socket);
+  }
+
+  function onCreateMedia(socket, d) {
+    dev.logfunction(`EVENT - onCreateMedia : ${JSON.stringify(d, null, 4)}`);
+    // this function is only called to create texts and markers
+    file.createTextMedia(d.slugFolderName)
+      .then(textMediaMeta => {
+        createMediaMeta(d.slugFolderName, textMediaMeta.slugMediaName, textMediaMeta.additionalMeta)
+          .then(() => sendMedias(d.slugFolderName, textMediaMeta.slugMediaName))
+          .catch(err => { dev.error(`Couldn’t create text createMediaMeta: ${err}`); reject(err); });
+      })
+      .catch(err => { dev.error(`Couldn’t create text media: ${err}`); reject(err); });
   }
 
   function createMediaMeta(slugFolderName, slugMediaName, additionalMeta) {
