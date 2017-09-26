@@ -244,7 +244,7 @@ main {
     height: 100%;
     width: 100%;
     margin-left: 25vw;
-    padding-right:   50px;
+//     padding-right:   50px;
     border-right: 1px solid black;
 
     // stupid trick to add some space to the right of this div without affecting its width
@@ -284,7 +284,6 @@ main {
       left: -@t-anchor/2;
       right: -@t-anchor/2;
 
-
       display: flex;
       flex-flow: row nowrap;
       justify-content: flex-end;
@@ -302,12 +301,30 @@ main {
       min-height: 0;
       display: block;
       pointer-events: auto;
+      font-size:0;
 
       box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
 
       &:focus {
         outline: none;
       }
+    }
+
+    .type-marker& {
+      @t-marker_anchor: 10px;
+      .mediaScrubber {
+      }
+      .accroche {
+        transform-origin: center center;
+        transform: scale(0.5);
+        background-color: @c-bleu;
+      }
+
+      .timelineMediaContent {
+        background-color: transparent;
+        height: 1em !important;
+      }
+
     }
 
     .accrocheDurationLine {
@@ -330,6 +347,9 @@ main {
       transition: opacity 0.3s ease-out;
     }
   }
+
+
+
 
   &.is--hovered, &.is--dragged {
     z-index: 1000;

@@ -1,12 +1,12 @@
 <template>
   <div class="mediaWrap"
     :style="getMediaPosition()"
-    :class="{
+    :class="[{
       'has--duration' : media.duration !== undefined,
       'is--hovered'   : is_hovered,
       'is--dragged'   : is_dragged,
-      'is--collapsed' : is_collapsed
-    }"
+      'is--collapsed' : is_collapsed,
+    }, 'type-' + media.type]"
     @mousedown.prevent="mousedown"
     @mouseover="mouseover"
     @mouseleave="mouseleave"
@@ -19,7 +19,7 @@
           <button class="accroche accroche_gauche" @mouseup=""></button>
           <div class="accrocheDurationLine" :style="{ width: getMediaWidthFromDuration() + 'px' }"></div>
         </template>
-        <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
+        <button class="accroche accroche_droite" @mouseup="clickAccrocheDroite"></button>
       </div>
 
 
@@ -63,7 +63,7 @@ export default {
       },
       mediaStyles: {
         ratio: this.media.ratio,
-        y: this.getPosY(),
+        y: this.limitMediaYPos(parseFloat(this.media.y) * this.timelineHeight),
         w: 180,
         h: 120
       }
@@ -78,7 +78,7 @@ export default {
       this.is_collapsed = (this.media.collapsed == 'true');
     },
     'media.y': function() {
-      this.mediaStyles.y = this.getPosY();
+      this.mediaStyles.y = this.limitMediaYPos(parseFloat(this.media.y) * this.timelineHeight);
     },
   },
   created() {
@@ -87,8 +87,11 @@ export default {
     window.removeEventListener('mouseup', this.mouseup);
   },
   methods: {
-    getPosY() {
-      return parseFloat(this.media.y) * this.timelineHeight;
+    limitMediaYPos(yPos) {
+      if(this.media.type === 'marker') {
+        return 50/2;
+      }
+      return Math.max(50, Math.min(this.timelineHeight - 100, yPos));
     },
     getMediaPosition() {
       let posX = this.posX !== false ? this.posX : 0;
@@ -125,17 +128,16 @@ export default {
 
         this.dragOffset.y = event.pageY;
         this.mediaStylesOld.y = this.mediaStyles.y;
-
       } else {
         let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
-        this.mediaStyles.y = Math.max(50, Math.min(this.timelineHeight - 100, newY));
+        this.mediaStyles.y = this.limitMediaYPos(newY);
       }
     },
     mouseup() {
       console.log(`MEDIA EVENT: mouseup`);
       if(this.is_dragged) {
         let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
-        this.mediaStyles.y = Math.max(50, Math.min(this.timelineHeight - 100, newY));
+        this.mediaStyles.y = this.limitMediaYPos(newY);
 
         let getHeightInPercent = this.mediaStyles.y / this.timelineHeight;
         let values = { y: getHeightInPercent };
@@ -164,6 +166,15 @@ export default {
       this.is_hovered = false;
     },
 
+    clickAccrocheDroite() {
+/*
+      if(this.media.type === 'marker') {
+        this.$emit('open');
+        return;
+      }
+*/
+      this.toggleCollapseMedia();
+    },
     toggleCollapseMedia() {
       if(this.is_dragged) {
         return;

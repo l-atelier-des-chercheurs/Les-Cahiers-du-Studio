@@ -48,8 +48,6 @@ module.exports = (function() {
       socket.on('editMedia', function (data){ onEditMedia(socket,data); });
       socket.on('removeMedia', function (data){ onRemoveMedia(socket,data); });
 
-      socket.on('createMarker', function (data){ onCreateMarker(socket,data); });
-
     });
   }
 
@@ -124,7 +122,6 @@ module.exports = (function() {
 
   function onCreateTextMedia(socket, d) {
     dev.logfunction(`EVENT - onCreateTextMedia : ${JSON.stringify(d, null, 4)}`);
-    // this function is only called to create texts and markers
     file.createTextMedia(d)
       .then(textMediaMeta => {
         file.createMediaMeta(d.slugFolderName, textMediaMeta.slugMediaName, textMediaMeta.additionalMeta)
@@ -168,7 +165,6 @@ module.exports = (function() {
       reject(err);
     });
   }
-
 
   /**************************************************************** GENERAL ********************************/
 

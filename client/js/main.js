@@ -199,9 +199,6 @@ window.socketio = (function() {
   function createTextMedia(mdata) {
     socket.emit('createTextMedia', mdata);
   }
-  function createMarker(mdata) {
-    socket.emit('createMarker', mdata);
-  }
   function editMedia(mdata) {
     socket.emit('editMedia', mdata);
   }

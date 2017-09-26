@@ -26,12 +26,15 @@ export default {
   methods: {
     addText() {
       this.$root.createTextMedia({
-        slugFolderName: this.slugFolderName
+        slugFolderName: this.slugFolderName,
+        type: 'text'
       });
     },
     addMarker() {
-      this.$root.createMarker({
-        slugFolderName: this.slugFolderName
+      this.$root.createTextMedia({
+        slugFolderName: this.slugFolderName,
+        type: 'marker',
+        color: 'red'
       });
     }
   }

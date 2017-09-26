@@ -377,7 +377,7 @@ export default {
 .options_panel {
   position: fixed;
   right: 0%;
-  bottom: 200px;
+  top: 20vh;
   width: auto;
   background-color: white;
   z-index: 1001;

@@ -104,12 +104,12 @@ export default {
   .modal-body {
     flex: 3 1 70%;
 
-    textarea {
+    textarea.mediaTextContent {
       min-height: 60vh;
     }
   }
   .modal-footer {
-    flex: 1 0 350px;
+    flex: 1 0 30%;
   }
 
   &.is--large {

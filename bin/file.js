@@ -82,7 +82,7 @@ module.exports = (function() {
 
         let tasks = [];
 
-        if(mediaData.type === 'text') {
+        if(mediaData.type === 'text' || mediaData.type === 'marker') {
           // get text content
           let getMediaContent = new Promise((resolve, reject) => {
             let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
@@ -186,7 +186,7 @@ module.exports = (function() {
     });
   }
 
-  function createFolder (fdata) {
+  function createFolder(fdata) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — createFolder : will create a new folder with: ${JSON.stringify(fdata, null, 4)}`);
 
@@ -403,7 +403,8 @@ module.exports = (function() {
             modified : api.getCurrentDate(),
             public: false,
             y: Math.random() * 0.5,
-            color: 'white'
+            color: 'white',
+            type: 'other'
           };
 
 
@@ -420,44 +421,45 @@ module.exports = (function() {
           tasks.push(getFileCreationDate);
 
           // in the case of files uploaded through the interface, there should be an additionalMeta object
-          if(additionalMeta !== undefined) {
-            if(additionalMeta.hasOwnProperty('fileCreationDate')) {
-              mdata.created = api.convertDate(additionalMeta.fileCreationDate);
-            }
-            if(additionalMeta.hasOwnProperty('color')) {
-              mdata.color = validator.escape(additionalMeta.color);
-            }
+          if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('fileCreationDate')) {
+            mdata.created = api.convertDate(additionalMeta.fileCreationDate);
           }
 
-          let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(slugMediaName)[0];
-          dev.logverbose(`Trying to guess filetype from extension: ${mediaFileExtension}`);
-          switch(mediaFileExtension.toLowerCase()) {
-            case '.jpeg':
-            case '.jpg':
-            case '.png':
-            case '.gif':
-            case '.tiff':
-            case '.tif':
-            case '.dng':
-              mdata.type = 'image';
-              break;
-            case '.mp4':
-            case '.mov':
-            case '.webm':
-              mdata.type = 'video';
-              break;
-            case '.mp3':
-            case '.wav':
-              mdata.type = 'audio';
-              break;
-            case '.md':
-            case '.rtf':
-              mdata.type = 'text';
-              break;
-            default:
-              mdata.type = 'other';
+          if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('color')) {
+            mdata.color = validator.escape(additionalMeta.color);
           }
-          dev.logverbose(`Type determined to be: ${mdata.type}`);
+
+          if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('type')) {
+            mdata.type = validator.escape(additionalMeta.type);
+          } else {
+            let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(slugMediaName)[0];
+            dev.logverbose(`Trying to guess filetype from extension: ${mediaFileExtension}`);
+            switch(mediaFileExtension.toLowerCase()) {
+              case '.jpeg':
+              case '.jpg':
+              case '.png':
+              case '.gif':
+              case '.tiff':
+              case '.tif':
+              case '.dng':
+                mdata.type = 'image';
+                break;
+              case '.mp4':
+              case '.mov':
+              case '.webm':
+                mdata.type = 'video';
+                break;
+              case '.mp3':
+              case '.wav':
+                mdata.type = 'audio';
+                break;
+              case '.md':
+              case '.rtf':
+                mdata.type = 'text';
+                break;
+            }
+            dev.logverbose(`Type determined to be: ${mdata.type}`);
+          }
 
           if(mdata.type === 'image') {
             // if EXIF, try to parse timesteamp and ratio
@@ -575,7 +577,7 @@ module.exports = (function() {
         });
         tasks.push(updateMediaMeta);
 
-        if(meta.type === 'text' && mdata.hasOwnProperty('content')) {
+        if((meta.type === 'text' || meta.type === 'marker') && mdata.hasOwnProperty('content')) {
           let updateTextMedia = new Promise((resolve, reject) => {
             let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
             let content = validator.escape(mdata.content);
@@ -641,6 +643,7 @@ module.exports = (function() {
             fileCreationDate: api.parseDate(timeCreated)
           }
         };
+        if(mdata.hasOwnProperty('type')) { newMediaInfos.additionalMeta['type'] = mdata.type; }
         if(mdata.hasOwnProperty('color')) { newMediaInfos.additionalMeta['color'] = mdata.color; }
         resolve(newMediaInfos);
       }, function(err) {
