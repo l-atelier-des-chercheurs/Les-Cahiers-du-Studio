@@ -122,7 +122,7 @@ module.exports = (function() {
   function onCreateMedia(socket, d) {
     dev.logfunction(`EVENT - onCreateMedia : ${JSON.stringify(d, null, 4)}`);
     // this function is only called to create texts and markers
-    file.createTextMedia(d.slugFolderName)
+    file.createTextMedia(d)
       .then(textMediaMeta => {
         file.createMediaMeta(d.slugFolderName, textMediaMeta.slugMediaName, textMediaMeta.additionalMeta)
           .then(() => sendMedias(d.slugFolderName, textMediaMeta.slugMediaName))

@@ -28,7 +28,9 @@ export default {
       this.$root.createMedia({ slugFolderName: this.slugFolderName });
     },
     addMarker() {
-
+      this.$root.createMedia({
+        slugFolderName: this.slugFolderName
+      });
     }
   }
 }

@@ -25,7 +25,7 @@ module.exports = (function() {
     editMedia           : (mdata)               => editMedia(mdata),
     removeMedia         : (slugFolderName, slugMediaName) => removeMedia(slugFolderName, slugMediaName),
 
-    createTextMedia     : (slugFolderName)      => createTextMedia(slugFolderName)
+    createTextMedia     : (mdata)      => createTextMedia(mdata)
   };
 
   function getMetaFileOfFolder(slugFolderName) {
@@ -416,7 +416,8 @@ module.exports = (function() {
             created : birthtime,
             modified : mtime,
             public: false,
-            y: Math.random() * 0.5
+            y: Math.random() * 0.5,
+            color: 'white'
           };
 
           let mediaFileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(slugMediaName)[0];
@@ -528,6 +529,9 @@ module.exports = (function() {
       if(mdata.hasOwnProperty('type'))    {
         newMediaData.type = validator.escape(mdata.type); }
 
+      if(mdata.hasOwnProperty('color'))    {
+        newMediaData.color = validator.escape(mdata.color); }
+
       if(mdata.hasOwnProperty('keywords')){
         newMediaData.keywords = validator.escape(mdata.keywords); }
 
@@ -606,11 +610,26 @@ module.exports = (function() {
     });
   }
 
-  function createTextMedia(slugFolderName) {
+  function createTextMedia(mdata) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — createTextMedia : will create text media at path: ${slugFolderName}`);
 
-      let timeCreated = api.getCurrentDate();
+      let slugFolderName = mdata.slugFolderName;
+
+      let timeCreated;
+      if(mdata.hasOwnProperty('created')) {
+        timeCreated = api.convertDate(mdata.created);
+      } else {
+        timeCreated = api.getCurrentDate();
+      }
+
+      let mediaColor;
+      if(mdata.hasOwnProperty('color')) {
+        mediaColor = validator.escape(mdata.color);
+      } else {
+        mediaColor = 'white';
+      }
+
       let textMediaName = timeCreated + '.md';
       let pathToTextMedia = path.join(api.getFolderPath(slugFolderName), textMediaName);
 

@@ -258,7 +258,7 @@ export default {
       let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
       let html = '';
 
-      /************************
+      /******************************
               make DAY ticks
       ******************************/
 
@@ -277,7 +277,7 @@ export default {
 
 //       if(this.timelineViewport.scale > 30) { return html; }
 
-      /************************
+      /******************************
               make HOUR ticks
       ******************************/
 
@@ -301,8 +301,8 @@ export default {
 
       if(this.timelineViewport.scale > 10) { return html; }
 
-      /************************
-              make MINUTES ticks
+      /******************************
+            make MINUTES ticks
       ******************************/
 
       // make MINUTES ticks
@@ -332,7 +332,7 @@ export default {
       let msSinceStart = timestamp - this.timelineViewport.start;
       let pc = msSinceStart/(this.timelineViewport.end - this.timelineViewport.start);
 
-      if(pc < 0 || pc > 1) { return false; }
+//       if(pc < 0 || pc > 1) { return false; }
 
       pc = Math.min(Math.max(parseFloat(pc), 0), 1);
       let posX = this.timelineStyles.width * pc;
