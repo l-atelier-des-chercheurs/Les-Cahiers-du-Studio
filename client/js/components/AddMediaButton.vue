@@ -30,7 +30,6 @@ export default {
     addMarker() {
       this.$root.createMedia({
         slugFolderName: this.slugFolderName,
-
       });
     }
   }
