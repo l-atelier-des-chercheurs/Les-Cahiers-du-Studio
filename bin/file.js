@@ -233,7 +233,7 @@ module.exports = (function() {
     });
   }
 
-  function editFolder (foldersData, fdata) {
+  function editFolder(foldersData, fdata) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — editFolder : will edit folder: ${JSON.stringify(fdata, null, 4)} with existing data ${JSON.stringify(foldersData, null, 4)}`);
       // remove slugFolderKey

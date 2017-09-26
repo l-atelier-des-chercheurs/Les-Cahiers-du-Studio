@@ -36,9 +36,13 @@ let vm = new Vue({
       window.socketio.removeFolder(slugFolderName);
     },
 
-    createMedia: function(mdata) {
-      if(window.store.debug) { console.log(`ROOT EVENT: createMedia: ${JSON.stringify(mdata, null, 4)}`); }
-      window.socketio.createMedia(mdata);
+    createTextMedia: function(mdata) {
+      if(window.store.debug) { console.log(`ROOT EVENT: createTextMedia: ${JSON.stringify(mdata, null, 4)}`); }
+      window.socketio.createTextMedia(mdata);
+    },
+    createMarker: function(mdata) {
+      if(window.store.debug) { console.log(`ROOT EVENT: createMarker: ${JSON.stringify(mdata, null, 4)}`); }
+      window.socketio.createMarker(mdata);
     },
     removeMedia: function(slugFolderName, slugMediaName) {
       if(window.store.debug) { console.log(`ROOT EVENT: removeMedia: ${slugFolderName}/${slugMediaName}`); }

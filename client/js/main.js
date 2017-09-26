@@ -74,7 +74,7 @@ window.socketio = (function() {
     removeFolder: (slugFolderName) => removeFolder(slugFolderName),
 
     listMedias  : (slugFolderName) => listMedias(slugFolderName),
-    createMedia : (mdata) =>          createMedia(mdata),
+    createTextMedia : (mdata) =>          createTextMedia(mdata),
     editMedia   : (mdata) =>          editMedia(mdata),
     removeMedia : (slugFolderName, slugMediaName) => removeMedia(slugFolderName, slugMediaName),
   };
@@ -196,8 +196,11 @@ window.socketio = (function() {
   function listMedias(slugFolderName) {
     socket.emit('listMedias', { slugFolderName });
   }
-  function createMedia(mdata) {
-    socket.emit('createMedia', mdata);
+  function createTextMedia(mdata) {
+    socket.emit('createTextMedia', mdata);
+  }
+  function createMarker(mdata) {
+    socket.emit('createMarker', mdata);
   }
   function editMedia(mdata) {
     socket.emit('editMedia', mdata);

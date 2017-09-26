@@ -4639,7 +4639,7 @@ main > *:first-child {
 .mediaWrap .timelineMediaContent .mediaContainer {
   pointer-events: none;
 }
-.mediaWrap .timelineMediaContent textarea {
+.mediaWrap .timelineMediaContent .modal-body textarea {
   min-height: 120px;
 }
 .mediaWrap.is--collapsed .timelineMediaContent {
