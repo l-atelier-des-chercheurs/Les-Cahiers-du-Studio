@@ -411,20 +411,8 @@ module.exports = (function() {
 
           let tasks = [];
 
-          // works with files copied directly in the folder
-          let getFileCreationDate = new Promise((resolve, reject) => {
-            fs.stat(mediaPath, function(err, stats) {
-              if(err) { resolve(); }
-              mdata.created = api.convertDate(new Date(stats.birthtime));
-              resolve();
-            });
-          });
-          tasks.push(getFileCreationDate);
 
-          // in the case of files uploaded through the interface, there should be an additionalMeta object
-          if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('fileCreationDate')) {
-            mdata.created = api.convertDate(additionalMeta.fileCreationDate);
-          }
+
           if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('color')) {
             mdata.color = validator.escape(additionalMeta.color);
           }
@@ -464,23 +452,20 @@ module.exports = (function() {
             dev.logverbose(`Type determined to be: ${mdata.type}`);
           }
 
+
+          /************** CREATED DATE ***************/
+          // if the file’s an image, we get the date from the EXIF infos
           if(mdata.type === 'image') {
-            // if EXIF, try to parse timesteamp and ratio
-            let useEXIFdata = new Promise((resolve, reject) => {
+            dev.logverbose(`Setting created from EXIF`);
+            let getEXIFTimestamp = new Promise((resolve, reject) => {
               thumbs.getEXIFData(mediaPath).then(({ ts, mediaRatio }) => {
                 if(ts === false) {
                   dev.log(`No timestamp found in EXIF.`);
                 } else {
-                  dev.log(`getEXIFData timestamp : ${ts}`);
                   let localTS = api.parseUTCDate(ts);
+                  dev.log(`getEXIFData timestamp to date : ${api.convertDate(localTS)}`);
                   mdata.created = api.convertDate(localTS);
                 }
-
-                dev.log(`getEXIFData mediaRatio : ${mediaRatio}`);
-                if(mediaRatio !== undefined) {
-                  mdata.ratio = mediaRatio;
-                }
-
                 resolve();
               })
               .catch((err) => {
@@ -488,9 +473,50 @@ module.exports = (function() {
                 resolve();
               });
             });
-            tasks.push(useEXIFdata);
+            tasks.push(getEXIFTimestamp);
+          } else
+          // in the case of files uploaded through the interface, there could be an additionalMeta object
+          if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('fileCreationDate')) {
+            dev.logverbose(`Setting created from additionalMeta`);
+            mdata.created = api.convertDate(additionalMeta.fileCreationDate);
+          } else
+
+          // otherwise, we can get the created directly on the file itself (if it was copy/pasted to the folder)
+          {
+            dev.logverbose(`Setting created from file birthtime`);
+            let getFileCreationDate = new Promise((resolve, reject) => {
+              fs.stat(mediaPath, function(err, stats) {
+                if(err) { resolve(); }
+                mdata.created = api.convertDate(new Date(stats.birthtime));
+                resolve();
+              });
+            });
+            tasks.push(getFileCreationDate);
           }
 
+
+          // get RATIO
+          let getEXIFRatio = new Promise((resolve, reject) => {
+            thumbs.getEXIFData(mediaPath).then(({ ts, mediaRatio }) => {
+              dev.log(`getEXIFData mediaRatio : ${mediaRatio}`);
+              if(mediaRatio !== undefined) {
+                mdata.ratio = mediaRatio;
+              }
+              resolve();
+            })
+            .catch((err) => {
+              dev.error(`No EXIF data to read from: ${err}`);
+              resolve();
+            });
+          });
+          tasks.push(getEXIFRatio);
+
+
+
+
+          /***************************************************************************
+              DURATION
+          ***************************************************************************/
           if(mdata.type === 'video' || mdata.type === 'audio') {
             // get video or audio duration
             let getMediaDuration = new Promise((resolve, reject) => {

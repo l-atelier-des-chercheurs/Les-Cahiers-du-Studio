@@ -4480,6 +4480,10 @@ main > *:first-child {
 .card_folder:nth-child(3n+1) {
   clear: left;
 }
+.alertify-logs > *,
+.alertify-logs > .default {
+  background-color: #89898c;
+}
 .m_timeline {
   position: relative;
   overflow-x: scroll;
@@ -4654,6 +4658,7 @@ main > *:first-child {
 }
 .mediaPreview .timelineMediaContent textarea {
   min-height: 120px;
+  overflow: hidden;
 }
 .mediaPreview.is--collapsed .timelineMediaContent {
   -webkit-transform: scale(0);
@@ -4686,11 +4691,13 @@ main > *:first-child {
   -webkit-box-direction: normal;
   -ms-flex-flow: column wrap;
   flex-flow: column wrap;
+  pointer-events: none;
 }
 .m_addMedia > * {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 auto;
   flex: 0 0 auto;
+  pointer-events: auto;
 }
 .component-fade-enter-active,
 .component-fade-leave-active {

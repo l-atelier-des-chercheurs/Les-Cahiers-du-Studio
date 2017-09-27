@@ -206,7 +206,9 @@ main {
 
 }
 
-
+.alertify-logs>*, .alertify-logs>.default {
+  background-color: @c-gris;
+}
 
 .m_timeline {
   position: relative;
@@ -387,6 +389,7 @@ main {
 
     textarea {
       min-height: 120px;
+      overflow: hidden;
     }
 
   }
@@ -414,9 +417,11 @@ main {
   right: @t-skipline*2;
   display: flex;
   flex-flow: column wrap;
+  pointer-events: none;
 
   > * {
     flex: 0 0 auto;
+    pointer-events: auto;
   }
 }
 
