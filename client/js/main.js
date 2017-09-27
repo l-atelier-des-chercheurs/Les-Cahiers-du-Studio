@@ -92,7 +92,6 @@ window.socketio = (function() {
     	socket.on('listMedias', _onListMedias);
     	socket.on('listFolder', _onListFolder);
     	socket.on('listFolders', _onListFolders);
-    	socket.on('mediaCreated', _onMediaCreated);
   }
 
   function _onSocketConnect() {
@@ -122,7 +121,7 @@ window.socketio = (function() {
           alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(`Wrong password or inexistent folder for ${slugFolderName}`)
+            .error(`Mauvais mot de passe ou dossier absent: ${slugFolderName}`)
             ;
           auth.removeKey(slugFolderName);
         } else {
@@ -136,6 +135,15 @@ window.socketio = (function() {
     	console.log(`Received _onListMedia packet.`);
     let slugFolderName = Object.keys(mdata)[0];
     	console.log(`Media data is for ${slugFolderName}.`);
+
+    let mediaData = Object.values(mdata[slugFolderName].medias)[0];
+    	let mediaName = Object.keys(mdata[slugFolderName].medias)[0];
+
+    alertify
+      .closeLogOnClick(true)
+      .delay(4000)
+      .log(`Création ou édition d’un média "${mediaData.type}" pour le dossier ${slugFolderName}`)
+      ;
 
     window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, mdata[slugFolderName].medias);
   }
@@ -168,17 +176,6 @@ window.socketio = (function() {
     }
     window.store.state.folders = Object.assign({}, fdata);
   }
-  function _onMediaCreated(mdata) {
-    	console.log(`Received _onMediaCreated packet.`);
-    let slugFolderName = Object.keys(mdata)[0];
-
-    let createdMediaMeta = mdata[slugFolderName].medias;
-    // to get Vue to detect that medias has a new key, we need to rewrite medias itself
-    window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, createdMediaMeta);
-    return;
-  }
-
-
 
   function listFolders() {
     socket.emit('listFolders');

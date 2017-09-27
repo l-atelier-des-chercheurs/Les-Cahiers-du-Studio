@@ -4523,7 +4523,7 @@ main > *:first-child {
 .m_timeline .m_timeline-container.is--realtime {
   border-right: 4px solid #ea0028;
 }
-.mediaWrap {
+.mediaPreview {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -4533,13 +4533,13 @@ main > *:first-child {
   transition: transform 0.7s ease-in-out;
   transition: transform 0.7s ease-in-out, -webkit-transform 0.7s ease-in-out;
 }
-.mediaWrap .media {
+.mediaPreview .media {
   position: absolute;
   right: 0;
   top: -1px;
   pointer-events: none;
 }
-.mediaWrap .media .mediaScrubber {
+.mediaPreview .media .mediaScrubber {
   position: absolute;
   height: 20px;
   text-align: right;
@@ -4560,7 +4560,7 @@ main > *:first-child {
   -ms-flex-align: center;
   align-items: center;
 }
-.mediaWrap .media .accroche {
+.mediaPreview .media .accroche {
   width: 20px;
   height: 20px;
   position: relative;
@@ -4575,10 +4575,10 @@ main > *:first-child {
   -webkit-box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 }
-.mediaWrap .media .accroche:focus {
+.mediaPreview .media .accroche:focus {
   outline: none;
 }
-.type-marker.mediaWrap .media .accroche {
+.type-marker.mediaPreview .media .accroche {
   -webkit-transform-origin: center center;
   -ms-transform-origin: center center;
   transform-origin: center center;
@@ -4587,16 +4587,16 @@ main > *:first-child {
   transform: scale(0.5);
   background-color: #0096FF;
 }
-.type-marker.mediaWrap .media .timelineMediaContent {
+.type-marker.mediaPreview .media .timelineMediaContent {
   background-color: transparent;
   height: 1em !important;
 }
-.mediaWrap .media .accrocheDurationLine {
+.mediaPreview .media .accrocheDurationLine {
   height: 4px;
   background-color: #0096FF;
   z-index: 150;
 }
-.mediaWrap .media .button_openmedia {
+.mediaPreview .media .button_openmedia {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -4608,19 +4608,19 @@ main > *:first-child {
   -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
 }
-.mediaWrap.is--hovered,
-.mediaWrap.is--dragged {
+.mediaPreview.is--hovered,
+.mediaPreview.is--dragged {
   z-index: 1000;
 }
-.mediaWrap.is--hovered .accroche,
-.mediaWrap.is--dragged .accroche {
+.mediaPreview.is--hovered .accroche,
+.mediaPreview.is--dragged .accroche {
   color: #0096FF;
 }
-.mediaWrap.is--hovered .button_openmedia,
-.mediaWrap.is--dragged .button_openmedia {
+.mediaPreview.is--hovered .button_openmedia,
+.mediaPreview.is--dragged .button_openmedia {
   opacity: 1;
 }
-.mediaWrap .timelineMediaContent {
+.mediaPreview .timelineMediaContent {
   width: 100%;
   height: 100%;
   background-color: #ddd;
@@ -4649,28 +4649,28 @@ main > *:first-child {
   transition: transform 0.2s ease-out;
   transition: transform 0.2s ease-out, -webkit-transform 0.2s ease-out;
 }
-.mediaWrap .timelineMediaContent .mediaContainer {
+.mediaPreview .timelineMediaContent .mediaContainer {
   pointer-events: none;
 }
-.mediaWrap .timelineMediaContent .modal-body textarea {
+.mediaPreview .timelineMediaContent textarea {
   min-height: 120px;
 }
-.mediaWrap.is--collapsed .timelineMediaContent {
+.mediaPreview.is--collapsed .timelineMediaContent {
   -webkit-transform: scale(0);
   -ms-transform: scale(0);
   transform: scale(0);
 }
-.mediaWrap.has--duration.is--collapsed .timelineMediaContent {
+.mediaPreview.has--duration.is--collapsed .timelineMediaContent {
   -webkit-transform: scaleY(0);
   -ms-transform: scaleY(0);
   transform: scaleY(0);
 }
-.mediaWrap.is--dragged {
+.mediaPreview.is--dragged {
   -webkit-transition: none;
   -o-transition: none;
   transition: none;
 }
-.mediaWrap.is--dragged .timelineMediaContent {
+.mediaPreview.is--dragged .timelineMediaContent {
   border: 2px solid #0096FF;
   cursor: -webkit-grabbing;
   cursor: -moz-grabbing;

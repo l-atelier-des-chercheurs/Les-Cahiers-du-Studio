@@ -168,6 +168,7 @@ export default {
     console.log(`Created component timeline`);
 
     window.addEventListener('resize', debounce(this.onResize, 300));
+    window.addEventListener('timeline.scrolltoend', this.scrollToEnd);
     this.setTimelineBounds();
     this.updateTimelineEnd();
     this.setTimeline();
@@ -191,6 +192,7 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('resize', debounce(this.onResize, 300));
+    window.removeEventListener('timeline.scrolltoend', this.scrollToEnd);
     clearInterval(this.timelineUpdateRoutine);
   },
   computed: {
@@ -344,7 +346,10 @@ export default {
     },
     closeMediaModal() {
       this.showMediaModalFor = '';
-    }
+    },
+    scrollToEnd() {
+      this.$refs.timeline.scrollLeft = this.timelineStyles.width;
+    },
   },
 }
 </script>

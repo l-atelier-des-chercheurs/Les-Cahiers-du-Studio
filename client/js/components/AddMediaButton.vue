@@ -29,13 +29,16 @@ export default {
         slugFolderName: this.slugFolderName,
         type: 'text'
       });
+      window.dispatchEvent( new Event('timeline.scrolltoend') );
     },
     addMarker() {
       this.$root.createTextMedia({
         slugFolderName: this.slugFolderName,
         type: 'marker',
-        color: 'red'
+        color: 'red',
+        collapsed: true
       });
+      window.dispatchEvent( new Event('timeline.scrolltoend') );
     }
   }
 }

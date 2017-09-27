@@ -404,7 +404,8 @@ module.exports = (function() {
             public: false,
             y: Math.random() * 0.5,
             color: 'white',
-            type: 'other'
+            type: 'other',
+            collapsed: false
           };
 
 
@@ -424,9 +425,11 @@ module.exports = (function() {
           if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('fileCreationDate')) {
             mdata.created = api.convertDate(additionalMeta.fileCreationDate);
           }
-
           if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('color')) {
             mdata.color = validator.escape(additionalMeta.color);
+          }
+          if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('collapsed') && typeof additionalMeta.collapsed === 'boolean') {
+            mdata.collapsed = additionalMeta.collapsed;
           }
 
           if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('type')) {
@@ -645,6 +648,7 @@ module.exports = (function() {
         };
         if(mdata.hasOwnProperty('type')) { newMediaInfos.additionalMeta['type'] = mdata.type; }
         if(mdata.hasOwnProperty('color')) { newMediaInfos.additionalMeta['color'] = mdata.color; }
+        if(mdata.hasOwnProperty('collapsed')) { newMediaInfos.additionalMeta['collapsed'] = mdata.collapsed; }
         resolve(newMediaInfos);
       }, function(err) {
         dev.error(`Failed to storeData for textmedia`);
