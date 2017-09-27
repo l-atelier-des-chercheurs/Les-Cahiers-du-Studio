@@ -6,7 +6,7 @@
       'is--hovered'   : is_hovered,
       'is--dragged'   : is_dragged,
       'is--collapsed' : is_collapsed,
-    }, 'type-' + media.type]"
+    }, 'type-' + media.type, 'color-' + media.color]"
     @mousedown.prevent="mousedown"
     @mouseover="mouseover"
     @mouseleave="mouseleave"

@@ -4595,6 +4595,15 @@ main > *:first-child {
   background-color: transparent;
   height: 1em !important;
 }
+.color-red.mediaPreview .media .accroche {
+  background-color: #ea0028;
+}
+.color-blue.mediaPreview .media .accroche {
+  background-color: #0096FF;
+}
+.color-green.mediaPreview .media .accroche {
+  background-color: #00ad41;
+}
 .mediaPreview .media .accrocheDurationLine {
   height: 4px;
   background-color: #0096FF;

@@ -42,6 +42,17 @@
           </select>
         </div>
 
+  <!-- Color -->
+        <div class="input-single">
+          <label>Couleur</label><br>
+          <select ref="type" v-model="mediadata.color">
+            <option v-for="mediaColor in ['white', 'red', 'blue', 'green']">
+              {{ mediaColor }}
+            </option>
+          </select>
+          </textarea>
+        </div>
+
   <!-- Keywords -->
         <div class="input-single">
           <label>Mot-clé(s) <small>un par ligne</small></label><br>
@@ -116,6 +127,7 @@ export default {
       mediadata: {
         created: this.media.created,
         type: this.media.type,
+        color: this.media.color,
         authors: this.media.authors,
         keywords: this.media.keywords,
         public: (this.media.public == 'true'),

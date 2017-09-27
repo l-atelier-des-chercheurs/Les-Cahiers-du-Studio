@@ -178,6 +178,7 @@ module.exports = (function() {
           created: '',
           modified: '',
           type: '',
+          color: '',
           authors: '',
           keywords: '',
           public: false,
