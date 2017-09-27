@@ -191,7 +191,7 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logverbose(`START: ${mediaPath}`);
       ffmpeg.ffprobe(mediaPath,function(err, metadata) {
-        if(err) reject();
+        if(err) { reject(); }
         if(metadata.streams !== undefined && typeof Array.isArray(metadata.streams)) {
           if(metadata.streams[0].height !== undefined && metadata.streams[0].width !== undefined) {
             let ratio = metadata.streams[0].height / metadata.streams[0].width;
