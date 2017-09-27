@@ -58,7 +58,7 @@
         <div class="input-group">
           <button type="button" class="button" @click="timelineViewport.scale = 0.5">0.5</button>
           <button type="button" class="button_small" @click="timelineViewport.scale = 2.5">2.5</button>
-          <button type="button" class="button_small" @click="timelineViewport.scale = 50">5</button>
+          <button type="button" class="button_small" @click="timelineViewport.scale = 5">5</button>
           <button type="button" class="button_small" @click="timelineViewport.scale = 50">50</button>
           <button type="button" class="button_small" @click="timelineViewport.scale = 150">150</button>
 <!--          <input type="range" v-model.number="" min="0.5" max="140"> -->
