@@ -53,10 +53,15 @@
         options
       </button>
 
-      <div v-if="showTimelineOptions" class="padding-small" style="width:400px">
-        <div class="input-single">
-          <label>Échelle :<br>1 pixel de large = {{ timelineViewport.scale }}  secondes</label>
-          <input type="range" v-model.number="timelineViewport.scale" min="0.5" max="140">
+      <div v-if="showTimelineOptions" class="padding-small" style="width:370px">
+        <label>Échelle <small>1 pixel de large = {{ timelineViewport.scale }}  secondes</small></label>
+        <div class="input-group">
+          <button type="button" class="button" @click="timelineViewport.scale = 0.5">0.5</button>
+          <button type="button" class="button_small" @click="timelineViewport.scale = 2.5">2.5</button>
+          <button type="button" class="button_small" @click="timelineViewport.scale = 50">5</button>
+          <button type="button" class="button_small" @click="timelineViewport.scale = 50">50</button>
+          <button type="button" class="button_small" @click="timelineViewport.scale = 150">150</button>
+<!--          <input type="range" v-model.number="" min="0.5" max="140"> -->
         </div>
         <div class="input-single" v-if="isRealtime">
           <label>Défiler automatiquement</label>
@@ -313,7 +318,7 @@ export default {
         if(moment(currentMinute).minute() === 0) {
           return;
         }
-        if(moment(currentMinute).minute()%10 === 0) {
+        if(moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 1) {
           let momentMinute = moment(currentMinute).format('HH:mm');
           html += `<div class="gridItem gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${momentMinute}"></div>`;
         } else {
@@ -382,9 +387,10 @@ export default {
 .options_panel {
   position: fixed;
   right: 0%;
-  top: 20vh;
+  top: 10px;
   width: auto;
-  background-color: white;
+  border:4px solid white;
+  background-color: #f2f2f2;
   z-index: 1001;
 }
 

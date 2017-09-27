@@ -87,7 +87,8 @@ export default {
   position: relative;
   max-height: 100vh;
   overflow-y: scroll;
-  width: 380px;
+  width: 100%;
+  max-width: 400px;
 
   margin: 0px auto;
   background-color: #fff;

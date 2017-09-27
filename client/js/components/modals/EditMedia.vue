@@ -23,62 +23,58 @@
 
     <form slot="footer" v-on:submit.prevent="editThisMedia">
 
-      <fieldset>
+<!-- Creation date (stored in meta file, overrides file date) -->
+      <div class="input-single">
+        <label>Date de création <small>utilisée pour le placement sur l’axe horizontal</small></label>
+        <DateTime v-model="mediadata.created">
+        </DateTime>
+      </div>
 
-  <!-- Creation date (stored in meta file, overrides file date) -->
-        <div class="input-single">
-          <label>Date de création <small>utilisée pour le placement sur l’axe horizontal</small></label>
-          <DateTime v-model="mediadata.created">
-          </DateTime>
-        </div>
+<!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
+      <div class="input-single">
+        <label>Type</label>
+        <select ref="type" v-model="mediadata.type">
+          <option v-for="mediaType in ['image', 'video', 'text', 'marker']">
+            {{ mediaType }}
+          </option>
+        </select>
+      </div>
 
-  <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
-        <div class="input-single">
-          <label>Type</label>
-          <select ref="type" v-model="mediadata.type">
-            <option v-for="mediaType in ['image', 'video', 'text', 'marker']">
-              {{ mediaType }}
-            </option>
-          </select>
-        </div>
+<!-- Color -->
+      <div class="input-single">
+        <label>Couleur</label><br>
+        <select ref="type" v-model="mediadata.color">
+          <option v-for="mediaColor in ['white', 'red', 'blue', 'green']">
+            {{ mediaColor }}
+          </option>
+        </select>
+        </textarea>
+      </div>
 
-  <!-- Color -->
-        <div class="input-single">
-          <label>Couleur</label><br>
-          <select ref="type" v-model="mediadata.color">
-            <option v-for="mediaColor in ['white', 'red', 'blue', 'green']">
-              {{ mediaColor }}
-            </option>
-          </select>
-          </textarea>
-        </div>
+<!-- Keywords -->
+      <div class="input-single">
+        <label>Mot-clé(s) <small>un par ligne</small></label><br>
+        <textarea v-model="mediadata.keywords">
+        </textarea>
+      </div>
 
-  <!-- Keywords -->
-        <div class="input-single">
-          <label>Mot-clé(s) <small>un par ligne</small></label><br>
-          <textarea v-model="mediadata.keywords">
-          </textarea>
-        </div>
+<!-- Author(s) -->
+      <div class="input-single">
+        <label>Auteur-e(s) <small>un-e par ligne</small></label><br>
 
-  <!-- Author(s) -->
-        <div class="input-single">
-          <label>Auteur-e(s) <small>un-e par ligne</small></label><br>
+        <textarea v-model="mediadata.authors">
+        </textarea>
+      </div>
 
-          <textarea v-model="mediadata.authors">
-          </textarea>
-        </div>
-
-  <!-- Public or private -->
-        <div class="input-single">
-          <span class="switch">
-            <input type="checkbox" class="switch" id="publicswitch" v-model="mediadata.public">
-            <label for="publicswitch">
-              Public
-            </label>
-          </span>
-        </div>
-
-      </fieldset>
+<!-- Public or private -->
+      <div class="input-single">
+        <span class="switch">
+          <input type="checkbox" class="switch" id="publicswitch" v-model="mediadata.public">
+          <label for="publicswitch">
+            Public
+          </label>
+        </span>
+      </div>
 
       <button type="button" class="button_small" @click="removeMedia()">
         Supprimer

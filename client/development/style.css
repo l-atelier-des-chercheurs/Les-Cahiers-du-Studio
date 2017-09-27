@@ -4700,6 +4700,9 @@ main > *:first-child {
   -webkit-box-direction: normal;
   -ms-flex-flow: column wrap;
   flex-flow: column wrap;
+  -webkit-box-align: end;
+  -ms-flex-align: end;
+  align-items: flex-end;
   pointer-events: none;
 }
 .m_addMedia > * {
