@@ -23,6 +23,7 @@ module.exports = (function() {
     makeMediaThumbs   : (slugFolderName, slugMediaName, meta) => makeMediaThumbs(slugFolderName, slugMediaName, meta),
     getEXIFData       : (mediaPath) => getEXIFData(mediaPath),
     getMediaDuration  : (mediaPath) => getMediaDuration(mediaPath),
+    getMediaRatio     : (mediaPath) => getMediaRatio(mediaPath),
   };
 
   // this function is used both when creating a media and everything media are listed.
@@ -179,11 +180,26 @@ module.exports = (function() {
   function getMediaDuration(mediaPath) {
     return new Promise(function(resolve, reject) {
       dev.logverbose(`START: ${mediaPath}`);
-
       ffmpeg.ffprobe(mediaPath,function(err, metadata) {
+        dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
         resolve(metadata.format.duration);
       });
+    });
+  }
 
+  function getMediaRatio(mediaPath) {
+    return new Promise(function(resolve, reject) {
+      dev.logverbose(`START: ${mediaPath}`);
+      ffmpeg.ffprobe(mediaPath,function(err, metadata) {
+        if(err) reject();
+        if(metadata.streams !== undefined && typeof Array.isArray(metadata.streams)) {
+          if(metadata.streams[0].height !== undefined && metadata.streams[0].width !== undefined) {
+            let ratio = metadata.streams[0].height / metadata.streams[0].width;
+            resolve(ratio);
+          }
+        }
+        reject();
+      });
     });
   }
 

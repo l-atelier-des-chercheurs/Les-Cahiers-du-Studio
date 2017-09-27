@@ -7,6 +7,10 @@
       <video controls :src="linkToMedia">
       </video>
     </template>
+    <template v-else-if="media.type === 'audio'">
+      <audio controls :src="linkToMedia">
+      </audio>
+    </template>
     <template v-else-if="media.type === 'text'">
       <textarea
         placeholder="Champ de texte…"

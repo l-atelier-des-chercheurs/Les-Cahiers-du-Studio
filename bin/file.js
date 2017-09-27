@@ -453,23 +453,25 @@ module.exports = (function() {
           }
 
 
-          /************** CREATED DATE ***************/
+          /***************************************************************************
+              CREATED DATE
+          ***************************************************************************/
           // if the file’s an image, we get the date from the EXIF infos
           if(mdata.type === 'image') {
             dev.logverbose(`Setting created from EXIF`);
             let getEXIFTimestamp = new Promise((resolve, reject) => {
               thumbs.getEXIFData(mediaPath).then(({ ts, mediaRatio }) => {
                 if(ts === false) {
-                  dev.log(`No timestamp found in EXIF.`);
+                  dev.logverbose(`No timestamp found in EXIF.`);
                 } else {
                   let localTS = api.parseUTCDate(ts);
-                  dev.log(`getEXIFData timestamp to date : ${api.convertDate(localTS)}`);
+                  dev.logverbose(`getEXIFData timestamp to date : ${api.convertDate(localTS)}`);
                   mdata.created = api.convertDate(localTS);
                 }
                 resolve();
               })
               .catch((err) => {
-                dev.error(`No EXIF data to read from: ${err}`);
+                dev.logverbose(`No EXIF data to read from: ${err}`);
                 resolve();
               });
             });
@@ -495,23 +497,40 @@ module.exports = (function() {
           }
 
 
-          // get RATIO
-          let getEXIFRatio = new Promise((resolve, reject) => {
-            thumbs.getEXIFData(mediaPath).then(({ ts, mediaRatio }) => {
-              dev.log(`getEXIFData mediaRatio : ${mediaRatio}`);
-              if(mediaRatio !== undefined) {
-                mdata.ratio = mediaRatio;
-              }
-              resolve();
-            })
-            .catch((err) => {
-              dev.error(`No EXIF data to read from: ${err}`);
-              resolve();
+          /***************************************************************************
+              RATIO
+          ***************************************************************************/
+          if(mdata.type === 'image') {
+            let getEXIFRatio = new Promise((resolve, reject) => {
+              thumbs.getEXIFData(mediaPath).then(({ ts, mediaRatio }) => {
+                dev.log(`getEXIFData mediaRatio : ${mediaRatio}`);
+                if(mediaRatio !== undefined) {
+                  mdata.ratio = mediaRatio;
+                }
+                resolve();
+              })
+              .catch((err) => {
+                dev.error(`No EXIF data to read from: ${err}`);
+                resolve();
+              });
             });
-          });
-          tasks.push(getEXIFRatio);
-
-
+            tasks.push(getEXIFRatio);
+          } else if(mdata.type === 'video' || mdata.type === 'audio') {
+            let getMediaRatio = new Promise((resolve, reject) => {
+              thumbs.getMediaRatio(mediaPath).then(mediaRatio => {
+                dev.log(`getMediaRatio : ${mediaRatio}`);
+                if(mediaRatio !== undefined) {
+                  mdata.ratio = mediaRatio;
+                }
+                resolve();
+              })
+              .catch((err) => {
+                dev.error(`No probe data to read from: ${err}`);
+                resolve();
+              });
+            });
+            tasks.push(getMediaRatio);
+          }
 
 
           /***************************************************************************
@@ -532,6 +551,10 @@ module.exports = (function() {
             tasks.push(getMediaDuration);
           }
 
+
+          /***************************************************************************
+              DO IT ALL
+          ***************************************************************************/
           Promise.all(tasks).then(() => {
             api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
               dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);

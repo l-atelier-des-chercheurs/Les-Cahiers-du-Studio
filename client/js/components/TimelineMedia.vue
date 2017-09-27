@@ -103,14 +103,16 @@ export default {
       return this.media.duration/this.timelineScale;
     },
     getMediaSize() {
+/*
       if(this.media.duration !== undefined) {
         this.mediaStyles.w = Math.max(180, this.getMediaWidthFromDuration());
       } else {
+*/
         if(this.mediaStyles.ratio) {
           let r = this.mediaStyles.ratio;
           this.mediaStyles.w = this.mediaStyles.h / r;
         }
-      }
+//       }
       return {
         width: `${this.mediaStyles.w}px`,
         height: `${this.mediaStyles.h}px`
