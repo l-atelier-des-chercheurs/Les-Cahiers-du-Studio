@@ -663,6 +663,9 @@ module.exports = (function() {
       }
 
       let textMediaName = timeCreated + '.md';
+      if(mdata.hasOwnProperty('type')) {
+        textMediaName = mdata.type + '-' + textMediaName;
+      }
       let pathToTextMedia = path.join(api.getFolderPath(slugFolderName), textMediaName);
 
       api.storeData(pathToTextMedia, '', 'create').then(() => {
