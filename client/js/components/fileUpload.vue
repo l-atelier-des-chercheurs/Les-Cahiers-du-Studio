@@ -1,5 +1,5 @@
 <template>
-  <div class="dropzone margin-bottom-small">
+  <div class="dropzone">
     <Dropzone
       :id="uniqueDropzoneID"
       ref="dropzone"
@@ -181,6 +181,7 @@ export default {
     justify-content: center;
     background-color: white;
     margin: 0 0 0 auto;
+    margin-bottom: 1em;
     padding: 25px;
     padding-top: 28px;
     border: none;
@@ -207,9 +208,13 @@ export default {
     align-items: center;
     justify-content: flex-start;
     padding: 0.5em;
-    margin: 0.5em 0;
+    margin: 0;
     background-color: #fff !important;
     pointer-events: auto;
+
+    + .dz-preview {
+      border-top: 1px solid #eee;
+    }
 
     &:hover .dz-image img {
       filter: unset;

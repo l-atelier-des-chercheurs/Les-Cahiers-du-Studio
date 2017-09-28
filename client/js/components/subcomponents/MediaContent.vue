@@ -4,11 +4,11 @@
       <img :src="linkToThumb">
     </template>
     <template v-else-if="media.type === 'video'">
-      <video controls :src="linkToMedia">
+      <video :controls="withControl" :src="linkToMedia">
       </video>
     </template>
     <template v-else-if="media.type === 'audio'">
-      <audio controls :src="linkToMedia">
+      <audio :controls="withControl" :src="linkToMedia">
       </audio>
     </template>
     <template v-else-if="media.type === 'text'">
@@ -44,6 +44,10 @@ export default {
     slugFolderName: String,
     slugMediaName: String,
     media: Object,
+    withControl: {
+      type: Boolean,
+      default: false,
+    },
     size: {
       type: Number,
       default: 200

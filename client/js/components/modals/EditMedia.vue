@@ -16,6 +16,7 @@
         :slugMediaName="slugMediaName"
         :media="media"
         :size="1800"
+        :withControl=true
         v-model="mediadata.content"
       >
       </MediaContent>
