@@ -82,7 +82,7 @@
       </button>
 
       <button type="button" class="button_small">
-        <a download :href="mediaURL" title="slugMediaName" target="_blank">
+        <a :download="slugMediaName" :href="mediaURL" title="slugMediaName" target="_blank">
           Télécharger
         </a>
       </button>
