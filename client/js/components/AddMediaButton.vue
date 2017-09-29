@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="m_addMedia">
-      <button type="button" class="button_small margin-bottom-small button_addText" @click="addText">
+      <button type="button" class="button margin-bottom-small button_addText" @click="addText">
         Ajouter du texte
       </button>
-      <button type="button" class="button_small margin-bottom-small button_addMarker" @click="addMarker">
+      <button type="button" class="button margin-bottom-small button_addMarker" @click="addMarker">
         Ajouter un marqueur
       </button>
 

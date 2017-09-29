@@ -11,21 +11,21 @@
     @mouseover="mouseover"
     @mouseleave="mouseleave"
   >
-    <div class="media">
+    <div class="media"
+      :style="{ width: getMediaWidthFromDuration() + 'px' }"
+    >
 
-      <div class="mediaScrubber">
+      <div class="mediaScrubber" :data-mediaduration="media.duration">
         <!-- play media on click -->
         <template v-if="media.duration !== undefined">
           <button class="accroche accroche_gauche" @mouseup=""></button>
-          <div class="accrocheDurationLine" :style="{ width: getMediaWidthFromDuration() + 'px' }"></div>
+          <div class="accrocheDurationLine"></div>
         </template>
         <button class="accroche accroche_droite" @mouseup="clickAccrocheDroite"></button>
       </div>
 
 
-      <div class="timelineMediaContent"
-        :style="getMediaSize(media)"
-      >
+      <div class="timelineMediaContent">
         <MediaContent
           :slugFolderName="slugFolderName"
           :slugMediaName="slugMediaName"
@@ -103,16 +103,26 @@ export default {
       return this.media.duration/this.timelineScale;
     },
     getMediaSize() {
+      if(this.mediaStyles.ratio) {
+        let r = this.mediaStyles.ratio;
+        this.mediaStyles.w = this.mediaStyles.h / r;
+      }
+
+      if(this.media.duration > 0) {
+        this.mediaStyles.h = 32;
+        if(this.getMediaWidthFromDuration() > this.mediaStyles.w) {
+          this.mediaStyles.w = this.getMediaWidthFromDuration();
+        }
+      }
+
+      // TODO : set width of duration-based media on the actual duration
+      // but only if this.getMediaWidthFromDuration > 120 (otherwise we use ratio or default width)
 /*
-      if(this.media.duration !== undefined) {
+      if(this.mediaStyles.w < 180 && this.media.duration !== undefined) {
         this.mediaStyles.w = Math.max(180, this.getMediaWidthFromDuration());
       } else {
 */
-        if(this.mediaStyles.ratio) {
-          let r = this.mediaStyles.ratio;
-          this.mediaStyles.w = this.mediaStyles.h / r;
-        }
-//       }
+
       return {
         width: `${this.mediaStyles.w}px`,
         height: `${this.mediaStyles.h}px`

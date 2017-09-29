@@ -208,7 +208,6 @@ module.exports = (function() {
           }
         });
 
-        // TODO : check client permissions, send public or all medias depending on this
       }, function(err) {
         dev.error(`Failed to list medias! Error: ${err}`);
       });

@@ -9,13 +9,15 @@
       :preview-template="template"
       :use-custom-dropzone-options=true
       :dropzone-options="customOptionsObject"
-      :maxFileSizeInMB="1024"
+      :maxFileSizeInMB="2048"
       :maxNumberOfFiles="50"
     >
       <input type="hidden">
 <!--
-      <div class="dropzone_overlay" ref="dropzoneoverlay">
-      </div>
+  ideal implementation: one button each
+      <input name="imageCapture" type="file" accept="image/*" capture>
+      <input name="videoCapture" type="file" accept="video/*" capture>
+      <input name="audioCapture" type="file" accept="audio/*" capture>
 -->
     </Dropzone>
 
@@ -123,7 +125,6 @@ export default {
 }
 
 .dropzone.dropzone {
-  pointer-events:none;
   background-color: transparent;
   min-height: 0;
   border: none;
@@ -140,8 +141,9 @@ export default {
   max-height: 40vh;
 
   margin:0;
-  padding: 1em;
+  padding: 0;
   padding-bottom: 2.5em;
+  padding-right: 2.5em;
 
   background-color: transparent;
   border: none !important;
@@ -152,27 +154,12 @@ export default {
   &.is--bigger {
 //     overflow: visible;
     .dz-message {
+
     }
   }
 
   &:hover {
     background-color: transparent;
-  }
-
-  .dropzone_overlay {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index:10;
-    pointer-events: none;
-    background-color: #ea0028;
-    opacity: 0;
-  }
-  &.is--bigger .dropzone_overlay {
-    opacity: 1;
-    pointer-events: auto;
   }
 
   .dz-message {
@@ -186,14 +173,17 @@ export default {
     padding-top: 28px;
     border: none;
     border-radius: 50%;
-    width: 70px;
-    height: 70px;
-    font-size: 50px;
+    width: 60px;
+    height: 60px;
     pointer-events: auto;
     z-index:100;
 
     background-color: #ea0028;
     color: white;
+
+    > * {
+      font-size: 50px;
+    }
   }
   &.is--bigger .dz-message {
   }

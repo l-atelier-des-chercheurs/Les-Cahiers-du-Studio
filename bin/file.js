@@ -359,6 +359,7 @@ module.exports = (function() {
               readMedia(slugFolderName,slugMediaName).then((meta) => {
                 meta.slugMediaName = slugMediaName;
                 meta.created = api.parseDate(meta.created);
+                meta.modified = api.parseDate(meta.modified);
                 resolve(meta);
               });
             });

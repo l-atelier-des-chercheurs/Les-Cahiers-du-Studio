@@ -38,6 +38,7 @@ module.exports = function(app,io,m){
       pageDataJSON.url = req.path;
       pageDataJSON.isHttps = req.connection.encrypted;
       pageDataJSON.lang = local.lang();
+      pageDataJSON.structure = local.settings().structure;
       pageDataJSON.logToFile = global.nodeStorage.getItem('logToFile');
 
       api.getLocalIP().then(networkInfos => {

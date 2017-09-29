@@ -35,7 +35,8 @@ html
     script.
       window.locals = {};
       locals.folderPath = "#{folderPath}";
-      locals.networkInfos = !{JSON.stringify(networkInfos, null, 4)};
       locals.lang = !{JSON.stringify(lang, null, 4)};
+      locals.structure = !{JSON.stringify(structure, null, 4)};
+      locals.networkInfos = !{JSON.stringify(networkInfos, null, 4)};
     script(src='/development/main.js')
     script(src='/development/vue.js')

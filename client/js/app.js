@@ -9,6 +9,7 @@ Vue.config.silent = false;
 Vue.config.devtools = true;
 import App from './App.vue';
 
+
 /* eslint-disable no-new */
 /* exported vm */
 let vm = new Vue({
@@ -111,5 +112,5 @@ let vm = new Vue({
 });
 
 setTimeout(() => {
-  vm.openFolder('howdy');
+  vm.openFolder('demo');
 }, 500);

@@ -255,12 +255,19 @@ code {
   }
 
   .m_logo {
-    margin-bottom:  @t-skipline * 1;
+    margin-bottom:  @t-skipline * 2;
     & > * {
       margin: 0;
       font-size: 1em;
     }
-
+    .stvlogo {
+      min-width: 0;
+      max-width: 100px;
+      height: 100%;
+      .make-md-column-offset(-5.5);
+      .make-xs-column(5);
+      margin-top:   4px;
+    }
   }
 
   .m_navigation {
@@ -281,6 +288,8 @@ code {
       padding:5px;
     }
   }
+
+
 }
 
 .margin-left-none {

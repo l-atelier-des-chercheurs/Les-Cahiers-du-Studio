@@ -1,6 +1,7 @@
 // I M P O R T
 @import (inline) "shoelace/variables.css";
 @import (inline) "shoelace/forms.css";
+@import (inline) "shoelace/tables.css";
 @import "_stv.less";
 
 @import "../../node_modules/vue2-animate/src/vue2-animate.less";
@@ -281,10 +282,9 @@ main {
     .mediaScrubber {
       position: absolute;
       height: @t-anchor;
+      width: 100%;
       text-align: right;
       top: -@t-anchor/2;
-      left: -@t-anchor/2;
-      right: -@t-anchor/2;
 
       display: flex;
       flex-flow: row nowrap;
@@ -293,9 +293,9 @@ main {
     }
 
     .accroche {
+      position: absolute;
       width: @t-anchor;
       height: @t-anchor;
-      position: relative;
       z-index: 10;
       border-radius: 50%;
       color: white;
@@ -304,11 +304,17 @@ main {
       display: block;
       pointer-events: auto;
 //       font-size:0;
-
       box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
 
       &:focus {
         outline: none;
+      }
+
+      &_droite {
+        right: -@t-anchor/2;
+      }
+      &_gauche {
+        left: -@t-anchor/2;
       }
     }
 
@@ -347,8 +353,9 @@ main {
 
     .accrocheDurationLine {
       height: 4px;
+      width: 100%;
       background-color: @c-bleu;
-      z-index: 150;
+      z-index: 9;
     }
 
     .button_openmedia {
@@ -400,12 +407,10 @@ main {
     transition: transform .2s ease-out;
 
     .mediaContainer {
-      pointer-events: none;
       opacity: 1;
-      transition: opacity .8s ease-out;
 
-      .is--hovered& {
-        opacity: 0.8;
+      &.type-audio {
+        width: 100%;
       }
     }
 
@@ -435,19 +440,56 @@ main {
 
 .m_addMedia {
   position: fixed;
-  bottom:0;
-  right: @t-skipline*2;
+  bottom: 20px;
+  right: 0;
   display: flex;
   flex-flow: column wrap;
   align-items: flex-end;
-  pointer-events: none;
+
+  button, .dz-message {
+    box-shadow: 2px 4px 13px #bbb;
+  }
 
 
   > * {
     flex: 0 0 auto;
     pointer-events: auto;
+    margin-right: @t-skipline * 2;
+
+    &.dropzone {
+      border: 1px solid @c-gris;
+      margin-right: 0;
+    }
   }
 }
+
+
+.m_sidebar {
+  position: fixed;
+  z-index:  1500;
+  max-width: 400px;
+  width: 90%;
+  height: 100vh;
+  height: ~"calc(100vh - 60px)";
+  overflow-y: scroll;
+
+  background-color: @c-gris_light;
+  border-right: 1px solid #000;
+
+  box-shadow: -2px 4px 13px #bbb;
+
+  .intro {
+    padding: var(--table-spacing-y) var(--table-spacing-x);
+  }
+
+  ul, li {
+    padding: 0; margin: 0;
+  }
+}
+
+
+
+
 
 
 .component-fade-enter-active, .component-fade-leave-active {
@@ -456,3 +498,5 @@ main {
 .component-fade-enter, .component-fade-leave-to {
   opacity: 0;
 }
+
+

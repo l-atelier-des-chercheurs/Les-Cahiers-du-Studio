@@ -46,7 +46,7 @@ export default {
     media: Object,
     withControl: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     size: {
       type: Number,

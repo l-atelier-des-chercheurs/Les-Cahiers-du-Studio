@@ -142,7 +142,7 @@ window.socketio = (function() {
     alertify
       .closeLogOnClick(true)
       .delay(4000)
-      .log(`Création ou édition d’un média "${mediaData.type}" pour le dossier ${slugFolderName}`)
+      .log(`Création ou édition d’un média <i>${mediaData.type}</i> pour le dossier ${slugFolderName}`)
       ;
 
     window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, mdata[slugFolderName].medias);
