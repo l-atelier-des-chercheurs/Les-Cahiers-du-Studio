@@ -431,7 +431,7 @@ export default {
     }
     &.gridItem_ishour {
 //       color: #00ad41;
-      border-left: 1px solid fade-out(black, 0.7);
+      border-left: 1px solid fade-out(black, 0.8);
       z-index:10;
 
       &::before {
@@ -454,6 +454,7 @@ export default {
 
       &[data-caption] {
         color: #333;
+        border-left: 1px solid fade-out(black, 0.8);
         &::before {
           content: attr(data-caption);
           display: block;

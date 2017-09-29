@@ -12,10 +12,12 @@
     @mouseleave="mouseleave"
   >
     <div class="media"
-      :style="{ width: getMediaWidthFromDuration() + 'px' }"
     >
 
-      <div class="mediaScrubber" :data-mediaduration="media.duration">
+      <div class="mediaScrubber"
+        :style="{ width: getMediaWidthFromDuration() + 'px' }"
+        :data-mediaduration="media.duration"
+      >
         <!-- play media on click -->
         <template v-if="media.duration !== undefined">
           <button class="accroche accroche_gauche" @mouseup=""></button>
@@ -25,7 +27,9 @@
       </div>
 
 
-      <div class="timelineMediaContent">
+      <div class="timelineMediaContent"
+        :style="getMediaSize()"
+      >
         <MediaContent
           :slugFolderName="slugFolderName"
           :slugMediaName="slugMediaName"
@@ -62,6 +66,8 @@ export default {
         y: ''
       },
       mediaStyles: {
+        defaultWidth: 180,
+        defaultHeight: 120,
         ratio: this.media.ratio,
         y: this.limitMediaYPos(parseFloat(this.media.y) * this.timelineHeight),
         w: 180,
@@ -109,9 +115,13 @@ export default {
       }
 
       if(this.media.duration > 0) {
-        this.mediaStyles.h = 32;
-        if(this.getMediaWidthFromDuration() > this.mediaStyles.w) {
+        if(this.media.type === 'audio') {
+          this.mediaStyles.h = 32;
+        }
+        if(this.getMediaWidthFromDuration() > this.mediaStyles.defaultWidth) {
           this.mediaStyles.w = this.getMediaWidthFromDuration();
+        } else {
+          this.mediaStyles.w = this.mediaStyles.defaultWidth;
         }
       }
 

@@ -4459,6 +4459,7 @@ input:required {
   flex: 0 0 60px;
   height: 100%;
   padding: 20px;
+  background-color: transparent;
 }
 .navbar_top .menu_icon svg {
   height: 20px;
@@ -4604,13 +4605,13 @@ main > *:first-child {
 .mediaPreview .media {
   position: absolute;
   right: 0;
-  top: -1px;
+  top: 0;
   pointer-events: none;
 }
 .mediaPreview .media .mediaScrubber {
   position: absolute;
   height: 20px;
-  width: 100%;
+  right: 0;
   text-align: right;
   top: -10px;
   display: -webkit-box;
