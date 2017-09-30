@@ -60,6 +60,9 @@ input:required {
   background-repeat: no-repeat;
   background-image: radial-gradient(transparent 10%, @c-rouge 18%,transparent 25%);
 }
+th {
+  font-weight: normal;
+}
 
 
 
@@ -247,9 +250,13 @@ main {
     position: relative;
     height: 100%;
     width: 100%;
-    margin-left: 25vw;
-//     padding-right:   50px;
+    left: 25vw;
     border-right: 1px solid black;
+    transition: margin 0.5s ease-out;
+
+    &.with--sidebar_opened {
+      left:  ~"calc(25vw + 500px)";
+    }
 
     // stupid trick to add some space to the right of this div without affecting its width
     &::after {
@@ -469,7 +476,6 @@ main {
   position: fixed;
   z-index:  1500;
   max-width: 500px;
-  max-width: 33vw;
   width: 90%;
   height: 100vh;
   height: ~"calc(100vh - 60px)";

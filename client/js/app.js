@@ -25,7 +25,6 @@ let vm = new Vue({
       has_modal_opened: false,
       currentlyOpenedFolder: '',
       has_sidebar_opened: true,
-      sidebarWidth: 400,
       highlightMedia: ''
     },
   },

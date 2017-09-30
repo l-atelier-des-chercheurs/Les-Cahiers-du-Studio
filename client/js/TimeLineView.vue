@@ -1,8 +1,10 @@
 <template>
   <div class="m_timeline" ref="timeline">
 
-    <div class="m_timeline-container" :style="setTimeline()" :class="{ 'is--realtime' : isRealtime }">
-
+    <div class="m_timeline-container"
+      :style="setTimeline()"
+      :class="{ 'is--realtime' : isRealtime, 'with--sidebar_opened' : $root.settings.has_sidebar_opened }"
+    >
       <div class="timeline_track">
       </div>
 
@@ -110,7 +112,6 @@ export default {
     slugFolderName: String,
     folder: Object,
     medias: Object,
-    has_sidebar_opened: Boolean
   },
   components: {
     Media,
@@ -369,7 +370,7 @@ export default {
       let mediaPosX = this.getMediaPosX(mediaToScrollTo);
       this.$scrollTo('.media', 500, {
         container: this.$refs.timeline,
-        offset: this.has_sidebar_opened ? mediaPosX - 450 : mediaPosX,
+        offset: this.$root.settings.has_sidebar_opened ? mediaPosX - 700 : 500,
         x: true,
         y: false
       });

@@ -6,7 +6,6 @@
       class="pushContentDown">
     </div>
 
-
     <div v-if="view === 'ListView'" class="container">
       <div class="row">
 
@@ -55,8 +54,6 @@
         :slugFolderName="$root.settings.currentlyOpenedFolder"
         :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
         :medias="$root.store.folders[$root.settings.currentlyOpenedFolder].medias"
-        :has_sidebar_opened="$root.settings.has_sidebar_opened"
-        :sidebarWidth="$root.settings.sidebarWidth"
       >
       </TimeLineView>
     </div>
@@ -110,9 +107,6 @@ export default {
   methods: {
     toggleSidebar: function() {
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
-      if(this.$root.settings.has_sidebar_opened) {
-
-      }
     }
 
   }
