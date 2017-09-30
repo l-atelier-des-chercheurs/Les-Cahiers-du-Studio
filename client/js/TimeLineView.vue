@@ -16,12 +16,14 @@
 <!--           v-if="getMediaPosX(media) !== false" -->
         <Media v-for="(media, index) in medias"
           v-bind:key="index"
+          :ref="`media_${index}`"
           :slugFolderName="slugFolderName"
           :slugMediaName="index"
           :media="media"
           :timelineScale="timelineViewport.scale"
           :timelineHeight="getVH(1)"
           :posX="getMediaPosX(media)"
+          :class="{ 'is--highlighted' : highlightedMedia === index }"
           @open="openMediaModal(index)"
         >
         </Media>
@@ -101,12 +103,14 @@ import AddMediaButton from './components/AddMediaButton.vue';
 import DateTime from './components/subcomponents/DateTime.vue';
 import moment from 'moment';
 import debounce from 'debounce';
+import EventBus from './event-bus';
 
 export default {
   props: {
     slugFolderName: String,
     folder: Object,
-    medias: Object
+    medias: Object,
+    has_sidebar_opened: Boolean
   },
   components: {
     Media,
@@ -124,6 +128,7 @@ export default {
 
       showMediaModalFor: '',
       showTimelineOptions: false,
+      highlightedMedia: '',
 
       isRealtime: false,
       timelineUpdateRoutine: '',
@@ -179,6 +184,8 @@ export default {
     this.setTimeline();
   },
   mounted() {
+    EventBus.$on('scrollToMedia', this.scrollToMedia);
+    EventBus.$on('highlightMedia', this.highlightMedia);
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
     if(this.timelineViewport.autoscroll) {
@@ -196,6 +203,8 @@ export default {
     }, 1000);
   },
   beforeDestroy() {
+    EventBus.$off('scrollToMedia', this.scrollToMedia);
+    EventBus.$off('highlightMedia', this.highlightMedia);
     window.removeEventListener('resize', debounce(this.onResize, 300));
     window.removeEventListener('timeline.scrolltoend', this.scrollToEnd);
     clearInterval(this.timelineUpdateRoutine);
@@ -272,7 +281,7 @@ export default {
       let createDayTick = (currentDay) => {
         let xPos = this.getXPosition(currentDay);
         let momentDay = moment(currentDay).format('YYYY-MM-DD HH:mm:ss');
-        html += `<div class="gridItem gridItem_isday" style="transform:translate(${xPos}px, 0px)" data-caption="${momentDay}"></div>`;
+        html += `<div class="gridItem font-small gridItem_isday" style="transform:translate(${xPos}px, 0px)" data-caption="${momentDay}"></div>`;
       }
 
       createDayTick(this.timelineViewport.start);
@@ -294,9 +303,9 @@ export default {
         let momentHour = moment(currentHour).format('HH:mm');
 
         if(this.timelineViewport.scale < 70) {
-          html += `<div class="gridItem gridItem_ishour" style="transform:translate(${xPos}px, 0px)" data-caption="${momentHour}"></div>`;
+          html += `<div class="gridItem font-small gridItem_ishour" style="transform:translate(${xPos}px, 0px)" data-caption="${momentHour}"></div>`;
         } else {
-          html += `<div class="gridItem gridItem_ishour" style="transform:translate(${xPos}px, 0px)"></div>`;
+          html += `<div class="gridItem font-small gridItem_ishour" style="transform:translate(${xPos}px, 0px)"></div>`;
         }
       }
 
@@ -320,9 +329,9 @@ export default {
         }
         if(moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 1) {
           let momentMinute = moment(currentMinute).format('HH:mm');
-          html += `<div class="gridItem gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${momentMinute}"></div>`;
+          html += `<div class="gridItem font-small gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${momentMinute}"></div>`;
         } else {
-          html += `<div class="gridItem gridItem_isminute" style="transform:translate(${xPos}px, 0px)"></div>`;
+          html += `<div class="gridItem font-small gridItem_isminute" style="transform:translate(${xPos}px, 0px)"></div>`;
         }
       }
 
@@ -355,6 +364,19 @@ export default {
     scrollToEnd() {
       this.$refs.timeline.scrollLeft = this.timelineStyles.width;
     },
+    scrollToMedia(slugMediaName) {
+      let mediaToScrollTo = this.medias[slugMediaName];
+      let mediaPosX = this.getMediaPosX(mediaToScrollTo);
+      this.$scrollTo('.media', 500, {
+        container: this.$refs.timeline,
+        offset: this.has_sidebar_opened ? mediaPosX - 450 : mediaPosX,
+        x: true,
+        y: false
+      });
+    },
+    highlightMedia(slugMediaName) {
+      this.highlightedMedia = slugMediaName;
+    }
   },
 }
 </script>
@@ -443,7 +465,6 @@ export default {
         margin-left: 4px;
         font-style: italic;
         margin-top: -30px;
-        font-style: 0.9em;
       }
     }
 
@@ -464,7 +485,6 @@ export default {
           margin-left: 4px;
           font-style: italic;
           margin-top: -30px;
-          font-style: 0.9em;
         }
       }
     }

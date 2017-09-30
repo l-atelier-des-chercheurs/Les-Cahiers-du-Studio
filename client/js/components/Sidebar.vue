@@ -2,7 +2,7 @@
   <div class="m_sidebar" ref="sidebar">
     <div class="intro">
       <h3>
-        Liste des médias de cette timeline.
+        Liste des médias de cette timeline&nbsp;:
       </h3>
     </div>
 
@@ -17,15 +17,24 @@
               </option>
             </select>
           </th>
+          <th>
+            Go
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="(media, index) in medias"
           v-bind:key="index"
+          @mouseover="highlightMedia(index)" @mouseleave="unHighlightMedia(index)"
         >
-          <td>{{ index }}</td>
-          <td>{{ media[secondColumn] }}</td>
+          <td class="font-small">{{ index }}</td>
+          <td class="font-small">{{ media[secondColumn] }}</td>
+          <td>
+            <button type="button" class="button_small" @click="scrollToMedia(index)">
+              &nbsp;↪&nbsp;
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -38,6 +47,8 @@
   </div>
 </template>
 <script>
+import EventBus from '../event-bus';
+
 export default {
   props: {
     slugFolderName: String,
@@ -52,6 +63,15 @@ export default {
   methods: {
     mediaKeys: function() {
       return Object.keys(locals.structure.media);
+    },
+    scrollToMedia: function(slugMediaName) {
+      EventBus.$emit('scrollToMedia', slugMediaName);
+    },
+    highlightMedia: function(slugMediaName) {
+      EventBus.$emit('highlightMedia', slugMediaName);
+    },
+    unHighlightMedia: function(slugMediaName) {
+      EventBus.$emit('highlightMedia', '');
     }
   }
 

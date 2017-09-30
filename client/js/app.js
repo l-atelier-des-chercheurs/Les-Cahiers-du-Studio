@@ -4,6 +4,9 @@
 
 import Vue from 'vue/dist/vue';
 import localstore from 'store';
+import VueScrollTo from 'vue-scrollto';
+
+Vue.use(VueScrollTo);
 
 Vue.config.silent = false;
 Vue.config.devtools = true;
@@ -20,7 +23,10 @@ let vm = new Vue({
     store: window.store.state,
     settings: {
       has_modal_opened: false,
-      currentlyOpenedFolder: ''
+      currentlyOpenedFolder: '',
+      has_sidebar_opened: true,
+      sidebarWidth: 400,
+      highlightMedia: ''
     },
   },
   methods: {

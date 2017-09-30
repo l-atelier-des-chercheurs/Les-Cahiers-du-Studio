@@ -1725,6 +1725,9 @@ b {
 .c_rouge {
   color: #ea0028;
 }
+.font-small {
+  font-size: 0.9em;
+}
 .margin-medium {
   margin: 1.25em;
 }
@@ -4692,15 +4695,18 @@ main > *:first-child {
   transition: opacity 0.3s ease-out;
 }
 .mediaPreview.is--hovered,
-.mediaPreview.is--dragged {
+.mediaPreview.is--dragged,
+.mediaPreview.is--highlighted {
   z-index: 1000;
 }
 .mediaPreview.is--hovered .accroche,
-.mediaPreview.is--dragged .accroche {
+.mediaPreview.is--dragged .accroche,
+.mediaPreview.is--highlighted .accroche {
   color: #0096FF;
 }
 .mediaPreview.is--hovered .button_openmedia,
-.mediaPreview.is--dragged .button_openmedia {
+.mediaPreview.is--dragged .button_openmedia,
+.mediaPreview.is--highlighted .button_openmedia {
   opacity: 1;
 }
 .mediaPreview .timelineMediaContent {
@@ -4742,12 +4748,12 @@ main > *:first-child {
   min-height: 120px;
   overflow: hidden;
 }
-.mediaPreview.is--collapsed .timelineMediaContent {
+.mediaPreview.is--collapsed:not(.is--highlighted) .timelineMediaContent {
   -webkit-transform: scale(0);
   -ms-transform: scale(0);
   transform: scale(0);
 }
-.mediaPreview.has--duration.is--collapsed .timelineMediaContent {
+.mediaPreview.has--duration.is--collapsed:not(.is--highlighted) .timelineMediaContent {
   -webkit-transform: scaleY(0);
   -ms-transform: scaleY(0);
   transform: scaleY(0);
@@ -4796,7 +4802,8 @@ main > *:first-child {
 .m_sidebar {
   position: fixed;
   z-index: 1500;
-  max-width: 400px;
+  max-width: 500px;
+  max-width: 33vw;
   width: 90%;
   height: 100vh;
   height: calc(100vh - 60px);

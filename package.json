@@ -58,6 +58,7 @@
     "store": "^2.0.12",
     "validator": "^8.0.0",
     "vue": "^2.4.2",
+    "vue-scrollto": "^2.7.8",
     "vue2-animate": "^1.0.4",
     "vue2-dropzone": "^2.3.5"
   },

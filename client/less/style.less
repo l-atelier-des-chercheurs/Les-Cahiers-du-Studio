@@ -377,7 +377,7 @@ main {
 
 
 
-  &.is--hovered, &.is--dragged {
+  &.is--hovered, &.is--dragged, &.is--highlighted {
     z-index: 1000;
     .accroche {
       color: @c-bleu;
@@ -422,10 +422,10 @@ main {
   }
 
 
-  &.is--collapsed .timelineMediaContent {
+  &.is--collapsed:not(.is--highlighted) .timelineMediaContent {
     transform: scale(0);
   }
-  &.has--duration.is--collapsed .timelineMediaContent {
+  &.has--duration.is--collapsed:not(.is--highlighted) .timelineMediaContent {
     transform: scaleY(0);
   }
   &.is--dragged {
@@ -468,7 +468,8 @@ main {
 .m_sidebar {
   position: fixed;
   z-index:  1500;
-  max-width: 400px;
+  max-width: 500px;
+  max-width: 33vw;
   width: 90%;
   height: 100vh;
   height: ~"calc(100vh - 60px)";
@@ -485,6 +486,9 @@ main {
 
   ul, li {
     padding: 0; margin: 0;
+  }
+
+  table {
   }
 }
 

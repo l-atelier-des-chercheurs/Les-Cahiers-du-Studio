@@ -39,12 +39,12 @@
       <NavbarTop
         :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
         :slugFolderName="$root.settings.currentlyOpenedFolder"
-        @toggleSidebar="openSidebar = !openSidebar"
+        @toggleSidebar="toggleSidebar()"
         >
       </NavbarTop>
 
       <Sidebar
-        v-if="openSidebar"
+        v-if="$root.settings.has_sidebar_opened"
         :slugFolderName="$root.settings.currentlyOpenedFolder"
         :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
         :medias="$root.store.folders[$root.settings.currentlyOpenedFolder].medias"
@@ -55,6 +55,8 @@
         :slugFolderName="$root.settings.currentlyOpenedFolder"
         :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
         :medias="$root.store.folders[$root.settings.currentlyOpenedFolder].medias"
+        :has_sidebar_opened="$root.settings.has_sidebar_opened"
+        :sidebarWidth="$root.settings.sidebarWidth"
       >
       </TimeLineView>
     </div>
@@ -92,7 +94,6 @@ export default {
   data () {
     return {
       view: 'ListView',
-      openSidebar: false
     }
   },
   computed: {
@@ -105,6 +106,15 @@ export default {
         this.view = 'ListView';
       }
     }
+  },
+  methods: {
+    toggleSidebar: function() {
+      this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
+      if(this.$root.settings.has_sidebar_opened) {
+
+      }
+    }
+
   }
 }
 </script>
