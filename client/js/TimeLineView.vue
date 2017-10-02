@@ -58,14 +58,17 @@
       </button>
 
       <div v-if="showTimelineOptions" class="padding-small" style="width:370px">
-        <label>Échelle <small>1 pixel de large = {{ timelineViewport.scale }}  secondes</small></label>
+        <label>Échelle de temps</label>
         <div class="input-group">
-          <button type="button" class="button" @click="timelineViewport.scale = 0.5">0.5</button>
-          <button type="button" class="button_small" @click="timelineViewport.scale = 2.5">2.5</button>
-          <button type="button" class="button_small" @click="timelineViewport.scale = 5">5</button>
-          <button type="button" class="button_small" @click="timelineViewport.scale = 50">50</button>
-          <button type="button" class="button_small" @click="timelineViewport.scale = 150">150</button>
-<!--          <input type="range" v-model.number="" min="0.5" max="140"> -->
+          <template v-for="btns in scaleBtns">
+            <button type="button"
+              class="button"
+              :class="{ 'is--active' : timelineViewport.scale === btns.scale }"
+              @click="timelineViewport.scale = btns.scale"
+            >
+              {{ btns.name }}
+            </button>
+          </template>
         </div>
         <div class="input-single" v-if="isRealtime">
           <label>Défiler automatiquement</label>
@@ -106,6 +109,7 @@ import DateTime from './components/subcomponents/DateTime.vue';
 import moment from 'moment';
 import debounce from 'debounce';
 import EventBus from './event-bus';
+
 
 export default {
   props: {
@@ -149,7 +153,29 @@ export default {
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
-      }
+      },
+
+      scaleBtns: [{
+        name: 'Seconde',
+        scale: 1
+      },
+      {
+        name: 'Minute',
+        scale: 5
+      },
+      {
+        name: 'Heure',
+        scale: 20
+      },
+      {
+        name: 'Demi-journée',
+        scale: 50
+      },
+      {
+        name: 'Journée',
+        scale: 120
+      }]
+
 
     }
   },
@@ -168,6 +194,14 @@ export default {
     },
     'timelineViewport.scale': function() {
       console.log('WATCH : timelineViewport.scale');
+      // before updating the scale, we get the percent that's currently shown, store it, and we go back to it right after scaling
+      let currentScrollLeft = this.$refs.timeline.scrollLeft;
+//       currentScrollLeft += window.innerWidth/2;
+      let currentScrollLeft_percent = currentScrollLeft / this.timelineStyles.width;
+      this.$nextTick(function () {
+        this.$refs.timeline.scrollLeft = this.timelineStyles.width * currentScrollLeft_percent;
+      });
+
       this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
     },
     'timelineViewport.scrollLeft': function() {
