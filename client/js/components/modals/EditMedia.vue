@@ -34,7 +34,7 @@
       <div class="input-single">
         <label>Type</label>
         <select ref="type" v-model="mediadata.type">
-          <option v-for="mediaType in ['image', 'video', 'text', 'marker']">
+          <option v-for="mediaType in ['image', 'video', 'audio', 'text', 'marker']">
             {{ mediaType }}
           </option>
         </select>

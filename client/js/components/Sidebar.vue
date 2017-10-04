@@ -2,7 +2,10 @@
   <div class="m_sidebar" ref="sidebar">
     <div class="intro">
       <h3>
-        Liste des médias de cette timeline&nbsp;:
+        Nombre de médias&nbsp;: {{ Object.keys(medias).length }}
+      </h3>
+      <h3>
+        Liste&nbsp;:
       </h3>
     </div>
 

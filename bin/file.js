@@ -443,6 +443,7 @@ module.exports = (function() {
                 break;
               case '.mp3':
               case '.wav':
+              case '.m4a':
                 mdata.type = 'audio';
                 break;
               case '.md':

@@ -15,20 +15,24 @@
       </div>
 
       <div v-if="Object.keys(medias).length > 0">
-<!--           v-if="getMediaPosX(media) !== false" -->
-        <Media v-for="(media, index) in medias"
-          v-bind:key="index"
-          :ref="`media_${index}`"
-          :slugFolderName="slugFolderName"
-          :slugMediaName="index"
-          :media="media"
-          :timelineScale="timelineViewport.scale"
-          :timelineHeight="getVH(1)"
-          :posX="getMediaPosX(media)"
-          :class="{ 'is--highlighted' : highlightedMedia === index }"
-          @open="openMediaModal(index)"
-        >
-        </Media>
+<!--         <transition name="fade"> -->
+
+<!--             v-if="mediaIsVisible(media.created)" -->
+          <Media v-for="(media, index) in medias"
+
+            v-bind:key="index"
+            :ref="`media_${index}`"
+            :slugFolderName="slugFolderName"
+            :slugMediaName="index"
+            :media="media"
+            :timelineScale="timelineViewport.scale"
+            :timelineHeight="getVH(1)"
+            :posX="getMediaPosX(media.created)"
+            :class="{ 'is--highlighted' : highlightedMedia === index }"
+            @open="openMediaModal(index)"
+          >
+          </Media>
+<!--         </transition> -->
       </div>
 
       <template v-else>
@@ -173,9 +177,8 @@ export default {
       },
       {
         name: 'Journée',
-        scale: 120
+        scale: 100
       }]
-
 
     }
   },
@@ -201,7 +204,6 @@ export default {
       this.$nextTick(function () {
         this.$refs.timeline.scrollLeft = this.timelineStyles.width * currentScrollLeft_percent;
       });
-
       this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
     },
     'timelineViewport.scrollLeft': function() {
@@ -300,8 +302,8 @@ export default {
 
       return `width: ${w}px; height: ${h}px;`;
     },
-    getMediaPosX(media) {
-      let createdTS = moment(media.created,'YYYY-MM-DD HH:mm:ss')
+    getMediaPosX(media_created) {
+      let createdTS = moment(media_created,'YYYY-MM-DD HH:mm:ss')
       let posX = this.getXPosition(createdTS);
       return posX;
     },
@@ -387,6 +389,13 @@ export default {
       let posX = this.timelineStyles.width * pc;
       return Math.floor(posX);
     },
+    mediaIsVisible(media_created) {
+      const mediaPosX = this.getMediaPosX(media_created);
+      if(this.timelineViewport.scrollLeft < mediaPosX && mediaPosX < this.timelineViewport.scrollLeft + window.innerWidth) {
+        return true;
+      }
+      return false;
+    },
     onResize() {
       this.windowHeight = window.innerHeight;
     },
@@ -401,7 +410,7 @@ export default {
     },
     scrollToMedia(slugMediaName) {
       let mediaToScrollTo = this.medias[slugMediaName];
-      let mediaPosX = this.getMediaPosX(mediaToScrollTo);
+      let mediaPosX = this.getMediaPosX(mediaToScrollTo.created);
       this.$scrollTo('.media', 500, {
         container: this.$refs.timeline,
         offset: this.$root.settings.has_sidebar_opened ? mediaPosX - 700 : 500,
