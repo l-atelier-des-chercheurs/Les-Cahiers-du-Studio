@@ -15,7 +15,7 @@
       </div>
 
       <div v-if="Object.keys(medias).length > 0">
-        <transition name="fade">
+        <transition-group name="fade">
           <Media v-for="(media, index) in medias"
             v-if="getMediaPosX(media.created)"
             v-bind:key="index"
@@ -30,7 +30,7 @@
             @open="openMediaModal(index)"
           >
           </Media>
-        </transition>
+        </transition-group>
       </div>
 
       <template v-else>
@@ -188,6 +188,7 @@ export default {
     folder: function() {
       console.log('WATCH : folder');
       this.setTimelineBounds();
+      this.setViewedTimelineBoundsFromInfos(this.timelineInfos.start);
     },
     'timelineViewport.scale': function() {
       console.log('WATCH : timelineViewport.scale');
@@ -204,10 +205,6 @@ export default {
       console.log('WATCH : timelineViewport.scrollLeft');
       this.$root.updateProjectScrollLeft(this.slugFolderName, this.timelineViewport.scrollLeft);
     },
-    'timelineViewport.start': function() {
-      console.log('WATCH : timelineViewport.start');
-      this.setViewedTimelineBounds(this.timelineViewport.start);
-    }
   },
   created() {
     console.log(`Created component timeline`);
@@ -215,7 +212,7 @@ export default {
     window.addEventListener('resize', debounce(this.onResize, 300));
     window.addEventListener('timeline.scrolltoend', this.scrollToEnd);
     this.setTimelineBounds();
-    this.setViewedTimelineBounds(this.timelineInfos.start);
+    this.setViewedTimelineBoundsFromInfos();
     // TODO : check localstorage pour une info de jour
   },
   mounted() {
@@ -224,19 +221,17 @@ export default {
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
 
-/*
     if(this.timelineViewport.autoscroll) {
-      this.$refs.timeline.scrollLeft = this.timelineViewport.width;
+      this.scrollToEnd();
     }
     this.timelineUpdateRoutine = setInterval(() => {
-      this.setViewedTimeline();
+      this.setTimelineBounds();
+      this.setViewedTimelineBoundsFromInfos();
       if(this.timelineViewport.autoscroll) {
-        this.$refs.timeline.scrollLeft = this.timelineViewport.width;
+        this.scrollToEnd()
       }
       this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
     }, 1000);
-*/
-
   },
   beforeDestroy() {
     EventBus.$off('scrollToMedia', this.scrollToMedia);
@@ -280,8 +275,8 @@ export default {
     /******************************************************************
         Updates viewed timeline with a start and end
     ******************************************************************/
-    setViewedTimelineBounds(new_start) {
-      const newStart = this.getViewedTimelineStart(new_start);
+    setViewedTimelineBoundsFromInfos() {
+      const newStart = this.getViewedTimelineStart(this.timelineInfos.start);
       if(+newStart !== +this.timelineViewport.start) {
         this.timelineViewport.start = newStart;
       }
@@ -307,6 +302,8 @@ export default {
       return val*winHeight;
     },
     getViewedTimelineStart(timelineView_new_start) {
+
+      // Sanitize new date
       if(timelineView_new_start.isBefore(this.timelineInfos.start)) {
         return moment(this.timelineInfos.start);
       }
@@ -314,21 +311,11 @@ export default {
         return moment(this.timelineInfos.end);
       }
 
-      debugger;
-      // showing not the first day captured
-      if(timelineView_new_start.format('YYYYMMDD') !== this.timelineInfos.start.format('YYYYMMDD')) {
-        return moment(timelineView_new_start).startOf('day');
-      }
-
-      return moment(timelineView_new_start);
+      // Sanitize new date
+      return timelineView_new_start;
     },
     getViewedTimelineEnd(timelineView_start) {
-      // si la timeline viewed commence le jour de la fin, on récupère la vraie fin
-      if(timelineView_start.format('YYYYMMDD') === this.timelineInfos.end.format('YYYYMMDD')) {
-        return moment(this.timelineInfos.end);
-      }
-      // sinon, alors on return 23:59 du jour du start
-      return moment(timelineView_start).endOf('day');
+      return moment(this.timelineInfos.end);
     },
 
     /******************************************************************
@@ -430,7 +417,12 @@ export default {
       this.showMediaModalFor = '';
     },
     scrollToEnd() {
-      this.$refs.timeline.scrollLeft = this.timelineViewport.width;
+      this.$scrollTo('.media', 500, {
+        container: this.$refs.timeline,
+        offset: this.timelineViewport.width,
+        x: true,
+        y: false
+      });
     },
     scrollToMedia(slugMediaName) {
       let mediaToScrollTo = this.medias[slugMediaName];
@@ -446,10 +438,26 @@ export default {
       this.highlightedMedia = slugMediaName;
     },
     goToPrevDay() {
-      this.setViewedTimelineBounds(moment(this.timelineViewport.start).subtract(1, 'days'));
+      let twentyFourHoursInSeconds = 24 * 60 * 60;
+      let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
+
+      this.$scrollTo('.media', 500, {
+        container: this.$refs.timeline,
+        offset: this.$refs.timeline.scrollLeft - twentyFourHoursInPixels,
+        x: true,
+        y: false
+      });
     },
     goToNextDay() {
-      this.setViewedTimelineBounds(moment(this.timelineViewport.start).add(1, 'days'));
+      let twentyFourHoursInSeconds = 24 * 60 * 60;
+      let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
+
+      this.$scrollTo('.media', 500, {
+        container: this.$refs.timeline,
+        offset: this.$refs.timeline.scrollLeft + twentyFourHoursInPixels,
+        x: true,
+        y: false
+      });
     }
   },
 }

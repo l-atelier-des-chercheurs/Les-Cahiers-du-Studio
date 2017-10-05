@@ -1,14 +1,14 @@
 <template>
   <div class="btnDayNav">
+<!--      :class="{ 'is--disabled' : !prevDayIsVisible() }" -->
     <button class="btnDayNav--prev button_small"
-      :class="{ 'is--disabled' : !prevDayIsVisible() }"
       @click="$emit('goToPrevDay')"
     >
       Jour Précédent
     </button>
 
+<!--      :class="{ 'is--disabled' : !nextDayIsVisible() }" -->
     <button class="btnDayNav--next button_small"
-      :class="{ 'is--disabled' : !nextDayIsVisible() }"
       @click="$emit('goToNextDay')"
       >
         Jour Suivant
@@ -35,18 +35,6 @@ export default {
         return false;
       }
       return true;
-    },
-    timelineIsShownFromTheStart: function() {
-      if(this.timelineInfos.start.format('YYYYMMDD') === this.timelineViewport.start.format('YYYYMMDD')) {
-        return true;
-      }
-      return false;
-    },
-    timelineIsShownUntilTheEnd: function() {
-      if(this.timelineInfos.end.format('YYYYMMDD') === this.timelineViewport.end.format('YYYYMMDD')) {
-        return true;
-      }
-      return false;
     }
   }
 }
