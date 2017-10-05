@@ -1,6 +1,6 @@
 {
   "name": "stv-doc",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "A documentation platform for the Studio-Théâtre in Vitry, France.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/louis-ev/stv-documentation",
