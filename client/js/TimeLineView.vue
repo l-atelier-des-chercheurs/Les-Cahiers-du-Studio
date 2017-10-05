@@ -87,8 +87,6 @@
           </DateTime>
         </div>
 
-        <div class="input-single" v-if="false">
-          <input type="range" v-model.number="timelineViewport.start" :min.number="+timelineInfos.start" :max.number="+timelineInfos.end">
         </div>
 
       </div>
@@ -187,14 +185,6 @@ export default {
       console.log('WATCH : folder');
       this.setTimelineBounds();
     },
-    'timelineViewport.start': function() {
-      console.log('WATCH : timelineViewport.start');
-      this.updateTimelineEnd();
-    },
-    'timelineViewport.end': function() {
-      console.log('WATCH : timelineViewport.start');
-      this.updateTimelineStart();
-    },
     'timelineViewport.scale': function() {
       console.log('WATCH : timelineViewport.scale');
       // before updating the scale, we get the percent that's currently shown, store it, and we go back to it right after scaling
@@ -217,7 +207,6 @@ export default {
     window.addEventListener('resize', debounce(this.onResize, 300));
     window.addEventListener('timeline.scrolltoend', this.scrollToEnd);
     this.setTimelineBounds();
-    this.updateTimelineEnd();
     this.setTimeline();
   },
   mounted() {
@@ -228,10 +217,7 @@ export default {
     if(this.timelineViewport.autoscroll) {
       this.$refs.timeline.scrollLeft = this.timelineStyles.width;
     }
-
     this.timelineUpdateRoutine = setInterval(() => {
-      this.setTimelineBounds();
-      this.updateTimelineEnd();
       this.setTimeline();
       if(this.timelineViewport.autoscroll) {
         this.$refs.timeline.scrollLeft = this.timelineStyles.width;

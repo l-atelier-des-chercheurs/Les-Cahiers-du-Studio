@@ -44,7 +44,7 @@
       <div class="input-single">
         <label>Couleur</label><br>
         <select ref="type" v-model="mediadata.color">
-          <option v-for="mediaColor in ['white', 'red', 'blue', 'green']">
+          <option v-for="mediaColor in ['white', 'red', 'blue', 'green', 'purple', 'orange', 'yellow']">
             {{ mediaColor }}
           </option>
         </select>

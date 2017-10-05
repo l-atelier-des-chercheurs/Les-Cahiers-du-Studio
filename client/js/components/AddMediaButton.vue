@@ -53,8 +53,8 @@ export default {
       }
 
       var key = e.key;
-
-      if( key === 'w' || key === 'z') {
+      debugger;
+      if(key === 'y' || key === 'w' || key === 'z') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,
           type: 'marker',
@@ -63,7 +63,7 @@ export default {
         });
         window.dispatchEvent( new Event('timeline.scrolltoend') );
       } else
-      if( key === 's') {
+      if(key === 'u' || key == 's') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,
           type: 'marker',
@@ -72,11 +72,38 @@ export default {
         });
         window.dispatchEvent( new Event('timeline.scrolltoend') );
       } else
-      if( key === 'a' || key === 'q') {
+      if(key === 'i' || key === 'a' || key === 'q') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,
           type: 'marker',
           color: 'green',
+          collapsed: true
+        });
+        window.dispatchEvent( new Event('timeline.scrolltoend') );
+      } else
+      if(key === 'o') {
+        this.$root.createTextMedia({
+          slugFolderName: this.slugFolderName,
+          type: 'marker',
+          color: 'yellow',
+          collapsed: true
+        });
+        window.dispatchEvent( new Event('timeline.scrolltoend') );
+      } else
+      if(key === 'p') {
+        this.$root.createTextMedia({
+          slugFolderName: this.slugFolderName,
+          type: 'marker',
+          color: 'orange',
+          collapsed: true
+        });
+        window.dispatchEvent( new Event('timeline.scrolltoend') );
+      } else
+      if(key === '6') {
+        this.$root.createTextMedia({
+          slugFolderName: this.slugFolderName,
+          type: 'marker',
+          color: 'purple',
           collapsed: true
         });
         window.dispatchEvent( new Event('timeline.scrolltoend') );

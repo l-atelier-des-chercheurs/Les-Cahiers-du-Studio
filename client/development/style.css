@@ -1788,6 +1788,9 @@ button {
 button.is--active {
   font-style: italic;
 }
+button.is--disabled {
+  opacity: 0.5;
+}
 button.button_small {
   font-size: 0.8em;
   padding: 0.3125em;
@@ -4685,6 +4688,15 @@ main > *:first-child {
 .color-green.mediaPreview .media .accroche {
   background-color: #00ad41;
 }
+.color-yellow.mediaPreview .media .accroche {
+  background-color: #FFF000;
+}
+.color-orange.mediaPreview .media .accroche {
+  background-color: #FFBE32;
+}
+.color-purple.mediaPreview .media .accroche {
+  background-color: #b357c1;
+}
 .mediaPreview .media .accrocheDurationLine {
   height: 4px;
   width: 100%;
@@ -4829,11 +4841,42 @@ main > *:first-child {
   padding: 0;
   margin: 0;
 }
+.btnDayNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: end;
+  -ms-flex-align: end;
+  align-items: flex-end;
+  pointer-events: none;
+}
+.btnDayNav > * {
+  height: 20px;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  pointer-events: auto;
+  -webkit-transition: opacity 0.4s ease-out;
+  -o-transition: opacity 0.4s ease-out;
+  transition: opacity 0.4s ease-out;
+}
 .component-fade-enter-active,
 .component-fade-leave-active {
-  -webkit-transition: opacity 0.6s ease;
-  -o-transition: opacity 0.6s ease;
-  transition: opacity 0.6s ease;
+  -webkit-transition: opacity 0.2s ease;
+  -o-transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 .component-fade-enter,
 .component-fade-leave-to {
