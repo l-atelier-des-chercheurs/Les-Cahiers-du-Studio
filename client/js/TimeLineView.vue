@@ -100,12 +100,6 @@
             <label>Défiler automatiquement</label>
             <input type="checkbox" v-model="timelineViewport.autoscroll">
           </div>
-          <div class="input-single">
-            <label>Afficher la timeline au :</label>
-            <DateTime v-model.number="timelineViewport.start" :twowaybinding="true">
-            </DateTime>
-          </div>
-
         </div>
       </div>
 
