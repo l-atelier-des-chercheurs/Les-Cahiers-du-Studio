@@ -371,10 +371,10 @@ export default {
         createDayTick(currentDay);
       }
 
-      // only show HOUR and MINUTES for the currentDay
+      // only show HOUR and MINUTES for the currentDay, the previous and the next
       // to do that, we create a const for the current timestamp and another for the number of ms we show the grid
-      const currentDayStart = moment(this.timelineViewport.currentDay, 'DD/MM/YYYY');
-      const timeEllapsedDay = 24 * 60 * 60 * 1000;
+      const currentDayStart = moment(this.timelineViewport.currentDay, 'DD/MM/YYYY').subtract(1, 'days');
+      const timeEllapsedDay = 3 * 24*60*60*1000;
 
       /****************************** make HOUR ticks ******************************/
 
@@ -456,7 +456,7 @@ export default {
     scrollToMedia(slugMediaName) {
       let mediaToScrollTo = this.medias[slugMediaName];
       let mediaPosX = this.getMediaPosX(mediaToScrollTo.created);
-      this.$scrollTo('.media', 500, {
+      this.$scrollTo('.m_timeline', 500, {
         container: this.$refs.timeline,
         offset: this.$root.settings.has_sidebar_opened ? mediaPosX - 700 : 500,
         x: true,
@@ -470,7 +470,7 @@ export default {
       let twentyFourHoursInSeconds = 24 * 60 * 60;
       let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
 
-      this.$scrollTo('.media', 500, {
+      this.$scrollTo('.m_timeline', 500, {
         container: this.$refs.timeline,
         offset: this.$refs.timeline.scrollLeft - twentyFourHoursInPixels,
         x: true,
@@ -481,7 +481,7 @@ export default {
       let twentyFourHoursInSeconds = 24 * 60 * 60;
       let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
 
-      this.$scrollTo('.media', 500, {
+      this.$scrollTo('.m_timeline', 500, {
         container: this.$refs.timeline,
         offset: this.$refs.timeline.scrollLeft + twentyFourHoursInPixels,
         x: true,
@@ -492,7 +492,8 @@ export default {
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
     },
     setCurrentDay() {
-      const dateFromPosX = this.getDateFromXPosition(this.timelineViewport.scrollLeft + window.innerWidth/2);
+      let dateFromPosX = this.getDateFromXPosition(this.timelineViewport.scrollLeft + window.innerWidth/2);
+      dateFromPosX = Math.min(this.timelineViewport.end, Math.max(dateFromPosX, this.timelineViewport.start));
       const dayFromPosX = moment(dateFromPosX).format('DD/MM/YYYY');
       this.timelineViewport.currentDay = dayFromPosX;
     }
