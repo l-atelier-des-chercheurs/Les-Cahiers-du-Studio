@@ -2,7 +2,7 @@
   <div class="m_timeline" ref="timeline">
 
     <div class="m_timeline-container"
-      :style="setTimeline()"
+      :style="setViewedTimeline()"
       :class="{ 'is--realtime' : isRealtime, 'with--sidebar_opened' : $root.settings.has_sidebar_opened }"
     >
       <div class="timeline_track">
@@ -15,11 +15,9 @@
       </div>
 
       <div v-if="Object.keys(medias).length > 0">
-<!--         <transition name="fade"> -->
-
-<!--             v-if="mediaIsVisible(media.created)" -->
+        <transition name="fade">
           <Media v-for="(media, index) in medias"
-
+            v-if="getMediaPosX(media.created)"
             v-bind:key="index"
             :ref="`media_${index}`"
             :slugFolderName="slugFolderName"
@@ -32,7 +30,7 @@
             @open="openMediaModal(index)"
           >
           </Media>
-<!--         </transition> -->
+        </transition>
       </div>
 
       <template v-else>
@@ -55,6 +53,13 @@
       :slugFolderName="slugFolderName">
     </AddMediaButton>
 
+    <DayNavButtons
+      :timelineInfos="timelineInfos"
+      :timelineViewport="timelineViewport"
+      @goToPrevDay="goToPrevDay()"
+      @goToNextDay="goToNextDay()"
+    >
+    </DayNavButtons>
 
     <div class="options_panel" >
       <button class="button_small padding-medium" @click="showTimelineOptions = !showTimelineOptions">
@@ -79,14 +84,9 @@
           <input type="checkbox" v-model="timelineViewport.autoscroll">
         </div>
         <div class="input-single">
-          <label>Afficher la timeline entre :</label>
+          <label>Afficher la timeline au :</label>
           <DateTime v-model.number="timelineViewport.start" :twowaybinding="true">
           </DateTime>
-          <label>et</label>
-          <DateTime v-model.number="timelineViewport.end" :twowaybinding="true">
-          </DateTime>
-        </div>
-
         </div>
 
       </div>
@@ -108,6 +108,7 @@ import Media from './components/TimelineMedia.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 import AddMediaButton from './components/AddMediaButton.vue';
 import DateTime from './components/subcomponents/DateTime.vue';
+import DayNavButtons from './components/subcomponents/DayNavButtons.vue';
 import moment from 'moment';
 import debounce from 'debounce';
 import EventBus from './event-bus';
@@ -123,7 +124,8 @@ export default {
     Media,
     EditMedia,
     AddMediaButton,
-    DateTime
+    DateTime,
+    DayNavButtons
   },
   data() {
     return {
@@ -139,18 +141,20 @@ export default {
 
       isRealtime: false,
       timelineUpdateRoutine: '',
+
+      // this object contains a start and end for this timeline,
+      // for example 2017-07-01 13:22 and 2017-07-12 12:24
       timelineInfos: {
         start: 0,
         end:   0,
       },
-      timelineStyles: {
-        width: 1,
-        height: 1
-      },
-
       timelineViewport: {
+        // this object contains a start and end for this view,
+        // for example 2017-07-01 13:22 and 2017-07-01 23:59
         start: 0,
         end: 0,
+        width: 1,
+        height: 1,
         scale: this.$root.getProjectScale(this.slugFolderName),
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
@@ -190,9 +194,9 @@ export default {
       // before updating the scale, we get the percent that's currently shown, store it, and we go back to it right after scaling
       let currentScrollLeft = this.$refs.timeline.scrollLeft;
 //       currentScrollLeft += window.innerWidth/2;
-      let currentScrollLeft_percent = currentScrollLeft / this.timelineStyles.width;
+      let currentScrollLeft_percent = currentScrollLeft / this.timelineViewport.width;
       this.$nextTick(function () {
-        this.$refs.timeline.scrollLeft = this.timelineStyles.width * currentScrollLeft_percent;
+        this.$refs.timeline.scrollLeft = this.timelineViewport.width * currentScrollLeft_percent;
       });
       this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
     },
@@ -200,6 +204,10 @@ export default {
       console.log('WATCH : timelineViewport.scrollLeft');
       this.$root.updateProjectScrollLeft(this.slugFolderName, this.timelineViewport.scrollLeft);
     },
+    'timelineViewport.start': function() {
+      console.log('WATCH : timelineViewport.start');
+      this.setViewedTimelineBounds(this.timelineViewport.start);
+    }
   },
   created() {
     console.log(`Created component timeline`);
@@ -207,23 +215,28 @@ export default {
     window.addEventListener('resize', debounce(this.onResize, 300));
     window.addEventListener('timeline.scrolltoend', this.scrollToEnd);
     this.setTimelineBounds();
-    this.setTimeline();
+    this.setViewedTimelineBounds(this.timelineInfos.start);
+    // TODO : check localstorage pour une info de jour
   },
   mounted() {
     EventBus.$on('scrollToMedia', this.scrollToMedia);
     EventBus.$on('highlightMedia', this.highlightMedia);
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
+
+/*
     if(this.timelineViewport.autoscroll) {
-      this.$refs.timeline.scrollLeft = this.timelineStyles.width;
+      this.$refs.timeline.scrollLeft = this.timelineViewport.width;
     }
     this.timelineUpdateRoutine = setInterval(() => {
-      this.setTimeline();
+      this.setViewedTimeline();
       if(this.timelineViewport.autoscroll) {
-        this.$refs.timeline.scrollLeft = this.timelineStyles.width;
+        this.$refs.timeline.scrollLeft = this.timelineViewport.width;
       }
       this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
     }, 1000);
+*/
+
   },
   beforeDestroy() {
     EventBus.$off('scrollToMedia', this.scrollToMedia);
@@ -235,19 +248,13 @@ export default {
   computed: {
   },
   methods: {
+
+    /******************************************************************
+        Updates timelineInfos with folder start and end
+    ******************************************************************/
     setTimelineBounds() {
       this.timelineInfos.start = this.getTimelineStart(this.folder.start);
       this.timelineInfos.end = this.getTimelineEnd(this.folder.end);
-    },
-    setTimelineView() {
-      this.timelineViewport.start = this.timelineInfos.start;
-      this.timelineViewport.end = this.timelineInfos.end;
-    },
-    updateTimelineEnd() {
-      this.timelineViewport.end = Math.min(this.timelineViewport.start+this.timelineViewport.longestIntervalTS, this.timelineInfos.end);
-    },
-    updateTimelineStart() {
-      this.timelineViewport.start = Math.max(this.timelineViewport.end-this.timelineViewport.longestIntervalTS, this.timelineInfos.start);
     },
     // retourne une valeure en pixel qui dépend de la hauteur de la timeline
     getTimelineStart(ts) {
@@ -268,13 +275,21 @@ export default {
         this.isRealtime = true;
         return moment();
       }
+    },
 
+    /******************************************************************
+        Updates viewed timeline with a start and end
+    ******************************************************************/
+    setViewedTimelineBounds(new_start) {
+      const newStart = this.getViewedTimelineStart(new_start);
+      if(+newStart !== +this.timelineViewport.start) {
+        this.timelineViewport.start = newStart;
+      }
+      this.timelineViewport.end = this.getViewedTimelineEnd(this.timelineViewport.start);
     },
-    getVH(val) {
-      let winHeight = this.windowHeight - this.topNavbarHeight - this.bottomScrollBar;
-      return val*winHeight;
-    },
-    setTimeline() {
+
+    // called by :style in template
+    setViewedTimeline() {
       // récupérer la longueur de la timeline en TS
       let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
       // décomposer en secondes
@@ -283,11 +298,42 @@ export default {
       let w = Math.floor(secondsEllapsed/this.timelineViewport.scale);
       let h = Math.floor(this.getVH(1));
 
-      this.timelineStyles.width = w;
-      this.timelineStyles.height = h;
-
+      this.timelineViewport.width = w;
+      this.timelineViewport.height = h;
       return `width: ${w}px; height: ${h}px;`;
     },
+    getVH(val) {
+      let winHeight = this.windowHeight - this.topNavbarHeight - this.bottomScrollBar;
+      return val*winHeight;
+    },
+    getViewedTimelineStart(timelineView_new_start) {
+      if(timelineView_new_start.isBefore(this.timelineInfos.start)) {
+        return moment(this.timelineInfos.start);
+      }
+      if(timelineView_new_start.isAfter(this.timelineInfos.end)) {
+        return moment(this.timelineInfos.end);
+      }
+
+      debugger;
+      // showing not the first day captured
+      if(timelineView_new_start.format('YYYYMMDD') !== this.timelineInfos.start.format('YYYYMMDD')) {
+        return moment(timelineView_new_start).startOf('day');
+      }
+
+      return moment(timelineView_new_start);
+    },
+    getViewedTimelineEnd(timelineView_start) {
+      // si la timeline viewed commence le jour de la fin, on récupère la vraie fin
+      if(timelineView_start.format('YYYYMMDD') === this.timelineInfos.end.format('YYYYMMDD')) {
+        return moment(this.timelineInfos.end);
+      }
+      // sinon, alors on return 23:59 du jour du start
+      return moment(timelineView_start).endOf('day');
+    },
+
+    /******************************************************************
+        Updates medias and grid position according to viewed timeline
+    ******************************************************************/
     getMediaPosX(media_created) {
       let createdTS = moment(media_created,'YYYY-MM-DD HH:mm:ss')
       let posX = this.getXPosition(createdTS);
@@ -297,13 +343,10 @@ export default {
       let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
       let html = '';
 
-      /******************************
-              make DAY ticks
-      ******************************/
-
+      /****************************** make DAY ticks ******************************/
       let createDayTick = (currentDay) => {
         let xPos = this.getXPosition(currentDay);
-        let momentDay = moment(currentDay).format('YYYY-MM-DD HH:mm:ss');
+        let momentDay = moment(currentDay).format('YYYY-MM-DD');
         html += `<div class="gridItem font-small gridItem_isday" style="transform:translate(${xPos}px, 0px)" data-caption="${momentDay}"></div>`;
       }
 
@@ -314,24 +357,19 @@ export default {
         createDayTick(currentDay);
       }
 
-//       if(this.timelineViewport.scale > 30) { return html; }
-
-      /******************************
-              make HOUR ticks
-      ******************************/
-
-      // make HOUR ticks
-      let createHourTick = (currentHour) => {
+      /****************************** make HOUR ticks ******************************/
+      let createHourTick = (currentHour, withCaption = false) => {
         let xPos = this.getXPosition(currentHour);
         let momentHour = moment(currentHour).format('HH:mm');
 
-        if(this.timelineViewport.scale < 70) {
+        if(withCaption || this.timelineViewport.scale < 70) {
           html += `<div class="gridItem font-small gridItem_ishour" style="transform:translate(${xPos}px, 0px)" data-caption="${momentHour}"></div>`;
         } else {
           html += `<div class="gridItem font-small gridItem_ishour" style="transform:translate(${xPos}px, 0px)"></div>`;
         }
       }
 
+      createHourTick(this.timelineViewport.start, true);
       let firstHour = moment(moment(this.timelineViewport.start).format('YYYY-MM-DD HH:00'));
       for(var h = 3600000; h < timeEllapsed; h +=  3600000) {
         let currentHour = firstHour + h;
@@ -370,9 +408,9 @@ export default {
       if(this.timelineViewport.start < 0 || !this.timelineViewport.end < 0) { console.log(`Error with getXPosition`); }
       let msSinceStart = timestamp - this.timelineViewport.start;
       let pc = msSinceStart/(this.timelineViewport.end - this.timelineViewport.start);
-//       if(pc < 0 || pc > 1) { return false; }
+      if(pc < 0 || pc > 1) { return false; }
       pc = Math.min(Math.max(parseFloat(pc), 0), 1);
-      let posX = this.timelineStyles.width * pc;
+      let posX = this.timelineViewport.width * pc;
       return Math.floor(posX);
     },
     mediaIsVisible(media_created) {
@@ -392,7 +430,7 @@ export default {
       this.showMediaModalFor = '';
     },
     scrollToEnd() {
-      this.$refs.timeline.scrollLeft = this.timelineStyles.width;
+      this.$refs.timeline.scrollLeft = this.timelineViewport.width;
     },
     scrollToMedia(slugMediaName) {
       let mediaToScrollTo = this.medias[slugMediaName];
@@ -406,6 +444,12 @@ export default {
     },
     highlightMedia(slugMediaName) {
       this.highlightedMedia = slugMediaName;
+    },
+    goToPrevDay() {
+      this.setViewedTimelineBounds(moment(this.timelineViewport.start).subtract(1, 'days'));
+    },
+    goToNextDay() {
+      this.setViewedTimelineBounds(moment(this.timelineViewport.start).add(1, 'days'));
     }
   },
 }
