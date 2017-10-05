@@ -361,11 +361,17 @@ export default {
       let createDayTick = (currentDay) => {
         let xPos = this.getXPositionFromDate(currentDay);
         let momentDay = moment(currentDay).format('DD/MM/YYYY');
-        html += `<div class="gridItem font-small gridItem_isday" style="transform:translate(${xPos}px, 0px)" data-caption="${momentDay}"></div>`;
+        html += `
+        <div class="gridItem font-small gridItem_isday" style="transform:translate(${xPos}px, 0px)">
+          <div class="gridItem--caption">
+            ${momentDay}
+          </div>
+        </div>
+        `;
       }
 
       createDayTick(this.timelineViewport.start);
-      let firstDay = moment(moment(this.timelineViewport.start).format('YYYY-MM-DD 00:00'));
+      let firstDay = moment(moment(this.timelineViewport.start).startOf('day').subtract(1, 'day'));
       for(var d = 86400000; d < timeEllapsed; d += 86400000) {
         let currentDay = firstDay + d;
         createDayTick(currentDay);
@@ -373,7 +379,7 @@ export default {
 
       // only show HOUR and MINUTES for the currentDay, the previous and the next
       // to do that, we create a const for the current timestamp and another for the number of ms we show the grid
-      const currentDayStart = moment(this.timelineViewport.currentDay, 'DD/MM/YYYY').subtract(1, 'days');
+      let currentDayStart = moment(this.timelineViewport.currentDay).subtract(1, 'days').startOf('day');
       const timeEllapsedDay = 3 * 24*60*60*1000;
 
       /****************************** make HOUR ticks ******************************/
@@ -433,10 +439,13 @@ export default {
     },
     mediaIsVisible(media_created) {
       // show only if == currentDay
-      let mediaCreatedDay = moment(media_created,'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY');
+      let mediaCreatedDay = moment(media_created,'YYYY-MM-DD HH:mm:ss');
       // show if in view
 //       if(this.timelineViewport.scrollLeft < mediaPosX && mediaPosX < this.timelineViewport.scrollLeft + window.innerWidth) {
-      if(mediaCreatedDay === this.timelineViewport.currentDay) {
+      if(mediaCreatedDay.isSame(this.timelineViewport.currentDay, 'day') ||
+      mediaCreatedDay.subtract(1, 'day').isSame(this.timelineViewport.currentDay, 'day') ||
+      mediaCreatedDay.add(1, 'day').isSame(this.timelineViewport.currentDay, 'day')
+      ) {
         return true;
       }
       return false;
@@ -492,10 +501,9 @@ export default {
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
     },
     setCurrentDay() {
-      let dateFromPosX = this.getDateFromXPosition(this.timelineViewport.scrollLeft + window.innerWidth/2);
+      let dateFromPosX = this.getDateFromXPosition(this.timelineViewport.scrollLeft + window.innerWidth/4);
       dateFromPosX = Math.min(this.timelineViewport.end, Math.max(dateFromPosX, this.timelineViewport.start));
-      const dayFromPosX = moment(dateFromPosX).format('DD/MM/YYYY');
-      this.timelineViewport.currentDay = dayFromPosX;
+      this.timelineViewport.currentDay = dateFromPosX;
     }
   },
 }
@@ -552,23 +560,19 @@ export default {
 
   .gridItem {
     position: absolute;
-    width: 1px;
     height: 100%;
 
     transition: all .4s;
 
     &.gridItem_isday {
-      border-left: 1px solid fade-out(black, 0.0);
+      border-left: 1px solid #00ad41;
       z-index:100;
+      color: white;
 
-      &::before {
-        content: attr(data-caption);
+      .gridItem--caption {
         display: block;
-        width: 150px;
-/*         transform: rotate(-15deg); */
-        transform-origin: left top;
-        margin-left: 4px;
-        margin-top: 1px;
+        background-color: #00ad41;
+        padding: 1px 4px;
       }
     }
     &.gridItem_ishour {

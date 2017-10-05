@@ -26,7 +26,7 @@
               </span>
             </li>
             <li v-if="typeof currentDay !== 'undefined'">
-              {{ currentDay }}
+              {{ getCurrentDay }}
             </li>
           </ol>
         </div>
@@ -46,6 +46,7 @@
 </template>
 <script>
 import EditFolder from './modals/EditFolder.vue';
+import moment from 'moment';
 
 export default {
   props: ['folder', 'slugFolderName', 'currentDay'],
@@ -56,6 +57,13 @@ export default {
     return {
       showEditFolderModal: false
     }
+  },
+  computed: {
+    getCurrentDay: function() {
+      return moment(this.currentDay).format('DD/MM/YYYY');
+    }
+
+
   }
 }
 </script>

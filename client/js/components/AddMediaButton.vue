@@ -53,7 +53,6 @@ export default {
       }
 
       var key = e.key;
-      debugger;
       if(key === 'y' || key === 'w' || key === 'z') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,
