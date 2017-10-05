@@ -1,118 +1,137 @@
 <template>
-  <div class="m_timeline" ref="timeline">
+  <div>
 
-    <div class="m_timeline-container"
-      :style="setViewedTimeline()"
-      :class="{ 'is--realtime' : isRealtime, 'with--sidebar_opened' : $root.settings.has_sidebar_opened }"
-    >
-      <div class="timeline_track">
-      </div>
-
-      <!-- GRID -->
-      <div class="simple_grid_overlay">
-        <div class="horizontal" v-html="generateHorizontalGrid()">
-        </div>
-      </div>
-
-      <div v-if="Object.keys(medias).length > 0">
-        <transition-group name="fade">
-          <Media v-for="(media, index) in medias"
-            v-if="getMediaPosX(media.created)"
-            v-bind:key="index"
-            :ref="`media_${index}`"
-            :slugFolderName="slugFolderName"
-            :slugMediaName="index"
-            :media="media"
-            :timelineScale="timelineViewport.scale"
-            :timelineHeight="getVH(1)"
-            :posX="getMediaPosX(media.created)"
-            :class="{ 'is--highlighted' : highlightedMedia === index }"
-            @open="openMediaModal(index)"
-          >
-          </Media>
-        </transition-group>
-      </div>
-
-      <template v-else>
-        <div class="nomediainfo">
-          <code>
-            <template v-if="folder.authorized">
-              Aucun média dans ce dossier.
-            </template>
-            <template v-else>
-              Aucun média public dans ce dossier.
-            </template>
-          </code>
-        </div>
-      </template>
-
-    </div>
-
-    <AddMediaButton
-      v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass')"
-      :slugFolderName="slugFolderName">
-    </AddMediaButton>
-
-    <DayNavButtons
-      :timelineInfos="timelineInfos"
-      :timelineViewport="timelineViewport"
-      @goToPrevDay="goToPrevDay()"
-      @goToNextDay="goToNextDay()"
-    >
-    </DayNavButtons>
-
-    <div class="options_panel" >
-      <button class="button_small padding-medium" @click="showTimelineOptions = !showTimelineOptions">
-        options
-      </button>
-
-      <div v-if="showTimelineOptions" class="padding-small" style="width:370px">
-        <label>Échelle de temps</label>
-        <div class="input-group">
-          <template v-for="btns in scaleBtns">
-            <button type="button"
-              class="button"
-              :class="{ 'is--active' : timelineViewport.scale === btns.scale }"
-              @click="timelineViewport.scale = btns.scale"
-            >
-              {{ btns.name }}
-            </button>
-          </template>
-        </div>
-        <div class="input-single" v-if="isRealtime">
-          <label>Défiler automatiquement</label>
-          <input type="checkbox" v-model="timelineViewport.autoscroll">
-        </div>
-        <div class="input-single">
-          <label>Afficher la timeline au :</label>
-          <DateTime v-model.number="timelineViewport.start" :twowaybinding="true">
-          </DateTime>
-        </div>
-
-      </div>
-    </div>
-
-    <EditMedia
-      v-if="showMediaModalFor !== ''"
+    <NavbarTop
+      :folder="folder"
       :slugFolderName="slugFolderName"
-      :slugMediaName="showMediaModalFor"
-      :media="medias[showMediaModalFor]"
-      @close="showMediaModalFor = ''"
-    >
-    </EditMedia>
+      :currentDay="timelineViewport.currentDay"
+      @toggleSidebar="toggleSidebar()"
+      >
+    </NavbarTop>
 
+    <Sidebar
+      v-if="$root.settings.has_sidebar_opened"
+      :folder="folder"
+      :slugFolderName="slugFolderName"
+      :medias="medias"
+    >
+    </Sidebar>
+
+    <div class="m_timeline" ref="timeline">
+      <div class="m_timeline-container"
+        :style="setViewedTimeline()"
+        :class="{ 'is--realtime' : isRealtime, 'with--sidebar_opened' : $root.settings.has_sidebar_opened }"
+      >
+        <div class="timeline_track">
+        </div>
+
+        <!-- GRID -->
+        <div class="simple_grid_overlay">
+          <div class="horizontal" v-html="generateHorizontalGrid()">
+          </div>
+        </div>
+
+        <div v-if="Object.keys(medias).length > 0">
+          <transition-group name="fade">
+            <Media v-for="(media, index) in medias"
+              v-if="getMediaPosX(media.created) && mediaIsVisible(media.created)"
+              v-bind:key="index"
+              :ref="`media_${index}`"
+              :slugFolderName="slugFolderName"
+              :slugMediaName="index"
+              :media="media"
+              :timelineScale="timelineViewport.scale"
+              :timelineHeight="getVH(1)"
+              :posX="getMediaPosX(media.created)"
+              :class="{ 'is--highlighted' : highlightedMedia === index }"
+              @open="openMediaModal(index)"
+            >
+            </Media>
+          </transition-group>
+        </div>
+
+        <template v-else>
+          <div class="nomediainfo">
+            <code>
+              <template v-if="folder.authorized">
+                Aucun média dans ce dossier.
+              </template>
+              <template v-else>
+                Aucun média public dans ce dossier.
+              </template>
+            </code>
+          </div>
+        </template>
+
+      </div>
+
+      <AddMediaButton
+        v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass')"
+        :slugFolderName="slugFolderName">
+      </AddMediaButton>
+
+      <DayNavButtons
+        :timelineInfos="timelineInfos"
+        :timelineViewport="timelineViewport"
+        @goToPrevDay="goToPrevDay()"
+        @goToNextDay="goToNextDay()"
+      >
+      </DayNavButtons>
+
+      <div class="options_panel" >
+        <button class="button_small padding-medium" @click="showTimelineOptions = !showTimelineOptions">
+          options
+        </button>
+
+        <div v-if="showTimelineOptions" class="padding-small" style="width:370px">
+          <label>Échelle de temps</label>
+          <div class="input-group">
+            <template v-for="btns in scaleBtns">
+              <button type="button"
+                class="button"
+                :class="{ 'is--active' : timelineViewport.scale === btns.scale }"
+                @click="timelineViewport.scale = btns.scale"
+              >
+                {{ btns.name }}
+              </button>
+            </template>
+          </div>
+          <div class="input-single" v-if="isRealtime">
+            <label>Défiler automatiquement</label>
+            <input type="checkbox" v-model="timelineViewport.autoscroll">
+          </div>
+          <div class="input-single">
+            <label>Afficher la timeline au :</label>
+            <DateTime v-model.number="timelineViewport.start" :twowaybinding="true">
+            </DateTime>
+          </div>
+
+        </div>
+      </div>
+
+      <EditMedia
+        v-if="showMediaModalFor !== ''"
+        :slugFolderName="slugFolderName"
+        :slugMediaName="showMediaModalFor"
+        :media="medias[showMediaModalFor]"
+        @close="showMediaModalFor = ''"
+      >
+      </EditMedia>
+    </div>
   </div>
 </template>
 <script>
+import NavbarTop from './components/NavbarTop.vue';
+import Sidebar from './components/Sidebar.vue';
+import AddMediaButton from './components/AddMediaButton.vue';
+
 import Media from './components/TimelineMedia.vue';
 import EditMedia from './components/modals/EditMedia.vue';
-import AddMediaButton from './components/AddMediaButton.vue';
 import DateTime from './components/subcomponents/DateTime.vue';
 import DayNavButtons from './components/subcomponents/DayNavButtons.vue';
 import moment from 'moment';
 import debounce from 'debounce';
 import EventBus from './event-bus';
-
 
 export default {
   props: {
@@ -123,6 +142,8 @@ export default {
   components: {
     Media,
     EditMedia,
+    NavbarTop,
+    Sidebar,
     AddMediaButton,
     DateTime,
     DayNavButtons
@@ -142,7 +163,7 @@ export default {
       isRealtime: false,
       timelineUpdateRoutine: '',
 
-      // this object contains a start and end for this timeline,
+      // this object contains a start and end for this timeline, ven if it is realtime
       // for example 2017-07-01 13:22 and 2017-07-12 12:24
       timelineInfos: {
         start: 0,
@@ -156,6 +177,7 @@ export default {
         width: 1,
         height: 1,
         scale: this.$root.getProjectScale(this.slugFolderName),
+        currentDay: '',
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
@@ -204,6 +226,7 @@ export default {
     'timelineViewport.scrollLeft': function() {
       console.log('WATCH : timelineViewport.scrollLeft');
       this.$root.updateProjectScrollLeft(this.slugFolderName, this.timelineViewport.scrollLeft);
+      this.setCurrentDay();
     },
   },
   created() {
@@ -213,6 +236,7 @@ export default {
     window.addEventListener('timeline.scrolltoend', this.scrollToEnd);
     this.setTimelineBounds();
     this.setViewedTimelineBoundsFromInfos();
+    this.setCurrentDay();
     // TODO : check localstorage pour une info de jour
   },
   mounted() {
@@ -224,6 +248,7 @@ export default {
     if(this.timelineViewport.autoscroll) {
       this.scrollToEnd();
     }
+
     this.timelineUpdateRoutine = setInterval(() => {
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
@@ -231,6 +256,7 @@ export default {
         this.scrollToEnd()
       }
       this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
+      this.setCurrentDay();
     }, 1000);
   },
   beforeDestroy() {
@@ -322,8 +348,8 @@ export default {
         Updates medias and grid position according to viewed timeline
     ******************************************************************/
     getMediaPosX(media_created) {
-      let createdTS = moment(media_created,'YYYY-MM-DD HH:mm:ss')
-      let posX = this.getXPosition(createdTS);
+      let createdTS = moment(media_created,'YYYY-MM-DD HH:mm:ss');
+      let posX = this.getXPositionFromDate(createdTS);
       return posX;
     },
     generateHorizontalGrid() {
@@ -331,9 +357,10 @@ export default {
       let html = '';
 
       /****************************** make DAY ticks ******************************/
+
       let createDayTick = (currentDay) => {
-        let xPos = this.getXPosition(currentDay);
-        let momentDay = moment(currentDay).format('YYYY-MM-DD');
+        let xPos = this.getXPositionFromDate(currentDay);
+        let momentDay = moment(currentDay).format('DD/MM/YYYY');
         html += `<div class="gridItem font-small gridItem_isday" style="transform:translate(${xPos}px, 0px)" data-caption="${momentDay}"></div>`;
       }
 
@@ -344,55 +371,53 @@ export default {
         createDayTick(currentDay);
       }
 
+      // only show HOUR and MINUTES for the currentDay
+      // to do that, we create a const for the current timestamp and another for the number of ms we show the grid
+      const currentDayStart = moment(this.timelineViewport.currentDay, 'DD/MM/YYYY');
+      const timeEllapsedDay = 24 * 60 * 60 * 1000;
+
       /****************************** make HOUR ticks ******************************/
+
       let createHourTick = (currentHour, withCaption = false) => {
-        let xPos = this.getXPosition(currentHour);
-        let momentHour = moment(currentHour).format('HH:mm');
+        let xPos = this.getXPositionFromDate(currentHour);
 
         if(withCaption || this.timelineViewport.scale < 70) {
-          html += `<div class="gridItem font-small gridItem_ishour" style="transform:translate(${xPos}px, 0px)" data-caption="${momentHour}"></div>`;
+          html += `<div class="gridItem font-small gridItem_ishour" style="transform:translate(${xPos}px, 0px)" data-caption="${moment(currentHour).format('HH:mm')}"></div>`;
         } else {
           html += `<div class="gridItem font-small gridItem_ishour" style="transform:translate(${xPos}px, 0px)"></div>`;
         }
       }
 
       createHourTick(this.timelineViewport.start, true);
-      let firstHour = moment(moment(this.timelineViewport.start).format('YYYY-MM-DD HH:00'));
-      for(var h = 3600000; h < timeEllapsed; h +=  3600000) {
-        let currentHour = firstHour + h;
+      for(var h = 3600000; h < timeEllapsedDay; h +=  3600000) {
+        let currentHour = currentDayStart + h;
         createHourTick(currentHour);
       }
 
       if(this.timelineViewport.scale > 10) { return html; }
 
-      /******************************
-            make MINUTES ticks
-      ******************************/
+      /****************************** make MINUTES ticks ******************************/
 
-      // make MINUTES ticks
       let createMinuteTick = (currentMinute) => {
-        let xPos = this.getXPosition(currentMinute);
+        let xPos = this.getXPositionFromDate(currentMinute);
         if(moment(currentMinute).minute() === 0) {
           return;
         }
         if(moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 1) {
-          let momentMinute = moment(currentMinute).format('HH:mm');
-          html += `<div class="gridItem font-small gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${momentMinute}"></div>`;
+          html += `<div class="gridItem font-small gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${moment(currentMinute).format('HH:mm')}"></div>`;
         } else {
           html += `<div class="gridItem font-small gridItem_isminute" style="transform:translate(${xPos}px, 0px)"></div>`;
         }
       }
 
-      let firstMinute = moment(moment(this.timelineViewport.start).format('YYYY-MM-DD HH:mm:00'));
-      for(var m = 0; m < timeEllapsed; m += 60000) {
-        let currentMinute = firstMinute + m;
+      for(var m = 0; m < timeEllapsedDay; m += 60000) {
+        let currentMinute = currentDayStart + m;
         createMinuteTick(currentMinute);
       }
 
       return html;
     },
-    getXPosition(timestamp) {
-      if(this.timelineViewport.start < 0 || !this.timelineViewport.end < 0) { console.log(`Error with getXPosition`); }
+    getXPositionFromDate(timestamp) {
       let msSinceStart = timestamp - this.timelineViewport.start;
       let pc = msSinceStart/(this.timelineViewport.end - this.timelineViewport.start);
       if(pc < 0 || pc > 1) { return false; }
@@ -400,9 +425,18 @@ export default {
       let posX = this.timelineViewport.width * pc;
       return Math.floor(posX);
     },
+    getDateFromXPosition(posX) {
+      let pc = posX/this.timelineViewport.width;
+      let viewportLength = this.timelineViewport.end - this.timelineViewport.start;
+      let timeSinceStart = pc * viewportLength;
+      return moment(timeSinceStart + this.timelineViewport.start);
+    },
     mediaIsVisible(media_created) {
-      const mediaPosX = this.getMediaPosX(media_created);
-      if(this.timelineViewport.scrollLeft < mediaPosX && mediaPosX < this.timelineViewport.scrollLeft + window.innerWidth) {
+      // show only if == currentDay
+      let mediaCreatedDay = moment(media_created,'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY');
+      // show if in view
+//       if(this.timelineViewport.scrollLeft < mediaPosX && mediaPosX < this.timelineViewport.scrollLeft + window.innerWidth) {
+      if(mediaCreatedDay === this.timelineViewport.currentDay) {
         return true;
       }
       return false;
@@ -417,12 +451,7 @@ export default {
       this.showMediaModalFor = '';
     },
     scrollToEnd() {
-      this.$scrollTo('.media', 500, {
-        container: this.$refs.timeline,
-        offset: this.timelineViewport.width,
-        x: true,
-        y: false
-      });
+      this.$refs.timeline.scrollLeft = this.timelineViewport.width;
     },
     scrollToMedia(slugMediaName) {
       let mediaToScrollTo = this.medias[slugMediaName];
@@ -458,6 +487,14 @@ export default {
         x: true,
         y: false
       });
+    },
+    toggleSidebar() {
+      this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
+    },
+    setCurrentDay() {
+      const dateFromPosX = this.getDateFromXPosition(this.timelineViewport.scrollLeft + window.innerWidth/2);
+      const dayFromPosX = moment(dateFromPosX).format('DD/MM/YYYY');
+      this.timelineViewport.currentDay = dayFromPosX;
     }
   },
 }

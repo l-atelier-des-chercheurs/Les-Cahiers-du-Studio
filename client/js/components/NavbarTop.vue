@@ -19,13 +19,14 @@
             </li>
             <li v-if="typeof folder !== 'undefined'">
               <template>{{ folder.name }}</template>
-
               <span v-if="folder.authorized">
                 <button type="button" class="button_small" @click="showEditFolderModal = true">
                   Edit
                 </button>
               </span>
-
+            </li>
+            <li v-if="typeof currentDay !== 'undefined'">
+              {{ currentDay }}
             </li>
           </ol>
         </div>
@@ -47,7 +48,7 @@
 import EditFolder from './modals/EditFolder.vue';
 
 export default {
-  props: ['folder', 'slugFolderName'],
+  props: ['folder', 'slugFolderName', 'currentDay'],
   components: {
     EditFolder
   },

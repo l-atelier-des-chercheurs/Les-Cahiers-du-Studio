@@ -35,27 +35,13 @@
     </div>
     <div v-if="view === 'TimeLineView'">
 
-      <NavbarTop
-        :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
-        :slugFolderName="$root.settings.currentlyOpenedFolder"
-        @toggleSidebar="toggleSidebar()"
-        >
-      </NavbarTop>
-
-      <Sidebar
-        v-if="$root.settings.has_sidebar_opened"
-        :slugFolderName="$root.settings.currentlyOpenedFolder"
-        :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
-        :medias="$root.store.folders[$root.settings.currentlyOpenedFolder].medias"
-      >
-      </Sidebar>
-
       <TimeLineView
         :slugFolderName="$root.settings.currentlyOpenedFolder"
         :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
         :medias="$root.store.folders[$root.settings.currentlyOpenedFolder].medias"
       >
       </TimeLineView>
+
     </div>
 
 
@@ -71,20 +57,16 @@
 </template>
 
 <script>
-import NavbarTop from './components/NavbarTop.vue';
 import NavbarLeft from './components/NavbarLeft.vue';
 import ListView from './ListView.vue';
-import Sidebar from './components/Sidebar.vue';
 import TimeLineView from './TimeLineView.vue';
 import BottomFooter from './components/BottomFooter.vue';
 
 export default {
   name: 'app',
   components: {
-    NavbarTop,
     NavbarLeft,
     ListView,
-    Sidebar,
     TimeLineView,
     BottomFooter
   },
@@ -105,10 +87,6 @@ export default {
     }
   },
   methods: {
-    toggleSidebar: function() {
-      this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
-    }
-
   }
 }
 </script>

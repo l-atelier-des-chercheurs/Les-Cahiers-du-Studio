@@ -4,11 +4,16 @@
       <h3>
         Nombre de médias&nbsp;: {{ Object.keys(medias).length }}
       </h3>
-      <h3>
-        Liste&nbsp;:
-      </h3>
     </div>
 
+    <h3>Calendrier&nbsp;:</h3>
+    <div class="calendar">
+      <div v-for="day in folderDays()">
+        {{ day }}
+      </div>
+    </div>
+
+    <h3>Liste&nbsp;:</h3>
     <table class="table-striped table-hoverable">
       <thead>
         <tr>
@@ -75,6 +80,10 @@ export default {
     },
     unHighlightMedia: function(slugMediaName) {
       EventBus.$emit('highlightMedia', '');
+    },
+
+    folderDays: function() {
+      debugger;
     }
   }
 
