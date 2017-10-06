@@ -502,7 +502,6 @@ main {
   box-shadow: -2px 4px 13px #bbb;
 
   .intro {
-    padding: var(--table-spacing-y) var(--table-spacing-x);
   }
 
   ul, li {
@@ -541,7 +540,27 @@ main {
   }
 }
 
+.m_calendar {
 
+
+  .m_calendar--days {
+    margin: @t-skipline/4;
+    &::after {
+      content:'';
+      clear:both;
+      display: table;
+    }
+  }
+
+  .m_calendar--days--day {
+    float: left;
+    width: 100/7%;
+    padding: @t-skipline/4;
+    margin: @t-skipline/4;
+    text-align: center;
+
+  }
+}
 
 
 .component-fade-enter-active, .component-fade-leave-active {

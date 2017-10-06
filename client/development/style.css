@@ -1737,6 +1737,9 @@ b {
 .margin-bottom-small {
   margin-bottom: 0.625em;
 }
+.margin-bottom-none {
+  margin-bottom: 0;
+}
 .margin-left-none {
   margin-left: 0;
 }
@@ -4833,9 +4836,6 @@ main > *:first-child {
   -webkit-box-shadow: -2px 4px 13px #bbb;
   box-shadow: -2px 4px 13px #bbb;
 }
-.m_sidebar .intro {
-  padding: var(--table-spacing-y) var(--table-spacing-x);
-}
 .m_sidebar ul,
 .m_sidebar li {
   padding: 0;
@@ -4871,6 +4871,21 @@ main > *:first-child {
   -webkit-transition: opacity 0.4s ease-out;
   -o-transition: opacity 0.4s ease-out;
   transition: opacity 0.4s ease-out;
+}
+.m_calendar .m_calendar--days {
+  margin: 0.3125em;
+}
+.m_calendar .m_calendar--days::after {
+  content: '';
+  clear: both;
+  display: table;
+}
+.m_calendar .m_calendar--days--day {
+  float: left;
+  width: 14.28571429%;
+  padding: 0.3125em;
+  margin: 0.3125em;
+  text-align: center;
 }
 .component-fade-enter-active,
 .component-fade-leave-active {

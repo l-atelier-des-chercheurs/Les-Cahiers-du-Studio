@@ -14,6 +14,7 @@
       :folder="folder"
       :slugFolderName="slugFolderName"
       :medias="medias"
+      :timelineInfos="timelineInfos"
     >
     </Sidebar>
 
@@ -235,6 +236,7 @@ export default {
   },
   mounted() {
     EventBus.$on('scrollToMedia', this.scrollToMedia);
+    EventBus.$on('scrollToDate', this.scrollToDate);
     EventBus.$on('highlightMedia', this.highlightMedia);
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
@@ -254,6 +256,7 @@ export default {
   },
   beforeDestroy() {
     EventBus.$off('scrollToMedia', this.scrollToMedia);
+    EventBus.$off('scrollToDate', this.scrollToDate);
     EventBus.$off('highlightMedia', this.highlightMedia);
     window.removeEventListener('resize', debounce(this.onResize, 300));
     window.removeEventListener('timeline.scrolltoend', this.scrollToEnd);
@@ -365,7 +368,7 @@ export default {
 
       createDayTick(this.timelineViewport.start);
       let firstDay = moment(moment(this.timelineViewport.start).startOf('day').subtract(1, 'day'));
-      for(var d = 86400000; d < timeEllapsed; d += 86400000) {
+      for(var d = 86400000; d < timeEllapsed + 86400000; d += 86400000) {
         let currentDay = firstDay + d;
         createDayTick(currentDay);
       }
@@ -431,10 +434,6 @@ export default {
       return moment(timeSinceStart + this.timelineViewport.start);
     },
     mediaIsVisible(media_created, slugMediaName) {
-      if(slugMediaName === 'image.jpg') {
-        debugger;
-      }
-      // show only if == currentDay
       let mediaCreatedDay = moment(media_created, 'YYYY-MM-DD HH:mm:ss');
 
       // show if in view
@@ -464,7 +463,16 @@ export default {
       let mediaPosX = this.getMediaPosX(mediaToScrollTo.created);
       this.$scrollTo('.m_timeline', 500, {
         container: this.$refs.timeline,
-        offset: this.$root.settings.has_sidebar_opened ? mediaPosX - 700 : 500,
+        offset: this.$root.settings.has_sidebar_opened ? mediaPosX - 700 : mediaPosX - 500,
+        x: true,
+        y: false
+      });
+    },
+    scrollToDate(timestamp) {
+      let xPos = this.getXPositionFromDate(timestamp);
+      this.$scrollTo('.m_timeline', 500, {
+        container: this.$refs.timeline,
+        offset: this.$root.settings.has_sidebar_opened ? xPos : xPos - 500,
         x: true,
         y: false
       });

@@ -27,9 +27,6 @@
             </li>
             <li v-if="typeof currentDay !== 'undefined'">
               {{ getCurrentDay }}
-              <button type="button" class="button_small">
-                Naviguer
-              </button>
             </li>
           </ol>
         </div>
