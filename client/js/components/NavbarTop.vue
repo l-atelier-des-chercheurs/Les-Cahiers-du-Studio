@@ -21,12 +21,15 @@
               <template>{{ folder.name }}</template>
               <span v-if="folder.authorized">
                 <button type="button" class="button_small" @click="showEditFolderModal = true">
-                  Edit
+                  Éditer
                 </button>
               </span>
             </li>
             <li v-if="typeof currentDay !== 'undefined'">
               {{ getCurrentDay }}
+              <button type="button" class="button_small">
+                Naviguer
+              </button>
             </li>
           </ol>
         </div>

@@ -34,7 +34,7 @@
         <div v-if="Object.keys(medias).length > 0">
           <transition-group name="fade">
             <Media v-for="(media, index) in medias"
-              v-if="getMediaPosX(media.created) && mediaIsVisible(media.created)"
+              v-if="getMediaPosX(media.created) && mediaIsVisible(media.created, index)"
               v-bind:key="index"
               :ref="`media_${index}`"
               :slugFolderName="slugFolderName"
@@ -244,7 +244,6 @@ export default {
     }
 
     this.timelineUpdateRoutine = setInterval(() => {
-      this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
       if(this.timelineViewport.autoscroll) {
         this.scrollToEnd()
@@ -299,8 +298,8 @@ export default {
       const newStart = this.getViewedTimelineStart(this.timelineInfos.start);
       if(+newStart !== +this.timelineViewport.start) {
         this.timelineViewport.start = newStart;
+        this.timelineViewport.end = this.getViewedTimelineEnd(this.timelineViewport.start);
       }
-      this.timelineViewport.end = this.getViewedTimelineEnd(this.timelineViewport.start);
     },
 
     // called by :style in template
@@ -431,14 +430,18 @@ export default {
       let timeSinceStart = pc * viewportLength;
       return moment(timeSinceStart + this.timelineViewport.start);
     },
-    mediaIsVisible(media_created) {
+    mediaIsVisible(media_created, slugMediaName) {
+      if(slugMediaName === 'image.jpg') {
+        debugger;
+      }
       // show only if == currentDay
-      let mediaCreatedDay = moment(media_created,'YYYY-MM-DD HH:mm:ss');
+      let mediaCreatedDay = moment(media_created, 'YYYY-MM-DD HH:mm:ss');
+
       // show if in view
 //       if(this.timelineViewport.scrollLeft < mediaPosX && mediaPosX < this.timelineViewport.scrollLeft + window.innerWidth) {
-      if(mediaCreatedDay.isSame(this.timelineViewport.currentDay, 'day') ||
-      mediaCreatedDay.subtract(1, 'day').isSame(this.timelineViewport.currentDay, 'day') ||
-      mediaCreatedDay.add(1, 'day').isSame(this.timelineViewport.currentDay, 'day')
+      if(moment(mediaCreatedDay).isSame(this.timelineViewport.currentDay, 'day') ||
+      moment(mediaCreatedDay).subtract(1, 'day').isSame(this.timelineViewport.currentDay, 'day') ||
+      moment(mediaCreatedDay).add(1, 'day').isSame(this.timelineViewport.currentDay, 'day')
       ) {
         return true;
       }
