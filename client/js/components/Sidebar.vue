@@ -6,28 +6,44 @@
       </h3>
     </div>
 
+    <hr>
+
     <h3 class="margin-small">Calendrier&nbsp;:</h3>
     <div
-      v-for="(days, month) in folderDays()"
       class="m_calendar"
     >
-      <h3 class="margin-small margin-bottom-none">
-        {{ month }}
-      </h3>
-      <div class="m_calendar--days">
-        <button
-          v-for="(daymeta, index) in days"
-          class="m_calendar--days--day button-small"
-          @click="scrollToDate(daymeta.timestamp)"
-        >
-          {{ daymeta.dayNumber }}<br>
-          {{ daymeta.numberOfMedias }}
-        </button>
+      <div
+        v-for="(days, month) in folderDays()"
+        class="m_calendar--month"
+      >
+        <h3 class="margin-small margin-bottom-none text-cap text-underline">
+          {{ month }}
+        </h3>
+        <div class="m_calendar--days">
+          <div
+            v-for="(daymeta, index) in days"
+            class="m_calendar--days--day"
+            :class="{
+              'is--current' : daymeta.isCurrentDay,
+              'has--noMedia' : !daymeta.numberOfMedias
+            }"
+            @click="scrollToDate(daymeta.timestamp)"
+          >
+            <button class="">
+              {{ daymeta.dayNumber }}
+              <sup>
+                {{ daymeta.numberOfMedias }}
+              </sup>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <h3>Liste&nbsp;:</h3>
-    <table class="table-striped table-hoverable">
+    <hr>
+
+    <h3 class="margin-small">Liste&nbsp;:</h3>
+    <table class="table table-hoverable">
       <thead>
         <tr>
           <th>Nom du média</th>
@@ -39,7 +55,7 @@
             </select>
           </th>
           <th>
-            Go
+            Scroll
           </th>
         </tr>
       </thead>
@@ -48,6 +64,7 @@
           v-for="(media, index) in medias"
           v-bind:key="index"
           @mouseover="highlightMedia(index)" @mouseleave="unHighlightMedia(index)"
+          v-if="media.hasOwnProperty(secondColumn) && media[secondColumn] !== ''"
         >
           <td class="font-small">{{ index }}</td>
           <td class="font-small">{{ media[secondColumn] }}</td>
@@ -80,8 +97,7 @@ var enumerateDaysBetweenDates = function(startDate, endDate) {
   var lastDate = moment(endDate).startOf('day').add(1, 'days');
 
   while(currDate.add(1, 'days').diff(lastDate) < 0) {
-      console.log(currDate.toDate());
-      dates.push(currDate.clone().toDate());
+    dates.push(currDate.clone().toDate());
   }
 
   return dates;
@@ -92,7 +108,8 @@ export default {
     slugFolderName: String,
     folder: Object,
     medias: Object,
-    timelineInfos: Object
+    timelineInfos: Object,
+    currentDay: Number
   },
   data() {
     return {
@@ -102,6 +119,9 @@ export default {
   methods: {
     mediaKeys() {
       return Object.keys(locals.structure.media);
+    },
+    getCurrentDay() {
+      return moment(this.currentDay).format('DD/MM/YYYY');
     },
     scrollToMedia(slugMediaName) {
       EventBus.$emit('scrollToMedia', slugMediaName);
@@ -117,7 +137,7 @@ export default {
     },
 
     folderDays() {
-      console.log('methods : getting folderDays');
+      console.log('METHODS • sidebar: getting folderDays');
       const allDays = enumerateDaysBetweenDates(this.timelineInfos.start, this.timelineInfos.end);
       if(allDays.length === 0) { return; }
 
@@ -128,19 +148,25 @@ export default {
             medias: 12
           },
           22: {
-
           },
-
         }
       */
 
       var dayGroupedByMonth = allDays.reduce((acc, cur, i) => {
         let monthName = moment(cur).format('MMMM');
         let day = moment(cur).date();
+
+        let fullDate = moment(cur).format('DD/MM/YYYY');
+        let isCurrentDay = false;
+        if(fullDate === this.getCurrentDay()) {
+          isCurrentDay = true;
+        }
+
         let dayData = {
           "dayNumber": day,
           "numberOfMedias": this.getNumberOfMediasCreatedOnThisDate(cur),
-          "timestamp": moment(cur)
+          "timestamp": moment(cur),
+          isCurrentDay
         };
 
         if(typeof acc[monthName] === 'undefined') {

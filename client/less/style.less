@@ -104,7 +104,7 @@ th {
   & > .wrapper {
     width: 100%;
     height: @t-navbarheight;
-    background-color: #f2f2f2; // @c-gris_light
+    background-color: @c-gris_verylight; // @c-gris_verylight
     border-bottom: 1px solid black;
   }
   .bloccontainer {
@@ -496,7 +496,7 @@ main {
   height: ~"calc(100vh - 60px)";
   overflow-y: scroll;
 
-  background-color: @c-gris_light;
+  background-color: @c-gris_verylight;
   border-right: 1px solid #000;
 
   box-shadow: -2px 4px 13px #bbb;
@@ -543,22 +543,40 @@ main {
 .m_calendar {
 
 
+  .m_calendar--month {
+  }
+
   .m_calendar--days {
     margin: @t-skipline/4;
-    &::after {
-      content:'';
-      clear:both;
-      display: table;
-    }
+    display: flex;
+    position: relative;
+    flex-flow: row wrap;
+    align-content: flex-start;
   }
 
   .m_calendar--days--day {
-    float: left;
-    width: 100/7%;
-    padding: @t-skipline/4;
-    margin: @t-skipline/4;
+    flex: 0 0 100/7%;
+    padding: 0;
     text-align: center;
+    padding: @t-skipline/4;
+    display: flex;
 
+    > * {
+      flex: 1 1 auto;
+      color: inherit;
+      transition: background-color 0.4s ease-out;
+    }
+
+    &.is--current {
+      color: @c-bleu;
+    }
+    &.has--noMedia {
+      color: @c-gris;
+
+      > * {
+        background-color: transparent;
+      }
+    }
   }
 }
 

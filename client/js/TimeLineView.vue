@@ -13,6 +13,7 @@
       v-if="$root.settings.has_sidebar_opened"
       :folder="folder"
       :slugFolderName="slugFolderName"
+      :currentDay="timelineViewport.currentDay"
       :medias="medias"
       :timelineInfos="timelineInfos"
     >
@@ -466,7 +467,7 @@ export default {
       let mediaPosX = this.getMediaPosX(mediaToScrollTo.created);
       this.$scrollTo('.m_timeline', 500, {
         container: this.$refs.timeline,
-        offset: this.$root.settings.has_sidebar_opened ? mediaPosX - 700 : mediaPosX - 500,
+        offset: this.$root.settings.has_sidebar_opened ? mediaPosX : mediaPosX - 500,
         x: true,
         y: false
       });
