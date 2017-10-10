@@ -205,7 +205,7 @@ export default {
     folder: function() {
       console.log('WATCH : folder');
       this.setTimelineBounds();
-      this.setViewedTimelineBoundsFromInfos(this.timelineInfos.start);
+      this.setViewedTimelineBoundsFromInfos();
     },
     'timelineViewport.scale': function() {
       console.log('WATCH : timelineViewport.scale');
@@ -301,7 +301,10 @@ export default {
       const newStart = this.getViewedTimelineStart(this.timelineInfos.start);
       if(+newStart !== +this.timelineViewport.start) {
         this.timelineViewport.start = newStart;
-        this.timelineViewport.end = this.getViewedTimelineEnd(this.timelineViewport.start);
+      }
+      const newEnd = this.getViewedTimelineEnd(this.timelineInfos.end);
+      if(+newEnd !== +this.timelineViewport.end) {
+        this.timelineViewport.end = newEnd;
       }
     },
 
@@ -336,8 +339,8 @@ export default {
       // Sanitize new date
       return timelineView_new_start;
     },
-    getViewedTimelineEnd(timelineView_start) {
-      return moment(this.timelineInfos.end);
+    getViewedTimelineEnd(timelineView_new_end) {
+      return timelineView_new_end;
     },
 
     /******************************************************************
