@@ -158,6 +158,7 @@ export default {
 
       isRealtime: false,
       timelineUpdateRoutine: '',
+      isScrolling: false,
 
       // this object contains a start and end for this timeline, ven if it is realtime
       // for example 2017-07-01 13:22 and 2017-07-12 12:24
@@ -204,29 +205,29 @@ export default {
   },
   watch: {
     folder: function() {
-      console.log('WATCH : folder');
+      console.log('WATCH • timelineview: folder');
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
     },
     'timelineViewport.scale': function() {
-      console.log('WATCH : timelineViewport.scale');
+      console.log('WATCH • timelineview: timelineViewport.scale');
       // before updating the scale, we get the percent that's currently shown, store it, and we go back to it right after scaling
       let currentScrollLeft = this.$refs.timeline.scrollLeft;
 //       currentScrollLeft += window.innerWidth/2;
       let currentScrollLeft_percent = currentScrollLeft / this.timelineViewport.width;
-      this.$nextTick(function () {
+      this.$nextTick(() => {
         this.$refs.timeline.scrollLeft = this.timelineViewport.width * currentScrollLeft_percent;
       });
       this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
     },
     'timelineViewport.scrollLeft': function() {
-      console.log('WATCH : timelineViewport.scrollLeft');
+      console.log('WATCH • timelineview: timelineViewport.scrollLeft');
       this.$root.updateProjectScrollLeft(this.slugFolderName, this.timelineViewport.scrollLeft);
       this.setCurrentDay();
     },
   },
   created() {
-    console.log(`Created component timeline`);
+    console.log('CREATED • timelineview: folder');
 
     window.addEventListener('resize', debounce(this.onResize, 300));
     window.addEventListener('timeline.scrolltoend', this.scrollToEnd);
@@ -247,6 +248,10 @@ export default {
     }
 
     this.timelineUpdateRoutine = setInterval(() => {
+      if(this.isScrolling) {
+        return;
+      }
+
       this.setViewedTimelineBoundsFromInfos();
       if(this.timelineViewport.autoscroll) {
         this.scrollToEnd()
@@ -353,6 +358,7 @@ export default {
       return posX;
     },
     generateHorizontalGrid() {
+      console.log('METHODS • timelineview: generateHorizontalGrid');
       let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
       let html = '';
 
@@ -360,6 +366,8 @@ export default {
 
       let createDayTick = (currentDay) => {
         let xPos = this.getXPositionFromDate(currentDay);
+        if(xPos === false) { return; }
+
         let momentDay = moment(currentDay).format('DD/MM/YYYY');
         html += `
         <div class="gridItem font-small gridItem_isday" style="transform:translate(${xPos}px, 0px)">
@@ -386,6 +394,7 @@ export default {
 
       let createHourTick = (currentHour, withCaption = false) => {
         let xPos = this.getXPositionFromDate(currentHour);
+        if(xPos === false) { return; }
 
         if(withCaption || this.timelineViewport.scale < 70) {
           html += `<div class="gridItem font-small gridItem_ishour" style="transform:translate(${xPos}px, 0px)" data-caption="${moment(currentHour).format('HH:mm')}"></div>`;
@@ -406,9 +415,9 @@ export default {
 
       let createMinuteTick = (currentMinute) => {
         let xPos = this.getXPositionFromDate(currentMinute);
-        if(moment(currentMinute).minute() === 0) {
-          return;
-        }
+        if(xPos === false) { return; }
+        if(moment(currentMinute).minute() === 0) { return; }
+
         if(moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 1) {
           html += `<div class="gridItem font-small gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${moment(currentMinute).format('HH:mm')}"></div>`;
         } else {
@@ -459,27 +468,18 @@ export default {
     closeMediaModal() {
       this.showMediaModalFor = '';
     },
+
     scrollToEnd() {
       this.$refs.timeline.scrollLeft = this.timelineViewport.width;
     },
     scrollToMedia(slugMediaName) {
       let mediaToScrollTo = this.medias[slugMediaName];
       let mediaPosX = this.getMediaPosX(mediaToScrollTo.created);
-      this.$scrollTo('.m_timeline', 500, {
-        container: this.$refs.timeline,
-        offset: this.$root.settings.has_sidebar_opened ? mediaPosX : mediaPosX - 500,
-        x: true,
-        y: false
-      });
+      this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? mediaPosX : mediaPosX - 500);
     },
     scrollToDate(timestamp) {
       let xPos = this.getXPositionFromDate(timestamp);
-      this.$scrollTo('.m_timeline', 500, {
-        container: this.$refs.timeline,
-        offset: this.$root.settings.has_sidebar_opened ? xPos : xPos - 500,
-        x: true,
-        y: false
-      });
+      this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? xPos : xPos - 500);
     },
     highlightMedia(slugMediaName) {
       this.highlightedMedia = slugMediaName;
@@ -487,25 +487,37 @@ export default {
     goToPrevDay() {
       let twentyFourHoursInSeconds = 24 * 60 * 60;
       let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
-
-      this.$scrollTo('.m_timeline', 500, {
-        container: this.$refs.timeline,
-        offset: this.$refs.timeline.scrollLeft - twentyFourHoursInPixels,
-        x: true,
-        y: false
-      });
+      this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft - twentyFourHoursInPixels);
     },
     goToNextDay() {
       let twentyFourHoursInSeconds = 24 * 60 * 60;
       let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
+      this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft + twentyFourHoursInPixels);
+    },
+    scrollTimelineToXPos(xPos_new) {
+
+      this.isScrolling = true;
 
       this.$scrollTo('.m_timeline', 500, {
         container: this.$refs.timeline,
-        offset: this.$refs.timeline.scrollLeft + twentyFourHoursInPixels,
+        offset: xPos_new,
+        cancelable: false,
+        easing: [0.45, 0.80, 0.58, 1.00],
         x: true,
-        y: false
+        y: false,
+        onDone: () => {
+          this.$nextTick(() => {
+            this.isScrolling = false;
+            this.timelineViewport.scrollLeft = xPos_new;
+            this.setCurrentDay();
+          });
+        },
+        onCancel: () => {
+          this.isScrolling = false;
+        }
       });
     },
+
     toggleSidebar() {
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
     },

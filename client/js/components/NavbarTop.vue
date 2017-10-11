@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <nav class="navbar_top">
+    <nav class="navbar_top font-large">
       <div class="wrapper">
         <div class="bloccontainer">
           <button class="menu_icon" @click="$emit('toggleSidebar')">
@@ -18,16 +18,17 @@
               </a>
             </li>
             <li v-if="typeof folder !== 'undefined'">
-              <template>{{ folder.name }}</template>
-              <span v-if="folder.authorized">
-                <button type="button" class="button_small" @click="showEditFolderModal = true">
-                  Éditer
-                </button>
-              </span>
+              {{ folder.name }}
+              <button
+                type="button"
+                class="button_small"
+                v-if="folder.authorized"
+                @click="showEditFolderModal = true"
+              >
+                Éditer
+              </button>
             </li>
-            <li v-if="typeof currentDay !== 'undefined'">
-              {{ getCurrentDay }}
-            </li>
+            <li v-if="typeof currentDay !== 'undefined'">{{ getCurrentDay }}</li>
           </ol>
         </div>
       </div>
@@ -60,7 +61,7 @@ export default {
   },
   computed: {
     getCurrentDay: function() {
-      return moment(this.currentDay).format('DD/MM/YYYY');
+      return `${moment(this.currentDay).format('DD/MM/YYYY')}`;
     }
 
 

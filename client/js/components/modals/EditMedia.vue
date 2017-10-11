@@ -2,26 +2,20 @@
   <BaseModal :size="'large'" @close="$emit('close')" >
     <div slot="header">
       Editer le media <i>{{ slugMediaName }}</i>
-
-      <span>
-        <button type="button" class="button_small" @click.prevent="printMedia">
-          Imprimer
-        </button>
-      </span>
     </div>
 
-    <div slot="body">
+
+    <form slot="body" v-on:submit.prevent="editThisMedia">
+
       <MediaContent
         :slugFolderName="slugFolderName"
         :slugMediaName="slugMediaName"
         :media="media"
+        :mediaURL="mediaURL"
         :size="1800"
         v-model="mediadata.content"
       >
       </MediaContent>
-    </div>
-
-    <form slot="footer" v-on:submit.prevent="editThisMedia">
 
 <!-- Creation date (stored in meta file, overrides file date) -->
       <div class="input-single">
@@ -78,6 +72,16 @@
 
       <button type="button" class="button_small" @click="removeMedia()">
         Supprimer
+      </button>
+
+      <button type="button" class="button_small" @click.prevent="printMedia">
+        Imprimer
+      </button>
+
+      <button type="button" class="button_small">
+        <a :href="mediaURL" title="slugMediaName" target="_blank">
+          Zoom
+        </a>
       </button>
 
       <button type="button" class="button_small">
@@ -137,6 +141,8 @@ export default {
   methods: {
     printMedia: function() {
       window.print();
+    },
+    openMediaNewWindow: function() {
     },
     removeMedia: function() {
       if(window.confirm(locals.lang.modal.sureToRemoveMedia)) {

@@ -4,11 +4,11 @@
       <img :src="linkToThumb">
     </template>
     <template v-else-if="media.type === 'video'">
-      <video :controls="withControl" :src="linkToMedia">
+      <video :controls="withControl" :src="mediaURL">
       </video>
     </template>
     <template v-else-if="media.type === 'audio'">
-      <audio :controls="withControl" :src="linkToMedia">
+      <audio :controls="withControl" :src="mediaURL">
       </audio>
     </template>
     <template v-else-if="media.type === 'text'">
@@ -44,6 +44,7 @@ export default {
     slugFolderName: String,
     slugMediaName: String,
     media: Object,
+    mediaURL: String,
     withControl: {
       type: Boolean,
       default: true,
@@ -62,12 +63,9 @@ export default {
     }
   },
   computed: {
-    linkToMedia: function() {
-      return this.slugFolderName + '/' + this.slugMediaName;
-    },
     linkToThumb: function() {
       let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: this.size }).path;
-      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : linkToMedia();
+      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     },
   }
 }

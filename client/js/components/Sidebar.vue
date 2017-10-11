@@ -1,6 +1,6 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-    <div class="intro margin-small">
+    <div class="intro margin-medium">
       <h3>
         Nombre de médias&nbsp;: {{ Object.keys(medias).length }}
       </h3>
@@ -8,7 +8,7 @@
 
     <hr>
 
-    <h3 class="margin-small">Calendrier&nbsp;:</h3>
+    <h3 class="margin-medium">Calendrier&nbsp;:</h3>
     <div
       class="m_calendar"
     >
@@ -16,7 +16,7 @@
         v-for="(days, month) in folderDays()"
         class="m_calendar--month"
       >
-        <h3 class="margin-small margin-bottom-none text-cap text-underline">
+        <h3 class="margin-medium margin-bottom-none text-cap text-underline">
           {{ month }}
         </h3>
         <div class="m_calendar--days">
@@ -40,10 +40,7 @@
       </div>
     </div>
 
-    <hr>
-
-    <h3 class="margin-small">Liste&nbsp;:</h3>
-    <table class="table table-hoverable">
+    <table class="table">
       <thead>
         <tr>
           <th>Nom du média</th>

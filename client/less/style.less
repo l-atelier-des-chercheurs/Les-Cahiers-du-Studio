@@ -104,7 +104,7 @@ th {
   & > .wrapper {
     width: 100%;
     height: @t-navbarheight;
-    background-color: @c-gris_verylight; // @c-gris_verylight
+    background-color: inherit; // @c-gris_verylight
     border-bottom: 1px solid black;
   }
   .bloccontainer {
@@ -153,8 +153,12 @@ th {
     padding: 3px;
   }
   .breadcrumb > li + li:before {
-    content: "/";
+    content: "•";
     padding-right:6px;
+  }
+
+  a {
+    text-decoration: none;
   }
 }
 
@@ -312,7 +316,7 @@ main {
       display: block;
       pointer-events: auto;
 //       font-size:0;
-      box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+//       box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
 
       &:focus {
         outline: none;
@@ -327,6 +331,7 @@ main {
     }
 
     .type-marker& {
+      z-index: 150;
       @t-marker_anchor: 10px;
       .mediaScrubber {
       }
@@ -425,7 +430,8 @@ main {
     cursor: -moz-grab;
 
     border: 2px solid #fff;
-    box-shadow: 0 3px 3px -2px rgba(0,0,0,.2), 0 3px 4px 0 rgba(0,0,0,.14), 0 1px 8px 0 rgba(0,0,0,.12);
+//     box-shadow: 0 3px 3px -2px rgba(0,0,0,.2), 0 3px 4px 0 rgba(0,0,0,.14), 0 1px 8px 0 rgba(0,0,0,.12);
+//     border: 1px dashed #000;
 
     transition: transform .2s ease-out;
 
@@ -490,8 +496,8 @@ main {
 .m_sidebar {
   position: fixed;
   z-index:  1500;
-  max-width: 500px;
-  width: 90%;
+  max-width: 400px;
+  width: 80%;
   height: 100vh;
   height: ~"calc(100vh - 60px)";
   overflow-y: scroll;
