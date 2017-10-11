@@ -1,18 +1,18 @@
 {
-  "name": "stv-doc",
-  "version": "0.10.2",
-  "description": "A documentation platform for the Studio-Théâtre in Vitry, France.",
+  "name": "les-cahiers",
+  "version": "0.11.0",
+  "description": "A time-based documentation platform for capturing, regrouping, collecting .",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
-  "homepage": "https://github.com/louis-ev/stv-documentation",
+  "homepage": "https://github.com/louis-ev/Les-Cahiers",
   "license": "CC-BY-NC-SA-4.0",
   "main": "main.js",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/louis-ev/stv-documentation"
+    "url": "git://github.com/louis-ev/Les-Cahiers"
   },
   "bugs": {
-    "url": "https://github.com/louis-ev/stv-documentation/issues"
+    "url": "https://github.com/louis-ev/Les-Cahiers/issues"
   },
   "scripts": {
     "start": "electron .",
@@ -23,7 +23,7 @@
   },
   "build": {
     "electronVersion": "1.7.5",
-    "appId": "stv-doc",
+    "appId": "les-cahiers",
     "asar": false,
     "mac": {
       "category": "public.app-category.education"

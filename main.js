@@ -33,7 +33,7 @@ function createWindow() {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
-  dev.log('——— Starting stv-doc app v' + process.env.npm_package_version);
+  dev.log('——— Starting les-cahiers app v' + process.env.npm_package_version);
 
   // checkout which langage to load
   var envLang = app.getLocale();

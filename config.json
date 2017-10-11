@@ -4,5 +4,5 @@
   "port": 8080,
   "templateEngine": "jade",
   "userDirPath": "documents",
-  "userDirname": "stv-doc"
+  "userDirname": "les-cahiers"
 }
