@@ -4,7 +4,7 @@ A realtime documentation tool
 
 ## How to install
 
-You need node.js and npm to install this preview of stvdoc
+You need node.js and npm to install this preview of Les Cahiers
 
 In a terminal : 
 
@@ -13,7 +13,7 @@ In a terminal :
 3. `npm install`
 4. `gulp`
 
-Now run stvdoc by writing
+Now run Les Cahiers by writing
 
 * `npm start`
 
