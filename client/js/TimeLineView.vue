@@ -586,13 +586,13 @@ export default {
     transition: all .4s;
 
     &.gridItem_isday {
-      border-left: 1px solid #00ad41;
+      border-left: 1px solid #000;
       z-index:100;
       color: white;
 
       .gridItem--caption {
         display: block;
-        background-color: #00ad41;
+        background-color: #000;
         padding: 1px 4px;
       }
     }

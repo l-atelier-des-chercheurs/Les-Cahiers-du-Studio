@@ -105,7 +105,7 @@ th {
     width: 100%;
     height: @t-navbarheight;
     background-color: inherit; // @c-gris_verylight
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid @c-border;
   }
   .bloccontainer {
     width: 100%;
@@ -245,7 +245,7 @@ main {
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: @c-bleu;
+    background-color: @c-gris_dark;
     outline: 1px solid @c-bleu;
   }
 //   margin-right:   50px;
@@ -255,7 +255,7 @@ main {
     height: 100%;
     width: 100%;
     left: 25vw;
-    border-right: 1px solid black;
+    border-right: 1px solid @c-border;
     transition: margin 0.5s ease-out;
 
     &.with--sidebar_opened {
@@ -496,14 +496,14 @@ main {
 .m_sidebar {
   position: fixed;
   z-index:  1500;
-  max-width: 400px;
+  max-width: 600px;
   width: 80%;
   height: 100vh;
   height: ~"calc(100vh - 60px)";
   overflow-y: scroll;
 
   background-color: @c-gris_verylight;
-  border-right: 1px solid #000;
+  border-right: 1px solid @c-border;
 
   box-shadow: -2px 4px 13px #bbb;
 

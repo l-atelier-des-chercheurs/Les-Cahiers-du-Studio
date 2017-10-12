@@ -1732,7 +1732,7 @@ b {
   font-size: 0.9em;
 }
 .font-large {
-  font-size: 1.2em;
+  font-size: 1.1em;
 }
 .margin-medium {
   margin: 1.25em;
@@ -4468,7 +4468,7 @@ th {
   width: 100%;
   height: 60px;
   background-color: inherit;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #000;
 }
 .navbar_top .bloccontainer {
   width: 100%;
@@ -4606,7 +4606,7 @@ main > *:first-child {
   -webkit-box-shadow: none;
 }
 .m_timeline::-webkit-scrollbar-thumb {
-  background-color: #0096FF;
+  background-color: #505050;
   outline: 1px solid #0096FF;
 }
 .m_timeline .m_timeline-container {
@@ -4614,7 +4614,7 @@ main > *:first-child {
   height: 100%;
   width: 100%;
   left: 25vw;
-  border-right: 1px solid black;
+  border-right: 1px solid #000;
   -webkit-transition: margin 0.5s ease-out;
   -o-transition: margin 0.5s ease-out;
   transition: margin 0.5s ease-out;
@@ -4848,7 +4848,7 @@ main > *:first-child {
 .m_sidebar {
   position: fixed;
   z-index: 1500;
-  max-width: 400px;
+  max-width: 600px;
   width: 80%;
   height: 100vh;
   height: calc(100vh - 60px);
