@@ -52,7 +52,6 @@
             </select>
           </th>
           <th>
-            Scroll
           </th>
         </tr>
       </thead>
@@ -66,7 +65,7 @@
           <td class="font-small">{{ index }}</td>
           <td class="font-small">{{ media[secondColumn] }}</td>
           <td>
-            <button type="button" class="button_small" @click="scrollToMedia(index)">
+            <button type="button" class="" @click="scrollToMedia(index)">
               &nbsp;↪&nbsp;
             </button>
           </td>

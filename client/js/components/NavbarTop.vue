@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <nav class="navbar_top font-large">
+    <nav class="navbar_top">
       <div class="wrapper">
         <div class="bloccontainer">
           <button class="menu_icon" @click="$emit('toggleSidebar')">
