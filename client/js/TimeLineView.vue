@@ -252,6 +252,7 @@ export default {
         return;
       }
 
+      this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
       if(this.timelineViewport.autoscroll) {
         this.scrollToEnd()
@@ -448,7 +449,6 @@ export default {
     },
     mediaIsVisible(media_created, slugMediaName) {
       let mediaCreatedDay = moment(media_created, 'YYYY-MM-DD HH:mm:ss');
-
       // show if in view
 //       if(this.timelineViewport.scrollLeft < mediaPosX && mediaPosX < this.timelineViewport.scrollLeft + window.innerWidth) {
       if(moment(mediaCreatedDay).isSame(this.timelineViewport.currentDay, 'day') ||

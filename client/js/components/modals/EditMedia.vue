@@ -101,6 +101,9 @@
 
     </form>
 
+    <div slot="footer">
+    </div>
+
   </BaseModal>
 </template>
 <script>

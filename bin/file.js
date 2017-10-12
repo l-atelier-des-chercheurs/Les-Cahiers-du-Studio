@@ -285,7 +285,7 @@ module.exports = (function() {
       let mdata = {
         name: slugFolderName,
         created : api.getCurrentDate(),
-        start: '',
+        start: api.getCurrentDate(),
         end: '',
         password: '',
         authors: ''

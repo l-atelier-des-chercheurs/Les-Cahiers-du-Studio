@@ -22,7 +22,6 @@
 
           <div class="modal-footer padding-small">
             <slot name="footer">
-              default footer
               <button class="modal-default-button" @click="$emit('close')">
                 OK
               </button>
