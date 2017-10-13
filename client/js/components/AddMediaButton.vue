@@ -2,11 +2,23 @@
   <div>
     <div class="m_addMedia">
       <button type="button" class="button margin-bottom-small button_addText" @click="addText">
-        Ajouter du texte
+        T
       </button>
       <button type="button" class="button margin-bottom-small button_addMarker" @click="addMarker">
-        Ajouter un marqueur
+        •
       </button>
+
+<!--
+      <FileInput
+        v-model="file"
+        :type="image"
+      >
+      </FileInput>
+
+      <input name="imageCapture" class="button margin-bottom-small button_addFile button_addImage" type="file" accept="image/*" capture @change="addImage">
+      <input name="videoCapture" class="button margin-bottom-small button_addFile button_addVideo" type="file" accept="video/*" capture @change="addVideo">
+      <input name="audioCapture" class="button margin-bottom-small button_addFile button_addAudio" type="file" accept="audio/*" capture @change="addAudio">
+-->
 
       <FileUpload
         :slugFolderName="slugFolderName">
@@ -17,17 +29,28 @@
 </template>
 <script>
 import FileUpload from './FileUpload.vue';
+import FileInput from './subcomponents/FileInput.vue';
 
 export default {
   props: ['slugFolderName'],
   components: {
-    FileUpload
+    FileUpload,
+    FileInput
+  },
+  data() {
+    return {
+      file: null
+    }
   },
   mounted: function() {
     document.addEventListener('keyup', this.boitierPressed);
   },
   destroyed: function() {
     document.removeEventListener('keyup', this.boitierPressed);
+  },
+  watch: {
+    file:  function() {
+    }
   },
   methods: {
     addText() {
