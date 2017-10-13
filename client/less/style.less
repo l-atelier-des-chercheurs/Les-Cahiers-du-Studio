@@ -248,6 +248,7 @@ main {
 
   &::-webkit-scrollbar-track {
     -webkit-box-shadow: none;
+    background-color: @c-gris_light;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -515,12 +516,13 @@ main {
   text-align: right;
 
   transform: translateX(0);
-  transition: transform .35s ease-out, opacity .45s;
+  transition: transform .32s ease-out, opacity .45s;
 
   z-index:  1499;
 
   &.is--collapsed {
     transform: translateX(-@t-sidebarWidth);
+    transition: transform .30s ease-in;
   }
 }
 
@@ -544,34 +546,6 @@ main {
   }
 
   table {
-  }
-}
-
-.btnDayNav {
-  position: fixed;
-  bottom: 0;
-  left:0;
-  right: 0;
-  height: 20px;
-
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: flex-end;
-
-  pointer-events: none;
-
-  > * {
-    height: 20px;
-    flex: 0 0 auto;
-
-    pointer-events: auto;
-    transition: opacity 0.4s ease-out;
-
-    &.btnDayNav--prev {
-    }
-    &.btnDayNav--next {
-    }
   }
 }
 

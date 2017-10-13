@@ -3718,6 +3718,7 @@ main > *:first-child {
 }
 .m_timeline::-webkit-scrollbar-track {
   -webkit-box-shadow: none;
+  background-color: #C6C6C6;
 }
 .m_timeline::-webkit-scrollbar-thumb {
   background-color: #333;
@@ -3976,17 +3977,22 @@ main > *:first-child {
   -webkit-transform: translateX(0);
   -ms-transform: translateX(0);
   transform: translateX(0);
-  -webkit-transition: opacity 0.45s, -webkit-transform 0.35s ease-out;
-  transition: opacity 0.45s, -webkit-transform 0.35s ease-out;
-  -o-transition: transform 0.35s ease-out, opacity 0.45s;
-  transition: transform 0.35s ease-out, opacity 0.45s;
-  transition: transform 0.35s ease-out, opacity 0.45s, -webkit-transform 0.35s ease-out;
+  -webkit-transition: opacity 0.45s, -webkit-transform 0.32s ease-out;
+  transition: opacity 0.45s, -webkit-transform 0.32s ease-out;
+  -o-transition: transform 0.32s ease-out, opacity 0.45s;
+  transition: transform 0.32s ease-out, opacity 0.45s;
+  transition: transform 0.32s ease-out, opacity 0.45s, -webkit-transform 0.32s ease-out;
   z-index: 1499;
 }
 .button_sidebarToggle.is--collapsed {
   -webkit-transform: translateX(-460px);
   -ms-transform: translateX(-460px);
   transform: translateX(-460px);
+  -webkit-transition: -webkit-transform 0.3s ease-in;
+  transition: -webkit-transform 0.3s ease-in;
+  -o-transition: transform 0.3s ease-in;
+  transition: transform 0.3s ease-in;
+  transition: transform 0.3s ease-in, -webkit-transform 0.3s ease-in;
 }
 .m_sidebar {
   position: absolute;
@@ -4002,37 +4008,6 @@ main > *:first-child {
 .m_sidebar li {
   padding: 0;
   margin: 0;
-}
-.btnDayNav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 20px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -ms-flex-flow: row wrap;
-  flex-flow: row wrap;
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
-  -webkit-box-align: end;
-  -ms-flex-align: end;
-  align-items: flex-end;
-  pointer-events: none;
-}
-.btnDayNav > * {
-  height: 20px;
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 auto;
-  flex: 0 0 auto;
-  pointer-events: auto;
-  -webkit-transition: opacity 0.4s ease-out;
-  -o-transition: opacity 0.4s ease-out;
-  transition: opacity 0.4s ease-out;
 }
 .m_footer {
   margin: 7.5em 0 5em;

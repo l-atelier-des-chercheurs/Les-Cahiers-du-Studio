@@ -85,14 +85,6 @@
         :slugFolderName="slugFolderName">
       </AddMediaButton>
 
-      <DayNavButtons
-        :timelineInfos="timelineInfos"
-        :timelineViewport="timelineViewport"
-        @goToPrevDay="goToPrevDay()"
-        @goToNextDay="goToNextDay()"
-      >
-      </DayNavButtons>
-
       <EditMedia
         v-if="showMediaModalFor !== ''"
         :slugFolderName="slugFolderName"
@@ -112,7 +104,6 @@ import AddMediaButton from './components/AddMediaButton.vue';
 import Media from './components/TimelineMedia.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 import DateTime from './components/subcomponents/DateTime.vue';
-import DayNavButtons from './components/subcomponents/DayNavButtons.vue';
 import moment from 'moment';
 import debounce from 'debounce';
 import EventBus from './event-bus';
@@ -129,8 +120,7 @@ export default {
     NavbarTop,
     Sidebar,
     AddMediaButton,
-    DateTime,
-    DayNavButtons
+    DateTime
   },
   data() {
     return {
@@ -211,6 +201,8 @@ export default {
     EventBus.$on('updateScale', this.updateTimelineViewportScale);
     EventBus.$on('goToPrevScreen', this.goToPrevScreen);
     EventBus.$on('goToNextScreen', this.goToNextScreen);
+    EventBus.$on('goToPrevDay', this.goToPrevDay);
+    EventBus.$on('goToNextDay', this.goToNextDay);
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
 
@@ -239,6 +231,8 @@ export default {
     EventBus.$off('updateScale', this.updateTimelineViewportScale);
     EventBus.$off('goToPrevScreen', this.goToPrevScreen);
     EventBus.$off('goToNextScreen', this.goToNextScreen);
+    EventBus.$off('goToPrevDay', this.goToPrevDay);
+    EventBus.$off('goToNextDay', this.goToNextDay);
 
     window.removeEventListener('resize', debounce(this.onResize, 300));
     window.removeEventListener('timeline.scrolltoend', this.scrollToEnd);
