@@ -37,9 +37,11 @@
       <button v-if="!folder.authorized" type="button" class="button_small" @click="showInputPasswordField = !showInputPasswordField">
         Entrer un mot de passe
       </button>
+<!--
       <button v-if="folder.authorized" type="button" class="button_small" @click="debugFolderContent = !debugFolderContent">
         Vue de debug
       </button>
+-->
       <button v-if="folder.authorized" type="button" class="button_small" @click="showEditFolderModal = true">
         Éditer
       </button>

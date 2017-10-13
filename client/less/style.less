@@ -2,10 +2,12 @@
 @import (inline) "shoelace/variables.css";
 @import (inline) "shoelace/forms.css";
 @import (inline) "shoelace/tables.css";
-@import "_stv.less";
-
 @import "../../node_modules/vue2-animate/src/vue2-animate.less";
 
+@import "_normalize";
+@import "_variables";
+@import "_globals";
+@import "_calendar";
 
 ::-moz-selection {
     background: rgba(151, 151, 151,0.25);
@@ -15,18 +17,30 @@
 }
 
 
-:root {
-  --body-color: black;
-  --body-bg-color: #fff;
-  --table-stripe-bg-color: #eee;
-  --color-primary: #666;
-  --font-family: 'STVitry';
-  --font-size: 1rem; /* Most browsers use a default font size of 16px */
-  --input-font-size: 1rem;
+
+
+* {
+  box-sizing: border-box;
 }
 
+html {
+  font-size: 100%;
+}
 
-@t-navbarheight: 60px;
+body {
+  font-family: 'STVitry', monospace;
+  font-weight: 400;
+  margin: 0;
+
+  font-size: @t-fontsize;
+  line-height: @t-lineheight;
+  color: black;
+  background-color: @c-gris_verylight;
+
+  padding-top: 0.3em;
+
+}
+
 
 /******************
   Mixins
@@ -38,32 +52,10 @@
 }
 
 body {
-  margin-top: 0;
-  padding-top: 0em;
   &.is_unscrollable {
     overflow: hidden;
   }
-  @media (max-width: @screen-sm-max) {
-    margin: 0;
-  }
 }
-
-img, video, audio, svg {
-	display: block;
-	min-width: 100%;
-	width:100%;
-}
-
-input:required {
-  background-size: 16px 16px;
-  background-position: top right;
-  background-repeat: no-repeat;
-  background-image: radial-gradient(transparent 10%, @c-rouge 18%,transparent 25%);
-}
-th {
-  font-weight: normal;
-}
-
 
 
 .alertify-logs {
@@ -103,9 +95,10 @@ th {
 
   & > .wrapper {
     width: 100%;
-    height: @t-navbarheight;
-    background-color: inherit; // @c-gris_verylight
-    border-bottom: 1px solid @c-border;
+    background-color: @c-bg_navbar; // @c-gris_verylight
+    color: white;
+
+    letter-spacing: 0.05em;
   }
   .bloccontainer {
     width: 100%;
@@ -113,29 +106,36 @@ th {
     margin: 0 auto;
 
     display:flex;
-    flex-flow: row nowrap;
-    align-items: stretch;
+    flex-flow: row wrap;
+    justify-content: space-between;
+
+    > * {
+      flex: 1 1 40%;
+      min-height: @t-navbarheight;
+    }
+    > .currentDay {
+      flex: 0 0 10%;
+    }
+
   }
 
   .menu_icon {
     flex: 0 0 @t-navbarheight;
     height: 100%;
-    padding: 20px;
+    padding: 0 @t-spacing;
     background-color: transparent;
+
+    display: flex;
+    align-items: center;
+
   }
   .menu_icon svg {
-    height: 20px;
-    width: 20px;
-    position: relative;
-  }
-  .svg-icon path,
-  .svg-icon polygon,
-  .svg-icon rect {
-    fill: #000;
-    stroke: transparent;
-    stroke-width: 1;
-  }
+    display: block;
+    height: 26px;
+    width: 40px;
 
+    margin: 0 auto;
+  }
   .breadcrumb {
     margin: 0;
     display: flex;
@@ -143,6 +143,7 @@ th {
     min-width: 0;
     padding: 0;
     list-style: none;
+    margin: 0;
   }
 
   .breadcrumb > li {
@@ -150,11 +151,25 @@ th {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 50px;
-    padding: 3px;
+    padding: @t-spacing/2 0;
   }
   .breadcrumb > li + li:before {
-    content: "•";
-    padding-right:6px;
+    content: "›";
+    margin: @t-spacing;
+  }
+
+  .currentDay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+  .scaleSwitch {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-flow: row wrap;
   }
 
   a {
@@ -169,13 +184,6 @@ h1 {
   font-style: italic;
 }
 
-.pushContentDown {
-  height: @t-skipline * 4;
-  margin-top: 0.3em;
-  &.is--collapsed {
-    display: none;
-  }
-}
 main {
 
   > *:first-child {
@@ -188,7 +196,6 @@ main {
 }
 
 .card_folder {
-  .make-md-column(14/3);
   margin-bottom:  @t-skipline*2;
 
   .folder {
@@ -209,7 +216,6 @@ main {
     padding: @t-skipline/2;
   }
   &:nth-child(3n+1) {
-//     .make-md-column-offset(1);
     clear:left;
   }
 
@@ -493,19 +499,42 @@ main {
 }
 
 
+@t-button_sidebartoggle: 60px;
+
+.button_sidebarToggle {
+  position: absolute;
+  top: 46%;
+  top:~"calc(50% - @t-button_sidebartoggle/3)";
+
+  width: @t-button_sidebartoggle;
+  height: @t-button_sidebartoggle;
+  left: @t-sidebarWidth - @t-button_sidebartoggle/2;
+  background-color: @c-gris_dark;
+  color: white;
+
+  text-align: right;
+
+  transform: translateX(0);
+  transition: transform .35s ease-out, opacity .45s;
+
+  z-index:  1499;
+
+  &.is--collapsed {
+    transform: translateX(-@t-sidebarWidth);
+  }
+}
+
 .m_sidebar {
-  position: fixed;
-  z-index:  1500;
-  max-width: 460px;
+  position: absolute;
+  max-width: @t-sidebarWidth;
   width: 80%;
   height: 100vh;
   height: ~"calc(100vh - 60px)";
   overflow-y: scroll;
 
-  background-color: @c-gris_verylight;
-  border-right: 1px solid @c-border;
+  background-color: @c-bg_sidebar;
 
-  box-shadow: -2px 4px 13px #bbb;
+  z-index:  1500;
 
   .intro {
   }
@@ -546,43 +575,12 @@ main {
   }
 }
 
-.m_calendar {
 
-
-  .m_calendar--month {
-  }
-
-  .m_calendar--days {
-    margin: @t-skipline/4;
-    display: flex;
-    position: relative;
-    flex-flow: row wrap;
-    align-content: flex-start;
-  }
-
-  .m_calendar--days--day {
-    flex: 0 0 100/7%;
-    padding: 0;
-    text-align: center;
-    padding: @t-skipline/4;
-    display: flex;
-
-    > * {
-      flex: 1 1 auto;
-      color: inherit;
-      transition: background-color 0.4s ease-out;
-    }
-
-    &.is--current {
-      color: @c-bleu;
-    }
-    &.has--noMedia {
-      color: @c-gris;
-
-      > * {
-        background-color: transparent;
-      }
-    }
+.m_footer {
+  margin: @t-skipline*6 0 @t-skipline*4;
+  color: @c-gris;
+  width: 100%;
+  > * {
   }
 }
 
@@ -593,5 +591,21 @@ main {
 .component-fade-enter, .component-fade-leave-to {
   opacity: 0;
 }
+
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.sidebar-animation-enter-active, .sidebar-animation-leave-active {
+  transform: translateX(0);
+  transition: transform .35s ease-out, opacity .45s;
+}
+.sidebar-animation-enter, .sidebar-animation-leave-to {
+  transform: translateX(-@t-sidebarWidth);
+  transition: transform .35s ease-in, opacity .45s;
+//   opacity: 0;
+}
+
+
+
+
 
 

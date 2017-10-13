@@ -1,16 +1,8 @@
 <template>
   <div id="app">
 
-    <div
-      :class="{ 'is--collapsed' : $root.settings.currentlyOpenedFolder !== '' }"
-      class="pushContentDown">
-    </div>
-
     <div v-if="view === 'ListView'" class="container">
       <div class="row">
-
-        <NavbarLeft v-if="view === 'ListView'">
-        </NavbarLeft>
 
         <ListView
           v-if="view === 'ListView'"
@@ -46,7 +38,6 @@
 </template>
 
 <script>
-import NavbarLeft from './components/NavbarLeft.vue';
 import ListView from './ListView.vue';
 import TimeLineView from './TimeLineView.vue';
 import BottomFooter from './components/BottomFooter.vue';
@@ -54,7 +45,6 @@ import BottomFooter from './components/BottomFooter.vue';
 export default {
   name: 'app',
   components: {
-    NavbarLeft,
     ListView,
     TimeLineView,
     BottomFooter

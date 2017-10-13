@@ -8,7 +8,6 @@ var rename = require('gulp-rename');
 var autoprefixer = require('gulp-autoprefixer');
 var less         = require('gulp-less');
 var jshint       = require('gulp-jshint');
-var browserSync  = require('browser-sync').create();
 var uglify       = require('gulp-uglify');
 
 var fs   = require('fs');
@@ -41,11 +40,9 @@ var nodeScripts = [
   'bin/*.js'
 ]
 
-var localDevUrl = 'https://localhost:8080/';
-
 // Compile Our Less
 gulp.task('less', function() {
-  return gulp.src('client/less/*.less')
+  return gulp.src('client/less/[^_]*.less')
     .pipe(plumber({
         errorHandler: function (err) {
             console.log(err.message);
@@ -57,8 +54,7 @@ gulp.task('less', function() {
       browsers: ['last 3 versions'],
       cascade: false
     }))
-    .pipe(gulp.dest('client/development'))
-    .pipe(browserSync.stream());
+    .pipe(gulp.dest('client/development'));
 });
 
 // Concatenate & Minify CSS
@@ -122,18 +118,6 @@ gulp.task('scripts-prod', ['vue', 'scripts'], function (done) {
     .pipe(concat('all.min.js'))
     .pipe(gulp.dest('client/production'))
 });
-
-// Live reload sync on every screen connect to localhost
-gulp.task('init-live-reload', function() {
-  browserSync.init({
-    proxy: localDevUrl,
-    notify: false
-  });
-});
-
-
-// Watch Files For Changes with live reload sync on every screen connect to localhost.
-gulp.task('dev-watch-sync', ['init-live-reload', 'watch']);
 
 // Watch Files For Changes
 gulp.task('watch', function() {

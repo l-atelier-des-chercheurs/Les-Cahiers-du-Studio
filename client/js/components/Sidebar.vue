@@ -1,14 +1,22 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-    <div class="intro margin-medium">
-      <h3>
-        Nombre de médias&nbsp;: {{ Object.keys(medias).length }}
+    <div class="m_sidebar--bandeau">
+      <h3 class="margin-medium text-cap">
+        Informations de session&nbsp;
       </h3>
+      <Bandeau>
+      </Bandeau>
+
     </div>
+
 
     <hr>
 
-    <h3 class="margin-medium">Calendrier&nbsp;:</h3>
+    <div class="m_sidebar--bandeau">
+      <h3 class="margin-medium text-cap">
+        Calendrier&nbsp;:
+      </h3>
+    </div>
     <div
       class="m_calendar"
     >
@@ -16,7 +24,7 @@
         v-for="(days, month) in folderDays()"
         class="m_calendar--month"
       >
-        <h3 class="margin-medium margin-bottom-none text-cap text-underline">
+        <h3 class="margin-medium margin-bottom-none text-ital font-small">
           {{ month }}
         </h3>
         <div class="m_calendar--days">
@@ -29,11 +37,11 @@
             }"
             @click="scrollToDate(daymeta.timestamp)"
           >
-            <button class="">
+            <button>
               {{ daymeta.dayNumber }}
-              <sup>
+              <div class="font-small">
                 {{ daymeta.numberOfMedias }}
-              </sup>
+              </div>
             </button>
           </div>
         </div>
@@ -78,11 +86,17 @@
       </li>
     </ul>
 
+
   </div>
+
 </template>
 <script>
 import EventBus from '../event-bus';
 import moment from 'moment';
+import Informations from './sidebar/Informations.vue';
+import Calendrier from './sidebar/Calendrier.vue';
+import Tableau from './sidebar/Tableau.vue';
+import Bandeau from './sidebar/_bandeau.vue';
 
 
 // from https://stackoverflow.com/questions/23795522/how-to-enumerate-dates-between-two-dates-in-moment
@@ -100,6 +114,10 @@ var enumerateDaysBetweenDates = function(startDate, endDate) {
 };
 
 export default {
+  components: {
+    Bandeau
+
+  },
   props: {
     slugFolderName: String,
     folder: Object,

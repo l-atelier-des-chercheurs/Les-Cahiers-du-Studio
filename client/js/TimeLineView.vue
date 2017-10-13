@@ -6,18 +6,31 @@
       :slugFolderName="slugFolderName"
       :currentDay="timelineViewport.currentDay"
       @toggleSidebar="toggleSidebar()"
+      :timelineViewport_scale="timelineViewport.scale"
       >
     </NavbarTop>
 
-    <Sidebar
-      v-if="$root.settings.has_sidebar_opened"
-      :folder="folder"
-      :slugFolderName="slugFolderName"
-      :currentDay="timelineViewport.currentDay"
-      :medias="medias"
-      :timelineInfos="timelineInfos"
-    >
-    </Sidebar>
+    <transition name="sidebar-animation">
+      <Sidebar
+        v-if="$root.settings.has_sidebar_opened"
+        :folder="folder"
+        :slugFolderName="slugFolderName"
+        :currentDay="timelineViewport.currentDay"
+        :medias="medias"
+        :timelineInfos="timelineInfos"
+        >
+      </Sidebar>
+    </transition>
+
+    <button type="button"
+      class="button_sidebarToggle"
+      @click.prevent="toggleSidebar()"
+      :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
+      >
+      <template v-if="$root.settings.has_sidebar_opened">←</template>
+      <template v-else>→</template>
+    </button>
+
 
     <div class="m_timeline" ref="timeline">
       <div class="m_timeline-container"
@@ -80,31 +93,6 @@
       >
       </DayNavButtons>
 
-      <div class="options_panel" >
-        <button class="button_small padding-medium" @click="showTimelineOptions = !showTimelineOptions">
-          options
-        </button>
-
-        <div v-if="showTimelineOptions" class="padding-small" style="width:370px">
-          <label>Échelle de temps</label>
-          <div class="input-group">
-            <template v-for="btns in scaleBtns">
-              <button type="button"
-                class="button"
-                :class="{ 'is--active' : timelineViewport.scale === btns.scale }"
-                @click="timelineViewport.scale = btns.scale"
-              >
-                {{ btns.name }}
-              </button>
-            </template>
-          </div>
-          <div class="input-single" v-if="isRealtime">
-            <label>Défiler automatiquement</label>
-            <input type="checkbox" v-model="timelineViewport.autoscroll">
-          </div>
-        </div>
-      </div>
-
       <EditMedia
         v-if="showMediaModalFor !== ''"
         :slugFolderName="slugFolderName"
@@ -153,7 +141,6 @@ export default {
       bottomScrollBar: 0,
 
       showMediaModalFor: '',
-      showTimelineOptions: false,
       highlightedMedia: '',
 
       isRealtime: false,
@@ -178,28 +165,8 @@ export default {
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
-      },
+      }
 
-      scaleBtns: [{
-        name: 'Seconde',
-        scale: 1
-      },
-      {
-        name: 'Minute',
-        scale: 5
-      },
-      {
-        name: 'Heure',
-        scale: 20
-      },
-      {
-        name: 'Demi-journée',
-        scale: 50
-      },
-      {
-        name: 'Journée',
-        scale: 100
-      }]
 
     }
   },
@@ -240,6 +207,9 @@ export default {
     EventBus.$on('scrollToMedia', this.scrollToMedia);
     EventBus.$on('scrollToDate', this.scrollToDate);
     EventBus.$on('highlightMedia', this.highlightMedia);
+    EventBus.$on('updateScale', this.updateTimelineViewportScale);
+    EventBus.$on('goToPrevScreen', this.goToPrevScreen);
+    EventBus.$on('goToNextScreen', this.goToNextScreen);
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
 
@@ -265,6 +235,10 @@ export default {
     EventBus.$off('scrollToMedia', this.scrollToMedia);
     EventBus.$off('scrollToDate', this.scrollToDate);
     EventBus.$off('highlightMedia', this.highlightMedia);
+    EventBus.$off('updateScale', this.updateTimelineViewportScale);
+    EventBus.$off('goToPrevScreen', this.goToPrevScreen);
+    EventBus.$off('goToNextScreen', this.goToNextScreen);
+
     window.removeEventListener('resize', debounce(this.onResize, 300));
     window.removeEventListener('timeline.scrolltoend', this.scrollToEnd);
     clearInterval(this.timelineUpdateRoutine);
@@ -494,6 +468,12 @@ export default {
       let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
       this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft + twentyFourHoursInPixels);
     },
+    goToPrevScreen() {
+      this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft - window.innerWidth);
+    },
+    goToNextScreen() {
+      this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft + window.innerWidth);
+    },
     scrollTimelineToXPos(xPos_new) {
 
       this.isScrolling = true;
@@ -525,6 +505,9 @@ export default {
       let dateFromPosX = this.getDateFromXPosition(this.timelineViewport.scrollLeft + window.innerWidth/4);
       dateFromPosX = Math.min(this.timelineViewport.end, Math.max(dateFromPosX, this.timelineViewport.start));
       this.timelineViewport.currentDay = dateFromPosX;
+    },
+    updateTimelineViewportScale(val) {
+      this.timelineViewport.scale = Number(val);
     }
   },
 }
