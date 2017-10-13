@@ -70,21 +70,21 @@
         </span>
       </div>
 
-      <button type="button" class="button_small" @click="removeMedia()">
+      <button type="button" class="button-small" @click="removeMedia()">
         Supprimer
       </button>
 
-      <button type="button" class="button_small" @click.prevent="printMedia">
+      <button type="button" class="button-small" @click.prevent="printMedia">
         Imprimer
       </button>
 
-      <button type="button" class="button_small">
+      <button type="button" class="button-small">
         <a :href="mediaURL" title="slugMediaName" target="_blank">
           Zoom
         </a>
       </button>
 
-      <button type="button" class="button_small">
+      <button type="button" class="button-small">
         <a :download="slugMediaName" :href="mediaURL" title="slugMediaName" target="_blank">
           Télécharger
         </a>

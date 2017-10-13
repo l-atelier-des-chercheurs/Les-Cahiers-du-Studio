@@ -122,7 +122,6 @@ body {
   .menu_icon {
     flex: 0 0 @t-navbarheight;
     height: 100%;
-    padding: 0 @t-spacing;
     background-color: transparent;
 
     display: flex;
@@ -257,6 +256,10 @@ main {
   }
 //   margin-right:   50px;
 
+  &.with--sidebar_opened {
+    margin-left: @t-sidebarWidth;
+  }
+
   .m_timeline-container {
     position: relative;
     height: 100%;
@@ -264,10 +267,6 @@ main {
     left: 25vw;
     border-right: 1px solid @c-border;
     transition: margin 0.5s ease-out;
-
-    &.with--sidebar_opened {
-      left:  ~"calc(25vw + 500px)";
-    }
 
     // stupid trick to add some space to the right of this div without affecting its width
     &::after {
@@ -279,10 +278,10 @@ main {
       height: 1px;
     }
 
-
-    &.is--realtime {
+    .is--realtime& .m_timeline-container {
       border-right: 4px solid @c-rouge;
     }
+
   }
 }
 .mediaPreview {

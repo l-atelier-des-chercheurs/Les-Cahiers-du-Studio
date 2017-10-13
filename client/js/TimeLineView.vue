@@ -31,12 +31,20 @@
       <template v-else>→</template>
     </button>
 
+    <EditFolder
+      v-if="showEditFolderModal"
+      :folder="folder"
+      :slugFolderName="slugFolderName"
+      @close="showEditFolderModal = false"
+    >
+    </EditFolder>
 
-    <div class="m_timeline" ref="timeline">
+    <div class="m_timeline" ref="timeline"
+      :class="{ 'is--realtime' : isRealtime, 'with--sidebar_opened' : $root.settings.has_sidebar_opened }"
+      >
       <div class="m_timeline-container"
         :style="setViewedTimeline()"
-        :class="{ 'is--realtime' : isRealtime, 'with--sidebar_opened' : $root.settings.has_sidebar_opened }"
-      >
+        >
         <div class="timeline_track">
         </div>
 
@@ -100,6 +108,7 @@
 import NavbarTop from './components/NavbarTop.vue';
 import Sidebar from './components/Sidebar.vue';
 import AddMediaButton from './components/AddMediaButton.vue';
+import EditFolder from './components/modals/EditFolder.vue';
 
 import Media from './components/TimelineMedia.vue';
 import EditMedia from './components/modals/EditMedia.vue';
@@ -117,6 +126,7 @@ export default {
   components: {
     Media,
     EditMedia,
+    EditFolder,
     NavbarTop,
     Sidebar,
     AddMediaButton,
@@ -133,6 +143,7 @@ export default {
 
       showMediaModalFor: '',
       highlightedMedia: '',
+      showEditFolderModal: false,
 
       isRealtime: false,
       timelineUpdateRoutine: '',
@@ -203,6 +214,7 @@ export default {
     EventBus.$on('goToNextScreen', this.goToNextScreen);
     EventBus.$on('goToPrevDay', this.goToPrevDay);
     EventBus.$on('goToNextDay', this.goToNextDay);
+    EventBus.$on('showEditFolderModal', this.startEditModal);
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
 
@@ -225,14 +237,15 @@ export default {
     }, 1000);
   },
   beforeDestroy() {
-    EventBus.$off('scrollToMedia', this.scrollToMedia);
-    EventBus.$off('scrollToDate', this.scrollToDate);
-    EventBus.$off('highlightMedia', this.highlightMedia);
-    EventBus.$off('updateScale', this.updateTimelineViewportScale);
-    EventBus.$off('goToPrevScreen', this.goToPrevScreen);
-    EventBus.$off('goToNextScreen', this.goToNextScreen);
-    EventBus.$off('goToPrevDay', this.goToPrevDay);
-    EventBus.$off('goToNextDay', this.goToNextDay);
+    EventBus.$off('scrollToMedia');
+    EventBus.$off('scrollToDate');
+    EventBus.$off('highlightMedia');
+    EventBus.$off('updateScale');
+    EventBus.$off('goToPrevScreen');
+    EventBus.$off('goToNextScreen');
+    EventBus.$off('goToPrevDay');
+    EventBus.$off('goToNextDay');
+    EventBus.$off('showEditFolderModal');
 
     window.removeEventListener('resize', debounce(this.onResize, 300));
     window.removeEventListener('timeline.scrolltoend', this.scrollToEnd);
@@ -485,8 +498,8 @@ export default {
         onDone: () => {
           this.$nextTick(() => {
             this.isScrolling = false;
-            this.timelineViewport.scrollLeft = xPos_new;
             this.setCurrentDay();
+            this.timelineViewport.scrollLeft = xPos_new;
           });
         },
         onCancel: () => {
@@ -498,14 +511,21 @@ export default {
     toggleSidebar() {
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
     },
-    setCurrentDay() {
-      let dateFromPosX = this.getDateFromXPosition(this.timelineViewport.scrollLeft + window.innerWidth/4);
+    setCurrentDay(xPos = this.timelineViewport.scrollLeft + window.innerWidth/4) {
+      let dateFromPosX = this.getDateFromXPosition(xPos);
       dateFromPosX = Math.min(this.timelineViewport.end, Math.max(dateFromPosX, this.timelineViewport.start));
       this.timelineViewport.currentDay = dateFromPosX;
     },
     updateTimelineViewportScale(val) {
       this.timelineViewport.scale = Number(val);
+    },
+
+    startEditModal() {
+      if(this.folder.authorized) {
+        this.showEditFolderModal = true;
+      }
     }
+
   },
 }
 </script>

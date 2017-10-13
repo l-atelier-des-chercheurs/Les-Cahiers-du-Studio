@@ -3254,7 +3254,10 @@ b {
   background-color: #333;
 }
 .border-circled {
-  border: 1px solid white;
+  border: 1px solid currentColor;
+}
+.border-bottom-dashed {
+  border-bottom: 1px dashed currentColor;
 }
 .button-thin {
   min-height: 0;
@@ -3264,6 +3267,9 @@ b {
 }
 .font-small {
   font-size: 0.9em;
+}
+.font-verysmall {
+  font-size: 0.7em;
 }
 .font-large {
   font-size: 1.1em;
@@ -3283,6 +3289,10 @@ b {
 .margin-bottom-none {
   margin-bottom: 0;
 }
+.margin-sides-medium {
+  margin-left: 1.25em;
+  margin-right: 1.25em;
+}
 .margin-left-none {
   margin-left: 0;
 }
@@ -3295,6 +3305,10 @@ b {
 .padding-verysmall {
   padding: 0.3125em;
 }
+.padding-sides-medium {
+  padding-left: 1.25em;
+  padding-right: 1.25em;
+}
 h1,
 h2,
 h3,
@@ -3305,7 +3319,6 @@ h4 {
 }
 .text-cap {
   text-transform: uppercase;
-  font-size: 0.9em;
   letter-spacing: 0.1em;
 }
 .text-ital {
@@ -3362,7 +3375,7 @@ button.bg-dark.is--active {
   background-color: white;
   color: #333;
 }
-button.button_small {
+button.button-small {
   font-size: 0.8em;
   padding: 0.3125em;
 }
@@ -3445,6 +3458,20 @@ input:required {
 th {
   font-weight: normal;
 }
+.flex-vertically-centered {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -ms-flex-line-pack: center;
+  align-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
 .m_calendar .m_calendar--days {
   margin: 0.3125em;
   display: -webkit-box;
@@ -3482,12 +3509,6 @@ th {
 }
 .m_calendar .m_calendar--days--day.is--current {
   color: #0096FF;
-}
-.m_calendar .m_calendar--days--day.has--noMedia {
-  color: #89898c;
-}
-.m_calendar .m_calendar--days--day.has--noMedia > * {
-  background-color: transparent;
 }
 ::-moz-selection {
   background: rgba(151, 151, 151, 0.25);
@@ -3595,7 +3616,6 @@ body.is_unscrollable {
   -ms-flex: 0 0 60px;
   flex: 0 0 60px;
   height: 100%;
-  padding: 0 20px;
   background-color: transparent;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -3724,6 +3744,9 @@ main > *:first-child {
   background-color: #333;
   outline: 1px solid #0096FF;
 }
+.m_timeline.with--sidebar_opened {
+  margin-left: 460px;
+}
 .m_timeline .m_timeline-container {
   position: relative;
   height: 100%;
@@ -3734,9 +3757,6 @@ main > *:first-child {
   -o-transition: margin 0.5s ease-out;
   transition: margin 0.5s ease-out;
 }
-.m_timeline .m_timeline-container.with--sidebar_opened {
-  left: calc(25vw + 500px);
-}
 .m_timeline .m_timeline-container::after {
   content: '';
   display: block;
@@ -3745,7 +3765,7 @@ main > *:first-child {
   width: 1px;
   height: 1px;
 }
-.m_timeline .m_timeline-container.is--realtime {
+.is--realtime.m_timeline .m_timeline-container .m_timeline-container {
   border-right: 4px solid #ea0028;
 }
 .mediaPreview {

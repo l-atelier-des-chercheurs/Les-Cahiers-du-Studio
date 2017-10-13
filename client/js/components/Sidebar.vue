@@ -1,51 +1,58 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-    <div class="m_sidebar--bandeau">
-      <h3 class="margin-medium text-cap">
-        Informations de session&nbsp;
-      </h3>
-      <Bandeau>
-      </Bandeau>
-
-    </div>
-
-
-    <hr>
 
     <div class="m_sidebar--bandeau">
-      <h3 class="margin-medium text-cap">
-        Calendrier&nbsp;:
-      </h3>
-    </div>
-    <div
-      class="m_calendar"
-    >
-      <div
-        v-for="(days, month) in folderDays()"
-        class="m_calendar--month"
-      >
-        <h3 class="margin-medium margin-bottom-none text-ital font-small">
-          {{ month }}
+      <header class="border-bottom-dashed margin-sides-medium flex-vertically-centered">
+        <h3 class="text-cap">
+          • Informations du dossier&nbsp;
         </h3>
-        <div class="m_calendar--days">
-          <div
-            v-for="(daymeta, index) in days"
-            class="m_calendar--days--day"
-            :class="{
-              'is--current' : daymeta.isCurrentDay,
-              'has--noMedia' : !daymeta.numberOfMedias
-            }"
-            @click="scrollToDate(daymeta.timestamp)"
-          >
-            <button>
-              {{ daymeta.dayNumber }}
-              <div class="font-small">
-                {{ daymeta.numberOfMedias }}
-              </div>
-            </button>
+        <button v-if="folder.authorized" type="button" class="button-small border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="openEditFolderModal()">
+          éditer
+        </button>
+      </header>
+    </div>
+
+    <Bandeau>
+    </Bandeau>
+
+    <div class="m_sidebar--bandeau">
+      <header>
+        <h3 class="margin-medium text-cap">
+          Calendrier&nbsp;:
+        </h3>
+      </header>
+
+      <div
+        class="m_calendar"
+      >
+        <div
+          v-for="(days, month) in folderDays()"
+          class="m_calendar--month"
+        >
+          <h3 class="margin-medium margin-bottom-none text-ital font-small">
+            {{ month }}
+          </h3>
+          <div class="m_calendar--days">
+            <div
+              v-for="(daymeta, index) in days"
+              class="m_calendar--days--day"
+              :class="{
+                'is--current' : daymeta.isCurrentDay,
+                'has--noMedia' : !daymeta.numberOfMedias
+              }"
+              @click="scrollToDate(daymeta.timestamp)"
+            >
+              <button>
+                {{ daymeta.dayNumber }}
+                <div class="font-verysmall">
+                  {{ daymeta.numberOfMedias }}
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
 
     <table class="table">
@@ -93,11 +100,11 @@
 <script>
 import EventBus from '../event-bus';
 import moment from 'moment';
+
 import Informations from './sidebar/Informations.vue';
 import Calendrier from './sidebar/Calendrier.vue';
 import Tableau from './sidebar/Tableau.vue';
 import Bandeau from './sidebar/_bandeau.vue';
-
 
 // from https://stackoverflow.com/questions/23795522/how-to-enumerate-dates-between-two-dates-in-moment
 var enumerateDaysBetweenDates = function(startDate, endDate) {
@@ -116,14 +123,14 @@ var enumerateDaysBetweenDates = function(startDate, endDate) {
 export default {
   components: {
     Bandeau
-
   },
   props: {
     slugFolderName: String,
     folder: Object,
     medias: Object,
     timelineInfos: Object,
-    currentDay: Number
+    currentDay: Number,
+    showEditFolderModal: false
   },
   data() {
     return {
@@ -209,6 +216,10 @@ export default {
       }, 0);
 
       return total;
+    },
+
+    openEditFolderModal() {
+      EventBus.$emit('showEditFolderModal');
     }
   }
 

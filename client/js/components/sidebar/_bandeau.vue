@@ -1,6 +1,5 @@
 <template>
   <div>
-    Plip
   </div>
 </template>
 <script>

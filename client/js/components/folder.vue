@@ -30,28 +30,28 @@
     </table>
 
     <div class="input-group">
-      <button type="button" class="button_small" @click="$root.openFolder(slugFolderName)">
+      <button type="button" class="button-small" @click="$root.openFolder(slugFolderName)">
         Ouvrir
       </button>
 
-      <button v-if="!folder.authorized" type="button" class="button_small" @click="showInputPasswordField = !showInputPasswordField">
+      <button v-if="!folder.authorized" type="button" class="button-small" @click="showInputPasswordField = !showInputPasswordField">
         Entrer un mot de passe
       </button>
 <!--
-      <button v-if="folder.authorized" type="button" class="button_small" @click="debugFolderContent = !debugFolderContent">
+      <button v-if="folder.authorized" type="button" class="button-small" @click="debugFolderContent = !debugFolderContent">
         Vue de debug
       </button>
 -->
-      <button v-if="folder.authorized" type="button" class="button_small" @click="showEditFolderModal = true">
+      <button v-if="folder.authorized" type="button" class="button-small" @click="showEditFolderModal = true">
         Éditer
       </button>
-      <button v-if="folder.authorized" type="button" class="button_small" @click="removeFolder()">
+      <button v-if="folder.authorized" type="button" class="button-small" @click="removeFolder()">
         Supprimer
       </button>
     </div>
       <div v-if="showInputPasswordField" class="input-group">
         <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus>
-        <button type="button" class="button_small" @click="submitPassword">Envoyer</button>
+        <button type="button" class="button-small" @click="submitPassword">Envoyer</button>
       </div>
 
     <EditFolder
