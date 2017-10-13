@@ -22,6 +22,9 @@ strong,b {
 .bg-transparent {
   background-color: transparent;
 }
+.bg-dark {
+  background-color: @c-gris_dark;
+}
 
 .border-circled {
   border: 1px solid white;
@@ -137,16 +140,27 @@ button {
   padding: 0 @t-skipline/2;
   border-radius: 6px;
 
+  transition: color .25s ease-out;
+
   &.is--active {
-    font-style: italic;
   }
   &.is--disabled {
     opacity: 0.5;
   }
 
+  &.bg-dark.is--active {
+    background-color: white;
+    color: @c-gris_dark;
+  }
+
+
   &.button_small {
     font-size:0.8em;
     padding: @t-skipline/4;
+  }
+
+  &:focus {
+    outline:0;
   }
 }
 

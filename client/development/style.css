@@ -3229,6 +3229,7 @@ th {
   --font-size: 1rem;
   /* Most browsers use a default font size of 16px */
   --input-font-size: 1rem;
+  --sidebar-width: 460px;
 }
 strong,
 b {
@@ -3248,6 +3249,9 @@ b {
 }
 .bg-transparent {
   background-color: transparent;
+}
+.bg-dark {
+  background-color: #333;
 }
 .border-circled {
   border: 1px solid white;
@@ -3347,16 +3351,23 @@ button {
   min-height: 2.5em;
   padding: 0 0.625em;
   border-radius: 6px;
-}
-button.is--active {
-  font-style: italic;
+  -webkit-transition: color 0.25s ease-out;
+  -o-transition: color 0.25s ease-out;
+  transition: color 0.25s ease-out;
 }
 button.is--disabled {
   opacity: 0.5;
 }
+button.bg-dark.is--active {
+  background-color: white;
+  color: #333;
+}
 button.button_small {
   font-size: 0.8em;
   padding: 0.3125em;
+}
+button:focus {
+  outline: 0;
 }
 input[type=range] {
   -webkit-appearance: none;

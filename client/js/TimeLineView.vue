@@ -139,6 +139,7 @@ export default {
       topNavbarHeight: 60,
       timelinetrackHeight: 50,
       bottomScrollBar: 0,
+      sidebarWidth: parseFloat(window.getComputedStyle(document.querySelector("html")).getPropertyValue("--sidebar-width")),
 
       showMediaModalFor: '',
       highlightedMedia: '',
@@ -449,11 +450,11 @@ export default {
     scrollToMedia(slugMediaName) {
       let mediaToScrollTo = this.medias[slugMediaName];
       let mediaPosX = this.getMediaPosX(mediaToScrollTo.created);
-      this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? mediaPosX : mediaPosX - 500);
+      this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? mediaPosX : mediaPosX - this.sidebarWidth);
     },
     scrollToDate(timestamp) {
       let xPos = this.getXPositionFromDate(timestamp);
-      this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? xPos : xPos - 500);
+      this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? xPos : xPos - this.sidebarWidth);
     },
     highlightMedia(slugMediaName) {
       this.highlightedMedia = slugMediaName;
@@ -469,10 +470,12 @@ export default {
       this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft + twentyFourHoursInPixels);
     },
     goToPrevScreen() {
-      this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft - window.innerWidth);
+      let delta = this.$root.settings.has_sidebar_opened ? window.innerWidth - this.sidebarWidth : window.innerWidth;
+      this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft - delta );
     },
     goToNextScreen() {
-      this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft + window.innerWidth);
+      let delta = this.$root.settings.has_sidebar_opened ? window.innerWidth - this.sidebarWidth : window.innerWidth;
+      this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft + delta);
     },
     scrollTimelineToXPos(xPos_new) {
 
@@ -481,7 +484,7 @@ export default {
       this.$scrollTo('.m_timeline', 500, {
         container: this.$refs.timeline,
         offset: xPos_new,
-        cancelable: false,
+        cancelable: true,
         easing: [0.45, 0.80, 0.58, 1.00],
         x: true,
         y: false,
