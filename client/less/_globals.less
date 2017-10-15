@@ -32,6 +32,10 @@ strong,b {
 
 .border-bottom-dashed {
   border-bottom: 1px dashed currentColor;
+  border: 0 solid currentColor;
+  border-bottom-width: 1px;
+  border-image: repeating-linear-gradient(to right, currentColor, currentColor 1ch, transparent 1ch, transparent ~"calc(1ch + 2px)") 1;
+  border-image-repeat: round;
 }
 
 .button-thin {
@@ -65,6 +69,9 @@ strong,b {
 .margin-bottom-none {
   margin-bottom: 0;
 }
+.margin-none {
+  margin: 0;
+}
 
 .margin-sides-medium {
   margin-left: @t-skipline;
@@ -72,6 +79,15 @@ strong,b {
 }
 .margin-left-none {
   margin-left: 0;
+}
+
+.padding-vert-medium {
+  padding-top: @t-skipline;
+  padding-bottom: @t-skipline;
+}
+.padding-vert-small {
+  padding-top: @t-skipline/2;
+  padding-bottom: @t-skipline/2;
 }
 
 .padding-medium {
@@ -86,6 +102,10 @@ strong,b {
 .padding-sides-medium {
   padding-left: @t-skipline;
   padding-right: @t-skipline;
+}
+
+.with-bullet::before {
+  content: '●';
 }
 
 h1,h2,h3,h4 {

@@ -1,44 +1,40 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
 
-    <div class="m_sidebar--bandeau">
-      <header class="border-bottom-dashed margin-sides-medium flex-vertically-centered">
-        <h3 class="text-cap">
-          • Informations du dossier&nbsp;
+    <SidebarSection>
+      <div slot="header" class="flex-vertically-centered">
+        <h3 class="margin-none text-cap with-bullet">
+          Informations du dossier&nbsp;
         </h3>
-        <button v-if="folder.authorized" type="button" class="button-small border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="openEditFolderModal()">
+        <button v-if="folder.authorized" type="button" class="button-small border-circled button-thin button-wide padding-verysmall margin-none" @click="openEditFolderModal()">
           éditer
         </button>
-      </header>
-    </div>
+      </div>
+    </SidebarSection>
 
-    <Bandeau>
-    </Bandeau>
-
-    <div class="m_sidebar--bandeau">
-      <header>
-        <h3 class="margin-medium text-cap">
-          Calendrier&nbsp;:
+    <SidebarSection>
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          Calendrier&nbsp;
         </h3>
-      </header>
+      </div>
 
-      <div
-        class="m_calendar"
-      >
+      <div slot="body" class="m_calendar">
         <div
           v-for="(days, month) in folderDays()"
           class="m_calendar--month"
         >
-          <h3 class="margin-medium margin-bottom-none text-ital font-small">
+          <h3 class="margin-bottom-none text-ital font-small">
             {{ month }}
           </h3>
           <div class="m_calendar--days">
             <div
               v-for="(daymeta, index) in days"
-              class="m_calendar--days--day"
+              class="m_calendar--days--day padding-small"
               :class="{
                 'is--current' : daymeta.isCurrentDay,
-                'has--noMedia' : !daymeta.numberOfMedias
+                'has--noMedia' : !daymeta.numberOfMedias,
+                'is--today': daymeta.isToday
               }"
               @click="scrollToDate(daymeta.timestamp)"
             >
@@ -52,47 +48,49 @@
           </div>
         </div>
       </div>
+    </SidebarSection>
 
-    </div>
+    <SidebarSection>
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          Liste&nbsp;
+        </h3>
+      </div>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Nom du média</th>
-          <th>
-            <select v-model="secondColumn">
-              <option v-for="mediaType in mediaKeys()">
-                {{ mediaType }}
-              </option>
-            </select>
-          </th>
-          <th>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(media, index) in medias"
-          v-bind:key="index"
-          @mouseover="highlightMedia(index)" @mouseleave="unHighlightMedia(index)"
-          v-if="media.hasOwnProperty(secondColumn) && media[secondColumn] !== ''"
-        >
-          <td class="font-small">{{ index }}</td>
-          <td class="font-small">{{ media[secondColumn] }}</td>
-          <td>
-            <button type="button" class="" @click="scrollToMedia(index)">
-              &nbsp;↪&nbsp;
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ul>
-      <li
-      >
-      </li>
-    </ul>
+      <table slot="body" class="table">
 
+        <thead>
+          <tr>
+            <th>Nom du média</th>
+            <th>
+              <select v-model="secondColumn">
+                <option v-for="mediaType in mediaKeys()">
+                  {{ mediaType }}
+                </option>
+              </select>
+            </th>
+            <th>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(media, index) in medias"
+            v-bind:key="index"
+            @mouseover="highlightMedia(index)" @mouseleave="unHighlightMedia(index)"
+            v-if="media.hasOwnProperty(secondColumn) && media[secondColumn] !== ''"
+          >
+            <td class="font-small">{{ index }}</td>
+            <td class="font-small">{{ media[secondColumn] }}</td>
+            <td>
+              <button type="button" class="" @click="scrollToMedia(index)">
+                &nbsp;↪&nbsp;
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </SidebarSection>
 
   </div>
 
@@ -104,7 +102,7 @@ import moment from 'moment';
 import Informations from './sidebar/Informations.vue';
 import Calendrier from './sidebar/Calendrier.vue';
 import Tableau from './sidebar/Tableau.vue';
-import Bandeau from './sidebar/_bandeau.vue';
+import SidebarSection from './sidebar/SidebarSection.vue';
 
 // from https://stackoverflow.com/questions/23795522/how-to-enumerate-dates-between-two-dates-in-moment
 var enumerateDaysBetweenDates = function(startDate, endDate) {
@@ -122,7 +120,7 @@ var enumerateDaysBetweenDates = function(startDate, endDate) {
 
 export default {
   components: {
-    Bandeau
+    SidebarSection
   },
   props: {
     slugFolderName: String,
@@ -182,12 +180,18 @@ export default {
         if(fullDate === this.getCurrentDay()) {
           isCurrentDay = true;
         }
+        let isToday = false;
+        let todaysDate = moment().format('DD/MM/YYYY');
+        if(todaysDate === fullDate) {
+          isToday = true;
+        }
 
         let dayData = {
           "dayNumber": day,
           "numberOfMedias": this.getNumberOfMediasCreatedOnThisDate(cur),
           "timestamp": moment(cur),
-          isCurrentDay
+          isCurrentDay,
+          isToday
         };
 
         if(typeof acc[monthName] === 'undefined') {

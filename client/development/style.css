@@ -3258,6 +3258,11 @@ b {
 }
 .border-bottom-dashed {
   border-bottom: 1px dashed currentColor;
+  border: 0 solid currentColor;
+  border-bottom-width: 1px;
+  -o-border-image: -o-repeating-linear-gradient(left, currentColor, currentColor 1ch, transparent 1ch, transparent calc(1ch + 2px)) 1;
+  border-image: repeating-linear-gradient(to right, currentColor, currentColor 1ch, transparent 1ch, transparent calc(1ch + 2px)) 1;
+  border-image-repeat: round;
 }
 .button-thin {
   min-height: 0;
@@ -3289,12 +3294,23 @@ b {
 .margin-bottom-none {
   margin-bottom: 0;
 }
+.margin-none {
+  margin: 0;
+}
 .margin-sides-medium {
   margin-left: 1.25em;
   margin-right: 1.25em;
 }
 .margin-left-none {
   margin-left: 0;
+}
+.padding-vert-medium {
+  padding-top: 1.25em;
+  padding-bottom: 1.25em;
+}
+.padding-vert-small {
+  padding-top: 0.625em;
+  padding-bottom: 0.625em;
 }
 .padding-medium {
   padding: 1.25em;
@@ -3308,6 +3324,9 @@ b {
 .padding-sides-medium {
   padding-left: 1.25em;
   padding-right: 1.25em;
+}
+.with-bullet::before {
+  content: '●';
 }
 h1,
 h2,
@@ -3473,7 +3492,6 @@ th {
   align-items: center;
 }
 .m_calendar .m_calendar--days {
-  margin: 0.3125em;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -3482,6 +3500,8 @@ th {
   -webkit-box-direction: normal;
   -ms-flex-flow: row wrap;
   flex-flow: row wrap;
+  margin-left: -0.625em;
+  margin-right: -0.625em;
   -ms-flex-line-pack: start;
   align-content: flex-start;
 }
@@ -3489,17 +3509,15 @@ th {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 14.28571429%;
   flex: 0 0 14.28571429%;
-  padding: 0;
   text-align: center;
-  padding: 0.3125em;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
 }
 .m_calendar .m_calendar--days--day > * {
   font-size: 1.2em;
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   color: inherit;
   background-color: #f2f2f2;
@@ -3509,6 +3527,10 @@ th {
 }
 .m_calendar .m_calendar--days--day.is--current {
   color: #0096FF;
+}
+.m_calendar .m_calendar--days--day.is--today > * {
+  background-color: #0096FF;
+  color: white;
 }
 ::-moz-selection {
   background: rgba(151, 151, 151, 0.25);

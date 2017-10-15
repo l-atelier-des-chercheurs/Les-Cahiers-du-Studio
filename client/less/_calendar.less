@@ -4,24 +4,23 @@
   }
 
   .m_calendar--days {
-    margin: @t-skipline/4;
     display: flex;
     position: relative;
     flex-flow: row wrap;
+    margin-left: -@t-skipline/2;
+    margin-right: -@t-skipline/2;
     align-content: flex-start;
   }
 
   .m_calendar--days--day {
     flex: 0 0 100/7%;
-    padding: 0;
     text-align: center;
-    padding: @t-skipline/4;
     display: flex;
 
     > * {
       font-size:1.2em;
-      width: 45px;
-      height: 45px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       color: inherit;
       background-color: @c-gris_verylight;
@@ -33,6 +32,13 @@
     }
     &.is--current {
       color: @c-bleu;
+    }
+    &.is--today {
+      > * {
+        background-color: @c-bleu;
+        color: white;
+      }
+
     }
   }
 }
