@@ -30,18 +30,18 @@
           <div class="m_calendar--days">
             <div
               v-for="(daymeta, index) in days"
-              class="m_calendar--days--day padding-small"
+              class="m_calendar--days--day padding-sides-verysmall padding-bottom-small"
               :class="{
                 'is--current' : daymeta.isCurrentDay,
                 'has--noMedia' : !daymeta.numberOfMedias,
                 'is--today': daymeta.isToday
               }"
               @click="scrollToDate(daymeta.timestamp)"
-            >
-              <button>
+              >
+              <button class="font-verylarge padding-none">
                 {{ daymeta.dayNumber }}
-                <div class="font-verysmall">
-                  {{ daymeta.numberOfMedias }}
+                <div class="font-veryverysmall bottomIndicator">
+                  {{ daymeta.numberOfMedias > 0 ? daymeta.numberOfMedias : '×' }}
                 </div>
               </button>
             </div>

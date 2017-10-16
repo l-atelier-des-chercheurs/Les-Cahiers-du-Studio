@@ -138,7 +138,7 @@ export default {
 
       topNavbarHeight: 60,
       timelinetrackHeight: 50,
-      bottomScrollBar: 0,
+      bottomScrollBar: 20,
       sidebarWidth: parseFloat(window.getComputedStyle(document.querySelector("html")).getPropertyValue("--sidebar-width")),
 
       showMediaModalFor: '',
@@ -531,109 +531,4 @@ export default {
 </script>
 
 <style lang="sass">
-
-.timeline_track {
-  position: absolute;
-  height: 50px;
-  width: 100%;
-  border-bottom: 1px solid black;
-}
-
-.timeline_overview {
-  position: absolute;
-  top:50px;
-  height: 10px;
-  width: 100%;
-  border-bottom: 1px solid black;
-}
-
-.nomediainfo {
-  position: fixed;
-  left: 100px;
-  bottom: 100px;
-  background: white;
-  padding: 15px;
-}
-
-.options_panel {
-  position: fixed;
-  right: 0%;
-  top: 10px;
-  width: auto;
-  border:4px solid white;
-  background-color: #f2f2f2;
-  z-index: 1001;
-}
-
-.simple_grid_overlay {
-  height: 100%;
-  left: 0;
-  padding-top:50px;
-  position: absolute;
-  width: 100%;
-  z-index: -1;
-  pointer-events:none;
-
-  .horizontal {
-    position:relative;
-    height: 100%;
-  }
-
-  .gridItem {
-    position: absolute;
-    height: 100%;
-
-    transition: all .4s;
-
-    &.gridItem_isday {
-      border-left: 1px solid #000;
-      z-index:100;
-      color: white;
-
-      .gridItem--caption {
-        display: block;
-        background-color: #000;
-        padding: 1px 4px;
-      }
-    }
-    &.gridItem_ishour {
-//       color: #00ad41;
-      border-left: 1px solid fade-out(black, 0.8);
-      z-index:10;
-
-      &::before {
-        content: attr(data-caption);
-        display: block;
-        width: 150px;
-        transform: rotate(-15deg);
-        transform-origin: left top;
-        margin-left: 4px;
-        font-style: italic;
-        margin-top: -30px;
-      }
-    }
-
-    &.gridItem_isminute {
-      color: #999;
-      border-left: 1px solid fade-out(black, 0.9);
-      z-index:1;
-
-      &[data-caption] {
-        color: #333;
-        border-left: 1px solid fade-out(black, 0.8);
-        &::before {
-          content: attr(data-caption);
-          display: block;
-          width: 150px;
-          transform: rotate(-15deg);
-          transform-origin: left top;
-          margin-left: 4px;
-          font-style: italic;
-          margin-top: -30px;
-        }
-      }
-    }
-
-  }
-}
 </style>

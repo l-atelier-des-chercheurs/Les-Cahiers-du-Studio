@@ -8,6 +8,8 @@
 @import "_variables";
 @import "_globals";
 @import "_calendar";
+@import "_timeline";
+@import "_fileupload";
 
 ::-moz-selection {
     background: rgba(151, 151, 151,0.25);
@@ -35,9 +37,7 @@ body {
   font-size: @t-fontsize;
   line-height: @t-lineheight;
   color: black;
-  background-color: @c-gris_verylight;
-
-  padding-top: 0.3em;
+  background-color: @c-bg_timeline;
 
 }
 
@@ -95,7 +95,7 @@ body {
 
   & > .wrapper {
     width: 100%;
-    background-color: @c-bg_navbar; // @c-gris_verylight
+    background-color: @c-bg_navbar;
     color: white;
 
     letter-spacing: 0.05em;
@@ -224,66 +224,6 @@ main {
   background-color: @c-gris;
 }
 
-.m_timeline {
-  position: relative;
-  overflow-x: scroll;
-  overflow-x: overlay;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-
-  &::-webkit-scrollbar {
-    width: 80px;
-    height: 20px;
-
-    &:hover {
-      cursor: -webkit-grab;
-      cursor: -moz-grab;
-    }
-
-    * {
-      background-color: transparent;
-    }
-  }
-
-  &::-webkit-scrollbar-track {
-    -webkit-box-shadow: none;
-    background-color: @c-gris_light;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: @c-gris_dark;
-    outline: 1px solid @c-bleu;
-  }
-//   margin-right:   50px;
-
-  &.with--sidebar_opened {
-    margin-left: @t-sidebarWidth;
-  }
-
-  .m_timeline-container {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    left: 25vw;
-    border-right: 1px solid @c-border;
-    transition: margin 0.5s ease-out;
-
-    // stupid trick to add some space to the right of this div without affecting its width
-    &::after {
-      content:'';
-      display: block;
-      position: absolute;
-      right: -50px;
-      width: 1px;
-      height: 1px;
-    }
-
-    .is--realtime& .m_timeline-container {
-      border-right: 4px solid @c-rouge;
-    }
-
-  }
-}
 .mediaPreview {
   position: absolute;
   width: 1px; height: 1px;
@@ -473,46 +413,22 @@ main {
 
 }
 
-.m_addMedia {
-  position: fixed;
-  bottom: 20px;
-  right: 0;
-  display: flex;
-  flex-flow: column wrap;
-  align-items: flex-end;
-
-  button, .dz-message {
-    box-shadow: 2px 4px 13px #bbb;
-  }
-
-
-  > * {
-    flex: 0 0 auto;
-    pointer-events: auto;
-    margin-right: @t-skipline * 2;
-
-    &.dropzone {
-      border: 1px solid @c-gris;
-      margin-right: 0;
-    }
-  }
-}
-
 
 @t-button_sidebartoggle: 60px;
 
 .button_sidebarToggle {
   position: absolute;
   top: 46%;
-  top:~"calc(50% - @t-button_sidebartoggle/3)";
+  top:~"calc(50% - @{t-button_sidebartoggle}/3)";
 
   width: @t-button_sidebartoggle;
   height: @t-button_sidebartoggle;
   left: @t-sidebarWidth - @t-button_sidebartoggle/2;
-  background-color: @c-gris_dark;
+  background-color: @c-noir;
   color: white;
 
   text-align: right;
+  border-radius: 50%;
 
   transform: translateX(0);
   transition: transform .32s ease-out, opacity .45s;

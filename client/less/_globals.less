@@ -23,7 +23,7 @@ strong,b {
   background-color: transparent;
 }
 .bg-dark {
-  background-color: @c-gris_dark;
+  background-color: @c-noir;
 }
 
 .border-circled {
@@ -40,6 +40,7 @@ strong,b {
 
 .button-thin {
   min-height: 0;
+  line-height: 0.9;
 }
 .button-wide {
   min-width: 3.5em;
@@ -51,8 +52,14 @@ strong,b {
 .font-verysmall {
   font-size: 0.7em;
 }
+.font-veryverysmall {
+  font-size: 0.5em;
+}
 .font-large {
   font-size:1.1em;
+}
+.font-verylarge {
+  font-size:1.3em;
 }
 .margin-medium {
   margin: @t-skipline;
@@ -81,6 +88,9 @@ strong,b {
   margin-left: 0;
 }
 
+.padding-none {
+  padding:0;
+}
 .padding-vert-medium {
   padding-top: @t-skipline;
   padding-bottom: @t-skipline;
@@ -99,9 +109,16 @@ strong,b {
 .padding-verysmall {
   padding: @t-skipline/4;
 }
+.padding-sides-verysmall {
+  padding-left: @t-skipline/4;
+  padding-right: @t-skipline/4;
+}
 .padding-sides-medium {
   padding-left: @t-skipline;
   padding-right: @t-skipline;
+}
+.padding-bottom-small {
+  padding-bottom:   @t-skipline/2;
 }
 
 .with-bullet::before {
@@ -184,7 +201,7 @@ button {
 
   &.bg-dark.is--active {
     background-color: white;
-    color: @c-gris_dark;
+    color: @c-noir;
   }
 
 
