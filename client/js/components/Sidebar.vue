@@ -41,7 +41,7 @@
               <button class="font-verylarge padding-none">
                 {{ daymeta.dayNumber }}
                 <div class="font-veryverysmall bottomIndicator">
-                  {{ daymeta.numberOfMedias > 0 ? daymeta.numberOfMedias : '×' }}
+                  {{ daymeta.numberOfMedias > 0 ? daymeta.numberOfMedias : '•' }}
                 </div>
               </button>
             </div>

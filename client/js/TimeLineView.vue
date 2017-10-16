@@ -455,11 +455,13 @@ export default {
       this.$refs.timeline.scrollLeft = this.timelineViewport.width;
     },
     scrollToMedia(slugMediaName) {
+      console.log(`METHODS • timelineview: scrollToMedia ${slugMediaName}`);
       let mediaToScrollTo = this.medias[slugMediaName];
       let mediaPosX = this.getMediaPosX(mediaToScrollTo.created);
       this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? mediaPosX : mediaPosX - this.sidebarWidth);
     },
     scrollToDate(timestamp) {
+      console.log(`METHODS • timelineview: scrollToDate ${timestamp}`);
       let xPos = this.getXPositionFromDate(timestamp);
       this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? xPos : xPos - this.sidebarWidth);
     },
@@ -467,6 +469,7 @@ export default {
       this.highlightedMedia = slugMediaName;
     },
     goToPrevDay() {
+      console.log('METHODS • timelineview: goToPrevDay');
       let twentyFourHoursInSeconds = 24 * 60 * 60;
       let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
       this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft - twentyFourHoursInPixels);

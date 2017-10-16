@@ -67,11 +67,11 @@ export default {
       },
       mediaStyles: {
         defaultWidth: 180,
-        defaultHeight: 120,
+        defaultHeight: 180,
         ratio: this.media.ratio,
         y: this.limitMediaYPos(parseFloat(this.media.y) * this.timelineHeight),
         w: 180,
-        h: 120
+        h: 180
       }
     }
   },
@@ -124,15 +124,6 @@ export default {
           this.mediaStyles.w = this.mediaStyles.defaultWidth;
         }
       }
-
-      // TODO : set width of duration-based media on the actual duration
-      // but only if this.getMediaWidthFromDuration > 120 (otherwise we use ratio or default width)
-/*
-      if(this.mediaStyles.w < 180 && this.media.duration !== undefined) {
-        this.mediaStyles.w = Math.max(180, this.getMediaWidthFromDuration());
-      } else {
-*/
-
       return {
         width: `${this.mediaStyles.w}px`,
         height: `${this.mediaStyles.h}px`

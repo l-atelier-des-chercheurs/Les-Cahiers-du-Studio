@@ -10,6 +10,7 @@
 @import "_calendar";
 @import "_timeline";
 @import "_fileupload";
+@import "_media";
 
 ::-moz-selection {
     background: rgba(151, 151, 151,0.25);
@@ -87,6 +88,26 @@ body {
 #app {
   width: 100%;
   margin: 0 auto;
+}
+
+.m_home {
+
+  .stvlogo {
+    width: 75px;
+    height: 50px;
+    min-width: 0;
+    flex-grow:0;
+  }
+
+  .m_home--filtres {
+
+
+  }
+
+  .m_home--folders {
+
+  }
+
 }
 
 .navbar_top {
@@ -177,242 +198,9 @@ body {
 }
 
 
-h1 {
-  text-decoration: underline;
-  color: @c-bleu;
-  font-style: italic;
-}
-
-main {
-
-  > *:first-child {
-    margin-top: 0;
-  }
-}
-
-.card_folder_container {
-  margin-top: @t-skipline;
-}
-
-.card_folder {
-  margin-bottom:  @t-skipline*2;
-
-  .folder {
-    min-height: @t-skipline * 3;
-    background-color: white;
-
-    > *:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  h2 {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  > * {
-    padding: @t-skipline/2;
-  }
-  &:nth-child(3n+1) {
-    clear:left;
-  }
-
-}
-
 .alertify-logs>*, .alertify-logs>.default {
   background-color: @c-gris;
 }
-
-.mediaPreview {
-  position: absolute;
-  width: 1px; height: 1px;
-  transition: transform .7s ease-in-out;
-
-  .media {
-    position: absolute;
-    right:0;
-    top: 0;
-    pointer-events: none;
-
-    @t-anchor: 20px;
-
-    .mediaScrubber {
-      position: absolute;
-      height: @t-anchor;
-      right: 0;
-      text-align: right;
-      top: -@t-anchor/2;
-
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    .accroche {
-      position: absolute;
-      width: @t-anchor;
-      height: @t-anchor;
-      z-index: 10;
-      border-radius: 50%;
-      color: white;
-      background-color: currentcolor;
-      min-height: 0;
-      display: block;
-      pointer-events: auto;
-//       font-size:0;
-      box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
-
-      &:focus {
-        outline: none;
-      }
-
-      &_droite {
-        right: -@t-anchor/2;
-      }
-      &_gauche {
-        left: -@t-anchor/2;
-      }
-    }
-
-    .type-marker& {
-      z-index: 150;
-      @t-marker_anchor: 10px;
-      .mediaScrubber {
-      }
-      .accroche {
-        transform-origin: center center;
-        transform: scale(0.5);
-        background-color: @c-bleu;
-      }
-
-      .timelineMediaContent {
-        background-color: transparent;
-        height: 1em !important;
-      }
-
-    }
-
-    .color-red& {
-      .accroche {
-        background-color: @c-rouge;
-      }
-    }
-    .color-blue& {
-      .accroche {
-        background-color: @c-bleu;
-      }
-    }
-    .color-green& {
-      .accroche {
-        background-color: @c-vert;
-      }
-    }
-    .color-yellow& {
-      .accroche {
-        background-color: #FFF000;
-      }
-    }
-    .color-orange& {
-      .accroche {
-        background-color: #FFBE32;
-      }
-    }
-    .color-purple& {
-      .accroche {
-        background-color: #b357c1;
-      }
-    }
-
-    .accrocheDurationLine {
-      height: 4px;
-      width: 100%;
-      background-color: @c-bleu;
-      z-index: 9;
-    }
-
-    .button_openmedia {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      z-index: 1;
-
-      margin: @t-skipline/2;
-      background-color: rgba(255,255,255,1);
-
-      opacity: 0;
-
-      transition: opacity 0.3s ease-out;
-    }
-  }
-
-
-
-
-  &.is--hovered, &.is--dragged, &.is--highlighted {
-    z-index: 1000;
-    .accroche {
-      color: @c-bleu;
-    }
-
-    .button_openmedia {
-      opacity: 1;
-    }
-  }
-
-  .timelineMediaContent {
-    width:100%;
-    height:100%;
-    background-color: white;
-    display: flex;
-    align-items:center;
-    justify-content:center;
-    overflow: hidden;
-    transform-origin: top right;
-    pointer-events: auto;
-
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-
-    border: 2px solid #fff;
-    box-shadow: 0 3px 3px -2px rgba(0,0,0,.2), 0 3px 4px 0 rgba(0,0,0,.14), 0 1px 8px 0 rgba(0,0,0,.12);
-//     border: 1px dashed #000;
-
-    transition: transform .2s ease-out;
-
-    .mediaContainer {
-      opacity: 1;
-
-      &.type-audio {
-        width: 100%;
-      }
-    }
-
-    textarea {
-      min-height: 120px;
-      overflow: hidden;
-    }
-  }
-
-
-  &.is--collapsed:not(.is--highlighted) .timelineMediaContent {
-    transform: scale(0);
-  }
-  &.has--duration.is--collapsed:not(.is--highlighted) .timelineMediaContent {
-    transform: scaleY(0);
-  }
-  &.is--dragged {
-    transition: none;
-    .timelineMediaContent {
-      border: 2px solid @c-bleu;
-      cursor: -webkit-grabbing;
-      cursor: -moz-grabbing;
-    }
-  }
-
-}
-
 
 @t-button_sidebartoggle: 60px;
 

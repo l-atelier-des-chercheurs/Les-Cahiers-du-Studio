@@ -13,10 +13,11 @@
   }
 
   .m_calendar--days--day {
-    flex: 0 0 100/7%;
     text-align: center;
     display: flex;
     position: relative;
+
+    @t-calendarButtonSize: 50px;
 
     > * {
       position: relative;
@@ -26,8 +27,8 @@
       padding-bottom: 2px;
       min-height: 0;
       justify-content: center;
-      width: 50px;
-      height: 50px;
+      width: @t-calendarButtonSize;
+      height: @t-calendarButtonSize;
       border-radius: 50%;
       color: inherit;
       background-color: @c-gris_verylight;
@@ -60,16 +61,18 @@
       }
     }
     &.is--today {
+      @t-todayTagSize: 0.4em;
+
       &::before {
         content: '';
         display: block;
         position: absolute;
         margin: auto;
-        width: .3em;
-        height: .3em;
-        top:0.2em;
-        left: ~"calc(50% - 0.15em)";
-        background-color: @c-bleu;
+        width: @t-todayTagSize;
+        height: @t-todayTagSize;
+        top:0.4em;
+        left: ~"calc(50% - @{t-todayTagSize}/2)";
+        background-color: @c-bleu_vif;
         border-radius: 50%;
         color: white;
         z-index: 1;
