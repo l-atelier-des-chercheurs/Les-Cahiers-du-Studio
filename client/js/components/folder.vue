@@ -1,66 +1,52 @@
 <template>
-  <div class="folder">
-    <h2 class="margin-small margin-left-none">
+  <div class="m_folder">
+    <h2 class="m_folder--title margin-none padding-medium bg-dark c_blanc font-large">
       {{ folder.name }}
-      <br>
+    </h2>
+
+    <div class="margin-medium">
       <mark class="" v-if="folder.password === 'has_pass'">
         protégé par mot de passe
       </mark>
-    </h2>
 
-    <div class="folder_metapreview margin-small margin-left-none">
-      Création&nbsp;: {{ formatDateToHuman(folder.created) }}
-    </div>
+      <div class="folder_metapreview margin-small margin-left-none">
+        <i>Date de création&nbsp;:</i><br>
+        {{ formatDateToHuman(folder.created) }}
+      </div>
 
-    <table v-if="debugFolderContent" class="">
-      <thead>
-        <tr>
-          <th>Prop</th>
-          <th>Values</th>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-for="(item, key) in folder">
-          <tr>
-            <td>{{ key }}</td>
-            <td>{{ item }}</td>
-          </tr>
-        </template>
-      </tbody>
-    </table>
+      <div class="input-group">
+        <button type="button" class="button-small" @click="$root.openFolder(slugFolderName)">
+          Ouvrir
+        </button>
 
-    <div class="input-group">
-      <button type="button" class="button-small" @click="$root.openFolder(slugFolderName)">
-        Ouvrir
-      </button>
-
-      <button v-if="!folder.authorized" type="button" class="button-small" @click="showInputPasswordField = !showInputPasswordField">
-        Entrer un mot de passe
-      </button>
-<!--
-      <button v-if="folder.authorized" type="button" class="button-small" @click="debugFolderContent = !debugFolderContent">
-        Vue de debug
-      </button>
--->
-      <button v-if="folder.authorized" type="button" class="button-small" @click="showEditFolderModal = true">
-        Éditer
-      </button>
-      <button v-if="folder.authorized" type="button" class="button-small" @click="removeFolder()">
-        Supprimer
-      </button>
-    </div>
+        <button v-if="!folder.authorized" type="button" class="button-small" @click="showInputPasswordField = !showInputPasswordField">
+          Entrer un mot de passe
+        </button>
+  <!--
+        <button v-if="folder.authorized" type="button" class="button-small" @click="debugFolderContent = !debugFolderContent">
+          Vue de debug
+        </button>
+  -->
+        <button v-if="folder.authorized" type="button" class="button-small" @click="showEditFolderModal = true">
+          Éditer
+        </button>
+        <button v-if="folder.authorized" type="button" class="button-small" @click="removeFolder()">
+          Supprimer
+        </button>
+      </div>
       <div v-if="showInputPasswordField" class="input-group">
         <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus>
         <button type="button" class="button-small" @click="submitPassword">Envoyer</button>
       </div>
 
-    <EditFolder
-      v-if="showEditFolderModal"
-      :folder="folder"
-      :slugFolderName="slugFolderName"
-      @close="showEditFolderModal = false"
-    >
-    </EditFolder>
+      <EditFolder
+        v-if="showEditFolderModal"
+        :folder="folder"
+        :slugFolderName="slugFolderName"
+        @close="showEditFolderModal = false"
+      >
+      </EditFolder>
+    </div>
   </div>
 </template>
 <script>

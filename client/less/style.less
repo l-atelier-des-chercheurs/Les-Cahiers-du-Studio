@@ -99,16 +99,28 @@ body {
     flex-grow:0;
   }
 
-  .m_home--filtres {
+
+}
+
+.m_home--filtres {
 
 
-  }
+}
 
-  .m_home--folders {
+.m_home--folders {
+  .m_home--folders--card {
+    width: 240px;
+    min-height: 240px;
+    background-color: white;
+    float: left;
 
+    &:nth-child(3n + 1) {
+      clear:left;
+    }
   }
 
 }
+
 
 .navbar_top {
   position: relative;

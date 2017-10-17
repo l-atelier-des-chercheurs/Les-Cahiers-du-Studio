@@ -3,7 +3,7 @@
 
     <header class="bg-dark c_blanc font-large">
       <div class="flex-wrap flex-vertically-centered limited-width">
-        <div class="flex-halfsize flex-collapse-on-mobile padding-medium flex-wrap flex-vertically-centered">
+        <div class="flex-size-2/5 flex-collapse-on-mobile padding-small flex-wrap flex-vertically-centered">
           <svg class="stvlogo margin-right-medium" version="1.1"
           	 x="0px" y="0px" width="40.5px" height="26.1px" viewBox="0 0 40.5 26.1" style="enable-background:new 0 0 40.5 26.1;"
           	 xml:space="preserve"
@@ -17,10 +17,10 @@
           </svg>
 
           <div>
-            Les Cahiers du studio
+            studio-théâtre <i>vitry</i> › <i>Les Cahiers du studio</i>
           </div>
         </div>
-        <div class="flex-halfsize flex-collapse-on-mobile padding-medium">
+        <div class="flex-size-3/5 flex-collapse-on-mobile padding-small">
 
           <h2 class="text-ital text-underline">
             Présentation
@@ -35,41 +35,44 @@
 
     <section class="flex-wrap flex-vertically-start limited-width">
 
-      <div class="m_home--filtres flex-halfsize flex-collapse-on-mobile  padding-medium">
-        <div class="">
-          <label class="border-bottom-dashed margin-sides-medium padding-vert-medium margin-none text-cap with-bullet">
+      <div class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-verylarge">
+
+        <div class="border border-bottom-dashed border-top-dashed padding-vert-medium">
+          <label class="margin-none text-cap with-bullet">
             Organiser par&nbsp;:
           </label>
-          <div class="input-group">
-            <button type="button" class="" @click="sort.type = 'alph', sort.field = 'name'">
+          <div class="margin-sides-negative-verysmall">
+            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'alph', sort.field = 'name'">
               nom
             </button>
-            <button type="button" @click="sort.type = 'date', sort.field = 'created'">
+            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'created'">
               date de création
             </button>
-            <button type="button" class="" @click="sort.type = 'date', sort.field = 'start'">
+            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'start'">
               date de début
             </button>
-            <button type="button" class="" @click="sort.type = 'date', sort.field = 'end'">
+            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'end'">
               date de fin
             </button>
           </div>
         </div>
-        <div class="">
-          <label>dans l’ordre&nbsp;</label>
-          <div class="input-group">
-            <button type="button" class="" @click="sort.order = 'ascending'">
+        <div class="border border-bottom-dashed padding-vert-medium">
+          <label class="margin-none text-cap with-bullet">
+            dans l’ordre&nbsp;
+          </label>
+          <div class="margin-sides-negative-verysmall">
+            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'ascending'">
               croissant
             </button>
-            <button type="button" class="" @click="sort.order = 'descending'">
+            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'descending'">
               décroissant
             </button>
           </div>
         </div>
       </div>
 
-      <div class="m_home--folders flex-halfsize flex-collapse-on-mobile padding-medium">
-        <div class="m_home--folders--card">
+      <div class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-verylarge">
+        <div class="m_home--folders--card margin-small">
           <button type="button" class="button margin-left-none" @click="showCreateFolderModal = true">
             Créer un dossier
           </button>
@@ -77,11 +80,11 @@
           </CreateFolder>
         </div>
 
-        <transition-group name="folder-list" tag="div">
+<!--        <transition-group name="folder-list" tag="div"> -->
           <div
             v-for="(sortedFolder, index) in sortedFoldersSlug"
             :key="sortedFolder.slugFolderName"
-            class="m_home--folders--card"
+            class="m_home--folders--card margin-small"
           >
             <Folder
               :slugFolderName="sortedFolder.slugFolderName"
@@ -89,7 +92,7 @@
             >
             </Folder>
           </div>
-        </transition-group>
+<!--        </transition-group> -->
       </div>
 
     </section>

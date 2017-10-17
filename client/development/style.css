@@ -3259,10 +3259,17 @@ b {
 .border-circled {
   border: 1px solid currentColor;
 }
-.border-bottom-dashed {
-  border-bottom: 1px dashed currentColor;
+.border {
   border: 0 solid currentColor;
+}
+.border-bottom-dashed {
   border-bottom-width: 1px;
+  -o-border-image: -o-repeating-linear-gradient(left, currentColor, currentColor 1ch, transparent 1ch, transparent calc(1ch + 2px)) 1;
+  border-image: repeating-linear-gradient(to right, currentColor, currentColor 1ch, transparent 1ch, transparent calc(1ch + 2px)) 1;
+  border-image-repeat: round;
+}
+.border-top-dashed {
+  border-top-width: 1px;
   -o-border-image: -o-repeating-linear-gradient(left, currentColor, currentColor 1ch, transparent 1ch, transparent calc(1ch + 2px)) 1;
   border-image: repeating-linear-gradient(to right, currentColor, currentColor 1ch, transparent 1ch, transparent calc(1ch + 2px)) 1;
   border-image-repeat: round;
@@ -3295,6 +3302,10 @@ b {
 .margin-small {
   margin: 0.625em;
 }
+.margin-sides-negative-verysmall {
+  margin-left: -0.625em;
+  margin-right: -0.625em;
+}
 .margin-verysmall {
   margin: 0.3125em;
 }
@@ -3311,11 +3322,23 @@ b {
   margin-left: 1.25em;
   margin-right: 1.25em;
 }
+.margin-sides-small {
+  margin-left: 0.625em;
+  margin-right: 0.625em;
+}
 .margin-left-none {
   margin-left: 0;
 }
 .margin-right-medium {
   margin-right: 1.25em;
+}
+.margin-vert-large {
+  margin-top: 2.5em;
+  margin-bottom: 2.5em;
+}
+.margin-vert-verylarge {
+  margin-top: 5em;
+  margin-bottom: 5em;
 }
 .padding-none {
   padding: 0;
@@ -3327,6 +3350,10 @@ b {
 .padding-vert-small {
   padding-top: 0.625em;
   padding-bottom: 0.625em;
+}
+.padding-vert-verysmall {
+  padding-top: 0.3125em;
+  padding-bottom: 0.3125em;
 }
 .padding-large {
   padding: 2.5em;
@@ -3535,13 +3562,38 @@ th {
   align-items: flex-start;
 }
 .limited-width {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
 }
-.flex-halfsize {
+.flex-size-1\/2 {
   -webkit-box-flex: 1;
   -ms-flex: 1 1 50%;
   flex: 1 1 50%;
+}
+.flex-size-1\/3 {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 33.333%;
+  flex: 1 1 33.333%;
+}
+.flex-size-2\/3 {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 66.666%;
+  flex: 1 1 66.666%;
+}
+.flex-size-1\/5 {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 20%;
+  flex: 1 1 20%;
+}
+.flex-size-2\/5 {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 40%;
+  flex: 1 1 40%;
+}
+.flex-size-3\/5 {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 60%;
+  flex: 1 1 60%;
 }
 @media screen and (max-width: 30rem) {
   .flex-collapse-on-mobile {
@@ -3603,7 +3655,7 @@ th {
   transition: opacity 0.3s ease-out;
 }
 .m_calendar .m_calendar--days--day.has--noMedia .bottomIndicator {
-  opacity: 0.5;
+  opacity: 0.2;
 }
 .m_calendar .m_calendar--days--day.is--current > * {
   background-color: #333;
@@ -4245,6 +4297,15 @@ body.is_unscrollable {
   -webkit-box-flex: 0;
   -ms-flex-positive: 0;
   flex-grow: 0;
+}
+.m_home--folders .m_home--folders--card {
+  width: 240px;
+  min-height: 240px;
+  background-color: white;
+  float: left;
+}
+.m_home--folders .m_home--folders--card:nth-child(3n + 1) {
+  clear: left;
 }
 .navbar_top {
   position: relative;
