@@ -117,5 +117,5 @@ let vm = new Vue({
 });
 
 setTimeout(() => {
-  vm.openFolder('rencontre-1');
+  vm.openFolder('demo');
 }, 500);

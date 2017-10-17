@@ -50,7 +50,6 @@
     &.has--noMedia {
 //       color: @c-gris;
       .bottomIndicator {
-         opacity: 0.2;
       }
 
     }
@@ -62,7 +61,11 @@
     }
     &.is--today {
       @t-todayTagSize: 0.4em;
+      color: @c-bleu_vif;
 
+      .bottomIndicator {
+      }
+/*
       &::before {
         content: '';
         display: block;
@@ -77,6 +80,7 @@
         color: white;
         z-index: 1;
       }
+*/
     }
   }
 }

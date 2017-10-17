@@ -3256,6 +3256,9 @@ b {
 .bg-noir {
   background-color: #333;
 }
+.bg-noir_light {
+  background-color: #4d4d4d;
+}
 .border-circled {
   border: 1px solid currentColor;
 }
@@ -3472,6 +3475,9 @@ button.button-small {
 button:focus {
   outline: 0;
 }
+button a {
+  text-decoration: none;
+}
 input[type=range] {
   -webkit-appearance: none;
   width: 100%;
@@ -3548,6 +3554,9 @@ input:required {
 th {
   font-weight: normal;
 }
+.float-right {
+  float: right;
+}
 .flex-wrap {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -3558,6 +3567,20 @@ th {
   flex-flow: row wrap;
 }
 .flex-wrap > * {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+.flex-nowrap {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+}
+.flex-nowrap > * {
   -webkit-box-flex: 1;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
@@ -3575,6 +3598,11 @@ th {
   -webkit-box-align: start;
   -ms-flex-align: start;
   align-items: flex-start;
+}
+.flex-vertically-stretched {
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
 }
 .flex-horizontally-start {
   -webkit-box-pack: start;
@@ -3616,7 +3644,7 @@ th {
   -ms-flex: 1 1 60%;
   flex: 1 1 60%;
 }
-@media screen and (max-width: 30rem) {
+@media screen and (max-width: 40rem) {
   .flex-collapse-on-mobile {
     -ms-flex-preferred-size: auto;
     flex-basis: auto;
@@ -3675,26 +3703,28 @@ th {
   -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
 }
-.m_calendar .m_calendar--days--day.has--noMedia .bottomIndicator {
-  opacity: 0.2;
-}
 .m_calendar .m_calendar--days--day.is--current > * {
   background-color: #333;
   color: white;
 }
-.m_calendar .m_calendar--days--day.is--today::before {
-  content: '';
-  display: block;
-  position: absolute;
-  margin: auto;
-  width: 0.4em;
-  height: 0.4em;
-  top: 0.4em;
-  left: calc(50% - 0.4em/2);
-  background-color: #0096FF;
-  border-radius: 50%;
-  color: white;
-  z-index: 1;
+.m_calendar .m_calendar--days--day.is--today {
+  color: #0096FF;
+  /*
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        margin: auto;
+        width: @t-todayTagSize;
+        height: @t-todayTagSize;
+        top:0.4em;
+        left: ~"calc(50% - @{t-todayTagSize}/2)";
+        background-color: @c-bleu_vif;
+        border-radius: 50%;
+        color: white;
+        z-index: 1;
+      }
+*/
 }
 .timeline_track {
   position: absolute;
@@ -4150,13 +4180,13 @@ th {
   background-color: #a3e6db;
 }
 .color-yellow.mediaPreview .media .timelineMediaContent {
-  background-color: #FFF000;
+  background-color: #ffff99;
 }
 .color-orange.mediaPreview .media .timelineMediaContent {
-  background-color: #FFBE32;
+  background-color: #ffb888;
 }
 .color-purple.mediaPreview .media .timelineMediaContent {
-  background-color: #b357c1;
+  background-color: #bec6e7;
 }
 .mediaPreview .media .accrocheDurationLine {
   height: 4px;
@@ -4221,12 +4251,13 @@ th {
 }
 .mediaPreview .timelineMediaContent .mediaContainer {
   opacity: 1;
+  pointer-events: none;
 }
 .mediaPreview .timelineMediaContent .mediaContainer.type-audio {
   width: 100%;
 }
 .mediaPreview .timelineMediaContent textarea {
-  min-height: 120px;
+  min-height: 180px;
   overflow: hidden;
   border: none;
   background-color: transparent;
@@ -4242,16 +4273,16 @@ th {
   transform: scaleY(0);
 }
 .mediaPreview.is--dragged {
-  -webkit-transition: none;
-  -o-transition: none;
-  transition: none;
+  -webkit-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
 }
 .mediaPreview.is--dragged .timelineMediaContent {
   border: 2px solid #f2f2f2;
   cursor: -webkit-grabbing;
   cursor: -moz-grabbing;
 }
-.modal-mask {
+.m_modal--mask {
   position: fixed;
   z-index: 10001;
   top: 0;
@@ -4264,11 +4295,11 @@ th {
   -o-transition: opacity .3s ease;
   transition: opacity .3s ease;
 }
-.modal-wrapper {
+.m_modal--wrapper {
   display: table-cell;
   vertical-align: middle;
 }
-.modal-container {
+.m_modal--container {
   position: relative;
   max-height: 100vh;
   overflow-y: scroll;
@@ -4283,41 +4314,68 @@ th {
   -o-transition: all .3s ease;
   transition: all .3s ease;
 }
-.modal-container .modal-preview {
-  -webkit-box-flex: 3;
-  -ms-flex: 3 1 70%;
-  flex: 3 1 70%;
-}
-.modal-container .modal-preview textarea.mediaTextContent {
-  min-height: 60vh;
-}
-.modal-container .modal-footer {
-  -webkit-box-flex: 1;
-  -ms-flex: 1 0 30%;
-  flex: 1 0 30%;
-}
-.modal-container.is--large {
+.m_modal--container.is--large {
   width: 90vw;
 }
-.modal-container .close_button {
+.color-red.m_modal--container {
+  background-color: #ff7e8a;
+}
+.color-blue.m_modal--container {
+  background-color: #b0e6f4;
+}
+.color-green.m_modal--container {
+  background-color: #a3e6db;
+}
+.color-yellow.m_modal--container {
+  background-color: #ffff99;
+}
+.color-orange.m_modal--container {
+  background-color: #ffb888;
+}
+.color-purple.m_modal--container {
+  background-color: #bec6e7;
+}
+.m_modal--container textarea,
+.m_modal--container input,
+.m_modal--container select {
+  color: #333;
+}
+.m_modal--preview .mediaContainer {
+  height: 100%;
+}
+.m_modal--preview .mediaContainer.type-text {
+  padding: 1.35em;
+}
+.m_modal--preview textarea.mediaTextContent {
+  min-height: 60vh;
+  height: 100%;
+  border: none;
+  padding: 0;
+  background: -o-linear-gradient(transparent, transparent 28px, #91D1D3 28px);
+  background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
+  background-size: 30px 30px;
+  background: -o-linear-gradient(transparent, transparent calc(1.35em - 2px), rgba(0, 0, 0, 0.15) calc(1.35em - 2px));
+  background: linear-gradient(transparent, transparent calc(1.35em - 2px), rgba(0, 0, 0, 0.15) calc(1.35em - 2px));
+  background-size: 1.35em 1.35em;
+  background-attachment: local;
+  background-position-y: calc(1.35em * 0.85);
+}
+.m_modal--close_button {
   position: absolute;
   top: 0;
   right: 0;
-}
-.modal-default-button {
-  float: right;
 }
 @media print {
   .m_timeline-container {
     display: none;
   }
-  .modal-header {
+  .m_modal--header {
     display: none;
   }
-  .modal-sidebar {
+  .m_modal--sidebar {
     display: none;
   }
-  .modal-footer {
+  .m_modal--footer {
     display: none;
   }
 }
@@ -4575,7 +4633,7 @@ body.is_unscrollable {
   height: calc(100vh - 60px);
   overflow-y: scroll;
   background-color: #fff;
-  border-right: 2px solid #333;
+  border-right: 1px solid #333;
   z-index: 1500;
 }
 .m_sidebar ul,

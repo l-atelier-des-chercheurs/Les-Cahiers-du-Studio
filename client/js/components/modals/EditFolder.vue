@@ -48,10 +48,10 @@
       </small>
 
       <div>
-        <button type="submit" class="modal-default-button button-success c_bleu">
+        <button type="submit" class="m_modal-default-button button-success c_bleu">
           Mettre à jour
         </button>
-        <button type="button" class="modal-default-button" @click.prevent="$emit('close')">
+        <button type="button" class="m_modal-default-button" @click.prevent="$emit('close')">
           Annuler
         </button>
       </div>

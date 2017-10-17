@@ -1,30 +1,40 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask" @click="$emit('close')">
-      <div class="modal-wrapper">
-        <div class="modal-container" @click.stop :class="{ 'is--large' : size === 'large' }">
+    <div class="m_modal--mask" @click="$emit('close')">
+      <div class="m_modal--wrapper">
+        <div class="m_modal--container"
+          @click.stop
+          :class="[{
+            'is--large' : size === 'large'
+          }, 'color-' + backgroundColor]"
+          >
 
-          <div class="modal-header padding-medium bg-noir c_blanc">
-            <h3 class="text-cap margin-none">
-              <slot name="header">
-                default header
+          <div class="flex-wrap flex-vertically-stretched ">
+            <div class="m_modal--sidebar flex-size-2/5 flex-collapse-on-mobile bg-noir_light c_blanc">
+
+              <div class="m_modal--header padding-medium bg-noir c_blanc">
+                <h3 class="margin-none with-bullet">
+                  <slot name="header">
+                      default header
+                  </slot>
+                </h3>
+              </div>
+
+              <div class="padding-medium">
+                <slot name="sidebar">
+                  default sidebar
+                </slot>
+              </div>
+            </div>
+
+            <div class="m_modal--preview flex-size-3/5 flex-collapse-on-mobile">
+              <slot name="preview">
+                default preview
               </slot>
-            </h3>
+            </div>
           </div>
 
-          <div class="modal-sidebar padding-small">
-            <slot name="sidebar">
-              default sidebar
-            </slot>
-          </div>
-
-          <div class="modal-preview padding-small">
-            <slot name="preview">
-              default preview
-            </slot>
-          </div>
-
-          <button class="close_button padding-medium" @click="$emit('close')">
+          <button class="m_modal--close_button" @click="$emit('close')">
             ✕
           </button>
 
@@ -39,7 +49,13 @@ let className = 'is_unscrollable';
 
 export default {
   name: 'BaseModal',
-  props: ['size'],
+  props: {
+    size: String,
+    backgroundColor: {
+      type: String,
+      default: 'white'
+    }
+  },
   data() {
     return {
     }

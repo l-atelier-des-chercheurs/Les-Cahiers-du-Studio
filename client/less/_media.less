@@ -93,17 +93,17 @@
     }
     .color-yellow& {
       .timelineMediaContent {
-        background-color: #FFF000;
+        background-color: @c-jaune;
       }
     }
     .color-orange& {
       .timelineMediaContent {
-        background-color: #FFBE32;
+        background-color: @c-orange;
       }
     }
     .color-purple& {
       .timelineMediaContent {
-        background-color: #b357c1;
+        background-color: @c-violet;
       }
     }
 
@@ -164,6 +164,7 @@
 
     .mediaContainer {
       opacity: 1;
+      pointer-events: none;
 
       &.type-audio {
         width: 100%;
@@ -171,7 +172,7 @@
     }
 
     textarea {
-      min-height: 120px;
+      min-height: 180px;
       overflow: hidden;
       border:none;
       background-color: transparent;
@@ -186,7 +187,8 @@
     transform: scaleY(0);
   }
   &.is--dragged {
-    transition: none;
+    transition: none !important;
+
     .timelineMediaContent {
       border: 2px solid @c-gris_verylight;
       cursor: -webkit-grabbing;

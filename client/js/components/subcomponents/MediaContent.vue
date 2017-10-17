@@ -14,7 +14,7 @@
     <template v-else-if="media.type === 'text'">
       <textarea
         placeholder="Champ de texte…"
-        class="mediaTextContent"
+        class="mediaTextContent bg-transparent"
         :value="value"
         @input="$emit('input', $event.target.value)"
       >

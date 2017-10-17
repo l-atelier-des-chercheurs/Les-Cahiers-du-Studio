@@ -28,6 +28,9 @@ strong,b {
 .bg-noir {
   background-color: @c-noir;
 }
+.bg-noir_light {
+  background-color: @c-noir_light;
+}
 
 .border-circled {
   border: 1px solid currentColor;
@@ -269,6 +272,10 @@ button {
   &:focus {
     outline:0;
   }
+
+  a {
+    text-decoration: none;
+  }
 }
 
 input[type=range] {
@@ -343,9 +350,20 @@ th {
   font-weight: normal;
 }
 
+.float-right {
+  float: right;
+}
+
 .flex-wrap {
   display: flex;
   flex-flow: row wrap;
+  > * {
+    flex: 1 1 auto;
+  }
+}
+.flex-nowrap {
+  display: flex;
+  flex-flow: row nowrap;
   > * {
     flex: 1 1 auto;
   }
@@ -360,6 +378,10 @@ th {
   align-content: center;
   align-items: flex-start;
 }
+.flex-vertically-stretched {
+  align-items: stretch;
+}
+
 .flex-horizontally-start {
   justify-content: flex-start;
 }
@@ -392,7 +414,7 @@ th {
 }
 
 
-@media screen and (max-width: 30rem) {
+@media screen and (max-width: 40rem) {
   .flex-collapse-on-mobile {
     flex-basis: auto;
   }

@@ -1,4 +1,4 @@
-.modal-mask {
+.m_modal--mask {
   position: fixed;
   z-index: 10001;
   top: 0;
@@ -10,12 +10,12 @@
   transition: opacity .3s ease;
 }
 
-.modal-wrapper {
+.m_modal--wrapper {
   display: table-cell;
   vertical-align: middle;
 }
 
-.modal-container {
+.m_modal--container {
   position: relative;
   max-height: 100vh;
   overflow-y: scroll;
@@ -28,52 +28,91 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   transition: all .3s ease;
 
-  .modal-sidebar {
-
-
-  }
-  .modal-preview {
-    flex: 3 1 70%;
-
-    textarea.mediaTextContent {
-      min-height: 60vh;
-    }
-  }
-  .modal-footer {
-    flex: 1 0 30%;
-  }
-
   &.is--large {
     width: 90vw;
   }
 
-  .close_button {
-    position: absolute;
-    top:0;
-    right:0;
+
+  .color-red& {
+    background-color: @c-rouge;
+  }
+  .color-blue& {
+    background-color: @c-bleu;
+  }
+  .color-green& {
+    background-color: @c-vert;
+  }
+  .color-yellow& {
+    background-color: @c-jaune;
+  }
+  .color-orange& {
+    background-color: @c-orange;
+  }
+  .color-purple& {
+    background-color: @c-violet;
+  }
+
+  textarea, input, select {
+    color: @c-noir;
+  }
+}
+.m_modal--sidebar {
+
+}
+// if no preview, then sidebar takes the whole width
+
+.m_modal--preview {
+  .mediaContainer {
+    height: 100%;
+
+    &.type-text {
+      .padding-medium;
+    }
   }
 
 
+  textarea.mediaTextContent {
+    min-height: 60vh;
+    height: 100%;
+    border: none;
+
+    .padding-none;
+
+//     width: ~"calc(100% - @{t-skipline}*2)";
+
+
+    background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
+    background-size: 30px 30px;
+    background-attachment: local;
+
+    background: linear-gradient(transparent, transparent ~"calc(@{t-skipline} - 2px)", rgba(0,0,0,.15) ~"calc(@{t-skipline} - 2px)");
+    background-size: @t-skipline @t-skipline;
+    background-attachment: local;
+    background-position-y: ~"calc(@{t-skipline} * 0.85)";
+  }
 }
 
-.modal-header {
+.m_modal--close_button {
+  position: absolute;
+  top:0;
+  right:0;
 }
 
-.modal-default-button {
-  float: right;
+.m_modal--header {
 }
+
 
 @media print {
   .m_timeline-container {
     display: none;
   }
-  .modal-header {
+  .m_modal--header {
     display: none;
   }
-  .modal-sidebar {
+  .m_modal--sidebar {
     display: none;
   }
-  .modal-footer {
+  .m_modal--footer {
     display: none;
   }
 }
