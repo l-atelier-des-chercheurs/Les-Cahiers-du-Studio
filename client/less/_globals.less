@@ -25,7 +25,7 @@ strong,b {
 .bg-transparent {
   background-color: transparent;
 }
-.bg-dark {
+.bg-noir {
   background-color: @c-noir;
 }
 
@@ -79,8 +79,16 @@ strong,b {
   margin: @t-skipline/2;
 }
 .margin-sides-negative-verysmall {
+  margin-left: -@t-skipline/4;
+  margin-right: -@t-skipline/4;
+}
+.margin-sides-negative-small {
   margin-left: -@t-skipline/2;
   margin-right: -@t-skipline/2;
+}
+.margin-sides-negative-medium {
+  margin-left: -@t-skipline;
+  margin-right: -@t-skipline;
 }
 .margin-verysmall {
   margin: @t-skipline/4;
@@ -247,7 +255,7 @@ button {
     opacity: 0.5;
   }
 
-  &.bg-dark.is--active {
+  &.bg-noir.is--active {
     background-color: white;
     color: @c-noir;
   }

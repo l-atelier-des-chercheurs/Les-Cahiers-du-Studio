@@ -1,6 +1,6 @@
 <template>
   <div class="m_folder">
-    <h2 class="m_folder--title margin-none padding-medium bg-dark c_blanc font-large">
+    <h2 class="m_folder--title margin-none padding-medium bg-noir c_blanc font-large">
       {{ folder.name }}
     </h2>
 

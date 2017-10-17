@@ -38,7 +38,24 @@
         >
         </MediaContent>
         <button class="button button_small button_openmedia"  @mousedown.stop="$emit('open')">
-          Ouvrir
+          <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
+            <title>Fichier 3</title>
+            <g id="Calque_2" data-name="Calque 2">
+              <g id="Content">
+                <g>
+                  <circle cx="23.5" cy="23.5" r="23" style="fill: #fff"/>
+                  <circle cx="23.5" cy="23.5" r="23" style="fill: none;stroke: #4d4d4d;stroke-miterlimit: 10"/>
+                </g>
+                <polyline points="33.33 23.74 33.33 33.96 23.11 33.96 12.88 33.96 12.88 23.74 12.88 13.52 23.11 13.52" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+                <polyline points="26.73 13.52 33.33 13.52 33.33 20.12" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+                <line x1="33.05" y1="13.89" x2="22.1" y2="24.83" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+              </g>
+            </g>
+          </svg>
+
+          <span class="text-cap font-verysmall">
+            Ouvrir
+          </span>
         </button>
       </div>
     </div>

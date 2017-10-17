@@ -1,23 +1,13 @@
 <template>
   <BaseModal :size="'large'" @close="$emit('close')" >
     <div slot="header">
-      Editer le media <i>{{ slugMediaName }}</i>
+      Éditer&nbsp;:<i>{{ slugMediaName }}</i>
     </div>
 
 
-    <form slot="body" v-on:submit.prevent="editThisMedia">
+    <form slot="sidebar" v-on:submit.prevent="editThisMedia">
 
-      <MediaContent
-        :slugFolderName="slugFolderName"
-        :slugMediaName="slugMediaName"
-        :media="media"
-        :mediaURL="mediaURL"
-        :size="1800"
-        v-model="mediadata.content"
-      >
-      </MediaContent>
-
-<!-- Creation date (stored in meta file, overrides file date) -->
+<!--  Creation date (stored in meta file, overrides file date) -->
       <div class="input-single">
         <label>Date de création <small>utilisée pour le placement sur l’axe horizontal</small></label>
         <DateTime v-model="mediadata.created">
@@ -101,7 +91,16 @@
 
     </form>
 
-    <div slot="footer">
+    <div slot="preview">
+      <MediaContent
+        :slugFolderName="slugFolderName"
+        :slugMediaName="slugMediaName"
+        :media="media"
+        :mediaURL="mediaURL"
+        :size="1800"
+        v-model="mediadata.content"
+      >
+      </MediaContent>
     </div>
 
   </BaseModal>

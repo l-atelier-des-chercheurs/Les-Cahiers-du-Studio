@@ -40,7 +40,11 @@
     </EditFolder>
 
     <div class="m_timeline" ref="timeline"
-      :class="{ 'is--realtime' : isRealtime, 'with--sidebar_opened' : $root.settings.has_sidebar_opened }"
+      :class="{
+        'is--realtime' : isRealtime,
+        'with--sidebar_opened' : $root.settings.has_sidebar_opened,
+        'is--animated': isAnimated
+      }"
       >
       <div class="m_timeline-container"
         :style="setViewedTimeline()"
@@ -54,24 +58,22 @@
           </div>
         </div>
 
-        <div v-if="Object.keys(medias).length > 0">
-          <transition-group name="fade">
-            <Media v-for="(media, index) in medias"
-              v-if="getMediaPosX(media.created) && mediaIsVisible(media.created, index)"
-              v-bind:key="index"
-              :ref="`media_${index}`"
-              :slugFolderName="slugFolderName"
-              :slugMediaName="index"
-              :media="media"
-              :timelineScale="timelineViewport.scale"
-              :timelineHeight="getVH(1)"
-              :posX="getMediaPosX(media.created)"
-              :class="{ 'is--highlighted' : highlightedMedia === index }"
-              @open="openMediaModal(index)"
-            >
-            </Media>
-          </transition-group>
-        </div>
+        <template v-if="Object.keys(medias).length > 0">
+          <Media v-for="(media, index) in medias"
+            v-if="getMediaPosX(media.created) && mediaIsVisible(media.created, index)"
+            v-bind:key="index"
+            :ref="`media_${index}`"
+            :slugFolderName="slugFolderName"
+            :slugMediaName="index"
+            :media="media"
+            :timelineScale="timelineViewport.scale"
+            :timelineHeight="getVH(1)"
+            :posX="getMediaPosX(media.created)"
+            :class="{ 'is--highlighted' : highlightedMedia === index }"
+            @open="openMediaModal(index)"
+          >
+          </Media>
+        </template>
 
         <template v-else>
           <div class="nomediainfo">
@@ -146,6 +148,7 @@ export default {
       showEditFolderModal: false,
 
       isRealtime: false,
+      isAnimated: true,
       timelineUpdateRoutine: '',
       isScrolling: false,
 
@@ -184,8 +187,13 @@ export default {
       let currentScrollLeft = this.$refs.timeline.scrollLeft;
 //       currentScrollLeft += window.innerWidth/2;
       let currentScrollLeft_percent = currentScrollLeft / this.timelineViewport.width;
+
+      // disable media animations
+      this.isAnimated = false;
       this.$nextTick(() => {
         this.$refs.timeline.scrollLeft = this.timelineViewport.width * currentScrollLeft_percent;
+        // reenable media animations
+        this.isAnimated = true;
       });
       this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
     },

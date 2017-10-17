@@ -11,6 +11,7 @@
 @import "_timeline";
 @import "_fileupload";
 @import "_media";
+@import "_modal";
 
 ::-moz-selection {
     background: rgba(151, 151, 151,0.25);
@@ -178,14 +179,13 @@ body {
     margin: 0;
   }
 
-  .breadcrumb > li {
+  .breadcrumb > .breadcrumb--item {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 50px;
-    padding: @t-spacing/2 0;
   }
-  .breadcrumb > li + li:before {
+  .breadcrumb > .breadcrumb--item + .breadcrumb--item::before {
     content: "›";
     margin: @t-spacing;
   }
@@ -218,8 +218,11 @@ body {
 
 .button_sidebarToggle {
   position: absolute;
+/*
   top: 46%;
   top:~"calc(50% - @{t-button_sidebartoggle}/3)";
+*/
+  bottom: 80px;
 
   width: @t-button_sidebartoggle;
   height: @t-button_sidebartoggle;
@@ -228,16 +231,16 @@ body {
   color: white;
 
   text-align: right;
-  border-radius: 50%;
+  border-radius: 10%;
 
   transform: translateX(0);
-  transition: transform .32s ease-out, opacity .45s;
+  transition: transform .35s ease-out, opacity .45s;
 
   z-index:  1499;
 
   &.is--collapsed {
     transform: translateX(-@t-sidebarWidth);
-    transition: transform .30s ease-in;
+    transition: transform .35s ease-in;
   }
 }
 
@@ -250,6 +253,7 @@ body {
   overflow-y: scroll;
 
   background-color: @c-bg_sidebar;
+  border-right: 2px solid @c-noir;
 
   z-index:  1500;
 

@@ -1,7 +1,7 @@
 <template>
   <main class="m_home">
 
-    <header class="bg-dark c_blanc font-large padding-vert-medium">
+    <header class="bg-noir c_blanc font-large padding-vert-medium">
       <div class="flex-wrap flex-vertically-centered limited-width">
         <div class="flex-size-2/5 flex-collapse-on-mobile padding-sides-medium padding-vert-medium flex-wrap flex-vertically-centered">
           <svg class="stvlogo margin-right-medium" version="1.1"
@@ -41,7 +41,7 @@
           <label class="margin-none text-cap with-bullet">
             Organiser par&nbsp;:
           </label>
-          <div class="margin-sides-negative-verysmall">
+          <div class="margin-sides-negative-small">
             <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'alph', sort.field = 'name'">
               nom
             </button>
@@ -60,7 +60,7 @@
           <label class="margin-none text-cap with-bullet">
             dans l’ordre&nbsp;
           </label>
-          <div class="margin-sides-negative-verysmall">
+          <div class="margin-sides-negative-small">
             <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'ascending'">
               croissant
             </button>
