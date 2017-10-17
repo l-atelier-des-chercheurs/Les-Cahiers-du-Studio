@@ -1,14 +1,13 @@
 <template>
   <Modal @close="$emit('close')">
-    <h3 slot="header">
-      Create a folder
-    </h3>
+    <div slot="header">
+      Éditer un dossier
+    </div>
 
     <form slot="body" v-on:submit.prevent="newFolder">
-
 <!-- Human name -->
       <div class="input-single">
-        <label>Name</label>
+        <label>Nom</label>
         <input type="text" v-model="folderdata.name" required>
       </div>
 

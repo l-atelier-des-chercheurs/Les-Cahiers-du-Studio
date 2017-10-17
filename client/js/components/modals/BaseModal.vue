@@ -4,10 +4,6 @@
       <div class="modal-wrapper">
         <div class="modal-container padding-small" @click.stop :class="{ 'is--large' : size === 'large' }">
 
-          <button class="close_button padding-medium" @click="$emit('close')">
-            ✕
-          </button>
-
           <div class="modal-header padding-small">
             <slot name="header">
               default header
@@ -20,13 +16,9 @@
             </slot>
           </div>
 
-          <div class="modal-footer padding-small">
-            <slot name="footer">
-              <button class="modal-default-button" @click="$emit('close')">
-                OK
-              </button>
-            </slot>
-          </div>
+          <button class="close_button padding-medium" @click="$emit('close')">
+            ✕
+          </button>
 
         </div>
       </div>

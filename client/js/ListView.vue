@@ -1,9 +1,9 @@
 <template>
   <main class="m_home">
 
-    <header class="bg-dark c_blanc font-large">
+    <header class="bg-dark c_blanc font-large padding-vert-medium">
       <div class="flex-wrap flex-vertically-centered limited-width">
-        <div class="flex-size-2/5 flex-collapse-on-mobile padding-small flex-wrap flex-vertically-centered">
+        <div class="flex-size-2/5 flex-collapse-on-mobile padding-sides-medium padding-vert-medium flex-wrap flex-vertically-centered">
           <svg class="stvlogo margin-right-medium" version="1.1"
           	 x="0px" y="0px" width="40.5px" height="26.1px" viewBox="0 0 40.5 26.1" style="enable-background:new 0 0 40.5 26.1;"
           	 xml:space="preserve"
@@ -17,10 +17,10 @@
           </svg>
 
           <div>
-            studio-théâtre <i>vitry</i> › <i>Les Cahiers du studio</i>
+            studio-théâtre <i>vitry</i> <br>› <i>Les Cahiers du studio</i>
           </div>
         </div>
-        <div class="flex-size-3/5 flex-collapse-on-mobile padding-small">
+        <div class="flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-medium">
 
           <h2 class="text-ital text-underline">
             Présentation
@@ -33,9 +33,9 @@
     </header>
 
 
-    <section class="flex-wrap flex-vertically-start limited-width">
+    <section class="flex-wrap flex-vertically-start limited-width padding-vert-medium">
 
-      <div class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-verylarge">
+      <div class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-large">
 
         <div class="border border-bottom-dashed border-top-dashed padding-vert-medium">
           <label class="margin-none text-cap with-bullet">
@@ -71,14 +71,28 @@
         </div>
       </div>
 
-      <div class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-verylarge">
-        <div class="m_home--folders--card margin-small">
-          <button type="button" class="button margin-left-none" @click="showCreateFolderModal = true">
+      <div class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large">
+        <button class="m_home--folders--card margin-small" @click="showCreateFolderModal = true">
+
+          <span class="c_gris margin-medium">
             Créer un dossier
-          </button>
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
+            <title>Fichier 6</title>
+            <g id="Calque_2" data-name="Calque 2">
+              <g id="Nav">
+                <g style="opacity: 0.30000000000000004">
+                  <circle cx="23.5" cy="23.5" r="23" transform="translate(-9.73 23.5) rotate(-45)" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+                  <line x1="23.5" y1="8.86" x2="23.5" y2="38.13" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+                  <line x1="8.86" y1="23.5" x2="38.13" y2="23.5" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+                </g>
+              </g>
+            </g>
+          </svg>
+
           <CreateFolder v-if="showCreateFolderModal" @close="showCreateFolderModal = false">
           </CreateFolder>
-        </div>
+        </button>
 
 <!--        <transition-group name="folder-list" tag="div"> -->
           <div
