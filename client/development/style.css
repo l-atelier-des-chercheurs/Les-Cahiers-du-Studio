@@ -3561,8 +3561,8 @@ input:required {
   background-size: 16px 16px;
   background-position: top right;
   background-repeat: no-repeat;
-  background-image: -o-radial-gradient(transparent 10%, #ff3b4c 18%, transparent 25%);
-  background-image: radial-gradient(transparent 10%, #ff3b4c 18%, transparent 25%);
+  background-image: -o-radial-gradient(#ff3b4c 18%, transparent 25%);
+  background-image: radial-gradient(#ff3b4c 18%, transparent 25%);
 }
 th {
   font-weight: normal;
@@ -3870,7 +3870,7 @@ th {
   display: block;
   background-color: #4d4d4d;
   padding: 1px 4px;
-  margin-top: -35px;
+  margin-top: -38px;
   border-radius: 3px;
 }
 .simple_grid_overlay .gridItem.gridItem_ishour {
@@ -3939,11 +3939,13 @@ th {
   -webkit-box-align: end;
   -ms-flex-align: end;
   align-items: flex-end;
+  pointer-events: none;
 }
 .m_addMedia button,
 .m_addMedia .dz-message {
   -webkit-box-shadow: 2px 4px 13px #bbb;
   box-shadow: 2px 4px 13px #bbb;
+  pointer-events: auto;
 }
 .m_addMedia > * {
   -webkit-box-flex: 0;
