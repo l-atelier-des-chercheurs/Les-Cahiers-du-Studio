@@ -64,6 +64,16 @@
               <div class="gridItem--caption">
                 {{ todaysRule.caption }}
               </div>
+              <button type="button" class="gridItem_isrealtimerule--autoscroll_checkbox button-small bg-rouge_vif border-circled button-thin button-wide padding-verysmall margin-none" >
+                <small>
+                  <input
+                    type="checkbox"
+                    v-model="timelineViewport.autoscroll"
+                  >défilement<br>
+                  automatique
+                </small>
+              </button>
+
             </div>
           </div>
         </div>
@@ -168,6 +178,10 @@ export default {
         xPos: false
       },
 
+      overallGrid: {
+
+      },
+
       // this object contains a start and end for this timeline, ven if it is realtime
       // for example 2017-07-01 13:22 and 2017-07-12 12:24
       timelineInfos: {
@@ -243,7 +257,7 @@ export default {
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
 
     if(this.timelineViewport.autoscroll) {
-      this.scrollToEnd();
+      this.scrollToToday();
     }
 
     this.timelineUpdateRoutine = setInterval(() => {
@@ -490,10 +504,8 @@ export default {
       let xPos = this.getXPositionFromDate(this.currentTime);
       if(xPos === false) {
         this.todaysRule.xPos = false;
-        debugger;
         return;
       }
-
 
       let caption = this.currentTime.format('HH:mm:ss');
       this.todaysRule = {
@@ -567,7 +579,7 @@ export default {
     toggleSidebar() {
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
     },
-    setVisibleDay(xPos = this.timelineViewport.scrollLeft + window.innerWidth/4) {
+    setVisibleDay(xPos = this.timelineViewport.scrollLeft + window.innerWidth/2) {
       let dateFromPosX = this.getDateFromXPosition(xPos);
       dateFromPosX = Math.min(this.timelineViewport.end, Math.max(dateFromPosX, this.timelineViewport.start));
       this.timelineViewport.visibleDay = dateFromPosX;

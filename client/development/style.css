@@ -3257,6 +3257,9 @@ b {
 .bg-noir {
   background-color: #333;
 }
+.bg-rouge_vif {
+  background-color: #ff3b4c;
+}
 .bg-noir_light {
   background-color: #4d4d4d;
 }
@@ -3305,6 +3308,9 @@ b {
 }
 .margin-medium {
   margin: 1.35em;
+}
+.margin-right-small {
+  margin-right: 0.675em;
 }
 .margin-small {
   margin: 0.675em;
@@ -3738,6 +3744,7 @@ th {
   height: 50px;
   width: 100%;
   border-bottom: 1px solid black;
+  z-index: -1;
 }
 .timeline_overview {
   position: absolute;
@@ -3798,7 +3805,7 @@ th {
   content: '';
   display: block;
   position: absolute;
-  right: -50px;
+  right: -150px;
   width: 1px;
   height: 1px;
 }
@@ -3818,6 +3825,8 @@ th {
 .simple_grid_overlay .gridItem {
   position: absolute;
   height: 100%;
+  width: 1px;
+  overflow: visible;
   -webkit-transition: all .4s;
   -o-transition: all .4s;
   transition: all .4s;
@@ -3828,24 +3837,40 @@ th {
   height: calc(100% + 50px);
   margin-top: -50px;
   color: white;
+  pointer-events: auto;
 }
 .simple_grid_overlay .gridItem.gridItem_isrealtimerule .gridItem--caption {
-  display: block;
   position: absolute;
   right: 0;
   background-color: #ff3b4c;
   padding: 1px 4px;
-  margin-top: 15px;
+  margin-top: 12px;
   border-radius: 4px 0px 0px 4px;
 }
+.simple_grid_overlay .gridItem.gridItem_isrealtimerule .gridItem_isrealtimerule--autoscroll_checkbox {
+  position: absolute;
+  right: 0;
+  width: 93px;
+  padding: 5px;
+  margin: 0;
+  line-height: 1.2;
+  border: none;
+  top: 65px;
+  background-color: #ff3b4c;
+  border-radius: 4px 0px 0px 4px;
+  text-align: right;
+}
+.simple_grid_overlay .gridItem.gridItem_isrealtimerule .gridItem_isrealtimerule--autoscroll_checkbox input[type="checkbox"] {
+  margin-right: 0.675em;
+}
 .simple_grid_overlay .gridItem.gridItem_isday {
-  border-left: 1px solid #333;
+  border-left: 1px solid #4d4d4d;
   z-index: 100;
   color: white;
 }
 .simple_grid_overlay .gridItem.gridItem_isday .gridItem--caption {
   display: block;
-  background-color: #333;
+  background-color: #4d4d4d;
   padding: 1px 4px;
   margin-top: -35px;
   border-radius: 3px;

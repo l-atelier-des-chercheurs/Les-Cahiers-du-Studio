@@ -94,7 +94,6 @@ export default {
 
       let fileCreationDate = file.lastModified;
       let fileName = file.name;
-      debugger;
       let objToSend = {
         fileCreationDate
       }
