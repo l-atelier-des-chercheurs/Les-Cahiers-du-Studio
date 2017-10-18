@@ -100,7 +100,7 @@
 
       <div v-if="showInputPasswordField" class="input-group">
         <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus>
-        <button type="button" class="button-small" @click="submitPassword">Envoyer</button>
+        <button type="button" class="" @click="submitPassword">Envoyer</button>
       </div>
 
       <EditFolder

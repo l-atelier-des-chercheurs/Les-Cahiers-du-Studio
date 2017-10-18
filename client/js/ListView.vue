@@ -71,6 +71,9 @@
         </div>
       </div>
 
+      <CreateFolder v-if="showCreateFolderModal" @close="showCreateFolderModal = false">
+      </CreateFolder>
+
       <div class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large">
         <button class="m_home--folders--card margin-small" @click="showCreateFolderModal = true">
 
@@ -90,8 +93,6 @@
             </g>
           </svg>
 
-          <CreateFolder v-if="showCreateFolderModal" @close="showCreateFolderModal = false">
-          </CreateFolder>
         </button>
 
 <!--        <transition-group name="folder-list" tag="div"> -->

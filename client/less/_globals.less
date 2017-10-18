@@ -35,6 +35,9 @@ strong,b {
 .border-circled {
   border: 1px solid currentColor;
 }
+.border-none {
+  border-width: 0px;
+}
 
 .border {
   border: 0 solid currentColor;
@@ -174,8 +177,16 @@ strong,b {
   padding-bottom:   @t-skipline/2;
 }
 
+.button-small {
+  .font-small;
+}
+
 .button-round {
   border-radius: 50%;
+  > span {
+    display: block;
+    margin-top: @t-skipline/2;
+  }
 }
 
 .with-bullet::before {
@@ -263,11 +274,6 @@ button {
     color: @c-noir;
   }
 
-
-  &.button-small {
-    font-size:0.8em;
-    padding: @t-skipline/4;
-  }
 
   &:focus {
     outline:0;

@@ -1,63 +1,54 @@
 <template>
-  <Modal @close="$emit('close')">
-    <div slot="header">
-      Éditer un dossier
-    </div>
+  <Modal
+    @close="$emit('close')"
+    @submit="newFolder"
+    >
+    <template slot="header">
+      <span class="text-cap"> Créer un dossier</span>
+    </template>
 
-    <form slot="body" v-on:submit.prevent="newFolder">
+    <template slot="sidebar">
+
 <!-- Human name -->
-      <div class="input-single">
-        <label>Nom</label>
+      <div class="margin-bottom-small">
+        <label>Nom&nbsp;:</label>
         <input type="text" v-model="folderdata.name" required>
       </div>
 
 <!-- Start date -->
-      <div class="input-single">
-        <label>Début</label>
+      <div class="margin-bottom-small">
+        <label>Début de la capture&nbsp;:</label>
         <DateTime v-model="folderdata.start">
         </DateTime>
       </div>
 
 <!-- End date -->
-      <div class="input-single">
-        <label>Fin</label>
+      <div class="margin-bottom-small">
+        <label>Fin de la capture&nbsp;:</label>
         <DateTime v-model="folderdata.end">
         </DateTime>
       </div>
 
 <!-- Password -->
-      <div class="input-single">
-        <label>Mot de passe</label><br>
+      <div class="margin-bottom-small">
+        <label>Mot de passe&nbsp;:</label><br>
         <input type="password" v-model="folderdata.password">
         <small>Si existant, seul les utilisateurs possédant ce mot de passe pourront modifier ce dossier.</small>
       </div>
 
 <!-- Author(s) -->
-      <div class="input-single">
-        <label>Auteur-e(s) <small>un-e par ligne</small></label><br>
-
+      <div class="margin-bottom-small">
+        <label>Auteur-e(s)&nbsp;:</label><br>
         <textarea v-model="folderdata.authors">
         </textarea>
+        <p><small>un-e par ligne</small></p>
       </div>
 
-      <small>
-        les champs comportant un <sup class="c_rouge">o</sup> sont requis<br>
-        ils peuvent aussi être édités plus tard
-      </small>
+    </template>
 
-      <div>
-        <button type="submit" class="m_modal-default-button button-success c_bleu">
-          Créer
-        </button>
-        <button type="button" class="m_modal-default-button" @click.prevent="$emit('close')">
-          Annuler
-        </button>
-      </div>
-
-    </form>
-
-    <div slot="footer">
-    </div>
+    <template slot="submit_button">
+      Créer
+    </template>
 
   </Modal>
 </template>

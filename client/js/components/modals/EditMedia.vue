@@ -1,18 +1,16 @@
 <template>
-  <BaseModal
-    :size="'large'"
+  <Modal
     :backgroundColor="mediadata.color"
     @close="$emit('close')"
+    @submit="editThisMedia"
     >
     <template slot="header">
-      <span class="text-cap"> Éditer&nbsp;:</span>
+      <span class="text-cap"> Éditer le média&nbsp;:</span>
       <i>{{ slugMediaName }}</i>
     </template>
 
-
-    <form slot="sidebar" v-on:submit.prevent="editThisMedia">
-
-<!--  Creation date (stored in meta file, overrides file date) -->
+    <template slot="sidebar">
+<!-- Creation date (stored in meta file, overrides file date) -->
       <div class="margin-bottom-small">
         <label>Date de création <small>(timeline)</small></label>
         <DateTime v-model="mediadata.created">
@@ -42,14 +40,14 @@
 
 <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>Mot-clé(s)&nbsp;<small>un par ligne</small></label><br>
+        <label>Mot-clé(s)&nbsp;:<small>un par ligne</small></label><br>
         <textarea v-model="mediadata.keywords">
         </textarea>
       </div>
 
 <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>Auteur-e(s)&nbsp;<small>un-e par ligne</small></label><br>
+        <label>Auteur-e(s)&nbsp;:<small>un-e par ligne</small></label><br>
         <textarea v-model="mediadata.authors">
         </textarea>
       </div>
@@ -101,7 +99,6 @@
           @click.prevent="printMedia()"
           >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
-            <title>Fichier 9</title>
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -160,7 +157,6 @@
           class="bg-transparent button-round margin-verysmall padding-verysmall"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
-            <title>Fichier 11</title>
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -185,27 +181,11 @@
         </button>
       </div>
 
-      <hr>
+    </template>
 
-      <div>
-        <button type="submit"
-        class="bg-transparent button-round margin-verysmall padding-verysmall float-right"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-            <g id="Calque_2" data-name="Calque 2">
-              <g id="Editeur_txt" data-name="Editeur txt">
-                <circle cx="24" cy="24" r="24" style="fill: #22b573"/>
-                <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
-              </g>
-            </g>
-          </svg>
-
-          <span class="text-cap font-verysmall">
-            Mettre à jour
-          </span>
-        </button>
-      </div>
-    </form>
+    <template slot="submit_button">
+      Enregistrer
+    </template>
 
     <template slot="preview">
       <MediaContent
@@ -219,10 +199,10 @@
       </MediaContent>
     </template>
 
-  </BaseModal>
+  </Modal>
 </template>
 <script>
-import BaseModal from './BaseModal.vue';
+import Modal from './BaseModal.vue';
 import alertify from 'alertify.js';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
@@ -236,7 +216,7 @@ import DateTime from '../subcomponents/DateTime.vue';
 export default {
   props: ['slugFolderName', 'slugMediaName', 'media'],
   components: {
-    BaseModal,
+    Modal,
     DateTime,
     MediaContent
   },

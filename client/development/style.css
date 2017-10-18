@@ -3230,6 +3230,7 @@ th {
   /* Most browsers use a default font size of 16px */
   --input-font-size: 1rem;
   --sidebar-width: 460px;
+  --input-box-shadow: none;
 }
 strong,
 b {
@@ -3261,6 +3262,9 @@ b {
 }
 .border-circled {
   border: 1px solid currentColor;
+}
+.border-none {
+  border-width: 0px;
 }
 .border {
   border: 0 solid currentColor;
@@ -3393,8 +3397,15 @@ b {
 .padding-bottom-small {
   padding-bottom: 0.675em;
 }
+.button-small {
+  font-size: 0.9em;
+}
 .button-round {
   border-radius: 50%;
+}
+.button-round > span {
+  display: block;
+  margin-top: 0.675em;
 }
 .with-bullet::before {
   content: '●';
@@ -3467,10 +3478,6 @@ button.is--disabled {
 button.bg-noir.is--active {
   background-color: white;
   color: #333;
-}
-button.button-small {
-  font-size: 0.8em;
-  padding: 0.3375em;
 }
 button:focus {
   outline: 0;
@@ -3548,8 +3555,8 @@ input:required {
   background-size: 16px 16px;
   background-position: top right;
   background-repeat: no-repeat;
-  background-image: -o-radial-gradient(transparent 10%, #ea0028 18%, transparent 25%);
-  background-image: radial-gradient(transparent 10%, #ea0028 18%, transparent 25%);
+  background-image: -o-radial-gradient(transparent 10%, #ff3b4c 18%, transparent 25%);
+  background-image: radial-gradient(transparent 10%, #ff3b4c 18%, transparent 25%);
 }
 th {
   font-weight: normal;
@@ -3795,7 +3802,7 @@ th {
   height: 1px;
 }
 .is--realtime.m_timeline .m_timeline-container .m_timeline-container {
-  border-right: 4px solid #ea0028;
+  border-right: 4px solid #ff3b4c;
 }
 .simple_grid_overlay {
   height: 100%;
@@ -4168,24 +4175,34 @@ th {
 }
 .type-marker.mediaPreview .media .timelineMediaContent {
   background-color: transparent;
-  height: 1em !important;
+  height: 2em !important;
+  margin-right: -90px;
 }
-.color-red.mediaPreview .media .timelineMediaContent {
+.type-marker.mediaPreview .media .timelineMediaContent input {
+  background-color: transparent;
+}
+.color-red.mediaPreview .media .timelineMediaContent,
+.color-red.mediaPreview .media .accroche {
   background-color: #ff7e8a;
 }
-.color-blue.mediaPreview .media .timelineMediaContent {
+.color-blue.mediaPreview .media .timelineMediaContent,
+.color-blue.mediaPreview .media .accroche {
   background-color: #b0e6f4;
 }
-.color-green.mediaPreview .media .timelineMediaContent {
+.color-green.mediaPreview .media .timelineMediaContent,
+.color-green.mediaPreview .media .accroche {
   background-color: #a3e6db;
 }
-.color-yellow.mediaPreview .media .timelineMediaContent {
+.color-yellow.mediaPreview .media .timelineMediaContent,
+.color-yellow.mediaPreview .media .accroche {
   background-color: #ffff99;
 }
-.color-orange.mediaPreview .media .timelineMediaContent {
+.color-orange.mediaPreview .media .timelineMediaContent,
+.color-orange.mediaPreview .media .accroche {
   background-color: #ffb888;
 }
-.color-purple.mediaPreview .media .timelineMediaContent {
+.color-purple.mediaPreview .media .timelineMediaContent,
+.color-purple.mediaPreview .media .accroche {
   background-color: #bec6e7;
 }
 .mediaPreview .media .accrocheDurationLine {
@@ -4199,8 +4216,6 @@ th {
   bottom: 0;
   right: 0;
   z-index: 1;
-  margin: 0.675em;
-  background-color: #ffffff;
   opacity: 0;
   -webkit-transition: opacity 0.3s ease-out;
   -o-transition: opacity 0.3s ease-out;
@@ -4289,7 +4304,7 @@ th {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.9);
   display: table;
   -webkit-transition: opacity .3s ease;
   -o-transition: opacity .3s ease;
@@ -4302,9 +4317,8 @@ th {
 .m_modal--container {
   position: relative;
   max-height: 100vh;
-  overflow-y: scroll;
   width: 90%;
-  max-width: 1024px;
+  max-width: 380px;
   margin: 0px auto;
   background-color: #fff;
   border-radius: 2px;
@@ -4315,7 +4329,7 @@ th {
   transition: all .3s ease;
 }
 .m_modal--container.is--large {
-  width: 90vw;
+  max-width: 1140px;
 }
 .color-red.m_modal--container {
   background-color: #ff7e8a;
@@ -4343,8 +4357,16 @@ th {
 .m_modal--preview .mediaContainer {
   height: 100%;
 }
-.m_modal--preview .mediaContainer.type-text {
+.m_modal--preview .mediaContainer.type-text,
+.m_modal--preview .mediaContainer.type-marker {
   padding: 1.35em;
+  font-size: 1.1em;
+}
+.m_modal--preview input[type="text"] {
+  border-width: 0px;
+  padding: 0;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 }
 .m_modal--preview textarea.mediaTextContent {
   min-height: 60vh;
@@ -4363,7 +4385,7 @@ th {
 .m_modal--close_button {
   position: absolute;
   top: 0;
-  right: 0;
+  right: -4.05em;
 }
 @media print {
   .m_timeline-container {

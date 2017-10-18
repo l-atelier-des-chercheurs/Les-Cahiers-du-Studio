@@ -1,5 +1,5 @@
 <template>
-  <div :class="'mediaContainer type-' + media.type">
+  <div :class="'mediaContainer flex-wrap flex-vertically-centered type-' + media.type">
     <template v-if="media.type === 'image'">
       <img :src="linkToThumb">
     </template>
@@ -13,8 +13,8 @@
     </template>
     <template v-else-if="media.type === 'text'">
       <textarea
-        placeholder="Champ de texte…"
-        class="mediaTextContent bg-transparent"
+        placeholder="…"
+        class="mediaTextContent border-none bg-transparent"
         :value="value"
         @input="$emit('input', $event.target.value)"
       >
@@ -23,6 +23,7 @@
     <template v-else-if="media.type === 'marker'">
       <input
         type="text"
+        class="border-none bg-transparent"
         placeholder="Étiquette"
         name="label"
         :value="value"

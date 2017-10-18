@@ -37,9 +37,8 @@
           v-model="media.content"
         >
         </MediaContent>
-        <button class="button button_small button_openmedia"  @mousedown.stop="$emit('open')">
+        <button class="button-round bg-transparent button_openmedia"  @mousedown.stop="$emit('open')">
           <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
-            <title>Fichier 3</title>
             <g id="Calque_2" data-name="Calque 2">
               <g id="Content">
                 <g>
