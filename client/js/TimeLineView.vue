@@ -55,7 +55,16 @@
         <div class="simple_grid_overlay">
           <div class="simple_grid_overlay--wrapper">
             <div v-html="generateHorizontalGrid()"></div>
-            <div v-html="drawRealtimeRule()"></div>
+
+            <div
+              v-if="!!todaysRule.xPos"
+              class="gridItem font-small gridItem_isrealtimerule"
+              :style="'transform:translate(' + todaysRule.xPos + 'px, 0px)'"
+              >
+              <div class="gridItem--caption">
+                {{ todaysRule.caption }}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -153,7 +162,11 @@ export default {
       timelineUpdateRoutine: '',
       isScrolling: false,
 
-      actual_time: moment().millisecond(0),
+      currentTime: moment().millisecond(0),
+      todaysRule: {
+        caption: '',
+        xPos: false
+      },
 
       // this object contains a start and end for this timeline, ven if it is realtime
       // for example 2017-07-01 13:22 and 2017-07-12 12:24
@@ -238,11 +251,10 @@ export default {
         return;
       }
 
-      this.actual_time = moment().millisecond(0);
-
-      this.drawRealtimeRule();
+      this.currentTime = moment().millisecond(0);
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
+      this.drawRealtimeRule();
       if(this.timelineViewport.autoscroll) {
         this.scrollToToday();
       }
@@ -301,7 +313,7 @@ export default {
       } else {
         // there is no valid end, we set end to current time and set realtime
         this.isRealtime = true;
-        return moment();
+        return this.currentTime;
       }
     },
 
@@ -475,24 +487,25 @@ export default {
     drawRealtimeRule() {
       if(!this.isRealtime) { return; }
 
-      let todayTime = moment().millisecond(0);
-      let xPos = this.getXPositionFromDate(todayTime);
-      if(xPos === false) { return; }
+      let xPos = this.getXPositionFromDate(this.currentTime);
+      if(xPos === false) {
+        this.todaysRule.xPos = false;
+        debugger;
+        return;
+      }
 
-      let momentDay = todayTime.format('DD/MM/YYYY');
-      return `
-      <div class="gridItem font-small gridItem_isrealtimerule" style="transform:translate(${xPos}px, 0px)">
-        <div class="gridItem--caption">
-          ${momentDay}
-        </div>
-      </div>
-      `;
+
+      let caption = this.currentTime.format('HH:mm:ss');
+      this.todaysRule = {
+        caption,
+        xPos
+      };
     },
     scrollToEnd() {
       this.$refs.timeline.scrollLeft = this.timelineViewport.width;
     },
     scrollToToday() {
-      this.scrollToDate(moment().millisecond(0));
+      this.scrollToDate(this.currentTime);
     },
     scrollToMedia(slugMediaName) {
       console.log(`METHODS • timelineview: scrollToMedia ${slugMediaName}`);

@@ -104,25 +104,29 @@
     &.gridItem_isrealtimerule {
       border-left: 2px solid @c-rouge_vif;
       z-index:10000;
+      height: ~"calc(100% + 50px)";
+      margin-top: -50px;
       color: white;
 
       .gridItem--caption {
         display: block;
+        position: absolute;
+        right:0;
         background-color: @c-rouge_vif;
         padding: 1px 4px;
-        margin-top: -35px;
-        border-radius: 3px;
+        margin-top: 15px;
+        border-radius: 4px 0px 0px 4px;
       }
     }
 
     &.gridItem_isday {
-      border-left: 1px solid #000;
+      border-left: 1px solid @c-noir;
       z-index:100;
       color: white;
 
       .gridItem--caption {
         display: block;
-        background-color: #000;
+        background-color: @c-noir;
         padding: 1px 4px;
         margin-top: -35px;
         border-radius: 3px;

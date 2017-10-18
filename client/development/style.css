@@ -3825,23 +3825,27 @@ th {
 .simple_grid_overlay .gridItem.gridItem_isrealtimerule {
   border-left: 2px solid #ff3b4c;
   z-index: 10000;
+  height: calc(100% + 50px);
+  margin-top: -50px;
   color: white;
 }
 .simple_grid_overlay .gridItem.gridItem_isrealtimerule .gridItem--caption {
   display: block;
+  position: absolute;
+  right: 0;
   background-color: #ff3b4c;
   padding: 1px 4px;
-  margin-top: -35px;
-  border-radius: 3px;
+  margin-top: 15px;
+  border-radius: 4px 0px 0px 4px;
 }
 .simple_grid_overlay .gridItem.gridItem_isday {
-  border-left: 1px solid #000;
+  border-left: 1px solid #333;
   z-index: 100;
   color: white;
 }
 .simple_grid_overlay .gridItem.gridItem_isday .gridItem--caption {
   display: block;
-  background-color: #000;
+  background-color: #333;
   padding: 1px 4px;
   margin-top: -35px;
   border-radius: 3px;
