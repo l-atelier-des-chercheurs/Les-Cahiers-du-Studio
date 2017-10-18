@@ -3825,8 +3825,6 @@ th {
 .simple_grid_overlay .gridItem {
   position: absolute;
   height: 100%;
-  width: 1px;
-  overflow: visible;
   -webkit-transition: all .4s;
   -o-transition: all .4s;
   transition: all .4s;
