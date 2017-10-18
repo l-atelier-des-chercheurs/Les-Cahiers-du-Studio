@@ -458,7 +458,19 @@ module.exports = (function() {
           /***************************************************************************
               CREATED DATE
           ***************************************************************************/
-          // if the file’s an image, we get the date from the EXIF infos
+
+          // 1. by default, use currentdate
+          // 2. override with fileCreationDate sent through the UI
+          // 3. override with fileCreationDate from fs.stat
+          // 4. override with EXIF
+
+          // 2.
+          if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('fileCreationDate')) {
+            dev.logverbose(`Setting created from additionalMeta`);
+            mdata.created = api.convertDate(additionalMeta.fileCreationDate);
+          }
+
+
           if(mdata.type === 'image') {
             dev.logverbose(`Setting created from EXIF`);
             let getEXIFTimestamp = new Promise((resolve, reject) => {
@@ -478,15 +490,8 @@ module.exports = (function() {
               });
             });
             tasks.push(getEXIFTimestamp);
-          } else
-          // in the case of files uploaded through the interface, there could be an additionalMeta object
-          if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('fileCreationDate')) {
-            dev.logverbose(`Setting created from additionalMeta`);
-            mdata.created = api.convertDate(additionalMeta.fileCreationDate);
-          } else
-
-          // otherwise, we can get the created directly on the file itself (if it was copy/pasted to the folder)
-          {
+          } else {
+            // 3. otherwise, we can try to get the created directly on the file itself (if it was copy/pasted to the folder)
             dev.logverbose(`Setting created from file birthtime`);
             let getFileCreationDate = new Promise((resolve, reject) => {
               fs.stat(mediaPath, function(err, stats) {
@@ -497,6 +502,8 @@ module.exports = (function() {
             });
             tasks.push(getFileCreationDate);
           }
+
+
 
 
           /***************************************************************************

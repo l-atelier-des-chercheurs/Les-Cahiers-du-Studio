@@ -111,7 +111,7 @@ export default {
   methods: {
     limitMediaYPos(yPos) {
       if(this.media.type === 'marker') {
-        return 50/2;
+        return 50;
       }
       return Math.max(50, Math.min(this.timelineHeight - 100, yPos));
     },

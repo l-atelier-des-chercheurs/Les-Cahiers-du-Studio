@@ -3710,7 +3710,7 @@ th {
   -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
 }
-.m_calendar .m_calendar--days--day.is--current > * {
+.m_calendar .m_calendar--days--day.is--visibleDay > * {
   background-color: #333;
   color: white;
 }
@@ -3785,6 +3785,7 @@ th {
 }
 .m_timeline .m_timeline-container {
   position: relative;
+  z-index: 0;
   height: 100%;
   width: 100%;
   left: 25vw;
@@ -3801,9 +3802,6 @@ th {
   width: 1px;
   height: 1px;
 }
-.is--realtime.m_timeline .m_timeline-container .m_timeline-container {
-  border-right: 4px solid #ff3b4c;
-}
 .simple_grid_overlay {
   height: 100%;
   left: 0;
@@ -3813,7 +3811,7 @@ th {
   z-index: -1;
   pointer-events: none;
 }
-.simple_grid_overlay .horizontal {
+.simple_grid_overlay .simple_grid_overlay--wrapper {
   position: relative;
   height: 100%;
 }
@@ -3823,6 +3821,18 @@ th {
   -webkit-transition: all .4s;
   -o-transition: all .4s;
   transition: all .4s;
+}
+.simple_grid_overlay .gridItem.gridItem_isrealtimerule {
+  border-left: 2px solid #ff3b4c;
+  z-index: 10000;
+  color: white;
+}
+.simple_grid_overlay .gridItem.gridItem_isrealtimerule .gridItem--caption {
+  display: block;
+  background-color: #ff3b4c;
+  padding: 1px 4px;
+  margin-top: -35px;
+  border-radius: 3px;
 }
 .simple_grid_overlay .gridItem.gridItem_isday {
   border-left: 1px solid #000;
@@ -3837,8 +3847,8 @@ th {
   border-radius: 3px;
 }
 .simple_grid_overlay .gridItem.gridItem_ishour {
-  border-left: 1px dashed #C6C6C6;
   z-index: 10;
+  border-left: 1px solid #89898c;
 }
 .simple_grid_overlay .gridItem.gridItem_ishour::before {
   content: attr(data-caption);
@@ -3856,12 +3866,12 @@ th {
 }
 .simple_grid_overlay .gridItem.gridItem_isminute {
   color: #999;
-  border-left: 1px solid fade-out(black, 0.9);
+  border-left: 1px dashed #C6C6C6;
   z-index: 1;
 }
 .simple_grid_overlay .gridItem.gridItem_isminute[data-caption] {
   color: #333;
-  border-left: 1px solid fade-out(black, 0.8);
+  border-left: 1px solid #C6C6C6;
 }
 .simple_grid_overlay .gridItem.gridItem_isminute[data-caption]::before {
   content: attr(data-caption);
@@ -4533,7 +4543,7 @@ body.is_unscrollable {
   flex: 1 1 40%;
   min-height: 60px;
 }
-.navbar_top .bloccontainer > .currentDay {
+.navbar_top .bloccontainer > .visibleDay {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 10%;
   flex: 0 0 10%;
@@ -4580,7 +4590,7 @@ body.is_unscrollable {
   content: "›";
   margin: 20px;
 }
-.navbar_top .currentDay {
+.navbar_top .visibleDay {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

@@ -83,7 +83,7 @@ let vm = new Vue({
       if(viewportScale !== undefined && viewportScale[slugFolderName] !== undefined) {
         return viewportScale[slugFolderName];
       }
-      return 10;
+      return 20;
     },
 
     updateProjectScrollLeft: function(slugFolderName, timelineViewport_scrollLeft) {
@@ -117,5 +117,5 @@ let vm = new Vue({
 });
 
 setTimeout(() => {
-  vm.openFolder('demo');
+//   vm.openFolder('demo');
 }, 500);

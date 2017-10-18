@@ -4,7 +4,7 @@
     <NavbarTop
       :folder="folder"
       :slugFolderName="slugFolderName"
-      :currentDay="timelineViewport.currentDay"
+      :visibleDay="timelineViewport.visibleDay"
       @toggleSidebar="toggleSidebar()"
       :timelineViewport_scale="timelineViewport.scale"
       >
@@ -15,7 +15,7 @@
         v-if="$root.settings.has_sidebar_opened"
         :folder="folder"
         :slugFolderName="slugFolderName"
-        :currentDay="timelineViewport.currentDay"
+        :visibleDay="timelineViewport.visibleDay"
         :medias="medias"
         :timelineInfos="timelineInfos"
         >
@@ -41,7 +41,6 @@
 
     <div class="m_timeline" ref="timeline"
       :class="{
-        'is--realtime' : isRealtime,
         'with--sidebar_opened' : $root.settings.has_sidebar_opened,
         'is--animated': isAnimated
       }"
@@ -54,7 +53,9 @@
 
         <!-- GRID -->
         <div class="simple_grid_overlay">
-          <div class="horizontal" v-html="generateHorizontalGrid()">
+          <div class="simple_grid_overlay--wrapper">
+            <div v-html="generateHorizontalGrid()"></div>
+            <div v-html="drawRealtimeRule()"></div>
           </div>
         </div>
 
@@ -152,6 +153,8 @@ export default {
       timelineUpdateRoutine: '',
       isScrolling: false,
 
+      actual_time: moment().millisecond(0),
+
       // this object contains a start and end for this timeline, ven if it is realtime
       // for example 2017-07-01 13:22 and 2017-07-12 12:24
       timelineInfos: {
@@ -166,7 +169,7 @@ export default {
         width: 1,
         height: 1,
         scale: this.$root.getProjectScale(this.slugFolderName),
-        currentDay: '',
+        visibleDay: '',
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
@@ -200,17 +203,17 @@ export default {
     'timelineViewport.scrollLeft': function() {
       console.log('WATCH • timelineview: timelineViewport.scrollLeft');
       this.$root.updateProjectScrollLeft(this.slugFolderName, this.timelineViewport.scrollLeft);
-      this.setCurrentDay();
+      this.setVisibleDay();
     },
   },
   created() {
     console.log('CREATED • timelineview: folder');
 
     window.addEventListener('resize', debounce(this.onResize, 300));
-    window.addEventListener('timeline.scrolltoend', this.scrollToEnd);
+    window.addEventListener('timeline.scrollToToday', this.scrollToToday);
     this.setTimelineBounds();
     this.setViewedTimelineBoundsFromInfos();
-    this.setCurrentDay();
+    this.setVisibleDay();
     // TODO : check localstorage pour une info de jour
   },
   mounted() {
@@ -235,13 +238,17 @@ export default {
         return;
       }
 
+      this.actual_time = moment().millisecond(0);
+
+      this.drawRealtimeRule();
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
       if(this.timelineViewport.autoscroll) {
-        this.scrollToEnd()
+        this.scrollToToday();
       }
+
       this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
-      this.setCurrentDay();
+      this.setVisibleDay();
     }, 1000);
   },
   beforeDestroy() {
@@ -256,7 +263,7 @@ export default {
     EventBus.$off('showEditFolderModal');
 
     window.removeEventListener('resize', debounce(this.onResize, 300));
-    window.removeEventListener('timeline.scrolltoend', this.scrollToEnd);
+    window.removeEventListener('timeline.scrollToToday', this.scrollToToday);
     clearInterval(this.timelineUpdateRoutine);
   },
   computed: {
@@ -282,10 +289,17 @@ export default {
     },
     getTimelineEnd(ts) {
       if(ts && moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-        this.isRealtime = false;
-        return moment(ts,'YYYY-MM-DD HH:mm:ss');
+        // if end is in the future
+        if(moment(ts,'YYYY-MM-DD HH:mm:ss', true).isAfter(moment())) {
+          this.isRealtime = true;
+          return moment(ts,'YYYY-MM-DD HH:mm:ss');
+        // if end is is in the present or past
+        } else {
+          this.isRealtime = false;
+          return moment(ts,'YYYY-MM-DD HH:mm:ss');
+        }
       } else {
-        // set end to current time
+        // there is no valid end, we set end to current time and set realtime
         this.isRealtime = true;
         return moment();
       }
@@ -355,11 +369,11 @@ export default {
 
       /****************************** make DAY ticks ******************************/
 
-      let createDayTick = (currentDay) => {
-        let xPos = this.getXPositionFromDate(currentDay);
+      let createDayTick = (thisDay) => {
+        let xPos = this.getXPositionFromDate(thisDay);
         if(xPos === false) { return; }
 
-        let momentDay = moment(currentDay).format('DD/MM/YYYY');
+        let momentDay = moment(thisDay).format('DD/MM/YYYY');
         html += `
         <div class="gridItem font-small gridItem_isday" style="transform:translate(${xPos}px, 0px)">
           <div class="gridItem--caption">
@@ -371,14 +385,14 @@ export default {
 
       createDayTick(this.timelineViewport.start);
       let firstDay = moment(moment(this.timelineViewport.start).startOf('day').subtract(1, 'day'));
-      for(var d = 86400000; d < timeEllapsed + 86400000; d += 86400000) {
-        let currentDay = firstDay + d;
-        createDayTick(currentDay);
+      for(var d = 86400000; d <= timeEllapsed + 86400000*2; d += 86400000) {
+        let thisDay = firstDay + d;
+        createDayTick(thisDay);
       }
 
-      // only show HOUR and MINUTES for the currentDay, the previous and the next
+      // only show HOUR and MINUTES for the thisDay, the previous and the next
       // to do that, we create a const for the current timestamp and another for the number of ms we show the grid
-      let currentDayStart = moment(this.timelineViewport.currentDay).subtract(1, 'days').startOf('day');
+      let thisDayStart = moment(this.timelineViewport.visibleDay).subtract(1, 'days').startOf('day');
       const timeEllapsedDay = 3 * 24*60*60*1000;
 
       /****************************** make HOUR ticks ******************************/
@@ -396,7 +410,7 @@ export default {
 
       createHourTick(this.timelineViewport.start, true);
       for(var h = 3600000; h < timeEllapsedDay; h +=  3600000) {
-        let currentHour = currentDayStart + h;
+        let currentHour = thisDayStart + h;
         createHourTick(currentHour);
       }
 
@@ -409,7 +423,7 @@ export default {
         if(xPos === false) { return; }
         if(moment(currentMinute).minute() === 0) { return; }
 
-        if(moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 1) {
+        if(moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 5) {
           html += `<div class="gridItem font-small gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${moment(currentMinute).format('HH:mm')}"></div>`;
         } else {
           html += `<div class="gridItem font-small gridItem_isminute" style="transform:translate(${xPos}px, 0px)"></div>`;
@@ -417,7 +431,7 @@ export default {
       }
 
       for(var m = 0; m < timeEllapsedDay; m += 60000) {
-        let currentMinute = currentDayStart + m;
+        let currentMinute = thisDayStart + m;
         createMinuteTick(currentMinute);
       }
 
@@ -441,9 +455,9 @@ export default {
       let mediaCreatedDay = moment(media_created, 'YYYY-MM-DD HH:mm:ss');
       // show if in view
 //       if(this.timelineViewport.scrollLeft < mediaPosX && mediaPosX < this.timelineViewport.scrollLeft + window.innerWidth) {
-      if(moment(mediaCreatedDay).isSame(this.timelineViewport.currentDay, 'day') ||
-      moment(mediaCreatedDay).subtract(1, 'day').isSame(this.timelineViewport.currentDay, 'day') ||
-      moment(mediaCreatedDay).add(1, 'day').isSame(this.timelineViewport.currentDay, 'day')
+      if(moment(mediaCreatedDay).isSame(this.timelineViewport.visibleDay, 'day') ||
+      moment(mediaCreatedDay).subtract(1, 'day').isSame(this.timelineViewport.visibleDay, 'day') ||
+      moment(mediaCreatedDay).add(1, 'day').isSame(this.timelineViewport.visibleDay, 'day')
       ) {
         return true;
       }
@@ -458,9 +472,27 @@ export default {
     closeMediaModal() {
       this.showMediaModalFor = '';
     },
+    drawRealtimeRule() {
+      if(!this.isRealtime) { return; }
 
+      let todayTime = moment().millisecond(0);
+      let xPos = this.getXPositionFromDate(todayTime);
+      if(xPos === false) { return; }
+
+      let momentDay = todayTime.format('DD/MM/YYYY');
+      return `
+      <div class="gridItem font-small gridItem_isrealtimerule" style="transform:translate(${xPos}px, 0px)">
+        <div class="gridItem--caption">
+          ${momentDay}
+        </div>
+      </div>
+      `;
+    },
     scrollToEnd() {
       this.$refs.timeline.scrollLeft = this.timelineViewport.width;
+    },
+    scrollToToday() {
+      this.scrollToDate(moment().millisecond(0));
     },
     scrollToMedia(slugMediaName) {
       console.log(`METHODS • timelineview: scrollToMedia ${slugMediaName}`);
@@ -509,7 +541,7 @@ export default {
         onDone: () => {
           this.$nextTick(() => {
             this.isScrolling = false;
-            this.setCurrentDay();
+            this.setVisibleDay();
             this.timelineViewport.scrollLeft = xPos_new;
           });
         },
@@ -522,10 +554,10 @@ export default {
     toggleSidebar() {
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
     },
-    setCurrentDay(xPos = this.timelineViewport.scrollLeft + window.innerWidth/4) {
+    setVisibleDay(xPos = this.timelineViewport.scrollLeft + window.innerWidth/4) {
       let dateFromPosX = this.getDateFromXPosition(xPos);
       dateFromPosX = Math.min(this.timelineViewport.end, Math.max(dateFromPosX, this.timelineViewport.start));
-      this.timelineViewport.currentDay = dateFromPosX;
+      this.timelineViewport.visibleDay = dateFromPosX;
     },
     updateTimelineViewportScale(val) {
       this.timelineViewport.scale = Number(val);

@@ -60,6 +60,7 @@
 
   .m_timeline-container {
     position: relative;
+    z-index: 0;
     height: 100%;
     width: 100%;
     left: 25vw;
@@ -76,10 +77,6 @@
       height: 1px;
     }
 
-    .is--realtime& .m_timeline-container {
-      border-right: 4px solid @c-rouge_vif;
-    }
-
   }
 }
 
@@ -93,7 +90,7 @@
   z-index: -1;
   pointer-events:none;
 
-  .horizontal {
+  .simple_grid_overlay--wrapper {
     position:relative;
     height: 100%;
   }
@@ -103,6 +100,20 @@
     height: 100%;
 
     transition: all .4s;
+
+    &.gridItem_isrealtimerule {
+      border-left: 2px solid @c-rouge_vif;
+      z-index:10000;
+      color: white;
+
+      .gridItem--caption {
+        display: block;
+        background-color: @c-rouge_vif;
+        padding: 1px 4px;
+        margin-top: -35px;
+        border-radius: 3px;
+      }
+    }
 
     &.gridItem_isday {
       border-left: 1px solid #000;
@@ -118,8 +129,8 @@
       }
     }
     &.gridItem_ishour {
-      border-left: 1px dashed @c-gris_light;
       z-index:10;
+      border-left: 1px solid @c-gris;
 
       &::before {
         content: attr(data-caption);
@@ -135,12 +146,12 @@
 
     &.gridItem_isminute {
       color: #999;
-      border-left: 1px solid fade-out(black, 0.9);
+      border-left: 1px dashed @c-gris_light;
       z-index:1;
 
       &[data-caption] {
         color: #333;
-        border-left: 1px solid fade-out(black, 0.8);
+        border-left: 1px solid @c-gris_light;
         &::before {
           content: attr(data-caption);
           display: block;
