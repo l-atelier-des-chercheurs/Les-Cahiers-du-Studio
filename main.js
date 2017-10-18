@@ -32,8 +32,9 @@ function createWindow() {
   const debug = flags.get('debug');
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
+  global.appVersion = app.getVersion();
 
-  dev.log('——— Starting les-cahiers app v' + process.env.npm_package_version);
+  dev.log('——— Starting les-cahiers app v' + global.appVersion);
 
   // checkout which langage to load
   var envLang = app.getLocale();

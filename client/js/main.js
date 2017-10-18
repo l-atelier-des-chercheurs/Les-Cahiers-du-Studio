@@ -50,6 +50,7 @@ window.store = {
   state: {
     folders: {},
     networkInfos: locals.networkInfos,
+    appVersion: locals.appVersion,
     lang: locals.lang
   },
 };

@@ -1,6 +1,7 @@
 <template>
   <footer class="m_footer">
     <template v-for="ninfos in $root.store.networkInfos">
+      <p>Les Cahiers du Studio version {{ $root.store.appVersion }}</p>
       <p class="text-center centered text-small">
         <span v-html="$root.store.lang.toconnectwithanotherdevice">
         </span>
