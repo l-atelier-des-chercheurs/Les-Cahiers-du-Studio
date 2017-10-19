@@ -63,10 +63,10 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
-                <circle cx="24" cy="24" r="24" style="fill: #ff3b4c"/>
+<!--                 <circle cx="24" cy="24" r="24" style="fill: #4d4d4d"/>  -->
                 <g>
-                  <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
-                  <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
+                  <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" style="fill: none;stroke: #4d4d4d;stroke-miterlimit: 10;stroke-width: 3px"/>
+                  <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" style="fill: none;stroke: #4d4d4d;stroke-miterlimit: 10;stroke-width: 3px"/>
                 </g>
               </g>
             </g>
