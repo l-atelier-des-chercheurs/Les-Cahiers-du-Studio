@@ -23,6 +23,7 @@
   max-height: 100vh;
   width: 90%;
   max-width: @t-panelWidth;
+  overflow-y: scroll;
 
   margin: 0px auto;
   background-color: #fff;
@@ -101,8 +102,8 @@
 
 .m_modal--close_button {
   position: absolute;
-  top: 0;
-  right: -@t-skipline * 3;
+  top: @t-skipline;
+  right: @t-skipline;
 }
 
 .m_modal--header {

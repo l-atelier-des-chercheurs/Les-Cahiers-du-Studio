@@ -77,7 +77,7 @@
       </CreateFolder>
 
       <div class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large">
-        <button class="m_home--folders--card margin-small" @click="showCreateFolderModal = true">
+        <button class="m_home--folders--card margin-small button-inline" @click="showCreateFolderModal = true">
 
           <span class="c_gris margin-medium">
             Créer un dossier

@@ -22,15 +22,17 @@
               </div>
 
               <form v-if="!!this.$slots['sidebar']"
-                class="padding-medium"
+                class=""
                 v-on:submit.prevent="$emit('submit')"
                 >
-                <slot name="sidebar">
-                  default sidebar
-                </slot>
+                <div class="scrollBox padding-medium">
+                  <slot name="sidebar">
+                    default sidebar
+                  </slot>
+                </div>
 
-                <button v-if="!!this.$slots['submit_button']"
-                  class="m_modal--save bg-transparent button-round margin-verysmall padding-verysmall float-right"
+                <button
+                  class="m_modal--save bg-vert_vif button-rectangle button-allwide button-inline margin-none padding-small"
                   type="submit"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
@@ -55,21 +57,22 @@
 
           </div>
 
-          <button class="button-round bg-transparent m_modal--close_button"  @click="$emit('close')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-              <g id="Calque_2" data-name="Calque 2">
-                <g id="Editeur_txt" data-name="Editeur txt">
-                  <circle cx="24" cy="24" r="24" style="fill: #ff3b4c"/>
-                  <g>
-                    <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
-                    <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
-                  </g>
+        </div>
+
+        <button class="button-round bg-transparent m_modal--close_button"  @click="$emit('close')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+            <g id="Calque_2" data-name="Calque 2">
+              <g id="Editeur_txt" data-name="Editeur txt">
+                <circle cx="24" cy="24" r="24" style="fill: #ff3b4c"/>
+                <g>
+                  <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
+                  <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
                 </g>
               </g>
-            </svg>
-          </button>
+            </g>
+          </svg>
+        </button>
 
-        </div>
       </div>
     </div>
   </transition>

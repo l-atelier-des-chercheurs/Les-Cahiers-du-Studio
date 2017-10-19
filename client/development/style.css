@@ -3263,6 +3263,9 @@ b {
 .bg-noir_light {
   background-color: #4d4d4d;
 }
+.bg-vert_vif {
+  background-color: #22b573;
+}
 .border-circled {
   border: 1px solid currentColor;
 }
@@ -3290,6 +3293,30 @@ b {
 }
 .button-wide {
   min-width: 3.5em;
+}
+.button-allwide {
+  width: 100%;
+}
+.button-inline {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+.button-rectangle {
+  border-radius: 0;
+}
+.display-inline {
+  display: inline;
 }
 .font-small {
   font-size: 0.9em;
@@ -3491,6 +3518,12 @@ button:focus {
 button a {
   text-decoration: none;
 }
+button svg {
+  min-width: 0;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+}
 input[type=range] {
   -webkit-appearance: none;
   width: 100%;
@@ -3686,10 +3719,6 @@ th {
 }
 .m_calendar .m_calendar--days--day > * {
   position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  display: block;
   overflow: visible;
   padding-bottom: 2px;
   min-height: 0;
@@ -4361,6 +4390,7 @@ th {
   max-height: 100vh;
   width: 90%;
   max-width: 380px;
+  overflow-y: scroll;
   margin: 0px auto;
   background-color: #fff;
   border-radius: 2px;
@@ -4426,8 +4456,8 @@ th {
 }
 .m_modal--close_button {
   position: absolute;
-  top: 0;
-  right: -4.05em;
+  top: 1.35em;
+  right: 1.35em;
 }
 @media print {
   .m_timeline-container {

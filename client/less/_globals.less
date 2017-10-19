@@ -34,6 +34,9 @@ strong,b {
 .bg-noir_light {
   background-color: @c-noir_light;
 }
+.bg-vert_vif {
+  background-color: @c-vert_vif;
+}
 
 .border-circled {
   border: 1px solid currentColor;
@@ -64,6 +67,25 @@ strong,b {
 }
 .button-wide {
   min-width: 3.5em;
+}
+.button-allwide {
+  width: 100%;
+}
+.button-inline {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+
+  > * {
+  }
+}
+.button-rectangle {
+  border-radius: 0;
+}
+
+.display-inline {
+  display: inline;
 }
 
 .font-small {
@@ -267,6 +289,7 @@ button {
   padding: 0 @t-skipline/2;
   border-radius: 6px;
 
+
   transition: color .25s ease-out;
 
   &.is--active {
@@ -287,6 +310,13 @@ button {
 
   a {
     text-decoration: none;
+  }
+
+  svg {
+    min-width: 0;
+    width: 48px;
+    height: 48px;
+    margin: 0;
   }
 }
 
