@@ -19,7 +19,8 @@
     "debug": "electron . --debug --verbose",
     "pack": "build --dir",
     "dist": "build",
-    "rebuild": "electron-rebuild -f -w sharp"
+    "rebuild": "electron-rebuild -f -w sharp",
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
     "electronVersion": "1.7.5",
