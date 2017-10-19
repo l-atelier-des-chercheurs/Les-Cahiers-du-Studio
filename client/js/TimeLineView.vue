@@ -237,7 +237,6 @@ export default {
     console.log('CREATED • timelineview: folder');
 
     window.addEventListener('resize', debounce(this.onResize, 300));
-    window.addEventListener('timeline.scrollToToday', this.scrollToToday);
     this.setTimelineBounds();
     this.setViewedTimelineBoundsFromInfos();
     this.setVisibleDay();
@@ -253,6 +252,7 @@ export default {
     EventBus.$on('goToPrevDay', this.goToPrevDay);
     EventBus.$on('goToNextDay', this.goToNextDay);
     EventBus.$on('showEditFolderModal', this.startEditModal);
+    EventBus.$on('timeline.scrollToToday', this.scrollToToday);
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
 
@@ -287,9 +287,9 @@ export default {
     EventBus.$off('goToPrevDay');
     EventBus.$off('goToNextDay');
     EventBus.$off('showEditFolderModal');
+    EventBus.$off('timeline.scrollToToday', this.scrollToToday);
 
     window.removeEventListener('resize', debounce(this.onResize, 300));
-    window.removeEventListener('timeline.scrollToToday', this.scrollToToday);
     clearInterval(this.timelineUpdateRoutine);
   },
   computed: {

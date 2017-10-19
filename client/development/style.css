@@ -3875,6 +3875,9 @@ th {
 }
 .simple_grid_overlay .gridItem.gridItem_ishour {
   z-index: 10;
+  border-left: 1px solid #C6C6C6;
+}
+.simple_grid_overlay .gridItem.gridItem_ishour[data-caption] {
   border-left: 1px solid #89898c;
 }
 .simple_grid_overlay .gridItem.gridItem_ishour::before {

@@ -155,7 +155,11 @@
     }
     &.gridItem_ishour {
       z-index:10;
-      border-left: 1px solid @c-gris;
+      border-left: 1px solid @c-gris_light;
+
+      &[data-caption] {
+        border-left: 1px solid @c-gris;
+      }
 
       &::before {
         content: attr(data-caption);

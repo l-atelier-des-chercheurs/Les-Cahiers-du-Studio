@@ -30,6 +30,7 @@
 <script>
 import FileUpload from './FileUpload.vue';
 import FileInput from './subcomponents/FileInput.vue';
+import EventBus from '../event-bus';
 
 export default {
   props: ['slugFolderName'],
@@ -58,7 +59,8 @@ export default {
         slugFolderName: this.slugFolderName,
         type: 'text'
       });
-      window.dispatchEvent( new Event('timeline.scrollToToday') );
+
+      EventBus.$emit('timeline.scrollToToday');
     },
     addMarker() {
       this.$root.createTextMedia({
@@ -67,7 +69,7 @@ export default {
         color: 'red',
         collapsed: true
       });
-      window.dispatchEvent( new Event('timeline.scrollToToday') );
+      EventBus.$emit('timeline.scrollToToday');
     },
     boitierPressed(e) {
       // if there is a modal opened, let’s not do something
@@ -83,7 +85,7 @@ export default {
           color: 'blue',
           collapsed: true
         });
-        window.dispatchEvent( new Event('timeline.scrollToToday') );
+        EventBus.$emit('timeline.scrollToToday');
       } else
       if(key === 'u' || key == 's') {
         this.$root.createTextMedia({
@@ -92,7 +94,7 @@ export default {
           color: 'red',
           collapsed: true
         });
-        window.dispatchEvent( new Event('timeline.scrollToToday') );
+        EventBus.$emit('timeline.scrollToToday');
       } else
       if(key === 'i' || key === 'a' || key === 'q') {
         this.$root.createTextMedia({
@@ -101,7 +103,7 @@ export default {
           color: 'green',
           collapsed: true
         });
-        window.dispatchEvent( new Event('timeline.scrollToToday') );
+        EventBus.$emit('timeline.scrollToToday');
       } else
       if(key === 'o') {
         this.$root.createTextMedia({
@@ -110,7 +112,7 @@ export default {
           color: 'yellow',
           collapsed: true
         });
-        window.dispatchEvent( new Event('timeline.scrollToToday') );
+        EventBus.$emit('timeline.scrollToToday');
       } else
       if(key === 'p') {
         this.$root.createTextMedia({
@@ -119,7 +121,7 @@ export default {
           color: 'orange',
           collapsed: true
         });
-        window.dispatchEvent( new Event('timeline.scrollToToday') );
+        EventBus.$emit('timeline.scrollToToday');
       } else
       if(key === '6') {
         this.$root.createTextMedia({
@@ -128,7 +130,7 @@ export default {
           color: 'purple',
           collapsed: true
         });
-        window.dispatchEvent( new Event('timeline.scrollToToday') );
+        EventBus.$emit('timeline.scrollToToday');
       }
     },
   }
