@@ -3236,20 +3236,23 @@ strong,
 b {
   font-weight: inherit;
 }
-.c_blanc {
+.c-blanc {
   color: white;
 }
-.c_gris {
+.c-gris {
   color: #89898c;
 }
-.c_vert {
+.c-vert {
   color: #a3e6db;
 }
-.c_bleu {
+.c-bleu {
   color: #b0e6f4;
 }
-.c_rouge {
+.c-rouge {
   color: #ff7e8a;
+}
+.c-rouge_vif {
+  color: #ff3b4c;
 }
 .bg-transparent {
   background-color: transparent;
@@ -3311,6 +3314,9 @@ b {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
+}
+.button-inline svg {
+  margin: 0;
 }
 .button-rectangle {
   border-radius: 0;
@@ -3522,7 +3528,7 @@ button svg {
   min-width: 0;
   width: 48px;
   height: 48px;
-  margin: 0;
+  margin: auto;
 }
 input[type=range] {
   -webkit-appearance: none;
@@ -4650,7 +4656,7 @@ body.is_unscrollable {
 }
 .navbar_top .breadcrumb > .breadcrumb--item + .breadcrumb--item::before {
   content: "›";
-  margin: 20px;
+  margin: 10px;
 }
 .navbar_top .visibleDay {
   display: -webkit-box;

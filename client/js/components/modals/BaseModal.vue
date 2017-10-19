@@ -11,9 +11,9 @@
           >
 
           <div class="flex-wrap flex-vertically-stretched ">
-            <div class="m_modal--sidebar flex-size-2/5 flex-collapse-on-mobile bg-noir_light c_blanc">
+            <div class="m_modal--sidebar flex-size-2/5 flex-collapse-on-mobile bg-noir_light c-blanc">
 
-              <div class="m_modal--header padding-medium bg-noir c_blanc">
+              <div class="m_modal--header padding-medium bg-noir c-blanc">
                 <h3 class="margin-none with-bullet">
                   <slot name="header">
                       default header

@@ -3,23 +3,26 @@ strong,b {
   font-weight: inherit;
 }
 
-.c_blanc {
+.c-blanc {
   color: white;
 }
-.c_gris {
+.c-gris {
   color: @c-gris;
 }
 
-.c_vert {
+.c-vert {
   color: @c-vert;
 }
 
-.c_bleu {
+.c-bleu {
   color: @c-bleu;
 }
 
-.c_rouge {
+.c-rouge {
   color: @c-rouge;
+}
+.c-rouge_vif {
+  color: @c-rouge_vif;
 }
 
 .bg-transparent {
@@ -77,7 +80,8 @@ strong,b {
   align-items: center;
   justify-content: center;
 
-  > * {
+  svg {
+    margin:0;
   }
 }
 .button-rectangle {
@@ -316,7 +320,7 @@ button {
     min-width: 0;
     width: 48px;
     height: 48px;
-    margin: 0;
+    margin: auto;
   }
 }
 

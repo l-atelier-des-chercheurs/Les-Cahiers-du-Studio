@@ -1,7 +1,7 @@
 <template>
   <main class="m_home">
 
-    <header class="bg-noir c_blanc font-large padding-vert-medium">
+    <header class="bg-noir c-blanc font-large padding-vert-medium">
       <div class="flex-wrap flex-vertically-centered limited-width">
         <div class="flex-size-2/5 flex-collapse-on-mobile padding-sides-medium padding-vert-medium flex-wrap flex-vertically-centered">
           <svg class="stvlogo margin-right-medium" version="1.1"
@@ -79,7 +79,7 @@
       <div class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large">
         <button class="m_home--folders--card margin-small button-inline" @click="showCreateFolderModal = true">
 
-          <span class="c_gris margin-medium">
+          <span class="c-gris margin-medium">
             Créer un dossier
           </span>
           <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
