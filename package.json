@@ -25,6 +25,7 @@
   "build": {
     "electronVersion": "1.7.5",
     "appId": "les-cahiers",
+    "productName": "Les Cahiers",
     "asar": false,
     "mac": {
       "category": "public.app-category.education"
