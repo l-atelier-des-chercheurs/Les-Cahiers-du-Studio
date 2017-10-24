@@ -52,7 +52,7 @@ export default {
     },
     size: {
       type: Number,
-      default: 200
+      default: 400
     },
     value: {
       type: String,
