@@ -4710,7 +4710,7 @@ body.is_unscrollable {
   top: 46%;
   top:~"calc(50% - @{t-button_sidebartoggle}/3)";
 */
-  bottom: 80px;
+  top: 140px;
   width: 60px;
   height: 60px;
   left: 430px;
