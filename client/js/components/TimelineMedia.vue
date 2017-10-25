@@ -23,7 +23,7 @@
           <button class="accroche accroche_gauche" @mouseup=""></button>
           <div class="accrocheDurationLine"></div>
         </template>
-        <button class="accroche accroche_droite" @mouseup="clickAccrocheDroite"></button>
+        <button class="accroche accroche_droite" @mouseup.prevent="toggleCollapseMedia"></button>
       </div>
 
 
@@ -37,6 +37,9 @@
           v-model="media.content"
         >
         </MediaContent>
+
+        <div class="mediaContour"></div>
+
         <button class="button-round bg-transparent button_openmedia"  @mousedown.stop="$emit('open')">
           <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
             <g id="Calque_2" data-name="Calque 2">
@@ -194,16 +197,6 @@ export default {
     mouseleave() {
       this.is_hovered = false;
     },
-
-    clickAccrocheDroite() {
-/*
-      if(this.media.type === 'marker') {
-        this.$emit('open');
-        return;
-      }
-*/
-      this.toggleCollapseMedia();
-    },
     toggleCollapseMedia() {
       if(this.is_dragged) {
         return;
@@ -217,7 +210,6 @@ export default {
 
       // if it's all good, collect everything and send over socketio
       this.$root.editMedia(values);
-
     }
   }
 }
