@@ -121,7 +121,7 @@
 
         <template v-if="Object.keys(medias).length > 0">
           <Media v-for="(media, index) in medias"
-            v-if="getMediaPosX(media.created) && mediaIsVisible(media.created, index)"
+            v-if="getMediaPosX(media.created) && elesIsClose(getMediaPosX(media.created))"
             v-bind:key="index"
             :ref="`media_${index}`"
             :slugFolderName="slugFolderName"
@@ -532,8 +532,9 @@ export default {
       return moment(timeSinceStart + this.timelineViewport.start);
     },
     elesIsClose(xPos) {
-      if(xPos < this.timelineViewport.scrollLeft - window.innerWidth * 2) { return false; }
-      if(xPos > this.timelineViewport.scrollLeft + window.innerWidth * 2) { return false; }
+      if(typeof xPos !== 'number') { return false; }
+      if(xPos < this.timelineViewport.scrollLeft - window.innerWidth * 3) { return false; }
+      if(xPos > this.timelineViewport.scrollLeft + window.innerWidth * 3) { return false; }
       return true;
     },
     mediaIsVisible(media_created, slugMediaName) {
@@ -634,12 +635,16 @@ export default {
     },
 
     toggleSidebar() {
+      console.log('METHODS • timelineview: toggleSidebar');
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
     },
     setVisibleDay(xPos = this.timelineViewport.scrollLeft + window.innerWidth/2) {
+      console.log('METHODS • timelineview: setVisibleDay');
       let dateFromPosX = this.getDateFromXPosition(xPos);
       dateFromPosX = Math.min(this.timelineViewport.end, Math.max(dateFromPosX, this.timelineViewport.start));
-      this.timelineViewport.visibleDay = dateFromPosX;
+      if(dateFromPosX !== this.timelineViewport.visibleDay) {
+        this.timelineViewport.visibleDay = dateFromPosX;
+      }
     },
     updateTimelineViewportScale(val) {
       this.timelineViewport.scale = Number(val);
