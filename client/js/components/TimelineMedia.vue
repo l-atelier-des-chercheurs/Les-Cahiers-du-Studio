@@ -1,5 +1,5 @@
 <template>
-  <div class="mediaPreview"
+  <div class="mediaPreview font-small"
     :style="getMediaPosition()"
     :class="[{
       'has--duration' : media.duration !== undefined,

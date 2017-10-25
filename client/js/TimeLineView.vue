@@ -54,7 +54,48 @@
         <!-- GRID -->
         <div class="simple_grid_overlay">
           <div class="simple_grid_overlay--wrapper">
-            <div v-html="generateHorizontalGrid()"></div>
+
+            <template v-if="overallGrid.days.length > 0">
+              <template v-for="item in overallGrid.days">
+                <div
+                  class="gridItem font-small gridItem_isday"
+                  :class="{ 'has--caption' : (item.caption !== undefined) }"
+                  :style="'transform:translate(' + item.xPos + 'px, 0px)'"
+                  >
+                  <div v-if="item.caption !== undefined" class="gridItem--caption">
+                    {{ item.caption }}
+                  </div>
+                </div>
+              </template>
+            </template>
+
+            <template v-if="overallGrid.hours.length > 0">
+              <template v-for="item in overallGrid.hours">
+              <div
+                class="gridItem font-small gridItem_ishour"
+                :class="{ 'has--caption' : (item.caption !== undefined) }"
+                :style="'transform:translate(' + item.xPos + 'px, 0px)'"
+                >
+                <div v-if="item.caption !== undefined" class="gridItem--caption">
+                  {{ item.caption }}
+                </div>
+              </div>
+              </template>
+            </template>
+
+            <template v-if="overallGrid.minutes.length > 0">
+              <template v-for="item in overallGrid.minutes">
+                <div
+                  class="gridItem font-small gridItem_isminute"
+                  :class="{ 'has--caption' : (item.caption !== undefined) }"
+                  :style="'transform:translate(' + item.xPos + 'px, 0px)'"
+                  >
+                  <div v-if="item.caption !== undefined" class="gridItem--caption">
+                    {{ item.caption }}
+                  </div>
+                </div>
+              </template>
+            </template>
 
             <div
               v-if="!!todaysRule.xPos"
@@ -179,7 +220,9 @@ export default {
       },
 
       overallGrid: {
-
+        days: [],
+        hours: [],
+        minutes: []
       },
 
       // this object contains a start and end for this timeline, ven if it is realtime
@@ -210,6 +253,7 @@ export default {
       console.log('WATCH • timelineview: folder');
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
+      this.updateGridData();
     },
     'timelineViewport.scale': function() {
       console.log('WATCH • timelineview: timelineViewport.scale');
@@ -222,6 +266,7 @@ export default {
       this.isAnimated = false;
       this.$nextTick(() => {
         this.$refs.timeline.scrollLeft = this.timelineViewport.width * currentScrollLeft_percent;
+        this.updateGridData();
         // reenable media animations
         this.isAnimated = true;
       });
@@ -240,7 +285,6 @@ export default {
     this.setTimelineBounds();
     this.setViewedTimelineBoundsFromInfos();
     this.setVisibleDay();
-    // TODO : check localstorage pour une info de jour
   },
   mounted() {
     EventBus.$on('scrollToMedia', this.scrollToMedia);
@@ -259,6 +303,7 @@ export default {
     if(this.timelineViewport.autoscroll) {
       this.scrollToToday();
     }
+    this.updateGridData();
 
     this.timelineUpdateRoutine = setInterval(() => {
       if(this.isScrolling) {
@@ -268,6 +313,7 @@ export default {
       this.currentTime = moment().millisecond(0);
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
+      this.updateGridData();
       this.drawRealtimeRule();
       if(this.timelineViewport.autoscroll) {
         this.scrollToToday();
@@ -388,6 +434,81 @@ export default {
       let posX = this.getXPositionFromDate(createdTS);
       return posX;
     },
+
+    updateGridData() {
+      console.log('METHODS • timelineview: updateGridData');
+
+      let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
+      let overallGrid = { minutes: [], hours: [], days: [] };
+
+      /****************************** make DAY ticks ******************************/
+
+      let createDayTick = (thisDay) => {
+        let xPos = this.getXPositionFromDate(thisDay);
+        if(xPos === false) { return; }
+        let momentDay = moment(thisDay).format('DD/MM/YYYY');
+        overallGrid.days.push({ xPos, momentDay });
+      }
+
+      createDayTick(this.timelineViewport.start);
+      let firstDay = moment(moment(this.timelineViewport.start).startOf('day').subtract(1, 'day'));
+      for(var d = 86400000; d <= timeEllapsed + 86400000*2; d += 86400000) {
+        let thisDay = firstDay + d;
+        createDayTick(thisDay);
+      }
+
+
+      // only show HOUR and MINUTES for the thisDay, the -2 and the +2
+      // to do that, we create a const for the current timestamp and another for the number of ms we show the grid
+      let thisDayStart = moment(this.timelineViewport.visibleDay).subtract(2, 'days').startOf('day');
+      const timeEllapsedDay = 5 * 24*60*60*1000;
+
+      /****************************** make HOUR ticks ******************************/
+
+      let createHourTick = (currentHour, withCaption = false) => {
+        let xPos = this.getXPositionFromDate(currentHour);
+        if(xPos === false) { return; }
+
+        let momentDay;
+        if(withCaption || this.timelineViewport.scale < 70) {
+          momentDay = moment(currentHour).format('HH:mm');
+        }
+        overallGrid.hours.push({ xPos, momentDay });
+      }
+
+      createHourTick(this.timelineViewport.start, true);
+      for(var h = 3600000; h < timeEllapsedDay; h +=  3600000) {
+        let currentHour = thisDayStart + h;
+        createHourTick(currentHour);
+      }
+
+     if(this.timelineViewport.scale <= 10) {
+
+        /****************************** make MINUTES ticks ******************************/
+
+        let createMinuteTick = (currentMinute) => {
+          let xPos = this.getXPositionFromDate(currentMinute);
+          if(xPos === false) { return; }
+          if(moment(currentMinute).minute() === 0) { return; }
+
+          let caption;
+          if(moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 5) {
+            caption = moment(currentMinute).format('HH:mm');
+          }
+          overallGrid.minutes.push({ xPos, caption });
+        }
+
+        for(var m = 0; m < timeEllapsedDay; m += 60000) {
+          let currentMinute = thisDayStart + m;
+          createMinuteTick(currentMinute);
+        }
+
+      }
+
+
+      this.overallGrid = overallGrid;
+    },
+
     generateHorizontalGrid() {
       console.log('METHODS • timelineview: generateHorizontalGrid');
       let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;

@@ -100,7 +100,7 @@
     position: absolute;
     height: 100%;
 
-    transition: all .4s;
+//     transition: all .4s;
 
     &.gridItem_isrealtimerule {
       border-left: 2px solid @c-rouge_vif;
@@ -157,12 +157,11 @@
       z-index:10;
       border-left: 1px solid @c-gris_light;
 
-      &[data-caption] {
+      &.has--caption {
         border-left: 1px solid @c-gris;
       }
 
-      &::before {
-        content: attr(data-caption);
+      .gridItem--caption {
         display: block;
         width: 150px;
         transform: rotate(-15deg);
@@ -178,11 +177,11 @@
       border-left: 1px dashed @c-gris_light;
       z-index:1;
 
-      &[data-caption] {
+      &.has--caption {
         color: #333;
         border-left: 1px solid @c-gris_light;
-        &::before {
-          content: attr(data-caption);
+
+        .gridItem--caption {
           display: block;
           width: 150px;
           transform: rotate(-15deg);

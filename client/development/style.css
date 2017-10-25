@@ -3326,6 +3326,7 @@ b {
 }
 .font-small {
   font-size: 0.9em;
+  line-height: 1.25;
 }
 .font-verysmall {
   font-size: 0.7em;
@@ -3438,6 +3439,7 @@ b {
 }
 .button-small {
   font-size: 0.9em;
+  line-height: 1.25;
 }
 .button-round {
   border-radius: 50%;
@@ -3863,9 +3865,6 @@ th {
 .simple_grid_overlay .gridItem {
   position: absolute;
   height: 100%;
-  -webkit-transition: all .4s;
-  -o-transition: all .4s;
-  transition: all .4s;
 }
 .simple_grid_overlay .gridItem.gridItem_isrealtimerule {
   border-left: 2px solid #ff3b4c;
@@ -3915,11 +3914,10 @@ th {
   z-index: 10;
   border-left: 1px solid #C6C6C6;
 }
-.simple_grid_overlay .gridItem.gridItem_ishour[data-caption] {
+.simple_grid_overlay .gridItem.gridItem_ishour.has--caption {
   border-left: 1px solid #89898c;
 }
-.simple_grid_overlay .gridItem.gridItem_ishour::before {
-  content: attr(data-caption);
+.simple_grid_overlay .gridItem.gridItem_ishour .gridItem--caption {
   display: block;
   width: 150px;
   -webkit-transform: rotate(-15deg);
@@ -3937,12 +3935,11 @@ th {
   border-left: 1px dashed #C6C6C6;
   z-index: 1;
 }
-.simple_grid_overlay .gridItem.gridItem_isminute[data-caption] {
+.simple_grid_overlay .gridItem.gridItem_isminute.has--caption {
   color: #333;
   border-left: 1px solid #C6C6C6;
 }
-.simple_grid_overlay .gridItem.gridItem_isminute[data-caption]::before {
-  content: attr(data-caption);
+.simple_grid_overlay .gridItem.gridItem_isminute.has--caption .gridItem--caption {
   display: block;
   width: 150px;
   -webkit-transform: rotate(-15deg);
