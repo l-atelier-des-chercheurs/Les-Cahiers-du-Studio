@@ -277,6 +277,9 @@ export default {
       this.$root.updateProjectScrollLeft(this.slugFolderName, this.timelineViewport.scrollLeft);
       this.setVisibleDay();
     },
+    'timelineViewport.visibleDay': function() {
+      this.updateGridData();
+    }
   },
   created() {
     console.log('CREATED • timelineview: folder');
@@ -313,7 +316,6 @@ export default {
       this.currentTime = moment().millisecond(0);
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
-      this.updateGridData();
       this.drawRealtimeRule();
       if(this.timelineViewport.autoscroll) {
         this.scrollToToday();
@@ -446,8 +448,8 @@ export default {
       let createDayTick = (thisDay) => {
         let xPos = this.getXPositionFromDate(thisDay);
         if(xPos === false) { return; }
-        let momentDay = moment(thisDay).format('DD/MM/YYYY');
-        overallGrid.days.push({ xPos, momentDay });
+        let caption = moment(thisDay).format('DD/MM/YYYY');
+        overallGrid.days.push({ xPos, caption });
       }
 
       createDayTick(this.timelineViewport.start);
@@ -458,22 +460,27 @@ export default {
       }
 
 
-      // only show HOUR and MINUTES for the thisDay, the -2 and the +2
+      // only show HOUR and MINUTES for two screens on the left and right
       // to do that, we create a const for the current timestamp and another for the number of ms we show the grid
       let thisDayStart = moment(this.timelineViewport.visibleDay).subtract(2, 'days').startOf('day');
       const timeEllapsedDay = 5 * 24*60*60*1000;
+
+      // we’ll then check for each item we add to overallGrid whether they are more than X pixels away from this.timelineViewport.scrollLeft
+      let leftScrollLimit = this.timelineViewport.scrollLeft - window.innerWidth * 2;
+      let rightScrollLimit = this.timelineViewport.scrollLeft - window.innerWidth * 2;
 
       /****************************** make HOUR ticks ******************************/
 
       let createHourTick = (currentHour, withCaption = false) => {
         let xPos = this.getXPositionFromDate(currentHour);
         if(xPos === false) { return; }
+        if(!this.elesIsClose(xPos)) { return; }
 
-        let momentDay;
+        let caption;
         if(withCaption || this.timelineViewport.scale < 70) {
-          momentDay = moment(currentHour).format('HH:mm');
+          caption = moment(currentHour).format('HH:mm');
         }
-        overallGrid.hours.push({ xPos, momentDay });
+        overallGrid.hours.push({ xPos, caption });
       }
 
       createHourTick(this.timelineViewport.start, true);
@@ -490,6 +497,7 @@ export default {
           let xPos = this.getXPositionFromDate(currentMinute);
           if(xPos === false) { return; }
           if(moment(currentMinute).minute() === 0) { return; }
+          if(!this.elesIsClose(xPos)) { return; }
 
           let caption;
           if(moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 5) {
@@ -509,81 +517,6 @@ export default {
       this.overallGrid = overallGrid;
     },
 
-    generateHorizontalGrid() {
-      console.log('METHODS • timelineview: generateHorizontalGrid');
-      let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
-      let html = '';
-
-      /****************************** make DAY ticks ******************************/
-
-      let createDayTick = (thisDay) => {
-        let xPos = this.getXPositionFromDate(thisDay);
-        if(xPos === false) { return; }
-
-        let momentDay = moment(thisDay).format('DD/MM/YYYY');
-        html += `
-        <div class="gridItem font-small gridItem_isday" style="transform:translate(${xPos}px, 0px)">
-          <div class="gridItem--caption">
-            ${momentDay}
-          </div>
-        </div>
-        `;
-      }
-
-      createDayTick(this.timelineViewport.start);
-      let firstDay = moment(moment(this.timelineViewport.start).startOf('day').subtract(1, 'day'));
-      for(var d = 86400000; d <= timeEllapsed + 86400000*2; d += 86400000) {
-        let thisDay = firstDay + d;
-        createDayTick(thisDay);
-      }
-
-      // only show HOUR and MINUTES for the thisDay, the previous and the next
-      // to do that, we create a const for the current timestamp and another for the number of ms we show the grid
-      let thisDayStart = moment(this.timelineViewport.visibleDay).subtract(1, 'days').startOf('day');
-      const timeEllapsedDay = 3 * 24*60*60*1000;
-
-      /****************************** make HOUR ticks ******************************/
-
-      let createHourTick = (currentHour, withCaption = false) => {
-        let xPos = this.getXPositionFromDate(currentHour);
-        if(xPos === false) { return; }
-
-        if(withCaption || this.timelineViewport.scale < 70) {
-          html += `<div class="gridItem font-small gridItem_ishour" style="transform:translate(${xPos}px, 0px)" data-caption="${moment(currentHour).format('HH:mm')}"></div>`;
-        } else {
-          html += `<div class="gridItem font-small gridItem_ishour" style="transform:translate(${xPos}px, 0px)"></div>`;
-        }
-      }
-
-      createHourTick(this.timelineViewport.start, true);
-      for(var h = 3600000; h < timeEllapsedDay; h +=  3600000) {
-        let currentHour = thisDayStart + h;
-        createHourTick(currentHour);
-      }
-
-      if(this.timelineViewport.scale > 10) { return html; }
-
-      /****************************** make MINUTES ticks ******************************/
-
-      let createMinuteTick = (currentMinute) => {
-        let xPos = this.getXPositionFromDate(currentMinute);
-        if(xPos === false) { return; }
-        if(moment(currentMinute).minute() === 0) { return; }
-
-        if(moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 5) {
-          html += `<div class="gridItem font-small gridItem_isminute" style="transform:translate(${xPos}px, 0px)" data-caption="${moment(currentMinute).format('HH:mm')}"></div>`;
-        } else {
-          html += `<div class="gridItem font-small gridItem_isminute" style="transform:translate(${xPos}px, 0px)"></div>`;
-        }
-      }
-
-      for(var m = 0; m < timeEllapsedDay; m += 60000) {
-        let currentMinute = thisDayStart + m;
-        createMinuteTick(currentMinute);
-      }
-
-      return html;
-    },
     getXPositionFromDate(timestamp) {
       let msSinceStart = timestamp - this.timelineViewport.start;
       let pc = msSinceStart/(this.timelineViewport.end - this.timelineViewport.start);
@@ -598,10 +531,13 @@ export default {
       let timeSinceStart = pc * viewportLength;
       return moment(timeSinceStart + this.timelineViewport.start);
     },
+    elesIsClose(xPos) {
+      if(xPos < this.timelineViewport.scrollLeft - window.innerWidth * 2) { return false; }
+      if(xPos > this.timelineViewport.scrollLeft + window.innerWidth * 2) { return false; }
+      return true;
+    },
     mediaIsVisible(media_created, slugMediaName) {
       let mediaCreatedDay = moment(media_created, 'YYYY-MM-DD HH:mm:ss');
-      // show if in view
-//       if(this.timelineViewport.scrollLeft < mediaPosX && mediaPosX < this.timelineViewport.scrollLeft + window.innerWidth) {
       if(moment(mediaCreatedDay).isSame(this.timelineViewport.visibleDay, 'day') ||
       moment(mediaCreatedDay).subtract(1, 'day').isSame(this.timelineViewport.visibleDay, 'day') ||
       moment(mediaCreatedDay).add(1, 'day').isSame(this.timelineViewport.visibleDay, 'day')
