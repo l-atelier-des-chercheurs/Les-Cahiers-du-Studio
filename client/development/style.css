@@ -3451,6 +3451,11 @@ b {
   display: block;
   margin-top: 0.675em;
 }
+.button-round-small {
+  width: 40px;
+  height: 40px;
+  min-height: 0;
+}
 .with-bullet::before {
   content: '●';
 }
@@ -3998,7 +4003,7 @@ th {
   -ms-flex: 0 0 auto;
   flex: 0 0 auto;
   pointer-events: auto;
-  margin-right: 3.7125em;
+  margin-right: 3.375em;
 }
 .m_addMedia > *.dropzone {
   margin-right: 0;

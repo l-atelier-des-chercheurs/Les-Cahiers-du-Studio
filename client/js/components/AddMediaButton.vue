@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="m_addMedia">
-      <button type="button" class="button button-round-small margin-bottom-small button_addText" @click="addText">
+      <button type="button" class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addText" @click="addText">
         T
       </button>
-      <button type="button" class="button button-round-small margin-bottom-small button_addMarker" @click="addMarker">
+      <button type="button" class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addMarker" @click="addMarker">
         •
       </button>
 

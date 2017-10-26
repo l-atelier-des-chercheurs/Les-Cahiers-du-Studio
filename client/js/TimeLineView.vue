@@ -16,7 +16,7 @@
         class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
         >
         <span class="animated flash">
-          LOADING
+          CHARGEMENT
         </span>
       </div>
     </transition>
@@ -482,10 +482,6 @@ export default {
       let thisDayStart = moment(this.timelineViewport.visibleDay).subtract(2, 'days').startOf('day');
       const timeEllapsedDay = 5 * 24*60*60*1000;
 
-      // we’ll then check for each item we add to overallGrid whether they are more than X pixels away from this.timelineViewport.scrollLeft
-      let leftScrollLimit = this.timelineViewport.scrollLeft - window.innerWidth * 2;
-      let rightScrollLimit = this.timelineViewport.scrollLeft - window.innerWidth * 2;
-
       /****************************** make HOUR ticks ******************************/
 
       let createHourTick = (currentHour, withCaption = false) => {
@@ -550,8 +546,8 @@ export default {
     },
     elesIsClose(xPos) {
       if(typeof xPos !== 'number') { return false; }
-      if(xPos < this.timelineViewport.scrollLeft - window.innerWidth * 3) { return false; }
-      if(xPos > this.timelineViewport.scrollLeft + window.innerWidth * 3) { return false; }
+      if(xPos < this.timelineViewport.scrollLeft - window.innerWidth * 1.5) { return false; }
+      if(xPos > this.timelineViewport.scrollLeft + window.innerWidth * 1.5) { return false; }
       return true;
     },
     mediaIsVisible(media_created, slugMediaName) {
