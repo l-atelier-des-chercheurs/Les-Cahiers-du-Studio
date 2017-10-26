@@ -144,7 +144,7 @@ export default {
         this.mediaStyles.w = this.mediaStyles.h / r;
       }
 
-      if(this.media.duration > 0) {
+      else if(this.media.duration > 0) {
         if(this.media.type === 'audio') {
           this.mediaStyles.h = 32;
         }
