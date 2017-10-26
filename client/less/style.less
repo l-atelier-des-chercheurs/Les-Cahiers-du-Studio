@@ -267,10 +267,27 @@ body {
   }
 
   .m_sidebarList {
-    tr.is--outOfScope {
-      background-color: @c-gris_verylight;
-      border-left: 4px solid @c-rouge_vif;
+
+    .m_sidebarList--media {
+
+      cursor: pointer;
+
+
+      &.is--outOfScope {
+        border-left: 6px solid @c-rouge_vif;
+      }
     }
+
+    td:first-child {
+      width:50px;
+      background-color: @c-gris_verylight;
+    }
+    td:first-child img {
+        min-width: 0;
+        width: auto;
+        margin: auto;
+    }
+
   }
 }
 
