@@ -10,6 +10,17 @@
       >
     </NavbarTop>
 
+    <transition name="component-fade">
+      <div
+        v-if="$root.settings.is_loading_medias_for_folder"
+        class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
+        >
+        <span class="animated flash">
+          LOADING
+        </span>
+      </div>
+    </transition>
+
     <transition name="sidebar-animation">
       <Sidebar
         v-if="$root.settings.has_sidebar_opened"

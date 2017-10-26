@@ -3669,6 +3669,11 @@ th {
   -ms-flex-pack: start;
   justify-content: flex-start;
 }
+.flex-horizontally-centered {
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
 .limited-width {
   max-width: 1300px;
   margin-left: auto;
@@ -4596,17 +4601,18 @@ body.is_unscrollable {
 .m_home--folders .m_home--folders--card:nth-child(3n + 1) {
   clear: left;
 }
-.navbar_top {
+.m_navbar {
   position: relative;
   width: 100%;
+  z-index: 1001;
 }
-.navbar_top > .wrapper {
+.m_navbar > .wrapper {
   width: 100%;
   background-color: #333;
   color: white;
   letter-spacing: 0.05em;
 }
-.navbar_top .bloccontainer {
+.m_navbar .bloccontainer {
   width: 100%;
   height: 100%;
   margin: 0 auto;
@@ -4621,18 +4627,18 @@ body.is_unscrollable {
   -ms-flex-pack: justify;
   justify-content: space-between;
 }
-.navbar_top .bloccontainer > * {
+.m_navbar .bloccontainer > * {
   -webkit-box-flex: 1;
   -ms-flex: 1 1 40%;
   flex: 1 1 40%;
   min-height: 60px;
 }
-.navbar_top .bloccontainer > .visibleDay {
+.m_navbar .bloccontainer > .visibleDay {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 10%;
   flex: 0 0 10%;
 }
-.navbar_top .menu_icon {
+.m_navbar .menu_icon {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 60px;
   flex: 0 0 60px;
@@ -4645,13 +4651,13 @@ body.is_unscrollable {
   -ms-flex-align: center;
   align-items: center;
 }
-.navbar_top .menu_icon svg {
+.m_navbar .menu_icon svg {
   display: block;
   height: 26px;
   width: 40px;
   margin: 0 auto;
 }
-.navbar_top .breadcrumb {
+.m_navbar .breadcrumb {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -4663,18 +4669,18 @@ body.is_unscrollable {
   list-style: none;
   margin: 0;
 }
-.navbar_top .breadcrumb > .breadcrumb--item {
+.m_navbar .breadcrumb > .breadcrumb--item {
   white-space: nowrap;
   overflow: hidden;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   min-width: 50px;
 }
-.navbar_top .breadcrumb > .breadcrumb--item + .breadcrumb--item::before {
+.m_navbar .breadcrumb > .breadcrumb--item + .breadcrumb--item::before {
   content: "›";
   margin: 10px;
 }
-.navbar_top .visibleDay {
+.m_navbar .visibleDay {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -4685,7 +4691,7 @@ body.is_unscrollable {
   -ms-flex-pack: center;
   justify-content: center;
 }
-.navbar_top .scaleSwitch {
+.m_navbar .scaleSwitch {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -4700,7 +4706,7 @@ body.is_unscrollable {
   -ms-flex-flow: row wrap;
   flex-flow: row wrap;
 }
-.navbar_top a {
+.m_navbar a {
   text-decoration: none;
 }
 .alertify-logs > *,
@@ -4729,7 +4735,7 @@ body.is_unscrollable {
   -o-transition: transform 0.35s ease-out, opacity 0.45s;
   transition: transform 0.35s ease-out, opacity 0.45s;
   transition: transform 0.35s ease-out, opacity 0.45s, -webkit-transform 0.35s ease-out;
-  z-index: 1499;
+  z-index: 998;
 }
 .button_sidebarToggle.is--collapsed {
   -webkit-transform: translateX(-460px);
@@ -4772,6 +4778,56 @@ body.is_unscrollable {
   width: auto;
   margin: auto;
 }
+.loader_folder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f2f2f2;
+  opacity: 1;
+  z-index: 999;
+  letter-spacing: 0.5em;
+}
+.loader_folder > * {
+  -webkit-box-flex: 0;
+  -ms-flex-positive: 0;
+  flex-grow: 0;
+}
+.animated {
+  -webkit-animation-duration: 3s;
+  animation-duration: 3s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+@-webkit-keyframes flash {
+  from,
+  50%,
+  to {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+@keyframes flash {
+  from,
+  50%,
+  to {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+.flash {
+  -webkit-animation-name: flash;
+  animation-name: flash;
+}
 .m_footer {
   margin: 8.1em 0 5.4em;
   color: #89898c;
@@ -4779,13 +4835,17 @@ body.is_unscrollable {
 }
 .component-fade-enter-active,
 .component-fade-leave-active {
-  -webkit-transition: opacity 0.2s ease;
-  -o-transition: opacity 0.2s ease;
-  transition: opacity 0.2s ease;
+  opacity: 1;
+  -webkit-transition: opacity .4s ease;
+  -o-transition: opacity .4s ease;
+  transition: opacity .4s ease;
 }
 .component-fade-enter,
 .component-fade-leave-to {
   opacity: 0;
+  -webkit-transition: opacity .4s ease;
+  -o-transition: opacity .4s ease;
+  transition: opacity .4s ease;
 }
 /* Enter and leave animations can use different */
 /* durations and timing functions.              */

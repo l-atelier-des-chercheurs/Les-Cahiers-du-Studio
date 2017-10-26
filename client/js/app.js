@@ -25,7 +25,8 @@ let vm = new Vue({
       has_modal_opened: false,
       currentlyOpenedFolder: '',
       has_sidebar_opened: false,
-      highlightMedia: ''
+      highlightMedia: '',
+      is_loading_medias_for_folder: ''
     },
   },
   methods: {
@@ -62,13 +63,22 @@ let vm = new Vue({
         return false;
       }
       this.settings.currentlyOpenedFolder = slugFolderName;
+      this.settings.is_loading_medias_for_folder = slugFolderName;
       window.socketio.listMedias(slugFolderName);
+
+      window.addEventListener('timeline.listMediasForFolder', this.listMediasForFolder);
     },
     closeFolder: function() {
       if(window.store.debug) { console.log(`ROOT EVENT: closeFolder`); }
       this.settings.currentlyOpenedFolder = '';
     },
 
+    listMediasForFolder: function(e) {
+      if(window.store.debug) { console.log(`ROOT EVENT: listMediasForFolder`); }
+      if(e.detail === this.settings.is_loading_medias_for_folder) {
+        this.settings.is_loading_medias_for_folder = '';
+      }
+    },
     updateProjectScale: function(slugFolderName, timelineViewport_scale) {
       if(window.store.debug) { console.log(`ROOT EVENT: updateProjectScale`); }
 

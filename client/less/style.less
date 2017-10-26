@@ -121,10 +121,10 @@ body {
 
 }
 
-
-.navbar_top {
+.m_navbar {
   position: relative;
   width: 100%;
+  z-index:  1001;
 
   & > .wrapper {
     width: 100%;
@@ -235,7 +235,7 @@ body {
   transform: translateX(0);
   transition: transform .35s ease-out, opacity .45s;
 
-  z-index:  1499;
+  z-index:  998;
 
   &.is--collapsed {
     transform: translateX(-@t-sidebarWidth);
@@ -292,6 +292,40 @@ body {
 }
 
 
+.loader_folder {
+  position: fixed;
+  top: 0; left: 0;  right: 0; bottom: 0;
+  background-color: @c-gris_verylight;
+  opacity: 1;
+  z-index: 999;
+  letter-spacing: 0.5em;
+
+  > * {
+    flex-grow: 0;
+  }
+}
+
+.animated {
+  animation-duration: 3s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+}
+
+@keyframes flash {
+  from, 50%, to {
+    opacity: 1;
+  }
+
+  25%, 75% {
+    opacity: 0;
+  }
+}
+
+.flash {
+  animation-name: flash;
+}
+
+
 .m_footer {
   margin: @t-skipline*6 0 @t-skipline*4;
   color: @c-gris;
@@ -302,10 +336,12 @@ body {
 
 
 .component-fade-enter-active, .component-fade-leave-active {
-  transition: opacity 0.2s ease;
+  opacity: 1;
+  transition: opacity .4s ease;
 }
 .component-fade-enter, .component-fade-leave-to {
   opacity: 0;
+  transition: opacity .4s ease;
 }
 
 /* Enter and leave animations can use different */

@@ -154,6 +154,8 @@ window.socketio = (function() {
     	console.log(`Media data is for ${slugFolderName}.`);
 
     window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
+
+    window.dispatchEvent(new CustomEvent('timeline.listMediasForFolder', { detail: slugFolderName }));
   }
   function _onListFolder(fdata) {
     	console.log(`Received _onListFolder packet.`);
