@@ -4754,6 +4754,10 @@ body.is_unscrollable {
   padding: 0;
   margin: 0;
 }
+.m_sidebar .m_sidebarList tr.is--outOfScope {
+  background-color: #f2f2f2;
+  border-left: 4px solid #ff3b4c;
+}
 .m_footer {
   margin: 8.1em 0 5.4em;
   color: #89898c;

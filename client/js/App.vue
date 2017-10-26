@@ -12,7 +12,6 @@
         </ListView>
 
       </div>
-
     </div>
     <div v-if="view === 'TimeLineView'">
 
@@ -24,7 +23,6 @@
       </TimeLineView>
 
     </div>
-
 
     <div class="container">
       <div class="row">

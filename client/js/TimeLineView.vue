@@ -18,6 +18,7 @@
         :visibleDay="timelineViewport.visibleDay"
         :medias="medias"
         :timelineInfos="timelineInfos"
+        :isRealtime="isRealtime"
         >
       </Sidebar>
     </transition>
@@ -243,9 +244,7 @@ export default {
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
-      }
-
-
+      },
     }
   },
   watch: {

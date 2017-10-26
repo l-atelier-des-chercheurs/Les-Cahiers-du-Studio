@@ -37,7 +37,7 @@
 
         <div class="mediaContour"></div>
 
-        <button class="button-round bg-transparent button_openmedia"  @mousedown.stop="$emit('open')">
+        <button class="button-round bg-transparent button_openmedia padding-medium"  @mousedown.stop="$emit('open')">
           <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Content">
@@ -51,10 +51,6 @@
               </g>
             </g>
           </svg>
-
-          <span class="text-cap font-verysmall">
-            Ouvrir
-          </span>
         </button>
       </div>
     </div>
@@ -89,7 +85,7 @@ export default {
         w: 180,
         h: 180,
         mediaWidthFromDuration: 0
-      }
+      },
     }
   },
   computed: {
