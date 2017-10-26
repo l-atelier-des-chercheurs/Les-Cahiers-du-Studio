@@ -9,7 +9,7 @@
       :preview-template="template"
       :use-custom-dropzone-options=true
       :dropzone-options="customOptionsObject"
-      :maxFileSizeInMB="2048"
+      :maxFileSizeInMB="4096"
       :maxNumberOfFiles="50"
     >
       <input type="hidden">
