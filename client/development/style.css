@@ -3915,7 +3915,7 @@ th {
   border-left: 1px solid #C6C6C6;
 }
 .simple_grid_overlay .gridItem.gridItem_ishour.has--caption {
-  border-left: 1px solid #89898c;
+  border-left: 1px solid #C6C6C6;
 }
 .simple_grid_overlay .gridItem.gridItem_ishour .gridItem--caption {
   display: block;

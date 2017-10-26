@@ -62,31 +62,48 @@ module.exports = (function() {
         }
 
         if(meta.type === 'video') {
-          ffmpeg(mediaPath)
-            // setup event handlers
-            .on('end', function(files) {
-              dev.logverbose(`Screenshots were saved : ${JSON.stringify(files,null,4)}`);
-/*
-              let thumbMeta = {
-                path: thumbPath,
-                size: thumbRes
-              };
-              resolve(thumbMeta);
-*/
-            })
-            .on('error', function(err) {
-              dev.error(`An error happened: ${err.message}`);
-              reject(err.message);
-            })
-            .screenshots({
-              count: 1,
-              timemarks: ['00:00:00'],
-              filename: `${slugMediaName}.%s.jpeg`,
-              folder: api.getFolderPath(thumbFolderPath)
+          // make screenshot
+          // TODO : take screenshot every 5 seconds
+          let screenshotsTimemarks = [0];
+          screenshotsTimemarks.forEach((timeMark) => {
+            let makeScreenshot = new Promise((resolve, reject) => {
+              _makeVideoScreenshot(mediaPath, thumbFolderPath, slugMediaName, timeMark).then(({ screenshotPath, screenshotName }) => {
+                // make screenshot, then make thumbs out of each screenshot and push this to thumbs
+                // naming :
+                // - mediaName.0.200.jpg, mediaName.0.400.jpg, etc.
+                // - mediaName.5.200.jpg, mediaName.10.400.jpg, etc.
+
+                let makeThumbsFromScreenshot = [];
+                let thumbResolutions = [50,200,400,600,1800];
+
+                thumbResolutions.forEach((thumbRes) => {
+                  let makeThumbFromScreenshot = new Promise((resolve, reject) => {
+                    _makeImageThumb(api.getFolderPath(screenshotPath), thumbFolderPath, screenshotName, thumbRes).then((thumbPath) => {
+                      let thumbMeta = {
+                        path: thumbPath,
+                        size: thumbRes
+                      };
+                      resolve(thumbMeta);
+                    })
+                    .catch(err => {
+                      resolve();
+                    });
+                  });
+                  makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
+                });
+                Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
+                  resolve({ timeMark, thumbsData });
+                });
+              });
             });
+            makeThumbs.push(makeScreenshot);
+          });
         }
 
         Promise.all(makeThumbs).then((thumbData) => {
+          if(Array.isArray(thumbData)) {
+
+          }
           resolve(thumbData);
         });
       });
@@ -172,6 +189,40 @@ module.exports = (function() {
 
         } else {
           resolve(thumbPath);
+        }
+      });
+    });
+  }
+  function _makeVideoScreenshot(mediaPath, thumbFolderPath, slugMediaName, timeMark) {
+    return new Promise(function(resolve, reject) {
+      dev.logverbose(`Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark}`);
+
+      let screenshotName = `${slugMediaName}.${timeMark}.jpeg`;
+      let screenshotPath = path.join(thumbFolderPath, screenshotName);
+      let fullScreenshotPath = api.getFolderPath(screenshotPath);
+
+      // check first if it exists, resolve if it does
+      fs.access(fullScreenshotPath, fs.F_OK, function(err) {
+        // if userDir folder doesn't exist yet at destination
+        if(err) {
+          ffmpeg(mediaPath)
+            // setup event handlers
+            .on('end', function(files) {
+              dev.logverbose(`Screenshots were saved : ${JSON.stringify(files,null,4)}`);
+              resolve({ screenshotPath, screenshotName });
+            })
+            .on('error', function(err) {
+              dev.error(`An error happened: ${err.message}`);
+              reject(err.message);
+            })
+            .screenshots({
+              count: 1,
+              timemarks: ['00:00:00'],
+              filename: screenshotName,
+              folder: api.getFolderPath(thumbFolderPath)
+            });
+        } else {
+          resolve({ screenshotPath, screenshotName });
         }
       });
     });

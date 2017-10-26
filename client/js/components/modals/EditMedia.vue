@@ -193,7 +193,6 @@
         :slugMediaName="slugMediaName"
         :media="media"
         :mediaURL="mediaURL"
-        :size="1800"
         v-model="mediadata.content"
       >
       </MediaContent>

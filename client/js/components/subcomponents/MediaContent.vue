@@ -4,11 +4,16 @@
       <img :src="linkToThumb">
     </template>
     <template v-else-if="media.type === 'video'">
-      <video :controls="withControl" :src="mediaURL">
-      </video>
+      <template v-if="isPreview">
+        <img :src="linkToVideoThumb">
+      </template>
+      <template v-else>
+        <video controls :src="mediaURL">
+        </video>
+      </template>
     </template>
     <template v-else-if="media.type === 'audio'">
-      <audio :controls="withControl" :src="mediaURL">
+      <audio :controls="isPreview" :src="mediaURL">
       </audio>
     </template>
     <template v-else-if="media.type === 'text'">
@@ -46,13 +51,9 @@ export default {
     slugMediaName: String,
     media: Object,
     mediaURL: String,
-    withControl: {
+    isPreview: {
       type: Boolean,
-      default: true,
-    },
-    size: {
-      type: Number,
-      default: 400
+      default: false,
     },
     value: {
       type: String,
@@ -65,9 +66,19 @@ export default {
   },
   computed: {
     linkToThumb: function() {
-      let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: this.size }).path;
+      let thumbSize = this.isPreview ? 400: 1800;
+      let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: thumbSize }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     },
+    linkToVideoThumb: function() {
+      let timeMark = 0;
+      let pathToTimeMarkThumbs = _.findWhere(this.media.thumbs, { timeMark }).thumbsData;
+
+      let thumbSize = this.isPreview ? 400: 1800;
+      let pathToSmallestThumb = _.findWhere(pathToTimeMarkThumbs, { size: thumbSize }).path;
+      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
+    }
+
   }
 }
 
