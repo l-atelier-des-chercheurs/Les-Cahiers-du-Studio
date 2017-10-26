@@ -1,15 +1,17 @@
 <template>
-  <footer class="m_footer">
-    <template v-for="ninfos in $root.store.networkInfos">
+  <footer class="m_footer flex-wrap flex-vertically-centered limited-width">
+    <div class="padding-vert-medium padding-sides-medium">
       <p>Les Cahiers du Studio version {{ $root.store.appVersion }}</p>
       <p class="text-center centered text-small">
         <span v-html="$root.store.lang.toconnectwithanotherdevice">
         </span>
-        <a :href="getURLToApp(ninfos)" class="js--openInBrowser" target="_blank">
-          {{ getURLToApp(ninfos) }}
-        </a>
+        <template v-for="(ninfos, index) in $root.store.networkInfos">
+          <a :href="getURLToApp(ninfos)" class="js--openInBrowser" target="_blank">
+            {{ getURLToApp(ninfos) }}
+          </a>
+        </template>
       </p>
-    </template>
+    </div>
   </footer>
 </template>
 
@@ -24,8 +26,4 @@ export default {
 </script>
 
 <style scoped>
-footer {
-  max-width: 42em;
-  margin: 0 auto;
-}
 </style>
