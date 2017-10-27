@@ -150,6 +150,7 @@ module.exports = (function() {
               meta.created = api.parseDate(meta.created);
               meta.start = api.parseDate(meta.start);
               meta.end = api.parseDate(meta.end);
+              meta.fullFolderPath = api.getFolderPath(slugFolderName);
               return meta;
             };
 

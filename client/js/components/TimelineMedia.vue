@@ -18,12 +18,11 @@
         >
         <!-- play media on click -->
         <template v-if="media.duration !== undefined">
-          <button class="accroche accroche_gauche" @mouseup=""></button>
+          <button class="accroche accroche_gauche"></button>
           <div class="accrocheDurationLine"></div>
         </template>
-        <button class="accroche accroche_droite" @mouseup.prevent="toggleCollapseMedia"></button>
+        <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
       </div>
-
 
       <div class="timelineMediaContent" :style="getMediaSize()">
         <MediaContent
@@ -159,11 +158,13 @@ export default {
     },
     mousedown() {
       console.log('METHODS • TimelineMedia: mousedown');
+      console.log(`with is_dragged = ${this.is_dragged}`);
       window.addEventListener('mousemove', this.mousemove);
       window.addEventListener('mouseup', this.mouseup);
     },
     mousemove() {
       console.log('METHODS • TimelineMedia: mousemove');
+      console.log(`with is_dragged = ${this.is_dragged}`);
       if(!this.is_dragged) {
         this.is_dragged = true;
 
@@ -175,7 +176,8 @@ export default {
       }
     },
     mouseup() {
-      console.log('METHODS • TimelineMedia: mouseup');
+      console.log(`METHODS • TimelineMedia: mouseup`);
+      console.log(`with is_dragged = ${this.is_dragged}`);
       if(this.is_dragged) {
         let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
         this.mediaStyles.y = this.limitMediaYPos(newY);

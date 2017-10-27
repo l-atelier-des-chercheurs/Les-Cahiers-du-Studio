@@ -26,7 +26,7 @@ let vm = new Vue({
       currentlyOpenedFolder: '',
       has_sidebar_opened: false,
       highlightMedia: '',
-      is_loading_medias_for_folder: ''
+      is_loading_medias_for_folder: '',
     },
   },
   methods: {

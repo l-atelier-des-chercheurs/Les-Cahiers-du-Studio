@@ -51,7 +51,8 @@ window.store = {
     folders: {},
     networkInfos: locals.networkInfos,
     appVersion: locals.appVersion,
-    lang: locals.lang
+    lang: locals.lang,
+    is_electron: !!(window && window.process && window.process.type)
   },
 };
 // window.store.state.folders = JSON.parse(JSON.stringify(locals.data));
@@ -230,6 +231,7 @@ $('body').on('click', '.js--openInBrowser', function() {
     shell.openExternal(event.target.href);
   }
 });
+
 
 document.addEventListener('keydown', function(event) {
   // letter G
