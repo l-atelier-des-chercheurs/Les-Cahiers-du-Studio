@@ -4,7 +4,8 @@ const
   parsedown = require('dodoc-parsedown'),
   fs = require('fs-extra'),
   slugg = require('slugg'),
-  os = require('os')
+  os = require('os'),
+  writeFileAtomic = require('write-file-atomic')
 ;
 
 const
@@ -106,18 +107,10 @@ module.exports = (function() {
       if(typeof d === 'object') { textd = parsedown.textify(d); }
       else { textd = d; }
 
-      if( e === 'create') {
-        fs.appendFile( mpath, textd, function(err) {
-          if(err){ reject( err); }
-          resolve(parseData(textd));
-        });
-      }
-  	    if( e === 'update') {
-        fs.writeFile( mpath, textd, function(err) {
-          if(err){ reject( err); }
-          resolve(parseData(textd));
-        });
-      }
+      writeFileAtomic( mpath, textd, function(err) {
+        if(err){ reject( err); }
+        resolve(parseData(textd));
+      });
     });
   }
 
