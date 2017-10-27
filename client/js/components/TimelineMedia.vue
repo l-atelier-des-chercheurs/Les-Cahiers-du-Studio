@@ -77,9 +77,7 @@ export default {
         y: ''
       },
       mediaStyles: {
-        defaultWidth: 180,
-        defaultHeight: 180,
-        ratio: this.media.ratio,
+        ratio: parseFloat(this.media.ratio),
         y: this.limitMediaYPos(parseFloat(this.media.y) * this.timelineHeight),
         w: 180,
         h: 180,
@@ -134,19 +132,24 @@ export default {
     // this shouldn’t need updating
     setMediaSize() {
       console.log('METHODS • timelineview: setMediaSize');
+
+      // let’s set some ratio
       if(this.mediaStyles.ratio) {
         let r = this.mediaStyles.ratio;
-        this.mediaStyles.w = this.mediaStyles.h / r;
+        if(r < 1) {
+          this.mediaStyles.h = this.mediaStyles.w * r;
+        } else {
+          this.mediaStyles.w = this.mediaStyles.h / r;
+        }
       }
 
-      else if(this.media.duration > 0) {
+      // if there’s some ratio
+      if(this.media.duration > 0) {
         if(this.media.type === 'audio') {
           this.mediaStyles.h = 32;
         }
-        if(this.mediaWidthFromDuration > this.mediaStyles.defaultWidth) {
+        if(this.mediaWidthFromDuration > this.mediaStyles.w) {
           this.mediaStyles.w = this.mediaWidthFromDuration;
-        } else {
-          this.mediaStyles.w = this.mediaStyles.defaultWidth;
         }
       }
     },
