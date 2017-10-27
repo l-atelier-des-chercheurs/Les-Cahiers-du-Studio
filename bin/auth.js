@@ -38,7 +38,7 @@ module.exports = (function() {
             }
           }
           dev.log(`Authentificated a new user ${sessionId}.`);
-          dev.log(`She can edit ${users_auth[sessionId] ? users_auth[sessionId].join():''}`);
+          dev.log(`Authorized to edit: ${users_auth[sessionId] ? users_auth[sessionId].join():''}`);
           resolve(users_auth[sessionId]);
         }, function(err, p) {
           dev.error(`Failed to get folder data: ${err}`);
