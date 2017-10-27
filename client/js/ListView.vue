@@ -30,6 +30,12 @@
           </p>
           <p>La liste ci-dessous contient tous les temps capturés dans les Cahiers du Studio. Certains d’entre eux sont publics et tous leurs contenus peuvent être consultés, d’autres sont protégés par mot de passe et seuls les contenus rendus publics par les éditeurs sont consultables.
           </p>
+          <p>
+            Vous pouvez retrouver la documentation de cette application
+            <a href="https://paper.dropbox.com/doc/Les-Cahiers-du-Studio-PvgkN59Zb2i9nAApZOIZz#:uid=389501177464251596585301&h2=Information-sur-le-stockage-de" class="js--openInBrowser" target="_blank">
+              ici
+            </a>
+          </p>
         </div>
       </div>
     </header>
