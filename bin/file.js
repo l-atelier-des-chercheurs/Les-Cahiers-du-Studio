@@ -78,7 +78,7 @@ module.exports = (function() {
 
       Promise.all(tasks).then(mediaData => {
         mediaData = mediaData[0];
-        dev.log(`Current mediameta : ${JSON.stringify(mediaData, null, 4)}`);
+//         dev.logverbose(`Current mediameta : ${JSON.stringify(mediaData, null, 4)}`);
 
         let tasks = [];
 
@@ -87,7 +87,7 @@ module.exports = (function() {
           let getMediaContent = new Promise((resolve, reject) => {
             let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
             mediaData.content = validator.unescape(fs.readFileSync(mediaPath, local.settings().textEncoding));
-            dev.log(`Got mediaData.content : ${mediaData.content}`);
+//             dev.logverbose(`Got mediaData.content : ${mediaData.content}`);
             resolve();
           });
           tasks.push(getMediaContent);
