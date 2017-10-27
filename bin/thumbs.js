@@ -172,6 +172,7 @@ module.exports = (function() {
       fs.access(fullThumbPath, fs.F_OK, function(err) {
         // if userDir folder doesn't exist yet at destination
         if(err) {
+          dev.log(`Missing thumb for ${mediaPath} and resolution = ${thumbRes}, about to create it`);
           sharp(mediaPath)
             .rotate()
             .resize(thumbRes, thumbRes)
