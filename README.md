@@ -1,8 +1,12 @@
 # Les Cahiers du Studio
 
-A realtime documentation tool.
+A time-based documentation tool to collaboratively keep notes and capture media from live experiences.
 
 ![dmk4q_fxkae_i70](https://user-images.githubusercontent.com/1948417/32667094-f8f3b43e-c639-11e7-98e2-22de0502fa96.png)
+
+# License
+
+This software is under a [Creative Commons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. It can be used, modified and shared freely as long as no commercial use is made.
 
 ## How to install
 

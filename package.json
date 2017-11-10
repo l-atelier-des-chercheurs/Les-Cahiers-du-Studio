@@ -1,7 +1,7 @@
 {
   "name": "les-cahiers-du-studio",
   "version": "0.9.1",
-  "description": "A time-based documentation platform for capturing, collecting and organizing medias (text, photo, video and audio snippets).",
+  "description": "A time-based documentation tool to collaboratively keep notes and capture media from live experiences.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio",
   "license": "CC-BY-NC-SA-4.0",
