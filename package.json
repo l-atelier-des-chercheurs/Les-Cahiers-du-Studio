@@ -1,18 +1,18 @@
 {
-  "name": "les-cahiers",
+  "name": "les-cahiers-du-studio",
   "version": "0.9.1",
-  "description": "A time-based documentation platform for capturing, regrouping, collecting .",
+  "description": "A time-based documentation platform for capturing, collecting and organizing medias (text, photo, video and audio snippets).",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
-  "homepage": "https://github.com/louis-ev/Les-Cahiers",
+  "homepage": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio",
   "license": "CC-BY-NC-SA-4.0",
   "main": "main.js",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/louis-ev/Les-Cahiers"
+    "url": "git://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio"
   },
   "bugs": {
-    "url": "https://github.com/louis-ev/Les-Cahiers/issues"
+    "url": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio/issues"
   },
   "scripts": {
     "start": "electron .",
