@@ -6,6 +6,8 @@ const fs = require('fs-extra');
 const flags = require('flags');
 const {dialog} = require('electron');
 const JSONStorage = require('node-localstorage').JSONStorage;
+const portscanner = require('portscanner');
+
 const server = require('./server');
 
 const
@@ -32,17 +34,20 @@ function createWindow() {
   const debug = flags.get('debug');
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
-  global.appVersion = app.getVersion();
 
-  dev.log('——— Starting les-cahiers app v' + global.appVersion);
+  if( global.appInfos === undefined) {
+    global.appInfos = {};
+  }
+
+  global.appInfos.version = app.getVersion();
+
+  dev.log(`——— Starting les-cahiers app version ${global.appInfos.version}`);
 
   // checkout which langage to load
   var envLang = app.getLocale();
   local.setCurrentCodeLang(envLang);
   dev.log(`Environment lang is ${local.getCurrentCodeLang()}`);
   local.init();
-
-  global.homeURL = `${config.protocol}://${config.host}:${config.port}`;
 
   var windowState = {};
   try {
@@ -102,17 +107,23 @@ function createWindow() {
     dev.log('Will store contents in: ' + global.pathToUserContent);
 
     try {
-      app.server = server(app);
-    }
-    catch (e) {
+      portscanner.findAPortNotInUse(config.port, config.port + 20).then((port) => {
+
+        dev.log(`main.js - Found available port: ${port}`);
+        global.appInfos.port = port;
+        global.appInfos.homeURL = `${config.protocol}://${config.host}:${global.appInfos.port}`;
+
+        app.server = server(app);
+
+        // and load the base url of the app.
+        win.loadURL(global.appInfos.homeURL);
+
+        if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
+          win.webContents.openDevTools();
+        }
+      });
+    } catch (e) {
       dev.error('Couldn’t load app: ', e);
-    }
-
-    // and load the base url of the app.
-    win.loadURL(global.homeURL);
-
-    if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
-      win.webContents.openDevTools();
     }
 
     // Emitted when the window is closed.
@@ -130,6 +141,10 @@ function createWindow() {
 
   }, function(err) {
     dev.error( 'Failed to check existing content folder : ' + err);
+  });
+
+  process.on('unhandledRejection', function(reason, p) {
+    dev.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
   });
 
 }
@@ -267,7 +282,7 @@ function copyAndRenameUserFolder() {
     let userDirPath = '';
     try {
       userDirPath = global.nodeStorage.getItem('userDirPath');
-      dev.log('global.nodeStorage.getItem("userDirPath") : ' + global.nodeStorage.getItem('userDirPath'));
+      dev.log(`global.nodeStorage.getItem('userDirPath') : ${global.nodeStorage.getItem('userDirPath')}`);
     } catch (err) {
       dev.log('Fail loading node storage for userDirPath');
       // the file is there, but corrupt. Handle appropriately.

@@ -49,7 +49,7 @@ window.store = {
   debug:true,
   state: {
     folders: {},
-    networkInfos: locals.networkInfos,
+    localNetworkInfos: locals.localNetworkInfos,
     appVersion: locals.appVersion,
     lang: locals.lang,
     is_electron: !!(window && window.process && window.process.type)

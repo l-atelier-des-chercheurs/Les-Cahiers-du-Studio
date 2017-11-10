@@ -41,14 +41,17 @@ module.exports = function(app,io,m){
       pageDataJSON.structure = local.settings().structure;
       pageDataJSON.logToFile = global.nodeStorage.getItem('logToFile');
 
-      api.getLocalIP().then(networkInfos => {
-        pageDataJSON.networkInfos = networkInfos;
+      api.getLocalIP().then(localNetworkInfos => {
+        pageDataJSON.localNetworkInfos = {
+          ip: [],
+          port: global.appInfos.port
+        };
+        pageDataJSON.localNetworkInfos.ip = Object.values(localNetworkInfos);
         resolve(pageDataJSON);
       }, function(err, p) {
-        dev.error(`Failed to get IP: ${err}`);
+        dev.error(`Err while getting local IP: ${err}`);
         reject(err);
       });
-
 
     });
   }

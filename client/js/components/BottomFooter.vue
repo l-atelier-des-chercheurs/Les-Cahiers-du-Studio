@@ -5,10 +5,14 @@
       <p class="text-center centered text-small">
         <span v-html="$root.store.lang.toconnectwithanotherdevice">
         </span>
-        <template v-for="(ninfos, index) in $root.store.networkInfos">
-          <a :href="getURLToApp(ninfos)" class="js--openInBrowser" target="_blank">
-            {{ getURLToApp(ninfos) }}
+        <template v-for="(ip, index) in $root.store.localNetworkInfos.ip">
+          <a
+            :href="getURLToApp(ip, $root.store.localNetworkInfos.port)"
+            class="js--openInBrowser"
+            target="_blank"
+            v-html="getURLToApp(ip, $root.store.localNetworkInfos.port)">
           </a>
+          <span> </span>
         </template>
       </p>
     </div>
@@ -18,8 +22,8 @@
 <script>
 export default {
   methods: {
-    getURLToApp(ninfos) {
-      return `https://${ninfos}:8080`;
+    getURLToApp(ip, port) {
+      return `https://${ip}:${port}`;
     }
   }
 }
