@@ -1,6 +1,8 @@
 # Les Cahiers du Studio
 
-A realtime documentation tool 
+A realtime documentation tool.
+
+![dmk4q_fxkae_i70](https://user-images.githubusercontent.com/1948417/32667094-f8f3b43e-c639-11e7-98e2-22de0502fa96.png)
 
 ## How to install
 
