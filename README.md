@@ -6,22 +6,59 @@ A time-based documentation tool to collaboratively keep notes and capture media 
 
 # License
 
-This software is under a [Creative Commons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. It can be used, modified and shared freely as long as no commercial use is made.
+This app is under a [Creative Commons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. It can be used, modified and shared freely as long as no commercial use is made.
 
-## How to install
+# Install Les Cahiers du Studio
 
-You need node.js and npm to install this preview of Les Cahiers
+### Method 1 — the easy way
 
-In a terminal : 
+Download the latest release from the [release page](https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio/releases).
 
-1. `git clone --recursive https://github.com/louis-ev/Les-Cahiers path/to/the/folder`
-2. `cd path/to/the/folder`
-3. `npm install`
-4. `gulp`
+### Method 2 — the long way
 
-Now run the app by writing
+_You need [node.js](https://nodejs.org/) and [python 2.7](https://www.python.org/) to install this app with this method. On Windows, you also need to install Microsoft’s Windows Build Tools by following the instructions [here](https://github.com/Microsoft/nodejs-guidelines/blob/master/windows-environment.md#prerequisites)._
 
-* `npm start`
+#### 1. Download this repository
+
+Click on *Clone or Download* in the top right corner of this page, then *Download ZIP*. Unpack this folder.
+
+#### 2. Open a terminal window
+
+Open a terminal window:
+
+- Windows: (XP) use [this tutorial](http://wikistrea.fr/Comment_ouvrir_la_console_de_commande_Windows_en_mode_administrateur_%3F) to open a terminal on Windows or open Command Prompt in the start menu 
+- macOS: go to Applications -> Utilities -> Terminal
+- Linux: use a terminal app such as Terminal or Konsole
+
+In your terminal, navigate to the Les-Cahiers-du-Studio-master folder with your terminal using the `cd` command:
+```
+cd path/to/Les-Cahiers-du-Studio-master
+```
+
+#### 3. Install dependencies
+
+If you haven’t already, install the tool that will enable native modules to be used. To do this, follow the instructions here: https://github.com/nodejs/node-gyp
+
+Then, install DoDoc’s dependencies (may take up to 5 minutes):
+```
+npm install
+```  
+
+Make sure to build native dependencies by running:
+
+```
+npm run rebuild
+```
+ 
+#### 4. Run Les Cahiers du Studio
+
+Start from the folder in a terminal window with the following command:
+
+```
+npm start
+```
+
+#### Troubleshooting
 
 If you get the *package mismatch* error, they are most probably due to native packages (looking at you sharp). Follow the instructions [here](https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md), and specifically:
 
@@ -41,7 +78,7 @@ export npm_config_build_from_source=true
 HOME=~/.electron-gyp npm install
 ```
 
-## How to tweak, fork and debug
+# Tweak, fork and debug
 
 ### server-side
 
@@ -51,4 +88,4 @@ HOME=~/.electron-gyp npm install
 
 To tweak and write some new SASS or client-side JS, you need to run the gulp task:
 
-* `gulp`
+* `gulp watch`
