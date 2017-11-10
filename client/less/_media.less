@@ -9,6 +9,8 @@
   width: 1px; height: 1px;
   text-rendering: optimizeSpeed;
 
+  will-change: transform;
+
   .media {
     position: absolute;
     right:0;
@@ -149,9 +151,7 @@
     width:100%;
     height:100%;
     background-color: white;
-    display: flex;
-    align-items:center;
-    justify-content:center;
+
     overflow: hidden;
     transform-origin: top right;
     pointer-events: auto;
@@ -171,11 +171,8 @@
         width: 100%;
       }
 
-      textarea {
-        min-height: 180px;
-        overflow: hidden;
-        border:none;
-        background-color: transparent;
+      &.type-text > * {
+
       }
 
     }

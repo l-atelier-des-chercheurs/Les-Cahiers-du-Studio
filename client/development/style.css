@@ -4200,6 +4200,7 @@ th {
   width: 1px;
   height: 1px;
   text-rendering: optimizeSpeed;
+  will-change: transform;
 }
 .mediaPreview .media {
   position: absolute;
@@ -4333,15 +4334,6 @@ th {
   width: 100%;
   height: 100%;
   background-color: white;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
   overflow: hidden;
   -webkit-transform-origin: top right;
   -ms-transform-origin: top right;
@@ -4362,12 +4354,6 @@ th {
 }
 .mediaPreview .timelineMediaContent .mediaContainer.type-audio {
   width: 100%;
-}
-.mediaPreview .timelineMediaContent .mediaContainer textarea {
-  min-height: 180px;
-  overflow: hidden;
-  border: none;
-  background-color: transparent;
 }
 .mediaPreview .timelineMediaContent .mediaContour {
   position: absolute;

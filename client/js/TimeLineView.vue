@@ -135,11 +135,12 @@
 
         <template v-if="Object.keys(medias).length > 0">
           <TimelineMedia v-for="(media, index) in medias"
-            v-if="getMediaPosX(media.created) && elesIsClose(getMediaPosX(media.created))"
+            v-if="getMediaPosX(media.created)"
             v-bind:key="index"
             :ref="`media_${index}`"
             :slugFolderName="slugFolderName"
             :slugMediaName="index"
+            :isPlaceholder="!elesIsClose(getMediaPosX(media.created))"
             :media="media"
             :timelineScale="timelineViewport.scale"
             :timelineHeight="getVH(1)"
@@ -328,6 +329,8 @@ export default {
       if(this.isScrolling) {
         return;
       }
+
+      console.log(`METHODS • TimeLineView: setInterval updating (timelineUpdateRoutine)`);
 
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
@@ -571,20 +574,19 @@ export default {
     },
     onScroll() {
       if(!this.isScrolling) {
-        console.log(`METHODS • TimeLineView: Scroll has started`);
+        console.log(`METHODS • TimeLineView: scroll has started`);
         this.isScrolling = true;
-      } else {
-        return;
       }
 
+      console.log(`METHODS • TimeLineView: scroll is happening`);
       clearTimeout(window.isScrollingTimeout);
 
       window.isScrollingTimeout = setTimeout(() => {
-        console.log(`METHODS • TimeLineView: Scroll has finished`);
+        console.log(`METHODS • TimeLineView: scroll has finished`);
         this.isScrolling = false;
         this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
         this.setVisibleDay();
-      }, 100);
+      }, 300);
 
     },
     openMediaModal(slugMediaName) {

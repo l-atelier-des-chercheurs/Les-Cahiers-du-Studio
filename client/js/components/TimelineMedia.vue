@@ -11,10 +11,13 @@
     @mouseover="mouseover"
     @mouseleave="mouseleave"
     >
+<!--
+-->
     <div class="media">
 
       <div class="mediaScrubber"
         :style="getMediaWidthFromDuration()"
+        v-if="!isPlaceholder"
         >
         <!-- play media on click -->
         <template v-if="media.duration !== undefined">
@@ -24,10 +27,13 @@
         <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
       </div>
 
-      <div class="timelineMediaContent" :style="getMediaSize()">
+      <div class="timelineMediaContent"
+        :style="getMediaSize()"
+        >
         <MediaContent
           :slugFolderName="slugFolderName"
           :slugMediaName="slugMediaName"
+          v-if="!isPlaceholder"
           :media="media"
           v-model="media.content"
           :isPreview="true"
@@ -36,7 +42,10 @@
 
         <div class="mediaContour"></div>
 
-        <button class="button-round bg-transparent button_openmedia padding-medium"  @mousedown.stop="$emit('open')">
+        <button
+          class="button-round bg-transparent button_openmedia padding-medium"
+          v-if="!isPlaceholder"
+          @mousedown.stop="$emit('open')">
           <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Content">
@@ -59,7 +68,7 @@
 import MediaContent from './subcomponents/MediaContent.vue';
 
 export default {
-  props: ['slugFolderName', 'slugMediaName', 'media', 'timelineScale', 'posX', 'timelineHeight'],
+  props: ['slugFolderName', 'slugMediaName', 'media', 'timelineScale', 'posX', 'timelineHeight', 'isPlaceholder'],
   components: {
     MediaContent
   },

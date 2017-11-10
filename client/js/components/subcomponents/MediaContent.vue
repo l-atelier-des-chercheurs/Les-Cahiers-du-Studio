@@ -17,7 +17,14 @@
       </audio>
     </template>
     <template v-else-if="media.type === 'text'">
+      <div v-if="isPreview" class="padding-small">
+        {{ value }}
+        <template v-if="value.length === 0">
+          …
+        </template>
+      </div>
       <textarea
+        v-else
         placeholder="…"
         class="mediaTextContent border-none bg-transparent"
         :value="value"
