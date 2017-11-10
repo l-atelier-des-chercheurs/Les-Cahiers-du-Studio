@@ -24,8 +24,8 @@
   },
   "build": {
     "electronVersion": "1.7.5",
-    "appId": "les-cahiers",
-    "productName": "Les Cahiers",
+    "appId": "les-cahiers-du-studio",
+    "productName": "Les Cahiers du Studio",
     "asar": false,
     "mac": {
       "category": "public.app-category.education"

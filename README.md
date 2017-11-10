@@ -1,4 +1,4 @@
-# Les Cahiers
+# Les Cahiers du Studio
 
 A realtime documentation tool 
 
@@ -13,7 +13,7 @@ In a terminal :
 3. `npm install`
 4. `gulp`
 
-Now run Les Cahiers by writing
+Now run the app by writing
 
 * `npm start`
 
