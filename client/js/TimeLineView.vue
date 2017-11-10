@@ -51,7 +51,9 @@
     >
     </EditFolder>
 
-    <div class="m_timeline" ref="timeline"
+    <div class="m_timeline"
+      ref="timeline"
+      @scroll="onScroll"
       :class="{
         'with--sidebar_opened' : $root.settings.has_sidebar_opened,
         'is--animated': isAnimated
@@ -294,12 +296,14 @@ export default {
   created() {
     console.log('CREATED • TimeLineView: folder');
 
-    window.addEventListener('resize', debounce(this.onResize, 300));
     this.setTimelineBounds();
     this.setViewedTimelineBoundsFromInfos();
     this.setVisibleDay();
   },
   mounted() {
+
+    window.addEventListener('resize', debounce(this.onResize, 300));
+
     EventBus.$on('scrollToMedia', this.scrollToMedia);
     EventBus.$on('scrollToDate', this.scrollToDate);
     EventBus.$on('highlightMedia', this.highlightMedia);
@@ -325,7 +329,6 @@ export default {
         return;
       }
 
-      this.currentTime = moment().millisecond(0);
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
 
@@ -355,7 +358,8 @@ export default {
     EventBus.$off('timeline.scrollToToday', this.scrollToToday);
     EventBus.$off('timeline.openMediaModal', this.openMediaModal);
 
-    window.removeEventListener('resize', debounce(this.onResize, 300));
+    window.removeEventListener('resize', this.onResize);
+
     clearInterval(this.timelineUpdateRoutine);
   },
   computed: {
@@ -488,7 +492,7 @@ export default {
       let createHourTick = (currentHour, withCaption = false) => {
         let xPos = this.getXPositionFromDate(currentHour);
         if(xPos === false) { return; }
-        if(!this.elesIsClose(xPos)) { return; }
+        if(!this.elesIsClose(xPos, 5)) { return; }
 
         let caption;
         if(withCaption || this.timelineViewport.scale < 70) {
@@ -545,10 +549,10 @@ export default {
       let timeSinceStart = pc * viewportLength;
       return moment(timeSinceStart + this.timelineViewport.start);
     },
-    elesIsClose(xPos) {
+    elesIsClose(xPos, screenMultiplier = 1.5) {
       if(typeof xPos !== 'number') { return false; }
-      if(xPos < this.timelineViewport.scrollLeft - window.innerWidth * 1.5) { return false; }
-      if(xPos > this.timelineViewport.scrollLeft + window.innerWidth * 1.5) { return false; }
+      if(xPos < this.timelineViewport.scrollLeft - window.innerWidth * screenMultiplier) { return false; }
+      if(xPos > this.timelineViewport.scrollLeft + window.innerWidth * screenMultiplier) { return false; }
       return true;
     },
     mediaIsVisible(media_created, slugMediaName) {
@@ -562,7 +566,26 @@ export default {
       return false;
     },
     onResize() {
+      console.log(`METHODS • TimeLineView: Updating windowHeight value`);
       this.windowHeight = window.innerHeight;
+    },
+    onScroll() {
+      if(!this.isScrolling) {
+        console.log(`METHODS • TimeLineView: Scroll has started`);
+        this.isScrolling = true;
+      } else {
+        return;
+      }
+
+      clearTimeout(window.isScrollingTimeout);
+
+      window.isScrollingTimeout = setTimeout(() => {
+        console.log(`METHODS • TimeLineView: Scroll has finished`);
+        this.isScrolling = false;
+        this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
+        this.setVisibleDay();
+      }, 100);
+
     },
     openMediaModal(slugMediaName) {
       this.showMediaModalFor = slugMediaName;

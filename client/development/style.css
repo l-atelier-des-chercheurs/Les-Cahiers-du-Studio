@@ -4199,6 +4199,7 @@ th {
   position: absolute;
   width: 1px;
   height: 1px;
+  text-rendering: optimizeSpeed;
 }
 .mediaPreview .media {
   position: absolute;
