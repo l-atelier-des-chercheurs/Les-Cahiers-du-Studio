@@ -4,9 +4,29 @@ A time-based documentation tool to collaboratively keep notes and capture media 
 
 ![dmk4q_fxkae_i70](https://user-images.githubusercontent.com/1948417/32667094-f8f3b43e-c639-11e7-98e2-22de0502fa96.png)
 
+The documentation for this app can be found here (in french): [](https://paper.dropbox.com/doc/Les-Cahiers-du-Studio-PvgkN59Zb2i9nAApZOIZz#:uid=389501177464251596585301&h2=Information-sur-le-stockage-de)
+
 # License
 
-This app is under a [Creative Commons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. It can be used, modified and shared freely as long as no commercial use is made.
+This app is under a [Creative Commons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. It can be used, modified and shared freely as long as no commercial use is made and the attribution and link to [L’Atelier des Chercheurs](https://latelier-des-chercheurs.fr/) are kept.
+
+The typeface embedded in this tool, *STVitry*, was created specifically for the Studio-Théâtre. Its use is expressly restricted to this tool, and it cannot be used anywhere else without prior authorisation by the Studio-Théâtre or Maxime Fittes, the creator of this font.
+
+# Credits and origin
+
+This tool was made for and in collaboration with the [Studio-Théâtre of Vitry](http://www.studiotheatre.fr/), a place for theatrical creation that welcomes and hosts Theatre companies. It is installed on a computer inside the Studio-Théâtre and allows companies to keep track of their time and process inside the walls of the Studio-Théâtre.
+
+The creation, design and code for this app was done by [L’Atelier des Chercheurs](https://latelier-des-chercheurs.fr/) following a series of workshops and field studies at the Studio-Théâtre, and meetings with persons in charge there (specifically Bérangère Vantusso, Florence Kremper and Ella Gouet).
+
+Furthermore, it was developed with the precious help from the following persons:
+
+- Vincent Desclaux (who participated in the creation of the user interface)
+
+- Maxime Fittes (who created the typeface *STVitry*)
+
+- Nolwenn Maudet, Benoît Verjat, Émilie Coquard, Nicolas Taffin, Julien Taquet, Thibéry Maillard, Anthony Masure, Mike Sabbagh, and others who gave feedbacks and helped refine the concept and use cases of this app.
+
+Finally, we should mention that this app wouldn’t be the same if it weren’t for two other, older free and open-source apps: [Rekall](http://www.rekall.fr/) and [Ligne de Temps](http://www.iri.centrepompidou.fr/outils/lignes-de-temps/). Both had very interesting ideas and use cases that we drew inspiration from to make Les Cahiers du Studio.
 
 # Install Les Cahiers du Studio
 
