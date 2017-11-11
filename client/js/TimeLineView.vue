@@ -60,7 +60,7 @@
       }"
       >
       <div class="m_timeline-container"
-        :style="setViewedTimeline()"
+        :style="`width: ${timelineViewport.width}px; height: ${timelineViewport.height}px;`"
         >
         <div class="timeline_track">
         </div>
@@ -74,7 +74,7 @@
                 <div
                   class="gridItem font-small gridItem_isday"
                   :class="{ 'has--caption' : (item.caption !== undefined) }"
-                  :style="'transform:translate(' + item.xPos + 'px, 0px)'"
+                  :style="`transform:translate(${item.xPos}px, 0px)`"
                   >
                   <div v-if="item.caption !== undefined" class="gridItem--caption">
                     {{ item.caption }}
@@ -112,7 +112,7 @@
             </template>
 
             <div
-              v-if="!!todaysRule.xPos"
+              v-if="!!todaysRule.xPos && isRealtime"
               class="gridItem font-small gridItem_isrealtimerule"
               :style="'transform:translate(' + todaysRule.xPos + 'px, 0px)'"
               >
@@ -225,6 +225,7 @@ export default {
 
       isRealtime: false,
       isAnimated: true,
+      isAdjustingScale: false,
       timelineUpdateRoutine: '',
       isScrolling: false,
 
@@ -262,14 +263,16 @@ export default {
     }
   },
   watch: {
-    folder: function() {
+    'folder': function() {
       console.log('WATCH • TimeLineView: folder');
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
+      this.setViewedTimelineWidthAndHeight();
       this.updateGridData();
     },
     'timelineViewport.scale': function() {
       console.log('WATCH • TimeLineView: timelineViewport.scale');
+
       // before updating the scale, we get the percent that's currently shown, store it, and we go back to it right after scaling
       let currentScrollLeft = this.$refs.timeline.scrollLeft;
       let currentScrollMiddle = currentScrollLeft + window.innerWidth/2;
@@ -278,12 +281,13 @@ export default {
       // disable media animations
       this.isAnimated = false;
       this.$nextTick(() => {
+        this.setViewedTimelineWidthAndHeight();
         let newScrollMiddle = this.timelineViewport.width * currentScrollMiddle_percent;
         let newScrollLeft = newScrollMiddle - window.innerWidth/2;
         this.$refs.timeline.scrollLeft = newScrollLeft;
         this.updateGridData();
         // reenable media animations
-        this.isAnimated = true;
+//         this.isAnimated = true;
       });
       this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
     },
@@ -302,6 +306,7 @@ export default {
     this.setTimelineBounds();
     this.setViewedTimelineBoundsFromInfos();
     this.setVisibleDay();
+    this.setViewedTimelineWidthAndHeight();
   },
   mounted() {
 
@@ -328,7 +333,7 @@ export default {
     this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft+1;
 
     this.timelineUpdateRoutine = setInterval(() => {
-      if(this.isScrolling) {
+      if(this.isScrolling || !this.isRealtime) {
         return;
       }
 
@@ -424,7 +429,9 @@ export default {
     },
 
     // called by :style in template
-    setViewedTimeline() {
+    setViewedTimelineWidthAndHeight() {
+      console.log('METHODS • TimeLineView: setViewedTimelineWidthAndHeight');
+
       // récupérer la longueur de la timeline en TS
       let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
       // décomposer en secondes
@@ -435,7 +442,6 @@ export default {
 
       this.timelineViewport.width = w;
       this.timelineViewport.height = h;
-      return `width: ${w}px; height: ${h}px;`;
     },
     getVH(val) {
       let winHeight = this.windowHeight - this.topNavbarHeight - this.bottomScrollBar;
@@ -587,8 +593,8 @@ export default {
       window.isScrollingTimeout = setTimeout(() => {
         console.log(`METHODS • TimeLineView: onScroll / has finished`);
         this.isScrolling = false;
+        // the following line will trigger watch: scrollLeft (which takes care of everything)
         this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
-        this.setVisibleDay();
       }, 300);
 
     },
@@ -667,7 +673,6 @@ export default {
         onDone: () => {
           this.$nextTick(() => {
             this.isScrolling = false;
-            this.setVisibleDay();
             this.timelineViewport.scrollLeft = xPos_new;
           });
         },
@@ -691,6 +696,8 @@ export default {
     },
     updateTimelineViewportScale(val) {
       // we are about to change scale to val
+      // to do this properly, we’ll show exactly where this will zoom before actually zooming
+
       this.timelineViewport.scale = Number(val);
     },
 
