@@ -3760,9 +3760,9 @@ th {
   border-radius: 50%;
   color: inherit;
   background-color: #f2f2f2;
-  -webkit-transition: all 0.4s ease-out;
-  -o-transition: all 0.4s ease-out;
-  transition: all 0.4s ease-out;
+  -webkit-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  transition: all 1s ease;
 }
 .m_calendar .m_calendar--days--day > * .bottomIndicator {
   position: absolute;
@@ -3771,16 +3771,16 @@ th {
   right: 0;
   opacity: 1;
   text-align: center;
-  -webkit-transition: opacity 0.3s ease-out;
-  -o-transition: opacity 0.3s ease-out;
-  transition: opacity 0.3s ease-out;
+  -webkit-transition: opacity 1s ease;
+  -o-transition: opacity 1s ease;
+  transition: opacity 1s ease;
 }
 .m_calendar .m_calendar--days--day.has--noMedia > * {
   background-color: transparent;
   padding-bottom: 0px;
 }
 .m_calendar .m_calendar--days--day.has--noMedia .bottomIndicator {
-  display: none;
+  opacity: 0;
 }
 .m_calendar .m_calendar--days--day.is--visibleDay > * {
   background-color: #333;

@@ -275,15 +275,16 @@ export default {
 
       // before updating the scale, we get the percent that's currently shown, store it, and we go back to it right after scaling
       let currentScrollLeft = this.$refs.timeline.scrollLeft;
-      let currentScrollMiddle = currentScrollLeft + window.innerWidth/2;
+      let currentScrollMiddle = currentScrollLeft + this.$refs.timeline.offsetWidth/2;
       let currentScrollMiddle_percent = currentScrollMiddle / this.timelineViewport.width;
+
+      this.setViewedTimelineWidthAndHeight();
 
       // disable media animations
       this.isAnimated = false;
       this.$nextTick(() => {
-        this.setViewedTimelineWidthAndHeight();
         let newScrollMiddle = this.timelineViewport.width * currentScrollMiddle_percent;
-        let newScrollLeft = newScrollMiddle - window.innerWidth/2;
+        let newScrollLeft = newScrollMiddle - this.$refs.timeline.offsetWidth/2;
         this.$refs.timeline.scrollLeft = newScrollLeft;
         this.updateGridData();
         // reenable media animations

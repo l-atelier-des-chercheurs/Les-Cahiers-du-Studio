@@ -30,9 +30,8 @@
       border-radius: 50%;
       color: inherit;
       background-color: @c-gris_verylight;
-      -webkit-transition: all 0.4s ease-out;
-      -o-transition: all 0.4s ease-out;
-      transition: all 0.4s ease-out;
+
+      transition: all 1s ease;
 
       .bottomIndicator {
         position: absolute;
@@ -41,7 +40,7 @@
         right: 0;
         opacity: 1;
         text-align: center;
-        transition: opacity 0.3s ease-out;
+        transition: opacity 1s ease;
       }
     }
 
@@ -53,7 +52,7 @@
       }
 
       .bottomIndicator {
-        display: none;
+        opacity: 0;
       }
 
     }
