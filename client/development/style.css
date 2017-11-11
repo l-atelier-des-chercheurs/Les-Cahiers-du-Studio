@@ -3367,6 +3367,9 @@ b {
 .margin-bottom-small {
   margin-bottom: 0.675em;
 }
+.margin-bottom-medium {
+  margin-bottom: 1.35em;
+}
 .margin-bottom-none {
   margin-bottom: 0;
 }
@@ -3439,6 +3442,9 @@ b {
 }
 .padding-bottom-small {
   padding-bottom: 0.675em;
+}
+.padding-bottom-medium {
+  margin-bottom: 1.35em;
 }
 .button-small {
   font-size: 0.9em;

@@ -28,6 +28,7 @@
         <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
       </div>
 
+      <transition name="fade">
         <div
           class="timelineMediaContent"
           v-if="!isPlaceholder"
@@ -65,7 +66,7 @@
             </svg>
           </button>
         </div>
-
+      </transition>
     </div>
   </div>
 </template>
@@ -126,14 +127,14 @@ export default {
       return Math.max(50, Math.min(this.timelineHeight - 100, yPos));
     },
     getMediaPosition() {
-      console.log('METHODS • timelineview: getMediaPosition');
+      console.log('METHODS • TimelineMedia: getMediaPosition');
       let posX = this.posX !== false ? this.posX : 0;
       return {
         transform: `translate(${posX}px, ${this.mediaStyles.y}px)`
       };
     },
     setMediaWidthFromDuration() {
-      console.log('METHODS • timelineview: setMediaWidthFromDuration');
+      console.log('METHODS • TimelineMedia: setMediaWidthFromDuration');
       this.mediaWidthFromDuration = Math.round(this.media.duration/this.timelineScale);
     },
     getMediaWidthFromDuration() {
@@ -145,7 +146,7 @@ export default {
     // set width and height for a media.
     // this shouldn’t need updating
     setMediaSize() {
-      console.log('METHODS • timelineview: setMediaSize');
+      console.log('METHODS • TimelineMedia: setMediaSize');
 
       // let’s set some ratio
       if(this.mediaStyles.ratio) {
