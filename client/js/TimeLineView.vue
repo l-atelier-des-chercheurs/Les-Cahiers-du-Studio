@@ -569,20 +569,20 @@ export default {
       return false;
     },
     onResize() {
-      console.log(`METHODS • TimeLineView: Updating windowHeight value`);
+      console.log(`METHODS • TimeLineView: onResize / updating windowHeight value`);
       this.windowHeight = window.innerHeight;
     },
     onScroll() {
       if(!this.isScrolling) {
-        console.log(`METHODS • TimeLineView: scroll has started`);
+        console.log(`METHODS • TimeLineView: onScroll / scroll has started`);
         this.isScrolling = true;
       }
 
-      console.log(`METHODS • TimeLineView: scroll is happening`);
+      console.log(`METHODS • TimeLineView: onScroll / is happening`);
       clearTimeout(window.isScrollingTimeout);
 
       window.isScrollingTimeout = setTimeout(() => {
-        console.log(`METHODS • TimeLineView: scroll has finished`);
+        console.log(`METHODS • TimeLineView: onScroll / has finished`);
         this.isScrolling = false;
         this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
         this.setVisibleDay();

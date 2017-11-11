@@ -17,50 +17,56 @@
 
       <div class="mediaScrubber"
         :style="getMediaWidthFromDuration()"
-        v-if="!isPlaceholder"
         >
         <!-- play media on click -->
-        <template v-if="media.duration !== undefined">
+        <template
+          v-if="media.duration !== undefined"
+          >
           <button class="accroche accroche_gauche"></button>
           <div class="accrocheDurationLine"></div>
         </template>
         <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
       </div>
 
-      <div class="timelineMediaContent"
-        :style="getMediaSize()"
-        >
-        <MediaContent
-          :slugFolderName="slugFolderName"
-          :slugMediaName="slugMediaName"
+      <transition name="fade">
+        <div
+          class="timelineMediaContent"
           v-if="!isPlaceholder"
-          :media="media"
-          v-model="media.content"
-          :isPreview="true"
+          :style="getMediaSize()"
           >
-        </MediaContent>
+          <MediaContent
+            :slugFolderName="slugFolderName"
+            :slugMediaName="slugMediaName"
+            :media="media"
+            v-model="media.content"
+            :isPreview="true"
+            >
+          </MediaContent>
 
-        <div class="mediaContour"></div>
+          <div
+            class="mediaContour">
+          </div>
 
-        <button
-          class="button-round bg-transparent button_openmedia padding-medium"
-          v-if="!isPlaceholder"
-          @mousedown.stop="$emit('open')">
-          <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
-            <g id="Calque_2" data-name="Calque 2">
-              <g id="Content">
-                <g>
-                  <circle cx="23.5" cy="23.5" r="23" style="fill: #fff"/>
-                  <circle cx="23.5" cy="23.5" r="23" style="fill: none;stroke: #4d4d4d;stroke-miterlimit: 10"/>
+          <button
+            class="button-round bg-transparent button_openmedia padding-medium"
+            v-if="!isPlaceholder"
+            @mousedown.stop="$emit('open')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
+              <g id="Calque_2" data-name="Calque 2">
+                <g id="Content">
+                  <g>
+                    <circle cx="23.5" cy="23.5" r="23" style="fill: #fff"/>
+                    <circle cx="23.5" cy="23.5" r="23" style="fill: none;stroke: #4d4d4d;stroke-miterlimit: 10"/>
+                  </g>
+                  <polyline points="33.33 23.74 33.33 33.96 23.11 33.96 12.88 33.96 12.88 23.74 12.88 13.52 23.11 13.52" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+                  <polyline points="26.73 13.52 33.33 13.52 33.33 20.12" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+                  <line x1="33.05" y1="13.89" x2="22.1" y2="24.83" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
                 </g>
-                <polyline points="33.33 23.74 33.33 33.96 23.11 33.96 12.88 33.96 12.88 23.74 12.88 13.52 23.11 13.52" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-                <polyline points="26.73 13.52 33.33 13.52 33.33 20.12" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-                <line x1="33.05" y1="13.89" x2="22.1" y2="24.83" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
               </g>
-            </g>
-          </svg>
-        </button>
-      </div>
+            </svg>
+          </button>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
