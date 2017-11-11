@@ -28,7 +28,6 @@
         <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
       </div>
 
-      <transition name="fade">
         <div
           class="timelineMediaContent"
           v-if="!isPlaceholder"
@@ -66,7 +65,7 @@
             </svg>
           </button>
         </div>
-      </transition>
+
     </div>
   </div>
 </template>

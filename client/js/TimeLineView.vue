@@ -272,13 +272,15 @@ export default {
       console.log('WATCH • TimeLineView: timelineViewport.scale');
       // before updating the scale, we get the percent that's currently shown, store it, and we go back to it right after scaling
       let currentScrollLeft = this.$refs.timeline.scrollLeft;
-//       currentScrollLeft += window.innerWidth/4;
-      let currentScrollLeft_percent = currentScrollLeft / this.timelineViewport.width;
+      let currentScrollMiddle = currentScrollLeft + window.innerWidth/2;
+      let currentScrollMiddle_percent = currentScrollMiddle / this.timelineViewport.width;
 
       // disable media animations
       this.isAnimated = false;
       this.$nextTick(() => {
-        this.$refs.timeline.scrollLeft = this.timelineViewport.width * currentScrollLeft_percent;
+        let newScrollMiddle = this.timelineViewport.width * currentScrollMiddle_percent;
+        let newScrollLeft = newScrollMiddle - window.innerWidth/2;
+        this.$refs.timeline.scrollLeft = newScrollLeft;
         this.updateGridData();
         // reenable media animations
         this.isAnimated = true;
@@ -332,6 +334,7 @@ export default {
 
       console.log(`METHODS • TimeLineView: setInterval updating (timelineUpdateRoutine)`);
 
+      this.currentTime = moment().millisecond(0);
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
 
@@ -687,6 +690,7 @@ export default {
       }
     },
     updateTimelineViewportScale(val) {
+      // we are about to change scale to val
       this.timelineViewport.scale = Number(val);
     },
 

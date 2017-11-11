@@ -3855,7 +3855,7 @@ th {
   z-index: 0;
   height: 100%;
   width: 100%;
-  left: 25vw;
+  left: 2.7em;
   border-right: 1px solid #000;
   -webkit-transition: margin 0.5s ease-out;
   -o-transition: margin 0.5s ease-out;
@@ -4195,12 +4195,10 @@ th {
     }
 */
 }
-.m_timeline.is--animated .mediaPreview {
-  -webkit-transition: -webkit-transform 0.7s ease-in-out;
-  transition: -webkit-transform 0.7s ease-in-out;
-  -o-transition: transform 0.7s ease-in-out;
-  transition: transform 0.7s ease-in-out;
-  transition: transform 0.7s ease-in-out, -webkit-transform 0.7s ease-in-out;
+.m_timeline:not(.is--animated) .mediaPreview {
+  -webkit-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
 }
 .mediaPreview {
   position: absolute;
@@ -4208,6 +4206,11 @@ th {
   height: 1px;
   text-rendering: optimizeSpeed;
   will-change: transform;
+  -webkit-transition: -webkit-transform 0.7s ease-in-out;
+  transition: -webkit-transform 0.7s ease-in-out;
+  -o-transition: transform 0.7s ease-in-out;
+  transition: transform 0.7s ease-in-out;
+  transition: transform 0.7s ease-in-out, -webkit-transform 0.7s ease-in-out;
 }
 .mediaPreview .media {
   position: absolute;

@@ -1,6 +1,6 @@
-.m_timeline.is--animated {
+.m_timeline:not(.is--animated) {
   .mediaPreview {
-    transition: transform .7s ease-in-out;
+    transition: none !important;
   }
 }
 
@@ -10,6 +10,7 @@
   text-rendering: optimizeSpeed;
 
   will-change: transform;
+  transition: transform .7s ease-in-out;
 
   .media {
     position: absolute;
