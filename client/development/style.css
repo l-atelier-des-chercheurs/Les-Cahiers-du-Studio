@@ -3744,7 +3744,7 @@ th {
 .m_calendar .m_calendar--days--day > * {
   position: relative;
   overflow: visible;
-  padding-bottom: 2px;
+  padding-bottom: 8px;
   min-height: 0;
   -webkit-box-pack: center;
   -ms-flex-pack: center;
@@ -3754,9 +3754,9 @@ th {
   border-radius: 50%;
   color: inherit;
   background-color: #f2f2f2;
-  -webkit-transition: background-color 0.4s ease-out;
-  -o-transition: background-color 0.4s ease-out;
-  transition: background-color 0.4s ease-out;
+  -webkit-transition: all 0.4s ease-out;
+  -o-transition: all 0.4s ease-out;
+  transition: all 0.4s ease-out;
 }
 .m_calendar .m_calendar--days--day > * .bottomIndicator {
   position: absolute;
@@ -3768,6 +3768,13 @@ th {
   -webkit-transition: opacity 0.3s ease-out;
   -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
+}
+.m_calendar .m_calendar--days--day.has--noMedia > * {
+  background-color: transparent;
+  padding-bottom: 0px;
+}
+.m_calendar .m_calendar--days--day.has--noMedia .bottomIndicator {
+  display: none;
 }
 .m_calendar .m_calendar--days--day.is--visibleDay > * {
   background-color: #333;
@@ -3919,7 +3926,7 @@ th {
 .simple_grid_overlay .gridItem.gridItem_isday .gridItem--caption {
   display: block;
   background-color: #4d4d4d;
-  padding: 1px 4px;
+  padding: 2px 4px 0px;
   margin-top: -38px;
   border-radius: 3px;
 }
@@ -4827,16 +4834,16 @@ body.is_unscrollable {
 .component-fade-enter-active,
 .component-fade-leave-active {
   opacity: 1;
-  -webkit-transition: opacity .4s ease;
-  -o-transition: opacity .4s ease;
-  transition: opacity .4s ease;
+  -webkit-transition: opacity 0.2s ease-out;
+  -o-transition: opacity 0.2s ease-out;
+  transition: opacity 0.2s ease-out;
 }
 .component-fade-enter,
 .component-fade-leave-to {
   opacity: 0;
-  -webkit-transition: opacity .4s ease;
-  -o-transition: opacity .4s ease;
-  transition: opacity .4s ease;
+  -webkit-transition: opacity 0.2s ease-out;
+  -o-transition: opacity 0.2s ease-out;
+  transition: opacity 0.2s ease-out;
 }
 /* Enter and leave animations can use different */
 /* durations and timing functions.              */
