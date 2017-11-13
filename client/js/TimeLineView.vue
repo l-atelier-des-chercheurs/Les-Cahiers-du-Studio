@@ -471,7 +471,7 @@ export default {
     ******************************************************************/
     getMediaPosX(media_created) {
       let createdTS = moment(media_created,'YYYY-MM-DD HH:mm:ss');
-      let posX = this.getXPositionFromDate(createdTS);
+      let posX = this.getXPositionFromDate(createdTS, false);
       return posX;
     },
 
@@ -493,15 +493,8 @@ export default {
       createDayTick(this.timelineViewport.start, 'DD/MM/YYYY HH:mm:ss');
       let nextDay = moment(moment(this.timelineViewport.start).startOf('day').add(1, 'day'));
 
-/*
-      for(var d = firstDay; d <= timeEllapsed + 86400000*2; d += 86400000) {
-        let thisDay = firstDay + d;
-        createDayTick(thisDay);
-      }
-*/
-
       // we need to iterate by day (and not every 24 hours, because of possible daylight savings)
-      for (var d = nextDay; d.isBefore(moment(this.timelineViewport.end)); d.add(1, 'days')) {
+      for (var d = nextDay; d.isSameOrBefore(moment(this.timelineViewport.end)); d.add(1, 'days')) {
         createDayTick(d);
       }
 
@@ -559,10 +552,14 @@ export default {
       this.overallGrid = overallGrid;
     },
 
-    getXPositionFromDate(timestamp) {
+    getXPositionFromDate(timestamp, removeFromTimelineIfOutOfBounds = true) {
       let msSinceStart = timestamp - this.timelineViewport.start;
       let pc = msSinceStart/(this.timelineViewport.end - this.timelineViewport.start);
-      if(pc < 0 || pc > 1) { return false; }
+
+      // What to do if the element (grid item or media) is out of the timeline
+      if(pc < 0 || pc > 1) {
+        if(removeFromTimelineIfOutOfBounds) { return false; }
+      }
       pc = Math.min(Math.max(parseFloat(pc), 0), 1);
       let posX = this.timelineViewport.width * pc;
       return Math.floor(posX);
@@ -648,7 +645,7 @@ export default {
     },
     scrollToDate(timestamp) {
       console.log(`METHODS • TimeLineView: scrollToDate / timestamp: ${timestamp}`);
-      let xPos = this.getXPositionFromDate(timestamp);
+      let xPos = this.getXPositionFromDate(timestamp, false);
 
       xPos = this.adjustPosXValueForScrollX(xPos);
       this.scrollTimelineToXPos(xPos);
