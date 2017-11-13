@@ -480,18 +480,26 @@ export default {
 
       /****************************** make DAY ticks ******************************/
 
-      let createDayTick = (thisDay) => {
+      let createDayTick = (thisDay, f = 'DD/MM/YYYY') => {
         let xPos = this.getXPositionFromDate(thisDay);
         if(xPos === false) { return; }
-        let caption = moment(thisDay).format('DD/MM/YYYY');
+        let caption = moment(thisDay).format(f);
         overallGrid.days.push({ xPos, caption });
       }
 
-      createDayTick(this.timelineViewport.start);
-      let firstDay = moment(moment(this.timelineViewport.start).startOf('day').subtract(1, 'day'));
-      for(var d = 86400000; d <= timeEllapsed + 86400000*2; d += 86400000) {
+      createDayTick(this.timelineViewport.start, 'DD/MM/YYYY HH:mm:ss');
+      let nextDay = moment(moment(this.timelineViewport.start).startOf('day').add(1, 'day'));
+
+/*
+      for(var d = firstDay; d <= timeEllapsed + 86400000*2; d += 86400000) {
         let thisDay = firstDay + d;
         createDayTick(thisDay);
+      }
+*/
+
+      // we need to iterate by day (and not every 24 hours, because of possible daylight savings)
+      for (var d = nextDay; d.isBefore(moment(this.timelineViewport.end)); d.add(1, 'days')) {
+        createDayTick(d);
       }
 
 
@@ -628,41 +636,51 @@ export default {
       this.scrollToDate(this.currentTime);
     },
     scrollToMedia(slugMediaName) {
-      console.log(`METHODS • TimeLineView: scrollToMedia ${slugMediaName}`);
+      console.log(`METHODS • TimeLineView: scrollToMedia / slugMediaName: ${slugMediaName}`);
       let mediaToScrollTo = this.medias[slugMediaName];
       let mediaPosX = this.getMediaPosX(mediaToScrollTo.created);
       this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? mediaPosX : mediaPosX - this.sidebarWidth);
     },
     scrollToDate(timestamp) {
-      console.log(`METHODS • TimeLineView: scrollToDate ${timestamp}`);
+      console.log(`METHODS • TimeLineView: scrollToDate / timestamp: ${timestamp}`);
       let xPos = this.getXPositionFromDate(timestamp);
-      this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? xPos : xPos - this.sidebarWidth);
+      xPos -= this.$refs.timeline.offsetWidth/2;
+      this.scrollTimelineToXPos(xPos);
     },
     highlightMedia(slugMediaName) {
       this.highlightedMedia = slugMediaName;
     },
     goToPrevDay() {
-      console.log('METHODS • TimeLineView: goToPrevDay');
+      console.log(`METHODS • TimeLineView: goToPrevDay`);
       let twentyFourHoursInSeconds = 24 * 60 * 60;
       let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
       this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft - twentyFourHoursInPixels);
     },
     goToNextDay() {
+      console.log(`METHODS • TimeLineView: goToNextDay`);
       let twentyFourHoursInSeconds = 24 * 60 * 60;
       let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
       this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft + twentyFourHoursInPixels);
     },
+/*
+    // TODO: recalc pos with this.$refs.timeline.offsetWidth/2
     goToPrevScreen() {
+      console.log(`METHODS • TimeLineView: goToPrevScreen`);
       let delta = this.$root.settings.has_sidebar_opened ? window.innerWidth - this.sidebarWidth : window.innerWidth;
       this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft - delta );
     },
     goToNextScreen() {
+      console.log(`METHODS • TimeLineView: goToNextScreen`);
       let delta = this.$root.settings.has_sidebar_opened ? window.innerWidth - this.sidebarWidth : window.innerWidth;
       this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft + delta);
     },
+*/
     scrollTimelineToXPos(xPos_new) {
+      console.log(`METHODS • TimeLineView: scrollTimelineToXPos / xPos_new = ${xPos_new}`);
 
       this.isScrolling = true;
+
+      xPos_new = xPos_new;
 
       this.$scrollTo('.m_timeline', 500, {
         container: this.$refs.timeline,
