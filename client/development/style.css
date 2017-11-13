@@ -3833,6 +3833,7 @@ th {
   overflow-x: scroll;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  padding-left: 2.7em;
 }
 .m_timeline::-webkit-scrollbar {
   width: 80px;
@@ -3861,7 +3862,6 @@ th {
   z-index: 0;
   height: 100%;
   width: 100%;
-  left: 2.7em;
   border-right: 1px solid #000;
   -webkit-transition: margin 0.5s ease-out;
   -o-transition: margin 0.5s ease-out;

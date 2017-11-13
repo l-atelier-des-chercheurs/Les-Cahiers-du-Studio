@@ -259,6 +259,7 @@ export default {
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
+        leftPadding: 0
       },
     }
   },
@@ -324,6 +325,8 @@ export default {
     EventBus.$on('showEditFolderModal', this.startEditModal);
     EventBus.$on('timeline.scrollToToday', this.scrollToToday);
     EventBus.$on('timeline.openMediaModal', this.openMediaModal);
+
+    this.timelineViewport.leftPadding = parseInt($(this.$refs.timeline).css('padding-left'), 10);
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
 
@@ -639,14 +642,23 @@ export default {
       console.log(`METHODS • TimeLineView: scrollToMedia / slugMediaName: ${slugMediaName}`);
       let mediaToScrollTo = this.medias[slugMediaName];
       let mediaPosX = this.getMediaPosX(mediaToScrollTo.created);
-      this.scrollTimelineToXPos(this.$root.settings.has_sidebar_opened ? mediaPosX : mediaPosX - this.sidebarWidth);
+
+      mediaPosX = this.adjustPosXValueForScrollX(mediaPosX);
+      this.scrollTimelineToXPos(mediaPosX);
     },
     scrollToDate(timestamp) {
       console.log(`METHODS • TimeLineView: scrollToDate / timestamp: ${timestamp}`);
       let xPos = this.getXPositionFromDate(timestamp);
-      xPos -= this.$refs.timeline.offsetWidth/2;
+
+      xPos = this.adjustPosXValueForScrollX(xPos);
       this.scrollTimelineToXPos(xPos);
     },
+    adjustPosXValueForScrollX(xPos) {
+      xPos -= this.$refs.timeline.offsetWidth/2;
+      xPos += this.timelineViewport.leftPadding;
+      return xPos;
+    },
+
     highlightMedia(slugMediaName) {
       this.highlightedMedia = slugMediaName;
     },
