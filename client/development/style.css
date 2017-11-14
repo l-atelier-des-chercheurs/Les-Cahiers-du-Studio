@@ -3930,6 +3930,15 @@ th {
 .simple_grid_overlay .gridItem.gridItem_isrealtimerule .gridItem_isrealtimerule--autoscroll_checkbox input[type="checkbox"] {
   margin-right: 0.675em;
 }
+.simple_grid_overlay .gridItem.gridItem_zoomZone {
+  border: 4px solid #0096FF;
+  width: 150px;
+  z-index: 10000;
+  height: calc(100% + 50px);
+  margin-top: -50px;
+  color: white;
+  pointer-events: none;
+}
 .simple_grid_overlay .gridItem.gridItem_isday {
   border-left: 1px solid #4d4d4d;
   z-index: 100;

@@ -143,6 +143,18 @@
       }
     }
 
+    &.gridItem_zoomZone {
+//       border: 4px dashed @c-rouge_vif;
+//       background: repeating-linear-gradient(45deg, transparent, transparent 10px, fade(@c-vert,10%) 10px, fade(@c-vert,10%) 40px);
+      border:4px solid @c-bleu_vif;
+      width: 150px;
+      z-index:10000;
+      height: ~"calc(100% + 50px)";
+      margin-top: -50px;
+      color: white;
+      pointer-events: none;
+    }
+
     &.gridItem_isday {
       border-left: 1px solid @c-noir_light;
       z-index:100;

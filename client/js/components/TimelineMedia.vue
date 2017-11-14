@@ -28,7 +28,7 @@
         <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
       </div>
 
-      <transition name="fade">
+      <transition name="zoom">
         <div
           class="timelineMediaContent"
           v-if="!isPlaceholder"

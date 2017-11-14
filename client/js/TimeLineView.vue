@@ -103,7 +103,7 @@
                 <div
                   class="gridItem font-small gridItem_isminute"
                   :class="{ 'has--caption' : (item.caption !== undefined) }"
-                  :style="'transform:translate(' + item.xPos + 'px, 0px)'"
+                  :style="`transform:translate(${item.xPos}px, 0px)`"
                   >
                   <div v-if="item.caption !== undefined" class="gridItem--caption">
                     {{ item.caption }}
@@ -131,6 +131,15 @@
               </button>
 
             </div>
+
+            <transition name="fade">
+              <div
+                v-if="zoomZone.display"
+                class="gridItem gridItem_zoomZone"
+                :style="zoomZoneStyle()"
+                >
+              </div>
+            </transition>
           </div>
         </div>
 
@@ -236,6 +245,11 @@ export default {
         caption: '',
         xPos: false
       },
+      zoomZone: {
+        display: false,
+        xPos: 0,
+        width: 50
+      },
 
       overallGrid: {
         days: [],
@@ -257,7 +271,7 @@ export default {
         width: 1,
         height: 1,
         scale: this.$root.getProjectScale(this.slugFolderName),
-        visibleDay: '',
+        visibleDay: 0,
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
@@ -285,14 +299,16 @@ export default {
 
       // disable media animations
       this.isAnimated = false;
+
       this.$nextTick(() => {
         let newScrollMiddle = this.timelineViewport.width * currentScrollMiddle_percent;
         let newScrollLeft = newScrollMiddle - this.$refs.timeline.offsetWidth/2;
         this.$refs.timeline.scrollLeft = newScrollLeft;
         this.updateGridData();
         // reenable media animations
-//         this.isAnimated = true;
+        this.isAnimated = true;
       });
+
       this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
     },
     'timelineViewport.scrollLeft': function() {
@@ -309,7 +325,6 @@ export default {
 
     this.setTimelineBounds();
     this.setViewedTimelineBoundsFromInfos();
-    this.setVisibleDay();
     this.setTimelineHeight();
     this.setViewedTimelineWidthAndHeight();
   },
@@ -328,6 +343,8 @@ export default {
     EventBus.$on('showEditFolderModal', this.startEditModal);
     EventBus.$on('timeline.scrollToToday', this.scrollToToday);
     EventBus.$on('timeline.openMediaModal', this.openMediaModal);
+    EventBus.$on('timeline.showZoomZone', this.showZoomZone);
+    EventBus.$on('timeline.hideZoomZone', this.hideZoomZone);
 
     this.timelineViewport.leftPadding = parseInt($(this.$refs.timeline).css('padding-left'), 10);
     // set scrollLeft to match timelineViewport.scrollLeft
@@ -375,6 +392,8 @@ export default {
     EventBus.$off('showEditFolderModal');
     EventBus.$off('timeline.scrollToToday', this.scrollToToday);
     EventBus.$off('timeline.openMediaModal', this.openMediaModal);
+    EventBus.$off('timeline.showZoomZone', this.showZoomZone);
+    EventBus.$off('timeline.hideZoomZone', this.hideZoomZone);
 
     window.removeEventListener('resize', this.onResize);
 
@@ -508,7 +527,7 @@ export default {
       let createHourTick = (currentHour, withCaption = false) => {
         let xPos = this.getXPositionFromDate(currentHour);
         if(xPos === false) { return; }
-        if(!this.elesIsClose(xPos, 5)) { return; }
+        if(!this.elesIsClose(xPos, 4)) { return; }
 
         let caption;
         if(withCaption || this.timelineViewport.scale < 70) {
@@ -544,9 +563,7 @@ export default {
           let currentMinute = thisDayStart + m;
           createMinuteTick(currentMinute);
         }
-
       }
-
 
       this.overallGrid = overallGrid;
     },
@@ -578,8 +595,9 @@ export default {
         if(this.elesIsClose(this.getMediaPosX(media.created))) {
           return true;
         }
+
         // otherwise, calculate proximity for created minus duration (which should give us when ths recording was started)
-        let startRecordingDate = +moment(media.created).subtract(parseInt(media.duration), 'seconds');
+        let startRecordingDate = moment(media.created).subtract(parseInt(media.duration), 'seconds');
         if(this.elesIsClose(this.getMediaPosX(startRecordingDate))) {
           return true;
         }
@@ -737,7 +755,7 @@ export default {
       console.log('METHODS • TimeLineView: toggleSidebar');
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
     },
-    setVisibleDay(xPos = this.timelineViewport.scrollLeft + window.innerWidth/2) {
+    setVisibleDay(xPos = this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2) {
       console.log('METHODS • TimeLineView: setVisibleDay');
       let dateFromPosX = this.getDateFromXPosition(xPos);
       dateFromPosX = Math.min(this.timelineViewport.end, Math.max(dateFromPosX, this.timelineViewport.start));
@@ -745,13 +763,25 @@ export default {
         this.timelineViewport.visibleDay = dateFromPosX;
       }
     },
+    showZoomZone(val) {
+      this.zoomZone.display = true;
+      this.zoomZone.width = Math.floor((val/this.timelineViewport.scale) * this.$refs.timeline.offsetWidth) - this.timelineViewport.leftPadding;
+      this.zoomZone.xPos = this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2 - this.zoomZone.width/2;
+    },
+    hideZoomZone() {
+      this.zoomZone.display = false;
+      this.zoomZone.width = 0;
+      this.zoomZone.xPos = 0;
+    },
+
     updateTimelineViewportScale(val) {
       // we are about to change scale to val
       // to do this properly, we’ll show exactly where this will zoom before actually zooming
-
       this.timelineViewport.scale = Number(val);
     },
-
+    zoomZoneStyle() {
+      return `width: ${this.zoomZone.width}px; transform:translate(${this.zoomZone.xPos}px, 0px);`;
+    },
     startEditModal() {
       if(this.folder.authorized) {
         this.showEditFolderModal = true;
