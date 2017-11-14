@@ -56,7 +56,8 @@
       @scroll="onScroll"
       :class="{
         'with--sidebar_opened' : $root.settings.has_sidebar_opened,
-        'is--animated': isAnimated
+        'is--animated': isAnimated,
+        'is--realtime': isRealtime
       }"
       >
       <div class="m_timeline-container"
@@ -143,7 +144,7 @@
             :isPlaceholder="!elesIsClose(getMediaPosX(media.created))"
             :media="media"
             :timelineScale="timelineViewport.scale"
-            :timelineHeight="getVH(1)"
+            :timelineHeight="timelineHeight"
             :posX="getMediaPosX(media.created)"
             :class="{ 'is--highlighted' : highlightedMedia === index }"
             @open="openMediaModal(index)"
@@ -212,10 +213,9 @@ export default {
   },
   data() {
     return {
-      windowHeight: window.innerHeight,
-
       topNavbarHeight: 60,
       timelinetrackHeight: 50,
+      timelineHeight: 0,
       bottomScrollBar: 20,
       sidebarWidth: parseFloat(window.getComputedStyle(document.querySelector("html")).getPropertyValue("--sidebar-width")),
 
@@ -310,6 +310,7 @@ export default {
     this.setTimelineBounds();
     this.setViewedTimelineBoundsFromInfos();
     this.setVisibleDay();
+    this.setTimelineHeight();
     this.setViewedTimelineWidthAndHeight();
   },
   mounted() {
@@ -444,14 +445,10 @@ export default {
       let secondsEllapsed = timeEllapsed/1000;
 
       let w = Math.floor(secondsEllapsed/this.timelineViewport.scale);
-      let h = Math.floor(this.getVH(1));
+      let h = Math.floor(this.timelineHeight);
 
       this.timelineViewport.width = w;
       this.timelineViewport.height = h;
-    },
-    getVH(val) {
-      let winHeight = this.windowHeight - this.topNavbarHeight - this.bottomScrollBar;
-      return val*winHeight;
     },
     getViewedTimelineStart(timelineView_new_start) {
       // Sanitize new date
@@ -589,8 +586,14 @@ export default {
       return false;
     },
     onResize() {
-      console.log(`METHODS • TimeLineView: onResize / updating windowHeight value`);
-      this.windowHeight = window.innerHeight;
+      console.log(`METHODS • TimeLineView: onResize`);
+      this.setTimelineHeight();
+      this.setViewedTimelineWidthAndHeight();
+    },
+    setTimelineHeight() {
+      console.log(`METHODS • TimeLineView: setTimelineHeight`);
+      debugger;
+      this.timelineHeight = window.innerHeight - this.topNavbarHeight - this.bottomScrollBar;
     },
     onScroll() {
       if(!this.isScrolling) {

@@ -3899,6 +3899,7 @@ th {
   margin-top: -50px;
   color: white;
   pointer-events: auto;
+  left: -1px;
 }
 .simple_grid_overlay .gridItem.gridItem_isrealtimerule .gridItem--caption {
   position: absolute;
@@ -4119,6 +4120,19 @@ th {
 .vue-dropzone.vue-dropzone .dz-preview .dz-details .dz-size {
   margin-bottom: 0;
   font-size: 1em;
+}
+.vue-dropzone.vue-dropzone .dz-preview .dz-progress {
+  bottom: 0;
+  top: auto;
+  left: 0;
+  right: 0;
+  width: 100%;
+  margin-left: 0;
+  height: 4px;
+  border-radius: 0;
+}
+.vue-dropzone.vue-dropzone .dz-preview .dz-progress .dz-upload {
+  background: #0096FF;
 }
 .vue-dropzone.vue-dropzone .dz-preview .dz-remove {
   opacity: 1;

@@ -111,6 +111,9 @@ export default {
     'media.y': function() {
       this.mediaStyles.y = this.limitMediaYPos(parseFloat(this.media.y) * this.timelineHeight);
     },
+    'timelineHeight': function() {
+      this.mediaStyles.y = this.limitMediaYPos(parseFloat(this.media.y) * this.timelineHeight);
+    }
   },
   mounted() {
     this.setMediaSize();
