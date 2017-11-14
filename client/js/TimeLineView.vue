@@ -229,6 +229,8 @@ export default {
       timelineUpdateRoutine: '',
       isScrolling: false,
 
+      currentScrollEvent: undefined,
+
       currentTime: moment().millisecond(0),
       todaysRule: {
         caption: '',
@@ -691,7 +693,12 @@ export default {
 
       xPos_new = xPos_new;
 
-      this.$scrollTo('.m_timeline', 500, {
+      if(this.currentScrollEvent !== undefined) {
+        this.currentScrollEvent();
+        return;
+      }
+
+      this.currentScrollEvent = this.$scrollTo('.m_timeline', 500, {
         container: this.$refs.timeline,
         offset: xPos_new,
         cancelable: true,
@@ -699,13 +706,13 @@ export default {
         x: true,
         y: false,
         onDone: () => {
-          this.$nextTick(() => {
-            this.isScrolling = false;
-            this.timelineViewport.scrollLeft = xPos_new;
-          });
+          console.log(`METHODS • TimeLineView: scrollTimelineToXPos / is done`);
+          this.currentScrollEvent = undefined;
+          // onScroll will update view
         },
         onCancel: () => {
-          this.isScrolling = false;
+          console.log(`METHODS • TimeLineView: scrollTimelineToXPos / was canceled`);
+          this.currentScrollEvent = undefined;
         }
       });
     },
