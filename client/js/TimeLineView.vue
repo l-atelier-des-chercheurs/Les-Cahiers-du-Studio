@@ -141,7 +141,7 @@
             :ref="`media_${index}`"
             :slugFolderName="slugFolderName"
             :slugMediaName="index"
-            :isPlaceholder="!elesIsClose(getMediaPosX(media.created))"
+            :isPlaceholder="!mediaIsClose(index,media)"
             :media="media"
             :timelineScale="timelineViewport.scale"
             :timelineHeight="timelineHeight"
@@ -469,8 +469,8 @@ export default {
         Updates medias and grid position according to viewed timeline
     ******************************************************************/
     getMediaPosX(media_created) {
-      let createdTS = moment(media_created,'YYYY-MM-DD HH:mm:ss');
-      let posX = this.getXPositionFromDate(createdTS, false);
+      let createdTS = moment.isMoment(media_created) ? media_created : moment(media_created,'YYYY-MM-DD HH:mm:ss');
+      let posX = this.getXPositionFromDate(+createdTS, false);
       return posX;
     },
 
@@ -569,21 +569,35 @@ export default {
       let timeSinceStart = pc * viewportLength;
       return moment(timeSinceStart + this.timelineViewport.start);
     },
-    elesIsClose(xPos, screenMultiplier = 2) {
-      if(typeof xPos !== 'number') { return false; }
-      if(xPos < this.timelineViewport.scrollLeft - window.innerWidth * screenMultiplier) { return false; }
-      if(xPos > this.timelineViewport.scrollLeft + window.innerWidth * screenMultiplier) { return false; }
-      return true;
-    },
-    mediaIsVisible(media_created, slugMediaName) {
-      let mediaCreatedDay = moment(media_created, 'YYYY-MM-DD HH:mm:ss');
-      if(moment(mediaCreatedDay).isSame(this.timelineViewport.visibleDay, 'day') ||
-      moment(mediaCreatedDay).subtract(1, 'day').isSame(this.timelineViewport.visibleDay, 'day') ||
-      moment(mediaCreatedDay).add(1, 'day').isSame(this.timelineViewport.visibleDay, 'day')
-      ) {
-        return true;
+    mediaIsClose(index,media) {
+      console.log(`METHODS • TimeLineView: mediaIsClose for ${index}`);
+
+      // check if media has duration
+      if(media.duration !== undefined) {
+        // calculate proximity for created
+        if(this.elesIsClose(this.getMediaPosX(media.created))) {
+          return true;
+        }
+        // otherwise, calculate proximity for created minus duration (which should give us when ths recording was started)
+        let startRecordingDate = +moment(media.created).subtract(parseInt(media.duration), 'seconds');
+        if(this.elesIsClose(this.getMediaPosX(startRecordingDate))) {
+          return true;
+        }
+        // finally, let’s check whether we are in between those two dates
+        let centerOfTimeline = this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2;
+        if(this.getMediaPosX(startRecordingDate) < centerOfTimeline && centerOfTimeline < this.getMediaPosX(media.created)) {
+          return true;
+        }
+      } else {
+        return this.elesIsClose(this.getMediaPosX(media.created));
       }
       return false;
+    },
+    elesIsClose(xPos, screenMultiplier = 1) {
+      if(typeof xPos !== 'number') { return false; }
+      if(xPos < this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2 - window.innerWidth * screenMultiplier) { return false; }
+      if(xPos > this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2 + window.innerWidth * screenMultiplier) { return false; }
+      return true;
     },
     onResize() {
       console.log(`METHODS • TimeLineView: onResize`);
@@ -592,7 +606,6 @@ export default {
     },
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
-      debugger;
       this.timelineHeight = window.innerHeight - this.topNavbarHeight - this.bottomScrollBar;
     },
     onScroll() {

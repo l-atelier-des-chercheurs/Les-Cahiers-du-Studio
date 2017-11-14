@@ -3777,13 +3777,18 @@ th {
 }
 .m_calendar .m_calendar--days--day.has--noMedia > * {
   background-color: transparent;
+  border: 2px solid #f2f2f2;
   padding-bottom: 0px;
 }
 .m_calendar .m_calendar--days--day.has--noMedia .bottomIndicator {
   opacity: 0;
 }
+.m_calendar .m_calendar--days--day:hover > * {
+  border: 2px solid #333;
+}
 .m_calendar .m_calendar--days--day.is--visibleDay > * {
   background-color: #333;
+  border: 2px solid #333;
   color: white;
 }
 .m_calendar .m_calendar--days--day.is--today {
