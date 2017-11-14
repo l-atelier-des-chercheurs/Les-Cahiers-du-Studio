@@ -569,7 +569,7 @@ export default {
       let timeSinceStart = pc * viewportLength;
       return moment(timeSinceStart + this.timelineViewport.start);
     },
-    elesIsClose(xPos, screenMultiplier = 1.5) {
+    elesIsClose(xPos, screenMultiplier = 2) {
       if(typeof xPos !== 'number') { return false; }
       if(xPos < this.timelineViewport.scrollLeft - window.innerWidth * screenMultiplier) { return false; }
       if(xPos > this.timelineViewport.scrollLeft + window.innerWidth * screenMultiplier) { return false; }
