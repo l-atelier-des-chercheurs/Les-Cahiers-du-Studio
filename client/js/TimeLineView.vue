@@ -306,7 +306,7 @@ export default {
 
       // before updating the scale, we get the percent that's currently shown, store it, and we go back to it right after scaling
       let currentScrollLeft = this.$refs.timeline.scrollLeft;
-      let currentScrollMiddle = currentScrollLeft + this.$refs.timeline.offsetWidth/2;
+      let currentScrollMiddle = currentScrollLeft + this.$refs.timeline.offsetWidth/2 - this.timelineViewport.leftPadding;
       let currentScrollMiddle_percent = currentScrollMiddle / this.timelineViewport.width;
 
       this.setViewedTimelineWidthAndHeight();
@@ -316,7 +316,7 @@ export default {
 
       this.$nextTick(() => {
         let newScrollMiddle = this.timelineViewport.width * currentScrollMiddle_percent;
-        let newScrollLeft = newScrollMiddle - this.$refs.timeline.offsetWidth/2;
+        let newScrollLeft = newScrollMiddle - this.$refs.timeline.offsetWidth/2 + this.timelineViewport.leftPadding;
         this.$refs.timeline.scrollLeft = newScrollLeft;
         this.updateGridData();
         this.updateMediaData();
@@ -792,8 +792,8 @@ export default {
     },
     showZoomZone(val) {
       this.zoomZone.display = true;
-      this.zoomZone.width = Math.floor((val/this.timelineViewport.scale) * this.$refs.timeline.offsetWidth) - this.timelineViewport.leftPadding;
-      this.zoomZone.xPos = this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2 - this.zoomZone.width/2;
+      this.zoomZone.width = Math.floor((val/this.timelineViewport.scale) * this.$refs.timeline.offsetWidth);
+      this.zoomZone.xPos = this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2 - this.zoomZone.width/2 - this.timelineViewport.leftPadding;
     },
     hideZoomZone() {
       this.zoomZone.display = false;
@@ -802,8 +802,6 @@ export default {
     },
 
     updateTimelineViewportScale(val) {
-      // we are about to change scale to val
-      // to do this properly, we’ll show exactly where this will zoom before actually zooming
       this.timelineViewport.scale = Number(val);
     },
     zoomZoneStyle() {
