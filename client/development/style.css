@@ -4353,7 +4353,6 @@ th {
   bottom: 0;
   right: 0;
   z-index: 1;
-  opacity: 0;
   -webkit-transition: opacity 0.3s ease-out;
   -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
@@ -4367,11 +4366,6 @@ th {
 .mediaPreview.is--dragged .accroche,
 .mediaPreview.is--highlighted .accroche {
   background-color: #333;
-}
-.mediaPreview.is--hovered .button_openmedia,
-.mediaPreview.is--dragged .button_openmedia,
-.mediaPreview.is--highlighted .button_openmedia {
-  opacity: 1;
 }
 .mediaPreview .timelineMediaContent {
   position: relative;
@@ -4395,6 +4389,9 @@ th {
 .mediaPreview .timelineMediaContent .mediaContainer {
   opacity: 1;
   pointer-events: none;
+}
+.mediaPreview .timelineMediaContent .mediaContainer > * {
+  width: 100%;
 }
 .mediaPreview .timelineMediaContent .mediaContainer.type-audio {
   width: 100%;

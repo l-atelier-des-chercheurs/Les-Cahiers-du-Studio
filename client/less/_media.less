@@ -129,7 +129,6 @@
       bottom: 0;
       right: 0;
       z-index: 1;
-      opacity: 0;
 
       transition: opacity 0.3s ease-out;
     }
@@ -140,10 +139,6 @@
     z-index: 1000;
     .accroche {
       background-color: @c-noir;
-    }
-
-    .button_openmedia {
-      opacity: 1;
     }
   }
 
@@ -167,6 +162,10 @@
     .mediaContainer {
       opacity: 1;
       pointer-events: none;
+
+      > * {
+        width: 100%;
+      }
 
       &.type-audio {
         width: 100%;

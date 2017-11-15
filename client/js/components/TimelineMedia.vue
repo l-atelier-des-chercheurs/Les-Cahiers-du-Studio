@@ -10,9 +10,9 @@
     @mousedown.prevent="mousedown"
     @mouseover="mouseover"
     @mouseleave="mouseleave"
+    @mouseup="openMedia"
     >
-<!--
--->
+
     <div class="media">
 
       <div class="mediaScrubber"
@@ -25,7 +25,7 @@
           <button class="accroche accroche_gauche"></button>
           <div class="accrocheDurationLine"></div>
         </template>
-        <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
+        <button class="accroche accroche_droite" @mouseup.prevent="toggleCollapseMedia"></button>
       </div>
 
         <div
@@ -46,28 +46,25 @@
             </MediaContent>
           </transition>
 
-          <div
-            class="mediaContour">
+          <div class="mediaContour">
           </div>
 
-          <button
-            class="button-round bg-transparent button_openmedia padding-medium"
-            v-if="!isPlaceholder"
-            @mousedown.stop="$emit('open')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
-              <g id="Calque_2" data-name="Calque 2">
-                <g id="Content">
-                  <g>
-                    <circle cx="23.5" cy="23.5" r="23" style="fill: #fff"/>
-                    <circle cx="23.5" cy="23.5" r="23" style="fill: none;stroke: #4d4d4d;stroke-miterlimit: 10"/>
-                  </g>
-                  <polyline points="33.33 23.74 33.33 33.96 23.11 33.96 12.88 33.96 12.88 23.74 12.88 13.52 23.11 13.52" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-                  <polyline points="26.73 13.52 33.33 13.52 33.33 20.12" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-                  <line x1="33.05" y1="13.89" x2="22.1" y2="24.83" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-                </g>
-              </g>
-            </svg>
-          </button>
+          <transition
+            name="slide"
+            enter-active-class="slideInUp"
+            leave-active-class="slideOutDown"
+            >
+            <button
+              type="button"
+              class="button_openmedia bg-noir c-blanc"
+              style="animation-duration: 0.3s"
+              v-if="!isPlaceholder && is_hovered"
+              @mousedown.stop="openMedia"
+              >
+              Ouvrir
+            </button>
+          </transition>
+
         </div>
     </div>
   </div>
@@ -184,14 +181,12 @@ export default {
       }
     },
     mousedown() {
-      console.log('METHODS • TimelineMedia: mousedown');
-      console.log(`with is_dragged = ${this.is_dragged}`);
+      console.log(`METHODS • TimelineMedia: mousedown with is_dragged = ${this.is_dragged}`);
       window.addEventListener('mousemove', this.mousemove);
       window.addEventListener('mouseup', this.mouseup);
     },
     mousemove() {
-      console.log('METHODS • TimelineMedia: mousemove');
-      console.log(`with is_dragged = ${this.is_dragged}`);
+      console.log(`METHODS • TimelineMedia: mousemove with is_dragged = ${this.is_dragged}`);
       if(!this.is_dragged) {
         this.is_dragged = true;
 
@@ -201,6 +196,10 @@ export default {
         let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
         this.mediaStyles.y = this.limitMediaYPos(newY);
       }
+    },
+    openMedia() {
+      if(this.is_dragged) { return; }
+      this.$emit('open');
     },
     mouseup() {
       console.log(`METHODS • TimelineMedia: mouseup`);

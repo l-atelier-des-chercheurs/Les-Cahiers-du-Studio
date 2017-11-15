@@ -520,7 +520,6 @@ export default {
         this.allMediasPosition[slugMediaName] = posX;
       });
     },
-
     updateGridData() {
       console.log('METHODS • TimeLineView: updateGridData');
 
