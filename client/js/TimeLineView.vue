@@ -613,6 +613,7 @@ export default {
     },
     mediaIsClose(index,media) {
       console.log(`METHODS • TimeLineView: mediaIsClose`);
+      if(typeof this.$refs.timeline === 'undefined') { return false; }
 
       // check if media has duration
       if(media.duration !== undefined) {
