@@ -70,50 +70,48 @@
         <div class="simple_grid_overlay">
           <div class="simple_grid_overlay--wrapper">
 
-            <template v-if="overallGrid.days.length > 0">
-              <template v-for="item in overallGrid.days">
-                <div
-                  class="gridItem font-small gridItem_isday"
-                  :class="{ 'has--caption' : (item.caption !== undefined) }"
-                  :style="`transform:translate(${item.xPos}px, 0px)`"
-                  >
-                  <div v-if="item.caption !== undefined" class="gridItem--caption">
-                    {{ item.caption }}
-                  </div>
-                </div>
-              </template>
-            </template>
-
-            <template v-if="overallGrid.hours.length > 0">
-              <template v-for="item in overallGrid.hours">
-              <div
-                class="gridItem font-small gridItem_ishour"
-                :class="{ 'has--caption' : (item.caption !== undefined) }"
-                :style="'transform:translate(' + item.xPos + 'px, 0px)'"
-                >
-                <div v-if="item.caption !== undefined" class="gridItem--caption">
-                  {{ item.caption }}
-                </div>
+            <div
+              v-if="overallGrid.days.length > 0"
+              v-for="(item, index) in overallGrid.days"
+              :key="`index`"
+              class="gridItem font-small gridItem_isday"
+              :class="{ 'has--caption' : (item.caption !== undefined) }"
+              :style="`transform:translate(${item.xPos}px, 0px)`"
+              >
+              <div v-if="item.caption !== undefined" class="gridItem--caption">
+                {{ item.caption }}
               </div>
-              </template>
-            </template>
+            </div>
 
-            <template v-if="overallGrid.minutes.length > 0">
-              <template v-for="item in overallGrid.minutes">
-                <div
-                  class="gridItem font-small gridItem_isminute"
-                  :class="{ 'has--caption' : (item.caption !== undefined) }"
-                  :style="`transform:translate(${item.xPos}px, 0px)`"
-                  >
-                  <div v-if="item.caption !== undefined" class="gridItem--caption">
-                    {{ item.caption }}
-                  </div>
-                </div>
-              </template>
-            </template>
+            <div
+              v-if="overallGrid.hours.length > 0"
+              v-for="(item, index) in overallGrid.hours"
+              :key="`index`"
+              class="gridItem font-small gridItem_ishour"
+              :class="{ 'has--caption' : (item.caption !== undefined) }"
+              :style="'transform:translate(' + item.xPos + 'px, 0px)'"
+              >
+              <div v-if="item.caption !== undefined" class="gridItem--caption">
+                {{ item.caption }}
+              </div>
+            </div>
+
+            <div
+              v-if="overallGrid.minutes.length > 0"
+              v-for="(item, index) in overallGrid.minutes"
+              :key="`index`"
+              class="gridItem font-small gridItem_isminute"
+              :class="{ 'has--caption' : (item.caption !== undefined) }"
+              :style="`transform:translate(${item.xPos}px, 0px)`"
+              >
+              <div v-if="item.caption !== undefined" class="gridItem--caption">
+                {{ item.caption }}
+              </div>
+            </div>
 
             <div
               v-if="!!todaysRule.xPos && isRealtime"
+              :key="`todaysRule`"
               class="gridItem font-small gridItem_isrealtimerule"
               :style="'transform:translate(' + todaysRule.xPos + 'px, 0px)'"
               >
@@ -129,7 +127,6 @@
                   automatique
                 </small>
               </button>
-
             </div>
 
             <transition name="fade">

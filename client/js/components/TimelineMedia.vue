@@ -33,6 +33,7 @@
           class="timelineMediaContent"
           v-if="!isPlaceholder"
           :style="getMediaSize()"
+          style="animation-duration: 0.3s"
           >
           <MediaContent
             :slugFolderName="slugFolderName"
