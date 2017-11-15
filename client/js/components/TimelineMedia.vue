@@ -28,21 +28,23 @@
         <button class="accroche accroche_droite" @mouseup="toggleCollapseMedia"></button>
       </div>
 
-      <transition name="zoom">
         <div
           class="timelineMediaContent"
-          v-if="!isPlaceholder"
           :style="getMediaSize()"
-          style="animation-duration: 0.3s"
           >
-          <MediaContent
-            :slugFolderName="slugFolderName"
-            :slugMediaName="slugMediaName"
-            :media="media"
-            v-model="media.content"
-            :isPreview="true"
-            >
-          </MediaContent>
+
+          <transition name="fade">
+            <MediaContent
+              v-if="!isPlaceholder"
+              v-model="media.content"
+              style="animation-duration: 0.3s"
+              :slugFolderName="slugFolderName"
+              :slugMediaName="slugMediaName"
+              :media="media"
+              :isPreview="true"
+              >
+            </MediaContent>
+          </transition>
 
           <div
             class="mediaContour">
@@ -67,7 +69,6 @@
             </svg>
           </button>
         </div>
-      </transition>
     </div>
   </div>
 </template>
