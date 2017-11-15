@@ -41,7 +41,7 @@
               :slugFolderName="slugFolderName"
               :slugMediaName="slugMediaName"
               :media="media"
-              :isPreview="true"
+              :isInTimeline=true
               >
             </MediaContent>
           </transition>

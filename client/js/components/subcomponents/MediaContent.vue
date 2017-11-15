@@ -1,10 +1,10 @@
 <template>
-  <div :class="'mediaContainer flex-wrap flex-vertically-centered type-' + media.type">
+  <div :class="`mediaContainer flex-wrap flex-vertically-centered type-${media.type}`">
     <template v-if="media.type === 'image'">
       <img :src="linkToThumb">
     </template>
     <template v-else-if="media.type === 'video'">
-      <template v-if="isPreview">
+      <template v-if="isInTimeline">
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
@@ -13,11 +13,11 @@
       </template>
     </template>
     <template v-else-if="media.type === 'audio'">
-      <audio :controls="isPreview" :src="mediaURL">
+      <audio :controls="isInTimeline" :src="mediaURL">
       </audio>
     </template>
     <template v-else-if="media.type === 'text'">
-      <div v-if="isPreview" class="padding-small">
+      <div v-if="isInTimeline" class="padding-small">
         {{ value }}
         <template v-if="value.length === 0">
           …
@@ -29,6 +29,7 @@
         class="mediaTextContent border-none bg-transparent"
         :value="value"
         @input="$emit('input', $event.target.value)"
+        ref="textField"
       >
       </textarea>
     </template>
@@ -40,6 +41,7 @@
         name="label"
         :value="value"
         @input="$emit('input', $event.target.value)"
+        ref="textField"
       >
     </template>
     <template v-else-if="media.type === 'other'">
@@ -58,7 +60,7 @@ export default {
     slugMediaName: String,
     media: Object,
     mediaURL: String,
-    isPreview: {
+    isInTimeline: {
       type: Boolean,
       default: false,
     },
@@ -71,9 +73,18 @@ export default {
     return {
     }
   },
+  mounted() {
+    if(!this.isInTimeline) {
+      if(Modernizr !== undefined && !Modernizr.touchevents) {
+        if(this.media.type === 'text' || this.media.type === 'marker') {
+          this.$refs.textField.focus();
+        }
+      }
+    }
+  },
   computed: {
     linkToThumb: function() {
-      let thumbSize = this.isPreview ? 400: 1800;
+      let thumbSize = this.isInTimeline ? 400: 1800;
       let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: thumbSize }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     },
@@ -81,7 +92,7 @@ export default {
       let timeMark = 0;
       let pathToTimeMarkThumbs = _.findWhere(this.media.thumbs, { timeMark }).thumbsData;
 
-      let thumbSize = this.isPreview ? 400: 1800;
+      let thumbSize = this.isInTimeline ? 400: 1800;
       let pathToSmallestThumb = _.findWhere(pathToTimeMarkThumbs, { size: thumbSize }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     }

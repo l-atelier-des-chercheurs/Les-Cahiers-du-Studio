@@ -57,6 +57,7 @@ window.store = {
 };
 // window.store.state.folders = JSON.parse(JSON.stringify(locals.data));
 
+
 /***********
   SOCKETIO
 ***********/
