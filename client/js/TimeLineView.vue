@@ -285,7 +285,8 @@ export default {
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
-        leftPadding: 0
+        leftPadding: 0,
+        viewerWidth: 0
       },
     }
   },
@@ -304,26 +305,25 @@ export default {
     'timelineViewport.scale': function() {
       console.log('WATCH • TimeLineView: timelineViewport.scale');
 
+      // disable media animations
+      this.isAnimated = false;
+
       // before updating the scale, we get the percent that's currently shown, store it, and we go back to it right after scaling
       let currentScrollLeft = this.$refs.timeline.scrollLeft;
-      let currentScrollMiddle = currentScrollLeft + this.$refs.timeline.offsetWidth/2 - this.timelineViewport.leftPadding;
+      let currentScrollMiddle = currentScrollLeft + this.timelineViewport.viewerWidth/2 - this.timelineViewport.leftPadding;
       let currentScrollMiddle_percent = currentScrollMiddle / this.timelineViewport.width;
 
       this.setViewedTimelineWidthAndHeight();
 
-      // disable media animations
-      this.isAnimated = false;
+      this.updateGridData();
+      this.updateMediaData();
 
+      // reenable media animations
       this.$nextTick(() => {
         let newScrollMiddle = this.timelineViewport.width * currentScrollMiddle_percent;
-        let newScrollLeft = newScrollMiddle - this.$refs.timeline.offsetWidth/2 + this.timelineViewport.leftPadding;
+        let newScrollLeft = newScrollMiddle - this.timelineViewport.viewerWidth/2 + this.timelineViewport.leftPadding;
         this.$refs.timeline.scrollLeft = newScrollLeft;
-        this.updateGridData();
-        this.updateMediaData();
-        // reenable media animations
-        this.$nextTick(() => {
-          this.isAnimated = true;
-        });
+        this.isAnimated = true;
       });
 
       this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
@@ -365,6 +365,8 @@ export default {
     EventBus.$on('timeline.hideZoomZone', this.hideZoomZone);
 
     this.timelineViewport.leftPadding = parseInt($(this.$refs.timeline).css('padding-left'), 10);
+    this.timelineViewport.viewerWidth = this.$refs.timeline.offsetWidth;
+
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
 
@@ -511,7 +513,8 @@ export default {
       console.log('METHODS • TimeLineView: updateMediaData');
 
       Object.keys(this.medias).map((slugMediaName) => {
-        let media_created = this.medias[slugMediaName].created;
+        let media = this.medias[slugMediaName];
+        let media_created = media.created;
         let createdTS = moment.isMoment(media_created) ? media_created : moment(media_created,'YYYY-MM-DD HH:mm:ss');
         let posX = this.getXPositionFromDate(+createdTS, false);
         this.allMediasPosition[slugMediaName] = posX;
@@ -628,7 +631,7 @@ export default {
           return true;
         }
         // finally, let’s check whether we are in between those two dates
-        let centerOfTimeline = this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2;
+        let centerOfTimeline = this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2;
         if(this.getXPositionFromDate(+startRecordingDate, false) < centerOfTimeline && centerOfTimeline < this.getXPositionFromDate(media.created)) {
           return true;
         }
@@ -641,14 +644,15 @@ export default {
       if(typeof xPos !== 'number') { return false; }
       if(typeof this.$refs.timeline === 'undefined') { return false; }
 
-      if(xPos < this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2 - window.innerWidth * screenMultiplier) { return false; }
-      if(xPos > this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2 + window.innerWidth * screenMultiplier) { return false; }
+      if(xPos < this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2 - window.innerWidth * screenMultiplier) { return false; }
+      if(xPos > this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2 + window.innerWidth * screenMultiplier) { return false; }
       return true;
     },
     onResize() {
       console.log(`METHODS • TimeLineView: onResize`);
       this.setTimelineHeight();
       this.setViewedTimelineWidthAndHeight();
+      this.timelineViewport.viewerWidth = this.$refs.timeline.offsetWidth;
     },
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
@@ -715,7 +719,7 @@ export default {
       this.scrollTimelineToXPos(xPos);
     },
     adjustPosXValueForScrollX(xPos) {
-      xPos -= this.$refs.timeline.offsetWidth/2;
+      xPos -= this.timelineViewport.viewerWidth/2;
       xPos += this.timelineViewport.leftPadding;
       return xPos;
     },
@@ -736,7 +740,7 @@ export default {
       this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft + twentyFourHoursInPixels);
     },
 /*
-    // TODO: recalc pos with this.$refs.timeline.offsetWidth/2
+    // TODO: recalc pos with this.timelineViewport.viewerWidth/2
     goToPrevScreen() {
       console.log(`METHODS • TimeLineView: goToPrevScreen`);
       let delta = this.$root.settings.has_sidebar_opened ? window.innerWidth - this.sidebarWidth : window.innerWidth;
@@ -783,7 +787,7 @@ export default {
       console.log('METHODS • TimeLineView: toggleSidebar');
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
     },
-    setVisibleDay(xPos = this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2) {
+    setVisibleDay(xPos = this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2) {
       console.log('METHODS • TimeLineView: setVisibleDay');
       let dateFromPosX = this.getDateFromXPosition(xPos);
       dateFromPosX = Math.min(this.timelineViewport.end, Math.max(dateFromPosX, this.timelineViewport.start));
@@ -793,8 +797,8 @@ export default {
     },
     showZoomZone(val) {
       this.zoomZone.display = true;
-      this.zoomZone.width = Math.floor((val/this.timelineViewport.scale) * this.$refs.timeline.offsetWidth);
-      this.zoomZone.xPos = this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2 - this.zoomZone.width/2 - this.timelineViewport.leftPadding;
+      this.zoomZone.width = Math.floor((val/this.timelineViewport.scale) * this.timelineViewport.viewerWidth);
+      this.zoomZone.xPos = this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2 - this.zoomZone.width/2 - this.timelineViewport.leftPadding;
     },
     hideZoomZone() {
       this.zoomZone.display = false;
