@@ -40,6 +40,7 @@ html
       locals.lang = !{JSON.stringify(lang, null, 4)};
       locals.structure = !{JSON.stringify(structure, null, 4)};
       locals.localNetworkInfos = !{JSON.stringify(localNetworkInfos, null, 4)};
+      locals.presentation_md = `#{presentation_md}` ;
       locals.appVersion = "!{global.appInfos.version}";
     script(src='/development/main.js')
     script(src='/development/vue.js')

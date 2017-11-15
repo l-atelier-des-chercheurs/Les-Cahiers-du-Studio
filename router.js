@@ -8,7 +8,8 @@ const
   local = require('./local'),
   sockets = require('./sockets'),
   dev = require('./bin/dev-log'),
-  api = require('./bin/api')
+  api = require('./bin/api'),
+  file = require('./bin/file')
 ;
 
 module.exports = function(app,io,m){
@@ -41,18 +42,34 @@ module.exports = function(app,io,m){
       pageDataJSON.structure = local.settings().structure;
       pageDataJSON.logToFile = global.nodeStorage.getItem('logToFile');
 
-      api.getLocalIP().then(localNetworkInfos => {
-        pageDataJSON.localNetworkInfos = {
-          ip: [],
-          port: global.appInfos.port
-        };
-        pageDataJSON.localNetworkInfos.ip = Object.values(localNetworkInfos);
-        resolve(pageDataJSON);
-      }, function(err, p) {
-        dev.error(`Err while getting local IP: ${err}`);
-        reject(err);
-      });
+      let tasks = [];
 
+      let getPresentation = new Promise((resolve, reject) => {
+        file.getPresentation().then((presentationMD) => {
+          pageDataJSON.presentation_md = presentationMD;
+          resolve();
+        });
+      });
+      tasks.push(getPresentation);
+
+      let getLocalIP = new Promise((resolve, reject) => {
+        api.getLocalIP().then(localNetworkInfos => {
+          pageDataJSON.localNetworkInfos = {
+            ip: [],
+            port: global.appInfos.port
+          };
+          pageDataJSON.localNetworkInfos.ip = Object.values(localNetworkInfos);
+          resolve();
+        }, function(err, p) {
+          dev.error(`Err while getting local IP: ${err}`);
+          reject(err);
+        });
+      });
+      tasks.push(getLocalIP);
+
+      Promise.all(tasks).then(() => {
+        resolve(pageDataJSON);
+      });
     });
   }
 

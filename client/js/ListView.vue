@@ -20,24 +20,10 @@
             studio-théâtre <i>vitry</i> <br>› <i>Les Cahiers du Studio</i>
           </div>
         </div>
-        <div class="flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-medium">
-
-          <h2 class="text-ital text-underline">
-            Présentation
-          </h2>
-          <p>
-            Les Cahiers du Studio est une application de capture, d’annotation et de publication de médias (photos, textes, vidéos, sons) conçu en particulier pour les temps de résidence dans un lieu de création Théâtrale.
-          </p>
-          <p>La liste ci-dessous contient tous les temps capturés dans les Cahiers du Studio. Certains d’entre eux sont publics et tous leurs contenus peuvent être consultés, d’autres sont protégés par mot de passe et seuls les contenus rendus publics par les éditeurs sont consultables.
-          </p>
-          <p>
-            <a href="https://paper.dropbox.com/doc/Les-Cahiers-du-Studio-PvgkN59Zb2i9nAApZOIZz#:uid=389501177464251596585301&h2=Information-sur-le-stockage-de" class="js--openInBrowser" target="_blank">
-              documentation
-            </a>
-            <a href="mailto:hello@louiseveillard.com?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">
-              contact
-            </a>
-          </p>
+        <div class="text-formatting flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-medium">
+          <vue-markdown
+            :html=true
+            >{{ presentationText }}</vue-markdown>
         </div>
       </div>
     </header>
@@ -47,36 +33,45 @@
 
       <div class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-large">
 
-        <div class="border border-bottom-dashed border-top-dashed padding-vert-medium">
-          <label class="margin-none text-cap with-bullet">
-            Organiser par&nbsp;:
-          </label>
-          <div class="margin-sides-negative-small">
-            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'alph', sort.field = 'name'">
-              nom
-            </button>
-            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'created'">
-              date de création
-            </button>
-            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'start'">
-              date de début
-            </button>
-            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'end'">
-              date de fin
-            </button>
-          </div>
+        <div class="border border-top-dashed">
+          <p class="margin-vert-medium">
+            Pour plus d’information, consultez la <a href="https://paper.dropbox.com/doc/Les-Cahiers-du-Studio-PvgkN59Zb2i9nAApZOIZz#:uid=389501177464251596585301&h2=Information-sur-le-stockage-de" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:hello@louiseveillard.com?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.
+          </p>
         </div>
-        <div class="border border-bottom-dashed padding-vert-medium">
-          <label class="margin-none text-cap with-bullet">
-            dans l’ordre&nbsp;
-          </label>
-          <div class="margin-sides-negative-small">
-            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'ascending'">
-              croissant
-            </button>
-            <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'descending'">
-              décroissant
-            </button>
+
+        <div class="border border-top-dashed">
+          <div class="margin-vert-medium">
+            <label class="margin-none text-cap with-bullet">
+              Organiser par&nbsp;:
+            </label>
+            <div class="margin-sides-negative-small">
+              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'alph', sort.field = 'name'">
+                nom
+              </button>
+              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'created'">
+                date de création
+              </button>
+              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'start'">
+                date de début
+              </button>
+              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'end'">
+                date de fin
+              </button>
+            </div>
+          </div>
+
+          <div class="margin-vert-small">
+            <label class="margin-none text-cap with-bullet">
+              dans l’ordre&nbsp;
+            </label>
+            <div class="margin-sides-negative-small">
+              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'ascending'">
+                croissant
+              </button>
+              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'descending'">
+                décroissant
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -127,12 +122,14 @@
 <script>
 import Folder from './components/Folder.vue';
 import CreateFolder from './components/modals/CreateFolder.vue';
+import VueMarkdown from 'vue-markdown'
 
 export default {
   name: 'app',
   components: {
     CreateFolder,
-    Folder
+    Folder,
+    VueMarkdown
   },
   data () {
     return {
@@ -165,6 +162,9 @@ export default {
         sortedSortable.reverse();
       }
       return sortedSortable;
+    },
+    presentationText() {
+      return this.$root.store.presentation_md;
     }
   }
 }

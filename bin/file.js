@@ -14,6 +14,8 @@ const
 module.exports = (function() {
 
   const API = {
+    getPresentation     : () => getPresentation(),
+
     getFolder           : (slugFolderName)      => getFolder(slugFolderName),
     getMetaFileOfFolder : (slugFolderName)      => getMetaFileOfFolder(slugFolderName),
     createFolder        : (fdata)               => createFolder(fdata),
@@ -27,6 +29,16 @@ module.exports = (function() {
 
     createTextMedia     : (mdata)      => createTextMedia(mdata)
   };
+
+  function getPresentation() {
+    return new Promise(function(resolve, reject) {
+      let presentationMd = path.join(api.getFolderPath(), 'presentation.md');
+      fs.access(presentationMd, fs.F_OK, function(err) {
+        if(err) { reject(); }
+        resolve(validator.unescape(fs.readFileSync(presentationMd, local.settings().textEncoding)));
+      });
+    });
+  }
 
   function getMetaFileOfFolder(slugFolderName) {
     let folderPath = api.getFolderPath(slugFolderName);
@@ -126,7 +138,7 @@ module.exports = (function() {
         if(err) { dev.error(`Couldn't read content dir: ${err}`); reject(err); }
         if(filenames === undefined) { dev.error(`No folder found: ${err}`); reject(err); }
 
-        var folders = filenames.filter(function(thisSlugFolderName){
+        var folders = filenames.filter(function(thisSlugFolderName) {
             // is a folder
           return new RegExp(local.settings().regexpMatchFolderNames, 'i').test(thisSlugFolderName) &&
             // if slugFolderName isset, filter to get only requested folder
