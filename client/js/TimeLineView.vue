@@ -61,7 +61,10 @@
       }"
       >
       <div class="m_timeline-container"
-        :style="`width: ${timelineViewport.width}px; height: ${timelineViewport.height}px;`"
+        :style="{
+          width: `${timelineViewport.width}px`,
+          height: `${timelineViewport.height}px`
+        }"
         >
         <div class="timeline_track">
         </div>
@@ -76,7 +79,9 @@
               :key="`index`"
               class="gridItem font-small gridItem_isday"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform:translate(${item.xPos}px, 0px)`"
+              :style="{
+                transform: `translate(${item.xPos}px, 0px)`
+              }"
               >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
@@ -89,7 +94,9 @@
               :key="`index`"
               class="gridItem font-small gridItem_ishour"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="'transform:translate(' + item.xPos + 'px, 0px)'"
+              :style="{
+                transform: `translate(${item.xPos}px, 0px)`
+              }"
               >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
@@ -102,7 +109,9 @@
               :key="`index`"
               class="gridItem font-small gridItem_isminute"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform:translate(${item.xPos}px, 0px)`"
+              :style="{
+                transform: `translate(${item.xPos}px, 0px)`
+              }"
               >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
@@ -113,7 +122,9 @@
               v-if="!!todaysRule.xPos && isRealtime"
               :key="`todaysRule`"
               class="gridItem font-small gridItem_isrealtimerule"
-              :style="'transform:translate(' + todaysRule.xPos + 'px, 0px)'"
+              :style="{
+                transform: `translate(${todaysRule.xPos}px, 0px)`
+              }"
               >
               <div class="gridItem--caption">
                 {{ todaysRule.caption }}
@@ -142,7 +153,7 @@
 
         <template v-if="Object.keys(medias).length > 0">
           <TimelineMedia v-for="(media, index) in medias"
-            v-if="getMediaPosX(media.created)"
+            v-if="getMediaPosX(index)"
             v-bind:key="index"
             :ref="`media_${index}`"
             :slugFolderName="slugFolderName"
@@ -151,7 +162,7 @@
             :media="media"
             :timelineScale="timelineViewport.scale"
             :timelineHeight="timelineHeight"
-            :posX="getMediaPosX(media.created)"
+            :posX="getMediaPosX(index)"
             :class="{ 'is--highlighted' : highlightedMedia === index }"
             @open="openMediaModal(index)"
             >
@@ -254,6 +265,8 @@ export default {
         minutes: []
       },
 
+      allMediasPosition: {},
+
       // this object contains a start and end for this timeline, ven if it is realtime
       // for example 2017-07-01 13:22 and 2017-07-12 12:24
       timelineInfos: {
@@ -282,7 +295,11 @@ export default {
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
       this.setViewedTimelineWidthAndHeight();
+      this.updateMediaData();
       this.updateGridData();
+    },
+    'medias': function() {
+      this.updateMediaData();
     },
     'timelineViewport.scale': function() {
       console.log('WATCH • TimeLineView: timelineViewport.scale');
@@ -302,8 +319,11 @@ export default {
         let newScrollLeft = newScrollMiddle - this.$refs.timeline.offsetWidth/2;
         this.$refs.timeline.scrollLeft = newScrollLeft;
         this.updateGridData();
+        this.updateMediaData();
         // reenable media animations
-        this.isAnimated = true;
+        this.$nextTick(() => {
+          this.isAnimated = true;
+        });
       });
 
       this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
@@ -324,6 +344,7 @@ export default {
     this.setViewedTimelineBoundsFromInfos();
     this.setTimelineHeight();
     this.setViewedTimelineWidthAndHeight();
+    this.updateMediaData();
   },
   mounted() {
 
@@ -451,7 +472,6 @@ export default {
       }
     },
 
-    // called by :style in template
     setViewedTimelineWidthAndHeight() {
       console.log('METHODS • TimeLineView: setViewedTimelineWidthAndHeight');
 
@@ -484,10 +504,18 @@ export default {
     /******************************************************************
         Updates medias and grid position according to viewed timeline
     ******************************************************************/
-    getMediaPosX(media_created) {
-      let createdTS = moment.isMoment(media_created) ? media_created : moment(media_created,'YYYY-MM-DD HH:mm:ss');
-      let posX = this.getXPositionFromDate(+createdTS, false);
-      return posX;
+    getMediaPosX(slugMediaName) {
+      return this.allMediasPosition[slugMediaName];
+    },
+    updateMediaData() {
+      console.log('METHODS • TimeLineView: updateMediaData');
+
+      Object.keys(this.medias).map((slugMediaName) => {
+        let media_created = this.medias[slugMediaName].created;
+        let createdTS = moment.isMoment(media_created) ? media_created : moment(media_created,'YYYY-MM-DD HH:mm:ss');
+        let posX = this.getXPositionFromDate(+createdTS, false);
+        this.allMediasPosition[slugMediaName] = posX;
+      });
     },
 
     updateGridData() {
@@ -584,32 +612,34 @@ export default {
       return moment(timeSinceStart + this.timelineViewport.start);
     },
     mediaIsClose(index,media) {
-      console.log(`METHODS • TimeLineView: mediaIsClose for ${index}`);
+      console.log(`METHODS • TimeLineView: mediaIsClose`);
 
       // check if media has duration
       if(media.duration !== undefined) {
         // calculate proximity for created
-        if(this.elesIsClose(this.getMediaPosX(media.created))) {
+        if(this.elesIsClose(this.getMediaPosX(index))) {
           return true;
         }
 
         // otherwise, calculate proximity for created minus duration (which should give us when ths recording was started)
         let startRecordingDate = moment(media.created).subtract(parseInt(media.duration), 'seconds');
-        if(this.elesIsClose(this.getMediaPosX(startRecordingDate))) {
+        if(this.elesIsClose(this.getXPositionFromDate(+startRecordingDate, false))) {
           return true;
         }
         // finally, let’s check whether we are in between those two dates
         let centerOfTimeline = this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2;
-        if(this.getMediaPosX(startRecordingDate) < centerOfTimeline && centerOfTimeline < this.getMediaPosX(media.created)) {
+        if(this.getXPositionFromDate(+startRecordingDate, false) < centerOfTimeline && centerOfTimeline < this.getXPositionFromDate(media.created)) {
           return true;
         }
       } else {
-        return this.elesIsClose(this.getMediaPosX(media.created));
+        return this.elesIsClose(this.getMediaPosX(index));
       }
       return false;
     },
     elesIsClose(xPos, screenMultiplier = 1) {
       if(typeof xPos !== 'number') { return false; }
+      if(typeof this.$refs.timeline === 'undefined') { return false; }
+
       if(xPos < this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2 - window.innerWidth * screenMultiplier) { return false; }
       if(xPos > this.timelineViewport.scrollLeft + this.$refs.timeline.offsetWidth/2 + window.innerWidth * screenMultiplier) { return false; }
       return true;
@@ -671,7 +701,7 @@ export default {
     scrollToMedia(slugMediaName) {
       console.log(`METHODS • TimeLineView: scrollToMedia / slugMediaName: ${slugMediaName}`);
       let mediaToScrollTo = this.medias[slugMediaName];
-      let mediaPosX = this.getMediaPosX(mediaToScrollTo.created);
+      let mediaPosX = this.getMediaPosX(slugMediaName);
 
       mediaPosX = this.adjustPosXValueForScrollX(mediaPosX);
       this.scrollTimelineToXPos(mediaPosX);
@@ -777,7 +807,10 @@ export default {
       this.timelineViewport.scale = Number(val);
     },
     zoomZoneStyle() {
-      return `width: ${this.zoomZone.width}px; transform:translate(${this.zoomZone.xPos}px, 0px);`;
+      return {
+        width: `${this.zoomZone.width}px`,
+        transform: `translate(${this.zoomZone.xPos}px, 0px)`
+      }
     },
     startEditModal() {
       if(this.folder.authorized) {
