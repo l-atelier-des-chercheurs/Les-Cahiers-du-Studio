@@ -145,9 +145,10 @@ export default {
       this.mediaWidthFromDuration = Math.round(this.media.duration/this.timelineScale);
     },
     getMediaWidthFromDuration() {
-      return {
-        width: `${this.mediaWidthFromDuration}px`
-      };
+      if(this.media.duration !== undefined) {
+        return { width: `${this.mediaWidthFromDuration}px` };
+      }
+      return false;
     },
 
     // set width and height for a media.
