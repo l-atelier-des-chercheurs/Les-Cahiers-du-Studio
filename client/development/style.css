@@ -3254,6 +3254,9 @@ b {
 .c-rouge_vif {
   color: #ff3b4c;
 }
+.c-noir {
+  color: #333;
+}
 .bg-transparent {
   background-color: transparent;
 }

@@ -156,7 +156,7 @@ export default {
         sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
       }
       let sortedSortable = sortable.sort(function(a, b) {
-          return a.orderBy - b.orderBy;
+        return a.orderBy - b.orderBy;
       });
       if(this.sort.order === 'descending') {
         sortedSortable.reverse();

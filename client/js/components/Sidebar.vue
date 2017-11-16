@@ -92,9 +92,9 @@
               <th class="font-small padding-medium">Vignette</th>
 <!--              <th class="font-small padding-medium">Nom du fichier</th> -->
               <th>
-                <select v-model="secondColumn">
-                  <option v-for="mediaType in mediaKeys()">
-                    {{ mediaType }}
+                <select v-model="sort.current">
+                  <option v-for="option in sort.available" :value="option">
+                    {{ option.name }}
                   </option>
                 </select>
               </th>
@@ -104,25 +104,25 @@
           </thead>
           <tbody>
             <tr
-              v-if="media.hasOwnProperty(secondColumn) && media[secondColumn] !== ''"
-              v-for="(media, index) in medias"
-              v-bind:key="index"
-              @mouseover="highlightMedia(index)"
-              @mouseleave="unHighlightMedia(index)"
-              @click.stop="scrollToMedia(index)"
+              v-if="media.hasOwnProperty(sort.current.field) && media[sort.current.field] !== ''"
+              v-for="media in sortedMedias"
+              :key="media.slugMediaName"
+              @mouseover="highlightMedia(media.slugMediaName)"
+              @mouseleave="unHighlightMedia(media.slugMediaName)"
+              @click.stop="scrollToMedia(media.slugMediaName)"
               class="m_sidebarList--media"
-              :class="{ 'is--outOfScope' : mediaIsOutOfScope(media) }"
+              :class="{ 'is--outOfScope' : mediaIsOutOfScope(media.slugMediaName) }"
               >
               <td class="padding-small">
                 <template v-if="media.type === 'image'">
                   <img :src="linkToThumb(media)">
                 </template>
               </td>
-<!--              <td class="font-small padding-medium">{{ index }}</td> -->
-              <td class="font-small padding-small">{{ media[secondColumn] }}</td>
+<!--              <td class="font-small padding-medium">{{ media.slugMediaName }}</td> -->
+              <td class="font-small padding-small">{{ media[sort.current.field] }}</td>
               <td class="font-small padding-small">
-                <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered"
-                  @click.stop="openMediaModal(index)"
+                <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
+                  @click.stop="openMediaModal(media.slugMediaName)"
                   >
                   Ouvrir
                 </button>
@@ -178,13 +178,103 @@ export default {
   },
   data() {
     return {
-      secondColumn: 'created'
+      sort: {
+        current: {
+          field: 'created',
+          name: 'Date de création',
+          type: 'date',
+          order: 'ascending',
+        },
+
+        available: [
+          {
+            field: 'created',
+            name: 'Date de création',
+            type: 'date',
+            order: 'ascending',
+          },
+          {
+            field: 'modified',
+            name: 'Date de modification',
+            type: 'date',
+            order: 'descending',
+          },
+          {
+            field: 'type',
+            name: 'Type',
+            type: 'alph',
+            order: 'ascending',
+          },
+          {
+            field: 'color',
+            name: 'Couleur',
+            type: 'alph',
+            order: 'ascending',
+          },
+          {
+            field: 'authors',
+            name: 'Auteurs',
+            type: 'alph',
+            order: 'ascending',
+          },
+          {
+            field: 'public',
+            name: 'Public',
+            type: 'alph',
+            order: 'descending',
+          },
+          {
+            field: 'content',
+            name: 'Contenu',
+            type: 'alph',
+            order: 'ascending',
+          },
+        ]
+      },
     }
   },
-  methods: {
-    mediaKeys() {
-      return Object.keys(locals.structure.media);
+  computed: {
+    sortedMedias() {
+      var sortable = [];
+      for (let slugMediaName in this.medias) {
+        let orderBy;
+
+        if (this.sort.current.type ==='date') {
+          orderBy = + new Date(this.medias[slugMediaName][this.sort.current.field]);
+        } else if (this.sort.current.type ==='alph') {
+          orderBy = this.medias[slugMediaName][this.sort.current.field];
+        }
+
+        sortable.push({ slugMediaName: slugMediaName, orderBy: orderBy });
+      }
+      let sortedSortable = sortable.sort(function(a, b) {
+        let valA = a.orderBy;
+        let valB = b.orderBy;
+        if(typeof a.orderBy === 'string' && typeof b.orderBy === 'string') {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        }
+        if (valA < valB) { return -1; }
+        if (valA > valB) { return 1; }
+        return 0;
+      });
+      if(this.sort.current.order === 'descending') {
+        sortedSortable.reverse();
+      }
+
+      // array order is garanteed while objects properties aren’t,
+      // that’s why we use an array here
+      let sortedMedias = sortedSortable.map((d) => {
+        let sortedMediaObj = this.medias[d.slugMediaName];
+        sortedMediaObj.slugMediaName = d.slugMediaName;
+        return sortedMediaObj;
+      });
+      debugger;
+      return sortedMedias;
     },
+  },
+
+  methods: {
     openInFinder(thisPath) {
       const shell = window.require('electron').shell;
       event.preventDefault();
