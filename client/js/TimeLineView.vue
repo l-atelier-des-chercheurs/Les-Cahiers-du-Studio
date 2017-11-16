@@ -131,11 +131,14 @@
               </div>
               <button type="button" class="gridItem_isrealtimerule--autoscroll_checkbox button-small bg-rouge_vif border-circled button-thin button-wide padding-verysmall margin-none" >
                 <small>
-                  <input
-                    type="checkbox"
-                    v-model="timelineViewport.autoscroll"
-                  >défilement<br>
-                  automatique
+                  <label for="autoScroll" class="margin-none">
+                    <input
+                      type="checkbox"
+                      v-model="timelineViewport.autoscroll"
+                      id="autoScroll"
+                    >défilement<br>
+                    automatique
+                  </label>
                 </small>
               </button>
             </div>
@@ -365,7 +368,7 @@ export default {
     EventBus.$on('timeline.hideZoomZone', this.hideZoomZone);
 
     this.timelineViewport.leftPadding = parseInt($(this.$refs.timeline).css('padding-left'), 10);
-    this.timelineViewport.viewerWidth = this.$refs.timeline.offsetWidth;
+    this.updateViewerWidth();
 
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
@@ -377,6 +380,7 @@ export default {
     this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft+1;
 
     this.timelineUpdateRoutine = setInterval(() => {
+
       if(this.isScrolling || !this.isRealtime) {
         return;
       }
@@ -386,6 +390,7 @@ export default {
       this.currentTime = moment().millisecond(0);
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
+      this.setViewedTimelineWidthAndHeight();
 
       if(this.timelineViewport.scrollLeft !== this.$refs.timeline.scrollLeft) {
         this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
@@ -651,6 +656,10 @@ export default {
       console.log(`METHODS • TimeLineView: onResize`);
       this.setTimelineHeight();
       this.setViewedTimelineWidthAndHeight();
+      this.updateViewerWidth();
+    },
+    updateViewerWidth() {
+      console.log(`METHODS • TimeLineView: updateViewerWidth`);
       this.timelineViewport.viewerWidth = this.$refs.timeline.offsetWidth;
     },
     setTimelineHeight() {
@@ -700,6 +709,7 @@ export default {
       this.$refs.timeline.scrollLeft = this.timelineViewport.width;
     },
     scrollToToday() {
+      console.log(`METHODS • TimeLineView: scrollToToday`);
       this.scrollToDate(this.currentTime);
     },
     scrollToMedia(slugMediaName) {
@@ -754,10 +764,7 @@ export default {
     scrollTimelineToXPos(xPos_new) {
       console.log(`METHODS • TimeLineView: scrollTimelineToXPos / xPos_new = ${xPos_new}`);
 
-      this.isScrolling = true;
-
       xPos_new = xPos_new;
-
       if(this.currentScrollEvent !== undefined) {
         this.currentScrollEvent();
         return;
@@ -781,10 +788,12 @@ export default {
         }
       });
     },
-
     toggleSidebar() {
       console.log('METHODS • TimeLineView: toggleSidebar');
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
+      this.$nextTick(() => {
+        this.updateViewerWidth();
+      });
     },
     setVisibleDay(xPos = this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2) {
       console.log('METHODS • TimeLineView: setVisibleDay');

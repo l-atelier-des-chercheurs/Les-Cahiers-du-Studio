@@ -25,7 +25,7 @@
           <button class="accroche accroche_gauche"></button>
           <div class="accrocheDurationLine"></div>
         </template>
-        <button class="accroche accroche_droite" @mouseup.prevent="toggleCollapseMedia"></button>
+        <button class="accroche accroche_droite" @mouseup.stop="toggleCollapseMedia"></button>
       </div>
 
         <div
@@ -57,6 +57,7 @@
             <button
               type="button"
               class="button_openmedia bg-noir c-blanc"
+              :class="{ 'padding-verysmall button-thin' : this.media.type === 'marker' }"
               style="animation-duration: 0.3s"
               v-if="!isPlaceholder && is_hovered"
               @mousedown.stop="openMedia"

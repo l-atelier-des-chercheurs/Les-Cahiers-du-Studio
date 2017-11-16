@@ -30,6 +30,7 @@
       border-radius: 50%;
       color: inherit;
       background-color: @c-gris_verylight;
+      border: 2px solid @c-gris_verylight;
 
       transition: all 1s ease;
 
@@ -48,7 +49,6 @@
 
       > * {
         background-color: transparent;
-        border: 2px solid @c-gris_verylight;
         padding-bottom: 0px;
       }
 
@@ -60,20 +60,23 @@
 
     &:hover {
       > * {
-        border: 2px solid @c-noir;
+        border-color: @c-noir;
       }
     }
 
     &.is--visibleDay {
       > * {
         background-color: @c-noir;
-        border: 2px solid @c-noir;
+        border-color: @c-noir;
         color: white;
       }
     }
     &.is--today {
       @t-todayTagSize: 0.4em;
-      color: @c-bleu_vif;
+
+      > * {
+        color: @c-rouge_vif;
+      }
 
       .bottomIndicator {
       }
