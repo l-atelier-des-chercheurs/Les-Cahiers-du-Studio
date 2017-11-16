@@ -56,7 +56,6 @@ import _ from 'underscore';
 
 export default {
   props: {
-    slugFolderName: String,
     slugMediaName: String,
     media: Object,
     mediaURL: String,

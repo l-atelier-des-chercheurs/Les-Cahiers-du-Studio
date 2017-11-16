@@ -189,7 +189,6 @@
 
     <template slot="preview">
       <MediaContent
-        :slugFolderName="slugFolderName"
         :slugMediaName="slugMediaName"
         :media="media"
         :mediaURL="mediaURL"

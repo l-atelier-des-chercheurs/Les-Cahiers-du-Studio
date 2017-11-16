@@ -199,6 +199,7 @@
         @close="showMediaModalFor = ''"
       >
       </EditMedia>
+
     </div>
   </div>
 </template>

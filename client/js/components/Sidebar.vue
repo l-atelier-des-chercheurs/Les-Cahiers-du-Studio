@@ -82,6 +82,13 @@
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           Liste&nbsp;
+          <button
+            type="button"
+            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="openListMediasModal()"
+            >
+            agrandir
+          </button>
         </h3>
       </div>
 
@@ -102,9 +109,9 @@
               </th>
             </tr>
             <tr>
-              <th class="font-small padding-medium">Recherche</th>
+              <th class="font-small padding-medium">Filtre</th>
               <th>
-                <input type="text" v-model="filter">
+                <input type="text" v-model="filter" debounce="5000">
               </th>
               <th>
               </th>
@@ -141,6 +148,13 @@
       </div>
     </SidebarSection>
 
+    <MediasList
+      v-if="showMediasList === true"
+      :sortedMedias="sortedMedias"
+      @close="closeListMediasModal()"
+    >
+    </MediasList>
+
   </div>
 
 </template>
@@ -153,6 +167,8 @@ import Informations from './sidebar/Informations.vue';
 import Calendrier from './sidebar/Calendrier.vue';
 import Tableau from './sidebar/Tableau.vue';
 import SidebarSection from './sidebar/SidebarSection.vue';
+
+import MediasList from './modals/MediasList.vue';
 
 // from https://stackoverflow.com/questions/23795522/how-to-enumerate-dates-between-two-dates-in-moment
 var enumerateDaysBetweenDates = function(startDate, endDate) {
@@ -170,7 +186,8 @@ var enumerateDaysBetweenDates = function(startDate, endDate) {
 
 export default {
   components: {
-    SidebarSection
+    SidebarSection,
+    MediasList
   },
   props: {
     slugFolderName: String,
@@ -182,11 +199,12 @@ export default {
       type: Boolean,
       default: false,
     },
-    showEditFolderModal: false
+    showEditFolderModal: false,
   },
   data() {
     return {
       filter: '',
+      showMediasList: false,
       sort: {
         current: {
           field: 'created',
@@ -237,9 +255,9 @@ export default {
             name: 'Contenu',
             type: 'alph',
             order: 'ascending',
-          },
+          }
         ]
-      },
+      }
     }
   },
   computed: {
@@ -316,6 +334,12 @@ export default {
     },
     openMediaModal(slugMediaName) {
       EventBus.$emit('timeline.openMediaModal', slugMediaName);
+    },
+    openListMediasModal() {
+      this.showMediasList = true;
+    },
+    closeListMediasModal() {
+      this.showMediasList = false;
     },
     linkToThumb(media) {
       let thumbSize = 50;

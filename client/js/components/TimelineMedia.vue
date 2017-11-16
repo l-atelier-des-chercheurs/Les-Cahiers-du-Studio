@@ -38,7 +38,6 @@
               v-if="!isPlaceholder"
               v-model="media.content"
               style="animation-duration: 0.3s"
-              :slugFolderName="slugFolderName"
               :slugMediaName="slugMediaName"
               :media="media"
               :isInTimeline=true
