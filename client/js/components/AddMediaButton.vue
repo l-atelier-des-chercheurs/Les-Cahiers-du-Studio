@@ -77,6 +77,10 @@ export default {
         return;
       }
 
+      if(e.target.tagName.toLowerCase() === 'input') {
+        return;
+      }
+
       var key = e.key;
       if(key === 'y' || key === 'w' || key === 'z') {
         this.$root.createTextMedia({

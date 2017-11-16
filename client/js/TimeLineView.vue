@@ -156,7 +156,6 @@
 
         <template v-if="Object.keys(medias).length > 0">
           <TimelineMedia v-for="(media, index) in medias"
-            v-if="getMediaPosX(index)"
             v-bind:key="index"
             :ref="`media_${index}`"
             :slugFolderName="slugFolderName"
@@ -326,6 +325,7 @@ export default {
         let newScrollMiddle = this.timelineViewport.width * currentScrollMiddle_percent;
         let newScrollLeft = newScrollMiddle - this.timelineViewport.viewerWidth/2 + this.timelineViewport.leftPadding;
         this.$refs.timeline.scrollLeft = newScrollLeft;
+        this.drawRealtimeRule();
         this.isAnimated = true;
       });
 

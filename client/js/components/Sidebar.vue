@@ -89,7 +89,7 @@
         <table class="m_sidebarList table-hoverable margin-none">
           <thead>
             <tr>
-              <th class="font-small padding-medium">Vignette</th>
+              <th class="font-small padding-medium">Aperçu</th>
 <!--              <th class="font-small padding-medium">Nom du fichier</th> -->
               <th>
                 <select v-model="sort.current">
@@ -97,6 +97,14 @@
                     {{ option.name }}
                   </option>
                 </select>
+              </th>
+              <th>
+              </th>
+            </tr>
+            <tr>
+              <th class="font-small padding-medium">Recherche</th>
+              <th>
+                <input type="text" v-model="filter">
               </th>
               <th>
               </th>
@@ -111,14 +119,14 @@
               @mouseleave="unHighlightMedia(media.slugMediaName)"
               @click.stop="scrollToMedia(media.slugMediaName)"
               class="m_sidebarList--media"
-              :class="{ 'is--outOfScope' : mediaIsOutOfScope(media.slugMediaName) }"
+              :class="{ 'is--outOfScope' : mediaIsOutOfScope(media) }"
+              :title="media.slugMediaName"
               >
               <td class="padding-small">
                 <template v-if="media.type === 'image'">
                   <img :src="linkToThumb(media)">
                 </template>
               </td>
-<!--              <td class="font-small padding-medium">{{ media.slugMediaName }}</td> -->
               <td class="font-small padding-small">{{ media[sort.current.field] }}</td>
               <td class="font-small padding-small">
                 <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
@@ -178,6 +186,7 @@ export default {
   },
   data() {
     return {
+      filter: '',
       sort: {
         current: {
           field: 'created',
@@ -237,20 +246,20 @@ export default {
     sortedMedias() {
       var sortable = [];
       for (let slugMediaName in this.medias) {
-        let orderBy;
+        let mediaDataToOrderBy;
 
         if (this.sort.current.type ==='date') {
-          orderBy = + new Date(this.medias[slugMediaName][this.sort.current.field]);
+          mediaDataToOrderBy = + new Date(this.medias[slugMediaName][this.sort.current.field]);
         } else if (this.sort.current.type ==='alph') {
-          orderBy = this.medias[slugMediaName][this.sort.current.field];
+          mediaDataToOrderBy = this.medias[slugMediaName][this.sort.current.field];
         }
 
-        sortable.push({ slugMediaName: slugMediaName, orderBy: orderBy });
+        sortable.push({ slugMediaName: slugMediaName, mediaDataToOrderBy: mediaDataToOrderBy });
       }
       let sortedSortable = sortable.sort(function(a, b) {
-        let valA = a.orderBy;
-        let valB = b.orderBy;
-        if(typeof a.orderBy === 'string' && typeof b.orderBy === 'string') {
+        let valA = a.mediaDataToOrderBy;
+        let valB = b.mediaDataToOrderBy;
+        if(typeof a.mediaDataToOrderBy === 'string' && typeof b.mediaDataToOrderBy === 'string') {
           valA = valA.toLowerCase();
           valB = valB.toLowerCase();
         }
@@ -264,12 +273,22 @@ export default {
 
       // array order is garanteed while objects properties aren’t,
       // that’s why we use an array here
-      let sortedMedias = sortedSortable.map((d) => {
+      let sortedMedias = sortedSortable.reduce((result, d) => {
         let sortedMediaObj = this.medias[d.slugMediaName];
         sortedMediaObj.slugMediaName = d.slugMediaName;
-        return sortedMediaObj;
-      });
-      debugger;
+
+        if(this.filter.length > 0) {
+          // if there is a filter set, let’s only return medias whose mediaDataToOrderBy contain that string
+          let originalContentFromMedia = sortedMediaObj[this.sort.current.field] + '';
+          if(originalContentFromMedia.indexOf(this.filter) !== -1) {
+            result.push(sortedMediaObj);
+          }
+        } else {
+          result.push(sortedMediaObj);
+        }
+
+        return result;
+      }, []);
       return sortedMedias;
     },
   },
@@ -305,7 +324,6 @@ export default {
     },
     mediaIsOutOfScope(media) {
       if(moment(media.created).isBefore(this.timelineInfos.start) || moment(media.created).isAfter(this.timelineInfos.end)) {
-
         return true;
       }
       return false;

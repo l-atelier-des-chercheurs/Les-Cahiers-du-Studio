@@ -3735,7 +3735,7 @@ th {
   -ms-flex: 1 1 60%;
   flex: 1 1 60%;
 }
-@media screen and (max-width: 40rem) {
+@media screen and (max-width: 50rem) {
   .flex-collapse-on-mobile {
     -ms-flex-preferred-size: auto;
     flex-basis: auto;
@@ -3855,7 +3855,7 @@ th {
   overflow-x: scroll;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  padding-left: 2.7em;
+  padding-left: 13.5em;
 }
 .m_timeline::-webkit-scrollbar {
   width: 80px;
@@ -4644,7 +4644,8 @@ body.is_unscrollable {
   flex-grow: 0;
 }
 .m_home--folders .m_home--folders--card {
-  width: 235px;
+  width: 50%;
+  max-width: 235px;
   min-height: 235px;
   background-color: white;
   float: left;
@@ -4792,11 +4793,11 @@ body.is_unscrollable {
   -webkit-transform: translateX(-460px);
   -ms-transform: translateX(-460px);
   transform: translateX(-460px);
-  -webkit-transition: -webkit-transform 0.35s ease-in;
-  transition: -webkit-transform 0.35s ease-in;
-  -o-transition: transform 0.35s ease-in;
-  transition: transform 0.35s ease-in;
-  transition: transform 0.35s ease-in, -webkit-transform 0.35s ease-in;
+  -webkit-transition: opacity 0.45s, -webkit-transform 0.35s ease-out;
+  transition: opacity 0.45s, -webkit-transform 0.35s ease-out;
+  -o-transition: transform 0.35s ease-out, opacity 0.45s;
+  transition: transform 0.35s ease-out, opacity 0.45s;
+  transition: transform 0.35s ease-out, opacity 0.45s, -webkit-transform 0.35s ease-out;
 }
 .m_sidebar {
   position: absolute;

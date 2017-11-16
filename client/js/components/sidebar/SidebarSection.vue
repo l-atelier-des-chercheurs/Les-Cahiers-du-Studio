@@ -1,6 +1,6 @@
 <template>
 
-  <section class="border border-bottom-dashed margin-sides-medium padding-vert-medium">
+  <section class="border border-bottom-dashed padding-medium">
     <header class="">
       <slot name="header">
       </slot>
