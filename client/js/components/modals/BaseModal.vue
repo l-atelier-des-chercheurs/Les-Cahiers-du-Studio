@@ -11,13 +11,16 @@
           >
 
           <div class="flex-wrap flex-vertically-stretched ">
-            <div class="m_modal--sidebar flex-size-2/5 flex-collapse-on-mobile bg-noir_light c-blanc">
+            <div class="m_modal--sidebar flex-collapse-on-mobile bg-noir_light c-blanc"
+              :class="{ 'flex-size-2/5' : !!this.$slots['sidebar'] }"
+            >
 
               <div class="m_modal--header padding-medium bg-noir c-blanc">
                 <h3 class="margin-none with-bullet">
                   <slot name="header">
                       default header
                   </slot>
+                  {{ !!this.$slots['sidebar'] }}
                 </h3>
               </div>
 
@@ -49,7 +52,9 @@
               </form>
 
             </div>
-            <div v-if="!!this.$slots['preview']" class="m_modal--preview flex-size-3/5 flex-collapse-on-mobile">
+            <div v-if="!!this.$slots['preview']" class="m_modal--preview flex-collapse-on-mobile"
+              :class="{ 'flex-size-3/5' : !!this.$slots['sidebar'] }"
+            >
               <slot name="preview">
                 default preview
               </slot>

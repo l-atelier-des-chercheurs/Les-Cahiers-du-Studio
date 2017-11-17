@@ -7,30 +7,35 @@
     </template>
 
     <template slot="preview">
-      <div v-for="media in sortedMedias" class="margin-vert-small">
-        <MediaContent
-          v-model="media.content"
-          style="animation-duration: 0.3s"
-          :slugMediaName="media.slugMediaName"
-          :media="media"
-          :isInTimeline=true
-          >
-        </MediaContent>
-      </div>
+      <Tableau
+        :display="'flux'"
+        :filter="filter"
+        :sort="sort"
+        :sortedMedias="sortedMedias"
+        :timelineInfos="timelineInfos"
+        @setSort="$emit('setSort')"
+        @setFilter="$emit('setFilter')"
+        >
+      </Tableau>
     </template>
   </Modal>
 </template>
 <script>
 import Modal from './BaseModal.vue';
+import Tableau from '../sidebar/Tableau.vue';
+
 import MediaContent from '../subcomponents/MediaContent.vue';
 
 export default {
   props: {
-    sortedMedias: Object,
+    filter: String,
+    sort: Object,
+    sortedMedias: Array,
+    timelineInfos: Object,
   },
   components: {
     Modal,
-    MediaContent
+    Tableau
   }
 }
 </script>

@@ -93,64 +93,28 @@
       </div>
 
       <div slot="body" class="margin-sides-negative-medium">
-        <table class="m_sidebarList table-hoverable margin-none">
-          <thead>
-            <tr>
-              <th class="font-small padding-medium">Aperçu</th>
-<!--              <th class="font-small padding-medium">Nom du fichier</th> -->
-              <th>
-                <select v-model="sort.current">
-                  <option v-for="option in sort.available" :value="option">
-                    {{ option.name }}
-                  </option>
-                </select>
-              </th>
-              <th>
-              </th>
-            </tr>
-            <tr>
-              <th class="font-small padding-medium">Filtre</th>
-              <th>
-                <input type="text" v-model="filter" debounce="5000">
-              </th>
-              <th>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-if="media.hasOwnProperty(sort.current.field) && media[sort.current.field] !== ''"
-              v-for="media in sortedMedias"
-              :key="media.slugMediaName"
-              @mouseover="highlightMedia(media.slugMediaName)"
-              @mouseleave="unHighlightMedia(media.slugMediaName)"
-              @click.stop="scrollToMedia(media.slugMediaName)"
-              class="m_sidebarList--media"
-              :class="{ 'is--outOfScope' : mediaIsOutOfScope(media) }"
-              :title="media.slugMediaName"
-              >
-              <td class="padding-small">
-                <template v-if="media.type === 'image'">
-                  <img :src="linkToThumb(media)">
-                </template>
-              </td>
-              <td class="font-small padding-small">{{ media[sort.current.field] }}</td>
-              <td class="font-small padding-small">
-                <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
-                  @click.stop="openMediaModal(media.slugMediaName)"
-                  >
-                  Ouvrir
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <Tableau
+          :display="'table'"
+          :filter="filter"
+          :sort="sort"
+          :sortedMedias="sortedMedias"
+          :timelineInfos="timelineInfos"
+          @setSort="setSort"
+          @setFilter="setFilter"
+          >
+        </Tableau>
       </div>
     </SidebarSection>
 
+
     <MediasList
       v-if="showMediasList === true"
+      :filter="filter"
+      :sort="sort"
       :sortedMedias="sortedMedias"
+      :timelineInfos="timelineInfos"
+      @setSort="setSort"
+      @setFilter="setFilter"
       @close="closeListMediasModal()"
     >
     </MediasList>
@@ -159,16 +123,15 @@
 
 </template>
 <script>
-import EventBus from '../event-bus';
-import moment from 'moment';
-import _ from 'underscore';
-
 import Informations from './sidebar/Informations.vue';
 import Calendrier from './sidebar/Calendrier.vue';
 import Tableau from './sidebar/Tableau.vue';
 import SidebarSection from './sidebar/SidebarSection.vue';
-
 import MediasList from './modals/MediasList.vue';
+import EventBus from '../event-bus';
+
+import moment from 'moment';
+
 
 // from https://stackoverflow.com/questions/23795522/how-to-enumerate-dates-between-two-dates-in-moment
 var enumerateDaysBetweenDates = function(startDate, endDate) {
@@ -187,6 +150,7 @@ var enumerateDaysBetweenDates = function(startDate, endDate) {
 export default {
   components: {
     SidebarSection,
+    Tableau,
     MediasList
   },
   props: {
@@ -203,8 +167,9 @@ export default {
   },
   data() {
     return {
-      filter: '',
       showMediasList: false,
+      filter: '',
+
       sort: {
         current: {
           field: 'created',
@@ -320,37 +285,14 @@ export default {
     getVisibleDay() {
       return moment(this.visibleDay).format('DD/MM/YYYY');
     },
-    scrollToMedia(slugMediaName) {
-      EventBus.$emit('scrollToMedia', slugMediaName);
-    },
     scrollToDate(timestamp) {
       EventBus.$emit('scrollToDate', timestamp);
-    },
-    highlightMedia(slugMediaName) {
-      EventBus.$emit('highlightMedia', slugMediaName);
-    },
-    unHighlightMedia(slugMediaName) {
-      EventBus.$emit('highlightMedia', '');
-    },
-    openMediaModal(slugMediaName) {
-      EventBus.$emit('timeline.openMediaModal', slugMediaName);
     },
     openListMediasModal() {
       this.showMediasList = true;
     },
     closeListMediasModal() {
       this.showMediasList = false;
-    },
-    linkToThumb(media) {
-      let thumbSize = 50;
-      let pathToSmallestThumb = _.findWhere(media.thumbs, { size: thumbSize }).path;
-      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : '';
-    },
-    mediaIsOutOfScope(media) {
-      if(moment(media.created).isBefore(this.timelineInfos.start) || moment(media.created).isAfter(this.timelineInfos.end)) {
-        return true;
-      }
-      return false;
     },
     folderDays() {
       console.log('METHODS • sidebar: getting folderDays');
@@ -425,6 +367,13 @@ export default {
 
     scrollToToday() {
       EventBus.$emit('timeline.scrollToToday');
+    },
+
+    setSort(newSort) {
+      this.sort.current = newSort;
+    },
+    setFilter(newFilter) {
+      this.filter = newFilter;
     }
   }
 
