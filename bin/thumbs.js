@@ -43,7 +43,7 @@ module.exports = (function() {
         let makeThumbs = [];
 
         if(meta.type === 'image') {
-          let thumbResolutions = [50,200,400,600,1800];
+          let thumbResolutions = [50,200,400,600,1200,1800];
           thumbResolutions.forEach((thumbRes) => {
             let makeThumb = new Promise((resolve, reject) => {
               _makeImageThumb(mediaPath, thumbFolderPath, slugMediaName, thumbRes).then((thumbPath) => {
@@ -74,7 +74,7 @@ module.exports = (function() {
                 // - mediaName.5.200.jpg, mediaName.10.400.jpg, etc.
 
                 let makeThumbsFromScreenshot = [];
-                let thumbResolutions = [50,200,400,600,1800];
+                let thumbResolutions = [50,200,400,600,1200,1800];
 
                 thumbResolutions.forEach((thumbRes) => {
                   let makeThumbFromScreenshot = new Promise((resolve, reject) => {

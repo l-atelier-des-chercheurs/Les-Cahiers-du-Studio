@@ -94,13 +94,13 @@
 
       <div slot="body" class="margin-sides-negative-medium">
         <Tableau
+          v-if="showMediasList === false"
           :display="'table'"
           :filter="filter"
           :sort="sort"
           :sortedMedias="sortedMedias"
+          :slugFolderName="slugFolderName"
           :timelineInfos="timelineInfos"
-          @setSort="setSort"
-          @setFilter="setFilter"
           >
         </Tableau>
       </div>
@@ -112,9 +112,8 @@
       :filter="filter"
       :sort="sort"
       :sortedMedias="sortedMedias"
+      :slugFolderName="slugFolderName"
       :timelineInfos="timelineInfos"
-      @setSort="setSort"
-      @setFilter="setFilter"
       @close="closeListMediasModal()"
     >
     </MediasList>
@@ -224,6 +223,14 @@ export default {
         ]
       }
     }
+  },
+  mounted() {
+    EventBus.$on('setSort', this.setSort);
+    EventBus.$on('setFilter', this.setFilter);
+  },
+  beforeDestroy() {
+    EventBus.$off('setSort');
+    EventBus.$off('setFilter');
   },
   computed: {
     sortedMedias() {

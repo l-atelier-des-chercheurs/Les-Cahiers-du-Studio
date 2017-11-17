@@ -1,7 +1,10 @@
 <template>
-  <div class="m_sidebarList">
-
-    <table class="table-hoverable margin-none">
+  <div class="m_sidebarList"
+    :class="`m_sidebarList_${display}`"
+    >
+    <table class="margin-none"
+      :class="{ 'table-hoverable' : display === 'table' }"
+      >
       <thead>
         <tr>
           <th class="font-small padding-medium">
@@ -22,7 +25,7 @@
           <th>
             <input type="text" v-model="currentFilter" debounce="5000">
           </th>
-          <th>
+          <th v-if="display === 'table'">
           </th>
         </tr>
       </thead>
@@ -35,7 +38,7 @@
           @mouseleave="unHighlightMedia(media.slugMediaName)"
           @click.stop="scrollToMedia(media.slugMediaName)"
           class="m_sidebarList--media"
-          :class="{ 'is--outOfScope' : mediaIsOutOfScope(media) }"
+          :class="[{ 'is--outOfScope' : mediaIsOutOfScope(media) }, 'color-' + media.color ]"
           :title="media.slugMediaName"
           >
 
@@ -54,15 +57,20 @@
               </button>
             </td>
           </template>
-          <template v-else-if="display === 'flux'">
-            <MediaContent
-              v-model="media.content"
-              class="margin-medium"
-              style="animation-duration: 0.3s"
-              :slugMediaName="media.slugMediaName"
-              :media="media"
-              >
-            </MediaContent>
+
+
+          <template v-else-if="display === 'mediasList'">
+            <td class="bg-transparent" colspan="2">
+              <MediaContent
+                v-model="media.content"
+                class="margin-medium"
+                :context="'MediasList'"
+                :slugMediaName="media.slugMediaName"
+                :slugFolderName="slugFolderName"
+                :media="media"
+                >
+              </MediaContent>
+            </td>
           </template>
         </tr>
       </tbody>
@@ -85,6 +93,7 @@ export default {
     display: String,
     filter: String,
     sort: Object,
+    slugFolderName: String,
     sortedMedias: Array,
     timelineInfos: Object,
   },
@@ -101,20 +110,23 @@ export default {
   },
   watch: {
     'currentSort': function() {
-      this.$emit('setSort', this.currentSort);
+      EventBus.$emit('setSort', this.currentSort);
     },
     'currentFilter': function() {
-      this.$emit('setFilter', this.currentFilter);
+      EventBus.$emit('setFilter', this.currentFilter);
     }
   },
   methods: {
     highlightMedia(slugMediaName) {
+      if(this.display !== 'table') return false;
       EventBus.$emit('highlightMedia', slugMediaName);
     },
     unHighlightMedia(slugMediaName) {
+      if(this.display !== 'table') return false;
       EventBus.$emit('highlightMedia', '');
     },
     scrollToMedia(slugMediaName) {
+      if(this.display !== 'table') return false;
       EventBus.$emit('scrollToMedia', slugMediaName);
     },
     openMediaModal(slugMediaName) {

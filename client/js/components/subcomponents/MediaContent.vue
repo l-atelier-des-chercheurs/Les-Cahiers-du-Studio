@@ -1,23 +1,28 @@
 <template>
-  <div :class="`mediaContainer flex-wrap flex-vertically-centered type-${media.type}`">
+  <div
+    :class="`mediaContainer flex-wrap flex-vertically-centered type-${media.type}`">
+
     <template v-if="media.type === 'image'">
       <img :src="linkToThumb">
     </template>
+
     <template v-else-if="media.type === 'video'">
-      <template v-if="isInTimeline">
+      <template v-if="this.context === 'preview'">
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video controls :src="mediaURL">
+        <video controls :src="mediaURL" :poster="linkToVideoThumb">
         </video>
       </template>
     </template>
+
     <template v-else-if="media.type === 'audio'">
-      <audio :controls="isInTimeline" :src="mediaURL">
+      <audio controls :src="mediaURL">
       </audio>
     </template>
+
     <template v-else-if="media.type === 'text'">
-      <div v-if="isInTimeline" class="padding-small">
+      <div v-if="this.context !== 'edit'" class="padding-small">
         {{ value }}
         <template v-if="value.length === 0">
           …
@@ -33,8 +38,16 @@
       >
       </textarea>
     </template>
+
     <template v-else-if="media.type === 'marker'">
+      <div v-if="this.context !== 'edit'" class="padding-small">
+        {{ value }}
+        <template v-if="value.length === 0">
+          …
+        </template>
+      </div>
       <input
+        v-else
         type="text"
         class="border-none bg-transparent"
         placeholder="Étiquette"
@@ -57,23 +70,26 @@ import _ from 'underscore';
 export default {
   props: {
     slugMediaName: String,
+    slugFolderName: String,
     media: Object,
-    mediaURL: String,
-    isInTimeline: {
-      type: Boolean,
-      default: false,
+    context: {
+      type: String,
+      default: 'preview'
+      // preview, edit, ou autre (hi-res, pas de input text)
     },
     value: {
       type: String,
       default: ''
-    }
+    },
   },
   data() {
     return {
+      defaultRes: 1200,
+      mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
     }
   },
   mounted() {
-    if(!this.isInTimeline) {
+    if(!this.context === 'edit') {
       if(Modernizr !== undefined && !Modernizr.touchevents) {
         if(this.media.type === 'text' || this.media.type === 'marker') {
           this.$refs.textField.focus();
@@ -83,7 +99,7 @@ export default {
   },
   computed: {
     linkToThumb: function() {
-      let thumbSize = this.isInTimeline ? 400: 1800;
+      let thumbSize = this.context === 'preview' ? 400 : this.defaultRes;
       let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: thumbSize }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     },
@@ -91,7 +107,7 @@ export default {
       let timeMark = 0;
       let pathToTimeMarkThumbs = _.findWhere(this.media.thumbs, { timeMark }).thumbsData;
 
-      let thumbSize = this.isInTimeline ? 400: 1800;
+      let thumbSize = this.context === 'preview' ? 400 : this.defaultRes;
       let pathToSmallestThumb = _.findWhere(pathToTimeMarkThumbs, { size: thumbSize }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     }

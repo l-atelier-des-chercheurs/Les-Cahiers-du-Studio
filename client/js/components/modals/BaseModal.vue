@@ -10,7 +10,9 @@
           @keyup.ctrl.enter="$emit('submit')"
           >
 
-          <div class="flex-wrap flex-vertically-stretched ">
+          <div
+            :class="{ 'flex-wrap flex-vertically-stretched' : !!this.$slots['sidebar'] }"
+            >
             <div class="m_modal--sidebar flex-collapse-on-mobile bg-noir_light c-blanc"
               :class="{ 'flex-size-2/5' : !!this.$slots['sidebar'] }"
             >
@@ -20,7 +22,6 @@
                   <slot name="header">
                       default header
                   </slot>
-                  {{ !!this.$slots['sidebar'] }}
                 </h3>
               </div>
 

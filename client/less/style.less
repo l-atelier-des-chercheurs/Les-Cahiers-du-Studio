@@ -267,7 +267,7 @@ body {
   table {
   }
 
-  .m_sidebarList {
+  .m_sidebarList_table {
 
     .m_sidebarList--media {
 
@@ -287,7 +287,32 @@ body {
         width: auto;
         margin: auto;
     }
+  }
 
+  .m_sidebarList_MediasList {
+
+  }
+
+  .m_sidebarList--media {
+
+    &.color-red {
+      background-color: @c-rouge;
+    }
+    &.color-blue {
+      background-color: @c-bleu;
+    }
+    &.color-green {
+      background-color: @c-vert;
+    }
+    &.color-yellow {
+      background-color: @c-jaune;
+    }
+    &.color-orange {
+      background-color: @c-orange;
+    }
+    &.color-purple {
+      background-color: @c-violet;
+    }
   }
 }
 

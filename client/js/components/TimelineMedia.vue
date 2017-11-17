@@ -36,9 +36,10 @@
           <MediaContent
             v-if="!isPlaceholder"
             v-model="media.content"
+            :slugFolderName="slugFolderName"
             :slugMediaName="slugMediaName"
             :media="media"
-            :isInTimeline=true
+            :context="'preview'"
             >
           </MediaContent>
 
