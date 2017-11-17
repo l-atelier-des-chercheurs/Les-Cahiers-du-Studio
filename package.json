@@ -59,11 +59,11 @@
     "socket.io": "^2.0.4",
     "store": "^2.0.12",
     "validator": "^9.1.1",
-    "vue": "^2.5.3",
+    "vue": "^2.5.5",
     "vue-markdown": "^2.2.4",
-    "vue-scrollto": "^2.7.10",
+    "vue-scrollto": "^2.8.0",
     "vue2-animate": "^1.0.4",
-    "vue2-dropzone": "^2.3.6",
+    "vue2-dropzone": "^3.0.0",
     "write-file-atomic": "^2.3.0"
   },
   "devDependencies": {
@@ -76,7 +76,7 @@
     "browser-sync": "^2.14.0",
     "browserify": "^14.5.0",
     "electron": "1.7.9",
-    "electron-builder": "^19.45.6",
+    "electron-builder": "^19.46.1",
     "electron-prebuilt": "^1.4.13",
     "electron-rebuild": "^1.6.0",
     "gulp": "^3.9.0",
@@ -94,7 +94,7 @@
     "underscore": "^1.8.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "vue-template-compiler": "^2.5.3",
+    "vue-template-compiler": "^2.5.5",
     "vueify": "^9.4.1"
   }
 }
