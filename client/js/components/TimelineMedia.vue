@@ -33,17 +33,14 @@
           :style="getMediaSize()"
           >
 
-          <transition name="fade">
-            <MediaContent
-              v-if="!isPlaceholder"
-              v-model="media.content"
-              style="animation-duration: 0.3s"
-              :slugMediaName="slugMediaName"
-              :media="media"
-              :isInTimeline=true
-              >
-            </MediaContent>
-          </transition>
+          <MediaContent
+            v-if="!isPlaceholder"
+            v-model="media.content"
+            :slugMediaName="slugMediaName"
+            :media="media"
+            :isInTimeline=true
+            >
+          </MediaContent>
 
           <div class="mediaContour">
           </div>

@@ -156,7 +156,7 @@
 
         <template v-if="Object.keys(medias).length > 0">
           <TimelineMedia v-for="(media, index) in medias"
-            v-bind:key="index"
+            :key="index"
             :ref="`media_${index}`"
             :slugFolderName="slugFolderName"
             :slugMediaName="index"
