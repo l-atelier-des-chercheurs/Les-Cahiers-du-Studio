@@ -23,7 +23,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
-    "electronVersion": "1.7.5",
+    "electronVersion": "1.7.9",
     "appId": "les-cahiers-du-studio",
     "productName": "Les Cahiers du Studio",
     "asar": false,
@@ -36,6 +36,7 @@
     "body-parser": "^1.18.2",
     "debounce": "^1.1.0",
     "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master",
+    "electron": "1.7.9",
     "electron-log": "^2.2.11",
     "exif-reader": "^1.0.2",
     "express": "^4.16.2",
@@ -75,7 +76,6 @@
     "babelify": "^8.0.0",
     "browser-sync": "^2.14.0",
     "browserify": "^14.5.0",
-    "electron": "1.7.9",
     "electron-builder": "^19.46.1",
     "electron-prebuilt": "^1.4.13",
     "electron-rebuild": "^1.6.0",

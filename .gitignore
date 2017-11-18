@@ -48,3 +48,4 @@ client/production/all.min.css
 client/production/all.min.css
 
 client/production/all.min.js
+build/config.gypi
