@@ -189,6 +189,7 @@
 
     <template slot="preview">
       <MediaContent
+        :context="'edit'"
         :slugMediaName="slugMediaName"
         :media="media"
         :mediaURL="mediaURL"
