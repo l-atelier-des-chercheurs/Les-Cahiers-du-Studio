@@ -326,7 +326,7 @@ function copyAndRenameUserFolder() {
       if(err) {
         dev.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
         dev.log(`->duplicating /${local.settings().contentDirname} to create a new one`);
-        const sourcePathInApp = `${__dirname.replace(`${path.sep}app.asar`, '')}/${local.settings().contentDirname}`;
+        const sourcePathInApp = path.join(`${__dirname.replace(`${path.sep}app.asar`, '')}`, `${local.settings().contentDirname}`);
         fs.copy(sourcePathInApp, pathToUserContent, function (err) {
           if(err) {
             dev.error('failed to copy: ' + err);
