@@ -79,9 +79,7 @@
               :key="`index`"
               class="gridItem font-small gridItem_isday"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="{
-                transform: `translate(${item.xPos}px, 0px)`
-              }"
+              :style="`transform: translate(${item.xPos}px, 0px)`"
               >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
@@ -94,9 +92,7 @@
               :key="`index`"
               class="gridItem font-small gridItem_ishour"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="{
-                transform: `translate(${item.xPos}px, 0px)`
-              }"
+              :style="`transform: translate(${item.xPos}px, 0px)`"
               >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
@@ -109,9 +105,7 @@
               :key="`index`"
               class="gridItem font-small gridItem_isminute"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="{
-                transform: `translate(${item.xPos}px, 0px)`
-              }"
+              :style="`transform: translate(${item.xPos}px, 0px)`"
               >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
@@ -119,12 +113,10 @@
             </div>
 
             <div
-              v-if="!!todaysRule.xPos && isRealtime"
+              v-if="isRealtime"
               :key="`todaysRule`"
               class="gridItem font-small gridItem_isrealtimerule"
-              :style="{
-                transform: `translate(${todaysRule.xPos}px, 0px)`
-              }"
+              :style="`transform: translate(${todaysRule.xPos}px, 0px)`"
               >
               <div class="gridItem--caption">
                 {{ todaysRule.caption }}
@@ -349,6 +341,7 @@ export default {
     this.setTimelineHeight();
     this.setViewedTimelineWidthAndHeight();
     this.updateMediaData();
+    this.setVisibleDay();
   },
   mounted() {
 
@@ -492,7 +485,8 @@ export default {
       let w = Math.floor(secondsEllapsed/this.timelineViewport.scale);
       let h = Math.floor(this.timelineHeight);
 
-      this.timelineViewport.width = w;
+      // prevent viewport width to be 0
+      this.timelineViewport.width = Math.max(w,1);
       this.timelineViewport.height = h;
     },
     getViewedTimelineStart(timelineView_new_start) {
