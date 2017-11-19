@@ -17,7 +17,7 @@
               </option>
             </select>
           </th>
-          <th>
+          <th v-if="display === 'table'">
           </th>
         </tr>
         <tr>
