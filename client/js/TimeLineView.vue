@@ -352,7 +352,8 @@ export default {
   },
   mounted() {
 
-    window.addEventListener('resize', debounce(this.onResize, 300));
+    this.onResize = debounce(this.onResize, 300);
+    window.addEventListener('resize', this.onResize);
 
     EventBus.$on('scrollToMedia', this.scrollToMedia);
     EventBus.$on('scrollToDate', this.scrollToDate);
