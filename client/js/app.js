@@ -127,5 +127,5 @@ let vm = new Vue({
 });
 
 setTimeout(() => {
-  vm.openFolder('test-video');
+//   vm.openFolder('rencontre-1');
 }, 500);
