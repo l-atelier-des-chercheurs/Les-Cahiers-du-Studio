@@ -23,7 +23,7 @@
         <tr>
           <th class="font-small padding-medium">Filtre</th>
           <th>
-            <input type="text" v-model="currentFilter" debounce="5000">
+            <input type="text" v-model="currentFilter">
           </th>
           <th v-if="display === 'table'">
           </th>
