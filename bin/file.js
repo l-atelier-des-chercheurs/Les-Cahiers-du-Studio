@@ -34,8 +34,11 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       let presentationMd = path.join(api.getFolderPath(), 'presentation.md');
       fs.access(presentationMd, fs.F_OK, function(err) {
-        if(err) { reject(); }
-        resolve(validator.unescape(fs.readFileSync(presentationMd, local.settings().textEncoding)));
+        if(err) {
+          resolve(validator.unescape(global.appInfos.presentationMd));
+        } else {
+          resolve(validator.unescape(fs.readFileSync(presentationMd, local.settings().textEncoding)));
+        }
       });
     });
   }
