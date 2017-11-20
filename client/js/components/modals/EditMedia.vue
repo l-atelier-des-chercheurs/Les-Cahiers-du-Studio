@@ -191,6 +191,7 @@
       <MediaContent
         :context="'edit'"
         :slugMediaName="slugMediaName"
+        :slugFolderName="slugFolderName"
         :media="media"
         :mediaURL="mediaURL"
         v-model="mediadata.content"
