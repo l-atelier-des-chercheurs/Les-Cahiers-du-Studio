@@ -79,7 +79,7 @@
       <CreateFolder v-if="showCreateFolderModal" @close="showCreateFolderModal = false">
       </CreateFolder>
 
-      <div class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large">
+      <div class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large flex-wrap flex-vertically-start">
         <button class="m_home--folders--card margin-small button-inline" @click="showCreateFolderModal = true">
 
           <span class="c-gris margin-medium">

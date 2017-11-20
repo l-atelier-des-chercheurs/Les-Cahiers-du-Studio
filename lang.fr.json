@@ -88,7 +88,8 @@
   "audioStreamCouldntBeStarted" : "Le flux audio n’a pas pu être démarré.",
 
   "mediapublitemplatesarestoredint" : "Les données chargées sur cette page sont stockées dans le dossier suivant&nbsp;: ",
-  "toconnectwithanotherdevice" : "Pour vous connecter depuis un autre appareil qui se trouve sur le même réseau (Wifi ou Ethernet), naviguez vers l’adresse suivante et ignorez l’avertissement qui s’affiche&nbsp;: ",
+  "toconnectwithanotherdevice" : "Pour accéder aux Cahiers avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url dans le navigateur web (puis ignorez le message de sécurité)&nbsp;: ",
+  "toconnectwithanotherdevicetothisfolder" : "Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url dans le navigateur web (puis ignorez le message de sécurité)&nbsp;: ",
   "clickHereToMoveContentFolder" : "Cliquez ici pour déplacer le dossier des contenus utilisateurs",
 
   "modal" : {

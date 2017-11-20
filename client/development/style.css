@@ -4647,14 +4647,9 @@ body.is_unscrollable {
   flex-grow: 0;
 }
 .m_home--folders .m_home--folders--card {
-  width: 50%;
-  max-width: 235px;
+  width: 235px;
   min-height: 235px;
   background-color: white;
-  float: left;
-}
-.m_home--folders .m_home--folders--card:nth-child(3n + 1) {
-  clear: left;
 }
 .m_navbar {
   position: relative;
@@ -4792,6 +4787,13 @@ body.is_unscrollable {
   transition: transform 0.35s ease-out, opacity 0.45s, -webkit-transform 0.35s ease-out;
   z-index: 998;
 }
+@media screen and (max-width: 50rem) {
+  .button_sidebarToggle {
+    left: 300px;
+    bottom: 30px;
+    top: auto;
+  }
+}
 .button_sidebarToggle.is--collapsed {
   -webkit-transform: translateX(-460px);
   -ms-transform: translateX(-460px);
@@ -4802,16 +4804,28 @@ body.is_unscrollable {
   transition: transform 0.35s ease-out, opacity 0.45s;
   transition: transform 0.35s ease-out, opacity 0.45s, -webkit-transform 0.35s ease-out;
 }
+@media screen and (max-width: 50rem) {
+  .button_sidebarToggle.is--collapsed {
+    -webkit-transform: translateX(-330px);
+    -ms-transform: translateX(-330px);
+    transform: translateX(-330px);
+  }
+}
 .m_sidebar {
   position: absolute;
   max-width: 460px;
-  width: 80%;
+  width: 100%;
   height: 100vh;
   height: calc(100vh - 60px);
   overflow-y: scroll;
   background-color: #fff;
   border-right: 1px solid #333;
   z-index: 1500;
+}
+@media screen and (max-width: 50rem) {
+  .m_sidebar {
+    width: 300px;
+  }
 }
 .m_sidebar ul,
 .m_sidebar li {

@@ -18,6 +18,19 @@
 
       <div slot="body" class="">
         <p class="font-small">
+          <span v-html="$root.store.lang.toconnectwithanotherdevicetothisfolder">
+          </span>
+          <template v-for="(ip, index) in $root.store.localNetworkInfos.ip">
+            <a
+              :href="getURLToApp(ip, $root.store.localNetworkInfos.port)"
+              class="js--openInBrowser"
+              target="_blank"
+              v-html="getURLToApp(ip, $root.store.localNetworkInfos.port)">
+            </a>
+            <span> </span>
+          </template>
+        </p>
+        <p class="font-small">
           Les contenus de ce dossier sont enregistrés dans
           <template v-if="$root.store.is_electron">
             <a :href="folder.fullFolderPath" @click.prevent="openInFinder(folder.fullFolderPath)">
@@ -278,6 +291,9 @@ export default {
   },
 
   methods: {
+    getURLToApp(ip, port) {
+      return `https://${ip}:${port}`;
+    },
     openInFinder(thisPath) {
       const shell = window.require('electron').shell;
       event.preventDefault();

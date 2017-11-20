@@ -133,7 +133,6 @@ export default {
       EventBus.$emit('timeline.openMediaModal', slugMediaName);
     },
     mediaIsOutOfScope(media) {
-      debugger;
       if(moment(media.date_timeline).isBefore(this.timelineInfos.start) || moment(media.date_timeline).isAfter(this.timelineInfos.end)) {
         return true;
       }

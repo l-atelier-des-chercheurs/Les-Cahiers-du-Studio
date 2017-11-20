@@ -109,15 +109,9 @@ body {
 
 .m_home--folders {
   .m_home--folders--card {
-    width: 50%;
-    max-width: 235px;
+    width: 235px;
     min-height: 235px;
     background-color: white;
-    float: left;
-
-    &:nth-child(3n + 1) {
-      clear:left;
-    }
   }
 
 }
@@ -238,16 +232,26 @@ body {
 
   z-index:  998;
 
+  @media screen and (max-width: 50rem) {
+    left:300px;
+    bottom: 30px;
+    top:auto;
+  }
+
   &.is--collapsed {
     transform: translateX(-@t-sidebarWidth);
     transition: transform .35s ease-out, opacity .45s;
+
+    @media screen and (max-width: 50rem) {
+      transform: translateX(-300px - @t-button_sidebartoggle/2);
+    }
   }
 }
 
 .m_sidebar {
   position: absolute;
   max-width: @t-sidebarWidth;
-  width: 80%;
+  width: 100%;
   height: 100vh;
   height: ~"calc(100vh - 60px)";
   overflow-y: scroll;
@@ -256,6 +260,10 @@ body {
   border-right: 1px solid @c-noir;
 
   z-index:  1500;
+
+  @media screen and (max-width: 50rem) {
+    width:300px;
+  }
 
   .intro {
   }
