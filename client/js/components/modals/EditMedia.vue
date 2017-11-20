@@ -128,7 +128,7 @@
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           >
-          <a :href="mediaURL" title="slugMediaName" target="_blank">
+          <a :href="mediaURL" :title="slugMediaName" target="_blank">
             <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
               <title>Fichier 10</title>
               <g id="Calque_2" data-name="Calque 2">
@@ -156,7 +156,7 @@
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
         >
-          <a :download="slugMediaName" :href="mediaURL" title="slugMediaName" target="_blank">
+          <a :download="slugMediaName" :href="mediaURL" :title="slugMediaName" target="_blank">
             <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
               <g id="Calque_2" data-name="Calque 2">
                 <g id="Editeur_txt" data-name="Editeur txt">
