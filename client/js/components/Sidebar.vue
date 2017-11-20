@@ -192,6 +192,12 @@ export default {
 
         available: [
           {
+            field: 'date_timeline',
+            name: 'Chronologique',
+            type: 'date',
+            order: 'ascending',
+          },
+          {
             field: 'date_modified',
             name: 'Dernière modification',
             type: 'date',
