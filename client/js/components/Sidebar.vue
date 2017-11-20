@@ -171,22 +171,16 @@ export default {
 
       sort: {
         current: {
-          field: 'created',
-          name: 'Date de création',
+          field: 'date_timeline',
+          name: 'Chronologique',
           type: 'date',
           order: 'ascending',
         },
 
         available: [
           {
-            field: 'created',
-            name: 'Date de création',
-            type: 'date',
-            order: 'ascending',
-          },
-          {
-            field: 'modified',
-            name: 'Date de modification',
+            field: 'date_modified',
+            name: 'Dernière modification',
             type: 'date',
             order: 'descending',
           },
@@ -357,11 +351,10 @@ export default {
 
       const total = Object.entries(this.medias).reduce((acc, pair) => {
         const [key, value] = pair;
-        let created_day = moment(value.created);
+        let created_day = moment(value.date_timeline);
         if(created_day.isSame(date, 'day')) {
           acc++;
         }
-
         return acc;
       }, 0);
 

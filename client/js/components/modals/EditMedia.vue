@@ -13,7 +13,7 @@
 <!-- Creation date (stored in meta file, overrides file date) -->
       <div class="margin-bottom-small">
         <label>Date de création <small>(timeline)</small></label>
-        <DateTime v-model="mediadata.created">
+        <DateTime v-model="mediadata.date_timeline">
         </DateTime>
       </div>
 
@@ -223,7 +223,7 @@ export default {
   data() {
     return {
       mediadata: {
-        created: this.media.created,
+        date_timeline: this.media.date_timeline,
         type: this.media.type,
         color: this.media.color,
         authors: this.media.authors,

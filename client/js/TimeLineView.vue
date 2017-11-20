@@ -515,9 +515,8 @@ export default {
 
       Object.keys(this.medias).map((slugMediaName) => {
         let media = this.medias[slugMediaName];
-        let media_created = media.created;
-        let createdTS = moment.isMoment(media_created) ? media_created : moment(media_created,'YYYY-MM-DD HH:mm:ss');
-        let posX = this.getXPositionFromDate(+createdTS, false);
+        let date_timeline = moment.isMoment(media.date_timeline) ? media.date_timeline : moment(media.date_timeline,'YYYY-MM-DD HH:mm:ss');
+        let posX = this.getXPositionFromDate(+date_timeline, false);
         this.allMediasPosition[slugMediaName] = posX;
       });
     },
@@ -626,13 +625,13 @@ export default {
         }
 
         // otherwise, calculate proximity for created minus duration (which should give us when ths recording was started)
-        let startRecordingDate = moment(media.created).subtract(parseInt(media.duration), 'seconds');
+        let startRecordingDate = moment(media.date_timeline).subtract(parseInt(media.duration), 'seconds');
         if(this.elesIsClose(this.getXPositionFromDate(+startRecordingDate, false))) {
           return true;
         }
         // finally, let’s check whether we are in between those two dates
         let centerOfTimeline = this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2;
-        if(this.getXPositionFromDate(+startRecordingDate, false) < centerOfTimeline && centerOfTimeline < this.getXPositionFromDate(media.created)) {
+        if(this.getXPositionFromDate(+startRecordingDate, false) < centerOfTimeline && centerOfTimeline < this.getXPositionFromDate(media.date_timeline)) {
           return true;
         }
       } else {

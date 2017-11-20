@@ -73,7 +73,7 @@ module.exports = (function() {
         // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
         let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
         fs.access(potentialMetaFile, fs.F_OK, function(err) {
-          // if there's nothing at path
+          // if there's no META file at path
           if(err) {
             dev.logverbose(`No meta for this media: ${err}`);
             // let’s get creation date and modification date, guess the type, and return this whole thing afterwards
@@ -374,8 +374,6 @@ module.exports = (function() {
             let fmeta = new Promise((resolve, reject) => {
               readMedia(slugFolderName,slugMediaName).then((meta) => {
                 meta.slugMediaName = slugMediaName;
-                meta.created = api.parseDate(meta.created);
-                meta.modified = api.parseDate(meta.modified);
                 resolve(meta);
               });
             });
@@ -416,8 +414,10 @@ module.exports = (function() {
 
           // default media data
           let mdata = {
-            created : api.getCurrentDate(),
-            modified : api.getCurrentDate(),
+            date_timeline: api.getCurrentDate(),
+            // date_created is added if EXIF or modified date
+            date_upload: api.getCurrentDate(),
+            date_modified : api.getCurrentDate(),
             public: false,
             y: Math.random() * 0.5,
             color: 'white',
@@ -475,20 +475,14 @@ module.exports = (function() {
               CREATED DATE
           ***************************************************************************/
 
-          // 1. by default, use currentdate
-          // 2. override with fileCreationDate sent through the UI
-          // 3. override with fileCreationDate from fs.stat
-          // 4. override with EXIF
-
-          // 2.
           if(additionalMeta !== undefined && additionalMeta.hasOwnProperty('fileCreationDate')) {
             dev.logverbose(`Setting created from additionalMeta`);
-            mdata.created = api.convertDate(additionalMeta.fileCreationDate);
+            mdata.date_created = api.convertDate(additionalMeta.fileCreationDate);
           }
 
 
           if(mdata.type === 'image') {
-            dev.logverbose(`Setting created from EXIF`);
+            dev.logverbose(`Looking for EXIF for image`);
             let getEXIFTimestamp = new Promise((resolve, reject) => {
               thumbs.getEXIFData(mediaPath).then(({ ts, mediaRatio }) => {
                 if(ts === false) {
@@ -496,7 +490,7 @@ module.exports = (function() {
                 } else {
                   let localTS = api.parseUTCDate(ts);
                   dev.logverbose(`getEXIFData timestamp to date : ${api.convertDate(localTS)}`);
-                  mdata.created = api.convertDate(localTS);
+                  mdata.date_created = api.convertDate(localTS);
                 }
                 resolve();
               })
@@ -507,12 +501,11 @@ module.exports = (function() {
             });
             tasks.push(getEXIFTimestamp);
           } else {
-            // 3. otherwise, we can try to get the created directly on the file itself (if it was copy/pasted to the folder)
             dev.logverbose(`Setting created from file birthtime`);
             let getFileCreationDate = new Promise((resolve, reject) => {
               fs.stat(mediaPath, function(err, stats) {
                 if(err) { resolve(); }
-                mdata.created = api.convertDate(new Date(stats.birthtime));
+                mdata.date_created = api.convertDate(new Date(stats.birthtime));
                 resolve();
               });
             });
@@ -611,8 +604,8 @@ module.exports = (function() {
       /**************************************************************************
         list here all possible edit properties and how to validate them
       **************************************************************************/
-      if(mdata.hasOwnProperty('created')) {
-        newMediaData.created = api.convertDate(mdata.created); }
+      if(mdata.hasOwnProperty('date_timeline')) {
+        newMediaData.date_timeline = api.convertDate(mdata.date_timeline); }
 
       if(mdata.hasOwnProperty('type'))    {
         newMediaData.type = validator.escape(mdata.type); }
@@ -635,7 +628,7 @@ module.exports = (function() {
       if(mdata.hasOwnProperty('y') && typeof mdata.y === 'number')  {
         newMediaData.y = api.clip(mdata.y, 0, 1); }
 
-      newMediaData.modified = api.getCurrentDate();
+      newMediaData.date_modified = api.getCurrentDate();
 
       dev.logverbose(`Following datas will replace existing data for this media meta: ${JSON.stringify(newMediaData, null, 4)}`);
       readMedia(slugFolderName,slugMediaName).then((meta) => {
@@ -703,14 +696,9 @@ module.exports = (function() {
       dev.logfunction(`COMMON — createTextMedia : will create text media at path: ${mdata.slugFolderName}`);
 
       let slugFolderName = mdata.slugFolderName;
-      let timeCreated;
-      if(mdata.hasOwnProperty('created')) {
-        timeCreated = api.convertDate(mdata.created);
-      } else {
-        timeCreated = api.getCurrentDate();
-      }
-
+      let timeCreated = api.getCurrentDate();
       let textMediaName = timeCreated + '.md';
+
       if(mdata.hasOwnProperty('type')) {
         textMediaName = mdata.type + '-' + textMediaName;
       }

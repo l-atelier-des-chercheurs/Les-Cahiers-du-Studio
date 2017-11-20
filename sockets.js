@@ -174,9 +174,9 @@ module.exports = (function() {
     file.getFolder(slugFolderName).then(foldersData => {
       file.getMedia(slugFolderName, slugMediaName).then(mediasData => {
 
-        const defaultMediaMeta = {
-          created: '',
-          modified: '',
+        const defaultReactiveMeta = {
+          date_timeline: '',
+          date_modified: '',
           type: '',
           color: '',
           authors: '',
@@ -187,9 +187,29 @@ module.exports = (function() {
           content: ''
         };
 
-        // sanitize each media (make sure they have all the fields when sent, even if their meta file doesn’t
+
+        // sanitize each media — make sure they have all the reactive fields when sent, because otherwise vue.js can’t track changes when a key is added afterwards
         for(let slugMediaName in mediasData) {
-          mediasData[slugMediaName] = Object.assign({}, defaultMediaMeta, mediasData[slugMediaName]);
+
+          let mediaData = mediasData[slugMediaName];
+
+          /*******************************************************
+            PRE 1.0.0 beta 3 legacy
+          ******************************************************/
+          // LEGACY : rename 'created' to 'date_created', and set date_timeline
+          if(mediaData.hasOwnProperty('created')) {
+            mediaData.date_created = mediaData.created;
+            if(!mediaData.hasOwnProperty('date_timeline')) {
+              mediaData.date_timeline = mediaData.created;
+            }
+            delete mediaData.created;
+          }
+          if(mediaData.hasOwnProperty('modified') && !mediaData.hasOwnProperty('date_modified')) {
+            mediaData.date_modified = mediaData.modified;
+            delete mediaData.modified;
+          }
+
+          mediasData[slugMediaName] = Object.assign({}, defaultReactiveMeta, mediaData);
         }
 
         Object.keys(io.sockets.connected).forEach(sid => {
