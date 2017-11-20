@@ -87,7 +87,8 @@
   "audioStreamCouldntBeStarted" : "Audio stream not available.",
 
   "mediapublitemplatesarestoredint" : "Contents are stored in: ",
-  "toconnectwithanotherdevice" : "To access do•doc with another device, please connect it to the same wifi network, then type this adress in your browser (and ignore security message): ",
+  "toconnectwithanotherdevice" : "To access Les Cahiers with another device, connect it to the same wifi network and type this adress in your browser (ignore security message): ",
+  "toconnectwithanotherdevicetothisfolder" : "",
   "clickHereToMoveContentFolder" : "Click here to change repository",
   "toSuggestFeatures" : "To report bugs or suggest features, go to:",
 
