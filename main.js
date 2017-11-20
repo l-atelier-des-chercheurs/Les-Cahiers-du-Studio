@@ -146,10 +146,6 @@ function createWindow() {
     dev.error( 'Failed to check existing content folder : ' + err);
   });
 
-  process.on('unhandledRejection', function(reason, p) {
-    dev.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
-  });
-
 }
 
 function setApplicationMenu() {

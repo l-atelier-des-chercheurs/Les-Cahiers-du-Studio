@@ -2,7 +2,7 @@
   <div class="m_sidebarList"
     :class="`m_sidebarList_${display}`"
     >
-    <table class="margin-none"
+    <table class="margin-none border-none"
       :class="{ 'table-hoverable' : display === 'table' }"
       >
       <thead>
@@ -133,7 +133,8 @@ export default {
       EventBus.$emit('timeline.openMediaModal', slugMediaName);
     },
     mediaIsOutOfScope(media) {
-      if(moment(media.created).isBefore(this.timelineInfos.start) || moment(media.created).isAfter(this.timelineInfos.end)) {
+      debugger;
+      if(moment(media.date_timeline).isBefore(this.timelineInfos.start) || moment(media.date_timeline).isAfter(this.timelineInfos.end)) {
         return true;
       }
       return false;

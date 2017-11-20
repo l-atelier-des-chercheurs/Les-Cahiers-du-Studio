@@ -10,11 +10,38 @@
     </template>
 
     <template slot="sidebar">
-<!-- Creation date (stored in meta file, overrides file date) -->
+
       <div class="margin-bottom-small">
-        <label>Date de création <small>(timeline)</small></label>
-        <DateTime v-model="mediadata.date_timeline">
+        <label>Date <small>(pour le placement sur la timeline)</small></label>
+        <DateTime v-model="mediadata.date_timeline" :twowaybinding=true>
         </DateTime>
+
+        <div class="margin-bottom-small" v-if="media.date_created !== undefined">
+          <small>
+            Date de création&nbsp;:
+            <button
+              type="button"
+              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+              @click="setMediaDateTimeline(media.date_created)"
+              >
+              {{ date_created_human }}
+            </button>
+          </small>
+        </div>
+
+        <div class="margin-bottom-small" v-if="media.date_upload !== undefined">
+          <small>
+            Date d’envoi&nbsp;:
+            <button
+              type="button"
+              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+              @click="setMediaDateTimeline(media.date_upload)"
+              >
+              {{ date_uploaded_human }}
+            </button>
+          </small>
+        </div>
+
       </div>
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -206,12 +233,7 @@ import Modal from './BaseModal.vue';
 import alertify from 'alertify.js';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
-
-// creation
-// type
-// keywords
-// authors
-// public/private
+import moment from 'moment';
 
 export default {
   props: ['slugFolderName', 'slugMediaName', 'media'],
@@ -235,6 +257,12 @@ export default {
     }
   },
   computed: {
+    date_created_human() {
+      return moment(this.media.date_created).format('DD/MM/YYYY HH:mm:ss');
+    },
+    date_uploaded_human() {
+      return moment(this.media.date_upload).format('DD/MM/YYYY HH:mm:ss');
+    }
   },
   methods: {
     printMedia: function() {
@@ -248,6 +276,9 @@ export default {
         // then close that popover
         this.$emit('close', '');
       }
+    },
+    setMediaDateTimeline: function(newDate) {
+      this.mediadata.date_timeline = newDate;
     },
     editThisMedia: function (event) {
       console.log('editThisMedia');

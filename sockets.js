@@ -209,6 +209,17 @@ module.exports = (function() {
             delete mediaData.modified;
           }
 
+          mediaData.date_timeline = api.parseDate(mediaData.date_timeline);
+          if(mediaData.hasOwnProperty('date_created')) {
+            mediaData.date_created = api.parseDate(mediaData.date_created);
+          }
+          if(mediaData.hasOwnProperty('date_upload')) {
+            mediaData.date_upload = api.parseDate(mediaData.date_upload);
+          }
+          if(mediaData.hasOwnProperty('date_modified')) {
+            mediaData.date_modified = api.parseDate(mediaData.date_modified);
+          }
+
           mediasData[slugMediaName] = Object.assign({}, defaultReactiveMeta, mediaData);
         }
 

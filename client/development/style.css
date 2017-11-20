@@ -3586,6 +3586,9 @@ input[type=range] {
 .input-group button + button {
   margin-left: 2px;
 }
+.input-group + * {
+  margin-top: -0.675em;
+}
 .input-group,
 .input-single {
   margin-bottom: 1.35em;
