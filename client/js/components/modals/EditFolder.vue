@@ -134,16 +134,4 @@ export default {
 
 </script>
 <style>
-
-.two-column {
-  column-count: 2;
-  column-gap: 1rem;
-}
-
-@media (max-width: 50rem) {
-  .two-column {
-    column-count: 1;
-    column-gap: 0;
-  }
-}
 </style>
