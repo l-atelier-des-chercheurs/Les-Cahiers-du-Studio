@@ -10,11 +10,11 @@ The documentation for this app can be found here (in french): [](https://paper.d
 
 This app is under a [Creative Commons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/) license. It can be used, modified and shared freely as long as no commercial use is made and the attribution and link to [L’Atelier des Chercheurs](https://latelier-des-chercheurs.fr/) are kept.
 
-The typeface embedded in this tool, *STVitry*, was created specifically for the Studio-Théâtre. Its use is expressly restricted to this tool, and it cannot be used anywhere else without prior authorisation by the Studio-Théâtre or Maxime Fittes, the creator of this font.
+The typeface embedded in this tool, *STVitry*, was created specifically for the Studio-Théâtre of Vitry. Its use is expressly restricted to this tool, and it cannot be used anywhere else without prior authorisation by the Studio-Théâtre or Maxime Fittes, the creator of this font.
 
 # Credits and origin
 
-This tool was made for and in collaboration with the [Studio-Théâtre of Vitry](http://www.studiotheatre.fr/), a place for theatrical creation that welcomes and hosts Theatre companies. It is installed on a computer inside the Studio-Théâtre and allows companies to keep track of their time and process inside the walls of the Studio-Théâtre.
+This tool was made for and in collaboration with the [Studio-Théâtre of Vitry](http://www.studiotheatre.fr/), a place for theatrical creation and research that welcomes and hosts theatre companies. It is installed on a computer inside the Studio-Théâtre and allows companies to keep track of their time and process inside the walls of the Studio-Théâtre. Studio-Théâtre of Vitry is supported by la ville de Vitry-sur-Seine, le Département du Val-de-Marne, la Région île-de-France et la DRAC île-de-France.
 
 The creation, design and code for this app was done by [L’Atelier des Chercheurs](https://latelier-des-chercheurs.fr/) following a series of workshops and field studies at the Studio-Théâtre, and meetings with persons in charge there (specifically Bérangère Vantusso, Florence Kremper and Ella Gouet).
 
