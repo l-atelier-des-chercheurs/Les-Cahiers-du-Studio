@@ -70,8 +70,8 @@
         </div>
 
         <!-- GRID -->
-        <div class="simple_grid_overlay">
-          <div class="simple_grid_overlay--wrapper">
+        <div class="grid_overlay">
+          <div class="grid_overlay--wrapper">
 
             <div
               v-if="overallGrid.days.length > 0"
