@@ -218,7 +218,6 @@ export default {
       }
 
       event.stopPropagation();
-
       window.removeEventListener('mousemove', this.mousemove);
       window.removeEventListener('mouseup', this.mouseup);
 
@@ -236,7 +235,11 @@ export default {
     toggleCollapseMedia() {
       console.log('METHODS • TimelineMedia: toggleCollapseMedia');
       if(this.is_dragged) {
+        this.mouseup();
         return;
+      } else {
+        // we need to trigger mouseup because this won’t be a drag
+        this.mouseup();
       }
       this.is_collapsed = !this.is_collapsed;
 
@@ -247,6 +250,8 @@ export default {
 
       // if it's all good, collect everything and send over socketio
       this.$root.editMedia(values);
+
+      event.stopPropagation();
     }
   }
 }
