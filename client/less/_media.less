@@ -84,35 +84,48 @@
         }
       }
 
+/*
+  // TODO: repère vertical
+      &::after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        right: 0;
+        top: 0;
+        height: 100vh;
+        background-color: currentcolor;
+        z-index: -1;
+      }
+*/
     }
 
     .color-red& {
-      .timelineMediaContent, .accroche {
+      .timelineMediaContent, .accroche, &::after {
         background-color: @c-rouge;
       }
     }
     .color-blue& {
-      .timelineMediaContent, .accroche {
+      .timelineMediaContent, .accroche, &::after {
         background-color: @c-bleu;
       }
     }
     .color-green& {
-      .timelineMediaContent, .accroche {
+      .timelineMediaContent, .accroche, &::after {
         background-color: @c-vert;
       }
     }
     .color-yellow& {
-      .timelineMediaContent, .accroche {
+      .timelineMediaContent, .accroche, &::after {
         background-color: @c-jaune;
       }
     }
     .color-orange& {
-      .timelineMediaContent, .accroche {
+      .timelineMediaContent, .accroche, &::after {
         background-color: @c-orange;
       }
     }
     .color-purple& {
-      .timelineMediaContent, .accroche {
+      .timelineMediaContent, .accroche, &::after {
         background-color: @c-violet;
       }
     }
