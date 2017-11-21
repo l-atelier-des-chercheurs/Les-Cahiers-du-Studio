@@ -574,6 +574,10 @@ module.exports = (function() {
               DO IT ALL
           ***************************************************************************/
           Promise.all(tasks).then(() => {
+            if(mdata.hasOwnProperty('date_created')) {
+              // if there is a created date, the timeline date should match this one in priority
+              mdata.date_timeline = mdata.date_created;
+            }
             api.storeData(potentialMetaFile, mdata, 'create').then(function(meta) {
               dev.logverbose(`New media meta file created at path: ${potentialMetaFile} with meta: ${JSON.stringify(meta, null, 4)}`);
               resolve(meta);
