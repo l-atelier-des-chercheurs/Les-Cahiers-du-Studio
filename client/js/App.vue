@@ -32,6 +32,9 @@
         </template>
       </div>
     </div>
+
+    <portal-target name="modal_container" />
+
   </div>
 </template>
 
@@ -64,6 +67,9 @@ export default {
     }
   },
   methods: {
+    log() {
+      debugger;
+    }
   }
 }
 </script>

@@ -5,13 +5,14 @@
 import Vue from 'vue/dist/vue';
 import localstore from 'store';
 import VueScrollTo from 'vue-scrollto';
+import PortalVue from 'portal-vue';
 
 Vue.use(VueScrollTo);
+Vue.use(PortalVue);
 
 Vue.config.silent = false;
 Vue.config.devtools = true;
 import App from './App.vue';
-
 
 /* eslint-disable no-new */
 /* exported vm */

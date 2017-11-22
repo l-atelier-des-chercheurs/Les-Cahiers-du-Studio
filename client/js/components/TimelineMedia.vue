@@ -50,6 +50,7 @@
             name="slide"
             enter-active-class="slideInUp"
             leave-active-class="slideOutDown"
+            :duration="350"
             >
             <button
               type="button"

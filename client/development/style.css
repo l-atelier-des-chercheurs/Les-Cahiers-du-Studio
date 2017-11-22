@@ -4477,9 +4477,6 @@ th {
   height: 100%;
   background-color: rgba(255, 255, 255, 0.9);
   display: table;
-  -webkit-transition: opacity .3s ease;
-  -o-transition: opacity .3s ease;
-  transition: opacity .3s ease;
 }
 .m_modal--wrapper {
   display: table-cell;
@@ -4572,26 +4569,6 @@ th {
   .m_modal--footer {
     display: none;
   }
-}
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
-.modal-enter {
-  opacity: 0;
-}
-.modal-leave-active {
-  opacity: 0;
-}
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  -webkit-transform: scale(1.06);
-  -ms-transform: scale(1.06);
-  transform: scale(1.06);
 }
 ::-moz-selection {
   background: rgba(151, 151, 151, 0.25);
@@ -4941,15 +4918,15 @@ body.is_unscrollable {
   color: #89898c;
   width: 100%;
 }
-.component-fade-enter-active,
-.component-fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   opacity: 1;
   -webkit-transition: opacity 0.2s ease-out;
   -o-transition: opacity 0.2s ease-out;
   transition: opacity 0.2s ease-out;
 }
-.component-fade-enter,
-.component-fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
   -webkit-transition: opacity 0.2s ease-out;
   -o-transition: opacity 0.2s ease-out;
@@ -4978,4 +4955,24 @@ body.is_unscrollable {
   -o-transition: transform 0.35s ease-in, opacity 0.45s;
   transition: transform 0.35s ease-in, opacity 0.45s;
   transition: transform 0.35s ease-in, opacity 0.45s, -webkit-transform 0.35s ease-in;
+}
+.modal-enter-active,
+.modal-leave-active {
+  opacity: 1;
+  -webkit-transform: translateY(0);
+  -ms-transform: translateY(0);
+  transform: translateY(0);
+  -webkit-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+.modal-enter,
+.modal-leave-to {
+  opacity: 0;
+  -webkit-transform: translateY(10px);
+  -ms-transform: translateY(10px);
+  transform: translateY(10px);
+  -webkit-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
 }

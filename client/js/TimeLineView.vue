@@ -10,7 +10,7 @@
       >
     </NavbarTop>
 
-    <transition name="component-fade">
+    <transition name="fade" :duration="350">
       <div
         v-if="$root.settings.is_loading_medias_for_folder"
         class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
@@ -21,7 +21,7 @@
       </div>
     </transition>
 
-    <transition name="sidebar-animation">
+    <transition name="sidebar-animation" :duration="350">
       <Sidebar
         v-if="$root.settings.has_sidebar_opened"
         :folder="folder"
@@ -135,7 +135,7 @@
               </button>
             </div>
 
-            <transition name="fade">
+            <transition name="fade" :duration="350">
               <div
                 v-if="zoomZone.display"
                 class="gridItem gridItem_zoomZone"
