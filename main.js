@@ -63,14 +63,14 @@ function createWindow() {
 
   // Create the browser window.
   win = new BrowserWindow({
-
     x: windowState.bounds && windowState.bounds.x || undefined,
     y: windowState.bounds && windowState.bounds.y || undefined,
     width: windowState.bounds && windowState.bounds.width || 1200,
     height: windowState.bounds && windowState.bounds.height || 800,
 
-    backgroundColor: '#fff',
+    backgroundColor: '#333',
     show: false,
+//     titleBarStyle: 'hiddenInset',
 
     webPreferences: {
       allowDisplayingInsecureContent: true,
