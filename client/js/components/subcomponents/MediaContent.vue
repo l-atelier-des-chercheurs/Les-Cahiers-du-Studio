@@ -35,6 +35,7 @@
         :value="value"
         @input="$emit('input', $event.target.value)"
         ref="textField"
+        autocorrect="on"
       >
       </textarea>
     </template>
