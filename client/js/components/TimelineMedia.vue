@@ -206,15 +206,15 @@ export default {
       if(this.is_dragged) {
         let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
         this.mediaStyles.y = this.limitMediaYPos(newY);
-
         let getHeightInPercent = this.mediaStyles.y / this.timelineHeight;
-        let values = { y: getHeightInPercent };
-        values.slugFolderName = this.slugFolderName;
-        values.slugMediaName = this.slugMediaName;
 
-        // if it's all good, collect everything and send over socketio
+        let values = {
+          "y": getHeightInPercent,
+          "slugFolderName": this.slugFolderName,
+          "slugMediaName": this.slugMediaName
+        };
+
         this.$root.editMedia(values);
-
         this.is_dragged = false;
       }
 

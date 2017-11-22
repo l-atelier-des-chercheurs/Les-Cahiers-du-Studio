@@ -11,6 +11,13 @@
 
     <template slot="sidebar">
 
+<!-- Caption -->
+      <div class="margin-bottom-small" v-if="mediadata.type !== 'marker' || mediadata.type !== 'text'">
+        <label>Légende&nbsp;:</label><br>
+        <textarea v-model="mediadata.caption">
+        </textarea>
+      </div>
+
       <div class="margin-bottom-small">
         <label>Date <small>(pour le placement sur la timeline)</small></label>
         <DateTime v-model="mediadata.date_timeline" :twowaybinding=true>
@@ -67,7 +74,7 @@
 
 <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>Mot-clé(s)&nbsp;:<small>un par ligne</small></label><br>
+        <label>Mot-clé(s)&nbsp;:</label><br>
         <textarea v-model="mediadata.keywords">
         </textarea>
       </div>
@@ -249,6 +256,7 @@ export default {
         type: this.media.type,
         color: this.media.color,
         authors: this.media.authors,
+        caption: this.media.caption,
         keywords: this.media.keywords,
         public: (this.media.public == 'true'),
         content: this.media.content

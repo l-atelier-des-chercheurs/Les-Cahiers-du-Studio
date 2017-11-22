@@ -151,6 +151,8 @@ module.exports = (function() {
     dev.logfunction(`EVENT - onEditMedia for ${d.slugFolderName}/${d.slugMediaName}`);
     file.editMedia(d).then(slugFolderName => {
       sendMedias(slugFolderName, d.slugMediaName);
+    }, function(err) {
+      dev.error(`Failed to edit media! Error: ${err}`);
     });
   }
 
@@ -181,6 +183,7 @@ module.exports = (function() {
           color: '',
           authors: '',
           keywords: '',
+          caption: '',
           public: false,
           collapsed: false,
           y: 0,

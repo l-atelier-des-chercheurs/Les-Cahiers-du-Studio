@@ -209,7 +209,6 @@ window.socketio = (function() {
     socket.emit('removeMedia', { slugFolderName, slugMediaName });
   }
 
-
   return API;
 })();
 socketio.init();

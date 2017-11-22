@@ -30,7 +30,7 @@ module.exports = (function() {
   // this way, if thumbs are deleted or moved while the app is running, they will be recreated next time they are required
   function makeMediaThumbs(slugFolderName, slugMediaName, meta) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`THUMBS — makeMediaThumbs — Making thumbs for media with meta: ${JSON.stringify(meta, null, 4)}`);
+//       dev.logfunction(`THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and meta: ${JSON.stringify(meta, null, 4)}`);
 
       let thumbFolderPath = path.join(local.settings().thumbFolderName, slugFolderName);
       let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
@@ -41,6 +41,7 @@ module.exports = (function() {
 
         // regroup all thumbs promises so they can happen as fast as possible
         let makeThumbs = [];
+        dev.logverbose(`meta.type = ${meta.type}`);
 
         if(meta.type === 'image') {
           let thumbResolutions = [50,200,400,600,1200,1800];
@@ -101,10 +102,9 @@ module.exports = (function() {
         }
 
         Promise.all(makeThumbs).then((thumbData) => {
-          if(Array.isArray(thumbData)) {
-
-          }
           resolve(thumbData);
+        }).catch(err => {
+          reject(err);
         });
       });
     });
@@ -162,7 +162,7 @@ module.exports = (function() {
 
   function _makeImageThumb(mediaPath, thumbFolderPath, slugMediaName, thumbRes) {
     return new Promise(function(resolve, reject) {
-//       dev.logverbose(`Looking for an image thumb for ${mediaPath} and resolution = ${thumbRes}`);
+//      dev.logverbose(`Looking for an image thumb for ${mediaPath} and resolution = ${thumbRes}`);
 
       let thumbName = `${slugMediaName}.${thumbRes}.jpeg`;
       let thumbPath = path.join(thumbFolderPath, thumbName);

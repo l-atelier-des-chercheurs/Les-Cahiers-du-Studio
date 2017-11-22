@@ -62,73 +62,74 @@ module.exports = (function() {
       resolve(folderData);
     });
   }
-  function readMedia(slugFolderName,slugMediaName) {
+  function readOrCreateMediaMeta(slugFolderName,slugMediaName) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`COMMON — readMedia: slugFolderName = ${slugFolderName} & slugMediaName = ${slugMediaName}`);
-
-
-      let tasks = [];
-
-      let readOrCreateMediaMeta = new Promise((resolve, reject) => {
-        // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
-        let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
-        fs.access(potentialMetaFile, fs.F_OK, function(err) {
-          // if there's no META file at path
-          if(err) {
-            dev.logverbose(`No meta for this media: ${err}`);
-            // let’s get creation date and modification date, guess the type, and return this whole thing afterwards
-            createMediaMeta(slugFolderName, slugMediaName).then(mediaData => {
-//               mediaData = Object.assign({}, defaultMediaMeta, mediasData[slugMediaName]);
-              delete mediaData.content;
-              resolve(mediaData);
-            });
-          } else {
-            let mediaData = readMetaFile(potentialMetaFile);
-            delete mediaData.content;
-            resolve(mediaData);
-          }
-        });
-      });
-      tasks.push(readOrCreateMediaMeta);
-
-      Promise.all(tasks).then(mediaData => {
-        mediaData = mediaData[0];
-//         dev.logverbose(`Current mediameta : ${JSON.stringify(mediaData, null, 4)}`);
-
+      // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
+      let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
+      fs.access(potentialMetaFile, fs.F_OK, function(err) {
+        // if there's no META file at path
         let tasks = [];
 
-        if(mediaData.type === 'text' || mediaData.type === 'marker') {
-          // get text content
-          let getMediaContent = new Promise((resolve, reject) => {
-            let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
-            mediaData.content = validator.unescape(fs.readFileSync(mediaPath, local.settings().textEncoding));
-//             dev.logverbose(`Got mediaData.content : ${mediaData.content}`);
-            resolve();
+        if(err) {
+          dev.logverbose(`No meta for this media: ${err}`);
+          // let’s get creation date and modification date, guess the type, and return this whole thing afterwards
+          let createNewMediaMeta = createMediaMeta(slugFolderName, slugMediaName).then(mediaData => {
+            delete mediaData.content;
+            resolve(mediaData);
           });
-          tasks.push(getMediaContent);
+          tasks.push(createNewMediaMeta);
+        } else {
+          dev.logverbose(`Found meta there: ${potentialMetaFile}`);
+          let readMediaMeta = readMetaFile(potentialMetaFile).then(mediaData => {
+            delete mediaData.content;
+            resolve(mediaData);
+          });
+          tasks.push(readMediaMeta);
         }
 
-        // let’s find or create thumbs
-        let getMediaThumbs = new Promise((resolve, reject) => {
-          thumbs.makeMediaThumbs(slugFolderName, slugMediaName, mediaData).then((thumbData) => {
-            mediaData.thumbs = thumbData;
-            resolve();
-          });
-        });
-        tasks.push(getMediaThumbs);
+        Promise.all(tasks).then(mediaData => {
+          mediaData = mediaData[0];
 
-        Promise.all(tasks).then(() => {
+          if(mediaData.type === 'text' || mediaData.type === 'marker') {
+            // get text content
+            let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
+            mediaData.content = validator.unescape(fs.readFileSync(mediaPath, local.settings().textEncoding));
+            dev.logverbose(`Got mediaData.content : ${mediaData.content}`);
+            resolve(mediaData);
+          }
+
           resolve(mediaData);
         });
       });
     });
   }
+  function readMediaAndThumbs(slugFolderName,slugMediaName) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(`COMMON — readMediaAndThumbs: slugFolderName = ${slugFolderName} & slugMediaName = ${slugMediaName}`);
+
+      readOrCreateMediaMeta(slugFolderName, slugMediaName).then(mediaData => {
+        dev.logverbose(`Read Meta, now getting thumbs for ${JSON.stringify(mediaData, null, 4)}`);
+
+        // let’s find or create thumbs
+        thumbs.makeMediaThumbs(slugFolderName, slugMediaName, mediaData).then((thumbData) => {
+          mediaData.thumbs = thumbData;
+          resolve(mediaData);
+        }).catch(err => {
+          reject(err);
+        });
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
 
   function readMetaFile(metaPath){
-    dev.logfunction(`COMMON — readMetaFile: ${metaPath}`);
-    var metaFileContent = fs.readFileSync(metaPath, local.settings().textEncoding);
-    var metaFileContentParsed = api.parseData(metaFileContent);
-    return metaFileContentParsed;
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(`COMMON — readMetaFile: ${metaPath}`);
+      var metaFileContent = fs.readFileSync(metaPath, local.settings().textEncoding);
+      var metaFileContentParsed = api.parseData(metaFileContent);
+      resolve(metaFileContentParsed);
+    });
   }
 
   function getFolder(slugFolderName) {
@@ -372,7 +373,7 @@ module.exports = (function() {
           var allMediasData = [];
           medias.forEach(function(slugMediaName) {
             let fmeta = new Promise((resolve, reject) => {
-              readMedia(slugFolderName,slugMediaName).then((meta) => {
+              readMediaAndThumbs(slugFolderName,slugMediaName).then((meta) => {
                 meta.slugMediaName = slugMediaName;
                 resolve(meta);
               });
@@ -620,6 +621,9 @@ module.exports = (function() {
       if(mdata.hasOwnProperty('keywords')){
         newMediaData.keywords = validator.escape(mdata.keywords); }
 
+      if(mdata.hasOwnProperty('caption')){
+        newMediaData.caption = validator.escape(mdata.caption); }
+
       if(mdata.hasOwnProperty('authors')) {
         newMediaData.authors = validator.escape(mdata.authors); }
 
@@ -633,9 +637,10 @@ module.exports = (function() {
         newMediaData.y = api.clip(mdata.y, 0, 1); }
 
       newMediaData.date_modified = api.getCurrentDate();
-
       dev.logverbose(`Following datas will replace existing data for this media meta: ${JSON.stringify(newMediaData, null, 4)}`);
-      readMedia(slugFolderName,slugMediaName).then((meta) => {
+
+      readOrCreateMediaMeta(slugFolderName,slugMediaName).then((meta) => {
+        dev.logverbose(`Got meta, now updating for ${slugMediaName}`);
         // overwrite stored obj with new informations
         Object.assign(meta, newMediaData);
         let tasks = [];
