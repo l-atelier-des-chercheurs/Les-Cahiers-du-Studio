@@ -161,7 +161,7 @@ module.exports = (function() {
 
           thumbs.map((thumbName) => {
             let removeThisThumb = new Promise((resolve, reject) => {
-              let pathToThumb = path.join(fullThumbFolderPath, thumbName);;
+              let pathToThumb = path.join(fullThumbFolderPath, thumbName);
               fs.unlink(pathToThumb, (err) => {
                 dev.logverbose(`Removing thumb ${thumbName}`);
                 if (err) {
