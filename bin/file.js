@@ -66,7 +66,7 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       // pour chaque item, on regarde s’il contient un fichier méta (même nom + .txt)
       let potentialMetaFile = getMetaFileOfMedia(slugFolderName, slugMediaName);
-      fs.access(potentialMetaFile, fs.F_OK, function(err) {
+      fs.access(potentialMetaFile, fs.F_OK, (err) => {
         // if there's no META file at path
         let tasks = [];
 
@@ -111,7 +111,7 @@ module.exports = (function() {
         dev.logverbose(`Read Meta, now getting thumbs for ${JSON.stringify(mediaData, null, 4)}`);
 
         // let’s find or create thumbs
-        thumbs.makeMediaThumbs(slugFolderName, slugMediaName, mediaData).then((thumbData) => {
+        thumbs.makeMediaThumbs(slugFolderName, slugMediaName, mediaData.type).then((thumbData) => {
           mediaData.thumbs = thumbData;
           resolve(mediaData);
         }).catch(err => {
@@ -182,9 +182,11 @@ module.exports = (function() {
                   dev.logverbose(`New folder meta file created at path: ${folderMetaPath} with meta: ${JSON.stringify(meta, null, 4)}`);
                   let preparedMeta = prepareFolderMetaForClient(slugFolderName, meta);
                   resolve(preparedMeta);
-                }, function(err) {
-                  reject(`${err}`);
+                }).catch(err => {
+                  reject(err);
                 });
+              }).catch(err => {
+                reject(err);
               });
             });
           });
@@ -686,10 +688,12 @@ module.exports = (function() {
       let mediaMetaPath = mediaPath + local.settings().metaFileext;
       let movedMediaMetaPath = movedMediaPath + local.settings().metaFileext;
 
-
       fs.move(mediaPath, movedMediaPath, { overwrite: true })
       .then(() => {
         return fs.move(mediaMetaPath, movedMediaMetaPath, { overwrite: true });
+      })
+      .then(() => {
+        return thumbs.removeMediaThumbs(slugFolderName, slugMediaName);
       })
       .then(() => {
         resolve();

@@ -20,7 +20,8 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 module.exports = (function() {
 
   const API = {
-    makeMediaThumbs   : (slugFolderName, slugMediaName, meta) => makeMediaThumbs(slugFolderName, slugMediaName, meta),
+    makeMediaThumbs   : (slugFolderName, slugMediaName, mediaType) => makeMediaThumbs(slugFolderName, slugMediaName, mediaType),
+    removeMediaThumbs : (slugFolderName, slugMediaName) => removeMediaThumbs(slugFolderName, slugMediaName),
     getEXIFData       : (mediaPath) => getEXIFData(mediaPath),
     getMediaDuration  : (mediaPath) => getMediaDuration(mediaPath),
     getMediaRatio     : (mediaPath) => getMediaRatio(mediaPath),
@@ -28,9 +29,9 @@ module.exports = (function() {
 
   // this function is used both when creating a media and everything media are listed.
   // this way, if thumbs are deleted or moved while the app is running, they will be recreated next time they are required
-  function makeMediaThumbs(slugFolderName, slugMediaName, meta) {
+  function makeMediaThumbs(slugFolderName, slugMediaName, mediaType) {
     return new Promise(function(resolve, reject) {
-//       dev.logfunction(`THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and meta: ${JSON.stringify(meta, null, 4)}`);
+//       dev.logfunction(`THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and mediaType: ${mediaType}`);
 
       let thumbFolderPath = path.join(local.settings().thumbFolderName, slugFolderName);
       let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
@@ -41,9 +42,8 @@ module.exports = (function() {
 
         // regroup all thumbs promises so they can happen as fast as possible
         let makeThumbs = [];
-        dev.logverbose(`meta.type = ${meta.type}`);
 
-        if(meta.type === 'image') {
+        if(mediaType === 'image') {
           let thumbResolutions = [50,200,400,600,1200,1800];
           thumbResolutions.forEach((thumbRes) => {
             let makeThumb = new Promise((resolve, reject) => {
@@ -62,7 +62,7 @@ module.exports = (function() {
           });
         }
 
-        if(meta.type === 'video') {
+        if(mediaType === 'video') {
           // make screenshot
           // TODO : take screenshot every 5 seconds
           let screenshotsTimemarks = [0];
@@ -134,6 +134,51 @@ module.exports = (function() {
           resolve({ ts, mediaRatio });
         })
         .catch(err => reject());
+    });
+  }
+
+  function removeMediaThumbs(slugFolderName, slugMediaName) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(`THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName}`);
+
+      let thumbFolderPath = path.join(local.settings().thumbFolderName, slugFolderName);
+      let fullThumbFolderPath = api.getFolderPath(thumbFolderPath);
+
+      fs.mkdirp(fullThumbFolderPath, function (err) {
+        if(err) { reject(err); }
+
+        // get all thumbs
+        fs.readdir(fullThumbFolderPath, function (err, filenames) {
+  //         dev.logverbose(`Found filenames: ${filenames}`);
+          if(err) { dev.error(`Couldn't read content dir: ${err}`); reject(err); }
+          if(filenames === undefined) { dev.error(`No folder found: ${err}`); reject(err); }
+
+          var thumbs = filenames.filter((name) => {
+            return name.indexOf(slugMediaName) === 0;
+          });
+
+          let tasks = [];
+
+          thumbs.map((thumbName) => {
+            let removeThisThumb = new Promise((resolve, reject) => {
+              let pathToThumb = path.join(fullThumbFolderPath, thumbName);;
+              fs.unlink(pathToThumb, (err) => {
+                dev.logverbose(`Removing thumb ${thumbName}`);
+                if (err) {
+                  reject(`${err}`);
+                } else {
+                  resolve();
+                }
+              });
+            });
+            tasks.push(removeThisThumb);
+          });
+
+          Promise.all(tasks).then(() => {
+            resolve();
+          });
+        });
+      });
     });
   }
 
