@@ -90,11 +90,9 @@ export default {
     }
   },
   mounted() {
-    if(!this.context === 'edit') {
+    if(this.context === 'edit') {
       if(Modernizr !== undefined && !Modernizr.touchevents) {
-        if(this.media.type === 'text' || this.media.type === 'marker') {
-          this.$refs.textField.focus();
-        }
+        this.$refs.textField.focus();
       }
     }
   },
