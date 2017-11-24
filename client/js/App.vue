@@ -2,7 +2,7 @@
   <div id="app">
 
     <div
-      v-if="$root.store.is_electron"
+      v-if="$root.store.is_electron && process.platform === 'darwin'"
       id="systemBar"
     >
       <div class="fixedBand">
