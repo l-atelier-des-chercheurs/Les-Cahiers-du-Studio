@@ -10,7 +10,9 @@ var dev = require('./bin/dev-log');
 // var ngrok = require('ngrok');
 
 const
-  config = require('./config.json')
+  config = require('./config.json'),
+  sockets = require('./sockets'),
+  router = require('./router')
 ;
 
 module.exports = function(electronApp) {
@@ -27,9 +29,6 @@ module.exports = function(electronApp) {
   let server = https.createServer(options, app);
   var io = require('socket.io').listen(server);
   dev.logverbose('Starting server 2');
-
-  var sockets = require('./sockets');
-  var router = require('./router');
 
   var m = sockets.init(app, io, electronApp);
 

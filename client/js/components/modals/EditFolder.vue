@@ -5,7 +5,7 @@
     @submit="editThisFolder"
     >
     <template slot="header">
-      <span class="text-cap"> Éditer le dossier&nbsp;:</span>
+      <span class="text-cap"> Éditer le dossier&nbsp;:</span><br>
       <i>{{ folder.name }}</i>
     </template>
 

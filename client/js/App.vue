@@ -13,6 +13,7 @@
           <div
             v-if="view === 'TimeLineView'"
             class="titleText font-small text-centered c-blanc"
+            @click.prevent="$root.closeFolder()"
             >
             <i>Les Cahiers du Studio</i>
           </div>

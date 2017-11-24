@@ -5,7 +5,7 @@
     @submit="editThisMedia"
     >
     <template slot="header">
-      <span class="text-cap"> Éditer le média&nbsp;:</span>
+      <span class="text-cap"> Éditer le média&nbsp;:</span><br>
       <i>{{ slugMediaName }}</i>
     </template>
 

@@ -3464,6 +3464,12 @@ b {
 .padding-bottom-small {
   padding-bottom: 0.675em;
 }
+.padding-left-small {
+  padding-left: 0.675em;
+}
+.padding-right-small {
+  padding-left: 0.675em;
+}
 .padding-bottom-verysmall {
   padding-bottom: 0.3375em;
 }
@@ -4557,11 +4563,15 @@ th {
   background: -o-linear-gradient(transparent, transparent 28px, #91D1D3 28px);
   background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
   background-size: 30px 30px;
-  background: -o-linear-gradient(transparent, transparent calc(1.35em - 2px), rgba(0, 0, 0, 0.15) calc(1.35em - 2px));
-  background: linear-gradient(transparent, transparent calc(1.35em - 2px), rgba(0, 0, 0, 0.15) calc(1.35em - 2px));
+  background: -o-linear-gradient(transparent, transparent calc(1.35em - 2px), rgba(0, 0, 0, 0.1) calc(1.35em - 2px));
+  background: linear-gradient(transparent, transparent calc(1.35em - 2px), rgba(0, 0, 0, 0.1) calc(1.35em - 2px));
   background-size: 1.35em 1.35em;
   background-attachment: local;
   background-position-y: calc(1.35em * 0.85);
+}
+.m_modal--preview textarea.mediaTextContent:focus {
+  background-image: -o-linear-gradient(transparent, transparent calc(1.35em - 2px), rgba(0, 0, 0, 0.2) calc(1.35em - 2px));
+  background-image: linear-gradient(transparent, transparent calc(1.35em - 2px), rgba(0, 0, 0, 0.2) calc(1.35em - 2px));
 }
 .m_modal--close_button {
   position: absolute;
@@ -4757,7 +4767,7 @@ body.is_unscrollable {
   overflow: hidden;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
-  min-width: 50px;
+  min-width: 30px;
 }
 .m_navbar .breadcrumb > .breadcrumb--item + .breadcrumb--item::before {
   content: "›";

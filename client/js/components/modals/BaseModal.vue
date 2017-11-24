@@ -1,19 +1,19 @@
 <template>
   <portal to="modal_container">
     <transition name="modal" :duration="350">
-      <div class="m_modal--mask" @click="closeModal" v-if="showModal">
+      <div class="m_modal--mask" v-if="showModal">
         <div class="m_modal--wrapper">
           <div class="m_modal--container"
-            @click.stop
+            @click.self="closeModal"
             :class="[{
               'is--large' : !!this.$slots['preview']
             }, 'color-' + backgroundColor]"
             @keyup.ctrl.enter="$emit('submit')"
             >
-
             <div
               class="m_modal--container--content"
               :class="{ 'flex-wrap flex-vertically-stretched' : !!this.$slots['sidebar'] }"
+
               >
               <div class="m_modal--sidebar flex-collapse-on-mobile bg-noir_light c-blanc"
                 :class="{ 'flex-size-2/5' : !!this.$slots['sidebar'] }"
