@@ -80,37 +80,40 @@ gulp.task('lint', function() {
 
 gulp.task('vue', function() {
   return browserify(vueMain)
-  .transform(vueify)
-  .transform(babelify, { presets: ['es2015'], plugins: ['transform-runtime'] })
-  .bundle()
-  .on('error', function(err) {
-    gutil.log(
-      gutil.colors.red('Browserify compile error:'),
-      err.message
-    );
-    gutil.beep();
-    this.emit('end'); // Ends the task
-  })
-  .pipe(source('vue.js'))
-  .pipe(buffer())
-  .pipe(gulp.dest('client/development'))
+    .transform(vueify)
+    .transform(babelify, { presets: ['es2015'], plugins: ['transform-runtime'] })
+    .bundle()
+    .on('error', function(err) {
+      gutil.log(
+        gutil.colors.red('Browserify compile error:'),
+        err.message
+      );
+      gutil.beep();
+      this.emit('end'); // Ends the task
+    })
+    .pipe(source('vue.js'))
+    .pipe(buffer())
+//     .pipe(uglify())
+    .pipe(gulp.dest('client/development'))
 });
 
 gulp.task('scripts', function () {
   return browserify(userScripts)
-  .transform(babelify, { presets: ['es2015'], plugins: ['transform-runtime'] })
-  .bundle()
-  .on('error', function(err) {
-    gutil.log(
-      gutil.colors.red('Browserify compile error:'),
-      err.message
-    );
-    gutil.beep();
-    this.emit('end'); // Ends the task
-  })
-  .pipe(source('main.js'))
-  .pipe(buffer())
-  .pipe(gulp.dest('client/development'))
+    .transform(babelify, { presets: ['es2015'], plugins: ['transform-runtime'] })
+    .bundle()
+    .on('error', function(err) {
+      gutil.log(
+        gutil.colors.red('Browserify compile error:'),
+        err.message
+      );
+      gutil.beep();
+      this.emit('end'); // Ends the task
+    })
+    .pipe(source('main.js'))
+    .pipe(buffer())
+//     .pipe(uglify())
+    .pipe(gulp.dest('client/development'));
+    ;
 });
 
 // Concatenate user scripts and minify them.
