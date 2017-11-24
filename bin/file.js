@@ -73,16 +73,20 @@ module.exports = (function() {
         if(err) {
           dev.logverbose(`No meta for this media: ${err}`);
           // let’s get creation date and modification date, guess the type, and return this whole thing afterwards
-          let createNewMediaMeta = createMediaMeta(slugFolderName, slugMediaName).then(mediaData => {
-            delete mediaData.content;
-            resolve(mediaData);
+          let createNewMediaMeta = new Promise((resolve, reject) => {
+            createMediaMeta(slugFolderName, slugMediaName).then(mediaData => {
+              delete mediaData.content;
+              resolve(mediaData);
+            });
           });
           tasks.push(createNewMediaMeta);
         } else {
           dev.logverbose(`Found meta there: ${potentialMetaFile}`);
-          let readMediaMeta = readMetaFile(potentialMetaFile).then(mediaData => {
-            delete mediaData.content;
-            resolve(mediaData);
+          let readMediaMeta = new Promise((resolve, reject) => {
+            readMetaFile(potentialMetaFile).then(mediaData => {
+              delete mediaData.content;
+              resolve(mediaData);
+            });
           });
           tasks.push(readMediaMeta);
         }
@@ -235,8 +239,8 @@ module.exports = (function() {
             api.storeData(folderMetaPath, mdata, 'create').then(function(meta) {
               dev.logverbose(`New folder meta file created at path: ${folderMetaPath} with meta: ${JSON.stringify(meta, null, 4)}`);
               resolve(slugFolderName);
-            }, function(err) {
-              reject(`${err}`);
+            }).catch(err => {
+              reject(err);
             });
           }, function(err) {
             reject(`${err}`);
@@ -642,7 +646,7 @@ module.exports = (function() {
       dev.logverbose(`Following datas will replace existing data for this media meta: ${JSON.stringify(newMediaData, null, 4)}`);
 
       readOrCreateMediaMeta(slugFolderName,slugMediaName).then((meta) => {
-        dev.logverbose(`Got meta, now updating for ${slugMediaName}`);
+        dev.logverbose(`Got meta, now updating for ${slugMediaName} with ${JSON.stringify(meta, null, 4)}`);
         // overwrite stored obj with new informations
         Object.assign(meta, newMediaData);
         let tasks = [];
@@ -659,12 +663,15 @@ module.exports = (function() {
         tasks.push(updateMediaMeta);
 
         if((meta.type === 'text' || meta.type === 'marker') && mdata.hasOwnProperty('content')) {
+          dev.logverbose(`Is text or marker and need to update content.`);
           let updateTextMedia = new Promise((resolve, reject) => {
             let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
             let content = validator.escape(mdata.content);
-            api.storeData(mediaPath, content, 'update').then(() => {
-              dev.logverbose(`Updated media file at path: ${mediaPath} with meta: ${content}`);
+            api.storeData(mediaPath, content, 'update').then((content) => {
+              dev.logverbose(`Updated media file at path: ${mediaPath} with content: ${content}`);
               resolve();
+            }).catch(err => {
+              reject(err);
             });
           });
           tasks.push(updateTextMedia);
