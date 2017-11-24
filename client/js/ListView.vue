@@ -35,7 +35,7 @@
 
         <div class="border border-top-dashed">
           <p class="margin-vert-medium">
-            Pour plus d’information, consultez la <a href="https://paper.dropbox.com/doc/Les-Cahiers-du-Studio-PvgkN59Zb2i9nAApZOIZz#:uid=389501177464251596585301&h2=Information-sur-le-stockage-de" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:hello@louiseveillard.com?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.
+            Pour plus d’information, consultez la <a href="https://paper.dropbox.com/doc/Les-Cahiers-du-Studio-PvgkN59Zb2i9nAApZOIZz#:uid=389501177464251596585301&h2=Information-sur-le-stockage-de" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.
           </p>
         </div>
 
