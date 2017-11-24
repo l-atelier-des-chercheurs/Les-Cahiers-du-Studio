@@ -126,8 +126,8 @@ gulp.task('scripts-prod', ['vue', 'scripts'], function (done) {
 // Watch Files For Changes
 gulp.task('watch', function() {
   gulp.watch([userScripts, vueMain, components, nodeScripts], ['lint', 'vue', 'scripts']);
-  gulp.watch('client/less/*.less', ['less', 'css-prod']);
+  gulp.watch('client/less/*.less', ['less']);
 });
 
 // Default Task
-gulp.task('default', ['less', 'css-prod', 'lint', 'vue', 'scripts', 'scripts-prod']);
+gulp.task('default', ['less', 'lint', 'vue', 'scripts', 'scripts-prod']);

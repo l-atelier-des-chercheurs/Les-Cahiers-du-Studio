@@ -225,7 +225,7 @@ export default {
   },
   data() {
     return {
-      systemBar: document.getElementById('systemBar') !== null ? 22 : 0,
+      systemBar: document.getElementById('systemBar') !== null ? 22 - 6 : 0,
       topNavbarHeight: 50,
       timelinetrackHeight: 50,
       timelineHeight: 0,

@@ -215,7 +215,7 @@ exports.default = {
   },
   data: function data() {
     return {
-      systemBar: document.getElementById('systemBar') !== null ? 22 : 0,
+      systemBar: document.getElementById('systemBar') !== null ? 22 - 6 : 0,
       topNavbarHeight: 50,
       timelinetrackHeight: 50,
       timelineHeight: 0,
@@ -825,7 +825,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-50dcb39b", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-50dcb39b", __vue__options__)
+    hotAPI.reload("data-v-50dcb39b", __vue__options__)
   }
 })()}
 },{"./components/AddMediaButton.vue":5,"./components/NavbarTop.vue":9,"./components/Sidebar.vue":10,"./components/TimelineMedia.vue":11,"./components/modals/EditFolder.vue":14,"./components/modals/EditMedia.vue":15,"./components/subcomponents/DateTime.vue":21,"./event-bus":24,"debounce":87,"moment":190,"vue":225,"vue-hot-reload-api":221}],4:[function(require,module,exports){
@@ -1357,7 +1357,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-586f05a2", __vue__options__)
   } else {
-    hotAPI.reload("data-v-586f05a2", __vue__options__)
+    hotAPI.rerender("data-v-586f05a2", __vue__options__)
   }
 })()}
 },{"./modals/EditFolder.vue":14,"moment":190,"moment/locale/fr":189,"vue":225,"vue-hot-reload-api":221}],9:[function(require,module,exports){

@@ -4657,7 +4657,7 @@ body.is_unscrollable {
   margin: 0 auto;
 }
 #systemBar {
-  height: 22px;
+  height: 16px;
   -webkit-user-select: none;
   -webkit-app-region: drag;
 }
