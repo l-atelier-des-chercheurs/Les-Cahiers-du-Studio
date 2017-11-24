@@ -225,11 +225,12 @@ export default {
   },
   data() {
     return {
-      topNavbarHeight: 60,
+      systemBar: document.getElementById('systemBar') !== null ? 22 : 0,
+      topNavbarHeight: 50,
       timelinetrackHeight: 50,
       timelineHeight: 0,
       bottomScrollBar: 20,
-      sidebarWidth: parseFloat(window.getComputedStyle(document.querySelector("html")).getPropertyValue("--sidebar-width")),
+      sidebarWidth: parseFloat(window.getComputedStyle(document.querySelector('html')).getPropertyValue('--sidebar-width')),
 
       showMediaModalFor: '',
       highlightedMedia: '',
@@ -659,7 +660,7 @@ export default {
     },
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
-      this.timelineHeight = window.innerHeight - this.topNavbarHeight - this.bottomScrollBar;
+      this.timelineHeight = window.innerHeight - this.topNavbarHeight - this.bottomScrollBar - this.systemBar;
     },
     onScroll() {
       if(!this.isScrolling) {

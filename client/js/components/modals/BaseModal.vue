@@ -12,6 +12,7 @@
             >
 
             <div
+              class="m_modal--container--content"
               :class="{ 'flex-wrap flex-vertically-stretched' : !!this.$slots['sidebar'] }"
               >
               <div class="m_modal--sidebar flex-collapse-on-mobile bg-noir_light c-blanc"

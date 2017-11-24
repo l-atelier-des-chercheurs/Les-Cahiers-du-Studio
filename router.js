@@ -31,7 +31,7 @@ module.exports = function(app,io,m){
 
       let pageDataJSON = {};
 
-      pageDataJSON.pageTitle = 'les-cahiers';
+      pageDataJSON.pageTitle = 'Les Cahiers du Studio';
       pageDataJSON.slugFolderName = '';
       // full path on the storage space, as displayed in the footer
       pageDataJSON.folderPath = api.getFolderPath();

@@ -1,6 +1,25 @@
 <template>
   <div id="app">
 
+    <div
+      v-if="$root.store.is_electron"
+      id="systemBar"
+    >
+      <div class="fixedBand">
+        <transition
+          name="fade"
+          :duration="850"
+          >
+          <div
+            v-if="view === 'TimeLineView'"
+            class="titleText font-small text-centered c-blanc"
+            >
+            <i>Les Cahiers du Studio</i>
+          </div>
+        </transition>
+      </div>
+    </div>
+
     <div v-if="view === 'ListView'" class="container">
       <div class="row">
 

@@ -70,7 +70,7 @@ function createWindow() {
 
     backgroundColor: '#333',
     show: false,
-//     titleBarStyle: 'hiddenInset',
+    titleBarStyle: 'hidden',
 
     webPreferences: {
       allowDisplayingInsecureContent: true,

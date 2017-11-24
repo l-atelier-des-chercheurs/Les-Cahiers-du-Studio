@@ -90,6 +90,33 @@ body {
   margin: 0 auto;
 }
 
+@t-systemBarHeight: 22px;
+
+#systemBar {
+  height: @t-systemBarHeight;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+
+  > .fixedBand {
+    position: fixed;
+    width: 100%;
+    height: @t-systemBarHeight;
+    background-color: @c-noir;
+    padding: 4px;
+    z-index: 15000;
+    overflow: hidden;
+
+    transition: background-color .2s ease-out;
+
+    &:hover {
+      background-color: #000;
+    }
+  }
+
+  .titleText {
+  }
+}
+
 .m_home {
 
   .stvlogo {
@@ -125,7 +152,6 @@ body {
     width: 100%;
     background-color: @c-bg_navbar;
     color: white;
-
     letter-spacing: 0.05em;
   }
   .bloccontainer {
@@ -136,6 +162,7 @@ body {
     display:flex;
     flex-flow: row wrap;
     justify-content: space-between;
+    align-items: flex-start;
 
     > * {
       flex: 1 1 40%;
@@ -168,9 +195,7 @@ body {
     display: flex;
     align-items: center;
     min-width: 0;
-    padding: 0;
     list-style: none;
-    margin: 0;
   }
 
   .breadcrumb > .breadcrumb--item {
@@ -225,7 +250,7 @@ body {
   color: white;
 
   text-align: right;
-  border-radius: 10%;
+  border-radius: 4px;
 
   transform: translateX(0);
   transition: transform .35s ease-out, opacity .45s;
