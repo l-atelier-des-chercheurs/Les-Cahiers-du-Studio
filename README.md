@@ -111,7 +111,7 @@ HOME=~/.electron-gyp npm install
 4. electron-builder (which builds electron to an app) embeds a script that rebuilds dependencies according to electron. To use it, write: 
 
 ```
-electron-builder install-app-deps
+./node_modules/.bin/electron-builder install-app-deps
 ``` 
 
 **sharp on ubuntu**
