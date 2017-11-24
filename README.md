@@ -80,11 +80,17 @@ npm start
 
 #### Troubleshooting
 
-If you get the *package mismatch* error, they are most probably due to native packages (looking at you sharp). Follow the instructions [here](https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md), and specifically:
+**Module version mismatch**
+
+If you get the *Module version mismatch. Expected 50, got XX.* error, they are most probably due to native packages (looking at you sharp). 
+
+Here are a few things you can try:
+
+1. Follow the instructions [here](https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md), and specifically:
 
 ```
 # Electron's version.
-export npm_config_target=1.8.1
+export npm_config_target=1.7.9
 # The architecture of Electron, can be ia32 or x64.
 export npm_config_arch=x64
 export npm_config_target_arch=x64
@@ -98,7 +104,23 @@ export npm_config_build_from_source=true
 HOME=~/.electron-gyp npm install
 ```
 
-Sometimes, Electron is not installed when running `npm install` on the repo. It may help to run `npm install electron` just to be sure it is actually installed locally.
+2. Sometimes, Electron is not installed when running `npm install` on the repo. It may help to run `npm install electron@1.7.9` just to be sure it is actually installed locally.
+
+3. Also, *it is necessary to run the same node version locally as the one used in electron* so that installed native packages are compiled with the same version. Since electron 1.7.9 uses Node 7.9.0, this is the version you should use. Obviously, changing Node version all the time is annoying, but great tools such as [nvm](https://github.com/creationix/nvm) make it much simpler.
+
+4. electron-builder (which builds electron to an app) embeds a script that rebuilds dependencies according to electron. To use it, write: 
+
+```
+electron-builder install-app-deps
+``` 
+
+**sharp on ubuntu**
+
+It seems the dependency sharp cannot be built easily on Ubuntu. Install an older version to fix this:
+
+```
+npm install sharp@0.17.3
+```
 
 # Tweak, fork and debug
 
