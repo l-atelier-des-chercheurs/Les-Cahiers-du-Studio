@@ -84,7 +84,7 @@ If you get the *package mismatch* error, they are most probably due to native pa
 
 ```
 # Electron's version.
-export npm_config_target=1.7.5
+export npm_config_target=1.8.1
 # The architecture of Electron, can be ia32 or x64.
 export npm_config_arch=x64
 export npm_config_target_arch=x64
@@ -97,6 +97,8 @@ export npm_config_build_from_source=true
 # Install all dependencies, and store cache to ~/.electron-gyp.
 HOME=~/.electron-gyp npm install
 ```
+
+Sometimes, Electron is not installed when running `npm install` on the repo. It may help to run `npm install electron` just to be sure it is actually installed locally.
 
 # Tweak, fork and debug
 
