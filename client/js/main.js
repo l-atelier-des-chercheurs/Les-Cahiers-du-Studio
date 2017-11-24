@@ -53,7 +53,8 @@ window.store = {
     appVersion: locals.appVersion,
     presentation_md: locals.presentation_md,
     lang: locals.lang,
-    is_electron: !!(window && window.process && window.process.type)
+    is_electron: !!(window && window.process && window.process.type),
+    is_darwin: !!(window && window.process && window.process.platform === 'darwin')
   },
 };
 // window.store.state.folders = JSON.parse(JSON.stringify(locals.data));
