@@ -115,8 +115,6 @@
 </template>
 <script>
 import EditFolder from './modals/EditFolder.vue';
-import moment from 'moment';
-require('moment/locale/fr')
 
 export default {
   props: ['folder', 'slugFolderName'],
@@ -132,7 +130,7 @@ export default {
   },
   methods: {
     formatDateToHuman(date) {
-      return moment(date, 'YYYY-MM-DD HH:mm:ss').calendar();
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').calendar();
     },
     openFolder() {
       this.$root.openFolder(this.slugFolderName);

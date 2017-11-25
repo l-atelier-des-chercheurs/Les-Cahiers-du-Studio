@@ -80,9 +80,6 @@
 
 <script>
 import MediaContent from '../subcomponents/MediaContent.vue';
-
-import EventBus from '../../event-bus';
-import moment from 'moment';
 import _ from 'underscore';
 
 export default {
@@ -110,30 +107,30 @@ export default {
   },
   watch: {
     'currentSort': function() {
-      EventBus.$emit('setSort', this.currentSort);
+      this.$eventHub.$emit('setSort', this.currentSort);
     },
     'currentFilter': function() {
-      EventBus.$emit('setFilter', this.currentFilter);
+      this.$eventHub.$emit('setFilter', this.currentFilter);
     }
   },
   methods: {
     highlightMedia(slugMediaName) {
       if(this.display !== 'table') return false;
-      EventBus.$emit('highlightMedia', slugMediaName);
+      this.$eventHub.$emit('highlightMedia', slugMediaName);
     },
     unHighlightMedia(slugMediaName) {
       if(this.display !== 'table') return false;
-      EventBus.$emit('highlightMedia', '');
+      this.$eventHub.$emit('highlightMedia', '');
     },
     scrollToMedia(slugMediaName) {
       if(this.display !== 'table') return false;
-      EventBus.$emit('scrollToMedia', slugMediaName);
+      this.$eventHub.$emit('scrollToMedia', slugMediaName);
     },
     openMediaModal(slugMediaName) {
-      EventBus.$emit('timeline.openMediaModal', slugMediaName);
+      this.$eventHub.$emit('timeline.openMediaModal', slugMediaName);
     },
     mediaIsOutOfScope(media) {
-      if(moment(media.date_timeline).isBefore(this.timelineInfos.start) || moment(media.date_timeline).isAfter(this.timelineInfos.end)) {
+      if(this.$moment(media.date_timeline).isBefore(this.timelineInfos.start) || this.$moment(media.date_timeline).isAfter(this.timelineInfos.end)) {
         return true;
       }
       return false;

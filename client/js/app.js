@@ -7,8 +7,16 @@ import localstore from 'store';
 import VueScrollTo from 'vue-scrollto';
 import PortalVue from 'portal-vue';
 
+import moment from 'moment';
+import 'moment/locale/fr';
+moment.locale('fr');
+Object.defineProperty(Vue.prototype, '$moment', { value: moment });
+
+Vue.prototype.$eventHub = new Vue(); // Global event bus
+
 Vue.use(VueScrollTo);
 Vue.use(PortalVue);
+
 
 Vue.config.silent = false;
 Vue.config.devtools = true;

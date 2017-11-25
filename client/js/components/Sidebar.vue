@@ -140,24 +140,6 @@ import Calendrier from './sidebar/Calendrier.vue';
 import Tableau from './sidebar/Tableau.vue';
 import SidebarSection from './sidebar/SidebarSection.vue';
 import MediasList from './modals/MediasList.vue';
-import EventBus from '../event-bus';
-
-import moment from 'moment';
-
-
-// from https://stackoverflow.com/questions/23795522/how-to-enumerate-dates-between-two-dates-in-moment
-var enumerateDaysBetweenDates = function(startDate, endDate) {
-  var dates = [];
-
-  var currDate = moment(startDate).startOf('day').subtract(1, 'days');
-  var lastDate = moment(endDate).startOf('day').add(1, 'days');
-
-  while(currDate.add(1, 'days').diff(lastDate) < 0) {
-    dates.push(currDate.clone().toDate());
-  }
-
-  return dates;
-};
 
 export default {
   components: {
@@ -238,12 +220,12 @@ export default {
     }
   },
   mounted() {
-    EventBus.$on('setSort', this.setSort);
-    EventBus.$on('setFilter', this.setFilter);
+    this.$eventHub.$on('setSort', this.setSort);
+    this.$eventHub.$on('setFilter', this.setFilter);
   },
   beforeDestroy() {
-    EventBus.$off('setSort');
-    EventBus.$off('setFilter');
+    this.$eventHub.$off('setSort');
+    this.$eventHub.$off('setFilter');
   },
   computed: {
     sortedMedias() {
@@ -297,6 +279,21 @@ export default {
   },
 
   methods: {
+
+    // from https://stackoverflow.com/questions/23795522/how-to-enumerate-dates-between-two-dates-in-moment
+    enumerateDaysBetweenDates(startDate, endDate) {
+      var dates = [];
+
+      var currDate = this.$moment(startDate).startOf('day').subtract(1, 'days');
+      var lastDate = this.$moment(endDate).startOf('day').add(1, 'days');
+
+      while(currDate.add(1, 'days').diff(lastDate) < 0) {
+        dates.push(currDate.clone().toDate());
+      }
+
+      return dates;
+    },
+
     getURLToApp(ip, port) {
       return `https://${ip}:${port}`;
     },
@@ -306,10 +303,10 @@ export default {
       shell.showItemInFolder(thisPath);
     },
     getVisibleDay() {
-      return moment(this.visibleDay).format('DD/MM/YYYY');
+      return this.$moment(this.visibleDay).format('DD/MM/YYYY');
     },
     scrollToDate(timestamp) {
-      EventBus.$emit('scrollToDate', timestamp);
+      this.$eventHub.$emit('scrollToDate', timestamp);
     },
     openListMediasModal() {
       this.showMediasList = true;
@@ -319,7 +316,7 @@ export default {
     },
     folderDays() {
       console.log('METHODS • sidebar: getting folderDays');
-      const allDays = enumerateDaysBetweenDates(this.timelineInfos.start, this.timelineInfos.end);
+      const allDays = this.enumerateDaysBetweenDates(this.timelineInfos.start, this.timelineInfos.end);
       if(allDays.length === 0) { return; }
 
       /*
@@ -334,16 +331,16 @@ export default {
       */
 
       var dayGroupedByMonth = allDays.reduce((acc, cur, i) => {
-        let monthName = moment(cur).format('MMMM');
-        let day = moment(cur).date();
+        let monthName = this.$moment(cur).format('MMMM');
+        let day = this.$moment(cur).date();
 
-        let fullDate = moment(cur).format('DD/MM/YYYY');
+        let fullDate = this.$moment(cur).format('DD/MM/YYYY');
         let isVisibleDay = false;
         if(fullDate === this.getVisibleDay()) {
           isVisibleDay = true;
         }
         let isToday = false;
-        let todaysDate = moment().format('DD/MM/YYYY');
+        let todaysDate = this.$moment().format('DD/MM/YYYY');
         if(todaysDate === fullDate) {
           isToday = true;
         }
@@ -351,7 +348,7 @@ export default {
         let dayData = {
           "dayNumber": day,
           "numberOfMedias": this.getNumberOfMediasCreatedOnThisDate(cur),
-          "timestamp": moment(cur),
+          "timestamp": this.$moment(cur),
           isVisibleDay,
           isToday
         };
@@ -373,7 +370,7 @@ export default {
 
       const total = Object.entries(this.medias).reduce((acc, pair) => {
         const [key, value] = pair;
-        let created_day = moment(value.date_timeline);
+        let created_day = this.$moment(value.date_timeline);
         if(created_day.isSame(date, 'day')) {
           acc++;
         }
@@ -384,11 +381,11 @@ export default {
     },
 
     openEditFolderModal() {
-      EventBus.$emit('showEditFolderModal');
+      this.$eventHub.$emit('showEditFolderModal');
     },
 
     scrollToToday() {
-      EventBus.$emit('timeline.scrollToToday');
+      this.$eventHub.$emit('timeline.scrollToToday');
     },
 
     setSort(newSort) {

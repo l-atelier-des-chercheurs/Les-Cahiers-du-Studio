@@ -30,7 +30,6 @@
 <script>
 import FileUpload from './FileUpload.vue';
 import FileInput from './subcomponents/FileInput.vue';
-import EventBus from '../event-bus';
 
 export default {
   props: ['slugFolderName'],
@@ -60,7 +59,7 @@ export default {
         type: 'text'
       });
 
-      EventBus.$emit('timeline.scrollToToday');
+      this.$eventHub.$emit('timeline.scrollToToday');
     },
     addMarker() {
       this.$root.createTextMedia({
@@ -69,7 +68,7 @@ export default {
         color: 'red',
         collapsed: true
       });
-      EventBus.$emit('timeline.scrollToToday');
+      this.$eventHub.$emit('timeline.scrollToToday');
     },
     boitierPressed(e) {
       // if there is a modal opened, let’s not do something
@@ -89,7 +88,7 @@ export default {
           color: 'blue',
           collapsed: true
         });
-        EventBus.$emit('timeline.scrollToToday');
+        this.$eventHub.$emit('timeline.scrollToToday');
       } else
       if(key === 'u' || key == 's') {
         this.$root.createTextMedia({
@@ -98,7 +97,7 @@ export default {
           color: 'red',
           collapsed: true
         });
-        EventBus.$emit('timeline.scrollToToday');
+        this.$eventHub.$emit('timeline.scrollToToday');
       } else
       if(key === 'i' || key === 'a' || key === 'q') {
         this.$root.createTextMedia({
@@ -107,7 +106,7 @@ export default {
           color: 'green',
           collapsed: true
         });
-        EventBus.$emit('timeline.scrollToToday');
+        this.$eventHub.$emit('timeline.scrollToToday');
       } else
       if(key === 'o') {
         this.$root.createTextMedia({
@@ -116,7 +115,7 @@ export default {
           color: 'yellow',
           collapsed: true
         });
-        EventBus.$emit('timeline.scrollToToday');
+        this.$eventHub.$emit('timeline.scrollToToday');
       } else
       if(key === 'p') {
         this.$root.createTextMedia({
@@ -125,7 +124,7 @@ export default {
           color: 'orange',
           collapsed: true
         });
-        EventBus.$emit('timeline.scrollToToday');
+        this.$eventHub.$emit('timeline.scrollToToday');
       } else
       if(key === '6') {
         this.$root.createTextMedia({
@@ -134,7 +133,7 @@ export default {
           color: 'purple',
           collapsed: true
         });
-        EventBus.$emit('timeline.scrollToToday');
+        this.$eventHub.$emit('timeline.scrollToToday');
       }
     },
   }

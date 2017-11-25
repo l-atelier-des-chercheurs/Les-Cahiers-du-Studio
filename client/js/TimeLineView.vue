@@ -204,9 +204,7 @@ import EditFolder from './components/modals/EditFolder.vue';
 import TimelineMedia from './components/TimelineMedia.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 import DateTime from './components/subcomponents/DateTime.vue';
-import moment from 'moment';
 import debounce from 'debounce';
-import EventBus from './event-bus';
 
 export default {
   props: {
@@ -244,7 +242,7 @@ export default {
 
       currentScrollEvent: undefined,
 
-      currentTime: moment().millisecond(0),
+      currentTime: this.$moment().millisecond(0),
       todaysRule: {
         caption: '',
         xPos: false
@@ -349,19 +347,19 @@ export default {
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener('resize', this.onResize);
 
-    EventBus.$on('scrollToMedia', this.scrollToMedia);
-    EventBus.$on('scrollToDate', this.scrollToDate);
-    EventBus.$on('highlightMedia', this.highlightMedia);
-    EventBus.$on('updateScale', this.updateTimelineViewportScale);
-    EventBus.$on('goToPrevScreen', this.goToPrevScreen);
-    EventBus.$on('goToNextScreen', this.goToNextScreen);
-    EventBus.$on('goToPrevDay', this.goToPrevDay);
-    EventBus.$on('goToNextDay', this.goToNextDay);
-    EventBus.$on('showEditFolderModal', this.startEditModal);
-    EventBus.$on('timeline.scrollToToday', this.scrollToToday);
-    EventBus.$on('timeline.openMediaModal', this.openMediaModal);
-    EventBus.$on('timeline.showZoomZone', this.showZoomZone);
-    EventBus.$on('timeline.hideZoomZone', this.hideZoomZone);
+    this.$eventHub.$on('scrollToMedia', this.scrollToMedia);
+    this.$eventHub.$on('scrollToDate', this.scrollToDate);
+    this.$eventHub.$on('highlightMedia', this.highlightMedia);
+    this.$eventHub.$on('updateScale', this.updateTimelineViewportScale);
+    this.$eventHub.$on('goToPrevScreen', this.goToPrevScreen);
+    this.$eventHub.$on('goToNextScreen', this.goToNextScreen);
+    this.$eventHub.$on('goToPrevDay', this.goToPrevDay);
+    this.$eventHub.$on('goToNextDay', this.goToNextDay);
+    this.$eventHub.$on('showEditFolderModal', this.startEditModal);
+    this.$eventHub.$on('timeline.scrollToToday', this.scrollToToday);
+    this.$eventHub.$on('timeline.openMediaModal', this.openMediaModal);
+    this.$eventHub.$on('timeline.showZoomZone', this.showZoomZone);
+    this.$eventHub.$on('timeline.hideZoomZone', this.hideZoomZone);
 
     this.timelineViewport.leftPadding = parseInt($(this.$refs.timeline).css('padding-left'), 10);
     this.updateViewerWidth();
@@ -383,7 +381,7 @@ export default {
 
       console.log(`METHODS • TimeLineView: setInterval updating (timelineUpdateRoutine)`);
 
-      this.currentTime = moment().millisecond(0);
+      this.currentTime = this.$moment().millisecond(0);
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
       this.setViewedTimelineWidthAndHeight();
@@ -402,19 +400,19 @@ export default {
     }, 1000);
   },
   beforeDestroy() {
-    EventBus.$off('scrollToMedia');
-    EventBus.$off('scrollToDate');
-    EventBus.$off('highlightMedia');
-    EventBus.$off('updateScale');
-    EventBus.$off('goToPrevScreen');
-    EventBus.$off('goToNextScreen');
-    EventBus.$off('goToPrevDay');
-    EventBus.$off('goToNextDay');
-    EventBus.$off('showEditFolderModal');
-    EventBus.$off('timeline.scrollToToday', this.scrollToToday);
-    EventBus.$off('timeline.openMediaModal', this.openMediaModal);
-    EventBus.$off('timeline.showZoomZone', this.showZoomZone);
-    EventBus.$off('timeline.hideZoomZone', this.hideZoomZone);
+    this.$eventHub.$off('scrollToMedia');
+    this.$eventHub.$off('scrollToDate');
+    this.$eventHub.$off('highlightMedia');
+    this.$eventHub.$off('updateScale');
+    this.$eventHub.$off('goToPrevScreen');
+    this.$eventHub.$off('goToNextScreen');
+    this.$eventHub.$off('goToPrevDay');
+    this.$eventHub.$off('goToNextDay');
+    this.$eventHub.$off('showEditFolderModal');
+    this.$eventHub.$off('timeline.scrollToToday', this.scrollToToday);
+    this.$eventHub.$off('timeline.openMediaModal', this.openMediaModal);
+    this.$eventHub.$off('timeline.showZoomZone', this.showZoomZone);
+    this.$eventHub.$off('timeline.hideZoomZone', this.hideZoomZone);
 
     window.removeEventListener('resize', this.onResize);
 
@@ -434,8 +432,8 @@ export default {
     },
     // retourne une valeure en pixel qui dépend de la hauteur de la timeline
     getTimelineStart(ts) {
-      if(ts && moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-        return moment(ts,'YYYY-MM-DD HH:mm:ss');
+      if(ts && this.$moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+        return this.$moment(ts,'YYYY-MM-DD HH:mm:ss');
       } else {
         console.log(`WARNING: no timeline start. This can’t work.`);
         throw `Missing timeline start`;
@@ -443,15 +441,15 @@ export default {
       return;
     },
     getTimelineEnd(ts) {
-      if(ts && moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+      if(ts && this.$moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
         // if end is in the future
-        if(moment(ts,'YYYY-MM-DD HH:mm:ss', true).isAfter(moment())) {
+        if(this.$moment(ts,'YYYY-MM-DD HH:mm:ss', true).isAfter(this.$moment())) {
           this.isRealtime = true;
-          return moment(ts,'YYYY-MM-DD HH:mm:ss');
+          return this.$moment(ts,'YYYY-MM-DD HH:mm:ss');
         // if end is is in the present or past
         } else {
           this.isRealtime = false;
-          return moment(ts,'YYYY-MM-DD HH:mm:ss');
+          return this.$moment(ts,'YYYY-MM-DD HH:mm:ss');
         }
       } else {
         // there is no valid end, we set end to current time and set realtime
@@ -493,10 +491,10 @@ export default {
     getViewedTimelineStart(timelineView_new_start) {
       // Sanitize new date
       if(timelineView_new_start.isBefore(this.timelineInfos.start)) {
-        return moment(this.timelineInfos.start);
+        return this.$moment(this.timelineInfos.start);
       }
       if(timelineView_new_start.isAfter(this.timelineInfos.end)) {
-        return moment(this.timelineInfos.end);
+        return this.$moment(this.timelineInfos.end);
       }
       // Sanitize new date
       return timelineView_new_start;
@@ -516,7 +514,7 @@ export default {
 
       Object.keys(this.medias).map((slugMediaName) => {
         let media = this.medias[slugMediaName];
-        let date_timeline = moment.isMoment(media.date_timeline) ? media.date_timeline : moment(media.date_timeline,'YYYY-MM-DD HH:mm:ss');
+        let date_timeline = this.$moment.isMoment(media.date_timeline) ? media.date_timeline : this.$moment(media.date_timeline,'YYYY-MM-DD HH:mm:ss');
         let posX = this.getXPositionFromDate(+date_timeline, false);
         this.allMediasPosition[slugMediaName] = posX;
       });
@@ -532,22 +530,22 @@ export default {
       let createDayTick = (thisDay, f = 'DD/MM/YYYY') => {
         let xPos = this.getXPositionFromDate(thisDay);
         if(xPos === false) { return; }
-        let caption = moment(thisDay).format(f);
+        let caption = this.$moment(thisDay).format(f);
         overallGrid.days.push({ xPos, caption });
       }
 
       createDayTick(this.timelineViewport.start, 'DD/MM/YYYY HH:mm:ss');
-      let nextDay = moment(moment(this.timelineViewport.start).startOf('day').add(1, 'day'));
+      let nextDay = this.$moment(this.$moment(this.timelineViewport.start).startOf('day').add(1, 'day'));
 
       // we need to iterate by day (and not every 24 hours, because of possible daylight savings)
-      for (var d = nextDay; d.isSameOrBefore(moment(this.timelineViewport.end)); d.add(1, 'days')) {
+      for (var d = nextDay; d.isSameOrBefore(this.$moment(this.timelineViewport.end)); d.add(1, 'days')) {
         createDayTick(d);
       }
 
 
       // only show HOUR and MINUTES for two screens on the left and right
       // to do that, we create a const for the current timestamp and another for the number of ms we show the grid
-      let thisDayStart = moment(this.timelineViewport.visibleDay).subtract(2, 'days').startOf('day');
+      let thisDayStart = this.$moment(this.timelineViewport.visibleDay).subtract(2, 'days').startOf('day');
       const timeEllapsedDay = 5 * 24*60*60*1000;
 
       /****************************** make HOUR ticks ******************************/
@@ -559,7 +557,7 @@ export default {
 
         let caption;
         if(withCaption || this.timelineViewport.scale < 70) {
-          caption = moment(currentHour).format('HH:mm');
+          caption = this.$moment(currentHour).format('HH:mm');
         }
         overallGrid.hours.push({ xPos, caption });
       }
@@ -577,12 +575,12 @@ export default {
         let createMinuteTick = (currentMinute) => {
           let xPos = this.getXPositionFromDate(currentMinute);
           if(xPos === false) { return; }
-          if(moment(currentMinute).minute() === 0) { return; }
+          if(this.$moment(currentMinute).minute() === 0) { return; }
           if(!this.elesIsClose(xPos)) { return; }
 
           let caption;
-          if(moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 5) {
-            caption = moment(currentMinute).format('HH:mm');
+          if(this.$moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 5) {
+            caption = this.$moment(currentMinute).format('HH:mm');
           }
           overallGrid.minutes.push({ xPos, caption });
         }
@@ -612,7 +610,7 @@ export default {
       let pc = posX/this.timelineViewport.width;
       let viewportLength = this.timelineViewport.end - this.timelineViewport.start;
       let timeSinceStart = pc * viewportLength;
-      return moment(timeSinceStart + this.timelineViewport.start);
+      return this.$moment(timeSinceStart + this.timelineViewport.start);
     },
     mediaIsClose(index,media) {
       console.log(`METHODS • TimeLineView: mediaIsClose`);
@@ -626,7 +624,7 @@ export default {
         }
 
         // otherwise, calculate proximity for created minus duration (which should give us when ths recording was started)
-        let startRecordingDate = moment(media.date_timeline).subtract(parseInt(media.duration), 'seconds');
+        let startRecordingDate = this.$moment(media.date_timeline).subtract(parseInt(media.duration), 'seconds');
         if(this.elesIsClose(this.getXPositionFromDate(+startRecordingDate, false))) {
           return true;
         }

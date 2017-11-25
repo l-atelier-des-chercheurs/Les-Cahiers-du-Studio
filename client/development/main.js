@@ -291,7 +291,7 @@ document.addEventListener('keydown', function (event) {
   }
 });
 
-},{"alertify.js":3,"babel-runtime/core-js/json/stringify":5,"babel-runtime/core-js/object/assign":6,"babel-runtime/core-js/object/keys":7,"babel-runtime/core-js/object/values":8,"jquery":79,"socket.io-client":84,"store":93}],2:[function(require,module,exports){
+},{"alertify.js":3,"babel-runtime/core-js/json/stringify":5,"babel-runtime/core-js/object/assign":6,"babel-runtime/core-js/object/keys":7,"babel-runtime/core-js/object/values":8,"jquery":77,"socket.io-client":82,"store":91}],2:[function(require,module,exports){
 module.exports = after
 
 function after(count, callback, err_cb) {
@@ -1326,20 +1326,20 @@ function useColors() {
   // NB: In an Electron preload script, document will be defined but not fully
   // initialized. Since we know we're in Chrome, we'll just detect this case
   // explicitly
-  if (window && window.process && window.process.type === 'renderer') {
+  if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
     return true;
   }
 
   // is webkit? http://stackoverflow.com/a/16459606/376773
   // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-  return (document && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
+  return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
     // is firebug? http://stackoverflow.com/a/398120/376773
-    (window && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
+    (typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
     // is firefox >= v31?
     // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (navigator && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
+    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
     // double check webkit in userAgent just in case we are in a worker
-    (navigator && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
+    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
 }
 
 /**
@@ -1471,7 +1471,7 @@ function localstorage() {
 }
 
 }).call(this,require('_process'))
-},{"./debug":60,"_process":83}],60:[function(require,module,exports){
+},{"./debug":60,"_process":81}],60:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -1675,7 +1675,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":80}],61:[function(require,module,exports){
+},{"ms":78}],61:[function(require,module,exports){
 
 module.exports = require('./socket');
 
@@ -1687,7 +1687,7 @@ module.exports = require('./socket');
  */
 module.exports.parser = require('engine.io-parser');
 
-},{"./socket":62,"engine.io-parser":72}],62:[function(require,module,exports){
+},{"./socket":62,"engine.io-parser":70}],62:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -2434,7 +2434,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":63,"./transports/index":64,"component-emitter":14,"debug":70,"engine.io-parser":72,"indexof":78,"parseqs":81,"parseuri":82}],63:[function(require,module,exports){
+},{"./transport":63,"./transports/index":64,"component-emitter":14,"debug":59,"engine.io-parser":70,"indexof":76,"parseqs":79,"parseuri":80}],63:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -2593,7 +2593,7 @@ Transport.prototype.onClose = function () {
   this.emit('close');
 };
 
-},{"component-emitter":14,"engine.io-parser":72}],64:[function(require,module,exports){
+},{"component-emitter":14,"engine.io-parser":70}],64:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies
@@ -3302,7 +3302,7 @@ function unloadHandler () {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":67,"component-emitter":14,"component-inherit":15,"debug":70,"xmlhttprequest-ssl":69}],67:[function(require,module,exports){
+},{"./polling":67,"component-emitter":14,"component-inherit":15,"debug":59,"xmlhttprequest-ssl":69}],67:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -3549,7 +3549,7 @@ Polling.prototype.uri = function () {
   return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
 };
 
-},{"../transport":63,"component-inherit":15,"debug":70,"engine.io-parser":72,"parseqs":81,"xmlhttprequest-ssl":69,"yeast":106}],68:[function(require,module,exports){
+},{"../transport":63,"component-inherit":15,"debug":59,"engine.io-parser":70,"parseqs":79,"xmlhttprequest-ssl":69,"yeast":104}],68:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -3839,7 +3839,7 @@ WS.prototype.check = function () {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../transport":63,"component-inherit":15,"debug":70,"engine.io-parser":72,"parseqs":81,"ws":12,"yeast":106}],69:[function(require,module,exports){
+},{"../transport":63,"component-inherit":15,"debug":59,"engine.io-parser":70,"parseqs":79,"ws":12,"yeast":104}],69:[function(require,module,exports){
 (function (global){
 // browser shim for xmlhttprequest module
 
@@ -3880,198 +3880,7 @@ module.exports = function (opts) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"has-cors":77}],70:[function(require,module,exports){
-(function (process){
-/**
- * This is the web browser implementation of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = require('./debug');
-exports.log = log;
-exports.formatArgs = formatArgs;
-exports.save = save;
-exports.load = load;
-exports.useColors = useColors;
-exports.storage = 'undefined' != typeof chrome
-               && 'undefined' != typeof chrome.storage
-                  ? chrome.storage.local
-                  : localstorage();
-
-/**
- * Colors.
- */
-
-exports.colors = [
-  'lightseagreen',
-  'forestgreen',
-  'goldenrod',
-  'dodgerblue',
-  'darkorchid',
-  'crimson'
-];
-
-/**
- * Currently only WebKit-based Web Inspectors, Firefox >= v31,
- * and the Firebug extension (any Firefox version) are known
- * to support "%c" CSS customizations.
- *
- * TODO: add a `localStorage` variable to explicitly enable/disable colors
- */
-
-function useColors() {
-  // NB: In an Electron preload script, document will be defined but not fully
-  // initialized. Since we know we're in Chrome, we'll just detect this case
-  // explicitly
-  if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
-    return true;
-  }
-
-  // is webkit? http://stackoverflow.com/a/16459606/376773
-  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-  return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
-    // is firebug? http://stackoverflow.com/a/398120/376773
-    (typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
-    // is firefox >= v31?
-    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
-    // double check webkit in userAgent just in case we are in a worker
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
-}
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-exports.formatters.j = function(v) {
-  try {
-    return JSON.stringify(v);
-  } catch (err) {
-    return '[UnexpectedJSONParseError]: ' + err.message;
-  }
-};
-
-
-/**
- * Colorize log arguments if enabled.
- *
- * @api public
- */
-
-function formatArgs(args) {
-  var useColors = this.useColors;
-
-  args[0] = (useColors ? '%c' : '')
-    + this.namespace
-    + (useColors ? ' %c' : ' ')
-    + args[0]
-    + (useColors ? '%c ' : ' ')
-    + '+' + exports.humanize(this.diff);
-
-  if (!useColors) return;
-
-  var c = 'color: ' + this.color;
-  args.splice(1, 0, c, 'color: inherit')
-
-  // the final "%c" is somewhat tricky, because there could be other
-  // arguments passed either before or after the %c, so we need to
-  // figure out the correct index to insert the CSS into
-  var index = 0;
-  var lastC = 0;
-  args[0].replace(/%[a-zA-Z%]/g, function(match) {
-    if ('%%' === match) return;
-    index++;
-    if ('%c' === match) {
-      // we only are interested in the *last* %c
-      // (the user may have provided their own)
-      lastC = index;
-    }
-  });
-
-  args.splice(lastC, 0, c);
-}
-
-/**
- * Invokes `console.log()` when available.
- * No-op when `console.log` is not a "function".
- *
- * @api public
- */
-
-function log() {
-  // this hackery is required for IE8/9, where
-  // the `console.log` function doesn't have 'apply'
-  return 'object' === typeof console
-    && console.log
-    && Function.prototype.apply.call(console.log, console, arguments);
-}
-
-/**
- * Save `namespaces`.
- *
- * @param {String} namespaces
- * @api private
- */
-
-function save(namespaces) {
-  try {
-    if (null == namespaces) {
-      exports.storage.removeItem('debug');
-    } else {
-      exports.storage.debug = namespaces;
-    }
-  } catch(e) {}
-}
-
-/**
- * Load `namespaces`.
- *
- * @return {String} returns the previously persisted debug modes
- * @api private
- */
-
-function load() {
-  var r;
-  try {
-    r = exports.storage.debug;
-  } catch(e) {}
-
-  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
-  if (!r && typeof process !== 'undefined' && 'env' in process) {
-    r = process.env.DEBUG;
-  }
-
-  return r;
-}
-
-/**
- * Enable namespaces listed in `localStorage.debug` initially.
- */
-
-exports.enable(load());
-
-/**
- * Localstorage attempts to return the localstorage.
- *
- * This is necessary because safari throws
- * when a user disables cookies/localstorage
- * and you attempt to access it.
- *
- * @return {LocalStorage}
- * @api private
- */
-
-function localstorage() {
-  try {
-    return window.localStorage;
-  } catch (e) {}
-}
-
-}).call(this,require('_process'))
-},{"./debug":71,"_process":83}],71:[function(require,module,exports){
-arguments[4][60][0].apply(exports,arguments)
-},{"dup":60,"ms":80}],72:[function(require,module,exports){
+},{"has-cors":75}],70:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -4681,7 +4490,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":73,"./utf8":74,"after":2,"arraybuffer.slice":4,"base64-arraybuffer":10,"blob":11,"has-binary2":75}],73:[function(require,module,exports){
+},{"./keys":71,"./utf8":72,"after":2,"arraybuffer.slice":4,"base64-arraybuffer":10,"blob":11,"has-binary2":73}],71:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -4702,7 +4511,7 @@ module.exports = Object.keys || function keys (obj){
   return arr;
 };
 
-},{}],74:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/utf8js v2.1.2 by @mathias */
 ;(function(root) {
@@ -4961,7 +4770,7 @@ module.exports = Object.keys || function keys (obj){
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],75:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 (function (global){
 /* global Blob File */
 
@@ -5027,14 +4836,14 @@ function hasBinary (obj) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":76}],76:[function(require,module,exports){
+},{"isarray":74}],74:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],77:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -5053,7 +4862,7 @@ try {
   module.exports = false;
 }
 
-},{}],78:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -5064,7 +4873,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],79:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v3.2.1
  * https://jquery.com/
@@ -15319,7 +15128,7 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-},{}],80:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -15473,7 +15282,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],81:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -15512,7 +15321,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],82:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -15553,7 +15362,7 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],83:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -15739,7 +15548,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],84:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -15835,7 +15644,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":85,"./socket":87,"./url":88,"debug":59,"socket.io-parser":90}],85:[function(require,module,exports){
+},{"./manager":83,"./socket":85,"./url":86,"debug":59,"socket.io-parser":88}],83:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -16410,7 +16219,7 @@ Manager.prototype.onreconnect = function () {
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":86,"./socket":87,"backo2":9,"component-bind":13,"component-emitter":14,"debug":59,"engine.io-client":61,"indexof":78,"socket.io-parser":90}],86:[function(require,module,exports){
+},{"./on":84,"./socket":85,"backo2":9,"component-bind":13,"component-emitter":14,"debug":59,"engine.io-client":61,"indexof":76,"socket.io-parser":88}],84:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -16436,7 +16245,7 @@ function on (obj, ev, fn) {
   };
 }
 
-},{}],87:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -16856,7 +16665,7 @@ Socket.prototype.compress = function (compress) {
   return this;
 };
 
-},{"./on":86,"component-bind":13,"component-emitter":14,"debug":59,"parseqs":81,"socket.io-parser":90,"to-array":105}],88:[function(require,module,exports){
+},{"./on":84,"component-bind":13,"component-emitter":14,"debug":59,"parseqs":79,"socket.io-parser":88,"to-array":103}],86:[function(require,module,exports){
 (function (global){
 
 /**
@@ -16935,7 +16744,7 @@ function url (uri, loc) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":59,"parseuri":82}],89:[function(require,module,exports){
+},{"debug":59,"parseuri":80}],87:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -17080,7 +16889,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":91,"isarray":92}],90:[function(require,module,exports){
+},{"./is-buffer":89,"isarray":90}],88:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -17482,7 +17291,7 @@ function error() {
   };
 }
 
-},{"./binary":89,"./is-buffer":91,"component-emitter":14,"debug":59,"has-binary2":75}],91:[function(require,module,exports){
+},{"./binary":87,"./is-buffer":89,"component-emitter":14,"debug":59,"has-binary2":73}],89:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -17499,9 +17308,9 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],92:[function(require,module,exports){
-arguments[4][76][0].apply(exports,arguments)
-},{"dup":76}],93:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],91:[function(require,module,exports){
 var engine = require('../src/store-engine')
 
 var storages = require('../storages/all')
@@ -17509,7 +17318,7 @@ var plugins = [require('../plugins/json2')]
 
 module.exports = engine.createStore(storages, plugins)
 
-},{"../plugins/json2":94,"../src/store-engine":96,"../storages/all":98}],94:[function(require,module,exports){
+},{"../plugins/json2":92,"../src/store-engine":94,"../storages/all":96}],92:[function(require,module,exports){
 module.exports = json2Plugin
 
 function json2Plugin() {
@@ -17517,7 +17326,7 @@ function json2Plugin() {
 	return {}
 }
 
-},{"./lib/json2":95}],95:[function(require,module,exports){
+},{"./lib/json2":93}],93:[function(require,module,exports){
 /* eslint-disable */
 
 //  json2.js
@@ -18026,7 +17835,7 @@ if (typeof JSON !== "object") {
         };
     }
 }());
-},{}],96:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 var util = require('./util')
 var slice = util.slice
 var pluck = util.pluck
@@ -18265,7 +18074,7 @@ function createStore(storages, plugins, namespace) {
 	return store
 }
 
-},{"./util":97}],97:[function(require,module,exports){
+},{"./util":95}],95:[function(require,module,exports){
 (function (global){
 var assign = make_assign()
 var create = make_create()
@@ -18387,7 +18196,7 @@ function isObject(val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],98:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 module.exports = [
 	// Listed in order of usage preference
 	require('./localStorage'),
@@ -18398,7 +18207,7 @@ module.exports = [
 	require('./memoryStorage')
 ]
 
-},{"./cookieStorage":99,"./localStorage":100,"./memoryStorage":101,"./oldFF-globalStorage":102,"./oldIE-userDataStorage":103,"./sessionStorage":104}],99:[function(require,module,exports){
+},{"./cookieStorage":97,"./localStorage":98,"./memoryStorage":99,"./oldFF-globalStorage":100,"./oldIE-userDataStorage":101,"./sessionStorage":102}],97:[function(require,module,exports){
 // cookieStorage is useful Safari private browser mode, where localStorage
 // doesn't work but cookies do. This implementation is adopted from
 // https://developer.mozilla.org/en-US/docs/Web/API/Storage/LocalStorage
@@ -18461,7 +18270,7 @@ function _has(key) {
 	return (new RegExp("(?:^|;\\s*)" + escape(key).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(doc.cookie)
 }
 
-},{"../src/util":97}],100:[function(require,module,exports){
+},{"../src/util":95}],98:[function(require,module,exports){
 var util = require('../src/util')
 var Global = util.Global
 
@@ -18501,7 +18310,7 @@ function clearAll() {
 	return localStorage().clear()
 }
 
-},{"../src/util":97}],101:[function(require,module,exports){
+},{"../src/util":95}],99:[function(require,module,exports){
 // memoryStorage is a useful last fallback to ensure that the store
 // is functions (meaning store.get(), store.set(), etc will all function).
 // However, stored values will not persist when the browser navigates to
@@ -18542,7 +18351,7 @@ function clearAll(key) {
 	memoryStorage = {}
 }
 
-},{}],102:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 // oldFF-globalStorage provides storage for Firefox
 // versions 6 and 7, where no localStorage, etc
 // is available.
@@ -18586,7 +18395,7 @@ function clearAll() {
 	})
 }
 
-},{"../src/util":97}],103:[function(require,module,exports){
+},{"../src/util":95}],101:[function(require,module,exports){
 // oldIE-userDataStorage provides storage for Internet Explorer
 // versions 6 and 7, where no localStorage, sessionStorage, etc
 // is available.
@@ -18715,7 +18524,7 @@ function _makeIEStorageElFunction() {
 	}
 }
 
-},{"../src/util":97}],104:[function(require,module,exports){
+},{"../src/util":95}],102:[function(require,module,exports){
 var util = require('../src/util')
 var Global = util.Global
 
@@ -18755,7 +18564,7 @@ function clearAll() {
 	return sessionStorage().clear()
 }
 
-},{"../src/util":97}],105:[function(require,module,exports){
+},{"../src/util":95}],103:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {
@@ -18770,7 +18579,7 @@ function toArray(list, index) {
     return array
 }
 
-},{}],106:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')

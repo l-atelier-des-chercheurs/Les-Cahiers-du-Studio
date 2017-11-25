@@ -55,7 +55,6 @@
 <script>
 import Modal from './BaseModal.vue';
 import DateTime from '../subcomponents/DateTime.vue';
-import moment from 'moment';
 import alertify from 'alertify.js';
 
 export default {
@@ -67,7 +66,7 @@ export default {
     return {
       folderdata: {
         name: '',
-        start: moment(),
+        start: this.$moment(),
         end: '',
         password: '',
         authors: ''

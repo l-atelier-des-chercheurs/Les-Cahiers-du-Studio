@@ -240,7 +240,6 @@ import Modal from './BaseModal.vue';
 import alertify from 'alertify.js';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
-import moment from 'moment';
 
 export default {
   props: ['slugFolderName', 'slugMediaName', 'media'],
@@ -266,10 +265,10 @@ export default {
   },
   computed: {
     date_created_human() {
-      return moment(this.media.date_created).format('DD/MM/YYYY HH:mm:ss');
+      return this.$moment(this.media.date_created).format('DD/MM/YYYY HH:mm:ss');
     },
     date_uploaded_human() {
-      return moment(this.media.date_upload).format('DD/MM/YYYY HH:mm:ss');
+      return this.$moment(this.media.date_upload).format('DD/MM/YYYY HH:mm:ss');
     }
   },
   methods: {
