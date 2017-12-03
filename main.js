@@ -43,7 +43,6 @@ function createWindow() {
   let pathToPresentationMd = path.join(`${__dirname.replace(`${path.sep}app.asar`, '')}`, `${local.settings().contentDirname}`, `presentation.md`);
   global.appInfos.presentationMd = fs.readFileSync(pathToPresentationMd, local.settings().textEncoding);
 
-
   dev.log(`——— Starting les-cahiers app version ${global.appInfos.version}`);
 
   // checkout which langage to load
@@ -109,25 +108,24 @@ function createWindow() {
     global.pathToUserContent = pathToUserContent;
     dev.log('Will store contents in: ' + global.pathToUserContent);
 
-    try {
-      portscanner.findAPortNotInUse(config.port, config.port + 20).then((port) => {
+    portscanner.findAPortNotInUse(config.port, config.port + 20).then((port) => {
 
-        dev.log(`main.js - Found available port: ${port}`);
-        global.appInfos.port = port;
-        global.appInfos.homeURL = `${config.protocol}://${config.host}:${global.appInfos.port}`;
+      dev.log(`main.js - Found available port: ${port}`);
+      global.appInfos.port = port;
+      global.appInfos.homeURL = `${config.protocol}://${config.host}:${global.appInfos.port}`;
 
-        app.server = server(app);
+      app.server = server(app);
 
-        // and load the base url of the app.
-        win.loadURL(global.appInfos.homeURL);
+      // and load the base url of the app.
+      win.loadURL(global.appInfos.homeURL);
 
-        if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
-          win.webContents.openDevTools();
-        }
-      });
-    } catch (e) {
-      dev.error('Couldn’t load app: ', e);
-    }
+      if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
+        win.webContents.openDevTools();
+      }
+    }, function(err) {
+      dev.error( 'Failed to find available port: ' + err);
+      dialog.showErrorBox(`L’application Les Cahiers du Studio n’as pas pu démarrer`, `Il semble que les ports ${config.port} jusqu’à ${config.port + 20} ne soient pas disponibles.\nCode de l’erreur: ${err}`);
+    });
 
     // Emitted when the window is closed.
     win.on('closed', () => {
