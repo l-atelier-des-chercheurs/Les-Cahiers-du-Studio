@@ -128,8 +128,7 @@
                       type="checkbox"
                       v-model="timelineViewport.autoscroll"
                       id="autoScroll"
-                    >défilement<br>
-                    automatique
+                    ><span v-html="$t('timeline.auto_scroll')"></span>
                   </label>
                 </small>
               </button>
@@ -167,10 +166,10 @@
           <div class="nomediainfo">
             <code>
               <template v-if="folder.authorized">
-                Aucun média dans ce dossier.
+                {{ $t('timeline.no_media_in_folder') }}
               </template>
               <template v-else>
-                Aucun média public dans ce dossier.
+                {{ $t('timeline.no_public_media_in_folder') }}
               </template>
             </code>
           </div>

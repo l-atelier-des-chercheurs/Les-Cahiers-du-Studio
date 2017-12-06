@@ -30,48 +30,55 @@
 
 
     <section class="flex-wrap flex-vertically-start limited-width padding-vert-medium">
-
       <div class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-large">
-
         <div class="border border-top-dashed">
-          <p class="margin-vert-medium">
-            Pour plus d’information, consultez la <a href="https://paper.dropbox.com/doc/Les-Cahiers-du-Studio-PvgkN59Zb2i9nAApZOIZz#:uid=389501177464251596585301&h2=Information-sur-le-stockage-de" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.
+          <p class="margin-vert-medium" v-html="$t('home.more_information')">
           </p>
         </div>
 
         <div class="border border-top-dashed">
           <div class="margin-vert-medium">
             <label class="margin-none text-cap with-bullet">
-              Organiser par&nbsp;:
+              {{ $t('sort_by') }}
             </label>
             <div class="margin-sides-negative-small">
               <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'alph', sort.field = 'name'">
-                nom
+                {{ $t('name') }}
               </button>
               <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'created'">
-                date de création
+                {{ $t('created_date') }}
               </button>
               <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'start'">
-                date de début
+                {{ $t('start_date') }}
               </button>
               <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'end'">
-                date de fin
+                {{ $t('end_date') }}
               </button>
             </div>
           </div>
 
           <div class="margin-vert-small">
             <label class="margin-none text-cap with-bullet">
-              dans l’ordre&nbsp;
+              {{ $t('in_the_order') }}
             </label>
             <div class="margin-sides-negative-small">
               <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'ascending'">
-                croissant
+                {{ $t('ascending') }}
               </button>
               <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'descending'">
-                décroissant
+                {{ $t('descending') }}
               </button>
             </div>
+          </div>
+        </div>
+        <div class="border border-top-dashed">
+          <div class="margin-vert-medium">
+            <label v-html="$t('lang:')"></label>
+            <select v-model="currentLang">
+              <option v-for="(name, code) in $root.lang.available" :value="code">
+                {{ name }}
+              </option>
+            </select>
           </div>
         </div>
       </div>
@@ -83,10 +90,9 @@
         <button class="m_home--folders--card margin-small button-inline" @click="showCreateFolderModal = true">
 
           <span class="c-gris margin-medium">
-            Créer un dossier
+            {{ $t('create_a_folder') }}
           </span>
           <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
-            <title>Fichier 6</title>
             <g id="Calque_2" data-name="Calque 2">
               <g id="Nav">
                 <g style="opacity: 0.30000000000000004">
@@ -139,6 +145,12 @@ export default {
         field: 'created',
         order: 'descending'
       },
+      currentLang: this.$root.lang.current
+    }
+  },
+  watch: {
+    'currentLang': function() {
+      this.$root.updateLocalLang(this.currentLang);
     }
   },
   computed: {

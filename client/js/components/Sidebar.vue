@@ -18,7 +18,7 @@
 
       <div slot="body" class="">
         <p class="font-small">
-          <span v-html="$root.store.lang.toconnectwithanotherdevicetothisfolder">
+          <span v-html="$t('toconnectwithanotherdevicetothisfolder')">
           </span>
           <template v-for="(ip, index) in $root.store.localNetworkInfos.ip">
             <a

@@ -3,7 +3,7 @@
     <div class="padding-vert-medium padding-sides-medium">
       <p><em>Les Cahiers du Studio</em> version {{ $root.store.appVersion }}</p>
       <p class="text-center centered font-small">
-        <span v-html="$root.store.lang.toconnectwithanotherdevice">
+        <span v-html="$t('toconnectwithanotherdevice')">
         </span>
         <template v-for="(ip, index) in $root.store.localNetworkInfos.ip">
           <a

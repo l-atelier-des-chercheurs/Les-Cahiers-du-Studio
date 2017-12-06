@@ -6,11 +6,12 @@
 
     <div class="">
       <mark class="margin-medium font-small" v-if="folder.password === 'has_pass'">
-        protégé par mot de passe
+        {{ $t('protected_by_pass') }}
       </mark>
 
       <div class="folder_metapreview margin-medium font-small">
-        <i>Date de création&nbsp;:</i><br>
+        <i>{{ $t('created_date') }}</i>
+        <br>
         {{ formatDateToHuman(folder.created) }}
       </div>
 
@@ -19,7 +20,6 @@
       <div class="margin-small flex-wrap flex-vertically-start flex-horizontally-start">
         <button type="button" class="button-round margin-verysmall padding-verysmall" @click="$root.openFolder(slugFolderName)">
           <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
-            <title>Fichier 3</title>
             <g id="Calque_2" data-name="Calque 2">
               <g id="Content">
                 <g>
@@ -33,13 +33,13 @@
             </g>
           </svg>
           <span class="text-cap font-verysmall">
-            Ouvrir
+            {{ $t('open') }}
           </span>
         </button>
 
         <button v-if="!folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" @click="showInputPasswordField = !showInputPasswordField">
           <span class="text-cap font-verysmall">
-            Mot de passe
+            {{ $t('password') }}
           </span>
         </button>
   <!--
@@ -66,7 +66,7 @@
             </g>
           </svg>
           <span class="text-cap font-verysmall">
-            Éditer
+            {{ $t('edit') }}
           </span>
         </button>
         <button v-if="folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" @click="removeFolder()">
@@ -92,7 +92,7 @@
             </g>
           </svg>
           <span class="text-cap font-verysmall">
-            Suppr.
+            {{ $t('remove') }}
           </span>
         </button>
       </div>
@@ -139,7 +139,7 @@ export default {
       this.$root.closeFolder();
     },
     removeFolder() {
-      if(window.confirm(locals.lang.modal.sureToRemoveFolder)) {
+      if(window.confirm(this.$t('sureToRemoveFolder'))) {
         this.$root.removeFolder(this.slugFolderName);
       }
     },

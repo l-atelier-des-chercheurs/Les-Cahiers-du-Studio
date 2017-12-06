@@ -45,12 +45,6 @@ function createWindow() {
 
   dev.log(`——— Starting les-cahiers app version ${global.appInfos.version}`);
 
-  // checkout which langage to load
-  var envLang = app.getLocale();
-  local.setCurrentCodeLang(envLang);
-  dev.log(`Environment lang is ${local.getCurrentCodeLang()}`);
-  local.init();
-
   var windowState = {};
   try {
     windowState = global.nodeStorage.getItem('windowstate') ? global.nodeStorage.getItem('windowstate') : {};
