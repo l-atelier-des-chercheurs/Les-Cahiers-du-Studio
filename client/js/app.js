@@ -31,7 +31,7 @@ import App from './App.vue';
 let lang_settings = {
   available: {
     fr: 'Français',
-    en: 'Anglais'
+    en: 'English'
   },
   default: 'en',
   current: '',

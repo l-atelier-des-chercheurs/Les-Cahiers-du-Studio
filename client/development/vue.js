@@ -890,7 +890,7 @@ _vue2.default.config.devtools = true;
 var lang_settings = {
   available: {
     fr: 'Français',
-    en: 'Anglais'
+    en: 'English'
   },
   default: 'en',
   current: '',
@@ -2322,7 +2322,7 @@ exports.default = {
     },
     openMediaNewWindow: function openMediaNewWindow() {},
     removeMedia: function removeMedia() {
-      if (window.confirm(locals.lang.modal.sureToRemoveMedia)) {
+      if (window.confirm(this.$t('sureToRemoveMedia'))) {
         this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
 
         this.$emit('close', '');
@@ -2727,7 +2727,7 @@ module.exports = function () {
       sort_by: 'Organiser par',
       in_the_order: 'Dans l’ordre',
 
-      'lang:': 'langue&nbsp;:',
+      'lang:': 'Changer la langue&nbsp;:',
 
       toconnectwithanotherdevice: 'Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans le navigateur web (puis ignorez le message de sécurité)&nbsp;: ',
       toconnectwithanotherdevicetothisfolder: 'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans le navigateur web (puis ignorez le message de sécurité)&nbsp;: ',
@@ -2769,7 +2769,7 @@ module.exports = function () {
       sort_by: 'Sort by',
       in_the_order: 'In the order',
 
-      'lang:': 'lang:',
+      'lang:': 'Select lang:',
 
       toconnectwithanotherdevice: 'To access Les Cahiers with another device, connect to the same wifi network and type this adress in your browser (and ignore the security message):',
       toconnectwithanotherdevicetothisfolder: 'To access this folder in Les Cahiers with another device, connect to the same wifi network and type this adress in your browser (and ignore the security message):',

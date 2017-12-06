@@ -278,7 +278,7 @@ export default {
     openMediaNewWindow: function() {
     },
     removeMedia: function() {
-      if(window.confirm(locals.lang.modal.sureToRemoveMedia)) {
+      if(window.confirm(this.$t('sureToRemoveMedia'))) {
         this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
         // then close that popover
         this.$emit('close', '');
