@@ -5,7 +5,7 @@
     @submit="editThisMedia"
     >
     <template slot="header">
-      <span class="text-cap"> Éditer le média&nbsp;:</span><br>
+      <span class="text-cap"> {{ $t('edit_the_media') }}</span><br>
       <i>{{ slugMediaName }}</i>
     </template>
 
@@ -19,13 +19,13 @@
       </div>
 
       <div class="margin-bottom-small">
-        <label>Date <small>(pour le placement sur la timeline)</small></label>
+        <label>Date <small>{{ $t('for_the_placement_on_timeline') }}</small></label>
         <DateTime v-model="mediadata.date_timeline" :twowaybinding=true>
         </DateTime>
 
         <div class="margin-bottom-small" v-if="media.date_created !== undefined">
           <small>
-            Date de création&nbsp;:
+            {{ $t('created_date') }}
             <button
               type="button"
               class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
@@ -38,7 +38,7 @@
 
         <div class="margin-bottom-small" v-if="media.date_upload !== undefined">
           <small>
-            Date d’envoi&nbsp;:
+            {{ $t('sent_date') }}
             <button
               type="button"
               class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
@@ -53,7 +53,7 @@
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
       <div class="margin-bottom-small">
-        <label>Type&nbsp;:</label>
+        <label>{{ $t('type') }}</label>
         <select ref="type" v-model="mediadata.type">
           <option v-for="mediaType in ['image', 'video', 'audio', 'text', 'marker']">
             {{ mediaType }}
@@ -63,7 +63,7 @@
 
 <!-- Color -->
       <div class="margin-bottom-small">
-        <label>Couleur&nbsp;:</label>
+        <label>{{ $t('color') }}</label>
         <select ref="type" v-model="mediadata.color">
           <option v-for="mediaColor in ['white', 'red', 'blue', 'green', 'purple', 'orange', 'yellow']">
             {{ mediaColor }}
@@ -74,14 +74,14 @@
 
 <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>Mot-clé(s)&nbsp;:</label><br>
+        <label>{{ $t('keywords') }}</label>
         <textarea v-model="mediadata.keywords">
         </textarea>
       </div>
 
 <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>Auteur-e(s)&nbsp;:<small>un-e par ligne</small></label><br>
+        <label>{{ $t('author') }}</label>
         <textarea v-model="mediadata.authors">
         </textarea>
       </div>
@@ -90,9 +90,7 @@
       <div class="margin-bottom-small">
         <span class="switch">
           <input type="checkbox" class="switch" id="publicswitch" v-model="mediadata.public">
-          <label for="publicswitch">
-            Public
-          </label>
+          <label for="publicswitch">{{ $t('public') }}</label>
         </span>
       </div>
 
@@ -102,7 +100,6 @@
           @click="removeMedia()"
           >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
-            <title>Fichier 8</title>
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -124,7 +121,7 @@
           </svg>
 
           <span class="text-cap font-verysmall">
-            Supprimer
+            {{ $t('remove') }}
           </span>
         </button>
 
@@ -182,7 +179,7 @@
               </g>
             </svg>
             <span class="text-cap font-verysmall">
-              Zoom
+              {{ $t('zoom') }}
             </span>
           </a>
         </button>
@@ -209,7 +206,7 @@
               </g>
             </svg>
             <span class="text-cap font-verysmall">
-              Télécharger
+              {{ $t('download') }}
             </span>
           </a>
         </button>
@@ -218,7 +215,7 @@
     </template>
 
     <template slot="submit_button">
-      Enregistrer
+      {{ $t('save') }}
     </template>
 
     <template slot="preview">

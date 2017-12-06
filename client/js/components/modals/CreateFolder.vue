@@ -4,14 +4,14 @@
     @submit="newFolder"
     >
     <template slot="header">
-      <span class="text-cap"> Créer un dossier</span>
+      <span class="text-cap"> {{ $t('create_a_folder') }}</span>
     </template>
 
     <template slot="sidebar">
 
 <!-- Human name -->
       <div class="margin-bottom-small">
-        <label>Nom&nbsp;:</label>
+        <label>{{ $t('name') }}</label>
         <input type="text" v-model="folderdata.name" required>
       </div>
 

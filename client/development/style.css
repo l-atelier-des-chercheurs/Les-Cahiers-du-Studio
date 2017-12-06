@@ -4914,6 +4914,7 @@ body.is_unscrollable {
   opacity: 1;
   z-index: 999;
   letter-spacing: 0.5em;
+  text-transform: uppercase;
 }
 .loader_folder > * {
   -webkit-box-flex: 0;

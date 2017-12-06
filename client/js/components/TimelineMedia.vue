@@ -60,7 +60,7 @@
               v-if="!isPlaceholder && is_hovered"
               @mousedown.stop="openMedia"
               >
-              Ouvrir
+              {{ $t('open') }}
             </button>
           </transition>
 

@@ -8,7 +8,7 @@
       <thead>
         <tr>
           <th class="font-small padding-medium">
-            Aperçu
+            {{ $t('preview') }}
           </th>
           <th>
             <select v-model="currentSort">
@@ -21,7 +21,9 @@
           </th>
         </tr>
         <tr>
-          <th class="font-small padding-medium">Filtre</th>
+          <th class="font-small padding-medium">
+            {{ $t('filter') }}
+          </th>
           <th>
             <input type="text" v-model="currentFilter">
           </th>
@@ -53,7 +55,7 @@
               <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
                 @click.stop="openMediaModal(media.slugMediaName)"
                 >
-                Ouvrir
+                {{ $t('open') }}
               </button>
             </td>
           </template>

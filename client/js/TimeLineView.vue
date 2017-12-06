@@ -16,7 +16,7 @@
         class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
         >
         <span class="animated flash">
-          CHARGEMENT
+          {{ $t('loading') }}
         </span>
       </div>
     </transition>

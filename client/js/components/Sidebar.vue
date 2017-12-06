@@ -4,7 +4,7 @@
     <SidebarSection>
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
-          Informations du dossier&nbsp;
+          {{ $t('folder_information') }}
           <button
             v-if="folder.authorized"
             type="button"
@@ -31,7 +31,7 @@
           </template>
         </p>
         <p class="font-small">
-          Les contenus de ce dossier sont enregistrés dans
+          {{ $t('timeline.contents_are_stored') }}
           <template v-if="$root.store.is_electron">
             <a :href="folder.fullFolderPath" @click.prevent="openInFinder(folder.fullFolderPath)">
               {{ folder.fullFolderPath.replace(/\//g, '\/\u200B') }}
@@ -48,14 +48,14 @@
     <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
-          Calendrier&nbsp;
+          {{ $t('calendar') }}
           <button
             v-if="isRealtime"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
             >
-            en ce moment →
+            {{ $t('now') }}
           </button>
         </h3>
       </div>
@@ -94,13 +94,13 @@
     <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
-          Liste&nbsp;
+          {{ $t('list') }}
           <button
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="openListMediasModal()"
             >
-            agrandir
+            {{ $t('fullscreen') }}
           </button>
         </h3>
       </div>
