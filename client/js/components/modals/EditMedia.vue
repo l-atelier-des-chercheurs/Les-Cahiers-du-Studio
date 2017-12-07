@@ -13,13 +13,13 @@
 
 <!-- Caption -->
       <div class="margin-bottom-small" v-if="mediadata.type !== 'marker' || mediadata.type !== 'text'">
-        <label>Légende&nbsp;:</label><br>
+        <label>{{ $t('caption') }}</label><br>
         <textarea v-model="mediadata.caption">
         </textarea>
       </div>
 
       <div class="margin-bottom-small">
-        <label>Date <small>{{ $t('for_the_placement_on_timeline') }}</small></label>
+        <label>{{ $t('date') }} <small>{{ $t('for_the_placement_on_timeline') }}</small></label>
         <DateTime v-model="mediadata.date_timeline" :twowaybinding=true>
         </DateTime>
 
@@ -152,7 +152,7 @@
             </g>
           </svg>
           <span class="text-cap font-verysmall">
-            Imprimer
+            {{ $t('print') }}
           </span>
         </button>
 
@@ -161,7 +161,6 @@
           >
           <a :href="mediaURL" :title="slugMediaName" target="_blank">
             <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
-              <title>Fichier 10</title>
               <g id="Calque_2" data-name="Calque 2">
                 <g id="Editeur_txt" data-name="Editeur txt">
                   <g>

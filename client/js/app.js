@@ -12,10 +12,6 @@ import locale_strings from './locale_strings.js';
 
 import moment from 'moment';
 
-import 'moment/locale/fr';
-moment.locale('fr');
-Object.defineProperty(Vue.prototype, '$moment', { value: moment });
-
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
 Vue.use(VueScrollTo);
@@ -43,23 +39,28 @@ let lang_settings = {
       // exists in available
       if(this.available[localstore_lang] !== undefined) {
         this.current = localstore_lang;
-        return;
       }
     }
 
-    // set current lang from
-    let browserLangIsAvailable = Object.keys(this.available).filter((x) => {
-      	return x === window.navigator.language;
-    });
-    if(browserLangIsAvailable.length > 0) {
-      this.current = browserLangIsAvailable[0];
-      return;
+    if(this.current === '') {
+      // set current lang from
+      let browserLangIsAvailable = Object.keys(this.available).filter((x) => {
+        	return x === window.navigator.language;
+      });
+      if(browserLangIsAvailable.length > 0) {
+        this.current = browserLangIsAvailable[0];
+      }
     }
 
-    this.current = 'en';
+    if(this.current === '') {
+      this.current = 'en';
+    }
   }
 };
 lang_settings.init();
+
+moment.locale(`${lang_settings.current}`);
+Object.defineProperty(Vue.prototype, '$moment', { value: moment });
 
 // Create VueI18n instance with options
 const i18n = new VueI18n({

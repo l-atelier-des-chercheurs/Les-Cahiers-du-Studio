@@ -11,7 +11,7 @@
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="openEditFolderModal()"
             >
-            éditer
+            {{ $t('edit') }}
           </button>
         </h3>
       </div>
@@ -31,7 +31,7 @@
           </template>
         </p>
         <p class="font-small">
-          {{ $t('timeline.contents_are_stored') }}
+          {{ $t('contents_are_stored') }}
           <template v-if="$root.store.is_electron">
             <a :href="folder.fullFolderPath" @click.prevent="openInFinder(folder.fullFolderPath)">
               {{ folder.fullFolderPath.replace(/\//g, '\/\u200B') }}
@@ -167,7 +167,7 @@ export default {
       sort: {
         current: {
           field: 'date_timeline',
-          name: 'Chronologique',
+          name: this.$t('date'),
           type: 'date',
           order: 'ascending',
         },
@@ -175,43 +175,43 @@ export default {
         available: [
           {
             field: 'date_timeline',
-            name: 'Chronologique',
+            name: this.$t('date'),
             type: 'date',
             order: 'ascending',
           },
           {
             field: 'date_modified',
-            name: 'Dernière modification',
+            name: this.$t('last_modified'),
             type: 'date',
             order: 'descending',
           },
           {
             field: 'type',
-            name: 'Type',
+            name: this.$t('type'),
             type: 'alph',
             order: 'ascending',
           },
           {
             field: 'color',
-            name: 'Couleur',
+            name: this.$t('color'),
             type: 'alph',
             order: 'ascending',
           },
           {
             field: 'authors',
-            name: 'Auteurs',
+            name: this.$t('author'),
             type: 'alph',
             order: 'ascending',
           },
           {
             field: 'public',
-            name: 'Public',
+            name: this.$t('public'),
             type: 'alph',
             order: 'descending',
           },
           {
             field: 'content',
-            name: 'Contenu',
+            name: this.$t('content'),
             type: 'alph',
             order: 'ascending',
           }

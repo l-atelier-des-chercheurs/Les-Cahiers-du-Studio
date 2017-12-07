@@ -32,7 +32,7 @@
     <section class="flex-wrap flex-vertically-start limited-width padding-vert-medium">
       <div class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-large">
         <div class="border border-top-dashed">
-          <p class="margin-vert-medium" v-html="$t('home.more_information')">
+          <p class="margin-vert-medium" v-html="$t('more_information')">
           </p>
         </div>
 

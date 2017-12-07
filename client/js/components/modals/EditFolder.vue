@@ -13,20 +13,20 @@
 
 <!-- Human name -->
       <div class="margin-bottom-small">
-        <label>Nom&nbsp;:</label>
+        <label>{{ $t('name') }}</label>
         <input type="text" v-model="folderdata.name" required>
       </div>
 
 <!-- Start date -->
       <div class="margin-bottom-small">
-        <label>Début de la capture&nbsp;:</label>
+        <label>{{ $t('capture_start') }}</label>
         <DateTime v-model="folderdata.start">
         </DateTime>
       </div>
 
 <!-- End date -->
       <div class="margin-bottom-small">
-        <label>Fin de la capture&nbsp;:</label>
+        <label>{{ $t('capture_end') }}</label>
         <DateTime v-model="folderdata.end">
         </DateTime>
       </div>
@@ -34,15 +34,15 @@
 <!-- Password -->
 <!--
       <div class="margin-bottom-small">
-        <label>Mot de passe&nbsp;:</label><br>
+        <label>{{ $t('password') }}</label>
         <input type="password" v-model="folderdata.password">
-        <small>Si existant, seul les utilisateurs possédant ce mot de passe pourront modifier ce dossier.</small>
+        <small>{{ $t('password_instructions') }}</small>
       </div>
  -->
 
 <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>Auteur-e(s)&nbsp;:<small>un-e par ligne</small></label><br>
+        <label>{{ $t('author') }}</label><br>
         <textarea v-model="folderdata.authors">
         </textarea>
       </div>
@@ -50,7 +50,7 @@
     </template>
 
     <template slot="submit_button">
-      Enregistrer
+      {{ $t('save') }}
     </template>
 
   </Modal>
