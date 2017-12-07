@@ -40,7 +40,7 @@ html
       locals.folderPath = "#{folderPath}";
       locals.structure = !{JSON.stringify(structure, null, 4)};
       locals.localNetworkInfos = !{JSON.stringify(localNetworkInfos, null, 4)};
-      locals.presentation_md = `#{presentation_md}` ;
+      locals.presentation_md = !{JSON.stringify(presentation_md)};
       locals.appVersion = "!{global.appInfos.version}";
     script(src='/development/main.js')
     script(src='/development/vue.js')

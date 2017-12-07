@@ -5,8 +5,7 @@
     @submit="editThisMedia"
     >
     <template slot="header">
-      <span class="text-cap"> {{ $t('edit_the_media') }}</span><br>
-      <i>{{ slugMediaName }}</i>
+      <span class="text-cap"> {{ $t('edit_the_media') }}</span> <i>{{ slugMediaName }}</i>
     </template>
 
     <template slot="sidebar">

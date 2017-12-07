@@ -5,8 +5,7 @@
     @submit="editThisFolder"
     >
     <template slot="header">
-      <span class="text-cap"> {{ $t('edit_folder') }}</span><br>
-      <i>{{ folder.name }}</i>
+      <span class="text-cap"> {{ $t('edit_folder') }}</span> <i>{{ folder.name }}</i>
     </template>
 
     <template slot="sidebar">

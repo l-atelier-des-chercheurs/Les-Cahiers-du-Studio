@@ -28,6 +28,7 @@
           v-if="view === 'ListView'"
           :slugFolderName="$root.settings.currentlyOpenedFolder"
           :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
+          :presentation_md="$root.store.presentation_md"
         >
         </ListView>
 

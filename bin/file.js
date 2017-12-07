@@ -37,7 +37,9 @@ module.exports = (function() {
         if(err) {
           resolve(validator.unescape(global.appInfos.presentationMd));
         } else {
-          resolve(validator.unescape(fs.readFileSync(presentationMd, local.settings().textEncoding)));
+          let presentationContent = validator.unescape(fs.readFileSync(presentationMd, local.settings().textEncoding));
+          presentationContent = api.parseData(presentationContent);
+          resolve(presentationContent);
         }
       });
     });

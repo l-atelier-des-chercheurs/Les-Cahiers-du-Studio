@@ -23,7 +23,8 @@
         <div class="text-formatting flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-medium">
           <vue-markdown
             :html=true
-            >{{ presentationText }}</vue-markdown>
+            :source="presentationText"
+          ></vue-markdown>
         </div>
       </div>
     </header>
@@ -72,7 +73,7 @@
           </div>
         </div>
         <div class="border border-top-dashed">
-          <div class="margin-vert-medium">
+          <div class="margin-vert-medium" style="max-width: 200px">
             <label v-html="$t('lang:')"></label>
             <select v-model="currentLang">
               <option v-for="(name, code) in $root.lang.available" :value="code">
@@ -131,7 +132,7 @@ import CreateFolder from './components/modals/CreateFolder.vue';
 import VueMarkdown from 'vue-markdown'
 
 export default {
-  name: 'app',
+  props: ['presentation_md'],
   components: {
     CreateFolder,
     Folder,
@@ -151,7 +152,7 @@ export default {
   watch: {
     'currentLang': function() {
       this.$root.updateLocalLang(this.currentLang);
-    }
+    },
   },
   computed: {
     sortedFoldersSlug() {
@@ -176,7 +177,14 @@ export default {
       return sortedSortable;
     },
     presentationText() {
-      return this.$root.store.presentation_md;
+
+      if(this.presentation_md.hasOwnProperty(this.currentLang)) {
+        return this.presentation_md[this.currentLang];
+      } else if(this.presentation_md.hasOwnProperty('content')) {
+        return this.presentation_md['content'];
+      }
+
+      return this.presentation_md;
     }
   }
 }
