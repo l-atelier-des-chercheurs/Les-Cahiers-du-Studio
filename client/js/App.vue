@@ -1,25 +1,11 @@
 <template>
   <div id="app">
 
-    <div
+    <SystemBar
       v-if="$root.store.is_electron && $root.store.is_darwin"
-      id="systemBar"
+      :view="view"
     >
-      <div class="fixedBand">
-        <transition
-          name="fade"
-          :duration="850"
-          >
-          <div
-            v-if="view === 'TimeLineView'"
-            class="titleText font-small text-centered c-blanc"
-            @click.prevent="$root.closeFolder()"
-            >
-            <i>Les Cahiers du Studio</i>
-          </div>
-        </transition>
-      </div>
-    </div>
+    </SystemBar>
 
     <div v-if="view === 'ListView'" class="container">
       <div class="row">
@@ -60,6 +46,7 @@
 </template>
 
 <script>
+import SystemBar from './SystemBar.vue';
 import ListView from './ListView.vue';
 import TimeLineView from './TimeLineView.vue';
 import BottomFooter from './components/BottomFooter.vue';
@@ -67,6 +54,7 @@ import BottomFooter from './components/BottomFooter.vue';
 export default {
   name: 'app',
   components: {
+    SystemBar,
     ListView,
     TimeLineView,
     BottomFooter
