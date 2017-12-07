@@ -179,12 +179,12 @@ export default {
         height: `${this.mediaStyles.h}px`
       }
     },
-    mousedown() {
+    mousedown(event) {
       console.log(`METHODS • TimelineMedia: mousedown with is_dragged = ${this.is_dragged}`);
       window.addEventListener('mousemove', this.mousemove);
       window.addEventListener('mouseup', this.mouseup);
     },
-    mousemove() {
+    mousemove(event) {
       console.log(`METHODS • TimelineMedia: mousemove with is_dragged = ${this.is_dragged}`);
       if(!this.is_dragged) {
         this.is_dragged = true;
@@ -200,7 +200,7 @@ export default {
       if(this.is_dragged) { return; }
       this.$emit('open');
     },
-    mouseup() {
+    mouseup(event) {
       console.log(`METHODS • TimelineMedia: mouseup`);
       console.log(`with is_dragged = ${this.is_dragged}`);
       if(this.is_dragged) {
@@ -225,26 +225,27 @@ export default {
       return false;
     },
 
-    mouseover() {
+    mouseover(event) {
       console.log('METHODS • TimelineMedia: mouseover');
       this.is_hovered = true;
     },
-    mouseleave() {
+    mouseleave(event) {
       console.log('METHODS • TimelineMedia: mouseleave');
       this.is_hovered = false;
     },
-    toggleCollapseMedia() {
-      console.log('METHODS • TimelineMedia: toggleCollapseMedia');
+    toggleCollapseMedia(event) {
+      console.log('METHODS • TimelineMedia: toggleCollapseMedia with drag = ' + this.is_dragged);
       if(this.is_dragged) {
-        this.mouseup();
+        this.mouseup(event);
         return;
       } else {
         // we need to trigger mouseup because this won’t be a drag
-        this.mouseup();
+        this.mouseup(event);
       }
       this.is_collapsed = !this.is_collapsed;
 
-      // copy all values
+      console.log('passed');
+
       let values = { collapsed: this.is_collapsed };
       values.slugFolderName = this.slugFolderName;
       values.slugMediaName = this.slugMediaName;

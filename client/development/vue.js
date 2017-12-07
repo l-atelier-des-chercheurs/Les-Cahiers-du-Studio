@@ -1916,12 +1916,12 @@ exports.default = {
         height: this.mediaStyles.h + 'px'
       };
     },
-    mousedown: function mousedown() {
+    mousedown: function mousedown(event) {
       console.log('METHODS \u2022 TimelineMedia: mousedown with is_dragged = ' + this.is_dragged);
       window.addEventListener('mousemove', this.mousemove);
       window.addEventListener('mouseup', this.mouseup);
     },
-    mousemove: function mousemove() {
+    mousemove: function mousemove(event) {
       console.log('METHODS \u2022 TimelineMedia: mousemove with is_dragged = ' + this.is_dragged);
       if (!this.is_dragged) {
         this.is_dragged = true;
@@ -1939,7 +1939,7 @@ exports.default = {
       }
       this.$emit('open');
     },
-    mouseup: function mouseup() {
+    mouseup: function mouseup(event) {
       console.log('METHODS \u2022 TimelineMedia: mouseup');
       console.log('with is_dragged = ' + this.is_dragged);
       if (this.is_dragged) {
@@ -1963,23 +1963,25 @@ exports.default = {
 
       return false;
     },
-    mouseover: function mouseover() {
+    mouseover: function mouseover(event) {
       console.log('METHODS • TimelineMedia: mouseover');
       this.is_hovered = true;
     },
-    mouseleave: function mouseleave() {
+    mouseleave: function mouseleave(event) {
       console.log('METHODS • TimelineMedia: mouseleave');
       this.is_hovered = false;
     },
-    toggleCollapseMedia: function toggleCollapseMedia() {
-      console.log('METHODS • TimelineMedia: toggleCollapseMedia');
+    toggleCollapseMedia: function toggleCollapseMedia(event) {
+      console.log('METHODS • TimelineMedia: toggleCollapseMedia with drag = ' + this.is_dragged);
       if (this.is_dragged) {
-        this.mouseup();
+        this.mouseup(event);
         return;
       } else {
-        this.mouseup();
+        this.mouseup(event);
       }
       this.is_collapsed = !this.is_collapsed;
+
+      console.log('passed');
 
       var values = { collapsed: this.is_collapsed };
       values.slugFolderName = this.slugFolderName;
@@ -2009,7 +2011,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-1322b01f", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-1322b01f", __vue__options__)
+    hotAPI.reload("data-v-1322b01f", __vue__options__)
   }
 })()}
 },{"./subcomponents/MediaContent.vue":23,"vue":229,"vue-hot-reload-api":224}],12:[function(require,module,exports){
@@ -2709,7 +2711,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-5cf17b42", __vue__options__)
   } else {
-    hotAPI.reload("data-v-5cf17b42", __vue__options__)
+    hotAPI.rerender("data-v-5cf17b42", __vue__options__)
   }
 })()}
 },{"underscore":216,"vue":229,"vue-hot-reload-api":224,"vueify/lib/insert-css":231}],24:[function(require,module,exports){
