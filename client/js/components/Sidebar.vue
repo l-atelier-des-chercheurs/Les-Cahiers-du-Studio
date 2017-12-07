@@ -65,7 +65,7 @@
           v-for="(days, month) in folderDays()"
           class="m_calendar--month"
         >
-          <h3 class="margin-bottom-none text-ital font-small">
+          <h3 class="margin-bottom-small text-ital font-small">
             {{ month }}
           </h3>
           <div class="m_calendar--days">

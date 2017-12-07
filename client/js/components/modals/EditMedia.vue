@@ -48,6 +48,19 @@
           </small>
         </div>
 
+        <div class="margin-bottom-small" v-if="isRealtime">
+          <small>
+            {{ $t('currently') }}
+            <button
+              type="button"
+              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+              @click="setMediaDateTimeline(currentTime)"
+              >
+              {{ currentTime_human }}
+            </button>
+          </small>
+        </div>
+
       </div>
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -234,7 +247,7 @@ import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 
 export default {
-  props: ['slugFolderName', 'slugMediaName', 'media'],
+  props: ['slugFolderName', 'slugMediaName', 'media', 'isRealtime', 'currentTime'],
   components: {
     Modal,
     DateTime,
@@ -261,6 +274,9 @@ export default {
     },
     date_uploaded_human() {
       return this.$moment(this.media.date_upload).format('DD/MM/YYYY HH:mm:ss');
+    },
+    currentTime_human() {
+      return this.$moment(this.currentTime).format('DD/MM/YYYY HH:mm:ss');
     }
   },
   methods: {

@@ -183,6 +183,8 @@
         :slugFolderName="slugFolderName"
         :slugMediaName="showMediaModalFor"
         :media="medias[showMediaModalFor]"
+        :isRealtime="isRealtime"
+        :currentTime="currentTime"
         @close="showMediaModalFor = ''"
       >
       </EditMedia>

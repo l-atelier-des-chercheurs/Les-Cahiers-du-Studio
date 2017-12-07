@@ -49,6 +49,7 @@ module.exports = (function() {
 
       capture_start: 'Début de la capture',
       capture_end: 'Fin de la capture',
+      currently: 'Actuellement',
 
       more_information: 'Pour plus d’information, consultez la <a href="https://paper.dropbox.com/doc/Les-Cahiers-du-Studio-PvgkN59Zb2i9nAApZOIZz#:uid=389501177464251596585301&h2=Information-sur-le-stockage-de" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
       no_media_in_folder: 'Aucun média dans ce dossier.',
@@ -121,6 +122,7 @@ module.exports = (function() {
 
       capture_start: 'Start of the capture',
       capture_end: 'End of the capture',
+      currently: 'Now',
 
       more_information: 'For more informations, read the <a href="https://paper.dropbox.com/doc/Les-Cahiers-du-Studio-PvgkN59Zb2i9nAApZOIZz#:uid=389501177464251596585301&h2=Information-sur-le-stockage-de" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
 

@@ -31,7 +31,7 @@
                   class=""
                   v-on:submit.prevent="$emit('submit')"
                   >
-                  <div class="scrollBox padding-medium">
+                  <div class="padding-medium">
                     <slot name="sidebar">
                       default sidebar
                     </slot>
