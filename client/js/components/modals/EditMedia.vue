@@ -11,7 +11,7 @@
     <template slot="sidebar">
 
 <!-- Caption -->
-      <div class="margin-bottom-small" v-if="mediadata.type !== 'marker' || mediadata.type !== 'text'">
+      <div class="margin-bottom-small" v-if="mediadata.type !== 'marker' && mediadata.type !== 'text'">
         <label>{{ $t('caption') }}</label><br>
         <textarea v-model="mediadata.caption">
         </textarea>
@@ -157,6 +157,7 @@
 
         <a :href="mediaURL" :title="slugMediaName" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
+          v-if="mediadata.type === 'image'"
           >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
