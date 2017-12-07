@@ -53,7 +53,6 @@ textarea {
   padding-right: calc(var(--component-spacing) * .5);
   margin: 0;
   transition: .1s border-color, .1s background-color, .1s color;
-  white-space: nowrap;
   -moz-appearance: none;
   -webkit-appearance: none;
 }
@@ -92,7 +91,6 @@ textarea {
   height: auto;
   resize: vertical;
   line-height: var(--line-height);
-  white-space: normal;
 }
 
 input[type="color"] {
