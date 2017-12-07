@@ -2,7 +2,7 @@
   <div id="app">
 
     <SystemBar
-      v-if="$root.store.is_electron && $root.store.is_darwin"
+      v-if="$root.settings.enable_system_bar"
       :view="view"
     >
     </SystemBar>

@@ -83,10 +83,16 @@ let vm = new Vue({
       has_sidebar_opened: false,
       highlightMedia: '',
       is_loading_medias_for_folder: '',
+      enable_system_bar: window.store.state.is_electron && window.store.state.is_darwin,
     },
     lang: {
       available: lang_settings.available,
       current: lang_settings.current
+    }
+  },
+  mounted() {
+    if(this.settings.enable_system_bar) {
+      document.body.classList.add('has_systembar');
     }
   },
   methods: {

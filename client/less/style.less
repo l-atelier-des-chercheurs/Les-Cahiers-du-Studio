@@ -94,10 +94,11 @@ body {
 
 #systemBar {
   height: @t-systemBarHeight - 6px;
-  -webkit-user-select: none;
-  -webkit-app-region: drag;
 
   > .fixedBand {
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+
     position: fixed;
     width: 100%;
     height: @t-systemBarHeight;
@@ -425,12 +426,12 @@ body {
 
 .modal-enter-active, .modal-leave-active {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
   transition: all .2s ease-out;
 }
 .modal-enter, .modal-leave-to {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(10px) scale(1.02);
   transition: all .2s ease-out;
 }
 

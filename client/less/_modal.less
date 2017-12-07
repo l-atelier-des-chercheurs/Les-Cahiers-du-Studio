@@ -1,40 +1,62 @@
 .m_modal--mask {
   position: fixed;
-  z-index: 10001;
+  z-index: 20000;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
+
   background-color: rgba(255,255,255, .9);
-  display: table;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  body.has_systembar & {
+//     padding-top: 22px;
+  }
 }
 
 .m_modal--wrapper {
-  display: table-cell;
-  vertical-align: middle;
 }
 
-@t-panelWidth: 380px;
+@t-panelWidth: 400px;
 
 .m_modal--container {
 
   position: relative;
-  max-height: 100vh;
-  overflow-y: scroll;
   transition: all .3s ease;
 
+  width: 90%;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  cursor: auto;
+
+  max-width: @t-panelWidth;
+  margin: auto;
+
+  &.is--large {
+    max-width: @t-panelWidth * 3;
+  }
+
   .m_modal--container--content {
+    height: 100%;
 
-    width: 90%;
-    max-width: @t-panelWidth;
-
-    margin: 40px auto;
     background-color: #fff;
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
 
-    .is--large& {
-      max-width: @t-panelWidth * 3;
+    display: flex;
+
+    > * {
+      flex: 1 1 auto;
+      max-height: 90vh;
+
+      &.m_modal--sidebar {
+        flex: 0 1 @t-panelWidth;
+        min-width: @t-panelWidth;
+      }
     }
 
     .color-red& {
@@ -66,7 +88,17 @@
 
 
 .m_modal--sidebar {
+  display: flex;
+  flex-flow: column nowrap;
 
+  > * {
+    flex: 0 0 auto;
+  }
+
+  .m_modal--metaOptions {
+    overflow-y: scroll;
+    flex: 1 1 auto;
+  }
 }
 // if no preview, then sidebar takes the whole width
 
@@ -77,6 +109,12 @@
     &.type-text, &.type-marker {
       .padding-medium;
       .font-large;
+    }
+
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
     }
   }
 
