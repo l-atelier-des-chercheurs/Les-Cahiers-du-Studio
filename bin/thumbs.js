@@ -22,7 +22,11 @@ module.exports = (function() {
   const API = {
     makeMediaThumbs   : (slugFolderName, slugMediaName, mediaType) => makeMediaThumbs(slugFolderName, slugMediaName, mediaType),
     removeMediaThumbs : (slugFolderName, slugMediaName) => removeMediaThumbs(slugFolderName, slugMediaName),
-    getEXIFData       : (mediaPath) => getEXIFData(mediaPath),
+
+    getEXIFData           : (mediaPath) => getEXIFData(mediaPath),
+    getRatioFromEXIF      : (mediaPath) => getRatioFromEXIF(mediaPath),
+    getTimestampFromEXIF  : (mediaPath) => getTimestampFromEXIF(mediaPath),
+
     getMediaDuration  : (mediaPath) => getMediaDuration(mediaPath),
     getMediaRatio     : (mediaPath) => getMediaRatio(mediaPath),
   };
@@ -110,28 +114,42 @@ module.exports = (function() {
     });
   }
 
+  function getRatioFromEXIF(mediaPath) {
+    return new Promise(function(resolve, reject) {
+      getEXIFData(mediaPath).then(exifdata => {
+        let mediaRatio;
+        mediaRatio = exifdata.height / exifdata.width;
+        if(exifdata.orientation && (exifdata.orientation === 8 || exifdata.orientation === 6)) {
+          dev.log(`Media is portrait. Inverting ratio`);
+          mediaRatio = 1/mediaRatio;
+        }
+        resolve(mediaRatio);
+      });
+    });
+  }
+
+  function getTimestampFromEXIF(mediaPath) {
+    return new Promise(function(resolve, reject) {
+      getEXIFData(mediaPath).then(exifdata => {
+        let ts = _extractImageTimestamp(exifdata);
+        dev.logverbose(`TS is ${ts}`);
+        resolve(ts);
+      });
+    });
+  }
+
   function getEXIFData(mediaPath) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`THUMBS — readEXIFData — for: ${mediaPath}`);
 
       sharp(mediaPath)
         .metadata()
-        .then(metadata => {
-          if(typeof metadata === 'undefined') {
+        .then(exifdata => {
+          if(typeof exifdata === 'undefined') {
             reject();
           }
-
           dev.logverbose(`Gotten metadata.`);
-          let ts = _extractImageTimestamp(metadata);
-          dev.logverbose(`TS is ${ts}`);
-
-          let mediaRatio;
-          mediaRatio = metadata.height / metadata.width;
-          if(metadata.orientation && (metadata.orientation === 8 || metadata.orientation === 6)) {
-            dev.log(`Media is portrait. Inverting ratio`);
-            mediaRatio = 1/mediaRatio;
-          }
-          resolve({ ts, mediaRatio });
+          resolve(exifdata);
         })
         .catch(err => reject());
     });

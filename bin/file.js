@@ -489,11 +489,10 @@ module.exports = (function() {
             mdata.date_created = api.convertDate(additionalMeta.fileCreationDate);
           }
 
-
           if(mdata.type === 'image') {
             dev.logverbose(`Looking for EXIF for image`);
             let getEXIFTimestamp = new Promise((resolve, reject) => {
-              thumbs.getEXIFData(mediaPath).then(({ ts, mediaRatio }) => {
+              thumbs.getTimestampFromEXIF(mediaPath).then(ts => {
                 if(ts === false) {
                   dev.logverbose(`No timestamp found in EXIF.`);
                 } else {
@@ -529,7 +528,7 @@ module.exports = (function() {
           ***************************************************************************/
           if(mdata.type === 'image') {
             let getEXIFRatio = new Promise((resolve, reject) => {
-              thumbs.getEXIFData(mediaPath).then(({ ts, mediaRatio }) => {
+              thumbs.getRatioFromEXIF(mediaPath).then(mediaRatio => {
                 dev.log(`getEXIFData mediaRatio : ${mediaRatio}`);
                 if(mediaRatio !== undefined) {
                   mdata.ratio = mediaRatio;
@@ -576,6 +575,23 @@ module.exports = (function() {
               });
             });
             tasks.push(getMediaDuration);
+          }
+
+
+          /***************************************************************************
+              DURATION
+          ***************************************************************************/
+          if(mdata.type === 'image') {
+            let getFullEXIF = new Promise((resolve, reject) => {
+              dev.logverbose(`Will attempt to get media duration.`);
+              thumbs.getEXIFData(mediaPath).then(exifdata => {
+                if(exifdata) {
+                  mdata.exif = JSON.stringify(exifdata);
+                }
+                resolve();
+              });
+            });
+            tasks.push(getFullEXIF);
           }
 
 
