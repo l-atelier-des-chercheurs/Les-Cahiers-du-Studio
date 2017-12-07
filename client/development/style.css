@@ -4878,14 +4878,20 @@ body.is_unscrollable {
 .m_sidebar .m_sidebarList_table .m_sidebarList--media.is--outOfScope {
   border-left: 6px solid #ff3b4c;
 }
-.m_sidebar .m_sidebarList_table td:first-child {
+.m_sidebar .m_sidebarList_table table td:first-child {
   width: 50px;
   background-color: #f2f2f2;
 }
-.m_sidebar .m_sidebarList_table td:first-child img {
+.m_sidebar .m_sidebarList_table table td:first-child img {
   min-width: 0;
   width: auto;
   margin: auto;
+}
+.m_sidebar .m_sidebarList_flux table {
+  table-layout: fixed;
+}
+.m_sidebar .m_sidebarList_flux table td {
+  overflow: scroll;
 }
 .m_sidebar .m_sidebarList--media.color-red {
   background-color: #ff7e8a;
