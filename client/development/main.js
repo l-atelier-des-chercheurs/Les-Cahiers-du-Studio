@@ -283,13 +283,6 @@ $('body').on('click', '.js--openInBrowser', function () {
   }
 });
 
-document.addEventListener('keydown', function (event) {
-  // letter G
-  if (event.keyCode === 71) {
-    $('body').toggleClass('is--debug');
-  }
-});
-
 },{"alertify.js":3,"babel-runtime/core-js/json/stringify":5,"babel-runtime/core-js/object/assign":6,"babel-runtime/core-js/object/keys":7,"babel-runtime/core-js/object/values":8,"jquery":77,"socket.io-client":82,"store":91}],2:[function(require,module,exports){
 module.exports = after
 

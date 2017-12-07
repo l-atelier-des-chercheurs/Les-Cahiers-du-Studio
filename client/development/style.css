@@ -3232,6 +3232,50 @@ th {
   --sidebar-width: 460px;
   --input-box-shadow: none;
 }
+button,
+.button {
+  background-color: transparent;
+  border: none;
+  font-size: inherit;
+  font-family: inherit;
+  background-color: #fff;
+  display: inline-block;
+  text-transform: lowercase;
+  text-decoration: none;
+  text-align: center;
+  margin: 0;
+  cursor: pointer;
+  min-height: 2.7em;
+  padding: 0 0.675em;
+  border-radius: 6px;
+  -webkit-transition: color 0.25s ease-out;
+  -o-transition: color 0.25s ease-out;
+  transition: color 0.25s ease-out;
+}
+button.is--disabled,
+.button.is--disabled {
+  opacity: 0.5;
+}
+button.bg-noir.is--active,
+.button.bg-noir.is--active {
+  background-color: white;
+  color: #333;
+}
+button:focus,
+.button:focus {
+  outline: 0;
+}
+button a,
+.button a {
+  text-decoration: none;
+}
+button svg,
+.button svg {
+  min-width: 0;
+  width: 48px;
+  height: 48px;
+  margin: auto;
+}
 strong,
 b {
   font-weight: inherit;
@@ -3505,6 +3549,7 @@ h4 {
   font-style: italic;
 }
 textarea {
+  white-space: pre;
   padding: 0.675em;
 }
 .text-cap {
@@ -3543,43 +3588,6 @@ hr {
 }
 table {
   border: 2px solid white;
-}
-button {
-  text-decoration: none;
-  background-color: transparent;
-  border: none;
-  font-size: inherit;
-  font-family: inherit;
-  background-color: #fff;
-  display: inline-block;
-  text-transform: lowercase;
-  margin: 0;
-  cursor: pointer;
-  min-height: 2.7em;
-  padding: 0 0.675em;
-  border-radius: 6px;
-  -webkit-transition: color 0.25s ease-out;
-  -o-transition: color 0.25s ease-out;
-  transition: color 0.25s ease-out;
-}
-button.is--disabled {
-  opacity: 0.5;
-}
-button.bg-noir.is--active {
-  background-color: white;
-  color: #333;
-}
-button:focus {
-  outline: 0;
-}
-button a {
-  text-decoration: none;
-}
-button svg {
-  min-width: 0;
-  width: 48px;
-  height: 48px;
-  margin: auto;
 }
 input[type=range] {
   -webkit-appearance: none;

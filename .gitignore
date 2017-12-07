@@ -37,3 +37,6 @@ Temporary Items
 dist/
 build/config.gypi
 client/development
+client/development/vue.js
+client/development/style.css
+client/development/main.js

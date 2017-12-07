@@ -233,10 +233,3 @@ $('body').on('click', '.js--openInBrowser', function() {
   }
 });
 
-
-document.addEventListener('keydown', function(event) {
-  // letter G
-  if(event.keyCode === 71) {
-    $('body').toggleClass('is--debug');
-  }
-});

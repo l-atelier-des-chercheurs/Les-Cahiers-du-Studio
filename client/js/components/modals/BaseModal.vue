@@ -88,7 +88,6 @@
 </template>
 
 <script>
-let className = 'is_unscrollable';
 
 export default {
   name: 'BaseModal',
@@ -105,6 +104,7 @@ export default {
   },
   methods: {
     modalKeyListener: function(evt) {
+      console.log('METHODS • BaseModal: modalKeyListener');
       if (evt.keyCode === 27) {
         this.closeModal();
       }
@@ -118,7 +118,7 @@ export default {
   },
   created: function () {
     window.addEventListener('keyup', this.modalKeyListener);
-    document.body.classList.add(className);
+    document.body.classList.add('is_unscrollable');
     this.$root.settings.has_modal_opened = true;
   },
   mounted: function() {
@@ -126,7 +126,7 @@ export default {
   },
   destroyed: function() {
     document.removeEventListener('keyup', this.modalKeyListener);
-    document.body.classList.remove(className);
+    document.body.classList.remove('is_unscrollable');
     this.$root.settings.has_modal_opened = false;
   },
 }

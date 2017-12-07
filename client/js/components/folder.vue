@@ -142,6 +142,7 @@ export default {
       }
     },
     submitPassword() {
+      console.log('METHODS • Folder: submitPassword');
       auth.updateAdminAccess({ [this.slugFolderName]: this.$refs.passwordField.value });
       window.socketio.sendAuth();
       this.showInputPasswordField = false;

@@ -70,17 +70,19 @@ export default {
       });
       this.$eventHub.$emit('timeline.scrollToToday');
     },
-    boitierPressed(e) {
+    boitierPressed(event) {
+      console.log('METHODS • AddMediaButton: boitierPressed');
+
       // if there is a modal opened, let’s not do something
       if(this.$root.settings.has_modal_opened === true) {
         return;
       }
 
-      if(e.target.tagName.toLowerCase() === 'input') {
+      if(event.target.tagName.toLowerCase() === 'input') {
         return;
       }
 
-      var key = e.key;
+      var key = event.key;
       if(key === 'y' || key === 'w' || key === 'z') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,

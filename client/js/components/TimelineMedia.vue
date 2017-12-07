@@ -244,8 +244,6 @@ export default {
       }
       this.is_collapsed = !this.is_collapsed;
 
-      console.log('passed');
-
       let values = { collapsed: this.is_collapsed };
       values.slugFolderName = this.slugFolderName;
       values.slugMediaName = this.slugMediaName;
