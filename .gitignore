@@ -35,6 +35,5 @@ Temporary Items
 .apdisk
 
 dist/
-
 build/config.gypi
 client/development

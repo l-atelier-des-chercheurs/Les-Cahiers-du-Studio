@@ -94,7 +94,9 @@ export default {
   mounted() {
     if(this.context === 'edit') {
       if(Modernizr !== undefined && !Modernizr.touchevents) {
-        this.$refs.textField.focus();
+        if(this.$refs.textField !== undefined) {
+          this.$refs.textField.focus();
+        }
       }
     }
   },

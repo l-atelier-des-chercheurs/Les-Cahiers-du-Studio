@@ -2633,7 +2633,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 },{"vue":229,"vue-hot-reload-api":224,"vueify/lib/insert-css":231}],23:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("/* line 128, stdin */\n.mediaContainer.type-text[data-v-5cf17b42] {\n  align-self: flex-start; }\n\n/* line 131, stdin */\n.mediaContainer.type-other[data-v-5cf17b42] {\n  padding: 10px;\n  align-self: flex-start; }")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("/* line 130, stdin */\n.mediaContainer.type-text[data-v-5cf17b42] {\n  align-self: flex-start; }\n\n/* line 133, stdin */\n.mediaContainer.type-other[data-v-5cf17b42] {\n  padding: 10px;\n  align-self: flex-start; }")
 ;(function(){
 'use strict';
 
@@ -2670,7 +2670,9 @@ exports.default = {
   mounted: function mounted() {
     if (this.context === 'edit') {
       if (Modernizr !== undefined && !Modernizr.touchevents) {
-        this.$refs.textField.focus();
+        if (this.$refs.textField !== undefined) {
+          this.$refs.textField.focus();
+        }
       }
     }
   },
@@ -2707,7 +2709,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-5cf17b42", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-5cf17b42", __vue__options__)
+    hotAPI.reload("data-v-5cf17b42", __vue__options__)
   }
 })()}
 },{"underscore":216,"vue":229,"vue-hot-reload-api":224,"vueify/lib/insert-css":231}],24:[function(require,module,exports){
