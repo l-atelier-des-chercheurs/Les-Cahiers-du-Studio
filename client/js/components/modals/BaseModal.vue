@@ -55,6 +55,18 @@
 
               <div v-if="!!this.$slots['preview']" class="m_modal--preview"
               >
+
+                <!-- if there is no sidebar, output header here -->
+                <template v-if="!this.$slots['sidebar']">
+                  <div class="m_modal--header padding-medium bg-noir c-blanc">
+                    <h3 class="margin-none with-bullet">
+                      <slot name="header">
+                          default header
+                      </slot>
+                    </h3>
+                  </div>
+                </template>
+
                 <slot name="preview">
                   default preview
                 </slot>
