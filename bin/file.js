@@ -586,7 +586,7 @@ module.exports = (function() {
               dev.logverbose(`Will attempt to get media duration.`);
               thumbs.getEXIFData(mediaPath).then(exifdata => {
                 if(exifdata) {
-                  mdata.exif = JSON.stringify(exifdata);
+                  mdata.exif = validator.escape(JSON.stringify(exifdata));
                 }
                 resolve();
               });
