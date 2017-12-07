@@ -5,6 +5,7 @@
     <table class="margin-none border-none"
       :class="{ 'table-hoverable' : display === 'table' }"
       >
+
       <thead>
         <tr>
           <th class="font-small padding-medium">

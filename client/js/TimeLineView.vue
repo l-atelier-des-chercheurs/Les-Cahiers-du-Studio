@@ -88,7 +88,6 @@
             <div
               v-if="overallGrid.hours.length > 0"
               v-for="(item, index) in overallGrid.hours"
-              :key="index"
               class="gridItem font-small gridItem_ishour"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
@@ -101,7 +100,6 @@
             <div
               v-if="overallGrid.minutes.length > 0"
               v-for="(item, index) in overallGrid.minutes"
-              :key="index"
               class="gridItem font-small gridItem_isminute"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
@@ -113,7 +111,6 @@
 
             <div
               v-if="isRealtime"
-              :key="`todaysRule`"
               class="gridItem font-small gridItem_isrealtimerule"
               :style="`transform: translate(${todaysRule.xPos}px, 0px)`"
               >
