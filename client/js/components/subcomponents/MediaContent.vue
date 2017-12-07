@@ -23,8 +23,10 @@
 
     <template v-else-if="media.type === 'text'">
       <div v-if="this.context !== 'edit'" class="padding-small">
-        {{ value }}
-        <template v-if="value.length === 0">
+        <template v-if="value.length !== 0">
+          {{ value }}
+        </template>
+        <template v-else="">
           …
         </template>
       </div>
