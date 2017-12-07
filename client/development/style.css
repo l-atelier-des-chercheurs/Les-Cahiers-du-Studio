@@ -4453,6 +4453,9 @@ th {
 .mediaPreview .timelineMediaContent .mediaContainer.type-audio {
   width: 100%;
 }
+.mediaPreview .timelineMediaContent .mediaContainer.type-text > * p {
+  margin: 0;
+}
 .mediaPreview .timelineMediaContent .mediaContour {
   position: absolute;
   top: 0;
@@ -4547,7 +4550,8 @@ th {
 }
 .m_modal--preview .mediaContainer.type-text,
 .m_modal--preview .mediaContainer.type-marker {
-  padding: 1.35em;
+  padding-top: 0.675em;
+  padding-bottom: 0.675em;
   font-size: 1.1em;
 }
 .m_modal--preview input[type="text"] {
@@ -4872,43 +4876,43 @@ body.is_unscrollable {
   padding: 0;
   margin: 0;
 }
-.m_sidebar .m_sidebarList_table .m_sidebarList--media {
+.m_sidebarList_table .m_sidebarList--media {
   cursor: pointer;
 }
-.m_sidebar .m_sidebarList_table .m_sidebarList--media.is--outOfScope {
+.m_sidebarList_table .m_sidebarList--media.is--outOfScope {
   border-left: 6px solid #ff3b4c;
 }
-.m_sidebar .m_sidebarList_table table td:first-child {
+.m_sidebarList_table table td:first-child {
   width: 50px;
   background-color: #f2f2f2;
 }
-.m_sidebar .m_sidebarList_table table td:first-child img {
+.m_sidebarList_table table td:first-child img {
   min-width: 0;
   width: auto;
   margin: auto;
 }
-.m_sidebar .m_sidebarList_flux table {
+.m_sidebarList_mediasList table {
   table-layout: fixed;
 }
-.m_sidebar .m_sidebarList_flux table td {
+.m_sidebarList_mediasList table td {
   overflow: scroll;
 }
-.m_sidebar .m_sidebarList--media.color-red {
+.m_sidebarList--media.color-red {
   background-color: #ff7e8a;
 }
-.m_sidebar .m_sidebarList--media.color-blue {
+.m_sidebarList--media.color-blue {
   background-color: #b0e6f4;
 }
-.m_sidebar .m_sidebarList--media.color-green {
+.m_sidebarList--media.color-green {
   background-color: #a3e6db;
 }
-.m_sidebar .m_sidebarList--media.color-yellow {
+.m_sidebarList--media.color-yellow {
   background-color: #ffff99;
 }
-.m_sidebar .m_sidebarList--media.color-orange {
+.m_sidebarList--media.color-orange {
   background-color: #ffb888;
 }
-.m_sidebar .m_sidebarList--media.color-purple {
+.m_sidebarList--media.color-purple {
   background-color: #bec6e7;
 }
 .loader_folder {

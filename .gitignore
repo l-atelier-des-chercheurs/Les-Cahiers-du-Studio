@@ -37,4 +37,4 @@ Temporary Items
 dist/
 
 build/config.gypi
-client/development/
+client/development
