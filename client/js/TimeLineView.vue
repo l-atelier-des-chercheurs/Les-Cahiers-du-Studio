@@ -76,7 +76,6 @@
             <div
               v-if="overallGrid.days.length > 0"
               v-for="(item, index) in overallGrid.days"
-              :key="`index`"
               class="gridItem font-small gridItem_isday"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
@@ -89,7 +88,7 @@
             <div
               v-if="overallGrid.hours.length > 0"
               v-for="(item, index) in overallGrid.hours"
-              :key="`index`"
+              :key="index"
               class="gridItem font-small gridItem_ishour"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
@@ -102,7 +101,7 @@
             <div
               v-if="overallGrid.minutes.length > 0"
               v-for="(item, index) in overallGrid.minutes"
-              :key="`index`"
+              :key="index"
               class="gridItem font-small gridItem_isminute"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
@@ -134,7 +133,7 @@
               </button>
             </div>
 
-            <transition name="fade" :duration="350">
+            <transition name="fade" :duration="250">
               <div
                 v-if="zoomZone.display"
                 class="gridItem gridItem_zoomZone"
