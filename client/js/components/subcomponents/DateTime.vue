@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     updateDate() {
-      this.$emit('input', $moment(this.date + 'T' + this.time));
+      this.$emit('input', this.$moment(this.date + 'T' + this.time));
     }
   }
 };
