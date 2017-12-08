@@ -30,6 +30,7 @@
         :medias="medias"
         :timelineInfos="timelineInfos"
         :isRealtime="isRealtime"
+        :style="{ height: `${sidebarHeight}px` }"
         >
       </Sidebar>
     </transition>
@@ -656,6 +657,7 @@ export default {
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
       this.timelineHeight = window.innerHeight - this.topNavbarHeight - this.bottomScrollBar - this.systemBar;
+      this.sidebarHeight = window.innerHeight - this.topNavbarHeight - this.systemBar;
     },
     onScroll() {
       if(!this.isScrolling) {
