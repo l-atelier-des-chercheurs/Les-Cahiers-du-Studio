@@ -59,7 +59,7 @@ gulp.task('less', function() {
 });
 
 // Concatenate & Minify CSS
-gulp.task('css-prod', function() {
+gulp.task('css-prod', ['less'], function() {
   return gulp.src('client/development/*.css')
     .pipe(concat('all.css'))
     .pipe(minifyCss({compatibility: 'ie9'}))
