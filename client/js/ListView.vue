@@ -155,7 +155,6 @@ export default {
     },
     '$root.store.folders': function() {
         // check if there is a justCreatedFolderID val
-        debugger;
 
         if(this.$root.justCreatedFolderID) {
           Object.keys(this.$root.store.folders).map((slugFolderName) => {

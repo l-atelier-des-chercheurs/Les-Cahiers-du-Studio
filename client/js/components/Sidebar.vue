@@ -18,17 +18,17 @@
 
       <div slot="body" class="">
         <p class="font-small">
-          <span v-html="$t('toconnectwithanotherdevicetothisfolder')">
-          </span>
-          <template v-for="(ip, index) in $root.store.localNetworkInfos.ip">
-            <a
-              :href="getURLToApp(ip, $root.store.localNetworkInfos.port)"
-              class="js--openInBrowser"
-              target="_blank"
-              v-html="getURLToApp(ip, $root.store.localNetworkInfos.port)">
-            </a>
-            <span> </span>
-          </template>
+          <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
+
+          <a v-for="(ip, index) in $root.store.localNetworkInfos.ip"
+            :href="getURLToApp(ip, $root.store.localNetworkInfos.port)"
+            class="js--openInBrowser button button-circled margin-vert-medium border-circled button-inline padding-small flex-horizontally-spaced"
+            target="_blank"
+            >
+            {{ getURLToApp(ip, $root.store.localNetworkInfos.port) }}
+            <qrcode :value="getURLToApp(ip, $root.store.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
+          </a>
+
         </p>
         <p class="font-small">
           {{ $t('contents_are_stored') }}
@@ -140,12 +140,14 @@ import Calendrier from './sidebar/Calendrier.vue';
 import Tableau from './sidebar/Tableau.vue';
 import SidebarSection from './sidebar/SidebarSection.vue';
 import MediasList from './modals/MediasList.vue';
+import qrcode from '@xkeshi/vue-qrcode';
 
 export default {
   components: {
     SidebarSection,
     Tableau,
-    MediasList
+    MediasList,
+    qrcode
   },
   props: {
     slugFolderName: String,

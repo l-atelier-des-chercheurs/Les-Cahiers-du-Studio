@@ -31,6 +31,7 @@
     }
   },
   "dependencies": {
+    "@xkeshi/vue-qrcode": "^0.3.0",
     "alertify.js": "^1.0.12",
     "body-parser": "^1.18.2",
     "debounce": "^1.1.0",
