@@ -515,6 +515,15 @@ export default {
         let date_timeline = this.$moment.isMoment(media.date_timeline) ? media.date_timeline : this.$moment(media.date_timeline,'YYYY-MM-DD HH:mm:ss');
         let posX = this.getXPositionFromDate(+date_timeline, false);
         this.allMediasPosition[slugMediaName] = posX;
+
+        // check if there is a justCreatedTextmediaID val
+        if(this.$root.justCreatedTextmediaID) {
+          // if there is, try to match it with mediaID of listed medias
+          if(media.mediaID && media.mediaID === this.$root.justCreatedTextmediaID) {
+            this.$root.justCreatedTextmediaID = false;
+            this.openMediaModal(slugMediaName);
+          }
+        }
       });
     },
     updateGridData() {

@@ -77,6 +77,7 @@ let vm = new Vue({
   components: { App },
   data: {
     store: window.store.state,
+    justCreatedTextmediaID: false,
     settings: {
       has_modal_opened: false,
       currentlyOpenedFolder: '',
@@ -111,6 +112,12 @@ let vm = new Vue({
 
     createTextMedia: function(mdata) {
       if(window.store.debug) { console.log(`ROOT EVENT: createTextMedia: ${JSON.stringify(mdata, null, 4)}`); }
+
+      if(mdata.type === 'text') {
+        mdata.mediaID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        this.justCreatedTextmediaID = mdata.mediaID;
+      }
+
       window.socketio.createTextMedia(mdata);
     },
     removeMedia: function(slugFolderName, slugMediaName) {

@@ -70,12 +70,12 @@ module.exports = (function() {
   /**************************************************************** FOLDER ********************************/
   function onListFolders(socket) {
     dev.logfunction(`EVENT - onListFolders`);
-    sendFolders('', socket);
+    sendFolders({ socket });
   }
   function onCreateFolder(socket, d) {
     dev.logfunction(`EVENT - onCreateFolder for ${d.name}`);
     file.createFolder(d).then(slugFolderName => {
-      sendFolders(slugFolderName);
+      sendFolders({ slugFolderName });
     }, function(err) {
       dev.error(`Failed to list medias! Error: ${err}`);
     });
@@ -91,7 +91,7 @@ module.exports = (function() {
       if(!auth.hasFolderAuth(socket.id,foldersData,d.slugFolderName)) { return; }
 
       file.editFolder(foldersData, d).then(slugFolderName => {
-        sendFolders(slugFolderName);
+        sendFolders({ slugFolderName });
       });
     });
   }
@@ -117,7 +117,7 @@ module.exports = (function() {
 
   function onListMedias(socket, d) {
     dev.logfunction(`EVENT - onListMedias : ${JSON.stringify(d, null, 4)}`);
-    sendMedias(d.slugFolderName, '', socket);
+    sendMedias({ slugFolderName: d.slugFolderName, socket });
   }
 
   function onCreateTextMedia(socket, d) {
@@ -125,7 +125,7 @@ module.exports = (function() {
     file.createTextMedia(d)
       .then(textMediaMeta => {
         file.createMediaMeta(d.slugFolderName, textMediaMeta.slugMediaName, textMediaMeta.additionalMeta)
-          .then(() => sendMedias(d.slugFolderName, textMediaMeta.slugMediaName))
+          .then(() => sendMedias({ slugFolderName: d.slugFolderName, slugMediaName: textMediaMeta.slugMediaName, mediaID: d.mediaID }))
           .catch(err => {
             dev.error(`Couldn’t create text media meta: ${err}`);
             reject(err);
@@ -141,7 +141,7 @@ module.exports = (function() {
     dev.logfunction(`EVENT - createMediaMeta for ${slugFolderName}/${slugMediaName}`);
     dev.logverbose(`Has additional meta: ${JSON.stringify(additionalMeta,null,4)}`);
     file.createMediaMeta(slugFolderName, slugMediaName, additionalMeta).then(() => {
-      sendMedias(slugFolderName, slugMediaName);
+      sendMedias({ slugFolderName, slugMediaName });
     }, function(err) {
       dev.error(`Failed to list medias! Error: ${err}`);
     });
@@ -150,7 +150,7 @@ module.exports = (function() {
   function onEditMedia(socket,d) {
     dev.logfunction(`EVENT - onEditMedia for ${d.slugFolderName}/${d.slugMediaName}`);
     file.editMedia(d).then(slugFolderName => {
-      sendMedias(slugFolderName, d.slugMediaName);
+      sendMedias({ slugFolderName, slugMediaName: d.slugMediaName });
     }, function(err) {
       dev.error(`Failed to edit media! Error: ${err}`);
     });
@@ -161,7 +161,7 @@ module.exports = (function() {
     let slugFolderName = d.slugFolderName;
     let slugMediaName = d.slugMediaName;
     file.removeMedia(slugFolderName, slugMediaName).then(() => {
-      sendMedias(slugFolderName, '');
+      sendMedias({ slugFolderName });
     }, function(err, p) {
       dev.error(`Failed to remove media: ${err}`);
       reject(err);
@@ -170,8 +170,8 @@ module.exports = (function() {
 
   /**************************************************************** GENERAL ********************************/
 
-  function sendMedias(slugFolderName, slugMediaName, socket) {
-    dev.logfunction(`COMMON - sendMedias for ${slugFolderName}`);
+  function sendMedias({ slugFolderName, slugMediaName, socket, mediaID }) {
+    dev.logfunction(`COMMON - sendMedias for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and mediaID = ${mediaID}`);
 
     file.getFolder(slugFolderName).then(foldersData => {
       file.getMedia(slugFolderName, slugMediaName).then(mediasData => {
@@ -200,17 +200,22 @@ module.exports = (function() {
             PRE 1.0.0 beta 3 legacy
           ******************************************************/
           // LEGACY : rename 'created' to 'date_created', and set date_timeline
-          if(mediaData.hasOwnProperty('created')) {
-            mediaData.date_created = mediaData.created;
-            if(!mediaData.hasOwnProperty('date_timeline')) {
-              mediaData.date_timeline = mediaData.created;
+          {
+            if(mediaData.hasOwnProperty('created')) {
+              mediaData.date_created = mediaData.created;
+              if(!mediaData.hasOwnProperty('date_timeline')) {
+                mediaData.date_timeline = mediaData.created;
+              }
+              delete mediaData.created;
             }
-            delete mediaData.created;
+            if(mediaData.hasOwnProperty('modified') && !mediaData.hasOwnProperty('date_modified')) {
+              mediaData.date_modified = mediaData.modified;
+              delete mediaData.modified;
+            }
           }
-          if(mediaData.hasOwnProperty('modified') && !mediaData.hasOwnProperty('date_modified')) {
-            mediaData.date_modified = mediaData.modified;
-            delete mediaData.modified;
-          }
+          /*******************************************************
+            END
+          ******************************************************/
 
           mediaData.date_timeline = api.parseDate(mediaData.date_timeline);
           if(mediaData.hasOwnProperty('date_created')) {
@@ -221,6 +226,9 @@ module.exports = (function() {
           }
           if(mediaData.hasOwnProperty('date_modified')) {
             mediaData.date_modified = api.parseDate(mediaData.date_modified);
+          }
+          if(mediaID) {
+            mediaData.mediaID = mediaID;
           }
 
           mediasData[slugMediaName] = Object.assign({}, defaultReactiveMeta, mediaData);
@@ -252,7 +260,7 @@ module.exports = (function() {
   }
 
 
-  function sendFolders(slugFolderName, socket) {
+  function sendFolders({ slugFolderName, socket }) {
     dev.logfunction(`COMMON - sendFolders for ${slugFolderName}`);
 
     file.getFolder(slugFolderName).then(foldersData => {

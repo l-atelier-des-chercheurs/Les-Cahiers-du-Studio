@@ -88,7 +88,6 @@ export default {
           slugFolderName: this.slugFolderName,
           type: 'marker',
           color: 'blue',
-          collapsed: true
         });
         this.$eventHub.$emit('timeline.scrollToToday');
       } else
@@ -97,7 +96,6 @@ export default {
           slugFolderName: this.slugFolderName,
           type: 'marker',
           color: 'red',
-          collapsed: true
         });
         this.$eventHub.$emit('timeline.scrollToToday');
       } else
@@ -106,7 +104,6 @@ export default {
           slugFolderName: this.slugFolderName,
           type: 'marker',
           color: 'green',
-          collapsed: true
         });
         this.$eventHub.$emit('timeline.scrollToToday');
       } else
@@ -115,7 +112,6 @@ export default {
           slugFolderName: this.slugFolderName,
           type: 'marker',
           color: 'yellow',
-          collapsed: true
         });
         this.$eventHub.$emit('timeline.scrollToToday');
       } else
@@ -124,7 +120,6 @@ export default {
           slugFolderName: this.slugFolderName,
           type: 'marker',
           color: 'orange',
-          collapsed: true
         });
         this.$eventHub.$emit('timeline.scrollToToday');
       } else
@@ -133,7 +128,6 @@ export default {
           slugFolderName: this.slugFolderName,
           type: 'marker',
           color: 'purple',
-          collapsed: true
         });
         this.$eventHub.$emit('timeline.scrollToToday');
       }
