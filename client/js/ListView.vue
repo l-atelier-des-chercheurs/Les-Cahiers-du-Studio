@@ -153,10 +153,27 @@ export default {
     'currentLang': function() {
       this.$root.updateLocalLang(this.currentLang);
     },
+    '$root.store.folders': function() {
+        // check if there is a justCreatedFolderID val
+        debugger;
+
+        if(this.$root.justCreatedFolderID) {
+          Object.keys(this.$root.store.folders).map((slugFolderName) => {
+            let folder = this.$root.store.folders[slugFolderName];
+            // if there is, try to match it with mediaID of listed medias
+            if(folder.folderID && folder.folderID === this.$root.justCreatedFolderID) {
+              this.$root.justCreatedFolderID = false;
+              this.$root.openFolder(slugFolderName);
+            }
+          });
+        }
+    }
   },
   computed: {
     sortedFoldersSlug() {
       var sortable = [];
+
+
       for (let slugFolderName in this.$root.store.folders) {
         let orderBy;
 
@@ -165,7 +182,6 @@ export default {
         } else if (this.sort.type ==='alph') {
           orderBy = this.$root.store.folders[slugFolderName][this.sort.field];
         }
-
         sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
       }
       let sortedSortable = sortable.sort(function(a, b) {

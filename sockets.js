@@ -75,7 +75,7 @@ module.exports = (function() {
   function onCreateFolder(socket, d) {
     dev.logfunction(`EVENT - onCreateFolder for ${d.name}`);
     file.createFolder(d).then(slugFolderName => {
-      sendFolders({ slugFolderName });
+      sendFolders({ slugFolderName, folderID: d.folderID });
     }, function(err) {
       dev.error(`Failed to list medias! Error: ${err}`);
     });
@@ -260,11 +260,15 @@ module.exports = (function() {
   }
 
 
-  function sendFolders({ slugFolderName, socket }) {
+  function sendFolders({ slugFolderName, socket, folderID }) {
     dev.logfunction(`COMMON - sendFolders for ${slugFolderName}`);
 
     file.getFolder(slugFolderName).then(foldersData => {
       // check if single socket or multiple sockets
+      if(slugFolderName && folderID) {
+        foldersData[slugFolderName].folderID = folderID;
+      }
+
       Object.keys(io.sockets.connected).forEach(sid => {
         if(socket) {
           if(socket.id !== sid) {

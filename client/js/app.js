@@ -21,8 +21,6 @@ Vue.use(VueI18n);
 Vue.config.silent = false;
 Vue.config.devtools = true;
 
-import App from './App.vue';
-
 
 let lang_settings = {
   available: {
@@ -68,6 +66,8 @@ const i18n = new VueI18n({
   messages: locale_strings, // set locale messages
 });
 
+import App from './App.vue';
+
 /* eslint-disable no-new */
 /* exported vm */
 let vm = new Vue({
@@ -78,6 +78,7 @@ let vm = new Vue({
   data: {
     store: window.store.state,
     justCreatedTextmediaID: false,
+    justCreatedFolderID: false,
     settings: {
       has_modal_opened: false,
       currentlyOpenedFolder: '',
@@ -99,6 +100,10 @@ let vm = new Vue({
   methods: {
     createFolder: function(fdata) {
       if(window.store.debug) { console.log(`ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`); }
+
+      fdata.folderID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      this.justCreatedFolderID = fdata.folderID;
+
       window.socketio.createFolder(fdata);
     },
     editFolder: function(fdata) {
