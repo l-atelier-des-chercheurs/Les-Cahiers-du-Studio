@@ -40,6 +40,7 @@ module.exports = function(app,io,m){
       pageDataJSON.isHttps = req.connection.encrypted;
       pageDataJSON.structure = local.settings().structure;
       pageDataJSON.logToFile = global.nodeStorage.getItem('logToFile');
+      pageDataJSON.isDebug = dev.isDebug();
 
       let tasks = [];
 

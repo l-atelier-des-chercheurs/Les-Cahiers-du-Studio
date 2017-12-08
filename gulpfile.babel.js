@@ -120,6 +120,7 @@ gulp.task('scripts', function () {
 gulp.task('scripts-prod', ['vue', 'scripts'], function (done) {
   return gulp.src('client/development/*.js')
     .pipe(concat('all.min.js'))
+    .pipe(uglify())
     .pipe(gulp.dest('client/production'))
 });
 
@@ -130,4 +131,4 @@ gulp.task('watch', function() {
 });
 
 // Default Task
-gulp.task('default', ['less', 'lint', 'vue', 'scripts', 'scripts-prod']);
+gulp.task('default', ['less', 'css-prod', 'lint', 'vue', 'scripts', 'scripts-prod']);

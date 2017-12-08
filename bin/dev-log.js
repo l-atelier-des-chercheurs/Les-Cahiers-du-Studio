@@ -15,7 +15,7 @@ var dev = (function() {
     logpackets  : logpackets,
     logfunction : logfunction,
     error       : error,
-    isDebug     : ()   => { return isDebugMode; },
+    isDebug     : () => isDebugMode,
   };
 
   function initModule(d, v) {
