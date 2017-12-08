@@ -4,8 +4,8 @@
       :id="uniqueDropzoneID"
       ref="dropzone"
       :url="uriToUploadMedia"
-      v-on:vdropzone-success="showSuccess"
-      v-on:vdropzone-sending="addMeta"
+      @vdropzone-success="showSuccess"
+      @vdropzone-sending="addMeta"
       :preview-template="template"
       :use-custom-dropzone-options=true
       :dropzone-options="customOptionsObject"
@@ -75,10 +75,13 @@ export default {
       return false;
     },
     showSuccess: function (file) {
+      setTimeout(() => {
+        this.$refs.dropzone.removeFile(file);
+      }, 1000);
       alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .log('Le fichier a été envoyé.')
+        .log(this.$t('file_was_sent'))
         ;
     },
     addMeta: function (file, xhr, formData) {

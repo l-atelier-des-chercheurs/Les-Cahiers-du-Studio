@@ -210,6 +210,8 @@ let vm = new Vue({
   }
 });
 
+/*
 setTimeout(() => {
-//   vm.openFolder('rencontre-1');
+  vm.openFolder('rencontre-1');
 }, 500);
+*/

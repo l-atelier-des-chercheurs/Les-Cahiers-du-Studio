@@ -73,6 +73,11 @@ module.exports = (function() {
       filter: 'Filtre',
 
       last_modified: 'Dernière modification',
+
+      notifications: {
+        file_was_sent: 'Le fichier a été envoyé.',
+
+      }
     },
     en: {
       ascending: 'Ascending',
@@ -147,6 +152,11 @@ module.exports = (function() {
       filter: 'Filter',
 
       last_modified: 'Last modified',
+
+      notifications: {
+        file_was_sent: 'The file was sent.',
+
+      }
     }
   };
 
