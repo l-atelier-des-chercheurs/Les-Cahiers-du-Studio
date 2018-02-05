@@ -4,7 +4,7 @@ A time-based documentation tool to collaboratively keep notes and capture media 
 
 ![dmk4q_fxkae_i70](https://user-images.githubusercontent.com/1948417/32667094-f8f3b43e-c639-11e7-98e2-22de0502fa96.png)
 
-The documentation for this app can be found [here (in french)](https://paper.dropbox.com/doc/Les-Cahiers-du-Studio-PvgkN59Zb2i9nAApZOIZz#:uid=389501177464251596585301&h2=Information-sur-le-stockage-de).
+The documentation for this app can be found [here (in french)](https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio).
 
 # License
 
