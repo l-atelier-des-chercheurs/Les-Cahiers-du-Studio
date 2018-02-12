@@ -37,7 +37,7 @@ module.exports = function(app,io,m){
       pageDataJSON.folderPath = api.getFolderPath();
 
       pageDataJSON.url = req.path;
-      pageDataJSON.isHttps = req.connection.encrypted;
+      pageDataJSON.protocol = req.protocol;
       pageDataJSON.structure = local.settings().structure;
       pageDataJSON.logToFile = global.nodeStorage.getItem('logToFile');
       pageDataJSON.isDebug = dev.isDebug();

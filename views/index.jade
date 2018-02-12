@@ -46,6 +46,7 @@ html
       locals.localNetworkInfos = !{JSON.stringify(localNetworkInfos, null, 4)};
       locals.presentation_md = !{JSON.stringify(presentation_md)};
       locals.appVersion = "!{global.appInfos.version}";
+      locals.protocol = "!{protocol}";
 
     - if(isDebug)
         script(src='/development/main.js')

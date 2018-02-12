@@ -23,7 +23,7 @@
 export default {
   methods: {
     getURLToApp(ip, port) {
-      return `https://${ip}:${port}`;
+      return `${locals.protocol}://${ip}:${port}`;
     }
   }
 }

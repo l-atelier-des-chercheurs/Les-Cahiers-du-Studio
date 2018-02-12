@@ -1337,8 +1337,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = {
   methods: {
     getURLToApp: function getURLToApp(ip, port) {
-      debugger;
-      return "https://" + ip + ":" + port;
+      return locals.protocol + "://" + ip + ":" + port;
     }
   }
 };
@@ -1356,7 +1355,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-0d4997da", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-0d4997da", __vue__options__)
+    hotAPI.reload("data-v-0d4997da", __vue__options__)
   }
 })()}
 },{"vue":231,"vue-hot-reload-api":226}],8:[function(require,module,exports){
@@ -1797,7 +1796,7 @@ exports.default = {
       return dates;
     },
     getURLToApp: function getURLToApp(ip, port) {
-      return 'https://' + ip + ':' + port;
+      return locals.protocol + '://' + ip + ':' + port;
     },
     openInFinder: function openInFinder(thisPath) {
       var shell = window.require('electron').shell;
