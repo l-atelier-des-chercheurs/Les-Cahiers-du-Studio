@@ -1,5 +1,5 @@
 var express = require('express');
-var https = require('https');
+var http = require('http');
 var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
@@ -26,7 +26,7 @@ module.exports = function(electronApp) {
   const options = { key: privateKey, cert: certificate };
 
 
-  let server = https.createServer(options, app);
+  let server = http.createServer(app);
   var io = require('socket.io').listen(server);
   dev.logverbose('Starting server 2');
 
