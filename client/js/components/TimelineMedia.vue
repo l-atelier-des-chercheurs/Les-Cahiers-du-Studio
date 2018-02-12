@@ -28,43 +28,44 @@
         <button class="accroche accroche_droite" @mouseup.stop="toggleCollapseMedia"></button>
       </div>
 
-        <div
-          class="timelineMediaContent"
-          :style="getMediaSize()"
+      <div
+        class="timelineMediaContent"
+        :style="getMediaSize()"
+        >
+
+        <MediaContent
+          v-if="!isPlaceholder"
+          v-model="media.content"
+          :slugFolderName="slugFolderName"
+          :slugMediaName="slugMediaName"
+          :media="media"
+          :context="'preview'"
+          :is_hovered="is_hovered"
           >
+        </MediaContent>
 
-          <MediaContent
-            v-if="!isPlaceholder"
-            v-model="media.content"
-            :slugFolderName="slugFolderName"
-            :slugMediaName="slugMediaName"
-            :media="media"
-            :context="'preview'"
-            >
-          </MediaContent>
-
-          <div class="mediaContour">
-          </div>
-
-          <transition
-            name="slide"
-            enter-active-class="slideInUp"
-            leave-active-class="slideOutDown"
-            :duration="350"
-            >
-            <button
-              type="button"
-              class="button_openmedia bg-noir c-blanc"
-              :class="{ 'padding-verysmall button-thin' : this.media.type === 'marker' }"
-              style="animation-duration: 0.3s"
-              v-if="!isPlaceholder && is_hovered"
-              @mousedown.stop="openMedia"
-              >
-              {{ $t('open') }}
-            </button>
-          </transition>
-
+        <div class="mediaContour">
         </div>
+
+        <transition
+          name="slide"
+          enter-active-class="slideInUp"
+          leave-active-class="slideOutDown"
+          :duration="350"
+          >
+          <button
+            type="button"
+            class="button_openmedia bg-noir c-blanc"
+            :class="{ 'padding-verysmall button-thin' : this.media.type === 'marker' }"
+            style="animation-duration: 0.3s"
+            v-if="!isPlaceholder && is_hovered"
+            @mousedown.stop="openMedia"
+            >
+            {{ $t('open') }}
+          </button>
+        </transition>
+
+      </div>
     </div>
   </div>
 </template>

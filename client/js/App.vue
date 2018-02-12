@@ -7,20 +7,22 @@
     >
     </SystemBar>
 
-    <div v-if="view === 'ListView'" class="container">
-      <div class="row">
+    <template v-if="view === 'ListView'">
+      <div class="container">
+        <div class="row">
 
-        <ListView
-          v-if="view === 'ListView'"
-          :slugFolderName="$root.settings.currentlyOpenedFolder"
-          :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
-          :presentation_md="$root.store.presentation_md"
-        >
-        </ListView>
+          <ListView
+            v-if="view === 'ListView'"
+            :slugFolderName="$root.settings.currentlyOpenedFolder"
+            :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
+            :presentation_md="$root.store.presentation_md"
+          >
+          </ListView>
 
+        </div>
       </div>
-    </div>
-    <div v-if="view === 'TimeLineView'">
+    </template>
+    <template v-else-if="view === 'TimeLineView'">
 
       <TimeLineView
         :slugFolderName="$root.settings.currentlyOpenedFolder"
@@ -29,7 +31,7 @@
       >
       </TimeLineView>
 
-    </div>
+    </template>
 
     <div class="container">
       <div class="row">

@@ -9,7 +9,7 @@
   "thumbFolderName" : "_thumbs",
   "deletedFolderName" : "_bin",
 
-  "mediaThumbQuality" : 60,
+  "mediaThumbQuality" : 70,
 
   "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",

@@ -100,7 +100,8 @@ export default {
   data() {
     return {
       currentSort: this.sort.current,
-      currentFilter: this.filter
+      currentFilter: this.filter,
+      thumbSize: 50
     }
   },
   mounted: function() {
@@ -139,8 +140,7 @@ export default {
       return false;
     },
     linkToThumb(media) {
-      let thumbSize = 50;
-      let pathToSmallestThumb = _.findWhere(media.thumbs, { size: thumbSize }).path;
+      let pathToSmallestThumb = _.findWhere(media.thumbs, { size: this.thumbSize }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : '';
     },
   }

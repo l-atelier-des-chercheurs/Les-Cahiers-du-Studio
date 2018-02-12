@@ -4370,7 +4370,6 @@ th {
   background-color: white;
 }
 .type-marker.mediaPreview .media .timelineMediaContent {
-  background-color: transparent;
   height: 2em !important;
   margin-right: -90px;
 }

@@ -1,9 +1,14 @@
 <template>
   <div
-    :class="`mediaContainer flex-wrap flex-vertically-centered type-${media.type}`">
+    :class="`mediaContainer flex-wrap flex-vertically-centered type-${media.type}`"
+    @mousenter="is_hovered = true"
+    @mouseleave="is_hovered = false"
+  >
 
     <template v-if="media.type === 'image'">
+      {{ is_hovered }}
       <img :src="linkToThumb">
+      <img v-if="is_hovered" :src="linkToHoveredThumb">
     </template>
 
     <template v-else-if="media.type === 'video'">
@@ -84,10 +89,15 @@ export default {
       type: String,
       default: ''
     },
+    is_hovered: Boolean
   },
   data() {
     return {
-      defaultRes: 1200,
+      available_resolutions: {
+        preview: 180,
+        preview_hovered: 360,
+        default: 1200
+      },
       mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
     }
   },
@@ -101,17 +111,25 @@ export default {
     }
   },
   computed: {
+    thumbRes: function() {
+      return this.context === 'preview' ? this.available_resolutions.preview : this.available_resolutions.default;
+    },
+    thumbResHovered: function() {
+      return this.available_resolutions.preview_hovered;
+    },
     linkToThumb: function() {
-      let thumbSize = this.context === 'preview' ? 400 : this.defaultRes;
-      let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: thumbSize }).path;
+      let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: this.thumbRes }).path;
+      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
+    },
+    linkToHoveredThumb: function() {
+      let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: this.thumbResHovered }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     },
     linkToVideoThumb: function() {
       let timeMark = 0;
       let pathToTimeMarkThumbs = _.findWhere(this.media.thumbs, { timeMark }).thumbsData;
 
-      let thumbSize = this.context === 'preview' ? 400 : this.defaultRes;
-      let pathToSmallestThumb = _.findWhere(pathToTimeMarkThumbs, { size: thumbSize }).path;
+      let pathToSmallestThumb = _.findWhere(pathToTimeMarkThumbs, { size: this.thumbRes }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     }
 
@@ -124,6 +142,11 @@ export default {
 }
 
 .mediaContainer img {
+  position: absolute;
+  top:0;
+  right: 0;
+  width: auto;
+  height: auto;
 }
 
 .mediaContainer {
