@@ -1355,7 +1355,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-0d4997da", __vue__options__)
   } else {
-    hotAPI.reload("data-v-0d4997da", __vue__options__)
+    hotAPI.rerender("data-v-0d4997da", __vue__options__)
   }
 })()}
 },{"vue":231,"vue-hot-reload-api":226}],8:[function(require,module,exports){
@@ -2746,7 +2746,6 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 },{"vue":231,"vue-hot-reload-api":226,"vueify/lib/insert-css":233}],24:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("/* line 144, stdin */\n.mediaContainer img[data-v-5cf17b42] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  width: auto;\n  height: auto; }\n\n/* line 153, stdin */\n.mediaContainer.type-text[data-v-5cf17b42] {\n  align-self: flex-start; }\n\n/* line 156, stdin */\n.mediaContainer.type-other[data-v-5cf17b42] {\n  padding: 10px;\n  align-self: flex-start; }")
 ;(function(){
 'use strict';
 
@@ -2824,21 +2823,20 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:("mediaContainer flex-wrap flex-vertically-centered type-" + (_vm.media.type)),on:{"mousenter":function($event){_vm.is_hovered = true},"mouseleave":function($event){_vm.is_hovered = false}}},[(_vm.media.type === 'image')?[_vm._v("\n    "+_vm._s(_vm.is_hovered)+"\n    "),_c('img',{attrs:{"src":_vm.linkToThumb}}),_vm._v(" "),(_vm.is_hovered)?_c('img',{attrs:{"src":_vm.linkToHoveredThumb}}):_vm._e()]:(_vm.media.type === 'video')?[(this.context === 'preview')?[_c('img',{attrs:{"src":_vm.linkToVideoThumb}})]:[_c('video',{attrs:{"controls":"","src":_vm.mediaURL,"poster":_vm.linkToVideoThumb}})]]:(_vm.media.type === 'audio')?[_c('audio',{attrs:{"controls":"","src":_vm.mediaURL}})]:(_vm.media.type === 'text')?[(this.context !== 'edit')?_c('div',{staticClass:"padding-small"},[(_vm.value.length !== 0)?[_vm._v("\n        "+_vm._s(_vm.value)+"\n      ")]:[_vm._v("\n        …\n      ")]],2):_c('textarea',{ref:"textField",staticClass:"mediaTextContent border-none bg-transparent",attrs:{"placeholder":"…","autocorrect":"on"},domProps:{"value":_vm.value},on:{"input":function($event){_vm.$emit('input', $event.target.value)}}})]:(_vm.media.type === 'marker')?[(this.context !== 'edit')?_c('div',{staticClass:"padding-small"},[_vm._v("\n      "+_vm._s(_vm.value)+"\n      "),(_vm.value.length === 0)?[_vm._v("\n        …\n      ")]:_vm._e()],2):_c('input',{ref:"textField",staticClass:"border-none bg-transparent",attrs:{"type":"text","placeholder":"Étiquette","name":"label"},domProps:{"value":_vm.value},on:{"input":function($event){_vm.$emit('input', $event.target.value)}}})]:(_vm.media.type === 'other')?[_vm._v("\n    "+_vm._s(this.slugMediaName)+"\n  ")]:_vm._e()],2)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mediaContainer flex-wrap flex-vertically-centered",class:("type-" + (_vm.media.type)),attrs:{"data-context":_vm.context},on:{"mousenter":function($event){_vm.is_hovered = true},"mouseleave":function($event){_vm.is_hovered = false}}},[(_vm.media.type === 'image')?[_c('img',{attrs:{"src":_vm.linkToThumb}}),_vm._v(" "),(_vm.is_hovered)?_c('img',{attrs:{"src":_vm.linkToHoveredThumb}}):_vm._e()]:(_vm.media.type === 'video')?[(_vm.context === 'preview')?[_c('img',{attrs:{"src":_vm.linkToVideoThumb}})]:[_c('video',{attrs:{"controls":"","src":_vm.mediaURL,"poster":_vm.linkToVideoThumb}})]]:(_vm.media.type === 'audio')?[_c('audio',{attrs:{"controls":"","src":_vm.mediaURL}})]:(_vm.media.type === 'text')?[(_vm.context !== 'edit')?_c('div',{staticClass:"padding-small"},[(_vm.value.length !== 0)?[_vm._v("\n        "+_vm._s(_vm.value)+"\n      ")]:[_vm._v("\n        …\n      ")]],2):_c('textarea',{ref:"textField",staticClass:"mediaTextContent border-none bg-transparent",attrs:{"placeholder":"…","autocorrect":"on"},domProps:{"value":_vm.value},on:{"input":function($event){_vm.$emit('input', $event.target.value)}}})]:(_vm.media.type === 'marker')?[(_vm.context !== 'edit')?_c('div',{staticClass:"padding-small"},[_vm._v("\n      "+_vm._s(_vm.value)+"\n      "),(_vm.value.length === 0)?[_vm._v("\n        …\n      ")]:_vm._e()],2):_c('input',{ref:"textField",staticClass:"border-none bg-transparent",attrs:{"type":"text","placeholder":"Étiquette","name":"label"},domProps:{"value":_vm.value},on:{"input":function($event){_vm.$emit('input', $event.target.value)}}})]:(_vm.media.type === 'other')?[_vm._v("\n    "+_vm._s(this.slugMediaName)+"\n  ")]:_vm._e()],2)}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-5cf17b42"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.accept()
-  module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-5cf17b42", __vue__options__)
   } else {
     hotAPI.rerender("data-v-5cf17b42", __vue__options__)
   }
 })()}
-},{"underscore":218,"vue":231,"vue-hot-reload-api":226,"vueify/lib/insert-css":233}],25:[function(require,module,exports){
+},{"underscore":218,"vue":231,"vue-hot-reload-api":226}],25:[function(require,module,exports){
 'use strict';
 
 var _defineProperty2 = require('babel-runtime/helpers/defineProperty');

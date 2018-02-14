@@ -1,18 +1,19 @@
 <template>
   <div
-    :class="`mediaContainer flex-wrap flex-vertically-centered type-${media.type}`"
+    class="mediaContainer flex-wrap flex-vertically-centered"
+    :class="`type-${media.type}`"
+    :data-context="context"
     @mousenter="is_hovered = true"
     @mouseleave="is_hovered = false"
   >
 
     <template v-if="media.type === 'image'">
-      {{ is_hovered }}
       <img :src="linkToThumb">
       <img v-if="is_hovered" :src="linkToHoveredThumb">
     </template>
 
     <template v-else-if="media.type === 'video'">
-      <template v-if="this.context === 'preview'">
+      <template v-if="context === 'preview'">
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
@@ -27,7 +28,7 @@
     </template>
 
     <template v-else-if="media.type === 'text'">
-      <div v-if="this.context !== 'edit'" class="padding-small">
+      <div v-if="context !== 'edit'" class="padding-small">
         <template v-if="value.length !== 0">
           {{ value }}
         </template>
@@ -48,7 +49,7 @@
     </template>
 
     <template v-else-if="media.type === 'marker'">
-      <div v-if="this.context !== 'edit'" class="padding-small">
+      <div v-if="context !== 'edit'" class="padding-small">
         {{ value }}
         <template v-if="value.length === 0">
           …
@@ -138,26 +139,4 @@ export default {
 
 </script>
 <style scoped lang="sass">
-.mediaContainer {
-}
-
-.mediaContainer img {
-  position: absolute;
-  top:0;
-  right: 0;
-  width: auto;
-  height: auto;
-}
-
-.mediaContainer {
-  &.type-text {
-    align-self: flex-start;
-  }
-  &.type-other {
-    padding:10px;
-    align-self: flex-start;
-  }
-
-}
-
 </style>

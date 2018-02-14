@@ -8,10 +8,22 @@
 
   background-color: rgba(255,255,255, .9);
   cursor: pointer;
+  overflow: auto;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media screen and (max-width: 50rem) {
+    display: block;
+
+    .m_modal--container {
+
+      .m_modal--container--content {
+        display: block;
+      }
+    }
+  }
 
   body.has_systembar & {
 //     padding-top: 22px;
@@ -28,30 +40,30 @@
   position: relative;
   transition: all .3s ease;
 
-  width: 90%;
-  margin-top: 5vh;
-  margin-bottom: 5vh;
+  width: 100%;
   cursor: auto;
 
   max-width: @t-panelWidth;
-  margin: auto;
+  padding: 5vh 5vw;
 
   &.is--large {
     max-width: @t-panelWidth * 3;
   }
 
   .m_modal--container--content {
-    height: 100%;
+    height: auto;
+    max-height: 1024px;
 
     background-color: #fff;
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
 
     display: flex;
+    flex-flow: row wrap;
 
     > * {
-      flex: 1 1 auto;
-      max-height: 90vh;
+      flex: 1 1 200px;
+      height: 90vh;
 
       &.m_modal--sidebar {
         flex: 0 1 @t-panelWidth;
@@ -109,17 +121,30 @@
 .m_modal--preview {
   .mediaContainer {
     height: 100%;
+    overflow: hidden;
+    position: relative;
+
+    &[data-context="edit"] {
+      > * {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    img {
+      position: absolute;
+      top:0;
+      right: 0;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
 
     &.type-text, &.type-marker {
       .padding-medium;
       .font-large;
     }
 
-    img {
-      height: 100%;
-      width: 100%;
-      object-fit: contain;
-    }
   }
 
   input[type="text"] {

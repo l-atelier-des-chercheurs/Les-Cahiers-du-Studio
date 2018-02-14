@@ -4280,6 +4280,15 @@ th {
   -o-transition: none !important;
   transition: none !important;
 }
+.mediaContainer.type-text {
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+}
+.mediaContainer.type-other {
+  padding: 10px;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+}
 .mediaPreview {
   position: absolute;
   width: 1px;
@@ -4506,6 +4515,7 @@ th {
   bottom: 0;
   background-color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
+  overflow: auto;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -4516,23 +4526,30 @@ th {
   -ms-flex-pack: center;
   justify-content: center;
 }
+@media screen and (max-width: 50rem) {
+  .m_modal--mask {
+    display: block;
+  }
+  .m_modal--mask .m_modal--container .m_modal--container--content {
+    display: block;
+  }
+}
 .m_modal--container {
   position: relative;
   -webkit-transition: all .3s ease;
   -o-transition: all .3s ease;
   transition: all .3s ease;
-  width: 90%;
-  margin-top: 5vh;
-  margin-bottom: 5vh;
+  width: 100%;
   cursor: auto;
   max-width: 400px;
-  margin: auto;
+  padding: 5vh 5vw;
 }
 .m_modal--container.is--large {
   max-width: 1200px;
 }
 .m_modal--container .m_modal--container--content {
-  height: 100%;
+  height: auto;
+  max-height: 1024px;
   background-color: #fff;
   border-radius: 2px;
   -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -4540,12 +4557,16 @@ th {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
 }
 .m_modal--container .m_modal--container--content > * {
   -webkit-box-flex: 1;
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
-  max-height: 90vh;
+  -ms-flex: 1 1 200px;
+  flex: 1 1 200px;
+  height: 90vh;
 }
 .m_modal--container .m_modal--container--content > *.m_modal--sidebar {
   -webkit-box-flex: 0;
@@ -4601,17 +4622,26 @@ th {
 }
 .m_modal--preview .mediaContainer {
   height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+.m_modal--preview .mediaContainer[data-context="edit"] > * {
+  width: 100%;
+  height: 100%;
+}
+.m_modal--preview .mediaContainer img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: auto;
+  -o-object-fit: contain;
+  object-fit: contain;
 }
 .m_modal--preview .mediaContainer.type-text,
 .m_modal--preview .mediaContainer.type-marker {
   padding: 1.35em;
   font-size: 1.1em;
-}
-.m_modal--preview .mediaContainer img {
-  height: 100%;
-  width: 100%;
-  -o-object-fit: contain;
-  object-fit: contain;
 }
 .m_modal--preview input[type="text"] {
   border-width: 0px;
