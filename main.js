@@ -16,6 +16,13 @@ const
   dev = require('./bin/dev-log')
 ;
 
+require('electron-context-menu')({
+  prepend: (params, BrowserWindow) => [{
+    // Only show it when right-clicking images
+    visible: params.mediaType === 'image'
+  }]
+});
+
 let win;
 app.commandLine.appendSwitch('--ignore-certificate-errors');
 app.commandLine.appendSwitch('--disable-http-cache');
