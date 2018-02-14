@@ -572,6 +572,10 @@ module.exports = (function() {
                   mdata.duration = duration;
                 }
                 resolve();
+              })
+              .catch((err) => {
+                dev.error(`No probe data to read from: ${err}`);
+                resolve();
               });
             });
             tasks.push(getMediaDuration);

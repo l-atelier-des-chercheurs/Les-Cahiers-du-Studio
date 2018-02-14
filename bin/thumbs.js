@@ -98,6 +98,10 @@ module.exports = (function() {
                 Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
                   resolve({ timeMark, thumbsData });
                 });
+              })
+              .catch((err) => {
+                dev.error(`Couldn’t make video screenshots.`);
+                resolve();
               });
             });
             makeThumbs.push(makeScreenshot);
@@ -275,7 +279,7 @@ module.exports = (function() {
               resolve({ screenshotPath, screenshotName });
             })
             .on('error', function(err) {
-              dev.error(`An error happened: ${err.message}`);
+              dev.error(`ffmpeg failed: ${err.message}`);
               reject(err.message);
             })
             .screenshots({
@@ -285,6 +289,7 @@ module.exports = (function() {
               folder: api.getFolderPath(thumbFolderPath)
             });
         } else {
+          dev.logverbose(`Screenshots already exist at path ${fullScreenshotPath}`);
           resolve({ screenshotPath, screenshotName });
         }
       });
@@ -293,26 +298,36 @@ module.exports = (function() {
 
   function getMediaDuration(mediaPath) {
     return new Promise(function(resolve, reject) {
-      dev.logverbose(`START: ${mediaPath}`);
-      ffmpeg.ffprobe(mediaPath,function(err, metadata) {
-        dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
-        resolve(metadata.format.duration);
+      dev.logfunction(`getMediaDuration: ${mediaPath}`);
+      ffmpeg.ffprobe(mediaPath, function(err, metadata) {
+        if(err || typeof metadata === 'undefined') {
+          dev.log(`getMediaDuration: PROBE DATA isn’t valid`);
+          reject();
+        } else {
+          dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
+          resolve(metadata.format.duration);
+        }
       });
     });
   }
 
   function getMediaRatio(mediaPath) {
     return new Promise(function(resolve, reject) {
-      dev.logverbose(`START: ${mediaPath}`);
-      ffmpeg.ffprobe(mediaPath,function(err, metadata) {
-        if(err) { reject(); }
-        if(metadata.streams !== undefined && typeof Array.isArray(metadata.streams)) {
-          if(metadata.streams[0].height !== undefined && metadata.streams[0].width !== undefined) {
-            let ratio = metadata.streams[0].height / metadata.streams[0].width;
-            resolve(ratio);
+      dev.logfunction(`getMediaRatio: ${mediaPath}`);
+      ffmpeg.ffprobe(mediaPath, function(err, metadata) {
+        if(err || typeof metadata === 'undefined') {
+          dev.log(`getMediaRatio: PROBE DATA isn’t valid`);
+          reject();
+        } else {
+          dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
+          if(metadata.streams !== undefined && typeof Array.isArray(metadata.streams)) {
+            if(metadata.streams[0].height !== undefined && metadata.streams[0].width !== undefined) {
+              let ratio = metadata.streams[0].height / metadata.streams[0].width;
+              resolve(ratio);
+            }
           }
+          reject();
         }
-        reject();
       });
     });
   }
