@@ -127,6 +127,8 @@ export default {
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     },
     linkToVideoThumb: function() {
+      if(!this.media.thumbs.hasOwnProperty('thumbsData')) { return; }
+
       let timeMark = 0;
       let pathToTimeMarkThumbs = _.findWhere(this.media.thumbs, { timeMark }).thumbsData;
 
