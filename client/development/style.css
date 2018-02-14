@@ -4468,6 +4468,11 @@ th {
 .mediaPreview .timelineMediaContent .mediaContainer > * {
   width: 100%;
 }
+.mediaPreview .timelineMediaContent .mediaContainer.type-image img {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 .mediaPreview .timelineMediaContent .mediaContainer.type-audio {
   width: 100%;
 }
