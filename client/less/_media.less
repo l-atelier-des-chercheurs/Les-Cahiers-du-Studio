@@ -73,8 +73,8 @@
     }
 
     .type-marker& {
-      z-index: 150;
       @t-marker_anchor: 10px;
+
       .mediaScrubber {
       }
       .accroche {
@@ -95,19 +95,19 @@
         }
       }
 
-/*
   // TODO: repère vertical
       &::after {
         content: '';
         position: absolute;
-        width: 2px;
+        width: 1px;
         right: 0;
         top: 0;
         height: 100vh;
         background-color: currentcolor;
+        pointer-events: none;
         z-index: -1;
       }
-*/
+
     }
 
     .color-red& {
