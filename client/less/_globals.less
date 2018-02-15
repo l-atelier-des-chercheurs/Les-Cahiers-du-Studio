@@ -489,6 +489,11 @@ th {
     flex: 1 1 auto;
   }
 }
+.flex-same-basis {
+  > * {
+    flex-basis: 0;
+  }
+}
 
 .flex-vertically-centered {
   align-content: center;
@@ -509,8 +514,11 @@ th {
 .flex-horizontally-centered {
   justify-content: center;
 }
-.flex-horizontally-spaced {
+.flex-space-around {
   justify-content: space-around;
+}
+.flex-space-between {
+  justify-content: space-between;
 }
 
 .limited-width {

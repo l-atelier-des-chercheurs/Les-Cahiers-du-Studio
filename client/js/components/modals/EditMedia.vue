@@ -106,7 +106,7 @@
         </span>
       </div>
 
-      <div class="m_modal--buttonrow flex-wrap flex-vertically-start flex-horizontally-start">
+      <div class="m_modal--buttonrow flex-wrap flex-vertically-start flex-space-between flex-same-basis">
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click="removeMedia()"

@@ -22,7 +22,7 @@
 
           <a v-for="(ip, index) in $root.store.localNetworkInfos.ip"
             :href="getURLToApp(ip, $root.store.localNetworkInfos.port)"
-            class="js--openInBrowser button button-circled margin-vert-medium border-circled button-inline padding-small flex-horizontally-spaced"
+            class="js--openInBrowser button button-circled margin-vert-medium border-circled button-inline padding-small flex-space-around"
             target="_blank"
             >
             {{ getURLToApp(ip, $root.store.localNetworkInfos.port) }}

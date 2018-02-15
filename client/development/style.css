@@ -3700,6 +3700,10 @@ th {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
 }
+.flex-same-basis > * {
+  -ms-flex-preferred-size: 0;
+  flex-basis: 0;
+}
 .flex-vertically-centered {
   -ms-flex-line-pack: center;
   align-content: center;
@@ -3729,9 +3733,14 @@ th {
   -ms-flex-pack: center;
   justify-content: center;
 }
-.flex-horizontally-spaced {
+.flex-space-around {
   -ms-flex-pack: distribute;
   justify-content: space-around;
+}
+.flex-space-between {
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
 }
 .limited-width {
   max-width: 1300px;
@@ -4546,14 +4555,18 @@ th {
   width: 100%;
   cursor: auto;
   max-width: 400px;
-  padding: 5vh 5vw;
+  margin: 5vh 5vw;
+}
+@media screen and (max-width: 50rem) {
+  .m_modal--container {
+    margin: 50px 0;
+  }
 }
 .m_modal--container.is--large {
   max-width: 1200px;
 }
 .m_modal--container .m_modal--container--content {
   height: auto;
-  max-height: 1024px;
   background-color: #fff;
   border-radius: 2px;
   -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -4570,16 +4583,15 @@ th {
   -webkit-box-flex: 1;
   -ms-flex: 1 1 200px;
   flex: 1 1 200px;
-  height: 90vh;
 }
 .m_modal--container .m_modal--container--content > *.m_modal--sidebar {
   -webkit-box-flex: 0;
-  -ms-flex: 0 1 400px;
-  flex: 0 1 400px;
-  min-width: 400px;
+  -ms-flex: 0 0 400px;
+  flex: 0 0 400px;
+  max-height: 90vh;
 }
 .m_modal--container .m_modal--container--content > *.m_modal--preview {
-  overflow-y: auto;
+  height: 90vh;
 }
 .color-red.m_modal--container .m_modal--container--content {
   background-color: #ff7e8a;
@@ -4623,6 +4635,25 @@ th {
   -webkit-box-flex: 1;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
+}
+.m_modal--sidebar .m_modal--metaOptions::-webkit-scrollbar {
+  height: 16px;
+  width: 16px;
+  background-color: rgba(255, 255, 255, 0);
+}
+.m_modal--sidebar .m_modal--metaOptions::-webkit-scrollbar-track,
+.m_modal--sidebar .m_modal--metaOptions::-webkit-scrollbar-thumb {
+  border: 10px solid rgba(255, 255, 255, 0);
+  background-clip: padding-box;
+}
+.m_modal--sidebar .m_modal--metaOptions::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.m_modal--sidebar .m_modal--metaOptions::-webkit-scrollbar-thumb {
+  background-color: #eee;
+}
+.m_modal--sidebar .m_modal--metaOptions::-webkit-scrollbar-thumb:hover {
+  border: 6px solid rgba(255, 255, 255, 0);
 }
 .m_modal--preview .mediaContainer {
   height: 100%;
@@ -4668,9 +4699,35 @@ th {
   background-position-y: calc(1.35em * 0.85);
 }
 .m_modal--close_button {
+  position: fixed;
+  top: 0;
+  right: 0;
+  mix-blend-mode: multiply;
+}
+.m_modal--close_button line {
+  fill: none;
+  stroke: #4d4d4d;
+  stroke-miterlimit: 10;
+  stroke-width: 3px;
+}
+.m_modal--close_button::before {
+  content: '';
+  display: block;
   position: absolute;
-  top: 0.675em;
-  right: 0.675em;
+  z-index: -1;
+  width: 0;
+  height: 0;
+  left: 50%;
+  top: 50%;
+  -webkit-box-shadow: 0 0 60px 30px #fff, /* inner white */ 0 0 100px 60px transparent;
+  box-shadow: 0 0 60px 30px #fff, /* inner white */ 0 0 100px 60px transparent;
+  /* middle magenta */
+}
+@media screen and (max-width: 50rem) {
+  .m_modal--close_button {
+    top: 0;
+    right: 0;
+  }
 }
 @media print {
   .m_timeline-container {

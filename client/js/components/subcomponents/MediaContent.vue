@@ -9,7 +9,12 @@
 
     <template v-if="media.type === 'image'">
       <img :src="linkToThumb">
-      <img v-if="is_hovered" :src="linkToHoveredThumb">
+      <transition
+        name="fade"
+        :duration="850"
+        >
+        <img v-if="is_hovered" :src="linkToHoveredThumb">
+      </transition>
     </template>
 
     <template v-else-if="media.type === 'video'">

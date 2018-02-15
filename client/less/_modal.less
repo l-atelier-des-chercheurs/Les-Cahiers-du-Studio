@@ -44,7 +44,11 @@
   cursor: auto;
 
   max-width: @t-panelWidth;
-  padding: 5vh 5vw;
+  margin: 5vh 5vw;
+
+  @media screen and (max-width: 50rem) {
+    margin: 50px 0;
+  }
 
   &.is--large {
     max-width: @t-panelWidth * 3;
@@ -52,7 +56,6 @@
 
   .m_modal--container--content {
     height: auto;
-    max-height: 1024px;
 
     background-color: #fff;
     border-radius: 2px;
@@ -63,15 +66,14 @@
 
     > * {
       flex: 1 1 200px;
-      height: 90vh;
 
       &.m_modal--sidebar {
-        flex: 0 1 @t-panelWidth;
-        min-width: @t-panelWidth;
+        flex: 0 0 @t-panelWidth;
+        max-height: 90vh;
       }
 
       &.m_modal--preview {
-        overflow-y: auto;
+        height: 90vh;
       }
     }
 
@@ -114,6 +116,33 @@
   .m_modal--metaOptions {
     overflow-y: auto;
     flex: 1 1 auto;
+
+    @scrollbar-height: 4px;
+    @scrollbar-padding: 6px;
+
+    &::-webkit-scrollbar {
+      height: ((@scrollbar-padding * 2) + @scrollbar-height);
+      width: ((@scrollbar-padding * 2) + @scrollbar-height);
+      background-color: rgba(255,255,255,0);
+    }
+
+    &::-webkit-scrollbar-track,
+    &::-webkit-scrollbar-thumb {
+      border: 10px solid rgba(255,255,255,0);
+      background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #eee;
+      &:hover {
+        border: @scrollbar-padding solid rgba(255,255,255,0);
+      }
+    }
+
   }
 }
 // if no preview, then sidebar takes the whole width
@@ -177,9 +206,38 @@
 }
 
 .m_modal--close_button {
-  position: absolute;
-  top: @t-skipline/2;
-  right: @t-skipline/2;
+  position: fixed;
+  top: 0;
+  right: 0;
+  mix-blend-mode: multiply;
+
+  line {
+    fill: none;
+    stroke: #4d4d4d;
+    stroke-miterlimit: 10;
+    stroke-width: 3px;
+  }
+
+  &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      z-index: -1;
+      width: 0;
+      height: 0;
+      left:50%;
+      top:50%;
+      box-shadow:
+        0 0 60px 30px #fff,  /* inner white */
+        0 0 100px 60px transparent; /* middle magenta */
+//         0 0 140px 90px #0ff; /* outer cyan */
+  }
+
+
+  @media screen and (max-width: 50rem) {
+    top: 0;
+    right: 0;
+  }
 }
 
 .m_modal--header {
