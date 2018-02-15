@@ -91,6 +91,7 @@ window.socketio = (function() {
     }
     	socket.on('connect', _onSocketConnect);
     socket.on('error', _onSocketError);
+    socket.on('connect_error', _onConnectError);
     	socket.on('authentificated', _authentificated);
     	socket.on('listMedia', _onListMedia);
     	socket.on('listMedias', _onListMedias);
@@ -112,6 +113,14 @@ window.socketio = (function() {
 
   function _onSocketError(reason) {
     	console.log(`Unable to connect to server: ${reason}`);
+  	}
+  	function _onConnectError(reason) {
+    	console.log(`Lost connection to server: ${reason}`);
+
+    alertify
+      .closeLogOnClick(true)
+      .error(`La connexion au serveur a été perdue.`)
+      ;
   	}
   function _authentificated(list_admin_folders) {
     	console.log(`Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`);
