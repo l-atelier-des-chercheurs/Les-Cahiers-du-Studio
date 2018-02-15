@@ -913,7 +913,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-50dcb39b", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-50dcb39b", __vue__options__)
+    hotAPI.reload("data-v-50dcb39b", __vue__options__)
   }
 })()}
 },{"./components/AddMediaButton.vue":6,"./components/NavbarTop.vue":10,"./components/Sidebar.vue":11,"./components/TimelineMedia.vue":12,"./components/modals/EditFolder.vue":15,"./components/modals/EditMedia.vue":16,"./components/subcomponents/DateTime.vue":22,"debounce":93,"vue":231,"vue-hot-reload-api":226}],5:[function(require,module,exports){

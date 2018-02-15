@@ -645,7 +645,7 @@ export default {
       }
       return false;
     },
-    elesIsClose(xPos, screenMultiplier = 1) {
+    elesIsClose(xPos, screenMultiplier = 2) {
       if(typeof xPos !== 'number') { return false; }
       if(typeof this.$refs.timeline === 'undefined') { return false; }
 

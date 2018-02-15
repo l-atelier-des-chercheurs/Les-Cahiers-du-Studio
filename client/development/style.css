@@ -4377,11 +4377,11 @@ th {
 .type-marker.mediaPreview .media::after {
   content: '';
   position: absolute;
-  width: 1px;
+  width: 2px;
   right: 0;
   top: 0;
   height: 100vh;
-  background-color: currentcolor;
+  background-color: #fff;
   pointer-events: none;
   z-index: -1;
 }
