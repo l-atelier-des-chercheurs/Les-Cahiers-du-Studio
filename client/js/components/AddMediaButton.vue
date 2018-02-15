@@ -1,10 +1,20 @@
 <template>
   <div>
     <div class="m_addMedia">
-      <button type="button" class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addText" @click="addText">
+      <button
+        type="button"
+        class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addText"
+        @click="addText"
+        :disabled="read_only"
+      >
         T
       </button>
-      <button type="button" class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addMarker" @click="addMarker">
+      <button
+        type="button"
+        class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addMarker"
+        @click="addMarker"
+        :disabled="read_only"
+      >
         •
       </button>
 
@@ -12,6 +22,7 @@
       <FileInput
         v-model="file"
         :type="image"
+        :read_only="read_only"
       >
       </FileInput>
 
@@ -21,7 +32,9 @@
 -->
 
       <FileUpload
-        :slugFolderName="slugFolderName">
+        :slugFolderName="slugFolderName"
+        :disabled="read_only"
+      >
       </FileUpload>
     </div>
 
@@ -32,7 +45,13 @@ import FileUpload from './FileUpload.vue';
 import FileInput from './subcomponents/FileInput.vue';
 
 export default {
-  props: ['slugFolderName'],
+  props: {
+    slugFolderName: String,
+    read_only: {
+      type: Boolean,
+      default: true
+    }
+  },
   components: {
     FileUpload,
     FileInput

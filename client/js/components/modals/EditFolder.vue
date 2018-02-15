@@ -3,6 +3,7 @@
   <Modal
     @close="$emit('close')"
     @submit="editThisFolder"
+    :read_only="read_only"
     >
     <template slot="header">
       <span class="text-cap"> {{ $t('edit_folder') }}</span> <i>{{ folder.name }}</i>
@@ -61,7 +62,11 @@ import alertify from 'alertify.js';
 import slug from 'slugg';
 
 export default {
-  props: ['slugFolderName', 'folder'],
+  props: {
+    slugFolderName: String,
+    folder: Object,
+    read_only: Boolean
+  },
   components: {
     Modal,
     DateTime

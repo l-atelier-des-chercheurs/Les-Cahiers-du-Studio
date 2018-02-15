@@ -48,6 +48,7 @@ auth.init();
 window.store = {
   debug:true,
   state: {
+    connected: false,
     folders: {},
     localNetworkInfos: locals.localNetworkInfos,
     appVersion: locals.appVersion,
@@ -102,6 +103,12 @@ window.socketio = (function() {
   function _onSocketConnect() {
     	let sessionId = socket.io.engine.id;
     	console.log(`Connected as ${sessionId}`);
+    	window.store.state.connected = true;
+    alertify
+      .closeLogOnClick(true)
+      .delay(4000)
+      .success(`La connexion au Cahier est active.`)
+      ;
     	sendAuth();
   }
 
@@ -113,10 +120,11 @@ window.socketio = (function() {
 
   function _onSocketError(reason) {
     	console.log(`Unable to connect to server: ${reason}`);
+    	window.store.state.connected = false;
   	}
   	function _onConnectError(reason) {
     	console.log(`Lost connection to server: ${reason}`);
-
+    	window.store.state.connected = false;
     alertify
       .closeLogOnClick(true)
       .error(`La connexion au serveur a été perdue.`)

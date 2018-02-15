@@ -89,6 +89,7 @@ auth.init();
 window.store = {
   debug: true,
   state: {
+    connected: false,
     folders: {},
     localNetworkInfos: locals.localNetworkInfos,
     appVersion: locals.appVersion,
@@ -159,6 +160,8 @@ window.socketio = function () {
   function _onSocketConnect() {
     var sessionId = socket.io.engine.id;
     console.log('Connected as ' + sessionId);
+    window.store.state.connected = true;
+    _alertify2.default.closeLogOnClick(true).delay(4000).success('La connexion au Cahier est active.');
     _sendAuth();
   }
 
@@ -170,10 +173,11 @@ window.socketio = function () {
 
   function _onSocketError(reason) {
     console.log('Unable to connect to server: ' + reason);
+    window.store.state.connected = false;
   }
   function _onConnectError(reason) {
     console.log('Lost connection to server: ' + reason);
-
+    window.store.state.connected = false;
     _alertify2.default.closeLogOnClick(true).error('La connexion au serveur a \xE9t\xE9 perdue.');
   }
   function _authentificated(list_admin_folders) {

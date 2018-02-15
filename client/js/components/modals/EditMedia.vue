@@ -3,6 +3,7 @@
     :backgroundColor="mediadata.color"
     @close="$emit('close')"
     @submit="editThisMedia"
+    :read_only="read_only"
     >
     <template slot="header">
       <span class="text-cap"> {{ $t('edit_the_media') }}</span> <i>{{ slugMediaName }}</i>
@@ -247,7 +248,17 @@ import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 
 export default {
-  props: ['slugFolderName', 'slugMediaName', 'media', 'isRealtime', 'currentTime'],
+  props: {
+    slugFolderName: String,
+    slugMediaName: String,
+    media: Object,
+    isRealtime: Boolean,
+    currentTime: Object,
+    read_only: {
+      type: Boolean,
+      default: true
+    }
+  },
   components: {
     Modal,
     DateTime,

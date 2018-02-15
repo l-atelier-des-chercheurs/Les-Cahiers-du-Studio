@@ -2,6 +2,7 @@
   <Modal
     @close="$emit('close')"
     @submit="newFolder"
+    :read_only="read_only"
     >
     <template slot="header">
       <span class="text-cap"> {{ $t('create_a_folder') }}</span>
@@ -57,6 +58,9 @@ import DateTime from '../subcomponents/DateTime.vue';
 import alertify from 'alertify.js';
 
 export default {
+  props: {
+    read_only: Boolean
+  },
   components: {
     Modal,
     DateTime

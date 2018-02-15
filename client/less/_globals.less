@@ -20,7 +20,12 @@ button, .button {
   border-radius: @t-buttonradius;
 
 
-  transition: color .25s ease-out;
+  transition: color .25s ease-out, opacity 0.5s;
+
+  &[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 
   &.is--active {
   }

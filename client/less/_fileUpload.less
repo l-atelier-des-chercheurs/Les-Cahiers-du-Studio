@@ -25,6 +25,14 @@
     pointer-events: auto;
   }
 
+  > *[disabled] {
+    cursor: not-allowed !important;
+    .vue-dropzone.vue-dropzone .dz-message {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+  }
+
   > * {
     flex: 0 0 auto;
     pointer-events: auto;

@@ -39,6 +39,7 @@
                 <button
                   class="m_modal--save bg-vert_vif button-rectangle button-allwide button-inline margin-none padding-small"
                   type="submit"
+                  :disabled="read_only"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
                     <circle cx="24" cy="24" r="24" style="fill: #22b573"/>
@@ -47,7 +48,7 @@
 
                   <span class="text-cap font-verysmall">
                     <slot name="submit_button">
-                      Enregistrer
+                      {{ $t('save') }}
                     </slot>
                   </span>
                 </button>
@@ -76,7 +77,10 @@
 
           </div>
 
-          <button class="button-round bg-transparent m_modal--close_button padding-verysmall"  @click="closeModal">
+          <button
+            class="button-round bg-transparent m_modal--close_button padding-verysmall"
+            @click="closeModal"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
               <line x1="13.33" y1="13.33" x2="34.67" y2="34.67"/>
               <line x1="13.33" y1="34.67" x2="34.67" y2="13.33"/>
@@ -96,6 +100,10 @@ export default {
     backgroundColor: {
       type: String,
       default: 'white'
+    },
+    read_only: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

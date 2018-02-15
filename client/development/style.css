@@ -3246,9 +3246,14 @@ button,
   min-height: 2.7em;
   padding: 0 0.675em;
   border-radius: 6px;
-  -webkit-transition: color 0.25s ease-out;
-  -o-transition: color 0.25s ease-out;
-  transition: color 0.25s ease-out;
+  -webkit-transition: color 0.25s ease-out, opacity 0.5s;
+  -o-transition: color 0.25s ease-out, opacity 0.5s;
+  transition: color 0.25s ease-out, opacity 0.5s;
+}
+button[disabled],
+.button[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 button.is--disabled,
 .button.is--disabled {
@@ -4084,6 +4089,13 @@ th {
   -webkit-box-shadow: 2px 4px 13px #bbb;
   box-shadow: 2px 4px 13px #bbb;
   pointer-events: auto;
+}
+.m_addMedia > *[disabled] {
+  cursor: not-allowed !important;
+}
+.m_addMedia > *[disabled] .vue-dropzone.vue-dropzone .dz-message {
+  opacity: 0.4;
+  pointer-events: none;
 }
 .m_addMedia > * {
   -webkit-box-flex: 0;

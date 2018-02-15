@@ -7,14 +7,14 @@
       :visibleDay="timelineViewport.visibleDay"
       @toggleSidebar="toggleSidebar()"
       :timelineViewport_scale="timelineViewport.scale"
-      >
+    >
     </NavbarTop>
 
     <transition name="fade" :duration="350">
       <div
         v-if="$root.settings.is_loading_medias_for_folder"
         class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
-        >
+      >
         <span class="animated flash">
           {{ $t('loading') }}
         </span>
@@ -31,7 +31,8 @@
         :timelineInfos="timelineInfos"
         :isRealtime="isRealtime"
         :style="{ height: `${sidebarHeight}px` }"
-        >
+        :read_only="read_only"
+      >
       </Sidebar>
     </transition>
 
@@ -39,7 +40,7 @@
       class="button_sidebarToggle"
       @click.prevent="toggleSidebar()"
       :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
-      >
+    >
       <template v-if="$root.settings.has_sidebar_opened">←</template>
       <template v-else>→</template>
     </button>
@@ -49,6 +50,7 @@
       :folder="folder"
       :slugFolderName="slugFolderName"
       @close="showEditFolderModal = false"
+      :read_only="read_only"
     >
     </EditFolder>
 
@@ -60,13 +62,13 @@
         'is--animated': isAnimated,
         'is--realtime': isRealtime
       }"
-      >
+    >
       <div class="m_timeline-container"
         :style="{
           width: `${timelineViewport.width}px`,
           height: `${timelineViewport.height}px`
         }"
-        >
+      >
         <div class="timeline_track">
         </div>
 
@@ -80,7 +82,7 @@
               class="gridItem font-small gridItem_isday"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
-              >
+            >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
               </div>
@@ -92,7 +94,7 @@
               class="gridItem font-small gridItem_ishour"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
-              >
+            >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
               </div>
@@ -104,7 +106,7 @@
               class="gridItem font-small gridItem_isminute"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
-              >
+            >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
               </div>
@@ -114,7 +116,7 @@
               v-if="isRealtime"
               class="gridItem font-small gridItem_isrealtimerule"
               :style="`transform: translate(${todaysRule.xPos}px, 0px)`"
-              >
+            >
               <div class="gridItem--caption">
                 {{ todaysRule.caption }}
               </div>
@@ -136,7 +138,7 @@
                 v-if="zoomZone.display"
                 class="gridItem gridItem_zoomZone"
                 :style="zoomZoneStyle()"
-                >
+              >
               </div>
             </transition>
           </div>
@@ -155,7 +157,8 @@
             :posX="getMediaPosX(index)"
             :class="{ 'is--highlighted' : highlightedMedia === index }"
             @open="openMediaModal(index)"
-            >
+            :read_only="read_only"
+          >
           </TimelineMedia>
         </template>
 
@@ -176,7 +179,9 @@
 
       <AddMediaButton
         v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass')"
-        :slugFolderName="slugFolderName">
+        :slugFolderName="slugFolderName"
+        :read_only="read_only"
+      >
       </AddMediaButton>
 
       <EditMedia
@@ -187,6 +192,7 @@
         :isRealtime="isRealtime"
         :currentTime="currentTime"
         @close="showMediaModalFor = ''"
+        :read_only="read_only"
       >
       </EditMedia>
 
@@ -209,6 +215,7 @@ export default {
     slugFolderName: String,
     folder: Object,
     medias: Object,
+    read_only: Boolean
   },
   components: {
     TimelineMedia,

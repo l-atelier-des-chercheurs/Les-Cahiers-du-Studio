@@ -10,6 +10,7 @@
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="openEditFolderModal()"
+            :disabled="read_only"
             >
             {{ $t('edit') }}
           </button>
@@ -24,6 +25,7 @@
             :href="getURLToApp(ip, $root.store.localNetworkInfos.port)"
             class="js--openInBrowser button button-circled margin-vert-medium border-circled button-inline padding-small flex-space-around"
             target="_blank"
+            :disabled="read_only"
             >
             {{ getURLToApp(ip, $root.store.localNetworkInfos.port) }}
             <qrcode :value="getURLToApp(ip, $root.store.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
@@ -159,7 +161,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    showEditFolderModal: false,
+    showEditFolderModal: {
+      type: Boolean,
+      default: false,
+    },
+    read_only: Boolean
   },
   data() {
     return {

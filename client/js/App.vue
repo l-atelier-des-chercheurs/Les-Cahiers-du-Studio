@@ -16,6 +16,7 @@
             :slugFolderName="$root.settings.currentlyOpenedFolder"
             :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
             :presentation_md="$root.store.presentation_md"
+            :read_only="!$root.store.connected"
           >
           </ListView>
 
@@ -28,6 +29,7 @@
         :slugFolderName="$root.settings.currentlyOpenedFolder"
         :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
         :medias="$root.store.folders[$root.settings.currentlyOpenedFolder].medias"
+        :read_only="!$root.store.connected"
       >
       </TimeLineView>
 

@@ -41,6 +41,7 @@
           :media="media"
           :context="'preview'"
           :is_hovered="is_hovered"
+          :read_only="read_only"
           >
         </MediaContent>
 
@@ -60,7 +61,7 @@
             style="animation-duration: 0.3s"
             v-if="!isPlaceholder && is_hovered"
             @mousedown.stop="openMedia"
-            >
+          >
             {{ $t('open') }}
           </button>
         </transition>
@@ -73,7 +74,19 @@
 import MediaContent from './subcomponents/MediaContent.vue';
 
 export default {
-  props: ['slugFolderName', 'slugMediaName', 'media', 'timelineScale', 'posX', 'timelineHeight', 'isPlaceholder'],
+  props: {
+    slugFolderName: String,
+    slugMediaName: String,
+    media: Object,
+    timelineScale: Number,
+    posX: Number,
+    timelineHeight: Number,
+    isPlaceholder: Boolean,
+    read_only: {
+      type: Boolean,
+      default: true
+    }
+  },
   components: {
     MediaContent
   },
@@ -182,8 +195,10 @@ export default {
     },
     mousedown(event) {
       console.log(`METHODS • TimelineMedia: mousedown with is_dragged = ${this.is_dragged}`);
-      window.addEventListener('mousemove', this.mousemove);
-      window.addEventListener('mouseup', this.mouseup);
+      if(!this.read_only) {
+        window.addEventListener('mousemove', this.mousemove);
+        window.addEventListener('mouseup', this.mouseup);
+      }
     },
     mousemove(event) {
       console.log(`METHODS • TimelineMedia: mousemove with is_dragged = ${this.is_dragged}`);
@@ -236,6 +251,8 @@ export default {
     },
     toggleCollapseMedia(event) {
       console.log('METHODS • TimelineMedia: toggleCollapseMedia with drag = ' + this.is_dragged);
+      if(this.read_only) { return; }
+
       if(this.is_dragged) {
         this.mouseup(event);
         return;
