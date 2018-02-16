@@ -291,6 +291,7 @@ module.exports = (function() {
 
       fs.move(folderPath, movedFolderPath, { overwrite: true })
       .then(() => {
+        dev.logfunction(`COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`);
         resolve();
       })
       .catch(err => {

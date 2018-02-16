@@ -100,7 +100,6 @@ module.exports = (function() {
     // check if allowed
     file.getFolder(slugFolderName).then(foldersData => {
       if(!auth.hasFolderAuth(socket.id,foldersData,slugFolderName)) { return; }
-
       file.removeFolder(slugFolderName).then(() => {
         sendFolders();
       }, function(err, p) {
@@ -260,7 +259,7 @@ module.exports = (function() {
   }
 
 
-  function sendFolders({ slugFolderName, socket, folderID }) {
+  function sendFolders({ slugFolderName, socket, folderID } = {}) {
     dev.logfunction(`COMMON - sendFolders for ${slugFolderName}`);
 
     file.getFolder(slugFolderName).then(foldersData => {
