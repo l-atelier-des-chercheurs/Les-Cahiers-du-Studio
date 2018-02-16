@@ -13,7 +13,7 @@
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input type="text" v-model="folderdata.name" required>
+        <input type="text" v-model="folderdata.name" required autofocus>
       </div>
 
 <!-- Start date -->
