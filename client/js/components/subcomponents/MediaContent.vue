@@ -49,14 +49,17 @@
         @input="$emit('input', $event.target.value)"
         ref="textField"
         autocorrect="on"
+        :readonly="read_only"
       >
       </textarea>
     </template>
 
     <template v-else-if="media.type === 'marker'">
       <div v-if="context !== 'edit'" class="padding-small">
-        {{ value }}
-        <template v-if="value.length === 0">
+        <template v-if="value.length > 0">
+          {{ value }}
+        </template>
+        <template v-else>
           …
         </template>
       </div>
@@ -69,6 +72,7 @@
         :value="value"
         @input="$emit('input', $event.target.value)"
         ref="textField"
+        :readonly="read_only"
       >
     </template>
     <template v-else-if="media.type === 'other'">
@@ -95,7 +99,11 @@ export default {
       type: String,
       default: ''
     },
-    is_hovered: Boolean
+    is_hovered: Boolean,
+    read_only: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {

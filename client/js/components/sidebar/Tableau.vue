@@ -71,8 +71,7 @@
                 :slugMediaName="media.slugMediaName"
                 :slugFolderName="slugFolderName"
                 :media="media"
-                >
-              </MediaContent>
+              ></MediaContent>
             </td>
           </template>
         </tr>

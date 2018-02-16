@@ -88,21 +88,21 @@
 <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>{{ $t('keywords') }}</label>
-        <textarea v-model="mediadata.keywords">
+        <textarea v-model="mediadata.keywords" :readonly="read_only">
         </textarea>
       </div>
 
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label>
-        <textarea v-model="mediadata.authors">
+        <textarea v-model="mediadata.authors" :readonly="read_only">
         </textarea>
       </div>
 
 <!-- Public or private -->
       <div class="margin-bottom-small">
         <span class="switch">
-          <input type="checkbox" class="switch" id="publicswitch" v-model="mediadata.public">
+          <input type="checkbox" class="switch" id="publicswitch" v-model="mediadata.public" :readonly="read_only">
           <label for="publicswitch">{{ $t('public') }}</label>
         </span>
       </div>
@@ -234,6 +234,7 @@
         :slugFolderName="slugFolderName"
         :media="media"
         :mediaURL="mediaURL"
+        :read_only="read_only"
         v-model="mediadata.content"
       >
       </MediaContent>
