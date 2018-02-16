@@ -2870,14 +2870,19 @@ exports.default = {
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     },
     linkToVideoThumb: function linkToVideoThumb() {
-      if (!this.media.thumbs.hasOwnProperty('thumbsData')) {
+
+      if (this.media.thumbs.length === 0) {
         return;
       }
 
       var timeMark = 0;
-      var pathToTimeMarkThumbs = _underscore2.default.findWhere(this.media.thumbs, { timeMark: timeMark }).thumbsData;
+      var timeMarkThumbs = _underscore2.default.findWhere(this.media.thumbs, { timeMark: timeMark });
 
-      var pathToSmallestThumb = _underscore2.default.findWhere(pathToTimeMarkThumbs, { size: this.thumbRes }).path;
+      if (timeMarkThumbs.length === 0) {
+        return;
+      }
+
+      var pathToSmallestThumb = _underscore2.default.findWhere(timeMarkThumbs.thumbsData, { size: this.thumbRes }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     }
 
@@ -2897,7 +2902,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-5cf17b42", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-5cf17b42", __vue__options__)
+    hotAPI.reload("data-v-5cf17b42", __vue__options__)
   }
 })()}
 },{"underscore":218,"vue":231,"vue-hot-reload-api":226}],25:[function(require,module,exports){

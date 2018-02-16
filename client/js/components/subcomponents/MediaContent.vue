@@ -140,12 +140,15 @@ export default {
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     },
     linkToVideoThumb: function() {
-      if(!this.media.thumbs.hasOwnProperty('thumbsData')) { return; }
+
+      if(this.media.thumbs.length === 0) { return; }
 
       let timeMark = 0;
-      let pathToTimeMarkThumbs = _.findWhere(this.media.thumbs, { timeMark }).thumbsData;
+      let timeMarkThumbs = _.findWhere(this.media.thumbs, { timeMark });
 
-      let pathToSmallestThumb = _.findWhere(pathToTimeMarkThumbs, { size: this.thumbRes }).path;
+      if(timeMarkThumbs.length === 0)  { return; }
+
+      let pathToSmallestThumb = _.findWhere(timeMarkThumbs.thumbsData, { size: this.thumbRes }).path;
       return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
     }
 
