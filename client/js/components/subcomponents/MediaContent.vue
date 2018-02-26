@@ -110,7 +110,7 @@ export default {
       available_resolutions: {
         preview: 180,
         preview_hovered: 360,
-        default: 1200
+        default: 1600
       },
       mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
     }
