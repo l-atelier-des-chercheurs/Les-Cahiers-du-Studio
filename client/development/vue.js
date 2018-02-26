@@ -3201,6 +3201,7 @@ module.exports = function () {
       file_upload_not_allowed: 'File upload is not allowed by this browser.',
       connection_active: 'The connection to the server is active.',
       connection_lost: 'The connection to the server was lost.',
+      contents_wont_be_editable: 'Content editing is disabled.',
       connection_error: 'The connection to the server could not be established.',
       'wrong_password_for_folder:': 'Wrong password or folder missing for:',
       'created_edited_media:': 'A media has been created or edited in folder:',
