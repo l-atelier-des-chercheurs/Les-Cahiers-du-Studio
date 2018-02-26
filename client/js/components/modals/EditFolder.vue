@@ -14,20 +14,20 @@
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input type="text" v-model="folderdata.name" required>
+        <input type="text" v-model="folderdata.name" required :readonly="read_only">
       </div>
 
 <!-- Start date -->
       <div class="margin-bottom-small">
         <label>{{ $t('capture_start') }}</label>
-        <DateTime v-model="folderdata.start">
+        <DateTime v-model="folderdata.start" :read_only="read_only">
         </DateTime>
       </div>
 
 <!-- End date -->
       <div class="margin-bottom-small">
         <label>{{ $t('capture_end') }}</label>
-        <DateTime v-model="folderdata.end">
+        <DateTime v-model="folderdata.end" :read_only="read_only">
         </DateTime>
       </div>
 
@@ -35,7 +35,7 @@
 <!--
       <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
-        <input type="password" v-model="folderdata.password">
+        <input type="password" v-model="folderdata.password" :readonly="read_only">
         <small>{{ $t('password_instructions') }}</small>
       </div>
  -->
@@ -43,7 +43,7 @@
 <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>{{ $t('author') }}</label><br>
-        <textarea v-model="folderdata.authors">
+        <textarea v-model="folderdata.authors" :readonly="read_only">
         </textarea>
       </div>
 

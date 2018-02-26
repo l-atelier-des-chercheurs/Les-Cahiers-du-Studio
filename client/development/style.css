@@ -3255,9 +3255,9 @@ button[disabled],
   opacity: 0.4;
   cursor: not-allowed;
 }
-button.is--disabled,
-.button.is--disabled {
-  opacity: 0.5;
+button[disabled][class*="bg-"]:not(.bg-transparent),
+.button[disabled][class*="bg-"]:not(.bg-transparent) {
+  background-color: gray;
 }
 button.bg-noir.is--active,
 .button.bg-noir.is--active {
@@ -3558,6 +3558,10 @@ h4 {
 textarea {
   padding: 0.675em;
 }
+input[readonly],
+textarea[readonly] {
+  background-color: var(--input-readonly-bg-color);
+}
 .text-cap {
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -3580,9 +3584,6 @@ textarea {
 }
 a {
   color: inherit;
-}
-.is--active {
-  color: #512b1c;
 }
 hr {
   margin: 1.35em 0;

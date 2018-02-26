@@ -1,13 +1,23 @@
 <template>
   <div class="input-group">
-    <input type="date" v-model="date" @input.lazy="updateDate()">
-    <input type="time" v-model="time" @input.lazy="updateDate()" step="1">
+    <input type="date" v-model="date" @input.lazy="updateDate()" :readonly="read_only">
+    <input type="time" v-model="time" @input.lazy="updateDate()" step="1" :readonly="read_only">
   </div>
 </template>
 <script>
 
 export default {
-  props: ['value', 'twowaybinding'],
+  props: {
+    value: String,
+    twowaybinding: {
+      type: Boolean,
+      default: false
+    },
+    read_only: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       date: this.$moment(this.value).format('YYYY-MM-DD'),

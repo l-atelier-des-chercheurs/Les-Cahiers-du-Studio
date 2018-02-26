@@ -25,12 +25,10 @@ button, .button {
   &[disabled] {
     opacity: 0.4;
     cursor: not-allowed;
-  }
 
-  &.is--active {
-  }
-  &.is--disabled {
-    opacity: 0.5;
+    &[class*="bg-"]:not(.bg-transparent) {
+      background-color: gray;
+    }
   }
 
   &.bg-noir.is--active {
@@ -353,6 +351,9 @@ h1,h2,h3,h4 {
 textarea {
   .padding-small;
 }
+input[readonly], textarea[readonly] {
+  background-color: var(--input-readonly-bg-color);
+}
 
 .text-cap {
   text-transform: uppercase;
@@ -381,10 +382,6 @@ textarea {
 
 a {
   color: inherit;
-}
-
-.is--active {
-  color: #512b1c;
 }
 
 hr {

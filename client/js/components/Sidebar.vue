@@ -25,7 +25,6 @@
             :href="getURLToApp(ip, $root.store.localNetworkInfos.port)"
             class="js--openInBrowser button button-circled margin-vert-medium border-circled button-inline padding-small flex-space-around"
             target="_blank"
-            :disabled="read_only"
             >
             {{ getURLToApp(ip, $root.store.localNetworkInfos.port) }}
             <qrcode :value="getURLToApp(ip, $root.store.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
@@ -222,7 +221,13 @@ export default {
             name: this.$t('content'),
             type: 'alph',
             order: 'ascending',
-          }
+          },
+          {
+            field: 'caption',
+            name: this.$t('caption'),
+            type: 'alph',
+            order: 'ascending',
+          },
         ]
       }
     }

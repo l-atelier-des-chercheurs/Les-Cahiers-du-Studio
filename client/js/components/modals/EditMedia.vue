@@ -14,75 +14,78 @@
 <!-- Caption -->
       <div class="margin-bottom-small" v-if="mediadata.type !== 'marker' && mediadata.type !== 'text'">
         <label>{{ $t('caption') }}</label><br>
-        <textarea v-model="mediadata.caption">
+        <textarea v-model="mediadata.caption" :readonly="read_only">
         </textarea>
       </div>
 
       <div class="margin-bottom-small">
         <label>{{ $t('date') }} <small>{{ $t('for_the_placement_on_timeline') }}</small></label>
-        <DateTime v-model="mediadata.date_timeline" :twowaybinding=true>
+        <DateTime v-model="mediadata.date_timeline" :twowaybinding=true :read_only="read_only">
         </DateTime>
 
-        <div class="margin-bottom-small" v-if="media.date_created !== undefined">
-          <small>
-            {{ $t('created_date') }}
-            <button
-              type="button"
-              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-              @click="setMediaDateTimeline(media.date_created)"
-              >
-              {{ date_created_human }}
-            </button>
-          </small>
-        </div>
+        <template v-if="!read_only">
+          <div class="margin-bottom-small" v-if="media.date_created !== undefined">
+            <small>
+              {{ $t('created_date') }}
+              <button
+                type="button"
+                class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+                @click="setMediaDateTimeline(media.date_created)"
+                >
+                {{ date_created_human }}
+              </button>
+            </small>
+          </div>
 
-        <div class="margin-bottom-small" v-if="media.date_upload !== undefined">
-          <small>
-            {{ $t('sent_date') }}
-            <button
-              type="button"
-              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-              @click="setMediaDateTimeline(media.date_upload)"
-              >
-              {{ date_uploaded_human }}
-            </button>
-          </small>
-        </div>
+          <div class="margin-bottom-small" v-if="media.date_upload !== undefined">
+            <small>
+              {{ $t('sent_date') }}
+              <button
+                type="button"
+                class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+                @click="setMediaDateTimeline(media.date_upload)"
+                >
+                {{ date_uploaded_human }}
+              </button>
+            </small>
+          </div>
 
-        <div class="margin-bottom-small" v-if="isRealtime">
-          <small>
-            {{ $t('currently') }}
-            <button
-              type="button"
-              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-              @click="setMediaDateTimeline(currentTime)"
-              >
-              {{ currentTime_human }}
-            </button>
-          </small>
-        </div>
+          <div class="margin-bottom-small" v-if="isRealtime">
+            <small>
+              {{ $t('currently') }}
+              <button
+                type="button"
+                class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+                @click="setMediaDateTimeline(currentTime)"
+                >
+                {{ currentTime_human }}
+              </button>
+            </small>
+          </div>
+        </template>
 
       </div>
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
       <div class="margin-bottom-small">
         <label>{{ $t('type') }}</label>
-        <select ref="type" v-model="mediadata.type">
+        <select v-if="!read_only" ref="type" v-model="mediadata.type">
           <option v-for="mediaType in ['image', 'video', 'audio', 'text', 'marker']">
             {{ mediaType }}
           </option>
         </select>
+        <input type="text" v-else :value="mediadata.type" readonly>
       </div>
 
 <!-- Color -->
       <div class="margin-bottom-small">
         <label>{{ $t('color') }}</label>
-        <select ref="type" v-model="mediadata.color">
+        <select v-if="!read_only" ref="type" v-model="mediadata.color">
           <option v-for="mediaColor in ['white', 'red', 'blue', 'green', 'purple', 'orange', 'yellow']">
             {{ mediaColor }}
           </option>
         </select>
-        </textarea>
+        <input type="text" v-else :value="mediadata.color" readonly>
       </div>
 
 <!-- Keywords -->
@@ -111,6 +114,7 @@
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click="removeMedia()"
+          :disabled="read_only"
           >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
@@ -172,6 +176,7 @@
         <a :href="mediaURL" :title="slugMediaName" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
           v-if="mediadata.type === 'image'"
+          :disabled="read_only"
           >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
@@ -197,6 +202,7 @@
 
         <a :download="slugMediaName" :href="mediaURL" :title="slugMediaName" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
+          :disabled="read_only"
           >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
