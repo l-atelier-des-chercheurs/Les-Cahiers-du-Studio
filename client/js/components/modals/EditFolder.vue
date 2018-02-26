@@ -124,7 +124,6 @@ export default {
 
       values.slugFolderName = this.slugFolderName;
 
-      // if it's all good, collect everything and send over socketio
       this.$root.editFolder(values);
 
       // then close that popover

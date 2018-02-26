@@ -25,7 +25,8 @@ var userScripts = [
 var vueMain = [
   'client/js/app.js'
 ];
-var components = [
+var watchedScriptsAndComponents = [
+  'client/js/*.js',
   'client/js/*.vue',
   'client/js/components/*.vue',
   'client/js/components/modals/*.vue',
@@ -126,7 +127,7 @@ gulp.task('scripts-prod', ['vue', 'scripts'], function (done) {
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-  gulp.watch([userScripts, vueMain, components, nodeScripts], ['lint', 'vue', 'scripts']);
+  gulp.watch([userScripts, vueMain, watchedScriptsAndComponents, nodeScripts], ['lint', 'vue', 'scripts']);
   gulp.watch('client/less/*.less', ['less']);
 });
 

@@ -266,7 +266,6 @@ export default {
       values.slugFolderName = this.slugFolderName;
       values.slugMediaName = this.slugMediaName;
 
-      // if it's all good, collect everything and send over socketio
       this.$root.editMedia(values);
 
       event.stopPropagation();

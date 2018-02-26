@@ -57,7 +57,7 @@ let lang_settings = {
 };
 lang_settings.init();
 
-moment.locale(`${lang_settings.current}`);
+moment.locale(lang_settings.current);
 Object.defineProperty(Vue.prototype, '$moment', { value: moment });
 
 // Create VueI18n instance with options
