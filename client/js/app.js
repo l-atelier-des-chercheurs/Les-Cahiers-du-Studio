@@ -7,6 +7,7 @@ import localstore from 'store';
 import VueScrollTo from 'vue-scrollto';
 import PortalVue from 'portal-vue';
 import VueI18n from 'vue-i18n';
+import alertify from 'alertify.js';
 
 import locale_strings from './locale_strings.js';
 
@@ -61,10 +62,182 @@ moment.locale(lang_settings.current);
 Object.defineProperty(Vue.prototype, '$moment', { value: moment });
 
 // Create VueI18n instance with options
-const i18n = new VueI18n({
+let i18n = new VueI18n({
   locale: lang_settings.current, // set locale
   messages: locale_strings, // set locale messages
 });
+
+
+/***********
+  SOCKETIO
+***********/
+import io from 'socket.io-client';
+
+Vue.prototype.$socketio = new Vue({
+  i18n,
+  data: {
+    socket: ''
+  },
+  created() {
+    if(window.navigator.userAgent.indexOf('Chrome') > -1) {
+      this.socket = io.connect({ transports: ['websocket','polling'] });
+    } else {
+      this.socket = io.connect({ transports: ['polling','websocket'] });
+    }
+    	this.socket.on('connect', this._onSocketConnect);
+    this.socket.on('error', this._onSocketError);
+    this.socket.on('connect_error', this._onConnectError);
+    this.socket.on('authentificated', this._authentificated);
+    	this.socket.on('listMedia', this._onListMedia);
+    	this.socket.on('listMedias', this._onListMedias);
+    	this.socket.on('listFolder', this._onListFolder);
+    	this.socket.on('listFolders', this._onListFolders);
+  },
+  methods: {
+    _onSocketConnect() {
+      debugger;
+      	let sessionId = this.socket.io.engine.id;
+      	console.log(`Connected as ${sessionId}`);
+      	window.store.state.connected = true;
+
+      	// only for non-electron (since obviously in electron we have to be connected)
+      	if(!window.store.state.is_electron) {
+        alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(this.$t('notifications.connection_active'))
+          ;
+      	}
+      this.sendAuth();
+    },
+
+    sendAuth() {
+      let admin_access = auth.getAdminAccess();
+      	console.log(`Asking for auth with ${JSON.stringify(admin_access, null, 4)}`);
+      this.socket.emit('authenticate', {admin_access});
+    },
+
+    _onSocketError(reason) {
+      	console.log(`Unable to connect to server: ${reason}`);
+      	window.store.state.connected = false;
+      alertify
+        .closeLogOnClick(true)
+        .error(this.$t('notifications.connection_error') + ' ' + reason)
+        ;
+    	},
+
+    	_onConnectError(reason) {
+      	console.log(`Lost connection to server: ${reason}`);
+      	window.store.state.connected = false;
+      alertify
+        .closeLogOnClick(true)
+        .error(this.$t('notifications.connection_lost') + '<br>' + this.$t('notifications.contents_wont_be_editable'))
+        ;
+    	},
+
+    _authentificated(list_admin_folders) {
+      	console.log(`Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`);
+
+      // compare local store and answer from server
+      // for each key that is not in the answer, let’s send and alert to notify that the password is most likely wrong or the folder name has changed
+      if(auth.getAdminAccess() !== undefined) {
+        let admin_access = Object.keys(auth.getAdminAccess());
+        admin_access.forEach(slugFolderName => {
+          if(list_admin_folders === undefined || list_admin_folders.indexOf(slugFolderName) === -1) {
+            alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(this.$t('notifications["wrong_password_for_folder:"]') + ' ' + slugFolderName)
+              ;
+            auth.removeKey(slugFolderName);
+          } else {
+          }
+        });
+      }
+      this.listFolders();
+    },
+
+    _onListMedia(mdata) {
+      	console.log(`Received _onListMedia packet.`);
+      let slugFolderName = Object.keys(mdata)[0];
+      	console.log(`Media data is for ${slugFolderName}.`);
+
+  //     let mediaData = Object.values(mdata[slugFolderName].medias)[0];
+  //     	let mediaName = Object.keys(mdata[slugFolderName].medias)[0];
+
+      alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .log(this.$t('notifications["created_edited_media:"]') + ' ' + window.store.state.folders[slugFolderName].name)
+        ;
+
+      window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, mdata[slugFolderName].medias);
+    },
+
+    _onListMedias(mdata) {
+      	console.log(`Received _onListMedias packet.`);
+      let slugFolderName = Object.keys(mdata)[0];
+      	console.log(`Media data is for ${slugFolderName}.`);
+
+      window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
+
+      window.dispatchEvent(new CustomEvent('timeline.listMediasForFolder', { detail: slugFolderName }));
+    },
+
+    _onListFolder(fdata) {
+      	console.log(`Received _onListFolder packet.`);
+
+      	// to prevent override of fully formed medias, we copy back the ones we have already
+      for(let slugFolderName in fdata) {
+        if(window.store.state.folders.hasOwnProperty(slugFolderName)) {
+          fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
+        }
+      }
+      window.store.state.folders = Object.assign({}, window.store.state.folders, fdata);
+    },
+
+    _onListFolders(fdata) {
+      	console.log(`Received _onListFolders packet.`);
+
+      	// to prevent override of fully formed medias, we copy back the ones we have already
+      	for(let slugFolderName in fdata) {
+        if(window.store.state.folders.hasOwnProperty(slugFolderName)) {
+          fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
+        }
+      }
+      window.store.state.folders = Object.assign({}, fdata);
+    },
+
+    listFolders() {
+      this.socket.emit('listFolders');
+    },
+    createFolder(fdata) {
+      this.socket.emit('createFolder', fdata);
+    },
+    editFolder(fdata) {
+      this.socket.emit('editFolder', fdata);
+    },
+    removeFolder(slugFolderName) {
+      this.socket.emit('removeFolder', slugFolderName);
+    },
+
+    listMedias(slugFolderName) {
+      this.socket.emit('listMedias', { slugFolderName });
+    },
+    createTextMedia(mdata) {
+      this.socket.emit('createTextMedia', mdata);
+    },
+    editMedia(mdata) {
+      this.socket.emit('editMedia', mdata);
+    },
+    removeMedia(slugFolderName, slugMediaName) {
+      this.socket.emit('removeMedia', { slugFolderName, slugMediaName });
+    }
+
+
+  }
+});
+
 
 import App from './App.vue';
 
@@ -104,15 +277,15 @@ let vm = new Vue({
       fdata.folderID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
       this.justCreatedFolderID = fdata.folderID;
 
-      window.socketio.createFolder(fdata);
+      this.$socketio.createFolder(fdata);
     },
     editFolder: function(fdata) {
       if(window.store.debug) { console.log(`ROOT EVENT: editFolder: ${JSON.stringify(fdata, null, 4)}`); }
-      window.socketio.editFolder(fdata);
+      this.$socketio.editFolder(fdata);
     },
     removeFolder: function(slugFolderName) {
       if(window.store.debug) { console.log(`ROOT EVENT: removeFolder: ${slugFolderName}`); }
-      window.socketio.removeFolder(slugFolderName);
+      this.$socketio.removeFolder(slugFolderName);
     },
 
     createTextMedia: function(mdata) {
@@ -123,15 +296,15 @@ let vm = new Vue({
         this.justCreatedTextmediaID = mdata.mediaID;
       }
 
-      window.socketio.createTextMedia(mdata);
+      this.$socketio.createTextMedia(mdata);
     },
     removeMedia: function(slugFolderName, slugMediaName) {
       if(window.store.debug) { console.log(`ROOT EVENT: removeMedia: ${slugFolderName}/${slugMediaName}`); }
-      window.socketio.removeMedia(slugFolderName, slugMediaName);
+      this.$socketio.removeMedia(slugFolderName, slugMediaName);
     },
     editMedia: function(mdata) {
       if(window.store.debug) { console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`); }
-      window.socketio.editMedia(mdata);
+      this.$socketio.editMedia(mdata);
     },
 
     openFolder: function(slugFolderName) {
@@ -142,7 +315,7 @@ let vm = new Vue({
       }
       this.settings.currentlyOpenedFolder = slugFolderName;
       this.settings.is_loading_medias_for_folder = slugFolderName;
-      window.socketio.listMedias(slugFolderName);
+      this.$socketio.listMedias(slugFolderName);
 
       window.addEventListener('timeline.listMediasForFolder', this.listMediasForFolder);
     },
