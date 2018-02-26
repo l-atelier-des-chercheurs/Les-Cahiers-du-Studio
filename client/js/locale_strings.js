@@ -79,6 +79,7 @@ module.exports = (function() {
         file_upload_not_allowed: 'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
         connection_active: 'La connexion au serveur est active.',
         connection_lost: 'La connexion au serveur a été perdue.',
+        contents_wont_be_editable: 'Les modifications et ajouts ne seront plus pris en compte.',
         connection_error: 'La connexion au serveur n’a pu se faire.',
         'wrong_password_for_folder:': 'Le password n’est pas le bon pour le dossier&nbsp;:',
         'created_edited_media:': 'Création ou édition d’un média pour le dossier&nbsp;:',

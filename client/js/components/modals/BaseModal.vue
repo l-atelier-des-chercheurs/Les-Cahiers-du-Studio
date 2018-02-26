@@ -1,6 +1,6 @@
 <template>
   <portal to="modal_container">
-    <transition name="modal" :duration="350">
+    <transition name="modal">
       <div class="m_modal--mask"
         v-if="showModal"
         @click.self="closeModal"
