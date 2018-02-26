@@ -104,11 +104,15 @@ window.socketio = (function() {
     	let sessionId = socket.io.engine.id;
     	console.log(`Connected as ${sessionId}`);
     	window.store.state.connected = true;
-    alertify
-      .closeLogOnClick(true)
-      .delay(4000)
-      .success(`La connexion au Cahier est active.`)
-      ;
+
+    	// only for non-electron (since obviously in electron we have to be connected)
+    	if(!window.store.state.is_electron) {
+      alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t('notifications.connection_active'))
+        ;
+    	}
     	sendAuth();
   }
 
@@ -121,13 +125,17 @@ window.socketio = (function() {
   function _onSocketError(reason) {
     	console.log(`Unable to connect to server: ${reason}`);
     	window.store.state.connected = false;
+    alertify
+      .closeLogOnClick(true)
+      .error(this.$t('notifications.connection_error') + ' ' + reason)
+      ;
   	}
   	function _onConnectError(reason) {
     	console.log(`Lost connection to server: ${reason}`);
     	window.store.state.connected = false;
     alertify
       .closeLogOnClick(true)
-      .error(`La connexion au serveur a été perdue.`)
+      .error(this.$t('notifications.connection_active'))
       ;
   	}
   function _authentificated(list_admin_folders) {
@@ -142,7 +150,7 @@ window.socketio = (function() {
           alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(`Mauvais mot de passe ou dossier absent: ${slugFolderName}`)
+            .error(this.$t('notifications.wrong_password_for_folder:') + ' ' + slugFolderName)
             ;
           auth.removeKey(slugFolderName);
         } else {
@@ -157,13 +165,13 @@ window.socketio = (function() {
     let slugFolderName = Object.keys(mdata)[0];
     	console.log(`Media data is for ${slugFolderName}.`);
 
-    let mediaData = Object.values(mdata[slugFolderName].medias)[0];
+//     let mediaData = Object.values(mdata[slugFolderName].medias)[0];
 //     	let mediaName = Object.keys(mdata[slugFolderName].medias)[0];
 
     alertify
       .closeLogOnClick(true)
       .delay(4000)
-      .log(`Création ou édition d’un média <i>${mediaData.type}</i> pour le dossier ${slugFolderName}`)
+      .log(this.$t('notifications.created_edited_media:') + ' ' + slugFolderName)
       ;
 
     window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, mdata[slugFolderName].medias);

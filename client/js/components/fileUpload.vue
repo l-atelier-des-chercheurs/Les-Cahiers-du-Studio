@@ -83,7 +83,7 @@ export default {
       alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .log(this.$t('file_was_sent'))
+        .log(this.$t('notifications.file_was_sent'))
         ;
     },
     addMeta: function (file, xhr, formData) {
@@ -92,7 +92,7 @@ export default {
         alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(`Reading files not supported in this browser. Additional Meta like creation date won’t be sent.`)
+          .error(this.$t('notifications.file_upload_not_allowed'))
           ;
         return;
       }

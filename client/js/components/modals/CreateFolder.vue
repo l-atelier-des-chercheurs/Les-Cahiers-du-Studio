@@ -98,7 +98,7 @@ export default {
         alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error('Folder name already exists. Please use another.')
+          .error(this.$t('notifications.folder_name_exists'))
           ;
 
         return false;

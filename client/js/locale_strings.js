@@ -76,7 +76,14 @@ module.exports = (function() {
 
       notifications: {
         file_was_sent: 'Le fichier a été envoyé.',
-
+        file_upload_not_allowed: 'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
+        connection_active: 'La connexion au serveur est active.',
+        connection_lost: 'La connexion au serveur a été perdue.',
+        connection_error: 'La connexion au serveur n’a pu se faire.',
+        'wrong_password_for_folder:': 'Le password n’est pas le bon pour le dossier&nbsp;:',
+        'created_edited_media:': 'Création ou édition d’un média pour le dossier&nbsp;:',
+        folder_name_exists: 'Ce nom de dossier existe déjà, utilisez-en un autre.',
+        folder_name_needs_alphanumeric_characters: 'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
       }
     },
     en: {
@@ -155,7 +162,14 @@ module.exports = (function() {
 
       notifications: {
         file_was_sent: 'The file was sent.',
-
+        file_upload_not_allowed: 'File upload is not allowed by this browser.',
+        connection_active: 'The connection to the server is active.',
+        connection_lost: 'The connection to the server was lost.',
+        connection_error: 'The connection to the server could not be established.',
+        'wrong_password_for_folder:': 'Wrong password or folder missing for:',
+        'created_edited_media:': 'A media has been created or edited in folder:',
+        folder_name_exists: 'Folder name already exists. Please use another.',
+        folder_name_needs_alphanumeric_characters: 'Folder names need to contain at least one alphanumeric character.',
       }
     }
   };
