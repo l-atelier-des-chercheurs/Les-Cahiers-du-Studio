@@ -1196,6 +1196,8 @@ var vm = new _vue2.default({
     }
   },
   mounted: function mounted() {
+    var _this2 = this;
+
     if (this.settings.enable_system_bar) {
       document.body.classList.add('has_systembar');
     }
@@ -1213,6 +1215,10 @@ var vm = new _vue2.default({
       }
       this.$socketio.connect();
     }
+
+    window.onpopstate = function (event) {
+      _this2.settings.currentlyOpenedFolder = event.state.slugFolderName;
+    };
   },
 
   methods: {
@@ -1276,6 +1282,8 @@ var vm = new _vue2.default({
       this.settings.is_loading_medias_for_folder = slugFolderName;
       this.$socketio.listMedias(slugFolderName);
 
+      history.pushState({ slugFolderName: slugFolderName }, this.store.folders[slugFolderName].name, slugFolderName);
+
       window.addEventListener('timeline.listMediasForFolder', this.listMediasForFolder);
     },
     closeFolder: function closeFolder() {
@@ -1283,6 +1291,8 @@ var vm = new _vue2.default({
         console.log('ROOT EVENT: closeFolder');
       }
       this.settings.currentlyOpenedFolder = '';
+
+      history.pushState({ slugFolderName: '' }, '', '/');
     },
 
     listMediasForFolder: function listMediasForFolder(e) {

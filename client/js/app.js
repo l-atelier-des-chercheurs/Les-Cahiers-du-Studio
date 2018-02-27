@@ -285,6 +285,9 @@ let vm = new Vue({
       this.$socketio.connect();
     }
 
+    window.onpopstate = (event) => {
+      this.settings.currentlyOpenedFolder = event.state.slugFolderName;
+    };
   },
   methods: {
     createFolder: function(fdata) {
@@ -333,11 +336,15 @@ let vm = new Vue({
       this.settings.is_loading_medias_for_folder = slugFolderName;
       this.$socketio.listMedias(slugFolderName);
 
+      history.pushState({ slugFolderName }, this.store.folders[slugFolderName].name, slugFolderName);
+
       window.addEventListener('timeline.listMediasForFolder', this.listMediasForFolder);
     },
     closeFolder: function() {
       if(window.store.debug) { console.log(`ROOT EVENT: closeFolder`); }
       this.settings.currentlyOpenedFolder = '';
+
+      history.pushState({ slugFolderName: '' }, '', '/');
     },
 
     listMediasForFolder: function(e) {
