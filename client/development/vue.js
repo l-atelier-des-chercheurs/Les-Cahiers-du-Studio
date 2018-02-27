@@ -1994,7 +1994,7 @@ exports.default = {
       return dates;
     },
     getURLToApp: function getURLToApp(ip, port) {
-      return locals.protocol + '://' + ip + ':' + port;
+      return locals.protocol + '://' + ip + ':' + port + '/' + this.slugFolderName;
     },
     openInFinder: function openInFinder(thisPath) {
       var shell = window.require('electron').shell;
@@ -2107,7 +2107,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-ce077450", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-ce077450", __vue__options__)
+    hotAPI.reload("data-v-ce077450", __vue__options__)
   }
 })()}
 },{"./modals/MediasList.vue":17,"./sidebar/Calendrier.vue":18,"./sidebar/Informations.vue":19,"./sidebar/SidebarSection.vue":20,"./sidebar/Tableau.vue":21,"@xkeshi/vue-qrcode":26,"vue":279,"vue-hot-reload-api":274}],12:[function(require,module,exports){

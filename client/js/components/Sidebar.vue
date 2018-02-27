@@ -308,7 +308,7 @@ export default {
     },
 
     getURLToApp(ip, port) {
-      return `${locals.protocol}://${ip}:${port}`;
+      return `${locals.protocol}://${ip}:${port}/${this.slugFolderName}`;
     },
     openInFinder(thisPath) {
       const shell = window.require('electron').shell;
