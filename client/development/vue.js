@@ -1059,7 +1059,6 @@ _vue2.default.prototype.$socketio = new _vue2.default({
 
   methods: {
     _onSocketConnect: function _onSocketConnect() {
-      debugger;
       var sessionId = this.socket.io.engine.id;
       console.log('Connected as ' + sessionId);
       window.store.state.connected = true;
