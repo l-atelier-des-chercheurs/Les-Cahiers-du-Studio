@@ -11,7 +11,7 @@ const portscanner = require('portscanner');
 const server = require('./server');
 
 const
-  local  = require('./local'),
+  settings = require('./settings.json'),
   config = require('./config.json'),
   dev = require('./bin/dev-log')
 ;
@@ -47,8 +47,8 @@ function createWindow() {
   }
 
   global.appInfos.version = app.getVersion();
-  let pathToPresentationMd = path.join(`${__dirname.replace(`${path.sep}app.asar`, '')}`, `${local.settings().contentDirname}`, `presentation.md`);
-  global.appInfos.presentationMd = fs.readFileSync(pathToPresentationMd, local.settings().textEncoding);
+  let pathToPresentationMd = path.join(`${__dirname.replace(`${path.sep}app.asar`, '')}`, `${settings.contentDirname}`, `presentation.md`);
+  global.appInfos.presentationMd = fs.readFileSync(pathToPresentationMd, settings.textEncoding);
 
   dev.log(`——— Starting les-cahiers app version ${global.appInfos.version}`);
 
@@ -281,8 +281,8 @@ function copyAndRenameUserFolder() {
       // if userDir folder doesn't exist yet at destination
       if(err) {
         dev.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
-        dev.log(`->duplicating /${local.settings().contentDirname} to create a new one`);
-        const sourcePathInApp = path.join(`${__dirname.replace(`${path.sep}app.asar`, '')}`, `${local.settings().contentDirname}`);
+        dev.log(`->duplicating /${settings.contentDirname} to create a new one`);
+        const sourcePathInApp = path.join(`${__dirname.replace(`${path.sep}app.asar`, '')}`, `${settings.contentDirname}`);
         fs.copy(sourcePathInApp, pathToUserContent, function (err) {
           if(err) {
             dev.error('failed to copy: ' + err);

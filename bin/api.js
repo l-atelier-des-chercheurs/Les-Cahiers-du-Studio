@@ -9,7 +9,7 @@ const
 ;
 
 const
-  local  = require('../local'),
+  settings = require('../settings.json'),
   dev = require('./dev-log')
 ;
 
@@ -18,10 +18,10 @@ module.exports = (function() {
   const API = {
     getFolderPath               : (slugFolderName = '') => getFolderPath(slugFolderName),
     findFirstFilenameNotTaken   : (thisPath, fileName) => findFirstFilenameNotTaken(thisPath, fileName),
-    getCurrentDate              : (format = local.settings().metaDateFormat) => getCurrentDate(format),
-    convertDate                 : (date, format = local.settings().metaDateFormat) => convertDate(date, format),
+    getCurrentDate              : (format = settings.metaDateFormat) => getCurrentDate(format),
+    convertDate                 : (date, format = settings.metaDateFormat) => convertDate(date, format),
     parseUTCDate                : (date) => parseUTCDate(date),
-    parseDate                   : (date, format = local.settings().metaDateFormat) => parseDate(date, format),
+    parseDate                   : (date, format = settings.metaDateFormat) => parseDate(date, format),
     storeData                   : (mpath, d, e) => storeData( mpath, d, e),
     parseData                   : (d) => parseData(d),
     eventAndContent             : (sendEvent, objectJson) => eventAndContent(sendEvent, objectJson),
@@ -63,14 +63,14 @@ module.exports = (function() {
   function findFirstFilenameNotTaken(thisPath, fileName) {
     return new Promise(function(resolve, reject) {
       // let's find the extension if it exists
-      var fileExtension = new RegExp(local.settings().regexpGetFileExtension, 'i').exec(fileName)[0];
+      var fileExtension = new RegExp(settings.regexpGetFileExtension, 'i').exec(fileName)[0];
       // remove extension
-      var fileNameWithoutExtension = new RegExp(local.settings().regexpRemoveFileExtension, 'i').exec(fileName)[1];
+      var fileNameWithoutExtension = new RegExp(settings.regexpRemoveFileExtension, 'i').exec(fileName)[1];
       // slug the rest of the name
       fileNameWithoutExtension = slug(fileNameWithoutExtension);
 
       let newFileName = `${fileNameWithoutExtension}${fileExtension}`;
-      let newMetaFileName = `${newFileName}${local.settings().metaFileext}`;
+      let newMetaFileName = `${newFileName}${settings.metaFileext}`;
       let newPathToFile = path.join(thisPath, newFileName);
       let newPathToMeta = path.join(thisPath, newMetaFileName);
       let index = 0;
@@ -82,7 +82,7 @@ module.exports = (function() {
           dev.logverbose(`- - following path is already taken : newPathToFile = ${newPathToFile} or newPathToMeta = ${newPathToMeta}`);
           index++;
           newFileName = `${fileNameWithoutExtension}-${index}${fileExtension}`;
-          newMetaFileName = `${newFileName}${local.settings().metaFileext}`;
+          newMetaFileName = `${newFileName}${settings.metaFileext}`;
           newPathToFile = path.join(thisPath, newFileName);
           newPathToMeta = path.join(thisPath, newMetaFileName);
         }

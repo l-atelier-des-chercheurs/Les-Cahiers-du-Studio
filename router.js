@@ -5,7 +5,7 @@ const
 ;
 
 const
-  local = require('./local'),
+  settings = require('./settings.json'),
   sockets = require('./sockets'),
   dev = require('./bin/dev-log'),
   api = require('./bin/api'),
@@ -32,13 +32,12 @@ module.exports = function(app,io,m){
       let pageDataJSON = {};
 
       pageDataJSON.pageTitle = 'Les Cahiers du Studio';
-      pageDataJSON.slugFolderName = '';
       // full path on the storage space, as displayed in the footer
       pageDataJSON.folderPath = api.getFolderPath();
 
       pageDataJSON.url = req.path;
       pageDataJSON.protocol = req.protocol;
-      pageDataJSON.structure = local.settings().structure;
+      pageDataJSON.structure = settings.structure;
       pageDataJSON.logToFile = global.nodeStorage.getItem('logToFile');
       pageDataJSON.isDebug = dev.isDebug();
 
@@ -74,7 +73,7 @@ module.exports = function(app,io,m){
   }
 
   // GET
-  function showIndex(req,res) {
+  function showIndex(req, res) {
     generatePageData(req).then(function(pageData) {
       dev.logpackets(`Rendering index with data `, JSON.stringify(pageData, null, 4));
       res.render('index', pageData);

@@ -9,7 +9,7 @@ const
 ;
 
 const
-  local  = require('../local'),
+  settings = require('../settings.json'),
   dev = require('./dev-log'),
   api = require('./api')
 ;
@@ -37,7 +37,7 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
 //       dev.logfunction(`THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and mediaType: ${mediaType}`);
 
-      let thumbFolderPath = path.join(local.settings().thumbFolderName, slugFolderName);
+      let thumbFolderPath = path.join(settings.thumbFolderName, slugFolderName);
       let mediaPath = path.join(api.getFolderPath(slugFolderName), slugMediaName);
 
       // let’s make sure that our thumb folder exists first
@@ -162,7 +162,7 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`THUMBS — removeMediaThumbs — for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName}`);
 
-      let thumbFolderPath = path.join(local.settings().thumbFolderName, slugFolderName);
+      let thumbFolderPath = path.join(settings.thumbFolderName, slugFolderName);
       let fullThumbFolderPath = api.getFolderPath(thumbFolderPath);
 
       fs.mkdirp(fullThumbFolderPath, function (err) {
@@ -246,7 +246,7 @@ module.exports = (function() {
             .withoutEnlargement()
             .withMetadata()
             .toFormat('jpeg', {
-              quality: local.settings().mediaThumbQuality
+              quality: settings.mediaThumbQuality
             })
             .toFile(fullThumbPath)
             .then(function() {
