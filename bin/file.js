@@ -23,6 +23,7 @@ module.exports = (function() {
     removeFolder        : (slugFolderName)      => removeFolder(slugFolderName),
 
     getMedia            : (slugFolderName, slugMediaName) => getMedia(slugFolderName, slugMediaName),
+    gatherAllMedias     : (slugFolderName, slugMediaName, mediaID) => gatherAllMedias( slugFolderName, slugMediaName, mediaID),
     createMediaMeta     : (slugFolderName, slugMediaName, additionalMeta) => createMediaMeta(slugFolderName, slugMediaName, additionalMeta),
     editMedia           : (mdata)               => editMedia(mdata),
     removeMedia         : (slugFolderName, slugMediaName) => removeMedia(slugFolderName, slugMediaName),
@@ -161,9 +162,12 @@ module.exports = (function() {
         });
 
         dev.logverbose(`Number of folders that match in ${mainFolderPath} = ${folders.length}. Folder(s) is(are) ${folders}`);
+        if(folders.length === 0) {
+          reject('No such folder found');
+        }
 
         var allFoldersData = [];
-        folders.forEach((slugFolderName) => {
+        folders.forEach(slugFolderName => {
           let fmeta = new Promise((resolve, reject) => {
 
             let prepareFolderMetaForClient = (slugFolderName, meta) => {
@@ -340,17 +344,17 @@ module.exports = (function() {
     });
   }
 
-  function getMedia(slugFolderName, slugMediaName) {
+  function getMedia(slugFolderName, slugMediaName = '') {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — getMedia`);
       if(slugFolderName === undefined) {
         dev.error(`Missing slugFolderName to read medias from.`);
         reject();
       }
-      if(!slugMediaName) {
+      if(slugMediaName === '') {
         dev.logverbose(`Missing slugMediaName to read medias from ${slugFolderName}. Reading all medias instead.`);
       }
-      dev.logverbose(`COMMON — getMedia — folder: ${slugFolderName} — media: ${slugMediaName}`);
+      dev.logverbose(`COMMON — getMedia — slugFolderName: ${slugFolderName} — slugMediaName: ${slugMediaName}`);
 
       let slugFolderPath = api.getFolderPath(slugFolderName);
       fs.readdir(slugFolderPath, function (err, filenames) {
@@ -403,6 +407,79 @@ module.exports = (function() {
           });
         }
 
+      });
+    });
+  }
+
+
+  function gatherAllMedias(slugFolderName, slugMediaName, mediaID) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction(`COMMON — gatherAllMedias : will gather medias for folder ${slugFolderName} with opt slugMediaName = ${slugMediaName}`);
+
+      getMedia(slugFolderName, slugMediaName).then(mediasData => {
+
+        const defaultReactiveMeta = {
+          date_timeline: '',
+          date_modified: '',
+          type: '',
+          color: '',
+          authors: '',
+          keywords: '',
+          caption: '',
+          public: false,
+          collapsed: false,
+          y: 0,
+          content: ''
+        };
+
+
+        // sanitize each media — make sure they have all the reactive fields when sent, because otherwise vue.js can’t track changes when a key is added afterwards
+        for(let slugMediaName in mediasData) {
+
+          let mediaData = mediasData[slugMediaName];
+
+          /*******************************************************
+            PRE 1.0.0 beta 3 legacy
+          ******************************************************/
+          // LEGACY : rename 'created' to 'date_created', and set date_timeline
+          {
+            if(mediaData.hasOwnProperty('created')) {
+              mediaData.date_created = mediaData.created;
+              if(!mediaData.hasOwnProperty('date_timeline')) {
+                mediaData.date_timeline = mediaData.created;
+              }
+              delete mediaData.created;
+            }
+            if(mediaData.hasOwnProperty('modified') && !mediaData.hasOwnProperty('date_modified')) {
+              mediaData.date_modified = mediaData.modified;
+              delete mediaData.modified;
+            }
+          }
+          /*******************************************************
+            END
+          ******************************************************/
+
+          mediaData.date_timeline = api.parseDate(mediaData.date_timeline);
+          if(mediaData.hasOwnProperty('date_created')) {
+            mediaData.date_created = api.parseDate(mediaData.date_created);
+          }
+          if(mediaData.hasOwnProperty('date_upload')) {
+            mediaData.date_upload = api.parseDate(mediaData.date_upload);
+          }
+          if(mediaData.hasOwnProperty('date_modified')) {
+            mediaData.date_modified = api.parseDate(mediaData.date_modified);
+          }
+          if(mediaID) {
+            mediaData.mediaID = mediaID;
+          }
+
+          mediasData[slugMediaName] = Object.assign({}, defaultReactiveMeta, mediaData);
+        }
+        resolve(mediasData);
+
+      }, function(err) {
+        dev.error(`Failed to list medias! Error: ${err}`);
+        reject(err);
       });
     });
   }

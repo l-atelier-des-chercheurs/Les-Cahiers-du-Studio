@@ -76,22 +76,22 @@ Vue.prototype.$socketio = new Vue({
   data: {
     socket: ''
   },
-  created() {
-    if(window.navigator.userAgent.indexOf('Chrome') > -1) {
-      this.socket = io.connect({ transports: ['websocket','polling'] });
-    } else {
-      this.socket = io.connect({ transports: ['polling','websocket'] });
-    }
-    	this.socket.on('connect', this._onSocketConnect);
-    this.socket.on('error', this._onSocketError);
-    this.socket.on('connect_error', this._onConnectError);
-    this.socket.on('authentificated', this._authentificated);
-    	this.socket.on('listMedia', this._onListMedia);
-    	this.socket.on('listMedias', this._onListMedias);
-    	this.socket.on('listFolder', this._onListFolder);
-    	this.socket.on('listFolders', this._onListFolders);
-  },
   methods: {
+    connect() {
+      if(window.navigator.userAgent.indexOf('Chrome') > -1) {
+        this.socket = io.connect({ transports: ['websocket','polling'] });
+      } else {
+        this.socket = io.connect({ transports: ['polling','websocket'] });
+      }
+      	this.socket.on('connect', this._onSocketConnect);
+      this.socket.on('error', this._onSocketError);
+      this.socket.on('connect_error', this._onConnectError);
+      this.socket.on('authentificated', this._authentificated);
+      	this.socket.on('listMedia', this._onListMedia);
+      	this.socket.on('listMedias', this._onListMedias);
+      	this.socket.on('listFolder', this._onListFolder);
+      	this.socket.on('listFolders', this._onListFolders);
+    },
     _onSocketConnect() {
       	let sessionId = this.socket.io.engine.id;
       	console.log(`Connected as ${sessionId}`);
@@ -266,6 +266,27 @@ let vm = new Vue({
     if(this.settings.enable_system_bar) {
       document.body.classList.add('has_systembar');
     }
+
+    {
+      if(!!this.store.noticeOfError) {
+        if(this.store.noticeOfError === 'failed_to_find_folder') {
+          alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t('notifications["failed_to_get_folder:"]') + ' ' + this.store.slugFolderName)
+            ;
+        }
+      } else {
+        // if no error and if we have some content already loaded, let’s open it directly
+        if(Object.keys(this.store.folders).length > 0) {
+          this.settings.currentlyOpenedFolder = Object.keys(this.store.folders)[0];
+          return;
+        }
+      }
+
+      this.$socketio.connect();
+    }
+
   },
   methods: {
     createFolder: function(fdata) {

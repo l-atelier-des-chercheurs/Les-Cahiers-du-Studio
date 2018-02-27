@@ -93,6 +93,9 @@ module.exports = (function() {
       file.editFolder(foldersData, d).then(slugFolderName => {
         sendFolders({ slugFolderName });
       });
+    }, function(err, p) {
+      dev.error(`Failed to edit folder: ${err}`);
+      reject(err);
     });
   }
   function onRemoveFolder(socket, slugFolderName) {
@@ -169,105 +172,16 @@ module.exports = (function() {
 
   /**************************************************************** GENERAL ********************************/
 
-  function sendMedias({ slugFolderName, slugMediaName, socket, mediaID }) {
-    dev.logfunction(`COMMON - sendMedias for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and mediaID = ${mediaID}`);
-
-    file.getFolder(slugFolderName).then(foldersData => {
-      file.getMedia(slugFolderName, slugMediaName).then(mediasData => {
-
-        const defaultReactiveMeta = {
-          date_timeline: '',
-          date_modified: '',
-          type: '',
-          color: '',
-          authors: '',
-          keywords: '',
-          caption: '',
-          public: false,
-          collapsed: false,
-          y: 0,
-          content: ''
-        };
-
-
-        // sanitize each media — make sure they have all the reactive fields when sent, because otherwise vue.js can’t track changes when a key is added afterwards
-        for(let slugMediaName in mediasData) {
-
-          let mediaData = mediasData[slugMediaName];
-
-          /*******************************************************
-            PRE 1.0.0 beta 3 legacy
-          ******************************************************/
-          // LEGACY : rename 'created' to 'date_created', and set date_timeline
-          {
-            if(mediaData.hasOwnProperty('created')) {
-              mediaData.date_created = mediaData.created;
-              if(!mediaData.hasOwnProperty('date_timeline')) {
-                mediaData.date_timeline = mediaData.created;
-              }
-              delete mediaData.created;
-            }
-            if(mediaData.hasOwnProperty('modified') && !mediaData.hasOwnProperty('date_modified')) {
-              mediaData.date_modified = mediaData.modified;
-              delete mediaData.modified;
-            }
-          }
-          /*******************************************************
-            END
-          ******************************************************/
-
-          mediaData.date_timeline = api.parseDate(mediaData.date_timeline);
-          if(mediaData.hasOwnProperty('date_created')) {
-            mediaData.date_created = api.parseDate(mediaData.date_created);
-          }
-          if(mediaData.hasOwnProperty('date_upload')) {
-            mediaData.date_upload = api.parseDate(mediaData.date_upload);
-          }
-          if(mediaData.hasOwnProperty('date_modified')) {
-            mediaData.date_modified = api.parseDate(mediaData.date_modified);
-          }
-          if(mediaID) {
-            mediaData.mediaID = mediaID;
-          }
-
-          mediasData[slugMediaName] = Object.assign({}, defaultReactiveMeta, mediaData);
-        }
-
-        Object.keys(io.sockets.connected).forEach(sid => {
-          if(socket) {
-            if(socket.id !== sid) {
-              return;
-            }
-          }
-          let thisSocket = socket || io.sockets.connected[sid];
-          let filteredMediasData = {[slugFolderName]: {medias: auth.filterMedias(sid, foldersData, slugFolderName, mediasData)}};
-
-          if(slugMediaName) {
-            api.sendEventWithContent('listMedia',  filteredMediasData, io, thisSocket);
-          } else {
-            api.sendEventWithContent('listMedias',  filteredMediasData, io, thisSocket);
-          }
-        });
-
-      }, function(err) {
-        dev.error(`Failed to list medias! Error: ${err}`);
-      });
-    }, function(err, p) {
-      dev.error(`Failed to get folders data: ${err}`);
-      reject(err);
-    });
-  }
-
-
   function sendFolders({ slugFolderName, socket, folderID } = {}) {
     dev.logfunction(`COMMON - sendFolders for ${slugFolderName}`);
 
     file.getFolder(slugFolderName).then(foldersData => {
-      // check if single socket or multiple sockets
+      // if folder creation, we get an ID to make sure
       if(slugFolderName && folderID) {
         foldersData[slugFolderName].folderID = folderID;
       }
 
+      // check if single socket or multiple sockets
       Object.keys(io.sockets.connected).forEach(sid => {
         if(socket) {
           if(socket.id !== sid) {
@@ -294,6 +208,26 @@ module.exports = (function() {
     });
   }
 
+  function sendMedias({ slugFolderName, slugMediaName, socket, mediaID }) {
+    dev.logfunction(`COMMON - sendMedias for slugFolderName = ${slugFolderName}, slugMediaName = ${slugMediaName} and mediaID = ${mediaID}`);
+
+    file.getFolder(slugFolderName).then(foldersData => {
+      file.gatherAllMedias( slugFolderName, slugMediaName, mediaID).then(mediasData => {
+        Object.keys(io.sockets.connected).forEach(sid => {
+          if(socket && socket.id !== sid) { return; }
+
+          let thisSocket = socket || io.sockets.connected[sid];
+          let filteredMediasData = {[slugFolderName]: {medias: auth.filterMedias(sid, foldersData, slugFolderName, mediasData)}};
+
+          if(slugMediaName) {
+            api.sendEventWithContent('listMedia',  filteredMediasData, io, thisSocket);
+          } else {
+            api.sendEventWithContent('listMedias',  filteredMediasData, io, thisSocket);
+          }
+        });
+      });
+    });
+  }
 
   return API;
 })();

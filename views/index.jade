@@ -8,6 +8,7 @@ html
       link(rel='stylesheet', href='/production/all.min.css')
 
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
     title #{pageTitle}
     style.
       @font-face {
@@ -41,15 +42,22 @@ html
 
     script.
       window.locals = {};
-      locals.folderPath = "#{folderPath}";
-      locals.structure = !{JSON.stringify(structure, null, 4)};
       locals.localNetworkInfos = !{JSON.stringify(localNetworkInfos, null, 4)};
-      locals.presentation_md = !{JSON.stringify(presentation_md)};
+      locals.presentationMD = !{JSON.stringify(presentationMD)};
       locals.appVersion = "!{global.appInfos.version}";
       locals.protocol = "!{protocol}";
+      locals.slugFolderName = "!{slugFolderName}";
+
+    - if(!!folderAndMediaData)
+      script.
+        locals.folderAndMediaData = !{JSON.stringify(folderAndMediaData)};
+
+    - if(!!noticeOfError)
+      script.
+        locals.noticeOfError = "!{noticeOfError}";
 
     - if(isDebug)
-        script(src='/development/main.js')
-        script(src='/development/vue.js')
+      script(src='/development/main.js')
+      script(src='/development/vue.js')
     - else
-        script(src='/production/all.min.js')
+      script(src='/production/all.min.js')

@@ -8,7 +8,7 @@
 
 export default {
   props: {
-    value: String,
+    value: Object,
     twowaybinding: {
       type: Boolean,
       default: false

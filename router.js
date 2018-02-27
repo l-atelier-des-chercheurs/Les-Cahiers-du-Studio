@@ -18,6 +18,7 @@ module.exports = function(app,io,m){
   * routing event
   */
   app.get('/', showIndex);
+  app.get('/:folder', loadFolder);
   app.post('/:folder/file-upload', postFile2);
 
   /**
@@ -34,7 +35,7 @@ module.exports = function(app,io,m){
       pageDataJSON.pageTitle = 'Les Cahiers du Studio';
       // full path on the storage space, as displayed in the footer
       pageDataJSON.folderPath = api.getFolderPath();
-
+      pageDataJSON.slugFolderName = '';
       pageDataJSON.url = req.path;
       pageDataJSON.protocol = req.protocol;
       pageDataJSON.structure = settings.structure;
@@ -45,7 +46,7 @@ module.exports = function(app,io,m){
 
       let getPresentation = new Promise((resolve, reject) => {
         file.getPresentation().then((presentationMD) => {
-          pageDataJSON.presentation_md = presentationMD;
+          pageDataJSON.presentationMD = presentationMD;
           resolve();
         });
       });
@@ -81,6 +82,36 @@ module.exports = function(app,io,m){
       dev.error(`Err while getting index data: ${err}`);
     });
   }
+
+  function loadFolder(req, res) {
+    let slugFolderName = req.param('folder');
+    generatePageData(req).then(function(pageData) {
+      pageData.slugFolderName = slugFolderName;
+
+      // get medias for a folder
+      file.getFolder(slugFolderName).then(foldersData => {
+        file.gatherAllMedias(slugFolderName).then(mediasData => {
+
+          // recreate full object
+          foldersData[slugFolderName].medias = mediasData;
+
+          pageData.folderAndMediaData = foldersData;
+          res.render('index', pageData);
+        }, function(err, p) {
+          dev.error(`Failed to gather medias: ${err}`);
+          pageData.noticeOfError = 'failed_to_find_folder';
+          res.render('index', pageData);
+        });
+      }, function(err, p) {
+        dev.error(`Failed to get folder: ${err}`);
+        pageData.noticeOfError = 'failed_to_find_folder';
+        res.render('index', pageData);
+      });
+    }, function(err) {
+      dev.error(`Err while getting index data: ${err}`);
+    });
+  }
+
 
   function postFile2(req, res){
     let slugFolderName = req.param('folder');

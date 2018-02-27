@@ -15,7 +15,7 @@
             v-if="view === 'ListView'"
             :slugFolderName="$root.settings.currentlyOpenedFolder"
             :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
-            :presentation_md="$root.store.presentation_md"
+            :presentationMD="$root.store.presentationMD"
             :read_only="!$root.store.connected"
           >
           </ListView>

@@ -66,10 +66,12 @@ window.store = {
   debug: true,
   state: {
     connected: false,
-    folders: {},
+    folders: locals.folderAndMediaData !== undefined ? locals.folderAndMediaData : {},
     localNetworkInfos: locals.localNetworkInfos,
     appVersion: locals.appVersion,
-    presentation_md: locals.presentation_md,
+    presentationMD: locals.presentationMD,
+    slugFolderName: locals.slugFolderName,
+    noticeOfError: locals.noticeOfError,
     is_electron: !!(window && window.process && window.process.type),
     is_darwin: !!(window && window.process && window.process.platform === 'darwin')
   }

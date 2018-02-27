@@ -135,7 +135,7 @@ import CreateFolder from './components/modals/CreateFolder.vue';
 import VueMarkdown from 'vue-markdown'
 
 export default {
-  props: ['presentation_md', 'read_only'],
+  props: ['presentationMD', 'read_only'],
   components: {
     CreateFolder,
     Folder,
@@ -162,7 +162,7 @@ export default {
         if(this.$root.justCreatedFolderID) {
           Object.keys(this.$root.store.folders).map((slugFolderName) => {
             let folder = this.$root.store.folders[slugFolderName];
-            // if there is, try to match it with mediaID of listed medias
+            // if there is, try to match it with folderID
             if(folder.folderID && folder.folderID === this.$root.justCreatedFolderID) {
               this.$root.justCreatedFolderID = false;
               this.$root.openFolder(slugFolderName);
@@ -196,13 +196,13 @@ export default {
     },
     presentationText() {
 
-      if(this.presentation_md.hasOwnProperty(this.currentLang)) {
-        return this.presentation_md[this.currentLang];
-      } else if(this.presentation_md.hasOwnProperty('content')) {
-        return this.presentation_md['content'];
+      if(this.presentationMD.hasOwnProperty(this.currentLang)) {
+        return this.presentationMD[this.currentLang];
+      } else if(this.presentationMD.hasOwnProperty('content')) {
+        return this.presentationMD['content'];
       }
 
-      return this.presentation_md;
+      return this.presentationMD;
     }
   }
 }
