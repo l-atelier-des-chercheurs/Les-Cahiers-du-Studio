@@ -275,47 +275,8 @@ function setApplicationMenu() {
 }
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
-
-    // check if nodeStorage has a userDirPath field
-    let userDirPath = '';
-    try {
-      userDirPath = global.nodeStorage.getItem('userDirPath');
-      dev.log(`global.nodeStorage.getItem('userDirPath') : ${global.nodeStorage.getItem('userDirPath')}`);
-    } catch (err) {
-      dev.log('Fail loading node storage for userDirPath');
-      // the file is there, but corrupt. Handle appropriately.
-    }
-
-    // if it has an empty userDirPath
-    if(userDirPath === '') {
-      dev.log('Missing path to content folder');
-      try {
-        userDirPath = dialog.showOpenDialog({
-          title: 'Select the folder which will contain all the medias and the informations added.',
-          defaultPath: app.getPath('documents'),
-          properties: ['openDirectory']
-        })[0];
-        dev.log('A path was picked: ' + userDirPath);
-      } catch(err){
-        dev.log('Cancel was click, not path selected. Settings userDirPath back to default.');
-        userDirPath = app.getPath(config.userDirPath);
-      }
-      global.nodeStorage.setItem('userDirPath', userDirPath);
-    }
-
-    // if it has a non-empty userDirPath, lets use it
-    else if(userDirPath !== null && userDirPath.length > 0) {
-      dev.log('Found usable userDirPath:' + userDirPath);
-    }
-
-    // if it doens't have a userDirPath
-    else {
-      dev.log('No usable userDirPath, using default');
-      userDirPath = app.getPath(config.userDirPath);
-    }
-
+    const userDirPath = app.getPath(config.userDirPath);
     const pathToUserContent = path.join(userDirPath, config.userDirname);
-
     fs.access(pathToUserContent, fs.F_OK, function(err) {
       // if userDir folder doesn't exist yet at destination
       if(err) {
@@ -331,7 +292,7 @@ function copyAndRenameUserFolder() {
         });
       } else {
         dev.log('Content folder ' + config.userDirname + ' already exists in ' + userDirPath);
-        dev.log('->not creating a new one');
+        dev.log('-> not creating a new one');
         resolve(pathToUserContent);
       }
     });
