@@ -1209,10 +1209,8 @@ var vm = new _vue2.default({
         // if no error and if we have some content already loaded, let’s open it directly
         if ((0, _keys2.default)(this.store.folders).length > 0) {
           this.settings.currentlyOpenedFolder = (0, _keys2.default)(this.store.folders)[0];
-          return;
         }
       }
-
       this.$socketio.connect();
     }
   },
@@ -3046,11 +3044,11 @@ exports.default = {
     },
     linkToThumb: function linkToThumb() {
       var pathToSmallestThumb = _underscore2.default.findWhere(this.media.thumbs, { size: this.thumbRes }).path;
-      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
+      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : this.mediaURL;
     },
     linkToHoveredThumb: function linkToHoveredThumb() {
       var pathToSmallestThumb = _underscore2.default.findWhere(this.media.thumbs, { size: this.thumbResHovered }).path;
-      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
+      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : this.mediaURL;
     },
     linkToVideoThumb: function linkToVideoThumb() {
 
@@ -3066,7 +3064,7 @@ exports.default = {
       }
 
       var pathToSmallestThumb = _underscore2.default.findWhere(timeMarkThumbs.thumbsData, { size: this.thumbRes }).path;
-      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
+      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : this.mediaURL;
     }
 
   }

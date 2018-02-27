@@ -131,11 +131,11 @@ export default {
     },
     linkToThumb: function() {
       let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: this.thumbRes }).path;
-      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
+      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : this.mediaURL;
     },
     linkToHoveredThumb: function() {
       let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: this.thumbResHovered }).path;
-      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
+      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : this.mediaURL;
     },
     linkToVideoThumb: function() {
 
@@ -147,7 +147,7 @@ export default {
       if(timeMarkThumbs.length === 0)  { return; }
 
       let pathToSmallestThumb = _.findWhere(timeMarkThumbs.thumbsData, { size: this.thumbRes }).path;
-      return pathToSmallestThumb !== undefined ? pathToSmallestThumb : this.mediaURL;
+      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : this.mediaURL;
     }
 
   }

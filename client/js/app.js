@@ -280,10 +280,8 @@ let vm = new Vue({
         // if no error and if we have some content already loaded, let’s open it directly
         if(Object.keys(this.store.folders).length > 0) {
           this.settings.currentlyOpenedFolder = Object.keys(this.store.folders)[0];
-          return;
         }
       }
-
       this.$socketio.connect();
     }
 
