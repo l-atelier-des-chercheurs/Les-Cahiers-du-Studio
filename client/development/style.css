@@ -4868,6 +4868,9 @@ body.is_unscrollable {
   width: 100%;
   color: white;
   letter-spacing: 0.05em;
+  -webkit-transition: background-color 0.4s ease-out;
+  -o-transition: background-color 0.4s ease-out;
+  transition: background-color 0.4s ease-out;
 }
 .m_navbar .bloccontainer {
   width: 100%;

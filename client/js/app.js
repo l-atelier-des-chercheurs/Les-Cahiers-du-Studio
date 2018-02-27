@@ -22,7 +22,6 @@ Vue.use(VueI18n);
 Vue.config.silent = false;
 Vue.config.devtools = true;
 
-
 let lang_settings = {
   available: {
     fr: 'Français',
@@ -66,7 +65,6 @@ let i18n = new VueI18n({
   locale: lang_settings.current, // set locale
   messages: locale_strings, // set locale messages
 });
-
 
 /***********
   SOCKETIO

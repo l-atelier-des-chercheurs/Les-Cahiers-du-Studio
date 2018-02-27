@@ -3,8 +3,6 @@
     class="mediaContainer flex-wrap flex-vertically-centered"
     :class="`type-${media.type}`"
     :data-context="context"
-    @mousenter="is_hovered = true"
-    @mouseleave="is_hovered = false"
   >
 
     <template v-if="media.type === 'image'">
@@ -13,7 +11,7 @@
         name="fade"
         :duration="850"
         >
-        <img v-if="is_hovered" :src="linkToHoveredThumb">
+        <img v-if="is_hovered && $root.store.is_electron" :src="linkToHoveredThumb">
       </transition>
     </template>
 
