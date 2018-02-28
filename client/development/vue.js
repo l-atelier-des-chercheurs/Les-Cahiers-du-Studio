@@ -32,31 +32,27 @@ exports.default = {
     TimeLineView: _TimeLineView2.default,
     BottomFooter: _BottomFooter2.default
   },
+  props: ['current_slugFolderName', 'currentFolder'],
   data: function data() {
-    return {
-      view: 'ListView'
-    };
+    return {};
   },
 
-  computed: {},
-  watch: {
-    '$root.settings.currentlyOpenedFolder': function $rootSettingsCurrentlyOpenedFolder() {
-      if (this.$root.settings.currentlyOpenedFolder !== '') {
-        this.view = 'TimeLineView';
-      } else {
-        this.view = 'ListView';
+  computed: {
+    view: function view() {
+      if (this.current_slugFolderName !== '') {
+        return 'TimeLineView';
       }
+      return 'ListView';
     }
   },
-  methods: {
-    log: function log() {}
-  }
+  watch: {},
+  methods: {}
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[(_vm.$root.settings.enable_system_bar)?_c('SystemBar',{attrs:{"view":_vm.view}}):_vm._e(),_vm._v(" "),(_vm.view === 'ListView')?[_c('div',{staticClass:"container"},[_c('div',{staticClass:"row"},[(_vm.view === 'ListView')?_c('ListView',{attrs:{"slugFolderName":_vm.$root.settings.currentlyOpenedFolder,"folder":_vm.$root.store.folders[_vm.$root.settings.currentlyOpenedFolder],"presentationMD":_vm.$root.store.presentationMD,"read_only":!_vm.$root.store.connected}}):_vm._e()],1)])]:(_vm.view === 'TimeLineView')?[_c('TimeLineView',{attrs:{"slugFolderName":_vm.$root.settings.currentlyOpenedFolder,"folder":_vm.$root.store.folders[_vm.$root.settings.currentlyOpenedFolder],"medias":_vm.$root.store.folders[_vm.$root.settings.currentlyOpenedFolder].medias,"read_only":!_vm.$root.store.connected}})]:_vm._e(),_vm._v(" "),_c('div',{staticClass:"container"},[_c('div',{staticClass:"row"},[[(_vm.$root.settings.currentlyOpenedFolder === '')?_c('BottomFooter'):_vm._e()]],2)]),_vm._v(" "),_c('portal-target',{attrs:{"name":"modal_container"}})],2)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[(_vm.$root.settings.enable_system_bar)?_c('SystemBar',{attrs:{"view":_vm.view}}):_vm._e(),_vm._v(" "),(_vm.view === 'ListView')?[_c('div',{staticClass:"container"},[_c('div',{staticClass:"row"},[(_vm.view === 'ListView')?_c('ListView',{attrs:{"slugFolderName":_vm.current_slugFolderName,"folder":_vm.currentFolder,"presentationMD":_vm.$root.store.presentationMD,"read_only":!_vm.$root.store.connected}}):_vm._e()],1)])]:(_vm.view === 'TimeLineView' && _vm.currentFolder.hasOwnProperty('name'))?[_c('TimeLineView',{attrs:{"slugFolderName":_vm.current_slugFolderName,"folder":_vm.currentFolder,"medias":_vm.currentFolder.medias,"read_only":!_vm.$root.store.connected}})]:_vm._e(),_vm._v(" "),_c('div',{staticClass:"container"},[_c('div',{staticClass:"row"},[[(_vm.current_slugFolderName === '')?_c('BottomFooter'):_vm._e()]],2)]),_vm._v(" "),_c('portal-target',{attrs:{"name":"modal_container"}})],2)}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -978,14 +974,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
   VUE
 ***********/
 
+_vue2.default.config.silent = false;
+_vue2.default.config.devtools = true;
+
 _vue2.default.prototype.$eventHub = new _vue2.default(); // Global event bus
 
 _vue2.default.use(_vueScrollto2.default);
 _vue2.default.use(_portalVue2.default);
 _vue2.default.use(_vueI18n2.default);
-
-_vue2.default.config.silent = false;
-_vue2.default.config.devtools = true;
 
 var lang_settings = {
   available: {
@@ -1099,6 +1095,8 @@ _vue2.default.prototype.$socketio = new _vue2.default({
           } else {}
         });
       }
+
+      window.dispatchEvent(new CustomEvent('socketio.connected_and_authentified'));
       this.listFolders();
     },
     _onListMedia: function _onListMedia(mdata) {
@@ -1107,7 +1105,7 @@ _vue2.default.prototype.$socketio = new _vue2.default({
       console.log('Media data is for ' + slugFolderName + '.');
 
       //     let mediaData = Object.values(mdata[slugFolderName].medias)[0];
-      //     	let mediaName = Object.keys(mdata[slugFolderName].medias)[0];
+      //     let mediaName = Object.keys(mdata[slugFolderName].medias)[0];
 
       _alertify2.default.closeLogOnClick(true).delay(4000).log(this.$t('notifications["created_edited_media:"]') + ' ' + window.store.state.folders[slugFolderName].name);
 
@@ -1143,6 +1141,7 @@ _vue2.default.prototype.$socketio = new _vue2.default({
         }
       }
       window.store.state.folders = (0, _assign2.default)({}, fdata);
+      window.dispatchEvent(new CustomEvent('socketio.folders_listed'));
     },
     listFolders: function listFolders() {
       this.socket.emit('listFolders');
@@ -1176,7 +1175,7 @@ _vue2.default.prototype.$socketio = new _vue2.default({
 var vm = new _vue2.default({
   i18n: i18n,
   el: '#app',
-  template: '<App/>',
+  template: '\n  <App\n    :current_slugFolderName="settings.current_slugFolderName"\n    :currentFolder="currentFolder"\n  />\n  ',
   components: { App: _App2.default },
   data: {
     store: window.store.state,
@@ -1184,7 +1183,7 @@ var vm = new _vue2.default({
     justCreatedFolderID: false,
     settings: {
       has_modal_opened: false,
-      currentlyOpenedFolder: '',
+      current_slugFolderName: '',
       has_sidebar_opened: false,
       highlightMedia: '',
       is_loading_medias_for_folder: '',
@@ -1195,30 +1194,51 @@ var vm = new _vue2.default({
       current: lang_settings.current
     }
   },
-  mounted: function mounted() {
+  created: function created() {
     var _this2 = this;
 
+    if (window.store.debug) {
+      console.log('ROOT EVENT: created');
+    }
     if (this.settings.enable_system_bar) {
       document.body.classList.add('has_systembar');
     }
 
-    {
-      if (!!this.store.noticeOfError) {
-        if (this.store.noticeOfError === 'failed_to_find_folder') {
-          _alertify2.default.closeLogOnClick(true).delay(4000).error(this.$t('notifications["failed_to_get_folder:"]') + ' ' + this.store.slugFolderName);
-        }
+    if (window.store.debug) {
+      console.log('ROOT EVENT: created / checking for errors');
+    }
+    if (!!this.store.noticeOfError) {
+      if (this.store.noticeOfError === 'failed_to_find_folder') {
+        _alertify2.default.closeLogOnClick(true).delay(4000).error(this.$t('notifications["failed_to_get_folder:"]') + ' ' + this.store.slugFolderName);
+      }
+    } else {
+      if (window.store.debug) {
+        console.log('ROOT EVENT: created / no erros, checking for content to load');
+      }
+      // if no error and if we have some content already loaded, let’s open it directly
+      // (we are probably in an exported timeline)
+      if ((0, _keys2.default)(this.store.folders).length > 0) {
+        this.settings.current_slugFolderName = (0, _keys2.default)(this.store.folders)[0];
       } else {
-        // if no error and if we have some content already loaded, let’s open it directly
-        if ((0, _keys2.default)(this.store.folders).length > 0) {
-          this.settings.currentlyOpenedFolder = (0, _keys2.default)(this.store.folders)[0];
+        // if a slugfoldername is requested, load the content of that folder rightaway
+        // we are probably in a webbrowser that accesses a subfolder
+        if (!!this.store.slugFolderName) {
+          this.settings.current_slugFolderName = this.store.slugFolderName;
+          this.settings.is_loading_medias_for_folder = this.store.slugFolderName;
+          window.addEventListener('socketio.folders_listed', function () {
+            _this2.openFolder(_this2.store.slugFolderName);
+          }, { once: true });
         }
       }
-      this.$socketio.connect();
     }
 
     window.onpopstate = function (event) {
-      _this2.settings.currentlyOpenedFolder = event.state.slugFolderName;
+      console.log('ROOT EVENT: popstate with event.state.slugFolderName = ' + event.state.slugFolderName);
+      _this2.settings.current_slugFolderName = event.state.slugFolderName;
     };
+
+    console.log('ROOT EVENT: created / now connecting with socketio');
+    this.$socketio.connect();
   },
 
   methods: {
@@ -1278,20 +1298,18 @@ var vm = new _vue2.default({
         console.log('Missing folder key on the page, aborting.');
         return false;
       }
-      this.settings.currentlyOpenedFolder = slugFolderName;
+      this.settings.current_slugFolderName = slugFolderName;
       this.settings.is_loading_medias_for_folder = slugFolderName;
       this.$socketio.listMedias(slugFolderName);
 
-      history.pushState({ slugFolderName: slugFolderName }, this.store.folders[slugFolderName].name, slugFolderName);
-
+      history.pushState({ slugFolderName: slugFolderName }, this.store.folders[slugFolderName].name, '/' + slugFolderName);
       window.addEventListener('timeline.listMediasForFolder', this.listMediasForFolder);
     },
     closeFolder: function closeFolder() {
       if (window.store.debug) {
         console.log('ROOT EVENT: closeFolder');
       }
-      this.settings.currentlyOpenedFolder = '';
-
+      this.settings.current_slugFolderName = '';
       history.pushState({ slugFolderName: '' }, '', '/');
     },
 
@@ -1363,6 +1381,15 @@ var vm = new _vue2.default({
       } else {
         document.body.style.overflow = '';
       }
+    }
+  },
+  computed: {
+    currentFolder: function currentFolder() {
+      debugger;
+      if (this.store.hasOwnProperty('folders') && this.store.folders.hasOwnProperty(this.settings.current_slugFolderName)) {
+        return this.store.folders[this.settings.current_slugFolderName];
+      }
+      return {};
     }
   }
 });
@@ -2107,7 +2134,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-ce077450", __vue__options__)
   } else {
-    hotAPI.reload("data-v-ce077450", __vue__options__)
+    hotAPI.rerender("data-v-ce077450", __vue__options__)
   }
 })()}
 },{"./modals/MediasList.vue":17,"./sidebar/Calendrier.vue":18,"./sidebar/Informations.vue":19,"./sidebar/SidebarSection.vue":20,"./sidebar/Tableau.vue":21,"@xkeshi/vue-qrcode":26,"vue":279,"vue-hot-reload-api":274}],12:[function(require,module,exports){

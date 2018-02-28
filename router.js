@@ -87,14 +87,28 @@ module.exports = function(app,io,m){
     let slugFolderName = req.param('folder');
     generatePageData(req).then(function(pageData) {
       pageData.slugFolderName = slugFolderName;
+      // let’s make sure that folder exists first and return some meta
+      file.getFolder(slugFolderName).then(foldersData => {
+        res.render('index', pageData);
+      }, function(err, p) {
+        dev.error(`Failed to get folder: ${err}`);
+        pageData.noticeOfError = 'failed_to_find_folder';
+        res.render('index', pageData);
+      });
+    }, function(err) {
+      dev.error(`Err while getting index data: ${err}`);
+    });
+  }
 
+
+  function exportFolder(req, res) {
+    let slugFolderName = req.param('folder');
+    generatePageData(req).then(function(pageData) {
       // get medias for a folder
       file.getFolder(slugFolderName).then(foldersData => {
         file.gatherAllMedias(slugFolderName).then(mediasData => {
-
           // recreate full object
           foldersData[slugFolderName].medias = mediasData;
-
           pageData.folderAndMediaData = foldersData;
           res.render('index', pageData);
         }, function(err, p) {
@@ -107,11 +121,8 @@ module.exports = function(app,io,m){
         pageData.noticeOfError = 'failed_to_find_folder';
         res.render('index', pageData);
       });
-    }, function(err) {
-      dev.error(`Err while getting index data: ${err}`);
     });
   }
-
 
   function postFile2(req, res){
     let slugFolderName = req.param('folder');

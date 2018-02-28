@@ -13,8 +13,8 @@
 
           <ListView
             v-if="view === 'ListView'"
-            :slugFolderName="$root.settings.currentlyOpenedFolder"
-            :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
+            :slugFolderName="current_slugFolderName"
+            :folder="currentFolder"
             :presentationMD="$root.store.presentationMD"
             :read_only="!$root.store.connected"
           >
@@ -23,12 +23,12 @@
         </div>
       </div>
     </template>
-    <template v-else-if="view === 'TimeLineView'">
+    <template v-else-if="view === 'TimeLineView' && currentFolder.hasOwnProperty('name')">
 
       <TimeLineView
-        :slugFolderName="$root.settings.currentlyOpenedFolder"
-        :folder="$root.store.folders[$root.settings.currentlyOpenedFolder]"
-        :medias="$root.store.folders[$root.settings.currentlyOpenedFolder].medias"
+        :slugFolderName="current_slugFolderName"
+        :folder="currentFolder"
+        :medias="currentFolder.medias"
         :read_only="!$root.store.connected"
       >
       </TimeLineView>
@@ -38,7 +38,7 @@
     <div class="container">
       <div class="row">
         <template>
-          <BottomFooter v-if="$root.settings.currentlyOpenedFolder === ''">
+          <BottomFooter v-if="current_slugFolderName === ''">
           </BottomFooter>
         </template>
       </div>
@@ -63,25 +63,22 @@ export default {
     TimeLineView,
     BottomFooter
   },
+  props: ['current_slugFolderName', 'currentFolder'],
   data () {
     return {
-      view: 'ListView',
     }
   },
   computed: {
+    view: function() {
+      if(this.current_slugFolderName !== '') {
+        return 'TimeLineView';
+      }
+      return 'ListView';
+    }
   },
   watch: {
-    '$root.settings.currentlyOpenedFolder' : function() {
-      if(this.$root.settings.currentlyOpenedFolder !== '') {
-        this.view = 'TimeLineView';
-      } else {
-        this.view = 'ListView';
-      }
-    }
   },
   methods: {
-    log() {
-    }
   }
 }
 </script>

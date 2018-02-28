@@ -13,14 +13,15 @@ import locale_strings from './locale_strings.js';
 
 import moment from 'moment';
 
+Vue.config.silent = false;
+Vue.config.devtools = true;
+
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
 Vue.use(VueScrollTo);
 Vue.use(PortalVue);
 Vue.use(VueI18n);
 
-Vue.config.silent = false;
-Vue.config.devtools = true;
 
 let lang_settings = {
   available: {
@@ -151,6 +152,8 @@ Vue.prototype.$socketio = new Vue({
           }
         });
       }
+
+      window.dispatchEvent(new CustomEvent('socketio.connected_and_authentified'));
       this.listFolders();
     },
 
@@ -160,7 +163,7 @@ Vue.prototype.$socketio = new Vue({
       	console.log(`Media data is for ${slugFolderName}.`);
 
   //     let mediaData = Object.values(mdata[slugFolderName].medias)[0];
-  //     	let mediaName = Object.keys(mdata[slugFolderName].medias)[0];
+  //     let mediaName = Object.keys(mdata[slugFolderName].medias)[0];
 
       alertify
         .closeLogOnClick(true)
@@ -203,6 +206,7 @@ Vue.prototype.$socketio = new Vue({
         }
       }
       window.store.state.folders = Object.assign({}, fdata);
+      window.dispatchEvent(new CustomEvent('socketio.folders_listed'));
     },
 
     listFolders() {
@@ -243,7 +247,12 @@ import App from './App.vue';
 let vm = new Vue({
   i18n,
   el: '#app',
-  template: `<App/>`,
+  template: `
+  <App
+    :current_slugFolderName="settings.current_slugFolderName"
+    :currentFolder="currentFolder"
+  />
+  `,
   components: { App },
   data: {
     store: window.store.state,
@@ -251,7 +260,7 @@ let vm = new Vue({
     justCreatedFolderID: false,
     settings: {
       has_modal_opened: false,
-      currentlyOpenedFolder: '',
+      current_slugFolderName: '',
       has_sidebar_opened: false,
       highlightMedia: '',
       is_loading_medias_for_folder: '',
@@ -262,32 +271,45 @@ let vm = new Vue({
       current: lang_settings.current
     }
   },
-  mounted() {
+  created() {
+    if(window.store.debug) { console.log(`ROOT EVENT: created`); }
     if(this.settings.enable_system_bar) {
       document.body.classList.add('has_systembar');
     }
 
-    {
-      if(!!this.store.noticeOfError) {
-        if(this.store.noticeOfError === 'failed_to_find_folder') {
-          alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t('notifications["failed_to_get_folder:"]') + ' ' + this.store.slugFolderName)
-            ;
-        }
+    if(window.store.debug) { console.log(`ROOT EVENT: created / checking for errors`); }
+    if(!!this.store.noticeOfError) {
+      if(this.store.noticeOfError === 'failed_to_find_folder') {
+        alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t('notifications["failed_to_get_folder:"]') + ' ' + this.store.slugFolderName)
+          ;
+      }
+    } else {
+      if(window.store.debug) { console.log(`ROOT EVENT: created / no erros, checking for content to load`); }
+      // if no error and if we have some content already loaded, let’s open it directly
+      // (we are probably in an exported timeline)
+      if(Object.keys(this.store.folders).length > 0) {
+        this.settings.current_slugFolderName = Object.keys(this.store.folders)[0];
       } else {
-        // if no error and if we have some content already loaded, let’s open it directly
-        if(Object.keys(this.store.folders).length > 0) {
-          this.settings.currentlyOpenedFolder = Object.keys(this.store.folders)[0];
+        // if a slugfoldername is requested, load the content of that folder rightaway
+        // we are probably in a webbrowser that accesses a subfolder
+        if(!!this.store.slugFolderName) {
+          this.settings.current_slugFolderName = this.store.slugFolderName;
+          this.settings.is_loading_medias_for_folder = this.store.slugFolderName;
+          window.addEventListener('socketio.folders_listed', () => { this.openFolder(this.store.slugFolderName); }, { once: true });
         }
       }
-      this.$socketio.connect();
     }
 
     window.onpopstate = (event) => {
-      this.settings.currentlyOpenedFolder = event.state.slugFolderName;
+      console.log(`ROOT EVENT: popstate with event.state.slugFolderName = ${event.state.slugFolderName}`);
+      this.settings.current_slugFolderName = event.state.slugFolderName;
     };
+
+    console.log(`ROOT EVENT: created / now connecting with socketio`);
+    this.$socketio.connect();
   },
   methods: {
     createFolder: function(fdata) {
@@ -332,18 +354,16 @@ let vm = new Vue({
         console.log(`Missing folder key on the page, aborting.`);
         return false;
       }
-      this.settings.currentlyOpenedFolder = slugFolderName;
+      this.settings.current_slugFolderName = slugFolderName;
       this.settings.is_loading_medias_for_folder = slugFolderName;
       this.$socketio.listMedias(slugFolderName);
 
-      history.pushState({ slugFolderName }, this.store.folders[slugFolderName].name, slugFolderName);
-
+      history.pushState({ slugFolderName }, this.store.folders[slugFolderName].name, '/' + slugFolderName);
       window.addEventListener('timeline.listMediasForFolder', this.listMediasForFolder);
     },
     closeFolder: function() {
       if(window.store.debug) { console.log(`ROOT EVENT: closeFolder`); }
-      this.settings.currentlyOpenedFolder = '';
-
+      this.settings.current_slugFolderName = '';
       history.pushState({ slugFolderName: '' }, '', '/');
     },
 
@@ -402,6 +422,15 @@ let vm = new Vue({
         document.body.style.overflow = '';
       }
 
+    }
+  },
+  computed: {
+    currentFolder: function() {
+      debugger;
+      if(this.store.hasOwnProperty('folders') && this.store.folders.hasOwnProperty(this.settings.current_slugFolderName)) {
+        return this.store.folders[this.settings.current_slugFolderName];
+      }
+      return {};
     }
   }
 });
