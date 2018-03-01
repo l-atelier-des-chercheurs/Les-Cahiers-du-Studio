@@ -61,7 +61,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-5bd0623c", __vue__options__)
   } else {
-    hotAPI.reload("data-v-5bd0623c", __vue__options__)
+    hotAPI.rerender("data-v-5bd0623c", __vue__options__)
   }
 })()}
 },{"./ListView.vue":2,"./SystemBar.vue":3,"./TimeLineView.vue":4,"./components/BottomFooter.vue":7,"vue":279,"vue-hot-reload-api":274}],2:[function(require,module,exports){
@@ -171,7 +171,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-6126c558", __vue__options__)
   } else {
-    hotAPI.reload("data-v-6126c558", __vue__options__)
+    hotAPI.rerender("data-v-6126c558", __vue__options__)
   }
 })()}
 },{"./components/Folder.vue":9,"./components/modals/CreateFolder.vue":14,"vue":279,"vue-hot-reload-api":274,"vue-markdown":276}],3:[function(require,module,exports){
@@ -229,7 +229,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-92fd2082", __vue__options__)
   } else {
-    hotAPI.reload("data-v-92fd2082", __vue__options__)
+    hotAPI.rerender("data-v-92fd2082", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],4:[function(require,module,exports){
@@ -910,7 +910,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-50dcb39b", __vue__options__)
   } else {
-    hotAPI.reload("data-v-50dcb39b", __vue__options__)
+    hotAPI.rerender("data-v-50dcb39b", __vue__options__)
   }
 })()}
 },{"./components/AddMediaButton.vue":6,"./components/NavbarTop.vue":10,"./components/Sidebar.vue":11,"./components/TimelineMedia.vue":12,"./components/modals/EditFolder.vue":15,"./components/modals/EditMedia.vue":16,"./components/subcomponents/DateTime.vue":22,"debounce":108,"vue":279,"vue-hot-reload-api":274}],5:[function(require,module,exports){
@@ -1542,7 +1542,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-21103a89", __vue__options__)
   } else {
-    hotAPI.reload("data-v-21103a89", __vue__options__)
+    hotAPI.rerender("data-v-21103a89", __vue__options__)
   }
 })()}
 },{"./FileUpload.vue":8,"./subcomponents/FileInput.vue":23,"vue":279,"vue-hot-reload-api":274}],7:[function(require,module,exports){
@@ -1573,7 +1573,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-0d4997da", __vue__options__)
   } else {
-    hotAPI.reload("data-v-0d4997da", __vue__options__)
+    hotAPI.rerender("data-v-0d4997da", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],8:[function(require,module,exports){
@@ -1683,7 +1683,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-05b2235e", __vue__options__)
   } else {
-    hotAPI.reload("data-v-05b2235e", __vue__options__)
+    hotAPI.rerender("data-v-05b2235e", __vue__options__)
   }
 })()}
 },{"alertify.js":28,"vue":279,"vue-hot-reload-api":274,"vue2-dropzone":280}],9:[function(require,module,exports){
@@ -1757,7 +1757,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-586f05a2", __vue__options__)
   } else {
-    hotAPI.reload("data-v-586f05a2", __vue__options__)
+    hotAPI.rerender("data-v-586f05a2", __vue__options__)
   }
 })()}
 },{"./modals/EditFolder.vue":15,"vue":279,"vue-hot-reload-api":274}],10:[function(require,module,exports){
@@ -1833,7 +1833,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-e56d8fbe", __vue__options__)
   } else {
-    hotAPI.reload("data-v-e56d8fbe", __vue__options__)
+    hotAPI.rerender("data-v-e56d8fbe", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],11:[function(require,module,exports){
@@ -2142,7 +2142,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-ce077450", __vue__options__)
   } else {
-    hotAPI.reload("data-v-ce077450", __vue__options__)
+    hotAPI.rerender("data-v-ce077450", __vue__options__)
   }
 })()}
 },{"./modals/MediasList.vue":17,"./sidebar/Calendrier.vue":18,"./sidebar/Informations.vue":19,"./sidebar/SidebarSection.vue":20,"./sidebar/Tableau.vue":21,"@xkeshi/vue-qrcode":26,"vue":279,"vue-hot-reload-api":274}],12:[function(require,module,exports){
@@ -2378,7 +2378,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-1322b01f", __vue__options__)
   } else {
-    hotAPI.reload("data-v-1322b01f", __vue__options__)
+    hotAPI.rerender("data-v-1322b01f", __vue__options__)
   }
 })()}
 },{"./subcomponents/MediaContent.vue":24,"vue":279,"vue-hot-reload-api":274}],13:[function(require,module,exports){
@@ -2451,7 +2451,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-d52c0332", __vue__options__)
   } else {
-    hotAPI.reload("data-v-d52c0332", __vue__options__)
+    hotAPI.rerender("data-v-d52c0332", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],14:[function(require,module,exports){
@@ -2539,7 +2539,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-202385cf", __vue__options__)
   } else {
-    hotAPI.reload("data-v-202385cf", __vue__options__)
+    hotAPI.rerender("data-v-202385cf", __vue__options__)
   }
 })()}
 },{"../subcomponents/DateTime.vue":22,"./BaseModal.vue":13,"alertify.js":28,"vue":279,"vue-hot-reload-api":274}],15:[function(require,module,exports){
@@ -2640,7 +2640,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-1cd3e09d", __vue__options__)
   } else {
-    hotAPI.reload("data-v-1cd3e09d", __vue__options__)
+    hotAPI.rerender("data-v-1cd3e09d", __vue__options__)
   }
 })()}
 },{"../subcomponents/DateTime.vue":22,"./BaseModal.vue":13,"alertify.js":28,"slugg":237,"vue":279,"vue-hot-reload-api":274}],16:[function(require,module,exports){
@@ -2755,7 +2755,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-14b2adf6", __vue__options__)
   } else {
-    hotAPI.reload("data-v-14b2adf6", __vue__options__)
+    hotAPI.rerender("data-v-14b2adf6", __vue__options__)
   }
 })()}
 },{"../subcomponents/DateTime.vue":22,"../subcomponents/MediaContent.vue":24,"./BaseModal.vue":13,"alertify.js":28,"vue":279,"vue-hot-reload-api":274}],17:[function(require,module,exports){
@@ -2802,7 +2802,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-71b8ed5c", __vue__options__)
   } else {
-    hotAPI.reload("data-v-71b8ed5c", __vue__options__)
+    hotAPI.rerender("data-v-71b8ed5c", __vue__options__)
   }
 })()}
 },{"../sidebar/Tableau.vue":21,"./BaseModal.vue":13,"vue":279,"vue-hot-reload-api":274}],18:[function(require,module,exports){
@@ -2814,7 +2814,6 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-d027bc90", __vue__options__)
   } else {
-    hotAPI.reload("data-v-d027bc90", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],19:[function(require,module,exports){
@@ -2826,7 +2825,6 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-1b84bece", __vue__options__)
   } else {
-    hotAPI.reload("data-v-1b84bece", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],20:[function(require,module,exports){
@@ -2845,7 +2843,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-2f93f930", __vue__options__)
   } else {
-    hotAPI.reload("data-v-2f93f930", __vue__options__)
+    hotAPI.rerender("data-v-2f93f930", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],21:[function(require,module,exports){
@@ -2938,7 +2936,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-2aca846a", __vue__options__)
   } else {
-    hotAPI.reload("data-v-2aca846a", __vue__options__)
+    hotAPI.rerender("data-v-2aca846a", __vue__options__)
   }
 })()}
 },{"../subcomponents/MediaContent.vue":24,"underscore":266,"vue":279,"vue-hot-reload-api":274}],22:[function(require,module,exports){
@@ -2994,7 +2992,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-0e86d668", __vue__options__)
   } else {
-    hotAPI.reload("data-v-0e86d668", __vue__options__)
+    hotAPI.rerender("data-v-0e86d668", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],23:[function(require,module,exports){
@@ -3031,7 +3029,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-c81eaf9e", __vue__options__)
   } else {
-    hotAPI.reload("data-v-c81eaf9e", __vue__options__)
+    hotAPI.rerender("data-v-c81eaf9e", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274,"vueify/lib/insert-css":281}],24:[function(require,module,exports){
@@ -3135,7 +3133,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-5cf17b42", __vue__options__)
   } else {
-    hotAPI.reload("data-v-5cf17b42", __vue__options__)
+    hotAPI.rerender("data-v-5cf17b42", __vue__options__)
   }
 })()}
 },{"underscore":266,"vue":279,"vue-hot-reload-api":274}],25:[function(require,module,exports){

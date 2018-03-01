@@ -142,19 +142,57 @@ module.exports = function(app,io,m){
             );
 
             // Copier les dépendances : all.min.js all.min.css dans un sous dossier.
+            tasks.push(
+              new Promise((resolve, reject) => {
+                let productionFolder = path.join(__dirname, 'client', 'production');
+                let productionFolderInCache = path.join(cachePath, 'production');
+                fs.copy(productionFolder, productionFolderInCache).then(() => {
+                  resolve();
+                }).catch(err => {
+                  dev.error(`Failed to copy production JS and CSS files.`);
+                  reject(err);
+                });
+              })
+            );
 
+            // Copie le dossier _thumbs/slugFolderName vers cache/_thumbs/slugFolderName
+            tasks.push(
+              new Promise((resolve, reject) => {
+                const relativePathToThumbFolder = path.join(settings.thumbFolderName, slugFolderName);
 
+                const fullThumbSlugFolderPath = api.getFolderPath(relativePathToThumbFolder);
+                const thumbFolderInCache = path.join(cachePath, relativePathToThumbFolder);
+
+                fs.copy(fullThumbSlugFolderPath, thumbFolderInCache).then(() => {
+                  resolve();
+                }).catch(err => {
+                  dev.error(`Failed to copy thumbs JS and CSS.`);
+                  reject(err);
+                });
+              })
+            );
+
+            // Copier tous les médias dans un dossier.
+            tasks.push(
+              new Promise((resolve, reject) => {
+                let fullSlugFolderPath = api.getFolderPath(slugFolderName);
+                let slugFolderInCache = path.join(cachePath, slugFolderName);
+
+                fs.copy(fullSlugFolderPath, slugFolderInCache).then(() => {
+                  resolve();
+                }).catch(err => {
+                  dev.error(`Failed to copy medias files.`);
+                  reject(err);
+                });
+              })
+            );
 
             Promise.all(tasks).then((d_array) => {
               resolve(d_array);
+              // zipper cachePath
+
+
             });
-
-
-            // Créer un dossier _thumbs et y copier le dossier _thumbs au bon chemin.
-
-            // Copier tous les médias dans un dossier.
-
-
           }, function(err, p) {
             dev.error(`Failed to create cache folder: ${err}`);
             reject(err);
