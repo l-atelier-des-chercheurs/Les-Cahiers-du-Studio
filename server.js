@@ -10,9 +10,9 @@ var dev = require('./bin/dev-log');
 // var ngrok = require('ngrok');
 
 const
-  config = require('./config.json'),
   sockets = require('./sockets'),
-  router = require('./router')
+  router = require('./router'),
+  settings = require('./settings.json')
 ;
 
 module.exports = function(electronApp) {
@@ -34,25 +34,26 @@ module.exports = function(electronApp) {
 
   var m = sockets.init(app, io, electronApp);
 
-  {
-    dev.logverbose('Starting express-settings');
+  dev.logverbose('Starting express-settings');
 
-    app.set('port', global.appInfos.port); //Server's port number
-    app.set('views', path.join(__dirname, 'views')); //Specify the views folder
-    app.set('view engine', config.templateEngine); //View engine is Jade
+  app.set('port', global.appInfos.port); //Server's port number
+  app.set('views', path.join(__dirname, 'views')); //Specify the views folder
+  app.set('view engine', 'jade'); //View engine is Jade
 
-    app.use(express.static(global.pathToUserContent));
-    app.use(express.static(path.join(__dirname, 'client')));
+  app.use(express.static(global.pathToUserContent));
+  app.use(express.static(path.join(__dirname, 'client')));
 
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(bodyParser.json());
-    app.locals.pretty = true;
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+  app.locals.pretty = true;
+
+
   }
 
   router(app, io, m);
 
   server.listen(app.get('port'), () => {
-    dev.log(`Server up and running. Go to ${config.protocol}://${config.host}:${global.appInfos.port}`);
+    dev.log(`Server up and running. Go to ${settings.protocol}://${settings.host}:${global.appInfos.port}`);
     dev.log(` `);
   });
 };

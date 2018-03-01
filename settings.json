@@ -1,4 +1,10 @@
 {
+  "protocol": "http",
+  "host": "localhost",
+  "port": 8080,
+  "userDirPath": "documents",
+  "userDirname": "les-cahiers",
+
   "contentDirname" : "user",
   "metaFileext" : ".txt",
   "folderMetafilename" : "meta",

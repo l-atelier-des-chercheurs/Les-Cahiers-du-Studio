@@ -12,7 +12,6 @@ const server = require('./server');
 
 const
   settings = require('./settings.json'),
-  config = require('./config.json'),
   dev = require('./bin/dev-log')
 ;
 
@@ -109,11 +108,11 @@ function createWindow() {
     global.pathToUserContent = pathToUserContent;
     dev.log('Will store contents in: ' + global.pathToUserContent);
 
-    portscanner.findAPortNotInUse(config.port, config.port + 20).then((port) => {
+    portscanner.findAPortNotInUse(settings.port, settings.port + 20).then((port) => {
 
       dev.log(`main.js - Found available port: ${port}`);
       global.appInfos.port = port;
-      global.appInfos.homeURL = `${config.protocol}://${config.host}:${global.appInfos.port}`;
+      global.appInfos.homeURL = `${settings.protocol}://${settings.host}:${global.appInfos.port}`;
 
       app.server = server(app);
 
@@ -125,7 +124,7 @@ function createWindow() {
       }
     }, function(err) {
       dev.error( 'Failed to find available port: ' + err);
-      dialog.showErrorBox(`L’application Les Cahiers du Studio n’as pas pu démarrer`, `Il semble que les ports ${config.port} jusqu’à ${config.port + 20} ne soient pas disponibles.\nCode de l’erreur: ${err}`);
+      dialog.showErrorBox(`L’application Les Cahiers du Studio n’as pas pu démarrer`, `Il semble que les ports ${settings.port} jusqu’à ${settings.port + 20} ne soient pas disponibles.\nCode de l’erreur: ${err}`);
     });
 
     // Emitted when the window is closed.
@@ -275,12 +274,12 @@ function setApplicationMenu() {
 }
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
-    const userDirPath = app.getPath(config.userDirPath);
-    const pathToUserContent = path.join(userDirPath, config.userDirname);
+    const userDirPath = app.getPath(settings.userDirPath);
+    const pathToUserContent = path.join(userDirPath, settings.userDirname);
     fs.access(pathToUserContent, fs.F_OK, function(err) {
       // if userDir folder doesn't exist yet at destination
       if(err) {
-        dev.log('Content folder ' + config.userDirname + ' does not already exists in ' + userDirPath);
+        dev.log('Content folder ' + settings.userDirname + ' does not already exists in ' + userDirPath);
         dev.log(`->duplicating /${settings.contentDirname} to create a new one`);
         const sourcePathInApp = path.join(`${__dirname.replace(`${path.sep}app.asar`, '')}`, `${settings.contentDirname}`);
         fs.copy(sourcePathInApp, pathToUserContent, function (err) {
@@ -291,7 +290,7 @@ function copyAndRenameUserFolder() {
           resolve(pathToUserContent);
         });
       } else {
-        dev.log('Content folder ' + config.userDirname + ' already exists in ' + userDirPath);
+        dev.log('Content folder ' + settings.userDirname + ' already exists in ' + userDirPath);
         dev.log('-> not creating a new one');
         resolve(pathToUserContent);
       }
