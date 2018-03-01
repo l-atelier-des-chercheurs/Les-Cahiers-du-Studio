@@ -1,7 +1,7 @@
 <template>
   <div class="m_sidebar padding-bottom-medium" ref="sidebar">
 
-    <SidebarSection>
+    <SidebarSection v-if="$root.state.mode !== 'export'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('folder_information') }}
@@ -17,7 +17,7 @@
         </h3>
       </div>
 
-      <div slot="body" v-if="$root.state.mode !== 'export'">
+      <div slot="body">
         <p class="font-small">
           <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
 
@@ -30,11 +30,6 @@
             <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
           </a>
         </p>
-        <p class="font-small">
-          {{ $t('contents_are_stored') }}
-
-
-        </p>
         <p class="font-small" v-if="$root.state.is_electron">
           {{ $t('contents_are_stored') }}
           <template>
@@ -46,7 +41,7 @@
       </div>
     </SidebarSection>
 
-    <SidebarSection>
+    <SidebarSection v-if="$root.state.mode !== 'export'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('export_folder') }}
