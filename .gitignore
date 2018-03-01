@@ -8,6 +8,7 @@ npm-debug.log*
 pids
 *.pid
 *.seed
+cache
 # Dependency directory
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 node_modules
