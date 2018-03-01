@@ -113,8 +113,54 @@ module.exports = function(app,io,m){
           // recreate full object
           foldersData[slugFolderName].medias = mediasData;
           pageData.folderAndMediaData = foldersData;
-          res.render('index', pageData);
-        }, function(err, p) {
+
+          pageData.mode = 'export';
+
+          // create cache folder that we will need to copy the content before zipping
+
+          // adding a random string characters at the end, in case two medias get sent at the precise same moment
+          let cacheFolderName = api.getCurrentDate() + '-' + (Math.random().toString(36)+'00000000000000000').slice(2, 3 + 2);
+
+          let cachePath = path.join(__dirname, 'cache', cacheFolderName);
+          fs.mkdirp(cachePath, function() {
+
+            let tasks = [];
+            // Générer le html a partir du jade au render, avec une variable qui contient tous les médias.
+            tasks.push(
+              new Promise((resolve, reject) => {
+                res.render('index', pageData, (err, html) => {
+                  // save to file named 'index.html' in a new folder in /cache
+                  let indexCacheFilepath = path.join(cachePath, 'index.html');
+                  api.storeData(indexCacheFilepath, html, 'create').then(function(meta) {
+                    resolve();
+                  }).catch(err => {
+                    dev.error(`Failed to store HTML for export.`);
+                    reject(err);
+                  });
+                });
+              })
+            );
+
+            // Copier les dépendances : all.min.js all.min.css dans un sous dossier.
+
+
+
+            Promise.all(tasks).then((d_array) => {
+              resolve(d_array);
+            });
+
+
+            // Créer un dossier _thumbs et y copier le dossier _thumbs au bon chemin.
+
+            // Copier tous les médias dans un dossier.
+
+
+          }, function(err, p) {
+            dev.error(`Failed to create cache folder: ${err}`);
+            reject(err);
+          });
+
+        }, (err, p) => {
           dev.error(`Failed to gather medias: ${err}`);
           pageData.noticeOfError = 'failed_to_find_folder';
           res.render('index', pageData);
