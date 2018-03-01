@@ -59,8 +59,12 @@ html
         localNetworkInfos: !{JSON.stringify(localNetworkInfos, null, 4)},
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",
-        noticeOfError: "!{noticeOfError}"
+        noticeOfError: "!{noticeOfError}",
+        is_electron: !!(window && window.process && window.process.type),
+        is_darwin: !!(window && window.process && window.process.platform === 'darwin')
       };
+
+
 
     - if(mode === 'export')
       script(src='./production/all.min.js')

@@ -248,10 +248,10 @@ let vm = new Vue({
   i18n,
   el: '#app',
   template: `
-  <App
-    :current_slugFolderName="settings.current_slugFolderName"
-    :currentFolder="currentFolder"
-  />
+    <App
+      :current_slugFolderName="settings.current_slugFolderName"
+      :currentFolder="currentFolder"
+    />
   `,
   components: { App },
   data: {
