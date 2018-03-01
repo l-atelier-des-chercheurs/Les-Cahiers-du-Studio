@@ -6,6 +6,7 @@
   "userDirname": "les-cahiers",
 
   "contentDirname" : "user",
+  "cacheDirname" : "cache",
   "metaFileext" : ".txt",
   "folderMetafilename" : "meta",
 

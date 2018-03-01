@@ -72,6 +72,9 @@ module.exports = (function() {
       preview: 'Aperçu',
       filter: 'Filtre',
 
+      export_folder: 'Exporter en format WEB',
+      export: 'Exporter',
+
       last_modified: 'Dernière modification',
 
       notifications: {

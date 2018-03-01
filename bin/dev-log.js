@@ -1,7 +1,7 @@
 var gutil = require('gulp-util');
 var logger = require('electron-log');
 
-var dev = (function() {
+module.exports = dev = (function() {
   let isDebugMode = false;
   let isVerboseMode = false;
   let logToFile = false;
@@ -86,4 +86,3 @@ var dev = (function() {
   return API;
 })();
 
-module.exports = dev;

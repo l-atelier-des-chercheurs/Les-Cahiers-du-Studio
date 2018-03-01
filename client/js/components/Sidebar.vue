@@ -11,13 +11,13 @@
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="openEditFolderModal()"
             :disabled="read_only"
-            >
+          >
             {{ $t('edit') }}
           </button>
         </h3>
       </div>
 
-      <div slot="body" class="">
+      <div slot="body" v-if="$root.state.mode !== 'export'">
         <p class="font-small">
           <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
 
@@ -29,20 +29,37 @@
             {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
             <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
           </a>
-
         </p>
         <p class="font-small">
           {{ $t('contents_are_stored') }}
-          <template v-if="$root.state.is_electron">
+
+
+        </p>
+        <p class="font-small" v-if="$root.state.is_electron">
+          {{ $t('contents_are_stored') }}
+          <template>
             <a :href="folder.fullFolderPath" @click.prevent="openInFinder(folder.fullFolderPath)">
               {{ folder.fullFolderPath.replace(/\//g, '\/\u200B') }}
             </a>
           </template>
-
-          <template v-else>
-            {{ folder.fullFolderPath.replace(/\//g, '\/\u200B') }}
-          </template>
         </p>
+      </div>
+    </SidebarSection>
+
+    <SidebarSection>
+      <div slot="header" class="flex-vertically-centered">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t('export_folder') }}
+          <button
+            v-if="folder.authorized"
+            type="button"
+            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="downloadExport()"
+            :disabled="read_only"
+          >
+            {{ $t('export') }}
+          </button>
+        </h3>
       </div>
     </SidebarSection>
 
@@ -406,6 +423,10 @@ export default {
     },
     setFilter(newFilter) {
       this.filter = newFilter;
+    },
+
+    downloadExport() {
+      window.location.replace(window.location.href + '/export');
     }
   }
 

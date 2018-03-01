@@ -5034,6 +5034,25 @@ body.is_unscrollable {
   border-right: 1px solid #333;
   z-index: 1500;
 }
+.m_sidebar::-webkit-scrollbar {
+  height: 16px;
+  width: 16px;
+  background-color: rgba(255, 255, 255, 0);
+}
+.m_sidebar::-webkit-scrollbar-track,
+.m_sidebar::-webkit-scrollbar-thumb {
+  border: 10px solid rgba(255, 255, 255, 0);
+  background-clip: padding-box;
+}
+.m_sidebar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.m_sidebar::-webkit-scrollbar-thumb {
+  background-color: #000;
+}
+.m_sidebar::-webkit-scrollbar-thumb:hover {
+  border: 6px solid rgba(255, 255, 255, 0);
+}
 @media screen and (max-width: 50rem) {
   .m_sidebar {
     width: 300px;

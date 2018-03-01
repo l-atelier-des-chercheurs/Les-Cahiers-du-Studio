@@ -1,7 +1,8 @@
 const
   path = require('path'),
   fs = require('fs-extra'),
-  formidable = require('formidable')
+  formidable = require('formidable'),
+  archiver = require('archiver')
 ;
 
 const
@@ -9,7 +10,8 @@ const
   sockets = require('./sockets'),
   dev = require('./bin/dev-log'),
   api = require('./bin/api'),
-  file = require('./bin/file')
+  file = require('./bin/file'),
+  exporter = require('./bin/exporter')
 ;
 
 module.exports = function(app,io,m){
@@ -113,89 +115,35 @@ module.exports = function(app,io,m){
           // recreate full object
           foldersData[slugFolderName].medias = mediasData;
           pageData.folderAndMediaData = foldersData;
-
           pageData.mode = 'export';
 
-          // create cache folder that we will need to copy the content before zipping
+          res.render('index', pageData, (err, html) => {
+            exporter.copyWebsiteContent({ html, slugFolderName}).then(cachePath => {
 
-          // adding a random string characters at the end, in case two medias get sent at the precise same moment
-          let cacheFolderName = api.getCurrentDate() + '-' + (Math.random().toString(36)+'00000000000000000').slice(2, 3 + 2);
+              var archive = archiver('zip');
 
-          let cachePath = path.join(__dirname, 'cache', cacheFolderName);
-          fs.mkdirp(cachePath, function() {
+              archive.on('error', function(err) {
+                res.status(500).send({error: err.message});
+              });
 
-            let tasks = [];
-            // Générer le html a partir du jade au render, avec une variable qui contient tous les médias.
-            tasks.push(
-              new Promise((resolve, reject) => {
-                res.render('index', pageData, (err, html) => {
-                  // save to file named 'index.html' in a new folder in /cache
-                  let indexCacheFilepath = path.join(cachePath, 'index.html');
-                  api.storeData(indexCacheFilepath, html, 'create').then(function(meta) {
-                    resolve();
-                  }).catch(err => {
-                    dev.error(`Failed to store HTML for export.`);
-                    reject(err);
-                  });
-                });
-              })
-            );
+              //on stream closed we can end the request
+              archive.on('end', function() {
+                dev.log('Archive wrote %d bytes', archive.pointer());
+              });
 
-            // Copier les dépendances : all.min.js all.min.css dans un sous dossier.
-            tasks.push(
-              new Promise((resolve, reject) => {
-                let productionFolder = path.join(__dirname, 'client', 'production');
-                let productionFolderInCache = path.join(cachePath, 'production');
-                fs.copy(productionFolder, productionFolderInCache).then(() => {
-                  resolve();
-                }).catch(err => {
-                  dev.error(`Failed to copy production JS and CSS files.`);
-                  reject(err);
-                });
-              })
-            );
+              //set the archive name
+              res.attachment(slugFolderName + '.zip');
 
-            // Copie le dossier _thumbs/slugFolderName vers cache/_thumbs/slugFolderName
-            tasks.push(
-              new Promise((resolve, reject) => {
-                const relativePathToThumbFolder = path.join(settings.thumbFolderName, slugFolderName);
+              //this is the streaming magic
+              archive.pipe(res);
 
-                const fullThumbSlugFolderPath = api.getFolderPath(relativePathToThumbFolder);
-                const thumbFolderInCache = path.join(cachePath, relativePathToThumbFolder);
+              archive.directory(cachePath, false);
 
-                fs.copy(fullThumbSlugFolderPath, thumbFolderInCache).then(() => {
-                  resolve();
-                }).catch(err => {
-                  dev.error(`Failed to copy thumbs JS and CSS.`);
-                  reject(err);
-                });
-              })
-            );
+              archive.finalize();
 
-            // Copier tous les médias dans un dossier.
-            tasks.push(
-              new Promise((resolve, reject) => {
-                let fullSlugFolderPath = api.getFolderPath(slugFolderName);
-                let slugFolderInCache = path.join(cachePath, slugFolderName);
-
-                fs.copy(fullSlugFolderPath, slugFolderInCache).then(() => {
-                  resolve();
-                }).catch(err => {
-                  dev.error(`Failed to copy medias files.`);
-                  reject(err);
-                });
-              })
-            );
-
-            Promise.all(tasks).then((d_array) => {
-              resolve(d_array);
-              // zipper cachePath
-
-
+            },(err, p) => {
+              dev.error('Failed while preparing/making a web export');
             });
-          }, function(err, p) {
-            dev.error(`Failed to create cache folder: ${err}`);
-            reject(err);
           });
 
         }, (err, p) => {

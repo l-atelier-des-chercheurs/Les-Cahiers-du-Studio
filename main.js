@@ -45,6 +45,7 @@ function createWindow() {
     global.appInfos = {};
   }
 
+  global.appRoot = path.resolve(__dirname);
   global.appInfos.version = app.getVersion();
   let pathToPresentationMd = path.join(`${__dirname.replace(`${path.sep}app.asar`, '')}`, `${settings.contentDirname}`, `presentation.md`);
   global.appInfos.presentationMd = fs.readFileSync(pathToPresentationMd, settings.textEncoding);
@@ -103,47 +104,49 @@ function createWindow() {
 
   setApplicationMenu();
 
-  copyAndRenameUserFolder().then(function(pathToUserContent) {
+  cleanCacheFolder().then(() => {
+    copyAndRenameUserFolder().then(function(pathToUserContent) {
+      global.pathToUserContent = pathToUserContent;
+      dev.log('Will store contents in: ' + global.pathToUserContent);
 
-    global.pathToUserContent = pathToUserContent;
-    dev.log('Will store contents in: ' + global.pathToUserContent);
+      portscanner.findAPortNotInUse(settings.port, settings.port + 20).then((port) => {
 
-    portscanner.findAPortNotInUse(settings.port, settings.port + 20).then((port) => {
+        dev.log(`main.js - Found available port: ${port}`);
+        global.appInfos.port = port;
+        global.appInfos.homeURL = `${settings.protocol}://${settings.host}:${global.appInfos.port}`;
 
-      dev.log(`main.js - Found available port: ${port}`);
-      global.appInfos.port = port;
-      global.appInfos.homeURL = `${settings.protocol}://${settings.host}:${global.appInfos.port}`;
+        app.server = server(app);
 
-      app.server = server(app);
+        // and load the base url of the app.
+        win.loadURL(global.appInfos.homeURL);
 
-      // and load the base url of the app.
-      win.loadURL(global.appInfos.homeURL);
+        if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
+          win.webContents.openDevTools();
+        }
+      }, function(err) {
+        dev.error( 'Failed to find available port: ' + err);
+        dialog.showErrorBox(`L’application Les Cahiers du Studio n’as pas pu démarrer`, `Il semble que les ports ${settings.port} jusqu’à ${settings.port + 20} ne soient pas disponibles.\nCode de l’erreur: ${err}`);
+      });
 
-      if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
-        win.webContents.openDevTools();
-      }
+      // Emitted when the window is closed.
+      win.on('closed', () => {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        win = null;
+      });
+
+      win.on('ready-to-show', function() {
+        win.show();
+        win.focus();
+      });
+
     }, function(err) {
-      dev.error( 'Failed to find available port: ' + err);
-      dialog.showErrorBox(`L’application Les Cahiers du Studio n’as pas pu démarrer`, `Il semble que les ports ${settings.port} jusqu’à ${settings.port + 20} ne soient pas disponibles.\nCode de l’erreur: ${err}`);
+      dev.error('Failed to check existing content folder: ' + err);
     });
-
-    // Emitted when the window is closed.
-    win.on('closed', () => {
-      // Dereference the window object, usually you would store windows
-      // in an array if your app supports multi windows, this is the time
-      // when you should delete the corresponding element.
-      win = null;
-    });
-
-    win.on('ready-to-show', function() {
-      win.show();
-      win.focus();
-    });
-
   }, function(err) {
-    dev.error( 'Failed to check existing content folder : ' + err);
+    dev.error('Failed to clean cache folder: ' + err);
   });
-
 }
 
 function setApplicationMenu() {
@@ -294,6 +297,15 @@ function copyAndRenameUserFolder() {
         dev.log('-> not creating a new one');
         resolve(pathToUserContent);
       }
+    });
+  });
+}
+
+function cleanCacheFolder() {
+  return new Promise(function(resolve, reject) {
+    let cachePath = path.join(global.appRoot, settings.cacheDirname);
+    fs.emptyDir(cachePath).then(() => {
+      resolve();
     });
   });
 }

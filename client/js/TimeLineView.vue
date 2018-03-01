@@ -178,7 +178,8 @@
       </div>
 
       <AddMediaButton
-        v-if="((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass')"
+        v-if="
+          ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
         :slugFolderName="slugFolderName"
         :read_only="read_only"
       >
