@@ -40,6 +40,13 @@ module.exports = function(electronApp) {
   app.set('views', path.join(__dirname, 'views')); //Specify the views folder
   app.set('view engine', 'jade'); //View engine is Jade
 
+  app.use(function(req,res,next) {
+    if(isURLToForbiddenFiles(req.url)) {
+      res.status(404).send('Access not allowed');
+    } else {
+      next();
+    }
+  });
   app.use(express.static(global.pathToUserContent));
   app.use(express.static(path.join(__dirname, 'client')));
 
@@ -48,6 +55,8 @@ module.exports = function(electronApp) {
   app.locals.pretty = true;
 
 
+  function isURLToForbiddenFiles(url) {
+    return url.includes(settings.metaFileext);
   }
 
   router(app, io, m);
