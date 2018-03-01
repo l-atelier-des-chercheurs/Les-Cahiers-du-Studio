@@ -426,7 +426,6 @@ let vm = new Vue({
   },
   computed: {
     currentFolder: function() {
-      debugger;
       if(this.store.hasOwnProperty('folders') && this.store.folders.hasOwnProperty(this.settings.current_slugFolderName)) {
         return this.store.folders[this.settings.current_slugFolderName];
       }
