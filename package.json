@@ -81,6 +81,7 @@
     "browserify": "^16.0.0",
     "electron": "1.8.2",
     "electron-builder": "^19.56.0",
+    "electron-devtools-installer": "^2.2.3",
     "electron-prebuilt": "^1.4.13",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",

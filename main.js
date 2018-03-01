@@ -1,6 +1,8 @@
 const electron = require('electron');
 const {app, BrowserWindow, Menu} = electron;
 
+const { default: installExtension, VUEJS_DEVTOOLS } = require('electron-devtools-installer');
+
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
@@ -121,7 +123,10 @@ function createWindow() {
         win.loadURL(global.appInfos.homeURL);
 
         if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
-          win.webContents.openDevTools();
+          // win.webContents.openDevTools({mode: 'detach'});
+          installExtension(VUEJS_DEVTOOLS)
+              .then((name) => console.log(`Added Extension:  ${name}`))
+              .catch((err) => console.log('An error occurred: ', err));
         }
       }, function(err) {
         dev.error( 'Failed to find available port: ' + err);
