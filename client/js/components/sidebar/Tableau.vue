@@ -140,7 +140,7 @@ export default {
     },
     linkToThumb(media) {
       let pathToSmallestThumb = _.findWhere(media.thumbs, { size: this.thumbSize }).path;
-      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : '';
+      return pathToSmallestThumb !== undefined ? './' + pathToSmallestThumb : '';
     },
   }
 }

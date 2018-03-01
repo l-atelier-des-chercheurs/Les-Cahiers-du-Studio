@@ -96,10 +96,11 @@ Vue.prototype.$socketio = new Vue({
     _onSocketConnect() {
       	let sessionId = this.socket.io.engine.id;
       	console.log(`Connected as ${sessionId}`);
-      	window.store.state.connected = true;
+
+      	window.state.connected = true;
 
       	// only for non-electron (since obviously in electron we have to be connected)
-      	if(!window.store.state.is_electron) {
+      	if(!window.state.is_electron) {
         alertify
           .closeLogOnClick(true)
           .delay(4000)
@@ -117,7 +118,7 @@ Vue.prototype.$socketio = new Vue({
 
     _onSocketError(reason) {
       	console.log(`Unable to connect to server: ${reason}`);
-      	window.store.state.connected = false;
+      	window.state.connected = false;
       alertify
         .closeLogOnClick(true)
         .error(this.$t('notifications.connection_error') + ' ' + reason)
@@ -126,7 +127,7 @@ Vue.prototype.$socketio = new Vue({
 
     	_onConnectError(reason) {
       	console.log(`Lost connection to server: ${reason}`);
-      	window.store.state.connected = false;
+      	window.state.connected = false;
       alertify
         .closeLogOnClick(true)
         .error(this.$t('notifications.connection_lost') + '<br>' + this.$t('notifications.contents_wont_be_editable'))
@@ -168,10 +169,10 @@ Vue.prototype.$socketio = new Vue({
       alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .log(this.$t('notifications["created_edited_media:"]') + ' ' + window.store.state.folders[slugFolderName].name)
+        .log(this.$t('notifications["created_edited_media:"]') + ' ' + window.store.folders[slugFolderName].name)
         ;
 
-      window.store.state.folders[slugFolderName].medias = Object.assign({}, window.store.state.folders[slugFolderName].medias, mdata[slugFolderName].medias);
+      window.store.folders[slugFolderName].medias = Object.assign({}, window.store.folders[slugFolderName].medias, mdata[slugFolderName].medias);
     },
 
     _onListMedias(mdata) {
@@ -179,7 +180,7 @@ Vue.prototype.$socketio = new Vue({
       let slugFolderName = Object.keys(mdata)[0];
       	console.log(`Media data is for ${slugFolderName}.`);
 
-      window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
+      window.store.folders[slugFolderName].medias = mdata[slugFolderName].medias;
 
       window.dispatchEvent(new CustomEvent('timeline.listMediasForFolder', { detail: slugFolderName }));
     },
@@ -189,11 +190,11 @@ Vue.prototype.$socketio = new Vue({
 
       	// to prevent override of fully formed medias, we copy back the ones we have already
       for(let slugFolderName in fdata) {
-        if(window.store.state.folders.hasOwnProperty(slugFolderName)) {
-          fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
+        if(window.store.folders.hasOwnProperty(slugFolderName)) {
+          fdata[slugFolderName].medias = window.store.folders[slugFolderName].medias;
         }
       }
-      window.store.state.folders = Object.assign({}, window.store.state.folders, fdata);
+      window.store.folders = Object.assign({}, window.store.folders, fdata);
     },
 
     _onListFolders(fdata) {
@@ -201,11 +202,11 @@ Vue.prototype.$socketio = new Vue({
 
       	// to prevent override of fully formed medias, we copy back the ones we have already
       	for(let slugFolderName in fdata) {
-        if(window.store.state.folders.hasOwnProperty(slugFolderName)) {
-          fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
+        if(window.store.folders.hasOwnProperty(slugFolderName)) {
+          fdata[slugFolderName].medias = window.store.folders[slugFolderName].medias;
         }
       }
-      window.store.state.folders = Object.assign({}, fdata);
+      window.store.folders = Object.assign({}, fdata);
       window.dispatchEvent(new CustomEvent('socketio.folders_listed'));
     },
 
@@ -239,7 +240,6 @@ Vue.prototype.$socketio = new Vue({
   }
 });
 
-
 import App from './App.vue';
 
 /* eslint-disable no-new */
@@ -255,29 +255,34 @@ let vm = new Vue({
   `,
   components: { App },
   data: {
-    store: window.store.state,
+    store: window.store,
+    state: window.state,
+
     justCreatedTextmediaID: false,
     justCreatedFolderID: false,
+
     settings: {
       has_modal_opened: false,
       current_slugFolderName: '',
       has_sidebar_opened: false,
       highlightMedia: '',
       is_loading_medias_for_folder: '',
-      enable_system_bar: window.store.state.is_electron && window.store.state.is_darwin,
+      enable_system_bar: window.state.is_electron && window.state.is_darwin,
     },
+
     lang: {
       available: lang_settings.available,
       current: lang_settings.current
     }
   },
   created() {
-    if(window.store.debug) { console.log(`ROOT EVENT: created`); }
+    if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: created`); }
     if(this.settings.enable_system_bar) {
       document.body.classList.add('has_systembar');
     }
 
-    if(window.store.debug) { console.log(`ROOT EVENT: created / checking for errors`); }
+    if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: created / checking for errors`); }
+
     if(!!this.store.noticeOfError) {
       if(this.store.noticeOfError === 'failed_to_find_folder') {
         alertify
@@ -287,7 +292,8 @@ let vm = new Vue({
           ;
       }
     } else {
-      if(window.store.debug) { console.log(`ROOT EVENT: created / no erros, checking for content to load`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: created / no erros, checking for content to load`); }
+
       // if no error and if we have some content already loaded, let’s open it directly
       // (we are probably in an exported timeline)
       if(Object.keys(this.store.folders).length > 0) {
@@ -308,12 +314,14 @@ let vm = new Vue({
       this.settings.current_slugFolderName = event.state.slugFolderName;
     };
 
-    console.log(`ROOT EVENT: created / now connecting with socketio`);
-    this.$socketio.connect();
+    if(this.state.mode === 'live') {
+      console.log(`ROOT EVENT: created / now connecting with socketio`);
+      this.$socketio.connect();
+    }
   },
   methods: {
     createFolder: function(fdata) {
-      if(window.store.debug) { console.log(`ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`); }
 
       fdata.folderID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
       this.justCreatedFolderID = fdata.folderID;
@@ -321,16 +329,16 @@ let vm = new Vue({
       this.$socketio.createFolder(fdata);
     },
     editFolder: function(fdata) {
-      if(window.store.debug) { console.log(`ROOT EVENT: editFolder: ${JSON.stringify(fdata, null, 4)}`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: editFolder: ${JSON.stringify(fdata, null, 4)}`); }
       this.$socketio.editFolder(fdata);
     },
     removeFolder: function(slugFolderName) {
-      if(window.store.debug) { console.log(`ROOT EVENT: removeFolder: ${slugFolderName}`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: removeFolder: ${slugFolderName}`); }
       this.$socketio.removeFolder(slugFolderName);
     },
 
     createTextMedia: function(mdata) {
-      if(window.store.debug) { console.log(`ROOT EVENT: createTextMedia: ${JSON.stringify(mdata, null, 4)}`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: createTextMedia: ${JSON.stringify(mdata, null, 4)}`); }
 
       if(mdata.type === 'text') {
         mdata.mediaID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -340,16 +348,16 @@ let vm = new Vue({
       this.$socketio.createTextMedia(mdata);
     },
     removeMedia: function(slugFolderName, slugMediaName) {
-      if(window.store.debug) { console.log(`ROOT EVENT: removeMedia: ${slugFolderName}/${slugMediaName}`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: removeMedia: ${slugFolderName}/${slugMediaName}`); }
       this.$socketio.removeMedia(slugFolderName, slugMediaName);
     },
     editMedia: function(mdata) {
-      if(window.store.debug) { console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`); }
       this.$socketio.editMedia(mdata);
     },
 
     openFolder: function(slugFolderName) {
-      if(window.store.debug) { console.log(`ROOT EVENT: openFolder: ${slugFolderName}`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: openFolder: ${slugFolderName}`); }
       if(!this.store.folders.hasOwnProperty(slugFolderName)) {
         console.log(`Missing folder key on the page, aborting.`);
         return false;
@@ -362,19 +370,19 @@ let vm = new Vue({
       window.addEventListener('timeline.listMediasForFolder', this.listMediasForFolder);
     },
     closeFolder: function() {
-      if(window.store.debug) { console.log(`ROOT EVENT: closeFolder`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: closeFolder`); }
       this.settings.current_slugFolderName = '';
       history.pushState({ slugFolderName: '' }, '', '/');
     },
 
     listMediasForFolder: function(e) {
-      if(window.store.debug) { console.log(`ROOT EVENT: listMediasForFolder`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: listMediasForFolder`); }
       if(e.detail === this.settings.is_loading_medias_for_folder) {
         this.settings.is_loading_medias_for_folder = '';
       }
     },
     updateProjectScale: function(slugFolderName, timelineViewport_scale) {
-      if(window.store.debug) { console.log(`ROOT EVENT: updateProjectScale`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: updateProjectScale`); }
 
       let viewportScale = localstore.get('viewport_scale') || {};
       viewportScale[slugFolderName] = timelineViewport_scale;
@@ -382,7 +390,7 @@ let vm = new Vue({
       localstore.set('viewport_scale', viewportScale);
     },
     getProjectScale: function(slugFolderName) {
-      if(window.store.debug) { console.log(`ROOT EVENT: getProjectScale`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: getProjectScale`); }
       let viewportScale = localstore.get('viewport_scale') || {};
       if(viewportScale !== undefined && viewportScale[slugFolderName] !== undefined) {
         return viewportScale[slugFolderName];
@@ -391,13 +399,13 @@ let vm = new Vue({
     },
 
     updateLocalLang: function(newLangCode) {
-      if(window.store.debug) { console.log(`ROOT EVENT: updateLocalLang`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: updateLocalLang`); }
       i18n.locale = newLangCode;
       localstore.set('language', newLangCode);
     },
 
     updateProjectScrollLeft: function(slugFolderName, timelineViewport_scrollLeft) {
-      if(window.store.debug) { console.log(`ROOT EVENT: updateProjectScrollLeft`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: updateProjectScrollLeft`); }
 
       let viewportScrollLeft = localstore.get('viewport_scrollLeft') || {};
       viewportScrollLeft[slugFolderName] = timelineViewport_scrollLeft;
@@ -405,7 +413,7 @@ let vm = new Vue({
       localstore.set('viewport_scrollLeft', viewportScrollLeft);
     },
     getScrollLeft: function(slugFolderName) {
-      if(window.store.debug) { console.log(`ROOT EVENT: getScrollLeft`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: getScrollLeft`); }
       let viewportScrollLeft = localstore.get('viewport_scrollLeft') || {};
       if(viewportScrollLeft !== undefined && viewportScrollLeft[slugFolderName] !== undefined) {
         return viewportScrollLeft[slugFolderName];
@@ -415,7 +423,7 @@ let vm = new Vue({
   },
   watch: {
     'settings.has_modal_opened': function() {
-      if(window.store.debug) { console.log(`ROOT EVENT: var has changed: has_modal_opened: ${this.settings.has_modal_opened}`); }
+      if(window.state.dev_mode === 'debug') { console.log(`ROOT EVENT: var has changed: has_modal_opened: ${this.settings.has_modal_opened}`); }
       if(this.has_modal_opened){
         document.body.style.overflow = 'hidden';
       } else {

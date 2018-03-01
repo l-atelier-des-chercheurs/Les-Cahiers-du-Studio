@@ -19,6 +19,7 @@ module.exports = function(app,io,m){
   */
   app.get('/', showIndex);
   app.get('/:folder', loadFolder);
+  app.get('/:folder/export', exportFolder);
   app.post('/:folder/file-upload', postFile2);
 
   /**
@@ -30,23 +31,25 @@ module.exports = function(app,io,m){
       let fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
       dev.log(`••• the following page has been requested: ${fullUrl} •••`);
 
-      let pageDataJSON = {};
+      let pageData = {};
 
-      pageDataJSON.pageTitle = 'Les Cahiers du Studio';
+      pageData.pageTitle = 'Les Cahiers du Studio';
       // full path on the storage space, as displayed in the footer
-      pageDataJSON.folderPath = api.getFolderPath();
-      pageDataJSON.slugFolderName = '';
-      pageDataJSON.url = req.path;
-      pageDataJSON.protocol = req.protocol;
-      pageDataJSON.structure = settings.structure;
-      pageDataJSON.logToFile = global.nodeStorage.getItem('logToFile');
-      pageDataJSON.isDebug = dev.isDebug();
+      pageData.folderPath = api.getFolderPath();
+      pageData.slugFolderName = '';
+      pageData.url = req.path;
+      pageData.protocol = req.protocol;
+      pageData.structure = settings.structure;
+      pageData.logToFile = global.nodeStorage.getItem('logToFile');
+      pageData.isDebug = dev.isDebug();
+
+      pageData.mode = 'live';
 
       let tasks = [];
 
       let getPresentation = new Promise((resolve, reject) => {
         file.getPresentation().then((presentationMD) => {
-          pageDataJSON.presentationMD = presentationMD;
+          pageData.presentationMD = presentationMD;
           resolve();
         });
       });
@@ -54,11 +57,11 @@ module.exports = function(app,io,m){
 
       let getLocalIP = new Promise((resolve, reject) => {
         api.getLocalIP().then(localNetworkInfos => {
-          pageDataJSON.localNetworkInfos = {
+          pageData.localNetworkInfos = {
             ip: [],
             port: global.appInfos.port
           };
-          pageDataJSON.localNetworkInfos.ip = Object.values(localNetworkInfos);
+          pageData.localNetworkInfos.ip = Object.values(localNetworkInfos);
           resolve();
         }, function(err, p) {
           dev.error(`Err while getting local IP: ${err}`);
@@ -68,34 +71,34 @@ module.exports = function(app,io,m){
       tasks.push(getLocalIP);
 
       Promise.all(tasks).then(() => {
-        resolve(pageDataJSON);
+        resolve(pageData);
       });
     });
   }
 
   // GET
   function showIndex(req, res) {
-    generatePageData(req).then(function(pageData) {
+    generatePageData(req).then((pageData) => {
       dev.logpackets(`Rendering index with data `, JSON.stringify(pageData, null, 4));
       res.render('index', pageData);
-    }, function(err) {
+    }, (err) => {
       dev.error(`Err while getting index data: ${err}`);
     });
   }
 
   function loadFolder(req, res) {
     let slugFolderName = req.param('folder');
-    generatePageData(req).then(function(pageData) {
+    generatePageData(req).then((pageData) => {
       pageData.slugFolderName = slugFolderName;
       // let’s make sure that folder exists first and return some meta
       file.getFolder(slugFolderName).then(foldersData => {
         res.render('index', pageData);
-      }, function(err, p) {
+      }, (err, p) => {
         dev.error(`Failed to get folder: ${err}`);
         pageData.noticeOfError = 'failed_to_find_folder';
         res.render('index', pageData);
       });
-    }, function(err) {
+    }, (err) => {
       dev.error(`Err while getting index data: ${err}`);
     });
   }
@@ -103,7 +106,7 @@ module.exports = function(app,io,m){
 
   function exportFolder(req, res) {
     let slugFolderName = req.param('folder');
-    generatePageData(req).then(function(pageData) {
+    generatePageData(req).then((pageData) => {
       // get medias for a folder
       file.getFolder(slugFolderName).then(foldersData => {
         file.gatherAllMedias(slugFolderName).then(mediasData => {
@@ -116,7 +119,7 @@ module.exports = function(app,io,m){
           pageData.noticeOfError = 'failed_to_find_folder';
           res.render('index', pageData);
         });
-      }, function(err, p) {
+      }, (err, p) => {
         dev.error(`Failed to get folder: ${err}`);
         pageData.noticeOfError = 'failed_to_find_folder';
         res.render('index', pageData);

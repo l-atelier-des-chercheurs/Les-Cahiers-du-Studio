@@ -2,10 +2,10 @@ doctype html
 html
   head
     meta(charset='utf-8')
-    - if(isDebug)
-      link(rel='stylesheet', href='/development/style.css')
+    - if(isDebug && mode !== 'export')
+      link(rel='stylesheet', href='./development/style.css')
     - else
-      link(rel='stylesheet', href='/production/all.min.css')
+      link(rel='stylesheet', href='./production/all.min.css')
 
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
@@ -41,23 +41,26 @@ html
     #app
 
     script.
-      window.locals = {};
-      locals.localNetworkInfos = !{JSON.stringify(localNetworkInfos, null, 4)};
-      locals.presentationMD = !{JSON.stringify(presentationMD)};
-      locals.appVersion = "!{global.appInfos.version}";
-      locals.protocol = "!{protocol}";
-      locals.slugFolderName = "!{slugFolderName}";
+      /* store contains content data */
+      window.store = {
+        presentationMD: !{JSON.stringify(presentationMD)},
+        slugFolderName: "!{slugFolderName}",
+        folders: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" }
+      };
 
-    - if(!!folderAndMediaData)
-      script.
-        locals.folderAndMediaData = !{JSON.stringify(folderAndMediaData)};
+      /* state contains settings data, time and client specific data */
+      window.state = {
+        appVersion: "!{global.appInfos.version}",
+        protocol: "!{protocol}",
+        connected: false,
+        localNetworkInfos: !{JSON.stringify(localNetworkInfos, null, 4)},
+        mode: "!{mode}",
+        dev_mode: "!{ isDebug ? "debug" : "production" }",
+        noticeOfError: "!{noticeOfError}"
+      };
 
-    - if(!!noticeOfError)
-      script.
-        locals.noticeOfError = "!{noticeOfError}";
-
-    - if(isDebug)
-      script(src='/development/main.js')
-      script(src='/development/vue.js')
+    - if(isDebug && mode !== 'export')
+      script(src='./development/main.js')
+      script(src='./development/vue.js')
     - else
-      script(src='/production/all.min.js')
+      script(src='./production/all.min.js')

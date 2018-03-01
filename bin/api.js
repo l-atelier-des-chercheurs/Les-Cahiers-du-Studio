@@ -104,15 +104,12 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — storeData at path ${mpath}`);
 //       dev.logfunction(`with content ${d}`);
-      let textd;
       if(typeof d === 'object') {
-        textd = parsedown.textify(d);
-      } else {
-        textd = d;
+        d = parsedown.textify(d);
       }
-      writeFileAtomic( mpath, textd, (err) => {
+      writeFileAtomic( mpath, d, (err) => {
         if(err){ reject( err); }
-        resolve(parseData(textd));
+        resolve(parseData(d));
       });
     });
   }

@@ -52,7 +52,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[(_vm.$root.settings.enable_system_bar)?_c('SystemBar',{attrs:{"view":_vm.view}}):_vm._e(),_vm._v(" "),(_vm.view === 'ListView')?[_c('div',{staticClass:"container"},[_c('div',{staticClass:"row"},[(_vm.view === 'ListView')?_c('ListView',{attrs:{"slugFolderName":_vm.current_slugFolderName,"folder":_vm.currentFolder,"presentationMD":_vm.$root.store.presentationMD,"read_only":!_vm.$root.store.connected}}):_vm._e()],1)])]:(_vm.view === 'TimeLineView' && _vm.currentFolder.hasOwnProperty('name'))?[_c('TimeLineView',{attrs:{"slugFolderName":_vm.current_slugFolderName,"folder":_vm.currentFolder,"medias":_vm.currentFolder.medias,"read_only":!_vm.$root.store.connected}})]:_vm._e(),_vm._v(" "),_c('div',{staticClass:"container"},[_c('div',{staticClass:"row"},[[(_vm.current_slugFolderName === '')?_c('BottomFooter'):_vm._e()]],2)]),_vm._v(" "),_c('portal-target',{attrs:{"name":"modal_container"}})],2)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[(_vm.$root.settings.enable_system_bar)?_c('SystemBar',{attrs:{"view":_vm.view}}):_vm._e(),_vm._v(" "),(_vm.view === 'ListView')?[_c('div',{staticClass:"container"},[_c('div',{staticClass:"row"},[(_vm.view === 'ListView')?_c('ListView',{attrs:{"slugFolderName":_vm.current_slugFolderName,"folder":_vm.currentFolder,"presentationMD":_vm.$root.store.presentationMD,"read_only":!_vm.$root.state.connected}}):_vm._e()],1)])]:(_vm.view === 'TimeLineView' && _vm.currentFolder.hasOwnProperty('name'))?[_c('TimeLineView',{attrs:{"slugFolderName":_vm.current_slugFolderName,"folder":_vm.currentFolder,"medias":_vm.currentFolder.medias,"read_only":!_vm.$root.state.connected}})]:_vm._e(),_vm._v(" "),_c('div',{staticClass:"container"},[_c('div',{staticClass:"row"},[[(_vm.current_slugFolderName === '')?_c('BottomFooter'):_vm._e()]],2)]),_vm._v(" "),_c('portal-target',{attrs:{"name":"modal_container"}})],2)}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -61,7 +61,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-5bd0623c", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-5bd0623c", __vue__options__)
+    hotAPI.reload("data-v-5bd0623c", __vue__options__)
   }
 })()}
 },{"./ListView.vue":2,"./SystemBar.vue":3,"./TimeLineView.vue":4,"./components/BottomFooter.vue":7,"vue":279,"vue-hot-reload-api":274}],2:[function(require,module,exports){
@@ -171,7 +171,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-6126c558", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-6126c558", __vue__options__)
+    hotAPI.reload("data-v-6126c558", __vue__options__)
   }
 })()}
 },{"./components/Folder.vue":9,"./components/modals/CreateFolder.vue":14,"vue":279,"vue-hot-reload-api":274,"vue-markdown":276}],3:[function(require,module,exports){
@@ -229,7 +229,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-92fd2082", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-92fd2082", __vue__options__)
+    hotAPI.reload("data-v-92fd2082", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],4:[function(require,module,exports){
@@ -910,7 +910,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-50dcb39b", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-50dcb39b", __vue__options__)
+    hotAPI.reload("data-v-50dcb39b", __vue__options__)
   }
 })()}
 },{"./components/AddMediaButton.vue":6,"./components/NavbarTop.vue":10,"./components/Sidebar.vue":11,"./components/TimelineMedia.vue":12,"./components/modals/EditFolder.vue":15,"./components/modals/EditMedia.vue":16,"./components/subcomponents/DateTime.vue":22,"debounce":108,"vue":279,"vue-hot-reload-api":274}],5:[function(require,module,exports){
@@ -1056,10 +1056,11 @@ _vue2.default.prototype.$socketio = new _vue2.default({
     _onSocketConnect: function _onSocketConnect() {
       var sessionId = this.socket.io.engine.id;
       console.log('Connected as ' + sessionId);
-      window.store.state.connected = true;
+
+      window.state.connected = true;
 
       // only for non-electron (since obviously in electron we have to be connected)
-      if (!window.store.state.is_electron) {
+      if (!window.state.is_electron) {
         _alertify2.default.closeLogOnClick(true).delay(4000).success(this.$t('notifications.connection_active'));
       }
       this.sendAuth();
@@ -1071,12 +1072,12 @@ _vue2.default.prototype.$socketio = new _vue2.default({
     },
     _onSocketError: function _onSocketError(reason) {
       console.log('Unable to connect to server: ' + reason);
-      window.store.state.connected = false;
+      window.state.connected = false;
       _alertify2.default.closeLogOnClick(true).error(this.$t('notifications.connection_error') + ' ' + reason);
     },
     _onConnectError: function _onConnectError(reason) {
       console.log('Lost connection to server: ' + reason);
-      window.store.state.connected = false;
+      window.state.connected = false;
       _alertify2.default.closeLogOnClick(true).error(this.$t('notifications.connection_lost') + '<br>' + this.$t('notifications.contents_wont_be_editable'));
     },
     _authentificated: function _authentificated(list_admin_folders) {
@@ -1107,16 +1108,16 @@ _vue2.default.prototype.$socketio = new _vue2.default({
       //     let mediaData = Object.values(mdata[slugFolderName].medias)[0];
       //     let mediaName = Object.keys(mdata[slugFolderName].medias)[0];
 
-      _alertify2.default.closeLogOnClick(true).delay(4000).log(this.$t('notifications["created_edited_media:"]') + ' ' + window.store.state.folders[slugFolderName].name);
+      _alertify2.default.closeLogOnClick(true).delay(4000).log(this.$t('notifications["created_edited_media:"]') + ' ' + window.store.folders[slugFolderName].name);
 
-      window.store.state.folders[slugFolderName].medias = (0, _assign2.default)({}, window.store.state.folders[slugFolderName].medias, mdata[slugFolderName].medias);
+      window.store.folders[slugFolderName].medias = (0, _assign2.default)({}, window.store.folders[slugFolderName].medias, mdata[slugFolderName].medias);
     },
     _onListMedias: function _onListMedias(mdata) {
       console.log('Received _onListMedias packet.');
       var slugFolderName = (0, _keys2.default)(mdata)[0];
       console.log('Media data is for ' + slugFolderName + '.');
 
-      window.store.state.folders[slugFolderName].medias = mdata[slugFolderName].medias;
+      window.store.folders[slugFolderName].medias = mdata[slugFolderName].medias;
 
       window.dispatchEvent(new CustomEvent('timeline.listMediasForFolder', { detail: slugFolderName }));
     },
@@ -1125,22 +1126,22 @@ _vue2.default.prototype.$socketio = new _vue2.default({
 
       // to prevent override of fully formed medias, we copy back the ones we have already
       for (var slugFolderName in fdata) {
-        if (window.store.state.folders.hasOwnProperty(slugFolderName)) {
-          fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
+        if (window.store.folders.hasOwnProperty(slugFolderName)) {
+          fdata[slugFolderName].medias = window.store.folders[slugFolderName].medias;
         }
       }
-      window.store.state.folders = (0, _assign2.default)({}, window.store.state.folders, fdata);
+      window.store.folders = (0, _assign2.default)({}, window.store.folders, fdata);
     },
     _onListFolders: function _onListFolders(fdata) {
       console.log('Received _onListFolders packet.');
 
       // to prevent override of fully formed medias, we copy back the ones we have already
       for (var slugFolderName in fdata) {
-        if (window.store.state.folders.hasOwnProperty(slugFolderName)) {
-          fdata[slugFolderName].medias = window.store.state.folders[slugFolderName].medias;
+        if (window.store.folders.hasOwnProperty(slugFolderName)) {
+          fdata[slugFolderName].medias = window.store.folders[slugFolderName].medias;
         }
       }
-      window.store.state.folders = (0, _assign2.default)({}, fdata);
+      window.store.folders = (0, _assign2.default)({}, fdata);
       window.dispatchEvent(new CustomEvent('socketio.folders_listed'));
     },
     listFolders: function listFolders() {
@@ -1178,17 +1179,21 @@ var vm = new _vue2.default({
   template: '\n  <App\n    :current_slugFolderName="settings.current_slugFolderName"\n    :currentFolder="currentFolder"\n  />\n  ',
   components: { App: _App2.default },
   data: {
-    store: window.store.state,
+    store: window.store,
+    state: window.state,
+
     justCreatedTextmediaID: false,
     justCreatedFolderID: false,
+
     settings: {
       has_modal_opened: false,
       current_slugFolderName: '',
       has_sidebar_opened: false,
       highlightMedia: '',
       is_loading_medias_for_folder: '',
-      enable_system_bar: window.store.state.is_electron && window.store.state.is_darwin
+      enable_system_bar: window.state.is_electron && window.state.is_darwin
     },
+
     lang: {
       available: lang_settings.available,
       current: lang_settings.current
@@ -1197,24 +1202,26 @@ var vm = new _vue2.default({
   created: function created() {
     var _this2 = this;
 
-    if (window.store.debug) {
+    if (window.state.dev_mode === 'debug') {
       console.log('ROOT EVENT: created');
     }
     if (this.settings.enable_system_bar) {
       document.body.classList.add('has_systembar');
     }
 
-    if (window.store.debug) {
+    if (window.state.dev_mode === 'debug') {
       console.log('ROOT EVENT: created / checking for errors');
     }
+
     if (!!this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {
         _alertify2.default.closeLogOnClick(true).delay(4000).error(this.$t('notifications["failed_to_get_folder:"]') + ' ' + this.store.slugFolderName);
       }
     } else {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: created / no erros, checking for content to load');
       }
+
       // if no error and if we have some content already loaded, let’s open it directly
       // (we are probably in an exported timeline)
       if ((0, _keys2.default)(this.store.folders).length > 0) {
@@ -1237,13 +1244,15 @@ var vm = new _vue2.default({
       _this2.settings.current_slugFolderName = event.state.slugFolderName;
     };
 
-    console.log('ROOT EVENT: created / now connecting with socketio');
-    this.$socketio.connect();
+    if (this.state.mode === 'live') {
+      console.log('ROOT EVENT: created / now connecting with socketio');
+      this.$socketio.connect();
+    }
   },
 
   methods: {
     createFolder: function createFolder(fdata) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: createfolder: ' + (0, _stringify2.default)(fdata, null, 4));
       }
 
@@ -1253,20 +1262,20 @@ var vm = new _vue2.default({
       this.$socketio.createFolder(fdata);
     },
     editFolder: function editFolder(fdata) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: editFolder: ' + (0, _stringify2.default)(fdata, null, 4));
       }
       this.$socketio.editFolder(fdata);
     },
     removeFolder: function removeFolder(slugFolderName) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: removeFolder: ' + slugFolderName);
       }
       this.$socketio.removeFolder(slugFolderName);
     },
 
     createTextMedia: function createTextMedia(mdata) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: createTextMedia: ' + (0, _stringify2.default)(mdata, null, 4));
       }
 
@@ -1278,20 +1287,20 @@ var vm = new _vue2.default({
       this.$socketio.createTextMedia(mdata);
     },
     removeMedia: function removeMedia(slugFolderName, slugMediaName) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: removeMedia: ' + slugFolderName + '/' + slugMediaName);
       }
       this.$socketio.removeMedia(slugFolderName, slugMediaName);
     },
     editMedia: function editMedia(mdata) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: editMedia: ' + (0, _stringify2.default)(mdata, null, 4));
       }
       this.$socketio.editMedia(mdata);
     },
 
     openFolder: function openFolder(slugFolderName) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: openFolder: ' + slugFolderName);
       }
       if (!this.store.folders.hasOwnProperty(slugFolderName)) {
@@ -1306,7 +1315,7 @@ var vm = new _vue2.default({
       window.addEventListener('timeline.listMediasForFolder', this.listMediasForFolder);
     },
     closeFolder: function closeFolder() {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: closeFolder');
       }
       this.settings.current_slugFolderName = '';
@@ -1314,7 +1323,7 @@ var vm = new _vue2.default({
     },
 
     listMediasForFolder: function listMediasForFolder(e) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: listMediasForFolder');
       }
       if (e.detail === this.settings.is_loading_medias_for_folder) {
@@ -1322,7 +1331,7 @@ var vm = new _vue2.default({
       }
     },
     updateProjectScale: function updateProjectScale(slugFolderName, timelineViewport_scale) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: updateProjectScale');
       }
 
@@ -1332,7 +1341,7 @@ var vm = new _vue2.default({
       _store2.default.set('viewport_scale', viewportScale);
     },
     getProjectScale: function getProjectScale(slugFolderName) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: getProjectScale');
       }
       var viewportScale = _store2.default.get('viewport_scale') || {};
@@ -1343,7 +1352,7 @@ var vm = new _vue2.default({
     },
 
     updateLocalLang: function updateLocalLang(newLangCode) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: updateLocalLang');
       }
       i18n.locale = newLangCode;
@@ -1351,7 +1360,7 @@ var vm = new _vue2.default({
     },
 
     updateProjectScrollLeft: function updateProjectScrollLeft(slugFolderName, timelineViewport_scrollLeft) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: updateProjectScrollLeft');
       }
 
@@ -1361,7 +1370,7 @@ var vm = new _vue2.default({
       _store2.default.set('viewport_scrollLeft', viewportScrollLeft);
     },
     getScrollLeft: function getScrollLeft(slugFolderName) {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: getScrollLeft');
       }
       var viewportScrollLeft = _store2.default.get('viewport_scrollLeft') || {};
@@ -1373,7 +1382,7 @@ var vm = new _vue2.default({
   },
   watch: {
     'settings.has_modal_opened': function settingsHas_modal_opened() {
-      if (window.store.debug) {
+      if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: var has changed: has_modal_opened: ' + this.settings.has_modal_opened);
       }
       if (this.has_modal_opened) {
@@ -1533,7 +1542,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-21103a89", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-21103a89", __vue__options__)
+    hotAPI.reload("data-v-21103a89", __vue__options__)
   }
 })()}
 },{"./FileUpload.vue":8,"./subcomponents/FileInput.vue":23,"vue":279,"vue-hot-reload-api":274}],7:[function(require,module,exports){
@@ -1546,7 +1555,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = {
   methods: {
     getURLToApp: function getURLToApp(ip, port) {
-      return locals.protocol + "://" + ip + ":" + port;
+      return this.$root.state.protocol + "://" + ip + ":" + port;
     }
   }
 };
@@ -1554,7 +1563,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('footer',{staticClass:"m_footer flex-wrap flex-vertically-centered limited-width"},[_c('div',{staticClass:"padding-vert-medium padding-sides-medium"},[_c('p',[_c('em',[_vm._v("Les Cahiers du Studio")]),_vm._v(" version "+_vm._s(_vm.$root.store.appVersion))]),_vm._v(" "),_c('p',{staticClass:"text-center centered font-small"},[_c('span',{domProps:{"innerHTML":_vm._s(_vm.$t('toconnectwithanotherdevice'))}}),_vm._v(" "),_vm._l((_vm.$root.store.localNetworkInfos.ip),function(ip,index){return [_c('a',{staticClass:"js--openInBrowser",attrs:{"href":_vm.getURLToApp(ip, _vm.$root.store.localNetworkInfos.port),"target":"_blank"},domProps:{"innerHTML":_vm._s(_vm.getURLToApp(ip, _vm.$root.store.localNetworkInfos.port))}}),_vm._v(" "),_c('span')]})],2)])])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('footer',{staticClass:"m_footer flex-wrap flex-vertically-centered limited-width"},[_c('div',{staticClass:"padding-vert-medium padding-sides-medium"},[_c('p',[_c('em',[_vm._v("Les Cahiers du Studio")]),_vm._v(" version "+_vm._s(_vm.$root.state.appVersion))]),_vm._v(" "),_c('p',{staticClass:"text-center centered font-small"},[_c('span',{domProps:{"innerHTML":_vm._s(_vm.$t('toconnectwithanotherdevice'))}}),_vm._v(" "),_vm._l((_vm.$root.state.localNetworkInfos.ip),function(ip,index){return [_c('a',{staticClass:"js--openInBrowser",attrs:{"href":_vm.getURLToApp(ip, _vm.$root.state.localNetworkInfos.port),"target":"_blank"},domProps:{"innerHTML":_vm._s(_vm.getURLToApp(ip, _vm.$root.state.localNetworkInfos.port))}}),_vm._v(" "),_c('span')]})],2)])])}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-0d4997da"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
@@ -1564,7 +1573,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-0d4997da", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-0d4997da", __vue__options__)
+    hotAPI.reload("data-v-0d4997da", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],8:[function(require,module,exports){
@@ -1674,7 +1683,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-05b2235e", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-05b2235e", __vue__options__)
+    hotAPI.reload("data-v-05b2235e", __vue__options__)
   }
 })()}
 },{"alertify.js":28,"vue":279,"vue-hot-reload-api":274,"vue2-dropzone":280}],9:[function(require,module,exports){
@@ -1748,7 +1757,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-586f05a2", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-586f05a2", __vue__options__)
+    hotAPI.reload("data-v-586f05a2", __vue__options__)
   }
 })()}
 },{"./modals/EditFolder.vue":15,"vue":279,"vue-hot-reload-api":274}],10:[function(require,module,exports){
@@ -1824,7 +1833,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-e56d8fbe", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-e56d8fbe", __vue__options__)
+    hotAPI.reload("data-v-e56d8fbe", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],11:[function(require,module,exports){
@@ -2020,7 +2029,7 @@ exports.default = {
       return dates;
     },
     getURLToApp: function getURLToApp(ip, port) {
-      return locals.protocol + '://' + ip + ':' + port + '/' + this.slugFolderName;
+      return this.$root.state.protocol + '://' + ip + ':' + port + '/' + this.slugFolderName;
     },
     openInFinder: function openInFinder(thisPath) {
       var shell = window.require('electron').shell;
@@ -2120,7 +2129,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"sidebar",staticClass:"m_sidebar padding-bottom-medium"},[_c('SidebarSection',[_c('div',{staticClass:"flex-vertically-centered",attrs:{"slot":"header"},slot:"header"},[_c('h3',{staticClass:"margin-none text-cap with-bullet"},[_vm._v("\n        "+_vm._s(_vm.$t('folder_information'))+"\n        "),(_vm.folder.authorized)?_c('button',{staticClass:"button-small border-circled button-thin button-wide padding-verysmall margin-none",attrs:{"type":"button","disabled":_vm.read_only},on:{"click":function($event){_vm.openEditFolderModal()}}},[_vm._v("\n          "+_vm._s(_vm.$t('edit'))+"\n        ")]):_vm._e()])]),_vm._v(" "),_c('div',{attrs:{"slot":"body"},slot:"body"},[_c('p',{staticClass:"font-small"},[_c('span',{domProps:{"innerHTML":_vm._s(_vm.$t('toconnectwithanotherdevicetothisfolder'))}}),_vm._v(" "),_vm._l((_vm.$root.store.localNetworkInfos.ip),function(ip,index){return _c('a',{staticClass:"js--openInBrowser button button-circled margin-vert-medium border-circled button-inline padding-small flex-space-around",attrs:{"href":_vm.getURLToApp(ip, _vm.$root.store.localNetworkInfos.port),"target":"_blank"}},[_vm._v("\n          "+_vm._s(_vm.getURLToApp(ip, _vm.$root.store.localNetworkInfos.port))+"\n          "),_c('qrcode',{attrs:{"value":_vm.getURLToApp(ip, _vm.$root.store.localNetworkInfos.port),"options":{ size: 100 }}})],1)})],2),_vm._v(" "),_c('p',{staticClass:"font-small"},[_vm._v("\n        "+_vm._s(_vm.$t('contents_are_stored'))+"\n        "),(_vm.$root.store.is_electron)?[_c('a',{attrs:{"href":_vm.folder.fullFolderPath},on:{"click":function($event){$event.preventDefault();_vm.openInFinder(_vm.folder.fullFolderPath)}}},[_vm._v("\n            "+_vm._s(_vm.folder.fullFolderPath.replace(/\//g, '\/\u200B'))+"\n          ")])]:[_vm._v("\n          "+_vm._s(_vm.folder.fullFolderPath.replace(/\//g, '\/\u200B'))+"\n        ")]],2)])]),_vm._v(" "),_c('SidebarSection',[_c('div',{attrs:{"slot":"header"},slot:"header"},[_c('h3',{staticClass:"margin-none text-cap with-bullet"},[_vm._v("\n        "+_vm._s(_vm.$t('calendar'))+"\n        "),(_vm.isRealtime)?_c('button',{staticClass:"button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif",attrs:{"type":"button"},on:{"click":function($event){_vm.scrollToToday()}}},[_vm._v("\n          "+_vm._s(_vm.$t('now'))+"\n        ")]):_vm._e()])]),_vm._v(" "),_c('div',{staticClass:"m_calendar",attrs:{"slot":"body"},slot:"body"},_vm._l((_vm.folderDays()),function(days,month){return _c('div',{staticClass:"m_calendar--month"},[_c('h3',{staticClass:"margin-bottom-small text-ital font-small"},[_vm._v("\n          "+_vm._s(month)+"\n        ")]),_vm._v(" "),_c('div',{staticClass:"m_calendar--days"},_vm._l((days),function(daymeta,index){return _c('div',{staticClass:"m_calendar--days--day padding-sides-verysmall padding-bottom-small",class:{
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"sidebar",staticClass:"m_sidebar padding-bottom-medium"},[_c('SidebarSection',[_c('div',{staticClass:"flex-vertically-centered",attrs:{"slot":"header"},slot:"header"},[_c('h3',{staticClass:"margin-none text-cap with-bullet"},[_vm._v("\n        "+_vm._s(_vm.$t('folder_information'))+"\n        "),(_vm.folder.authorized)?_c('button',{staticClass:"button-small border-circled button-thin button-wide padding-verysmall margin-none",attrs:{"type":"button","disabled":_vm.read_only},on:{"click":function($event){_vm.openEditFolderModal()}}},[_vm._v("\n          "+_vm._s(_vm.$t('edit'))+"\n        ")]):_vm._e()])]),_vm._v(" "),_c('div',{attrs:{"slot":"body"},slot:"body"},[_c('p',{staticClass:"font-small"},[_c('span',{domProps:{"innerHTML":_vm._s(_vm.$t('toconnectwithanotherdevicetothisfolder'))}}),_vm._v(" "),_vm._l((_vm.$root.state.localNetworkInfos.ip),function(ip,index){return _c('a',{staticClass:"js--openInBrowser button button-circled margin-vert-medium border-circled button-inline padding-small flex-space-around",attrs:{"href":_vm.getURLToApp(ip, _vm.$root.state.localNetworkInfos.port),"target":"_blank"}},[_vm._v("\n          "+_vm._s(_vm.getURLToApp(ip, _vm.$root.state.localNetworkInfos.port))+"\n          "),_c('qrcode',{attrs:{"value":_vm.getURLToApp(ip, _vm.$root.state.localNetworkInfos.port),"options":{ size: 100 }}})],1)})],2),_vm._v(" "),_c('p',{staticClass:"font-small"},[_vm._v("\n        "+_vm._s(_vm.$t('contents_are_stored'))+"\n        "),(_vm.$root.state.is_electron)?[_c('a',{attrs:{"href":_vm.folder.fullFolderPath},on:{"click":function($event){$event.preventDefault();_vm.openInFinder(_vm.folder.fullFolderPath)}}},[_vm._v("\n            "+_vm._s(_vm.folder.fullFolderPath.replace(/\//g, '\/\u200B'))+"\n          ")])]:[_vm._v("\n          "+_vm._s(_vm.folder.fullFolderPath.replace(/\//g, '\/\u200B'))+"\n        ")]],2)])]),_vm._v(" "),_c('SidebarSection',[_c('div',{attrs:{"slot":"header"},slot:"header"},[_c('h3',{staticClass:"margin-none text-cap with-bullet"},[_vm._v("\n        "+_vm._s(_vm.$t('calendar'))+"\n        "),(_vm.isRealtime)?_c('button',{staticClass:"button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif",attrs:{"type":"button"},on:{"click":function($event){_vm.scrollToToday()}}},[_vm._v("\n          "+_vm._s(_vm.$t('now'))+"\n        ")]):_vm._e()])]),_vm._v(" "),_c('div',{staticClass:"m_calendar",attrs:{"slot":"body"},slot:"body"},_vm._l((_vm.folderDays()),function(days,month){return _c('div',{staticClass:"m_calendar--month"},[_c('h3',{staticClass:"margin-bottom-small text-ital font-small"},[_vm._v("\n          "+_vm._s(month)+"\n        ")]),_vm._v(" "),_c('div',{staticClass:"m_calendar--days"},_vm._l((days),function(daymeta,index){return _c('div',{staticClass:"m_calendar--days--day padding-sides-verysmall padding-bottom-small",class:{
               'is--visibleDay' : daymeta.isVisibleDay,
               'has--noMedia' : !daymeta.numberOfMedias,
               'is--today': daymeta.isToday
@@ -2133,7 +2142,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-ce077450", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-ce077450", __vue__options__)
+    hotAPI.reload("data-v-ce077450", __vue__options__)
   }
 })()}
 },{"./modals/MediasList.vue":17,"./sidebar/Calendrier.vue":18,"./sidebar/Informations.vue":19,"./sidebar/SidebarSection.vue":20,"./sidebar/Tableau.vue":21,"@xkeshi/vue-qrcode":26,"vue":279,"vue-hot-reload-api":274}],12:[function(require,module,exports){
@@ -2222,7 +2231,10 @@ exports.default = {
       return Math.max(50, Math.min(this.timelineHeight - 100, yPos));
     },
     getMediaPosition: function getMediaPosition() {
-      console.log('METHODS • TimelineMedia: getMediaPosition');
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • TimelineMedia: getMediaPosition');
+      }
+
       var posX = this.posX !== false ? this.posX : 0;
       return {
         transform: 'translate(' + posX + 'px, ' + this.mediaStyles.y + 'px)'
@@ -2239,7 +2251,9 @@ exports.default = {
       return false;
     },
     setMediaSize: function setMediaSize() {
-      console.log('METHODS • TimelineMedia: setMediaSize');
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • TimelineMedia: setMediaSize');
+      }
 
       if (this.mediaStyles.ratio) {
         var r = this.mediaStyles.ratio;
@@ -2364,7 +2378,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-1322b01f", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-1322b01f", __vue__options__)
+    hotAPI.reload("data-v-1322b01f", __vue__options__)
   }
 })()}
 },{"./subcomponents/MediaContent.vue":24,"vue":279,"vue-hot-reload-api":274}],13:[function(require,module,exports){
@@ -2437,7 +2451,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-d52c0332", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-d52c0332", __vue__options__)
+    hotAPI.reload("data-v-d52c0332", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],14:[function(require,module,exports){
@@ -2489,8 +2503,8 @@ exports.default = {
 
       function getAllFolderNames() {
         var allFoldersName = [];
-        for (var slugFolderName in window.store.state.folders) {
-          var foldersName = window.store.state.folders[slugFolderName].name;
+        for (var slugFolderName in window.store.folders) {
+          var foldersName = window.store.folders[slugFolderName].name;
           allFoldersName.push(foldersName);
         }
         return allFoldersName;
@@ -2525,7 +2539,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-202385cf", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-202385cf", __vue__options__)
+    hotAPI.reload("data-v-202385cf", __vue__options__)
   }
 })()}
 },{"../subcomponents/DateTime.vue":22,"./BaseModal.vue":13,"alertify.js":28,"vue":279,"vue-hot-reload-api":274}],15:[function(require,module,exports){
@@ -2583,8 +2597,8 @@ exports.default = {
       if (this.folderdata.name !== this.folder.name) {
         var getAllFolderNames = function getAllFolderNames() {
           var allFoldersName = [];
-          for (var slugFolderName in window.store.state.folders) {
-            var foldersName = window.store.state.folders[slugFolderName].name;
+          for (var slugFolderName in window.store.folders) {
+            var foldersName = window.store.folders[slugFolderName].name;
             allFoldersName.push(foldersName);
           }
           return allFoldersName;
@@ -2626,7 +2640,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-1cd3e09d", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-1cd3e09d", __vue__options__)
+    hotAPI.reload("data-v-1cd3e09d", __vue__options__)
   }
 })()}
 },{"../subcomponents/DateTime.vue":22,"./BaseModal.vue":13,"alertify.js":28,"slugg":237,"vue":279,"vue-hot-reload-api":274}],16:[function(require,module,exports){
@@ -2741,7 +2755,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-14b2adf6", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-14b2adf6", __vue__options__)
+    hotAPI.reload("data-v-14b2adf6", __vue__options__)
   }
 })()}
 },{"../subcomponents/DateTime.vue":22,"../subcomponents/MediaContent.vue":24,"./BaseModal.vue":13,"alertify.js":28,"vue":279,"vue-hot-reload-api":274}],17:[function(require,module,exports){
@@ -2788,7 +2802,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-71b8ed5c", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-71b8ed5c", __vue__options__)
+    hotAPI.reload("data-v-71b8ed5c", __vue__options__)
   }
 })()}
 },{"../sidebar/Tableau.vue":21,"./BaseModal.vue":13,"vue":279,"vue-hot-reload-api":274}],18:[function(require,module,exports){
@@ -2800,6 +2814,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-d027bc90", __vue__options__)
   } else {
+    hotAPI.reload("data-v-d027bc90", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],19:[function(require,module,exports){
@@ -2811,6 +2826,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-1b84bece", __vue__options__)
   } else {
+    hotAPI.reload("data-v-1b84bece", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],20:[function(require,module,exports){
@@ -2829,7 +2845,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-2f93f930", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-2f93f930", __vue__options__)
+    hotAPI.reload("data-v-2f93f930", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],21:[function(require,module,exports){
@@ -2905,7 +2921,7 @@ exports.default = {
     },
     linkToThumb: function linkToThumb(media) {
       var pathToSmallestThumb = _underscore2.default.findWhere(media.thumbs, { size: this.thumbSize }).path;
-      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : '';
+      return pathToSmallestThumb !== undefined ? './' + pathToSmallestThumb : '';
     }
   }
 };
@@ -2922,7 +2938,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-2aca846a", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-2aca846a", __vue__options__)
+    hotAPI.reload("data-v-2aca846a", __vue__options__)
   }
 })()}
 },{"../subcomponents/MediaContent.vue":24,"underscore":266,"vue":279,"vue-hot-reload-api":274}],22:[function(require,module,exports){
@@ -2934,7 +2950,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = {
   props: {
-    value: Object,
+    value: String,
     twowaybinding: {
       type: Boolean,
       default: false
@@ -2978,7 +2994,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-0e86d668", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-0e86d668", __vue__options__)
+    hotAPI.reload("data-v-0e86d668", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274}],23:[function(require,module,exports){
@@ -3015,7 +3031,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-c81eaf9e", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-c81eaf9e", __vue__options__)
+    hotAPI.reload("data-v-c81eaf9e", __vue__options__)
   }
 })()}
 },{"vue":279,"vue-hot-reload-api":274,"vueify/lib/insert-css":281}],24:[function(require,module,exports){
@@ -3080,11 +3096,11 @@ exports.default = {
     },
     linkToThumb: function linkToThumb() {
       var pathToSmallestThumb = _underscore2.default.findWhere(this.media.thumbs, { size: this.thumbRes }).path;
-      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : this.mediaURL;
+      return pathToSmallestThumb !== undefined ? './' + pathToSmallestThumb : this.mediaURL;
     },
     linkToHoveredThumb: function linkToHoveredThumb() {
       var pathToSmallestThumb = _underscore2.default.findWhere(this.media.thumbs, { size: this.thumbResHovered }).path;
-      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : this.mediaURL;
+      return pathToSmallestThumb !== undefined ? './' + pathToSmallestThumb : this.mediaURL;
     },
     linkToVideoThumb: function linkToVideoThumb() {
 
@@ -3100,7 +3116,7 @@ exports.default = {
       }
 
       var pathToSmallestThumb = _underscore2.default.findWhere(timeMarkThumbs.thumbsData, { size: this.thumbRes }).path;
-      return pathToSmallestThumb !== undefined ? '/' + pathToSmallestThumb : this.mediaURL;
+      return pathToSmallestThumb !== undefined ? './' + pathToSmallestThumb : this.mediaURL;
     }
 
   }
@@ -3109,7 +3125,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mediaContainer flex-wrap flex-vertically-centered",class:("type-" + (_vm.media.type)),attrs:{"data-context":_vm.context}},[(_vm.media.type === 'image')?[_c('img',{attrs:{"src":_vm.linkToThumb}}),_vm._v(" "),_c('transition',{attrs:{"name":"fade","duration":850}},[(_vm.is_hovered && _vm.$root.store.is_electron)?_c('img',{attrs:{"src":_vm.linkToHoveredThumb}}):_vm._e()])]:(_vm.media.type === 'video')?[(_vm.context === 'preview')?[_c('img',{attrs:{"src":_vm.linkToVideoThumb}})]:[_c('video',{attrs:{"controls":"","src":_vm.mediaURL,"poster":_vm.linkToVideoThumb}})]]:(_vm.media.type === 'audio')?[_c('audio',{attrs:{"controls":"","src":_vm.mediaURL}})]:(_vm.media.type === 'text')?[(_vm.context !== 'edit')?_c('div',{staticClass:"padding-small"},[(_vm.value.length !== 0)?[_vm._v("\n        "+_vm._s(_vm.value)+"\n      ")]:[_vm._v("\n        …\n      ")]],2):_c('textarea',{ref:"textField",staticClass:"mediaTextContent border-none bg-transparent",attrs:{"placeholder":"…","autocorrect":"on","readonly":_vm.read_only},domProps:{"value":_vm.value},on:{"input":function($event){_vm.$emit('input', $event.target.value)}}})]:(_vm.media.type === 'marker')?[(_vm.context !== 'edit')?_c('div',{staticClass:"padding-small"},[(_vm.value.length > 0)?[_vm._v("\n        "+_vm._s(_vm.value)+"\n      ")]:[_vm._v("\n        …\n      ")]],2):_c('input',{ref:"textField",staticClass:"border-none bg-transparent",attrs:{"type":"text","placeholder":"Étiquette","name":"label","readonly":_vm.read_only},domProps:{"value":_vm.value},on:{"input":function($event){_vm.$emit('input', $event.target.value)}}})]:(_vm.media.type === 'other')?[_vm._v("\n    "+_vm._s(this.slugMediaName)+"\n  ")]:_vm._e()],2)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"mediaContainer flex-wrap flex-vertically-centered",class:("type-" + (_vm.media.type)),attrs:{"data-context":_vm.context}},[(_vm.media.type === 'image')?[_c('img',{attrs:{"src":_vm.linkToThumb}}),_vm._v(" "),_c('transition',{attrs:{"name":"fade","duration":850}},[(_vm.is_hovered && _vm.$root.state.is_electron)?_c('img',{attrs:{"src":_vm.linkToHoveredThumb}}):_vm._e()])]:(_vm.media.type === 'video')?[(_vm.context === 'preview')?[_c('img',{attrs:{"src":_vm.linkToVideoThumb}})]:[_c('video',{attrs:{"controls":"","src":_vm.mediaURL,"poster":_vm.linkToVideoThumb}})]]:(_vm.media.type === 'audio')?[_c('audio',{attrs:{"controls":"","src":_vm.mediaURL}})]:(_vm.media.type === 'text')?[(_vm.context !== 'edit')?_c('div',{staticClass:"padding-small"},[(_vm.value.length !== 0)?[_vm._v("\n        "+_vm._s(_vm.value)+"\n      ")]:[_vm._v("\n        …\n      ")]],2):_c('textarea',{ref:"textField",staticClass:"mediaTextContent border-none bg-transparent",attrs:{"placeholder":"…","autocorrect":"on","readonly":_vm.read_only},domProps:{"value":_vm.value},on:{"input":function($event){_vm.$emit('input', $event.target.value)}}})]:(_vm.media.type === 'marker')?[(_vm.context !== 'edit')?_c('div',{staticClass:"padding-small"},[(_vm.value.length > 0)?[_vm._v("\n        "+_vm._s(_vm.value)+"\n      ")]:[_vm._v("\n        …\n      ")]],2):_c('input',{ref:"textField",staticClass:"border-none bg-transparent",attrs:{"type":"text","placeholder":"Étiquette","name":"label","readonly":_vm.read_only},domProps:{"value":_vm.value},on:{"input":function($event){_vm.$emit('input', $event.target.value)}}})]:(_vm.media.type === 'other')?[_vm._v("\n    "+_vm._s(this.slugMediaName)+"\n  ")]:_vm._e()],2)}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-5cf17b42"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
@@ -3119,7 +3135,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-5cf17b42", __vue__options__)
   } else {
-    hotAPI.rerender("data-v-5cf17b42", __vue__options__)
+    hotAPI.reload("data-v-5cf17b42", __vue__options__)
   }
 })()}
 },{"underscore":266,"vue":279,"vue-hot-reload-api":274}],25:[function(require,module,exports){

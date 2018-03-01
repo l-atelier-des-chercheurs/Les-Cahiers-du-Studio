@@ -16,7 +16,7 @@
             :slugFolderName="current_slugFolderName"
             :folder="currentFolder"
             :presentationMD="$root.store.presentationMD"
-            :read_only="!$root.store.connected"
+            :read_only="!$root.state.connected"
           >
           </ListView>
 
@@ -29,7 +29,7 @@
         :slugFolderName="current_slugFolderName"
         :folder="currentFolder"
         :medias="currentFolder.medias"
-        :read_only="!$root.store.connected"
+        :read_only="!$root.state.connected"
       >
       </TimeLineView>
 

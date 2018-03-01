@@ -145,7 +145,8 @@ export default {
       return Math.max(50, Math.min(this.timelineHeight - 100, yPos));
     },
     getMediaPosition() {
-      console.log('METHODS • TimelineMedia: getMediaPosition');
+      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: getMediaPosition'); }
+
       let posX = this.posX !== false ? this.posX : 0;
       return {
         transform: `translate(${posX}px, ${this.mediaStyles.y}px)`
@@ -165,7 +166,7 @@ export default {
     // set width and height for a media.
     // this shouldn’t need updating
     setMediaSize() {
-      console.log('METHODS • TimelineMedia: setMediaSize');
+      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: setMediaSize'); }
 
       // let’s set some ratio
       if(this.mediaStyles.ratio) {

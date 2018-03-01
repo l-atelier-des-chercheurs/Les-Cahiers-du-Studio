@@ -59,27 +59,6 @@ window.auth = function () {
 auth.init();
 
 /***********
-   STOREJS
-***********/
-
-window.store = {
-  debug: true,
-  state: {
-    connected: false,
-    folders: locals.folderAndMediaData !== undefined ? locals.folderAndMediaData : {},
-    localNetworkInfos: locals.localNetworkInfos,
-    appVersion: locals.appVersion,
-    presentationMD: locals.presentationMD,
-    slugFolderName: locals.slugFolderName,
-    noticeOfError: locals.noticeOfError,
-    is_electron: !!(window && window.process && window.process.type),
-    is_darwin: !!(window && window.process && window.process.platform === 'darwin')
-  }
-};
-// window.store.state.folders = JSON.parse(JSON.stringify(locals.data));
-
-
-/***********
   UTILS
 ***********/
 

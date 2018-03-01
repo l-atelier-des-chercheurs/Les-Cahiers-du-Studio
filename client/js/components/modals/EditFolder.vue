@@ -91,8 +91,8 @@ export default {
       if(this.folderdata.name !== this.folder.name) {
         function getAllFolderNames() {
           let allFoldersName = [];
-          for (let slugFolderName in window.store.state.folders) {
-            let foldersName = window.store.state.folders[slugFolderName].name;
+          for (let slugFolderName in window.store.folders) {
+            let foldersName = window.store.folders[slugFolderName].name;
             allFoldersName.push(foldersName);
           }
           return allFoldersName;

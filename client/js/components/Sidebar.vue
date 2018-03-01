@@ -21,19 +21,19 @@
         <p class="font-small">
           <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
 
-          <a v-for="(ip, index) in $root.store.localNetworkInfos.ip"
-            :href="getURLToApp(ip, $root.store.localNetworkInfos.port)"
+          <a v-for="(ip, index) in $root.state.localNetworkInfos.ip"
+            :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
             class="js--openInBrowser button button-circled margin-vert-medium border-circled button-inline padding-small flex-space-around"
             target="_blank"
             >
-            {{ getURLToApp(ip, $root.store.localNetworkInfos.port) }}
-            <qrcode :value="getURLToApp(ip, $root.store.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
+            {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
+            <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
           </a>
 
         </p>
         <p class="font-small">
           {{ $t('contents_are_stored') }}
-          <template v-if="$root.store.is_electron">
+          <template v-if="$root.state.is_electron">
             <a :href="folder.fullFolderPath" @click.prevent="openInFinder(folder.fullFolderPath)">
               {{ folder.fullFolderPath.replace(/\//g, '\/\u200B') }}
             </a>
@@ -308,7 +308,7 @@ export default {
     },
 
     getURLToApp(ip, port) {
-      return `${locals.protocol}://${ip}:${port}/${this.slugFolderName}`;
+      return `${this.$root.state.protocol}://${ip}:${port}/${this.slugFolderName}`;
     },
     openInFinder(thisPath) {
       const shell = window.require('electron').shell;
