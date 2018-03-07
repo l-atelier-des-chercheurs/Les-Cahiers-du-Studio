@@ -148,11 +148,9 @@ function createWindow() {
             function(err) {
               dev.error('Failed to find available port: ' + err);
               dialog.showErrorBox(
-                `L’application ${app.getName()} n’as pas pu démarrer`,
-                `Il semble que les ports ${
-                  settings.port
-                } jusqu’à ${settings.port +
-                  20} ne soient pas disponibles.\nCode de l’erreur: ${err}`
+                `The app ${app.getName()} wasn’t able to start`,
+                `It seems ports between ${settings.port} and ${settings.port +
+                  20} are not available.\nError code: ${err}`
               );
             }
           );
