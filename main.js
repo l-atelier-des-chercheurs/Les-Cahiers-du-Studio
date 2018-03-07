@@ -148,7 +148,7 @@ function createWindow() {
             function(err) {
               dev.error('Failed to find available port: ' + err);
               dialog.showErrorBox(
-                `L’application Les Cahiers du Studio n’as pas pu démarrer`,
+                `L’application ${app.getName()} n’as pas pu démarrer`,
                 `Il semble que les ports ${
                   settings.port
                 } jusqu’à ${settings.port +
