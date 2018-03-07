@@ -1,27 +1,30 @@
 const electron = require('electron');
-const {app, BrowserWindow, Menu} = electron;
+const { app, BrowserWindow, Menu } = electron;
 
-const { default: installExtension, VUEJS_DEVTOOLS } = require('electron-devtools-installer');
+const {
+  default: installExtension,
+  VUEJS_DEVTOOLS
+} = require('electron-devtools-installer');
 
 const path = require('path');
 const fs = require('fs-extra');
 const flags = require('flags');
-const {dialog} = require('electron');
+const { dialog } = require('electron');
 const JSONStorage = require('node-localstorage').JSONStorage;
 const portscanner = require('portscanner');
 
 const server = require('./server');
 
-const
-  settings = require('./settings.json'),
-  dev = require('./bin/dev-log')
-;
+const settings = require('./settings.json'),
+  dev = require('./bin/dev-log');
 
 require('electron-context-menu')({
-  prepend: (params, BrowserWindow) => [{
-    // Only show it when right-clicking images
-    visible: params.mediaType === 'image'
-  }]
+  prepend: (params, BrowserWindow) => [
+    {
+      // Only show it when right-clicking images
+      visible: params.mediaType === 'image'
+    }
+  ]
 });
 
 let win;
@@ -29,7 +32,7 @@ app.commandLine.appendSwitch('--ignore-certificate-errors');
 app.commandLine.appendSwitch('--disable-http-cache');
 
 function createWindow() {
-
+  console.log(`Starting app ${app.getName()}`);
   console.log(process.versions);
 
   var storageLocation = app.getPath('userData');
@@ -43,20 +46,29 @@ function createWindow() {
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
 
-  if( global.appInfos === undefined) {
+  if (global.appInfos === undefined) {
     global.appInfos = {};
   }
 
   global.appRoot = path.resolve(__dirname);
   global.appInfos.version = app.getVersion();
-  let pathToPresentationMd = path.join(`${__dirname.replace(`${path.sep}app.asar`, '')}`, `${settings.contentDirname}`, `presentation.md`);
-  global.appInfos.presentationMd = fs.readFileSync(pathToPresentationMd, settings.textEncoding);
+  let pathToPresentationMd = path.join(
+    `${__dirname.replace(`${path.sep}app.asar`, '')}`,
+    `${settings.contentDirname}`,
+    `presentation.md`
+  );
+  global.appInfos.presentationMd = fs.readFileSync(
+    pathToPresentationMd,
+    settings.textEncoding
+  );
 
   dev.log(`——— Starting les-cahiers app version ${global.appInfos.version}`);
 
   var windowState = {};
   try {
-    windowState = global.nodeStorage.getItem('windowstate') ? global.nodeStorage.getItem('windowstate') : {};
+    windowState = global.nodeStorage.getItem('windowstate')
+      ? global.nodeStorage.getItem('windowstate')
+      : {};
     dev.log('Found defaults for windowState: ');
     dev.log(windowState);
   } catch (err) {
@@ -65,10 +77,10 @@ function createWindow() {
 
   // Create the browser window.
   win = new BrowserWindow({
-    x: windowState.bounds && windowState.bounds.x || undefined,
-    y: windowState.bounds && windowState.bounds.y || undefined,
-    width: windowState.bounds && windowState.bounds.width || 1200,
-    height: windowState.bounds && windowState.bounds.height || 800,
+    x: (windowState.bounds && windowState.bounds.x) || undefined,
+    y: (windowState.bounds && windowState.bounds.y) || undefined,
+    width: (windowState.bounds && windowState.bounds.width) || 1200,
+    height: (windowState.bounds && windowState.bounds.height) || 800,
 
     backgroundColor: '#333',
     show: false,
@@ -98,7 +110,7 @@ function createWindow() {
     win.on(e, function() {
       try {
         storeWindowState();
-      } catch(e) {
+      } catch (e) {
         dev.error('Couldn’t update local settings with window position: ' + e);
       }
     });
@@ -106,176 +118,199 @@ function createWindow() {
 
   setApplicationMenu();
 
-  cleanCacheFolder().then(() => {
-    copyAndRenameUserFolder().then(function(pathToUserContent) {
-      global.pathToUserContent = pathToUserContent;
-      dev.log('Will store contents in: ' + global.pathToUserContent);
+  cleanCacheFolder().then(
+    () => {
+      copyAndRenameUserFolder().then(
+        function(pathToUserContent) {
+          global.pathToUserContent = pathToUserContent;
+          dev.log('Will store contents in: ' + global.pathToUserContent);
 
-      portscanner.findAPortNotInUse(settings.port, settings.port + 20).then((port) => {
+          portscanner.findAPortNotInUse(settings.port, settings.port + 20).then(
+            port => {
+              dev.log(`main.js - Found available port: ${port}`);
+              global.appInfos.port = port;
+              global.appInfos.homeURL = `${settings.protocol}://${
+                settings.host
+              }:${global.appInfos.port}`;
 
-        dev.log(`main.js - Found available port: ${port}`);
-        global.appInfos.port = port;
-        global.appInfos.homeURL = `${settings.protocol}://${settings.host}:${global.appInfos.port}`;
+              app.server = server(app);
 
-        app.server = server(app);
+              // and load the base url of the app.
+              win.loadURL(global.appInfos.homeURL);
 
-        // and load the base url of the app.
-        win.loadURL(global.appInfos.homeURL);
+              if (dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
+                // win.webContents.openDevTools({mode: 'detach'});
+                installExtension(VUEJS_DEVTOOLS)
+                  .then(name => console.log(`Added Extension:  ${name}`))
+                  .catch(err => console.log('An error occurred: ', err));
+              }
+            },
+            function(err) {
+              dev.error('Failed to find available port: ' + err);
+              dialog.showErrorBox(
+                `L’application Les Cahiers du Studio n’as pas pu démarrer`,
+                `Il semble que les ports ${
+                  settings.port
+                } jusqu’à ${settings.port +
+                  20} ne soient pas disponibles.\nCode de l’erreur: ${err}`
+              );
+            }
+          );
 
-        if(dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
-          // win.webContents.openDevTools({mode: 'detach'});
-          installExtension(VUEJS_DEVTOOLS)
-              .then((name) => console.log(`Added Extension:  ${name}`))
-              .catch((err) => console.log('An error occurred: ', err));
+          // Emitted when the window is closed.
+          win.on('closed', () => {
+            // Dereference the window object, usually you would store windows
+            // in an array if your app supports multi windows, this is the time
+            // when you should delete the corresponding element.
+            win = null;
+          });
+
+          win.on('ready-to-show', function() {
+            win.show();
+            win.focus();
+          });
+        },
+        function(err) {
+          dev.error('Failed to check existing content folder: ' + err);
         }
-      }, function(err) {
-        dev.error( 'Failed to find available port: ' + err);
-        dialog.showErrorBox(`L’application Les Cahiers du Studio n’as pas pu démarrer`, `Il semble que les ports ${settings.port} jusqu’à ${settings.port + 20} ne soient pas disponibles.\nCode de l’erreur: ${err}`);
-      });
-
-      // Emitted when the window is closed.
-      win.on('closed', () => {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
-        win = null;
-      });
-
-      win.on('ready-to-show', function() {
-        win.show();
-        win.focus();
-      });
-
-    }, function(err) {
-      dev.error('Failed to check existing content folder: ' + err);
-    });
-  }, function(err) {
-    dev.error('Failed to clean cache folder: ' + err);
-  });
+      );
+    },
+    function(err) {
+      dev.error('Failed to clean cache folder: ' + err);
+    }
+  );
 }
 
 function setApplicationMenu() {
   // Create the Application's main menu
-  var template = [{
-    label: 'Electron',
-    submenu: [
-      {
-        label: 'About Electron',
-        selector: 'orderFrontStandardAboutPanel:'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Services',
-        submenu: []
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Hide Electron',
-        accelerator: 'Command+H',
-        selector: 'hide:'
-      },
-      {
-        label: 'Hide Others',
-        accelerator: 'Command+Shift+H',
-        selector: 'hideOtherApplications:'
-      },
-      {
-        label: 'Show All',
-        selector: 'unhideAllApplications:'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Quit',
-        accelerator: 'Command+Q',
-        click: function() { app.quit(); }
-      },
-    ]
-  },
-  {
-    label: 'Edit',
-    submenu: [
-      {
-        label: 'Undo',
-        accelerator: 'Command+Z',
-        selector: 'undo:'
-      },
-      {
-        label: 'Redo',
-        accelerator: 'Shift+Command+Z',
-        selector: 'redo:'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Cut',
-        accelerator: 'Command+X',
-        selector: 'cut:'
-      },
-      {
-        label: 'Copy',
-        accelerator: 'Command+C',
-        selector: 'copy:'
-      },
-      {
-        label: 'Paste',
-        accelerator: 'Command+V',
-        selector: 'paste:'
-      },
-      {
-        label: 'Select All',
-        accelerator: 'Command+A',
-        selector: 'selectAll:'
-      },
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      {
-        label: 'Reload',
-        accelerator: 'Command+R',
-        click: function() { BrowserWindow.getFocusedWindow().reload(); }
-      },
-      {
-        label: 'Toggle DevTools',
-        accelerator: 'Alt+Command+I',
-        click: function() { BrowserWindow.getFocusedWindow().toggleDevTools(); }
-      },
-    ]
-  },
-  {
-    label: 'Window',
-    submenu: [
-      {
-        label: 'Minimize',
-        accelerator: 'Command+M',
-        selector: 'performMiniaturize:'
-      },
-      {
-        label: 'Close',
-        accelerator: 'Command+W',
-        selector: 'performClose:'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Bring All to Front',
-        selector: 'arrangeInFront:'
-      },
-    ]
-  },
-  {
-    label: 'Help',
-    submenu: []
-  }];
+  var template = [
+    {
+      label: 'Electron',
+      submenu: [
+        {
+          label: 'About Electron',
+          selector: 'orderFrontStandardAboutPanel:'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Services',
+          submenu: []
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Hide Electron',
+          accelerator: 'Command+H',
+          selector: 'hide:'
+        },
+        {
+          label: 'Hide Others',
+          accelerator: 'Command+Shift+H',
+          selector: 'hideOtherApplications:'
+        },
+        {
+          label: 'Show All',
+          selector: 'unhideAllApplications:'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Quit',
+          accelerator: 'Command+Q',
+          click: function() {
+            app.quit();
+          }
+        }
+      ]
+    },
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          label: 'Undo',
+          accelerator: 'Command+Z',
+          selector: 'undo:'
+        },
+        {
+          label: 'Redo',
+          accelerator: 'Shift+Command+Z',
+          selector: 'redo:'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Cut',
+          accelerator: 'Command+X',
+          selector: 'cut:'
+        },
+        {
+          label: 'Copy',
+          accelerator: 'Command+C',
+          selector: 'copy:'
+        },
+        {
+          label: 'Paste',
+          accelerator: 'Command+V',
+          selector: 'paste:'
+        },
+        {
+          label: 'Select All',
+          accelerator: 'Command+A',
+          selector: 'selectAll:'
+        }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'Command+R',
+          click: function() {
+            BrowserWindow.getFocusedWindow().reload();
+          }
+        },
+        {
+          label: 'Toggle DevTools',
+          accelerator: 'Alt+Command+I',
+          click: function() {
+            BrowserWindow.getFocusedWindow().toggleDevTools();
+          }
+        }
+      ]
+    },
+    {
+      label: 'Window',
+      submenu: [
+        {
+          label: 'Minimize',
+          accelerator: 'Command+M',
+          selector: 'performMiniaturize:'
+        },
+        {
+          label: 'Close',
+          accelerator: 'Command+W',
+          selector: 'performClose:'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Bring All to Front',
+          selector: 'arrangeInFront:'
+        }
+      ]
+    },
+    {
+      label: 'Help',
+      submenu: []
+    }
+  ];
 
   menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
@@ -286,20 +321,31 @@ function copyAndRenameUserFolder() {
     const pathToUserContent = path.join(userDirPath, settings.userDirname);
     fs.access(pathToUserContent, fs.F_OK, function(err) {
       // if userDir folder doesn't exist yet at destination
-      if(err) {
-        dev.log('Content folder ' + settings.userDirname + ' does not already exists in ' + userDirPath);
-        dev.log(`->duplicating /${settings.contentDirname} to create a new one`);
-        const sourcePathInApp = path.join(`${__dirname.replace(`${path.sep}app.asar`, '')}`, `${settings.contentDirname}`);
-        fs.copy(sourcePathInApp, pathToUserContent, function (err) {
-          if(err) {
-            dev.error('failed to copy: ' + err);
+      if (err) {
+        dev.log(
+          `Content folder ${
+            settings.userDirname
+          } does not already exists in ${userDirPath}`
+        );
+        dev.log(`->duplicating ${settings.contentDirname} to create a new one`);
+        const sourcePathInApp = path.join(
+          `${__dirname.replace(`${path.sep}app.asar`, '')}`,
+          `${settings.contentDirname}`
+        );
+        fs.copy(sourcePathInApp, pathToUserContent, function(err) {
+          if (err) {
+            dev.error(`Failed to copy: ${err}`);
             reject(err);
           }
           resolve(pathToUserContent);
         });
       } else {
-        dev.log('Content folder ' + settings.userDirname + ' already exists in ' + userDirPath);
-        dev.log('-> not creating a new one');
+        dev.log(
+          `Content folder ${
+            settings.userDirname
+          } already exists in ${userDirPath}`
+        );
+        dev.log(`-> not creating a new one`);
         resolve(pathToUserContent);
       }
     });
@@ -325,7 +371,7 @@ app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   // if (process.platform !== 'darwin') {
-    app.quit();
+  app.quit();
   // }
 });
 
@@ -336,4 +382,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
