@@ -1,17 +1,18 @@
 ####### NODE ########
 .tmp
 .sass-cache
-bower_components
-public/bower_components
 npm-debug.log*
 # Runtime data
 pids
 *.pid
 *.seed
 cache
-# Dependency directory
-# https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 node_modules
+
+dist/
+build/config.gypi
+package-lock.json
+client/development/*
 
 ####### OSX ########
 .DS_Store
@@ -35,6 +36,3 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-dist/
-build/config.gypi
-package-lock.json
