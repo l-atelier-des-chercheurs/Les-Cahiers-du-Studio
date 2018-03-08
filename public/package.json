@@ -5,15 +5,16 @@
   "author": "Louis Eveillard <barlou15+github@gmail.com>",
   "private": true,
   "scripts": {
-    "watchify": "watchify -vd -p browserify-hmr -e -t [ node-lessify --minify=false --output dist/bundle.css ] src/main.js -o dist/build.js",
+    "watchify": "watchify -vd -p browserify-hmr -e src/main.js -o dist/build.js",
     "dev": "npm-run-all --parallel watchify",
     "lint": "eslint --ext .js,.vue src",
-    "build": "cross-env NODE_ENV=production browserify -g envify -t [ node-lessify --minify=true --output dist/bundle.css ] -e src/main.js | uglifyjs -c warnings=false -m > dist/build.js"
+    "build": "cross-env NODE_ENV=production browserify -g envify -e src/main.js | uglifyjs -c warnings=false -m > dist/build.js"
   },
   "browserify": {
     "transform": [
       "babelify",
-      "vueify"
+      "vueify",
+      "node-lessify"
     ]
   },
   "browser": {
