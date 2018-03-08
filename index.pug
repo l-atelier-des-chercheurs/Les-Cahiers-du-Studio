@@ -2,13 +2,7 @@ doctype html
 html
   head
     meta(charset='utf-8')
-    - if(mode === 'export')
-      link(rel='stylesheet', href='./production/all.min.css')
-    - else
-      - if(isDebug)
-        link(rel='stylesheet', href='/development/style.css')
-      - else
-        link(rel='stylesheet', href='/production/all.min.css')
+    <link rel="stylesheet" href="dist/bundle.css">
 
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
@@ -60,4 +54,9 @@ html
         is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true }
       };
 
-  include client/index.html
+
+  body  
+    #app
+
+  <script src="dist/build.js"></script>
+    

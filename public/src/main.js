@@ -1,5 +1,8 @@
+import localstore from 'store';
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
+
+import less from './less/style.less';
 
 /***********
    AUTH
@@ -59,3 +62,5 @@ $('body').on('click', '.js--openInBrowser', function() {
     shell.openExternal(event.target.href);
   }
 });
+
+import main from './vue/app.js';

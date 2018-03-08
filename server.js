@@ -39,13 +39,13 @@ module.exports = function(electronApp) {
 
   app.use(function(req, res, next) {
     if (isURLToForbiddenFiles(req.url)) {
-      res.status(404).send('Access not allowed');
+      res.status(404).send(`Access not allowed.`);
     } else {
       next();
     }
   });
   app.use(express.static(global.pathToUserContent));
-  // app.use(express.static(path.join(__dirname, 'client')));
+  app.use(express.static(path.join(__dirname, 'public')));
 
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
