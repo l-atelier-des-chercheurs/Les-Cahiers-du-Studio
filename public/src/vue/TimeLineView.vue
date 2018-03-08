@@ -542,14 +542,14 @@ export default {
 
       /****************************** make DAY ticks ******************************/
 
-      let createDayTick = (thisDay, f = 'DD/MM/YYYY') => {
+      let createDayTick = (thisDay, f = 'L') => {
         let xPos = this.getXPositionFromDate(thisDay);
         if(xPos === false) { return; }
         let caption = this.$moment(thisDay).format(f);
         overallGrid.days.push({ xPos, caption });
       }
 
-      createDayTick(this.timelineViewport.start, 'DD/MM/YYYY HH:mm:ss');
+      createDayTick(this.timelineViewport.start, 'LLL');
       let nextDay = this.$moment(this.$moment(this.timelineViewport.start).startOf('day').add(1, 'day'));
 
       // we need to iterate by day (and not every 24 hours, because of possible daylight savings)
@@ -572,7 +572,7 @@ export default {
 
         let caption;
         if(withCaption || this.timelineViewport.scale < 70) {
-          caption = this.$moment(currentHour).format('HH:mm');
+          caption = this.$moment(currentHour).format('LT');
         }
         overallGrid.hours.push({ xPos, caption });
       }

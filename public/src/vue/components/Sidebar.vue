@@ -23,11 +23,15 @@
 
           <a v-for="(ip, index) in $root.state.localNetworkInfos.ip"
             :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
-            class="js--openInBrowser button button-circled margin-vert-medium border-circled button-inline padding-small flex-space-around"
+            class="js--openInBrowser qrSnippet button button-circled margin-vert-medium border-circled button-inline padding-small"
             target="_blank"
             >
-            {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
-            <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
+            <div class="qrSnippet--text">
+              {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
+            </div>
+            <div class="qrSnippet--motif">
+              <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
+            </div>
           </a>
         </p>
         <p class="font-small" v-if="$root.state.is_electron">

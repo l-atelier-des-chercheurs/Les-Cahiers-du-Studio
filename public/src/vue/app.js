@@ -66,6 +66,11 @@ import 'moment/locale/en-gb';
 moment.locale(lang_settings.current);
 Vue.prototype.$moment = moment;
 
+const html = document.documentElement; // returns the html tag
+html.setAttribute('lang', lang_settings.current);
+
+document.body.classList.add('has_systembar');
+
 // Create VueI18n instance with options
 let i18n = new VueI18n({
   locale: lang_settings.current, // set locale
@@ -508,6 +513,10 @@ let vm = new Vue({
       }
       i18n.locale = newLangCode;
       moment.locale(newLangCode);
+
+      const html = document.documentElement; // returns the html tag
+      html.setAttribute('lang', newLangCode);
+
       localstore.set('language', newLangCode);
     },
 

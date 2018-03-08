@@ -29,7 +29,8 @@ module.exports = (function() {
       remove: 'Suppr.',
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
-      password_instructions: 'Si existant, seul les utilisateurs possédant ce mot de passe pourront modifier ce dossier et accéder aux médias non publics.',
+      password_instructions:
+        'Si existant, seul les utilisateurs possédant ce mot de passe pourront modifier ce dossier et accéder aux médias non publics.',
 
       sort_by: 'Organiser par',
       in_the_order: 'Dans l’ordre',
@@ -38,8 +39,10 @@ module.exports = (function() {
 
       'lang:': 'Changer la langue&nbsp;:',
 
-      toconnectwithanotherdevice: 'Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans le navigateur web (puis ignorez le message de sécurité)&nbsp;: ',
-      toconnectwithanotherdevicetothisfolder : 'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans le navigateur web (puis ignorez le message de sécurité)&nbsp;: ',
+      toconnectwithanotherdevice:
+        'Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans le navigateur web (puis ignorez le message de sécurité)&nbsp;: ',
+      toconnectwithanotherdevicetothisfolder:
+        'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans le navigateur web (puis ignorez le message de sécurité)&nbsp;: ',
       sureToRemoveFolder: 'Êtes-vous sûr de vouloir supprimer ce dossier ?',
       sureToRemoveMedia: 'Êtes-vous sûr de vouloir supprimer ce média ?',
 
@@ -51,7 +54,8 @@ module.exports = (function() {
       capture_end: 'Fin de la capture',
       currently: 'Actuellement',
 
-      more_information: 'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
+      more_information:
+        'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
       no_media_in_folder: 'Aucun média dans ce dossier.',
       no_public_media_in_folder: 'Aucun média public dans ce dossier.',
       auto_scroll: 'défilement<br>automatique',
@@ -61,7 +65,7 @@ module.exports = (function() {
         minute: 'min',
         hour: 'h',
         half_day: '½j',
-        day: 'j',
+        day: 'j'
       },
       contents_are_stored: 'Les contenus de ce dossier sont enregistrés dans ',
       folder_information: 'Informations du dossier',
@@ -79,16 +83,22 @@ module.exports = (function() {
 
       notifications: {
         file_was_sent: 'Le fichier a été envoyé.',
-        file_upload_not_allowed: 'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
+        file_upload_not_allowed:
+          'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
         connection_active: 'La connexion au serveur est active.',
         connection_lost: 'La connexion au serveur a été perdue.',
-        contents_wont_be_editable: 'Les modifications et ajouts ne seront plus pris en compte.',
+        contents_wont_be_editable:
+          'Les modifications et ajouts ne seront plus pris en compte.',
         connection_error: 'La connexion au serveur n’a pu se faire.',
-        'wrong_password_for_folder:': 'Le password n’est pas le bon pour le dossier&nbsp;:',
-        'created_edited_media:': 'Création ou édition d’un média pour le dossier&nbsp;:',
-        folder_name_exists: 'Ce nom de dossier existe déjà, utilisez-en un autre.',
-        folder_name_needs_alphanumeric_characters: 'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
-        'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:',
+        'wrong_password_for_folder:':
+          'Le password n’est pas le bon pour le dossier&nbsp;:',
+        'created_edited_media:':
+          'Création ou édition d’un média pour le dossier&nbsp;:',
+        folder_name_exists:
+          'Ce nom de dossier existe déjà, utilisez-en un autre.',
+        folder_name_needs_alphanumeric_characters:
+          'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
+        'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:'
       }
     },
     en: {
@@ -119,7 +129,8 @@ module.exports = (function() {
       remove: 'Remove',
       password: 'Mot de passe',
       protected_by_pass: 'protected by password',
-      password_instructions: 'If set, only users with the password will be able to edit this folder and access the content that’s not public.',
+      password_instructions:
+        'If set, only users with the password will be able to edit this folder and access the content that’s not public.',
 
       sort_by: 'Sort by',
       in_the_order: 'In the order',
@@ -128,9 +139,11 @@ module.exports = (function() {
 
       'lang:': 'Select lang:',
 
-      toconnectwithanotherdevice: 'To access Les Cahiers with another device, connect to the same wifi network and type this adress in your browser (and ignore the security message):',
-      toconnectwithanotherdevicetothisfolder: 'To access this folder in Les Cahiers with another device, connect to the same wifi network and type this adress in your browser (and ignore the security message):',
-      sureToRemoveFolder : 'Do you really want to delete this folder?',
+      toconnectwithanotherdevice:
+        'To access Les Cahiers with another device, connect to the same wifi network and type this adress in your browser (and ignore the security message):',
+      toconnectwithanotherdevicetothisfolder:
+        'To access this folder in Les Cahiers with another device, connect to the same wifi network and type this adress in your browser (and ignore the security message):',
+      sureToRemoveFolder: 'Do you really want to delete this folder?',
       sureToRemoveMedia: 'Do you really want to delete this media?',
 
       create_a_folder: 'Create a folder',
@@ -141,7 +154,8 @@ module.exports = (function() {
       capture_end: 'End of the capture',
       currently: 'Now',
 
-      more_information: 'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
+      more_information:
+        'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
 
       no_media_in_folder: 'No media in this folder.',
       no_public_media_in_folder: 'No public media in this folder.',
@@ -152,7 +166,7 @@ module.exports = (function() {
         minute: 'min',
         hour: 'h',
         half_day: '½d',
-        day: 'd',
+        day: 'd'
       },
       contents_are_stored: 'Contents for this folder are stored in ',
       folder_information: 'Folder information',
@@ -163,6 +177,9 @@ module.exports = (function() {
       preview: 'Preview',
       filter: 'Filter',
 
+      export_folder: 'Export as a webpage',
+      export: 'Export',
+
       last_modified: 'Last modified',
 
       notifications: {
@@ -171,12 +188,15 @@ module.exports = (function() {
         connection_active: 'The connection to the server is active.',
         connection_lost: 'The connection to the server was lost.',
         contents_wont_be_editable: 'Content editing is disabled.',
-        connection_error: 'The connection to the server could not be established.',
+        connection_error:
+          'The connection to the server could not be established.',
         'wrong_password_for_folder:': 'Wrong password or folder missing for:',
-        'created_edited_media:': 'A media has been created or edited in folder:',
+        'created_edited_media:':
+          'A media has been created or edited in folder:',
         folder_name_exists: 'Folder name already exists. Please use another.',
-        folder_name_needs_alphanumeric_characters: 'Folder names need to contain at least one alphanumeric character.',
-        'failed_to_get_folder:': 'Failed to get the requested folder:',
+        folder_name_needs_alphanumeric_characters:
+          'Folder names need to contain at least one alphanumeric character.',
+        'failed_to_get_folder:': 'Failed to get the requested folder:'
       }
     }
   };
