@@ -209,7 +209,6 @@ export default {
         let orderBy;
 
         if (this.sort.type ==='date') {
-          
           orderBy = +this.$moment(this.$root.store.folders[slugFolderName][this.sort.field], 'YYYY-MM-DD HH:mm:ss');
         } else if (this.sort.type ==='alph') {
           orderBy = this.$root.store.folders[slugFolderName][this.sort.field];
@@ -217,14 +216,12 @@ export default {
         sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
       }
 
-      console.log(`ORDER OF FOLDERS: ${sortable.map((x) => x.slugFolderName).toString()}`);
-      
       let sortedSortable = sortable.sort((a, b) => {
         return a.orderBy - b.orderBy;
       });
+
       if(this.sort.order === 'descending') {
         sortedSortable.reverse();
-        sortedSortable = sortedSortable.reverse();
       }
 
       return sortedSortable;
