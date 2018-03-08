@@ -123,6 +123,7 @@
 
       <transition-group 
       tag="div"
+      name="list-complete"
       class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large flex-wrap flex-vertically-start"
       >
           <button
