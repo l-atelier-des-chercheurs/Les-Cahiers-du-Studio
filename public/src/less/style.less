@@ -138,6 +138,8 @@ body {
     min-height: 235px;
     background-color: white;
     flex-grow: 0;
+
+    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 
@@ -150,7 +152,7 @@ body {
     width: 100%;
     color: white;
     letter-spacing: 0.05em;
-    transition: background-color .4s ease-out;
+    transition: background-color .4s cubic-bezier(0.19, 1, 0.22, 1);
   }
   .bloccontainer {
     width: 100%;
@@ -251,7 +253,7 @@ body {
   border-radius: 4px;
 
   transform: translateX(0);
-  transition: transform .35s ease-out, opacity .45s;
+  transition: transform .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
 
   z-index:  998;
 
@@ -263,7 +265,7 @@ body {
 
   &.is--collapsed {
     transform: translateX(-@t-sidebarWidth);
-    transition: transform .35s ease-out, opacity .45s;
+    transition: transform .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
 
     @media screen and (max-width: 50rem) {
       transform: translateX(-300px - @t-button_sidebartoggle/2);
@@ -459,11 +461,11 @@ body {
 /* durations and timing functions.              */
 .sidebar-animation-enter-active, .sidebar-animation-leave-active {
   transform: translateX(0);
-  transition: transform .35s ease-out, opacity .45s;
+  transition: transform .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
 }
 .sidebar-animation-enter, .sidebar-animation-leave-to {
   transform: translateX(-@t-sidebarWidth);
-  transition: transform .35s ease-in, opacity .45s;
+  transition: transform .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
 //   opacity: 0;
 }
 
@@ -480,3 +482,10 @@ body {
 }
 
 
+.list-complete-enter, .list-complete-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-complete-leave-active {
+  position: absolute;
+}

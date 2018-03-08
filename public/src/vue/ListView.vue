@@ -106,7 +106,7 @@
           <div class="margin-vert-medium" style="max-width: 200px">
             <label v-html="$t('lang:')"></label>
             <select v-model="currentLang">
-              <option v-for="(name, code) in $root.lang.available" :value="code">
+              <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
                 {{ name }}
               </option>
             </select>
@@ -121,27 +121,30 @@
       >
       </CreateFolder>
 
-      <div class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large flex-wrap flex-vertically-start">
-        <button
-          class="m_home--folders--card m_home--folders--card_createButton margin-small button-inline"
-          @click="showCreateFolderModal = true"
-          :disabled="read_only"
-        >
+      <transition-group 
+      tag="div"
+      class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large flex-wrap flex-vertically-start"
+      >
+          <button
+            class="m_home--folders--card m_home--folders--card_createButton margin-small button-inline"
+            @click="showCreateFolderModal = true"
+            :disabled="read_only"
+            :key="'createButton'"
+          >
 
-          <span class="margin-medium">
-            {{ $t('create_a_folder') }}
-          </span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
-            <circle cx="23.5" cy="23.5" r="23" transform="translate(-9.73 23.5) rotate(-45)" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-            <line x1="23.5" y1="8.86" x2="23.5" y2="38.13" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-            <line x1="8.86" y1="23.5" x2="38.13" y2="23.5" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-          </svg>
+            <span class="margin-medium">
+              {{ $t('create_a_folder') }}
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
+              <circle cx="23.5" cy="23.5" r="23" transform="translate(-9.73 23.5) rotate(-45)" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+              <line x1="23.5" y1="8.86" x2="23.5" y2="38.13" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+              <line x1="8.86" y1="23.5" x2="38.13" y2="23.5" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+            </svg>
 
-        </button>
+          </button>
 
-<!--        <transition-group name="folder-list" tag="div"> -->
           <div
-            v-for="(sortedFolder, index) in sortedFoldersSlug"
+            v-for="sortedFolder in sortedFoldersSlug"
             :key="sortedFolder.slugFolderName"
             class="m_home--folders--card margin-small"
           >
@@ -152,8 +155,7 @@
             >
             </Folder>
           </div>
-<!--        </transition-group> -->
-      </div>
+      </transition-group>
 
     </section>
 
