@@ -79,23 +79,23 @@
 
       <div slot="body" class="m_calendar">
         <div
-          v-for="(days, month) in folderDays()"
-          class="m_calendar--month"
+        v-for="(days, month) in folderDays()"
+        class="m_calendar--month"
         >
           <h3 class="margin-bottom-small text-ital font-small">
             {{ month }}
           </h3>
           <div class="m_calendar--days">
             <div
-              v-for="(daymeta, index) in days"
-              class="m_calendar--days--day padding-sides-verysmall padding-bottom-small"
-              :class="{
-                'is--visibleDay' : daymeta.isVisibleDay,
-                'has--noMedia' : !daymeta.numberOfMedias,
-                'is--today': daymeta.isToday
-              }"
-              @click="scrollToDate(daymeta.timestamp)"
-              >
+            v-for="(daymeta, index) in days"
+            class="m_calendar--days--day padding-sides-verysmall padding-bottom-small"
+            :class="{
+              'is--visibleDay' : daymeta.isVisibleDay,
+              'has--noMedia' : !daymeta.numberOfMedias,
+              'is--today': daymeta.isToday
+            }"
+            @click="scrollToDate(daymeta.timestamp)"
+            >
               <button class="font-verylarge padding-none">
                 {{ daymeta.dayNumber }}
                 <div class="font-veryverysmall bottomIndicator">
@@ -263,7 +263,7 @@ export default {
         let mediaDataToOrderBy;
 
         if (this.sort.current.type ==='date') {
-          mediaDataToOrderBy = + new Date(this.medias[slugMediaName][this.sort.current.field]);
+          mediaDataToOrderBy = +this.$moment(this.medias[slugMediaName][this.sort.current.field], 'YYYY-MM-DD HH:mm:ss');
         } else if (this.sort.current.type ==='alph') {
           mediaDataToOrderBy = this.medias[slugMediaName][this.sort.current.field];
         }
@@ -281,6 +281,7 @@ export default {
         if (valA > valB) { return 1; }
         return 0;
       });
+
       if(this.sort.current.order === 'descending') {
         sortedSortable.reverse();
       }
