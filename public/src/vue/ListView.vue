@@ -175,23 +175,28 @@ export default {
     sortedFoldersSlug() {
       var sortable = [];
 
-
       for (let slugFolderName in this.$root.store.folders) {
         let orderBy;
 
         if (this.sort.type ==='date') {
-          orderBy = + new Date(this.$root.store.folders[slugFolderName][this.sort.field]);
+          
+          orderBy = +this.$moment(this.$root.store.folders[slugFolderName][this.sort.field], 'YYYY-MM-DD HH:mm:ss');
         } else if (this.sort.type ==='alph') {
           orderBy = this.$root.store.folders[slugFolderName][this.sort.field];
         }
         sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
       }
-      let sortedSortable = sortable.sort(function(a, b) {
+
+      console.log(`ORDER OF FOLDERS: ${sortable.map((x) => x.slugFolderName).toString()}`);
+      
+      let sortedSortable = sortable.sort((a, b) => {
         return a.orderBy - b.orderBy;
       });
       if(this.sort.order === 'descending') {
         sortedSortable.reverse();
+        sortedSortable = sortedSortable.reverse();
       }
+
       return sortedSortable;
     },
     presentationText() {
