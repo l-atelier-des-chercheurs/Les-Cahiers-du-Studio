@@ -291,10 +291,10 @@ export default {
       return this.$moment(this.media.date_created).format('l LTS');
     },
     date_uploaded_human() {
-      return this.$moment(this.media.date_upload).format('DD/MM/YYYY HH:mm:ss');
+      return this.$moment(this.media.date_upload).format('l LTS');
     },
     currentTime_human() {
-      return this.$moment(this.currentTime).format('DD/MM/YYYY HH:mm:ss');
+      return this.$moment(this.currentTime).format('l LTS');
     }
   },
   methods: {

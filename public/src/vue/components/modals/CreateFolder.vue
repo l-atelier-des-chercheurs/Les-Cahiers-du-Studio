@@ -69,7 +69,7 @@ export default {
     return {
       folderdata: {
         name: '',
-        start: this.$moment(),
+        start: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         end: '',
         password: '',
         authors: ''

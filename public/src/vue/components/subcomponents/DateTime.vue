@@ -8,7 +8,10 @@
 
 export default {
   props: {
-    value: String,
+    value: {
+      type: String,
+      default: ''
+    },
     twowaybinding: {
       type: Boolean,
       default: false
@@ -20,8 +23,8 @@ export default {
   },
   data() {
     return {
-      date: this.$moment(this.value).format('YYYY-MM-DD'),
-      time: this.$moment(this.value).format('HH:mm:ss')
+      date: this.$moment(this.value).isValid() ? this.$moment().format('YYYY-MM-DD') : '',
+      time: this.$moment(this.value).isValid() ? this.$moment(this.value).format('HH:mm:ss') : ''
     }
   },
   watch: {
