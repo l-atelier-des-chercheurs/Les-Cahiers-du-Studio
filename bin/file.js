@@ -740,6 +740,18 @@ module.exports = (function() {
             mdata.date_created = api.convertDate(
               additionalMeta.fileCreationDate
             );
+          } else {
+            dev.logverbose(`Setting created from file birthtime`);
+            let getFileCreationDate = new Promise((resolve, reject) => {
+              fs.stat(mediaPath, function(err, stats) {
+                if (err) {
+                  resolve();
+                }
+                mdata.date_created = api.convertDate(new Date(stats.birthtime));
+                resolve();
+              });
+            });
+            tasks.push(getFileCreationDate);
           }
 
           if (mdata.type === 'image') {
@@ -767,18 +779,6 @@ module.exports = (function() {
                 });
             });
             tasks.push(getEXIFTimestamp);
-          } else {
-            dev.logverbose(`Setting created from file birthtime`);
-            let getFileCreationDate = new Promise((resolve, reject) => {
-              fs.stat(mediaPath, function(err, stats) {
-                if (err) {
-                  resolve();
-                }
-                mdata.date_created = api.convertDate(new Date(stats.birthtime));
-                resolve();
-              });
-            });
-            tasks.push(getFileCreationDate);
           }
 
           /***************************************************************************
