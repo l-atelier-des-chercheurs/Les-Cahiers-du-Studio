@@ -215,9 +215,16 @@ export default {
         }
         sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
       }
-
-      let sortedSortable = sortable.sort((a, b) => {
-        return a.orderBy - b.orderBy;
+      let sortedSortable = sortable.sort(function(a, b) {
+        let valA = a.orderBy;
+        let valB = b.orderBy;
+        if(typeof a.orderBy === 'string' && typeof b.orderBy === 'string') {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        }
+        if (valA < valB) { return -1; }
+        if (valA > valB) { return 1; }
+        return 0;
       });
 
       if(this.sort.order === 'descending') {
