@@ -455,6 +455,16 @@ body {
   transition: opacity .2s ease-out;
 }
 
+
+.mediareveal-enter-active, .mediareveal-leave-active {
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}
+.mediareveal-enter, .mediareveal-leave-to {
+  opacity: 0;
+  transition: none;
+}
+
 /* Enter and leave animations can use different */
 /* durations and timing functions.              */
 .sidebar-animation-enter-active, .sidebar-animation-leave-active {

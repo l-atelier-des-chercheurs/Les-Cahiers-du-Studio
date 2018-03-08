@@ -29,24 +29,26 @@
       </div>
 
       <div
-        class="timelineMediaContent"
-        :style="getMediaSize()"
-        >
+      class="timelineMediaContent"
+      :style="getMediaSize()"
+      >
 
-        <MediaContent
-          v-if="!isPlaceholder"
-          v-model="media.content"
-          :slugFolderName="slugFolderName"
-          :slugMediaName="slugMediaName"
-          :media="media"
-          :context="'preview'"
-          :is_hovered="is_hovered"
-          :read_only="read_only"
-          >
-        </MediaContent>
+        <transition name="mediareveal">
+          <div v-if="!isPlaceholder">
+                <MediaContent
+                  v-model="media.content"
+                  :slugFolderName="slugFolderName"
+                  :slugMediaName="slugMediaName"
+                  :media="media"
+                  :context="'preview'"
+                  :is_hovered="is_hovered"
+                  :read_only="read_only"
+                  >
+                </MediaContent>
+          </div>
+        </transition>
 
-        <div class="mediaContour">
-        </div>
+        <div class="mediaContour" />
 
         <transition
           name="slide"
@@ -67,6 +69,7 @@
         </transition>
 
       </div>
+
     </div>
   </div>
 </template>
