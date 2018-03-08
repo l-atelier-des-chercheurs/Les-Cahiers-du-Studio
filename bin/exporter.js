@@ -42,18 +42,15 @@ module.exports = (function() {
               })
             );
 
-            // Copier les dépendances : all.min.js all.min.css dans un sous dossier.
+            // Copier les dépendances : bundle.js dans un sous dossier.
             tasks.push(
               new Promise((resolve, reject) => {
                 let productionFolder = path.join(
                   global.appRoot,
-                  'client',
-                  'production'
+                  'public',
+                  'dist'
                 );
-                let productionFolderInCache = path.join(
-                  cachePath,
-                  'production'
-                );
+                let productionFolderInCache = path.join(cachePath, 'dist');
                 fs
                   .copy(productionFolder, productionFolderInCache)
                   .then(() => {

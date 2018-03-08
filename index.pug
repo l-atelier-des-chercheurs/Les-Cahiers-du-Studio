@@ -56,5 +56,7 @@ html
   body  
     #app
 
-  <script src="dist/build.js"></script>
-    
+    - if(mode === 'export')
+      script(src='./dist/build.js')
+    - else
+      script(src='/dist/build.js')
