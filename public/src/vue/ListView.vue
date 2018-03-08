@@ -43,16 +43,36 @@
               {{ $t('sort_by') }}
             </label>
             <div class="margin-sides-negative-small">
-              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'alph', sort.field = 'name'">
+              <button 
+              type="button" 
+              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+              @click="sort.type = 'alph', sort.field = 'name'"
+              :class="{ 'is--active' : sort.field === 'name' }"
+              >
                 {{ $t('name') }}
               </button>
-              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'created'">
+              <button 
+              type="button" 
+              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+              @click="sort.type = 'date', sort.field = 'created'"
+              :class="{ 'is--active' : sort.field === 'created' }"
+              >
                 {{ $t('created_date') }}
               </button>
-              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'start'">
+              <button 
+              type="button" 
+              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+              @click="sort.type = 'date', sort.field = 'start'"
+              :class="{ 'is--active' : sort.field === 'start' }"
+              >
                 {{ $t('start_date') }}
               </button>
-              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.type = 'date', sort.field = 'end'">
+              <button 
+              type="button" 
+              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+              @click="sort.type = 'date', sort.field = 'end'"
+              :class="{ 'is--active' : sort.field === 'end' }"
+              >
                 {{ $t('end_date') }}
               </button>
             </div>
@@ -63,10 +83,20 @@
               {{ $t('in_the_order') }}
             </label>
             <div class="margin-sides-negative-small">
-              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'ascending'">
+              <button 
+              type="button" 
+              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+              @click="sort.order = 'ascending'"
+              :class="{ 'is--active' : sort.order === 'ascending' }"
+              >
                 {{ $t('ascending') }}
               </button>
-              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall" @click="sort.order = 'descending'">
+              <button 
+              type="button" 
+              class="border-circled button-thin button-wide padding-verysmall margin-verysmall" 
+              @click="sort.order = 'descending'"
+              :class="{ 'is--active' : sort.order === 'descending' }"
+              >
                 {{ $t('descending') }}
               </button>
             </div>
