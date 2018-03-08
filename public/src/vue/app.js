@@ -15,8 +15,6 @@ import alertify from 'alertify.js';
 
 import locale_strings from './locale_strings.js';
 
-import moment from 'moment';
-
 Vue.config.silent = false;
 Vue.config.devtools = true;
 
@@ -61,8 +59,12 @@ let lang_settings = {
 };
 lang_settings.init();
 
+import moment from 'moment';
+import 'moment/locale/fr';
+import 'moment/locale/en-gb';
+
 moment.locale(lang_settings.current);
-Object.defineProperty(Vue.prototype, '$moment', { value: moment });
+Vue.prototype.$moment = moment;
 
 // Create VueI18n instance with options
 let i18n = new VueI18n({
@@ -505,6 +507,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: updateLocalLang`);
       }
       i18n.locale = newLangCode;
+      moment.locale(newLangCode);
       localstore.set('language', newLangCode);
     },
 
