@@ -324,6 +324,23 @@ body {
 
   table {
   }
+
+}
+
+.qrSnippet {
+  display:flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  text-align: left;
+
+  .qrSnippet--text {
+    width: @t-sidebarWidth * 0.6;
+    word-break: break-all;
+  }
+  .qrSnippet--motif {
+    width: 100px;
+    line-height: 0;
+  }
 }
 
 .m_sidebarList_table {
