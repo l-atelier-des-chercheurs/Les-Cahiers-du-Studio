@@ -288,7 +288,7 @@ export default {
   },
   computed: {
     date_created_human() {
-      return this.$moment(this.media.date_created).format('LLLTS');
+      return this.$moment(this.media.date_created).format('l LTS');
     },
     date_uploaded_human() {
       return this.$moment(this.media.date_upload).format('DD/MM/YYYY HH:mm:ss');
