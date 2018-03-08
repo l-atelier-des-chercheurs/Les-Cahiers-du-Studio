@@ -1,7 +1,7 @@
 <template>
   <div class="input-group">
-    <input type="date" v-model="date" @input.lazy="updateDate()" :readonly="read_only">
-    <input type="time" v-model="time" @input.lazy="updateDate()" step="1" :readonly="read_only">
+    <input type="date" v-model="date" @input="updateDate()" :readonly="read_only">
+    <input type="time" v-model="time" @input="updateDate()" step="1" :readonly="read_only">
   </div>
 </template>
 <script>

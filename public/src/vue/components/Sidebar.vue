@@ -25,6 +25,7 @@
             :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
             class="js--openInBrowser qrSnippet button button-circled margin-vert-medium border-circled button-inline padding-small"
             target="_blank"
+            :key="index"
             >
             <div class="qrSnippet--text">
               {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
@@ -81,6 +82,7 @@
         <div
         v-for="(days, month) in folderDays()"
         class="m_calendar--month"
+        :key="month"
         >
           <h3 class="margin-bottom-small text-ital font-small">
             {{ month }}
@@ -95,6 +97,7 @@
               'is--today': daymeta.isToday
             }"
             @click="scrollToDate(daymeta.timestamp)"
+            :key="index"
             >
               <button class="font-verylarge padding-none">
                 {{ daymeta.dayNumber }}

@@ -70,7 +70,7 @@
       <div class="margin-bottom-small">
         <label>{{ $t('type') }}</label>
         <select v-if="!read_only" ref="type" v-model="mediadata.type">
-          <option v-for="mediaType in ['image', 'video', 'audio', 'text', 'marker']">
+          <option v-for="mediaType in ['image', 'video', 'audio', 'text', 'marker']" :key="mediaType">
             {{ mediaType }}
           </option>
         </select>
@@ -81,7 +81,7 @@
       <div class="margin-bottom-small">
         <label>{{ $t('color') }}</label>
         <select v-if="!read_only" ref="type" v-model="mediadata.color">
-          <option v-for="mediaColor in ['white', 'red', 'blue', 'green', 'purple', 'orange', 'yellow']">
+          <option v-for="mediaColor in ['white', 'red', 'blue', 'green', 'purple', 'orange', 'yellow']" :key="mediaColor">
             {{ mediaColor }}
           </option>
         </select>
