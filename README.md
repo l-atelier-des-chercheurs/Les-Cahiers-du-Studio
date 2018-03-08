@@ -130,6 +130,10 @@ npm install sharp@0.17.3
 
 ### client-side
 
-To tweak and write some new SASS or client-side JS, you need to run the gulp task:
+To tweak and write some new CSS or client-side JS, you need to run the following tasks:
 
-* `gulp watch`
+* `npm run dev`
+
+To build for production, use 
+
+* `npm run build`
