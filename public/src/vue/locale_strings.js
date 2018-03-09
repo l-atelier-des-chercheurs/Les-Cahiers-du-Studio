@@ -40,9 +40,9 @@ module.exports = (function() {
       'lang:': 'Changer la langue&nbsp;:',
 
       toconnectwithanotherdevice:
-        'Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans le navigateur web (puis ignorez le message de sécurité)&nbsp;: ',
+        'Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans le navigateur web&nbsp;: ',
       toconnectwithanotherdevicetothisfolder:
-        'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans le navigateur web (puis ignorez le message de sécurité)&nbsp;: ',
+        'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans le navigateur web&nbsp;: ',
       sureToRemoveFolder: 'Êtes-vous sûr de vouloir supprimer ce dossier ?',
       sureToRemoveMedia: 'Êtes-vous sûr de vouloir supprimer ce média ?',
 
@@ -140,9 +140,9 @@ module.exports = (function() {
       'lang:': 'Select lang:',
 
       toconnectwithanotherdevice:
-        'To access Les Cahiers with another device, connect to the same wifi network and type this adress in your browser (and ignore the security message):',
+        'To access Les Cahiers with another device, connect to the same wifi network and type this adress in your browser:',
       toconnectwithanotherdevicetothisfolder:
-        'To access this folder in Les Cahiers with another device, connect to the same wifi network and type this adress in your browser (and ignore the security message):',
+        'To access this folder in Les Cahiers with another device, connect to the same wifi network and type this adress in your browser:',
       sureToRemoveFolder: 'Do you really want to delete this folder?',
       sureToRemoveMedia: 'Do you really want to delete this media?',
 
