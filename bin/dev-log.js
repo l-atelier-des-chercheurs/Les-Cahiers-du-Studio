@@ -9,13 +9,15 @@ module.exports = dev = (function() {
   logger.transports.console = false;
 
   const API = {
-    init        : (isDebug, isVerbose)   => { return initModule(isDebug, isVerbose); },
-    log         : log,
-    logverbose  : logverbose,
-    logpackets  : logpackets,
-    logfunction : logfunction,
-    error       : error,
-    isDebug     : () => isDebugMode,
+    init: (isDebug, isVerbose) => {
+      return initModule(isDebug, isVerbose);
+    },
+    log: log,
+    logverbose: logverbose,
+    logpackets: logpackets,
+    logfunction: logfunction,
+    error: error,
+    isDebug: () => isDebugMode
   };
 
   function initModule(d, v) {
@@ -23,17 +25,17 @@ module.exports = dev = (function() {
     isVerboseMode = v;
     logToFile = global.nodeStorage.getItem('logToFile');
 
-    if(isDebugMode) {
+    if (isDebugMode) {
       console.log('Debug mode is Enabled');
       console.log('---');
       dev.logfunction('(log) magenta is for functions');
       dev.logpackets('(log) green is for packets');
       dev.logpackets('(log) green is for packets');
-      if(isVerboseMode) {
+      if (isVerboseMode) {
         dev.logverbose('(dev and verbose) gray for regular parsing data');
       }
     }
-    if(logToFile) {
+    if (logToFile) {
       console.log('Logging to file');
     } else {
       console.log('Not logging to a file');
@@ -47,28 +49,44 @@ module.exports = dev = (function() {
     _sendToLogFile(logArgs);
     _sendToConsole(logArgs, gutil.colors.white);
   }
-  function logverbose() { // gray
+  function logverbose() {
+    // gray
     var args = Array.prototype.slice.call(arguments);
     var logArgs = '- '.concat(args);
 
-    if(logToFile) { _sendToLogFile(logArgs); }
-    if(isDebugMode && isVerboseMode) { _sendToConsole(logArgs, gutil.colors.gray); }
+    if (logToFile) {
+      _sendToLogFile(logArgs);
+    }
+    if (isDebugMode && isVerboseMode) {
+      _sendToConsole(logArgs, gutil.colors.gray);
+    }
   }
-  function logpackets() { // green
+  function logpackets() {
+    // green
     var args = Array.prototype.slice.call(arguments);
     var logArgs = '* '.concat(args);
 
-    if(logToFile) { _sendToLogFile(logArgs); }
-    if(isDebugMode) { _sendToConsole(logArgs, gutil.colors.green); }
+    if (logToFile) {
+      _sendToLogFile(logArgs);
+    }
+    if (isDebugMode) {
+      _sendToConsole(logArgs, gutil.colors.green);
+    }
   }
-  function logfunction() { // magenta
+  function logfunction() {
+    // magenta
     var args = Array.prototype.slice.call(arguments);
     var logArgs = '~ '.concat(args);
 
-    if(logToFile) { _sendToLogFile(logArgs); }
-    if(isDebugMode) { _sendToConsole(logArgs, gutil.colors.magenta); }
+    if (logToFile) {
+      _sendToLogFile(logArgs);
+    }
+    if (isDebugMode) {
+      _sendToConsole(logArgs, gutil.colors.magenta);
+    }
   }
-  function error() { // red
+  function error() {
+    // red
     var args = Array.prototype.slice.call(arguments);
     var logArgs = 'ERROR! '.concat(args);
 
@@ -85,4 +103,3 @@ module.exports = dev = (function() {
 
   return API;
 })();
-
