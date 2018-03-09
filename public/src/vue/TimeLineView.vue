@@ -94,7 +94,6 @@
               class="gridItem font-small gridItem_ishour"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="index"
             >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
@@ -107,7 +106,6 @@
               class="gridItem font-small gridItem_isminute"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="index"
             >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
@@ -152,7 +150,7 @@
             :ref="`media_${index}`"
             :slugFolderName="slugFolderName"
             :slugMediaName="index"
-            :isPlaceholder="!mediaIsClose(index,media)"
+            :is_placeholder="!mediaIsClose(index,media)"
             :media="media"
             :timelineScale="timelineViewport.scale"
             :timelineHeight="timelineHeight"
@@ -211,10 +209,12 @@ import EditFolder from './components/modals/EditFolder.vue';
 import TimelineMedia from './components/TimelineMedia.vue';
 import EditMedia from './components/modals/EditMedia.vue';
 import DateTime from './components/subcomponents/DateTime.vue';
+
 import debounce from 'debounce';
+import _ from 'underscore';
 
 let allMediasPosition = {};
-
+let isScrollingTimeout;
 
 export default {
   props: {
@@ -517,8 +517,12 @@ export default {
         Updates medias and grid position according to viewed timeline
     ******************************************************************/
     getMediaPosX(slugMediaName) {
-      return allMediasPosition[slugMediaName];
+      return allMediasPosition[slugMediaName].created;
     },
+    getDurationMediaPosX(slugMediaName, type) {
+      return allMediasPosition[slugMediaName][type];
+    },
+
     updateMediaData() {
       console.log('METHODS • TimeLineView: updateMediaData');
 
@@ -526,17 +530,39 @@ export default {
         let media = this.medias[slugMediaName];
         let date_timeline = this.$moment.isMoment(media.date_timeline) ? media.date_timeline : this.$moment(media.date_timeline,'YYYY-MM-DD HH:mm:ss');
         let posX = this.getXPositionFromDate(+date_timeline, false);
-        allMediasPosition[slugMediaName] = posX;
 
-        // check if there is a justCreatedTextmediaID val
-        if(this.$root.justCreatedTextmediaID) {
-          // if there is, try to match it with mediaID of listed medias
-          if(media.mediaID && media.mediaID === this.$root.justCreatedTextmediaID) {
-            this.$root.justCreatedTextmediaID = false;
-            this.openMediaModal(slugMediaName);
+        if(media.duration !== undefined) {
+          let startRecordingDate = date_timeline.subtract(parseInt(media.duration), 'seconds');
+          let start_posX = this.getXPositionFromDate(+startRecordingDate, false)
+
+          allMediasPosition[slugMediaName] = {
+            started: start_posX,
+            created: posX
           }
+        } else {
+          allMediasPosition[slugMediaName] = {
+            created: posX
+          };
         }
       });
+
+      // check if there is a justCreatedTextmediaID val
+      if(this.$root.justCreatedTextmediaID) {
+        // if there is, try to match it with mediaID of listed medias
+        let mediaJustCreatedSlug = Object.keys(this.medias).filter((x) => {
+          return this.medias[x].mediaID === this.$root.justCreatedTextmediaID;
+        })[0];        
+        debugger;
+
+        // do a findwhere in medias
+        if(mediaJustCreatedSlug !== undefined) {
+          this.$root.justCreatedTextmediaID = false;
+          this.$nextTick(() => {
+            this.openMediaModal(mediaJustCreatedSlug);
+          });
+        }
+      }
+
     },
     updateGridData() {
       console.log('METHODS • TimeLineView: updateGridData');
@@ -587,10 +613,9 @@ export default {
         createHourTick(currentHour);
       }
 
-     if(this.timelineViewport.scale <= 10) {
+      if(this.timelineViewport.scale <= 10) {
 
         /****************************** make MINUTES ticks ******************************/
-
         let createMinuteTick = (currentMinute) => {
           let xPos = this.getXPositionFromDate(currentMinute);
           if(xPos === false) { return; }
@@ -638,18 +663,17 @@ export default {
 
       // check if media has duration
       if(media.duration !== undefined) {
-        // calculate proximity for created
-        if(this.elesIsClose(this.getMediaPosX(index))) {
+        // calculate proximity for end
+        if(this.elesIsClose(this.getDurationMediaPosX(index, 'end'))) {
           return true;
         }
-        // otherwise, calculate proximity for created minus duration (which should give us when the recording was started)
-        let startRecordingDate = this.$moment(media.date_timeline).subtract(parseInt(media.duration), 'seconds');
-        if(this.elesIsClose(this.getXPositionFromDate(+startRecordingDate, false))) {
+        // otherwise, calculate proximity for start (see method updateMediaData)
+        if(this.elesIsClose(this.getDurationMediaPosX(index, 'start'))) {
           return true;
         }
         // finally, let’s check whether we are in between those two dates
         let centerOfTimeline = this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2;
-        if(this.getXPositionFromDate(+startRecordingDate, false) < centerOfTimeline && centerOfTimeline < this.getXPositionFromDate(media.date_timeline)) {
+        if(this.getDurationMediaPosX(index, 'start') < centerOfTimeline && centerOfTimeline < this.getDurationMediaPosX(index, 'end')) {
           return true;
         }
       } else {
@@ -658,7 +682,7 @@ export default {
 
       return false;
     },
-    elesIsClose(xPos, screenMultiplier = 0.5) {
+    elesIsClose(xPos, screenMultiplier = 2) {
       if(xPos < this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2 - window.innerWidth * screenMultiplier) { return false; }
       if(xPos > this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2 + window.innerWidth * screenMultiplier) { return false; }
       return true;
@@ -685,17 +709,26 @@ export default {
       }
 
       console.log(`METHODS • TimeLineView: onScroll / is happening`);
-      clearTimeout(window.isScrollingTimeout);
+      clearTimeout(isScrollingTimeout);
 
-      window.isScrollingTimeout = setTimeout(() => {
+      isScrollingTimeout = setTimeout(() => {
         console.log(`METHODS • TimeLineView: onScroll / has finished`);
         this.isScrolling = false;
         // the following line will trigger watch: scrollLeft (which takes care of everything)
-        this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
-      }, 300);
+        this.$nextTick(() => {    
+          this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
+        });
+      }, 100);
 
     },
     openMediaModal(slugMediaName) {
+      // check if media exists first
+      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimeLineView: openMediaModal'); }
+
+      if(!this.medias.hasOwnProperty(slugMediaName)) {
+        if(window.state.dev_mode === 'debug') { console.log('METHODS • TimeLineView: openMediaModal / missing media in timeline'); }
+      }
+      
       this.showMediaModalFor = slugMediaName;
     },
     closeMediaModal() {

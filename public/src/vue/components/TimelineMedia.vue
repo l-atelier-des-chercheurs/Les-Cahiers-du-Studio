@@ -32,9 +32,8 @@
       class="timelineMediaContent"
       :style="getMediaSize()"
       >
-
         <MediaContent
-          v-if="!isPlaceholder"
+          v-if="!is_placeholder"
           v-model="media.content"
           :slugFolderName="slugFolderName"
           :slugMediaName="slugMediaName"
@@ -58,7 +57,7 @@
             class="button_openmedia bg-noir c-blanc"
             :class="{ 'padding-verysmall button-thin' : this.media.type === 'marker' }"
             style="animation-duration: 0.3s"
-            v-if="!isPlaceholder && is_hovered"
+            v-if="!is_placeholder && is_hovered"
             @mousedown.stop="openMedia"
           >
             {{ $t('open') }}
@@ -84,7 +83,7 @@ export default {
       default: 0 
     },
     timelineHeight: Number,
-    isPlaceholder: Boolean,
+    is_placeholder: Boolean,
     read_only: {
       type: Boolean,
       default: true
@@ -142,6 +141,7 @@ export default {
   },
   methods: {
     limitMediaYPos(yPos) {
+      console.log(`METHODS • TimelineMedia: limitMediaYPos`);
       if(this.media.type === 'marker') {
         return 50/2;
       }
@@ -152,6 +152,7 @@ export default {
       this.mediaWidthFromDuration = Math.round(this.media.duration/this.timelineScale);
     },
     getMediaWidthFromDuration() {
+      console.log('METHODS • TimelineMedia: getMediaWidthFromDuration');
       if(this.media.duration !== undefined) {
         return { width: `${this.mediaWidthFromDuration}px` };
       }
@@ -184,6 +185,7 @@ export default {
       }
     },
     getMediaSize() {
+      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: getMediaSize'); }
       return {
         width: `${this.mediaStyles.w}px`,
         height: `${this.mediaStyles.h}px`
@@ -210,6 +212,7 @@ export default {
     },
     openMedia() {
       if(this.is_dragged) { return; }
+      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: openMedia'); }
       this.$emit('open');
     },
     mouseup(event) {
