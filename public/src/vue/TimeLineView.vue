@@ -574,7 +574,6 @@ export default {
       let overallGrid = { minutes: [], hours: [], days: [] };
 
       /****************************** make DAY ticks ******************************/
-
       let createDayTick = (thisDay, f = 'L') => {
         let xPos = this.getXPositionFromDate(thisDay);
         if(xPos === false) { return; }
@@ -622,12 +621,13 @@ export default {
         let createMinuteTick = (currentMinute) => {
           let xPos = this.getXPositionFromDate(currentMinute);
           if(xPos === false) { return; }
-          if(this.$moment(currentMinute).minute() === 0) { return; }
+          const currentMinute_minutesOnly = new Date(currentMinute).getMinutes();
+          if(currentMinute_minutesOnly === 0) { return; }
           if(!this.elesIsClose(xPos)) { return; }
 
           let caption;
-          if(this.$moment(currentMinute).minute()%10 === 0 || this.timelineViewport.scale < 5) {
-            caption = this.$moment(currentMinute).format('HH:mm');
+          if(currentMinute_minutesOnly%10 === 0 || this.timelineViewport.scale < 5) {
+            caption = this.$moment(currentMinute).format('LT');
           }
           overallGrid.minutes.push({ xPos, caption });
         }
