@@ -1,5 +1,5 @@
 <template>
-  <div class="m_sidebar padding-bottom-medium" ref="sidebar">
+  <div class="m_sidebar" ref="sidebar">
 
     <SidebarSection v-if="$root.state.mode !== 'export'">
       <div slot="header" class="flex-vertically-centered">
@@ -154,7 +154,6 @@
       </div>
     </SidebarSection>
 
-
     <MediasList
       v-if="showMediasList === true"
       :filter="filter"
@@ -165,6 +164,11 @@
       @close="closeListMediasModal()"
     >
     </MediasList>
+
+    <div class="c-gris font-small margin-medium">
+      <p><em>Les Cahiers du Studio</em> version {{ $root.state.appVersion }}</p>
+      <p v-html="$t('credits')"></p>
+    </div>
 
   </div>
 

@@ -40,6 +40,9 @@ module.exports = (function() {
       'lang:': 'Changer la langue&nbsp;:',
       lang: 'Changer la langue',
 
+      credits:
+        'Un projet libre et open-source réalisé par l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> avec et pour le <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
+
       toconnectwithanotherdevice:
         'Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
       toconnectwithanotherdevicetothisfolder:
@@ -140,6 +143,9 @@ module.exports = (function() {
 
       'lang:': 'Select lang:',
       lang: 'Select lang',
+
+      credits:
+        'A free and open-source app made by l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> with and for the <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
 
       toconnectwithanotherdevice:
         'To access Les Cahiers with another device, connect to the same wifi network and type this adress in your browser:',
