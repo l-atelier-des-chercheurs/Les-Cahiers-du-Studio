@@ -1,6 +1,6 @@
 <template>
   <div class="mediaPreview font-small"
-    :style="getMediaPosition()"
+    :style="`transform: translate(${posX}px, ${mediaStyles.y}px)`"
     :class="[{
       'has--duration' : media.duration !== undefined,
       'is--hovered'   : is_hovered,
@@ -33,20 +33,17 @@
       :style="getMediaSize()"
       >
 
-        <transition name="mediareveal">
-          <div v-if="!isPlaceholder">
-            <MediaContent
-              v-model="media.content"
-              :slugFolderName="slugFolderName"
-              :slugMediaName="slugMediaName"
-              :media="media"
-              :context="'preview'"
-              :is_hovered="is_hovered"
-              :read_only="read_only"
-              >
-            </MediaContent>
-          </div>
-        </transition>
+        <MediaContent
+          v-if="!isPlaceholder"
+          v-model="media.content"
+          :slugFolderName="slugFolderName"
+          :slugMediaName="slugMediaName"
+          :media="media"
+          :context="'preview'"
+          :is_hovered="is_hovered"
+          :read_only="read_only"
+          >
+        </MediaContent>
 
         <!-- <div class="mediaContour" /> -->
 
@@ -82,7 +79,10 @@ export default {
     slugMediaName: String,
     media: Object,
     timelineScale: Number,
-    posX: Number,
+    posX: {
+      type: Number,
+      default: 0 
+    },
     timelineHeight: Number,
     isPlaceholder: Boolean,
     read_only: {
@@ -146,14 +146,6 @@ export default {
         return 50/2;
       }
       return Math.max(50, Math.min(this.timelineHeight - 100, yPos));
-    },
-    getMediaPosition() {
-      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: getMediaPosition'); }
-
-      let posX = this.posX !== false ? this.posX : 0;
-      return {
-        transform: `translate(${posX}px, ${this.mediaStyles.y}px)`
-      };
     },
     setMediaWidthFromDuration() {
       console.log('METHODS • TimelineMedia: setMediaWidthFromDuration');
