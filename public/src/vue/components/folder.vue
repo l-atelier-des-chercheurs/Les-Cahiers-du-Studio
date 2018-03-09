@@ -4,21 +4,46 @@
       {{ folder.name }}
     </h2>
 
-    <div class="">
-      <mark class="margin-medium font-small" v-if="folder.password === 'has_pass'">
-        {{ $t('protected_by_pass') }}
-      </mark>
+    <div class="font-small">
+      <div class="margin-sides-medium margin-vert-small">
+        <mark class="" v-if="folder.password === 'has_pass'">
+          {{ $t('protected_by_pass') }}
+        </mark>
+      </div>
 
-      <div class="folder_metapreview margin-medium font-small">
-        <i>{{ $t('created_date') }}</i>
-        <br>
-        {{ formatDateToHuman(folder.created) }}
+      <div class="folder_metapreview margin-medium">
+        <template v-if="sort_field === 'created'">
+          <i>{{ $t('created_date') }}</i>
+          <br>
+          {{ formatDateToHuman(folder.created) }}
+        </template>
+        <template v-else-if="sort_field === 'name'">
+        </template>
+        <template v-else-if="sort_field === 'start'">
+          <i>{{ $t('start_date') }}</i>
+          <br>
+          {{ formatDateToHuman(folder.start) }}
+        </template>
+        <template v-else-if="sort_field === 'end'">
+          <i>{{ $t('end_date') }}</i>
+          <br>
+          {{ formatDateToHuman(folder.end) }}
+        </template>
+        <template v-else>
+          <i>{{ $t('created_date') }}</i>
+          <br>
+          {{ formatDateToHuman(folder.created) }}
+        </template>
       </div>
 
       <hr class="margin-small margin-sides-medium">
 
       <div class="margin-small flex-wrap flex-vertically-start flex-horizontally-start">
-        <button type="button" class="button-round margin-verysmall padding-verysmall" @click="$root.openFolder(slugFolderName)">
+        <button 
+        v-if="folder.authorized"
+        type="button" 
+        class="button-round margin-verysmall padding-verysmall" 
+        @click="$root.openFolder(slugFolderName)">
           <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Content">
@@ -83,12 +108,11 @@
             {{ $t('remove') }}
           </span>
         </button>
-      </div>
 
-
-      <div v-if="showInputPasswordField" class="input-group">
-        <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus>
-        <button type="button" class="" @click="submitPassword">Envoyer</button>
+        <div v-if="showInputPasswordField" class="margin-bottom-small">
+          <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus placeholder="…">
+          <button type="button" class="border-circled button-thin padding-verysmall" @click="submitPassword">Envoyer</button>
+        </div>
       </div>
 
       <EditFolder
@@ -109,7 +133,8 @@ export default {
   props: {
     folder: Object,
     slugFolderName: String,
-    read_only: Boolean
+    read_only: Boolean,
+    sort_field: String
   },
   components: {
     EditFolder,
@@ -123,7 +148,7 @@ export default {
   },
   methods: {
     formatDateToHuman(date) {
-      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').calendar();
+      return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
     },
     openFolder() {
       this.$root.openFolder(this.slugFolderName);

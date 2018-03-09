@@ -35,7 +35,7 @@
         <template v-if="value.length !== 0">
           {{ value }}
         </template>
-        <template v-else="">
+        <template v-else>
           …
         </template>
       </div>

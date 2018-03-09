@@ -153,6 +153,7 @@
               :slugFolderName="sortedFolder.slugFolderName"
               :folder="$root.store.folders[sortedFolder.slugFolderName]"
               :read_only="read_only"
+              :sort_field="sort.field"
             >
             </Folder>
           </div>

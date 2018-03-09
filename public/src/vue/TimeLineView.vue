@@ -555,7 +555,6 @@ export default {
         let mediaJustCreatedSlug = Object.keys(this.medias).filter((x) => {
           return this.medias[x].mediaID === this.$root.justCreatedTextmediaID;
         })[0];        
-        debugger;
 
         // do a findwhere in medias
         if(mediaJustCreatedSlug !== undefined) {

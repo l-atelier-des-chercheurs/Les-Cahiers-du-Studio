@@ -38,6 +38,7 @@ module.exports = (function() {
       content: 'Contenu',
 
       'lang:': 'Changer la langue&nbsp;:',
+      lang: 'Changer la langue',
 
       toconnectwithanotherdevice:
         'Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans le navigateur web&nbsp;: ',
@@ -138,6 +139,7 @@ module.exports = (function() {
       content: 'Content',
 
       'lang:': 'Select lang:',
+      lang: 'Select lang',
 
       toconnectwithanotherdevice:
         'To access Les Cahiers with another device, connect to the same wifi network and type this adress in your browser:',

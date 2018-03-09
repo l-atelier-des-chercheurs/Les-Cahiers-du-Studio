@@ -46,6 +46,21 @@
       </div>
     </SidebarSection>
 
+    <SidebarSection>
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t('lang') }}
+        </h3>
+      </div>
+      <div slot="body">
+        <select v-model="currentLang">
+          <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">
+            {{ name }}
+          </option>
+        </select>
+      </div>
+    </SidebarSection>
+    
     <SidebarSection v-if="$root.state.mode !== 'export'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
@@ -189,6 +204,7 @@ export default {
     return {
       showMediasList: false,
       filter: '',
+      currentLang: this.$root.lang.current,
 
       sort: {
         current: {
@@ -308,6 +324,12 @@ export default {
         return result;
       }, []);
       return sortedMedias;
+    },
+  },
+
+  watch: {
+    'currentLang': function() {
+      this.$root.updateLocalLang(this.currentLang);
     },
   },
 
