@@ -301,7 +301,8 @@ let vm = new Vue({
       has_sidebar_opened: false,
       highlightMedia: '',
       is_loading_medias_for_folder: '',
-      enable_system_bar: window.state.is_electron && window.state.is_darwin
+      enable_system_bar: window.state.is_electron && window.state.is_darwin,
+      perf_mode: 'low'
     },
 
     lang: {

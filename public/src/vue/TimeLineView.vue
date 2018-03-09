@@ -711,17 +711,39 @@ export default {
         this.isScrolling = true;
       }
 
-      console.log(`METHODS • TimeLineView: onScroll / is happening`);
-      clearTimeout(isScrollingTimeout);
+      // Two possibilities there: either we wait until the scroll is finished to update everything
+      // (which is a very low-perf mode)
 
-      isScrollingTimeout = setTimeout(() => {
-        console.log(`METHODS • TimeLineView: onScroll / has finished`);
-        this.isScrolling = false;
-        // the following line will trigger watch: scrollLeft (which takes care of everything)
-        this.$nextTick(() => {    
-          this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
-        });
-      }, 100);
+      // OR we update progressively, every once in a while when scroll is detected
+
+      
+      if(this.$root.settings.perf_mode === 'low') {
+        console.log(`METHODS • TimeLineView: onScroll / is happening`);
+        clearTimeout(isScrollingTimeout);
+
+        isScrollingTimeout = setTimeout(() => {
+          console.log(`METHODS • TimeLineView: onScroll / has finished`);
+          this.isScrolling = false;
+          // the following line will trigger watch: scrollLeft (which takes care of everything)
+          this.$nextTick(() => {    
+            this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
+          });
+        }, 100);
+
+      } else {
+        console.log(`METHODS • TimeLineView: onScroll / is happening`);
+        if(isScrollingTimeout === undefined) {
+          isScrollingTimeout = setTimeout(() => {
+            console.log(`METHODS • TimeLineView: onScroll / update`);
+            this.isScrolling = false;
+            // the following line will trigger watch: scrollLeft (which takes care of everything)
+            this.$nextTick(() => {    
+              this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
+            });
+            isScrollingTimeout = undefined;
+          }, 150);
+        }
+      }
 
     },
     openMediaModal(slugMediaName) {
