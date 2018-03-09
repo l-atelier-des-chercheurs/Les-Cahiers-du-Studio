@@ -27,6 +27,33 @@
 
 html {
   font-size: 100%;
+
+  @scrollbar-height: 4px;
+  @scrollbar-padding: 6px;
+
+  &::-webkit-scrollbar {
+    height: ((@scrollbar-padding * 2) + @scrollbar-height);
+    width: ((@scrollbar-padding * 2) + @scrollbar-height);
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb {
+    border: 10px solid rgba(255,255,255,0);
+    background-clip: padding-box;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: @c-noir;
+    &:hover {
+      border: @scrollbar-padding solid rgba(255,255,255,0);
+    }
+  }
+
 }
 
 body {
