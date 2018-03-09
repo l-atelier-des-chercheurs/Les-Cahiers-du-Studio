@@ -660,7 +660,7 @@ export default {
       return this.$moment(timeSinceStart + this.timelineViewport.start);
     },
     mediaIsClose(index,media) {
-      console.log(`METHODS • TimeLineView: mediaIsClose`);
+      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimeLineView: mediaIsClose'); }
 
       if(typeof this.$refs.timeline === 'undefined') { return false; }
 
