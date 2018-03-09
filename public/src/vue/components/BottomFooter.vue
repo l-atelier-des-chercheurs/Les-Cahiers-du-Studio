@@ -8,7 +8,7 @@
         <template v-for="(ip, index) in $root.state.localNetworkInfos.ip">
           <a
             :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
-            :key="index"
+            :key="`${index}_${ip}`"
             class="js--openInBrowser"
             target="_blank"
             v-html="getURLToApp(ip, $root.state.localNetworkInfos.port)">
