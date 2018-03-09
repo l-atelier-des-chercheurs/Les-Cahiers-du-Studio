@@ -185,7 +185,7 @@ export default {
       }
     },
     getMediaSize() {
-      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: getMediaSize'); }
+      // if(window.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: getMediaSize'); }
       return {
         width: `${this.mediaStyles.w}px`,
         height: `${this.mediaStyles.h}px`
