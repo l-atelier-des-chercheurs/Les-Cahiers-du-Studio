@@ -6,7 +6,7 @@
   >
 
     <template v-if="media.type === 'image'">
-      <img :src="linkToThumb">
+      <img :src="linkToImageThumb">
       <transition
         name="fade"
         :duration="850"
@@ -129,8 +129,13 @@ export default {
     thumbResHovered: function() {
       return this.available_resolutions.preview_hovered;
     },
-    linkToThumb: function() {
+    linkToImageThumb: function() {
       let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: this.thumbRes }).path;
+      // if image is gif and context is not 'preview', let’s show the original gif
+      if(this.context !== 'preview' && this.mediaURL.toLowerCase().endsWith('.gif')) {
+        return this.mediaURL;
+      }
+
       return pathToSmallestThumb !== undefined ? './' + pathToSmallestThumb : this.mediaURL;
     },
     linkToHoveredThumb: function() {
