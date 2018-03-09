@@ -35,20 +35,20 @@
 
         <transition name="mediareveal">
           <div v-if="!isPlaceholder">
-                <MediaContent
-                  v-model="media.content"
-                  :slugFolderName="slugFolderName"
-                  :slugMediaName="slugMediaName"
-                  :media="media"
-                  :context="'preview'"
-                  :is_hovered="is_hovered"
-                  :read_only="read_only"
-                  >
-                </MediaContent>
+            <MediaContent
+              v-model="media.content"
+              :slugFolderName="slugFolderName"
+              :slugMediaName="slugMediaName"
+              :media="media"
+              :context="'preview'"
+              :is_hovered="is_hovered"
+              :read_only="read_only"
+              >
+            </MediaContent>
           </div>
         </transition>
 
-        <div class="mediaContour" />
+        <!-- <div class="mediaContour" /> -->
 
         <transition
           name="slide"

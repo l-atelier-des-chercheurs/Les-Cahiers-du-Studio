@@ -47,13 +47,14 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
         <div class="scaleSwitch padding-none">
           <span class="padding-small" v-html="$t('scale')">
           </span>
-          <template v-for="btns in scaleBtns">
+          <template v-for="(btns, index) in scaleBtns">
             <button type="button"
               class="bg-noir border-circled button-thin button-wide padding-verysmall margin-verysmall"
               :class="{ 'is--active' : timelineViewport_scale === btns.scale }"
               @click="updateScale(Number(btns.scale))"
               @mouseover="showZoomZone(Number(btns.scale))"
               @mouseleave="hideZoomZone()"
+              :key="index"
               >
               {{ btns.name }}
             </button>
