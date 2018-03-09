@@ -41,9 +41,9 @@ module.exports = (function() {
       lang: 'Changer la langue',
 
       toconnectwithanotherdevice:
-        'Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans le navigateur web&nbsp;: ',
+        'Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
       toconnectwithanotherdevicetothisfolder:
-        'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans le navigateur web&nbsp;: ',
+        'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
       sureToRemoveFolder: 'Êtes-vous sûr de vouloir supprimer ce dossier ?',
       sureToRemoveMedia: 'Êtes-vous sûr de vouloir supprimer ce média ?',
 

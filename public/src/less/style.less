@@ -436,6 +436,16 @@ body {
 .m_footer {
   color: @c-gris;
   width: 100%;
+  text-align: center;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    position: relative;
+    width: 100px;
+    border-top: 2px solid @c-gris_light;
+  }
+
   > * {
   }
 }
