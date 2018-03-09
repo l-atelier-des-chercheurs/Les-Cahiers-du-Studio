@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      date: this.$moment(this.value).isValid() ? this.$moment().format('YYYY-MM-DD') : '',
+      date: this.$moment(this.value).isValid() ? this.$moment(this.value).format('YYYY-MM-DD') : '',
       time: this.$moment(this.value).isValid() ? this.$moment(this.value).format('HH:mm:ss') : ''
     }
   },
