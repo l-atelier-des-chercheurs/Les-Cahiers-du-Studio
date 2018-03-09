@@ -12,7 +12,10 @@
     <template slot="sidebar">
 
 <!-- Caption -->
-      <div class="margin-bottom-small" v-if="mediadata.type !== 'marker' && mediadata.type !== 'text'">
+      <div 
+      v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
+      class="margin-bottom-small" 
+      >
         <label>{{ $t('caption') }}</label><br>
         <textarea v-model="mediadata.caption" :readonly="read_only">
         </textarea>
@@ -89,28 +92,28 @@
       </div>
 
 <!-- Keywords -->
-      <div class="margin-bottom-small">
+      <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
         <label>{{ $t('keywords') }}</label>
         <textarea v-model="mediadata.keywords" :readonly="read_only">
         </textarea>
       </div>
 
 <!-- Author(s) -->
-      <div class="margin-bottom-small">
+      <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
         <label>{{ $t('author') }}</label>
         <textarea v-model="mediadata.authors" :readonly="read_only">
         </textarea>
       </div>
 
 <!-- Public or private -->
-      <div class="margin-bottom-small">
+      <div v-if="!read_only" class="margin-bottom-small">
         <span class="switch">
           <input type="checkbox" class="switch" id="publicswitch" v-model="mediadata.public" :readonly="read_only">
           <label for="publicswitch">{{ $t('public') }}</label>
         </span>
       </div>
 
-      <div class="m_modal--buttonrow flex-wrap flex-vertically-start flex-space-between flex-same-basis">
+      <div v-if="!read_only" class="m_modal--buttonrow flex-wrap flex-vertically-start flex-space-between flex-same-basis">
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click="removeMedia()"
