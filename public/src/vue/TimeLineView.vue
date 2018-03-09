@@ -82,6 +82,7 @@
               class="gridItem font-small gridItem_isday"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
+              :key="item.caption"
             >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
@@ -94,6 +95,7 @@
               class="gridItem font-small gridItem_ishour"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
+              :key="`${index}-${item.xPos}`"
             >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}
@@ -106,6 +108,7 @@
               class="gridItem font-small gridItem_isminute"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
               :style="`transform: translate(${item.xPos}px, 0px)`"
+              :key="`${index}-${item.xPos}`"
             >
               <div v-if="item.caption !== undefined" class="gridItem--caption">
                 {{ item.caption }}

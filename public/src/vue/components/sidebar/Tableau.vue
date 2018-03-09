@@ -13,7 +13,7 @@
           </th>
           <th>
             <select v-model="currentSort">
-              <option v-for="option in sort.available" :value="option">
+              <option v-for="option in sort.available" :value="option" :key="option.name">
                 {{ option.name }}
               </option>
             </select>
