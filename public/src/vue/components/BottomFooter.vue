@@ -27,8 +27,9 @@ export default {
       return `${this.$root.state.protocol}://${ip}:${port}`;
     }
   }
-}
+};
 </script>
 
 <style scoped>
+
 </style>

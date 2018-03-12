@@ -166,7 +166,7 @@
 <script>
 import Folder from './components/Folder.vue';
 import CreateFolder from './components/modals/CreateFolder.vue';
-import VueMarkdown from 'vue-markdown'
+import VueMarkdown from 'vue-markdown';
 
 export default {
   props: ['presentationMD', 'read_only'],
@@ -175,7 +175,7 @@ export default {
     Folder,
     VueMarkdown
   },
-  data () {
+  data() {
     return {
       showCreateFolderModal: false,
       sort: {
@@ -184,25 +184,28 @@ export default {
         order: 'descending'
       },
       currentLang: this.$root.lang.current
-    }
+    };
   },
   watch: {
-    'currentLang': function() {
+    currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
     },
     '$root.store.folders': function() {
-        // check if there is a justCreatedFolderID val
+      // check if there is a justCreatedFolderID val
 
-        if(this.$root.justCreatedFolderID) {
-          Object.keys(this.$root.store.folders).map((slugFolderName) => {
-            let folder = this.$root.store.folders[slugFolderName];
-            // if there is, try to match it with folderID
-            if(folder.folderID && folder.folderID === this.$root.justCreatedFolderID) {
-              this.$root.justCreatedFolderID = false;
-              this.$root.openFolder(slugFolderName);
-            }
-          });
-        }
+      if (this.$root.justCreatedFolderID) {
+        Object.keys(this.$root.store.folders).map(slugFolderName => {
+          let folder = this.$root.store.folders[slugFolderName];
+          // if there is, try to match it with folderID
+          if (
+            folder.folderID &&
+            folder.folderID === this.$root.justCreatedFolderID
+          ) {
+            this.$root.justCreatedFolderID = false;
+            this.$root.openFolder(slugFolderName);
+          }
+        });
+      }
     }
   },
   computed: {
@@ -212,9 +215,12 @@ export default {
       for (let slugFolderName in this.$root.store.folders) {
         let orderBy;
 
-        if (this.sort.type ==='date') {
-          orderBy = +this.$moment(this.$root.store.folders[slugFolderName][this.sort.field], 'YYYY-MM-DD HH:mm:ss');
-        } else if (this.sort.type ==='alph') {
+        if (this.sort.type === 'date') {
+          orderBy = +this.$moment(
+            this.$root.store.folders[slugFolderName][this.sort.field],
+            'YYYY-MM-DD HH:mm:ss'
+          );
+        } else if (this.sort.type === 'alph') {
           orderBy = this.$root.store.folders[slugFolderName][this.sort.field];
         }
         sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
@@ -222,33 +228,37 @@ export default {
       let sortedSortable = sortable.sort(function(a, b) {
         let valA = a.orderBy;
         let valB = b.orderBy;
-        if(typeof a.orderBy === 'string' && typeof b.orderBy === 'string') {
+        if (typeof a.orderBy === 'string' && typeof b.orderBy === 'string') {
           valA = valA.toLowerCase();
           valB = valB.toLowerCase();
         }
-        if (valA < valB) { return -1; }
-        if (valA > valB) { return 1; }
+        if (valA < valB) {
+          return -1;
+        }
+        if (valA > valB) {
+          return 1;
+        }
         return 0;
       });
 
-      if(this.sort.order === 'descending') {
+      if (this.sort.order === 'descending') {
         sortedSortable.reverse();
       }
 
       return sortedSortable;
     },
     presentationText() {
-
-      if(this.presentationMD.hasOwnProperty(this.currentLang)) {
+      if (this.presentationMD.hasOwnProperty(this.currentLang)) {
         return this.presentationMD[this.currentLang];
-      } else if(this.presentationMD.hasOwnProperty('content')) {
+      } else if (this.presentationMD.hasOwnProperty('content')) {
         return this.presentationMD['content'];
       }
 
       return this.presentationMD;
     }
   }
-}
+};
 </script>
 <style>
+
 </style>

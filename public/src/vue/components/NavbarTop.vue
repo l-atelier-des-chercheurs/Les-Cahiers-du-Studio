@@ -85,7 +85,6 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
   </nav>
 </template>
 <script>
-
 export default {
   props: {
     folder: Object,
@@ -93,31 +92,32 @@ export default {
     visibleDay: Number,
     timelineViewport_scale: Number
   },
-  components: {
-  },
-  data () {
+  components: {},
+  data() {
     return {
-      scaleBtns: [{
-        name: this.$t('scale_items.second'),
-        scale: 1
-      },
-      {
-        name: this.$t('scale_items.minute'),
-        scale: 8
-      },
-      {
-        name: this.$t('scale_items.hour'),
-        scale: 20
-      },
-      {
-        name: this.$t('scale_items.half_day'),
-        scale: 50
-      },
-      {
-        name: this.$t('scale_items.day'),
-        scale: 100
-      }]
-    }
+      scaleBtns: [
+        {
+          name: this.$t('scale_items.second'),
+          scale: 1
+        },
+        {
+          name: this.$t('scale_items.minute'),
+          scale: 8
+        },
+        {
+          name: this.$t('scale_items.hour'),
+          scale: 20
+        },
+        {
+          name: this.$t('scale_items.half_day'),
+          scale: 50
+        },
+        {
+          name: this.$t('scale_items.day'),
+          scale: 100
+        }
+      ]
+    };
   },
   computed: {
     getVisibleDay: function() {
@@ -141,9 +141,8 @@ export default {
       this.$eventHub.$emit('timeline.hideZoomZone');
     }
   }
-}
+};
 </script>
 <style scoped lang="">
-
 
 </style>

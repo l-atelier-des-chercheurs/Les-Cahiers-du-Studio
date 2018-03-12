@@ -64,23 +64,20 @@ export default {
     BottomFooter
   },
   props: ['current_slugFolderName', 'currentFolder'],
-  data () {
-    return {
-    }
+  data() {
+    return {};
   },
   computed: {
     view: function() {
-      if(this.current_slugFolderName !== '') {
+      if (this.current_slugFolderName !== '') {
         return 'TimeLineView';
       }
       return 'ListView';
     }
   },
-  watch: {
-  },
-  methods: {
-  }
-}
+  watch: {},
+  methods: {}
+};
 </script>
 
 <style></style>

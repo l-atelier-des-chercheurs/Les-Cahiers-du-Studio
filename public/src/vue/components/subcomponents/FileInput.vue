@@ -16,10 +16,10 @@ export default {
 
   methods: {
     handleFileChange(e) {
-      this.$emit('input', e.target.files[0])
+      this.$emit('input', e.target.files[0]);
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -27,15 +27,15 @@ export default {
   padding: 1rem;
 
   color: white;
-  background-color: #2EA169;
+  background-color: #2ea169;
 
-  border-radius: .3rem;
+  border-radius: 0.3rem;
 
   text-align: center;
   font-weight: bold;
 }
 
-.file-select > input[type="file"] {
+.file-select > input[type='file'] {
   display: none;
 }
 </style>

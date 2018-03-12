@@ -19,49 +19,41 @@
   </div>
 </template>
 <script>
-
-
 export default {
   props: ['view'],
-  components: {
-  },
+  components: {},
   data() {
     return {
-      is_dragged: false,
-    }
+      is_dragged: false
+    };
   },
 
-  created() {
-  },
-  mounted() {
-  },
-  beforeDestroy() {
-  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
 
-  watch: {
-  },
-  computed: {
-  },
+  watch: {},
+  computed: {},
   methods: {
     mousedown(event) {
       console.log(`METHODS • SystemBar: mousedown`);
       this.is_dragged = false;
     },
     mousemove(event) {
-      if(!this.is_dragged) {
+      if (!this.is_dragged) {
         this.is_dragged = true;
       }
     },
     mouseup(event) {
       console.log(`METHODS • SystemBar: mouseup`);
       console.log(`with is_dragged = ${this.is_dragged}`);
-      if(!this.is_dragged) {
+      if (!this.is_dragged) {
         this.$root.closeFolder();
       }
       this.is_dragged = false;
-    },
+    }
   }
-}
+};
 </script>
 <style>
 

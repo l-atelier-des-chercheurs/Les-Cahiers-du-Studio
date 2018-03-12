@@ -283,11 +283,11 @@ export default {
         authors: this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,
-        public: (this.media.public == 'true'),
+        public: this.media.public == 'true',
         content: this.media.content
       },
       mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
-    }
+    };
   },
   computed: {
     date_created_human() {
@@ -304,10 +304,9 @@ export default {
     printMedia: function() {
       window.print();
     },
-    openMediaNewWindow: function() {
-    },
+    openMediaNewWindow: function() {},
     removeMedia: function() {
-      if(window.confirm(this.$t('sureToRemoveMedia'))) {
+      if (window.confirm(this.$t('sureToRemoveMedia'))) {
         this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
         // then close that popover
         this.$emit('close', '');
@@ -316,7 +315,7 @@ export default {
     setMediaDateTimeline: function(newDate) {
       this.mediadata.date_timeline = newDate;
     },
-    editThisMedia: function (event) {
+    editThisMedia: function(event) {
       console.log('editThisMedia');
 
       // copy all values
@@ -330,10 +329,9 @@ export default {
       this.$emit('close', '');
     }
   },
-  mounted() {
-  }
-}
-
+  mounted() {}
+};
 </script>
 <style>
+
 </style>

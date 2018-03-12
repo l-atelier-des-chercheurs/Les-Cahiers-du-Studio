@@ -1,4 +1,4 @@
-/***********
+/** *********
   VUE
 ***********/
 
@@ -77,7 +77,7 @@ let i18n = new VueI18n({
   messages: locale_strings // set locale messages
 });
 
-/***********
+/** *********
   SOCKETIO
 ***********/
 import io from 'socket.io-client';
@@ -182,7 +182,7 @@ Vue.prototype.$socketio = new Vue({
     },
 
     _onListMedia(mdata) {
-      console.log(`Received _onListMedia packet.`);
+      console.log('Received _onListMedia packet.');
       let slugFolderName = Object.keys(mdata)[0];
       console.log(`Media data is for ${slugFolderName}.`);
 
@@ -206,7 +206,7 @@ Vue.prototype.$socketio = new Vue({
     },
 
     _onListMedias(mdata) {
-      console.log(`Received _onListMedias packet.`);
+      console.log('Received _onListMedias packet.');
       let slugFolderName = Object.keys(mdata)[0];
       console.log(`Media data is for ${slugFolderName}.`);
 
@@ -221,7 +221,7 @@ Vue.prototype.$socketio = new Vue({
     },
 
     _onListFolder(fdata) {
-      console.log(`Received _onListFolder packet.`);
+      console.log('Received _onListFolder packet.');
 
       // to prevent override of fully formed medias, we copy back the ones we have already
       for (let slugFolderName in fdata) {
@@ -234,7 +234,7 @@ Vue.prototype.$socketio = new Vue({
     },
 
     _onListFolders(fdata) {
-      console.log(`Received _onListFolders packet.`);
+      console.log('Received _onListFolders packet.');
 
       // to prevent override of fully formed medias, we copy back the ones we have already
       for (let slugFolderName in fdata) {
@@ -312,17 +312,17 @@ let vm = new Vue({
   },
   created() {
     if (window.state.dev_mode === 'debug') {
-      console.log(`ROOT EVENT: created`);
+      console.log('ROOT EVENT: created');
     }
     if (this.settings.enable_system_bar) {
       document.body.classList.add('has_systembar');
     }
 
     if (window.state.dev_mode === 'debug') {
-      console.log(`ROOT EVENT: created / checking for errors`);
+      console.log('ROOT EVENT: created / checking for errors');
     }
 
-    if (!!this.store.noticeOfError) {
+    if (this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {
         alertify
           .closeLogOnClick(true)
@@ -336,7 +336,7 @@ let vm = new Vue({
     } else {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          `ROOT EVENT: created / no erros, checking for content to load`
+          'ROOT EVENT: created / no erros, checking for content to load'
         );
       }
 
@@ -349,7 +349,7 @@ let vm = new Vue({
       } else {
         // if a slugfoldername is requested, load the content of that folder rightaway
         // we are probably in a webbrowser that accesses a subfolder
-        if (!!this.store.slugFolderName) {
+        if (this.store.slugFolderName) {
           this.settings.current_slugFolderName = this.store.slugFolderName;
           this.settings.is_loading_medias_for_folder = this.store.slugFolderName;
           window.addEventListener(
@@ -373,7 +373,7 @@ let vm = new Vue({
     };
 
     if (this.state.mode === 'live') {
-      console.log(`ROOT EVENT: created / now connecting with socketio`);
+      console.log('ROOT EVENT: created / now connecting with socketio');
       this.$socketio.connect();
     }
   },
@@ -451,7 +451,7 @@ let vm = new Vue({
         console.log(`ROOT EVENT: openFolder: ${slugFolderName}`);
       }
       if (!this.store.folders.hasOwnProperty(slugFolderName)) {
-        console.log(`Missing folder key on the page, aborting.`);
+        console.log('Missing folder key on the page, aborting.');
         return false;
       }
       this.settings.current_slugFolderName = slugFolderName;
@@ -470,7 +470,7 @@ let vm = new Vue({
     },
     closeFolder: function() {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: closeFolder`);
+        console.log('ROOT EVENT: closeFolder');
       }
       this.settings.current_slugFolderName = '';
       history.pushState({ slugFolderName: '' }, '', '/');
@@ -478,7 +478,7 @@ let vm = new Vue({
 
     listMediasForFolder: function(e) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: listMediasForFolder`);
+        console.log('ROOT EVENT: listMediasForFolder');
       }
       if (e.detail === this.settings.is_loading_medias_for_folder) {
         this.settings.is_loading_medias_for_folder = '';
@@ -486,7 +486,7 @@ let vm = new Vue({
     },
     updateProjectScale: function(slugFolderName, timelineViewport_scale) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: updateProjectScale`);
+        console.log('ROOT EVENT: updateProjectScale');
       }
 
       let viewportScale = localstore.get('viewport_scale') || {};
@@ -496,7 +496,7 @@ let vm = new Vue({
     },
     getProjectScale: function(slugFolderName) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: getProjectScale`);
+        console.log('ROOT EVENT: getProjectScale');
       }
       let viewportScale = localstore.get('viewport_scale') || {};
       if (
@@ -510,7 +510,7 @@ let vm = new Vue({
 
     updateLocalLang: function(newLangCode) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: updateLocalLang`);
+        console.log('ROOT EVENT: updateLocalLang');
       }
       i18n.locale = newLangCode;
       moment.locale(newLangCode);
@@ -526,7 +526,7 @@ let vm = new Vue({
       timelineViewport_scrollLeft
     ) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: updateProjectScrollLeft`);
+        console.log('ROOT EVENT: updateProjectScrollLeft');
       }
 
       let viewportScrollLeft = localstore.get('viewport_scrollLeft') || {};
@@ -536,7 +536,7 @@ let vm = new Vue({
     },
     getScrollLeft: function(slugFolderName) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`ROOT EVENT: getScrollLeft`);
+        console.log('ROOT EVENT: getScrollLeft');
       }
       let viewportScrollLeft = localstore.get('viewport_scrollLeft') || {};
       if (

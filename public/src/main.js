@@ -4,7 +4,7 @@ window.$ = window.jQuery = jQuery;
 
 import less from './less/style.less';
 
-/***********
+/** *********
    AUTH
 ***********/
 window.auth = (function() {
@@ -41,7 +41,7 @@ window.auth = (function() {
 })();
 auth.init();
 
-/***********
+/** *********
   UTILS
 ***********/
 

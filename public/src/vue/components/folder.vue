@@ -137,14 +137,14 @@ export default {
     sort_field: String
   },
   components: {
-    EditFolder,
+    EditFolder
   },
   data() {
     return {
       debugFolderContent: false,
       showEditFolderModal: false,
       showInputPasswordField: false
-    }
+    };
   },
   methods: {
     formatDateToHuman(date) {
@@ -157,20 +157,22 @@ export default {
       this.$root.closeFolder();
     },
     removeFolder() {
-      if(window.confirm(this.$t('sureToRemoveFolder'))) {
+      if (window.confirm(this.$t('sureToRemoveFolder'))) {
         this.$root.removeFolder(this.slugFolderName);
       }
     },
     submitPassword() {
       console.log('METHODS • Folder: submitPassword');
-      auth.updateAdminAccess({ [this.slugFolderName]: this.$refs.passwordField.value });
+      auth.updateAdminAccess({
+        [this.slugFolderName]: this.$refs.passwordField.value
+      });
       this.$socketio.sendAuth();
       this.showInputPasswordField = false;
     }
   },
-  watch: {
-  },
-}
+  watch: {}
+};
 </script>
 <style scoped>
+
 </style>

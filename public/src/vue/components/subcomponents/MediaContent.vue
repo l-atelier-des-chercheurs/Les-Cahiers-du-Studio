@@ -111,12 +111,12 @@ export default {
         default: 1600
       },
       mediaURL: `./${this.slugFolderName}/${this.slugMediaName}`
-    }
+    };
   },
   mounted() {
-    if(this.context === 'edit') {
-      if(Modernizr !== undefined && !Modernizr.touchevents) {
-        if(this.$refs.textField !== undefined) {
+    if (this.context === 'edit') {
+      if (Modernizr !== undefined && !Modernizr.touchevents) {
+        if (this.$refs.textField !== undefined) {
           this.$refs.textField.focus();
         }
       }
@@ -124,40 +124,58 @@ export default {
   },
   computed: {
     thumbRes: function() {
-      return this.context === 'preview' ? this.available_resolutions.preview : this.available_resolutions.default;
+      return this.context === 'preview'
+        ? this.available_resolutions.preview
+        : this.available_resolutions.default;
     },
     thumbResHovered: function() {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
-      let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: this.thumbRes }).path;
+      let pathToSmallestThumb = _.findWhere(this.media.thumbs, {
+        size: this.thumbRes
+      }).path;
       // if image is gif and context is not 'preview', let’s show the original gif
-      if(this.context !== 'preview' && this.mediaURL.toLowerCase().endsWith('.gif')) {
+      if (
+        this.context !== 'preview' &&
+        this.mediaURL.toLowerCase().endsWith('.gif')
+      ) {
         return this.mediaURL;
       }
 
-      return pathToSmallestThumb !== undefined ? './' + pathToSmallestThumb : this.mediaURL;
+      return pathToSmallestThumb !== undefined
+        ? './' + pathToSmallestThumb
+        : this.mediaURL;
     },
     linkToHoveredThumb: function() {
-      let pathToSmallestThumb = _.findWhere(this.media.thumbs, { size: this.thumbResHovered }).path;
-      return pathToSmallestThumb !== undefined ? './' + pathToSmallestThumb : this.mediaURL;
+      let pathToSmallestThumb = _.findWhere(this.media.thumbs, {
+        size: this.thumbResHovered
+      }).path;
+      return pathToSmallestThumb !== undefined
+        ? './' + pathToSmallestThumb
+        : this.mediaURL;
     },
     linkToVideoThumb: function() {
-
-      if(this.media.thumbs.length === 0) { return; }
+      if (this.media.thumbs.length === 0) {
+        return;
+      }
 
       let timeMark = 0;
       let timeMarkThumbs = _.findWhere(this.media.thumbs, { timeMark });
 
-      if(timeMarkThumbs.length === 0)  { return; }
+      if (timeMarkThumbs.length === 0) {
+        return;
+      }
 
-      let pathToSmallestThumb = _.findWhere(timeMarkThumbs.thumbsData, { size: this.thumbRes }).path;
-      return pathToSmallestThumb !== undefined ? './' + pathToSmallestThumb : this.mediaURL;
+      let pathToSmallestThumb = _.findWhere(timeMarkThumbs.thumbsData, {
+        size: this.thumbRes
+      }).path;
+      return pathToSmallestThumb !== undefined
+        ? './' + pathToSmallestThumb
+        : this.mediaURL;
     }
-
   }
-}
-
+};
 </script>
 <style scoped lang="sass">
 </style>

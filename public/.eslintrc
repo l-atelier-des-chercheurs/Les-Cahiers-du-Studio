@@ -1,9 +1,10 @@
 {
-  "extends": "standard",
-  "plugins": [
-    "html"
-  ],
+  "plugins": ["html"],
   "env": {
     "jasmine": true
-  }
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "extends": ["prettier"]
 }

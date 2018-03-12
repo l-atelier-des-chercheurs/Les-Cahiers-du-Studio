@@ -94,54 +94,59 @@ export default {
     sort: Object,
     slugFolderName: String,
     sortedMedias: Array,
-    timelineInfos: Object,
+    timelineInfos: Object
   },
   data() {
     return {
       currentSort: this.sort.current,
       currentFilter: this.filter,
       thumbSize: 50
-    }
+    };
   },
-  mounted: function() {
-  },
+  mounted: function() {},
 
-  computed: {
-  },
+  computed: {},
   watch: {
-    'currentSort': function() {
+    currentSort: function() {
       this.$eventHub.$emit('setSort', this.currentSort);
     },
-    'currentFilter': function() {
+    currentFilter: function() {
       this.$eventHub.$emit('setFilter', this.currentFilter);
     }
   },
   methods: {
     highlightMedia(slugMediaName) {
-      if(this.display !== 'table') return false;
+      if (this.display !== 'table') return false;
       this.$eventHub.$emit('highlightMedia', slugMediaName);
     },
     unHighlightMedia(slugMediaName) {
-      if(this.display !== 'table') return false;
+      if (this.display !== 'table') return false;
       this.$eventHub.$emit('highlightMedia', '');
     },
     scrollToMedia(slugMediaName) {
-      if(this.display !== 'table') return false;
+      if (this.display !== 'table') return false;
       this.$eventHub.$emit('scrollToMedia', slugMediaName);
     },
     openMediaModal(slugMediaName) {
       this.$eventHub.$emit('timeline.openMediaModal', slugMediaName);
     },
     mediaIsOutOfScope(media) {
-      if(this.$moment(media.date_timeline).isBefore(this.timelineInfos.start) || this.$moment(media.date_timeline).isAfter(this.timelineInfos.end)) {
+      if (
+        this.$moment(media.date_timeline).isBefore(this.timelineInfos.start) ||
+        this.$moment(media.date_timeline).isAfter(this.timelineInfos.end)
+      ) {
         return true;
       }
       return false;
     },
     linkToThumb(media) {
-      let pathToSmallestThumb = _.findWhere(media.thumbs, { size: this.thumbSize }).path;
-      return pathToSmallestThumb !== undefined ? './' + pathToSmallestThumb : '';
-    },
+      let pathToSmallestThumb = _.findWhere(media.thumbs, {
+        size: this.thumbSize
+      }).path;
+      return pathToSmallestThumb !== undefined
+        ? './' + pathToSmallestThumb
+        : '';
+    }
   }
-}
+};
 </script>

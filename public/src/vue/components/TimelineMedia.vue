@@ -80,7 +80,7 @@ export default {
     timelineScale: Number,
     posX: {
       type: Number,
-      default: 0 
+      default: 0
     },
     timelineHeight: Number,
     is_placeholder: Boolean,
@@ -96,7 +96,7 @@ export default {
     return {
       is_dragged: false,
       is_hovered: false,
-      is_collapsed: (this.media.collapsed == 'true'),
+      is_collapsed: this.media.collapsed == 'true',
       dragOffset: {
         x: '',
         y: ''
@@ -111,24 +111,26 @@ export default {
         w: 180,
         h: 180,
         mediaWidthFromDuration: 0
-      },
-    }
+      }
+    };
   },
-  computed: {
-  },
+  computed: {},
   watch: {
-    media: function() {
-    },
+    media: function() {},
     'media.collapsed': function() {
-      this.is_collapsed = (this.media.collapsed == 'true');
+      this.is_collapsed = this.media.collapsed == 'true';
     },
     'media.y': function() {
-      this.mediaStyles.y = this.limitMediaYPos(parseFloat(this.media.y) * this.timelineHeight);
+      this.mediaStyles.y = this.limitMediaYPos(
+        parseFloat(this.media.y) * this.timelineHeight
+      );
     },
-    'timelineHeight': function() {
-      this.mediaStyles.y = this.limitMediaYPos(parseFloat(this.media.y) * this.timelineHeight);
+    timelineHeight: function() {
+      this.mediaStyles.y = this.limitMediaYPos(
+        parseFloat(this.media.y) * this.timelineHeight
+      );
     },
-    'timelineScale': function() {
+    timelineScale: function() {
       this.setMediaWidthFromDuration();
     }
   },
@@ -142,18 +144,20 @@ export default {
   methods: {
     limitMediaYPos(yPos) {
       console.log(`METHODS • TimelineMedia: limitMediaYPos`);
-      if(this.media.type === 'marker') {
-        return 50/2;
+      if (this.media.type === 'marker') {
+        return 50 / 2;
       }
       return Math.max(50, Math.min(this.timelineHeight - 100, yPos));
     },
     setMediaWidthFromDuration() {
       console.log('METHODS • TimelineMedia: setMediaWidthFromDuration');
-      this.mediaWidthFromDuration = Math.round(this.media.duration/this.timelineScale);
+      this.mediaWidthFromDuration = Math.round(
+        this.media.duration / this.timelineScale
+      );
     },
     getMediaWidthFromDuration() {
       console.log('METHODS • TimelineMedia: getMediaWidthFromDuration');
-      if(this.media.duration !== undefined) {
+      if (this.media.duration !== undefined) {
         return { width: `${this.mediaWidthFromDuration}px` };
       }
       return false;
@@ -162,12 +166,14 @@ export default {
     // set width and height for a media.
     // this shouldn’t need updating
     setMediaSize() {
-      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: setMediaSize'); }
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • TimelineMedia: setMediaSize');
+      }
 
       // let’s set some ratio
-      if(this.mediaStyles.ratio) {
+      if (this.mediaStyles.ratio) {
         let r = this.mediaStyles.ratio;
-        if(r < 1) {
+        if (r < 1) {
           this.mediaStyles.h = this.mediaStyles.w * r;
         } else {
           this.mediaStyles.w = this.mediaStyles.h / r;
@@ -175,11 +181,11 @@ export default {
       }
 
       // if there’s some ratio
-      if(this.media.duration > 0) {
-        if(this.media.type === 'audio') {
+      if (this.media.duration > 0) {
+        if (this.media.type === 'audio') {
           this.mediaStyles.h = 32;
         }
-        if(this.mediaWidthFromDuration > this.mediaStyles.w) {
+        if (this.mediaWidthFromDuration > this.mediaStyles.w) {
           this.mediaStyles.w = this.mediaWidthFromDuration;
         }
       }
@@ -189,18 +195,26 @@ export default {
       return {
         width: `${this.mediaStyles.w}px`,
         height: `${this.mediaStyles.h}px`
-      }
+      };
     },
     mousedown(event) {
-      console.log(`METHODS • TimelineMedia: mousedown with is_dragged = ${this.is_dragged}`);
-      if(!this.read_only) {
+      console.log(
+        `METHODS • TimelineMedia: mousedown with is_dragged = ${
+          this.is_dragged
+        }`
+      );
+      if (!this.read_only) {
         window.addEventListener('mousemove', this.mousemove);
         window.addEventListener('mouseup', this.mouseup);
       }
     },
     mousemove(event) {
-      console.log(`METHODS • TimelineMedia: mousemove with is_dragged = ${this.is_dragged}`);
-      if(!this.is_dragged) {
+      console.log(
+        `METHODS • TimelineMedia: mousemove with is_dragged = ${
+          this.is_dragged
+        }`
+      );
+      if (!this.is_dragged) {
         this.is_dragged = true;
 
         this.dragOffset.y = event.pageY;
@@ -211,22 +225,26 @@ export default {
       }
     },
     openMedia() {
-      if(this.is_dragged) { return; }
-      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: openMedia'); }
+      if (this.is_dragged) {
+        return;
+      }
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • TimelineMedia: openMedia');
+      }
       this.$emit('open');
     },
     mouseup(event) {
       console.log(`METHODS • TimelineMedia: mouseup`);
       console.log(`with is_dragged = ${this.is_dragged}`);
-      if(this.is_dragged) {
+      if (this.is_dragged) {
         let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
         this.mediaStyles.y = this.limitMediaYPos(newY);
         let getHeightInPercent = this.mediaStyles.y / this.timelineHeight;
 
         let values = {
-          "y": getHeightInPercent,
-          "slugFolderName": this.slugFolderName,
-          "slugMediaName": this.slugMediaName
+          y: getHeightInPercent,
+          slugFolderName: this.slugFolderName,
+          slugMediaName: this.slugMediaName
         };
 
         this.$root.editMedia(values);
@@ -249,10 +267,15 @@ export default {
       this.is_hovered = false;
     },
     toggleCollapseMedia(event) {
-      console.log('METHODS • TimelineMedia: toggleCollapseMedia with drag = ' + this.is_dragged);
-      if(this.read_only) { return; }
+      console.log(
+        'METHODS • TimelineMedia: toggleCollapseMedia with drag = ' +
+          this.is_dragged
+      );
+      if (this.read_only) {
+        return;
+      }
 
-      if(this.is_dragged) {
+      if (this.is_dragged) {
         this.mouseup(event);
         return;
       } else {
@@ -270,7 +293,7 @@ export default {
       event.stopPropagation();
     }
   }
-}
+};
 </script>
 <style lang="sass">
 </style>

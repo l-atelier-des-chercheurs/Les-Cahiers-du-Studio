@@ -29,36 +29,35 @@ import alertify from 'alertify.js';
 
 export default {
   props: {
-    slugFolderName: String,
+    slugFolderName: String
   },
   components: {
     Dropzone
   },
-  data(){
+  data() {
     return {
       customOptionsObject: {
         language: {
-          dictDefaultMessage : '+',
-          dictCancelUpload : 'Annuler l’upload',
+          dictDefaultMessage: '+',
+          dictCancelUpload: 'Annuler l’upload',
           dictRemoveFile: 'Masquer'
         }
       }
-    }
+    };
   },
   computed: {
     uniqueDropzoneID: function() {
-      return 'myVueDropzone_' + Math.ceil((Math.random() * 1000));
+      return 'myVueDropzone_' + Math.ceil(Math.random() * 1000);
     },
     uriToUploadMedia: function() {
       return this.slugFolderName + '/file-upload';
-    },
+    }
   },
   mounted: function() {
     document.addEventListener('dragover', this.enhanceDropzone);
     $(this.$refs.dropzoneoverlay)
       .on('dragleave', this.unenhanceDropzone)
-      .on('drop', this.unenhanceDropzone)
-      ;
+      .on('drop', this.unenhanceDropzone);
   },
   destroyed: function() {
     document.removeEventListener('dragover', this.enhanceDropzone);
@@ -76,24 +75,25 @@ export default {
       evt.stopPropagation();
       return false;
     },
-    showSuccess: function (file) {
+    showSuccess: function(file) {
       setTimeout(() => {
         this.$refs.dropzone.removeFile(file);
       }, 1000);
       alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .log(this.$t('notifications.file_was_sent'))
-        ;
+        .log(this.$t('notifications.file_was_sent'));
     },
-    addMeta: function (file, xhr, formData) {
+    addMeta: function(file, xhr, formData) {
       // Testing for 'function' is more specific and correct, but doesn't work with Safari 6.x
-      if (typeof window.FileReader !== 'function' && typeof window.FileReader !== 'object') {
+      if (
+        typeof window.FileReader !== 'function' &&
+        typeof window.FileReader !== 'object'
+      ) {
         alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t('notifications.file_upload_not_allowed'))
-          ;
+          .error(this.$t('notifications.file_upload_not_allowed'));
         return;
       }
 
@@ -101,11 +101,11 @@ export default {
       let fileName = file.name;
       let objToSend = {
         fileCreationDate
-      }
+      };
       formData.append(fileName, JSON.stringify(objToSend));
     },
-    'template':function() {
-        return `
+    template: function() {
+      return `
           <div class="dz-preview dz-file-preview">
               <div class="dz-image" style="width: 50px;height: 50px">
                   <img data-dz-thumbnail /></div>
@@ -120,9 +120,8 @@ export default {
           </div>
             `;
     }
-
   }
-}
+};
 </script>
 <style lang="sass">
 </style>

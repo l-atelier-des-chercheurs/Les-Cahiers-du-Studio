@@ -5,7 +5,6 @@
   </div>
 </template>
 <script>
-
 export default {
   props: {
     value: {
@@ -23,15 +22,21 @@ export default {
   },
   data() {
     return {
-      date: this.$moment(this.value).isValid() ? this.$moment(this.value).format('YYYY-MM-DD') : '',
-      time: this.$moment(this.value).isValid() ? this.$moment(this.value).format('HH:mm:ss') : ''
-    }
+      date: this.$moment(this.value).isValid()
+        ? this.$moment(this.value).format('YYYY-MM-DD')
+        : '',
+      time: this.$moment(this.value).isValid()
+        ? this.$moment(this.value).format('HH:mm:ss')
+        : ''
+    };
   },
   watch: {
-    value:  function() {
-      if(this.twowaybinding !== true) { return; }
-      this.date = this.$moment(this.value).format('YYYY-MM-DD'),
-      this.time = this.$moment(this.value).format('HH:mm:ss')
+    value: function() {
+      if (this.twowaybinding !== true) {
+        return;
+      }
+      (this.date = this.$moment(this.value).format('YYYY-MM-DD')),
+        (this.time = this.$moment(this.value).format('HH:mm:ss'));
     }
   },
   methods: {

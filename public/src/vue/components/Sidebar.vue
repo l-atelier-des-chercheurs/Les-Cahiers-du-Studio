@@ -196,11 +196,11 @@ export default {
     visibleDay: Number,
     isRealtime: {
       type: Boolean,
-      default: false,
+      default: false
     },
     showEditFolderModal: {
       type: Boolean,
-      default: false,
+      default: false
     },
     read_only: Boolean
   },
@@ -215,7 +215,7 @@ export default {
           field: 'date_timeline',
           name: this.$t('date'),
           type: 'date',
-          order: 'ascending',
+          order: 'ascending'
         },
 
         available: [
@@ -223,53 +223,53 @@ export default {
             field: 'date_timeline',
             name: this.$t('date'),
             type: 'date',
-            order: 'ascending',
+            order: 'ascending'
           },
           {
             field: 'date_modified',
             name: this.$t('last_modified'),
             type: 'date',
-            order: 'descending',
+            order: 'descending'
           },
           {
             field: 'type',
             name: this.$t('type'),
             type: 'alph',
-            order: 'ascending',
+            order: 'ascending'
           },
           {
             field: 'color',
             name: this.$t('color'),
             type: 'alph',
-            order: 'ascending',
+            order: 'ascending'
           },
           {
             field: 'authors',
             name: this.$t('author'),
             type: 'alph',
-            order: 'ascending',
+            order: 'ascending'
           },
           {
             field: 'public',
             name: this.$t('public'),
             type: 'alph',
-            order: 'descending',
+            order: 'descending'
           },
           {
             field: 'content',
             name: this.$t('content'),
             type: 'alph',
-            order: 'ascending',
+            order: 'ascending'
           },
           {
             field: 'caption',
             name: this.$t('caption'),
             type: 'alph',
-            order: 'ascending',
-          },
+            order: 'ascending'
+          }
         ]
       }
-    }
+    };
   },
   mounted() {
     this.$eventHub.$on('setSort', this.setSort);
@@ -285,27 +285,42 @@ export default {
       for (let slugMediaName in this.medias) {
         let mediaDataToOrderBy;
 
-        if (this.sort.current.type ==='date') {
-          mediaDataToOrderBy = +this.$moment(this.medias[slugMediaName][this.sort.current.field], 'YYYY-MM-DD HH:mm:ss');
-        } else if (this.sort.current.type ==='alph') {
-          mediaDataToOrderBy = this.medias[slugMediaName][this.sort.current.field];
+        if (this.sort.current.type === 'date') {
+          mediaDataToOrderBy = +this.$moment(
+            this.medias[slugMediaName][this.sort.current.field],
+            'YYYY-MM-DD HH:mm:ss'
+          );
+        } else if (this.sort.current.type === 'alph') {
+          mediaDataToOrderBy = this.medias[slugMediaName][
+            this.sort.current.field
+          ];
         }
 
-        sortable.push({ slugMediaName: slugMediaName, mediaDataToOrderBy: mediaDataToOrderBy });
+        sortable.push({
+          slugMediaName: slugMediaName,
+          mediaDataToOrderBy: mediaDataToOrderBy
+        });
       }
       let sortedSortable = sortable.sort(function(a, b) {
         let valA = a.mediaDataToOrderBy;
         let valB = b.mediaDataToOrderBy;
-        if(typeof a.mediaDataToOrderBy === 'string' && typeof b.mediaDataToOrderBy === 'string') {
+        if (
+          typeof a.mediaDataToOrderBy === 'string' &&
+          typeof b.mediaDataToOrderBy === 'string'
+        ) {
           valA = valA.toLowerCase();
           valB = valB.toLowerCase();
         }
-        if (valA < valB) { return -1; }
-        if (valA > valB) { return 1; }
+        if (valA < valB) {
+          return -1;
+        }
+        if (valA > valB) {
+          return 1;
+        }
         return 0;
       });
 
-      if(this.sort.current.order === 'descending') {
+      if (this.sort.current.order === 'descending') {
         sortedSortable.reverse();
       }
 
@@ -315,10 +330,11 @@ export default {
         let sortedMediaObj = this.medias[d.slugMediaName];
         sortedMediaObj.slugMediaName = d.slugMediaName;
 
-        if(this.filter.length > 0) {
+        if (this.filter.length > 0) {
           // if there is a filter set, let’s only return medias whose mediaDataToOrderBy contain that string
-          let originalContentFromMedia = sortedMediaObj[this.sort.current.field] + '';
-          if(originalContentFromMedia.indexOf(this.filter) !== -1) {
+          let originalContentFromMedia =
+            sortedMediaObj[this.sort.current.field] + '';
+          if (originalContentFromMedia.indexOf(this.filter) !== -1) {
             result.push(sortedMediaObj);
           }
         } else {
@@ -328,25 +344,28 @@ export default {
         return result;
       }, []);
       return sortedMedias;
-    },
+    }
   },
 
   watch: {
-    'currentLang': function() {
+    currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
-    },
+    }
   },
 
   methods: {
-
     // from https://stackoverflow.com/questions/23795522/how-to-enumerate-dates-between-two-dates-in-moment
     enumerateDaysBetweenDates(startDate, endDate) {
       var dates = [];
 
-      var currDate = this.$moment(startDate).startOf('day').subtract(1, 'days');
-      var lastDate = this.$moment(endDate).startOf('day').add(1, 'days');
+      var currDate = this.$moment(startDate)
+        .startOf('day')
+        .subtract(1, 'days');
+      var lastDate = this.$moment(endDate)
+        .startOf('day')
+        .add(1, 'days');
 
-      while(currDate.add(1, 'days').diff(lastDate) < 0) {
+      while (currDate.add(1, 'days').diff(lastDate) < 0) {
         dates.push(currDate.clone().toDate());
       }
 
@@ -354,7 +373,9 @@ export default {
     },
 
     getURLToApp(ip, port) {
-      return `${this.$root.state.protocol}://${ip}:${port}/${this.slugFolderName}`;
+      return `${this.$root.state.protocol}://${ip}:${port}/${
+        this.slugFolderName
+      }`;
     },
     openInFinder(thisPath) {
       const shell = window.require('electron').shell;
@@ -375,8 +396,13 @@ export default {
     },
     folderDays() {
       console.log('METHODS • sidebar: getting folderDays');
-      const allDays = this.enumerateDaysBetweenDates(this.timelineInfos.start, this.timelineInfos.end);
-      if(allDays.length === 0) { return; }
+      const allDays = this.enumerateDaysBetweenDates(
+        this.timelineInfos.start,
+        this.timelineInfos.end
+      );
+      if (allDays.length === 0) {
+        return;
+      }
 
       /*
       {
@@ -395,24 +421,24 @@ export default {
 
         let fullDate = this.$moment(cur).format('DD/MM/YYYY');
         let isVisibleDay = false;
-        if(fullDate === this.getVisibleDay()) {
+        if (fullDate === this.getVisibleDay()) {
           isVisibleDay = true;
         }
         let isToday = false;
         let todaysDate = this.$moment().format('DD/MM/YYYY');
-        if(todaysDate === fullDate) {
+        if (todaysDate === fullDate) {
           isToday = true;
         }
 
         let dayData = {
-          "dayNumber": day,
-          "numberOfMedias": this.getNumberOfMediasCreatedOnThisDate(cur),
-          "timestamp": this.$moment(cur),
+          dayNumber: day,
+          numberOfMedias: this.getNumberOfMediasCreatedOnThisDate(cur),
+          timestamp: this.$moment(cur),
           isVisibleDay,
           isToday
         };
 
-        if(typeof acc[monthName] === 'undefined') {
+        if (typeof acc[monthName] === 'undefined') {
           acc[monthName] = [];
         }
         acc[monthName].push(dayData);
@@ -423,14 +449,14 @@ export default {
     },
 
     getNumberOfMediasCreatedOnThisDate(date) {
-      if(Object.keys(this.medias).length === 0) {
+      if (Object.keys(this.medias).length === 0) {
         return 0;
       }
 
       const total = Object.entries(this.medias).reduce((acc, pair) => {
         const [key, value] = pair;
         let created_day = this.$moment(value.date_timeline);
-        if(created_day.isSame(date, 'day')) {
+        if (created_day.isSame(date, 'day')) {
           acc++;
         }
         return acc;
@@ -458,8 +484,7 @@ export default {
       window.location.replace(window.location.href + '/export');
     }
   }
-
-}
+};
 </script>
 
 <style lang="sass">

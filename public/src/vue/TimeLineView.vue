@@ -242,7 +242,11 @@ export default {
       timelinetrackHeight: 50,
       timelineHeight: 0,
       bottomScrollBar: 20,
-      sidebarWidth: parseFloat(window.getComputedStyle(document.querySelector('html')).getPropertyValue('--sidebar-width')),
+      sidebarWidth: parseFloat(
+        window
+          .getComputedStyle(document.querySelector('html'))
+          .getPropertyValue('--sidebar-width')
+      ),
 
       showMediaModalFor: '',
       highlightedMedia: '',
@@ -273,12 +277,11 @@ export default {
         minutes: []
       },
 
-
       // this object contains a start and end for this timeline, ven if it is realtime
       // for example 2017-07-01 13:22 and 2017-07-12 12:24
       timelineInfos: {
         start: 0,
-        end:   0,
+        end: 0
       },
       timelineViewport: {
         // this object contains a start and end for this view,
@@ -294,11 +297,11 @@ export default {
         longestIntervalTS: 86400000 * 10,
         leftPadding: 0,
         viewerWidth: 0
-      },
-    }
+      }
+    };
   },
   watch: {
-    'folder': function() {
+    folder: function() {
       console.log('WATCH • TimeLineView: folder');
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
@@ -306,7 +309,7 @@ export default {
       this.updateMediaData();
       this.updateGridData();
     },
-    'medias': function() {
+    medias: function() {
       this.updateMediaData();
     },
     'timelineViewport.scale': function() {
@@ -317,8 +320,12 @@ export default {
 
       // before updating the scale, we get the percent that's currently shown, store it, and we go back to it right after scaling
       let currentScrollLeft = this.$refs.timeline.scrollLeft;
-      let currentScrollMiddle = currentScrollLeft + this.timelineViewport.viewerWidth/2 - this.timelineViewport.leftPadding;
-      let currentScrollMiddle_percent = currentScrollMiddle / this.timelineViewport.width;
+      let currentScrollMiddle =
+        currentScrollLeft +
+        this.timelineViewport.viewerWidth / 2 -
+        this.timelineViewport.leftPadding;
+      let currentScrollMiddle_percent =
+        currentScrollMiddle / this.timelineViewport.width;
 
       this.setViewedTimelineWidthAndHeight();
 
@@ -327,18 +334,28 @@ export default {
 
       // reenable media animations
       this.$nextTick(() => {
-        let newScrollMiddle = this.timelineViewport.width * currentScrollMiddle_percent;
-        let newScrollLeft = newScrollMiddle - this.timelineViewport.viewerWidth/2 + this.timelineViewport.leftPadding;
+        let newScrollMiddle =
+          this.timelineViewport.width * currentScrollMiddle_percent;
+        let newScrollLeft =
+          newScrollMiddle -
+          this.timelineViewport.viewerWidth / 2 +
+          this.timelineViewport.leftPadding;
         this.$refs.timeline.scrollLeft = newScrollLeft;
         this.drawRealtimeRule();
         this.isAnimated = true;
       });
 
-      this.$root.updateProjectScale(this.slugFolderName, this.timelineViewport.scale);
+      this.$root.updateProjectScale(
+        this.slugFolderName,
+        this.timelineViewport.scale
+      );
     },
     'timelineViewport.scrollLeft': function() {
       console.log('WATCH • TimeLineView: timelineViewport.scrollLeft');
-      this.$root.updateProjectScrollLeft(this.slugFolderName, this.timelineViewport.scrollLeft);
+      this.$root.updateProjectScrollLeft(
+        this.slugFolderName,
+        this.timelineViewport.scrollLeft
+      );
       this.setVisibleDay();
     },
     'timelineViewport.visibleDay': function() {
@@ -356,7 +373,6 @@ export default {
     this.setVisibleDay();
   },
   mounted() {
-
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener('resize', this.onResize);
 
@@ -374,42 +390,45 @@ export default {
     this.$eventHub.$on('timeline.showZoomZone', this.showZoomZone);
     this.$eventHub.$on('timeline.hideZoomZone', this.hideZoomZone);
 
-    this.timelineViewport.leftPadding = parseInt($(this.$refs.timeline).css('padding-left'), 10);
+    this.timelineViewport.leftPadding = parseInt(
+      $(this.$refs.timeline).css('padding-left'),
+      10
+    );
     this.updateViewerWidth();
 
     // set scrollLeft to match timelineViewport.scrollLeft
     this.$refs.timeline.scrollLeft = this.timelineViewport.scrollLeft;
 
-    if(this.timelineViewport.autoscroll) {
+    if (this.timelineViewport.autoscroll) {
       this.scrollToToday();
     }
     // refresh everything that depends upon scrollLeft
-    this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft+1;
+    this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft + 1;
 
     this.timelineUpdateRoutine = setInterval(() => {
-
-      if(this.isScrolling || !this.isRealtime) {
+      if (this.isScrolling || !this.isRealtime) {
         return;
       }
 
-      console.log(`METHODS • TimeLineView: setInterval updating (timelineUpdateRoutine)`);
+      console.log(
+        `METHODS • TimeLineView: setInterval updating (timelineUpdateRoutine)`
+      );
 
       this.currentTime = this.$moment().millisecond(0);
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
       this.setViewedTimelineWidthAndHeight();
 
-      if(this.timelineViewport.scrollLeft !== this.$refs.timeline.scrollLeft) {
+      if (this.timelineViewport.scrollLeft !== this.$refs.timeline.scrollLeft) {
         this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
         this.setVisibleDay();
       }
 
       this.drawRealtimeRule();
 
-      if(this.timelineViewport.autoscroll) {
+      if (this.timelineViewport.autoscroll) {
         this.scrollToToday();
       }
-
     }, 1000);
   },
   beforeDestroy() {
@@ -431,10 +450,8 @@ export default {
 
     clearInterval(this.timelineUpdateRoutine);
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-
     /******************************************************************
         Updates timelineInfos with folder start and end
     ******************************************************************/
@@ -445,8 +462,8 @@ export default {
     },
     // retourne une valeure en pixel qui dépend de la hauteur de la timeline
     getTimelineStart(ts) {
-      if(ts && this.$moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-        return this.$moment(ts,'YYYY-MM-DD HH:mm:ss');
+      if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+        return this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
       } else {
         console.log(`WARNING: no timeline start. This can’t work.`);
         throw `Missing timeline start`;
@@ -454,15 +471,17 @@ export default {
       return;
     },
     getTimelineEnd(ts) {
-      if(ts && this.$moment(ts,'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+      if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
         // if end is in the future
-        if(this.$moment(ts,'YYYY-MM-DD HH:mm:ss', true).isAfter(this.$moment())) {
+        if (
+          this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isAfter(this.$moment())
+        ) {
           this.isRealtime = true;
-          return this.$moment(ts,'YYYY-MM-DD HH:mm:ss');
-        // if end is is in the present or past
+          return this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+          // if end is is in the present or past
         } else {
           this.isRealtime = false;
-          return this.$moment(ts,'YYYY-MM-DD HH:mm:ss');
+          return this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
         }
       } else {
         // there is no valid end, we set end to current time and set realtime
@@ -477,11 +496,11 @@ export default {
     setViewedTimelineBoundsFromInfos() {
       console.log('METHODS • TimeLineView: setViewedTimelineBoundsFromInfos');
       const newStart = this.getViewedTimelineStart(this.timelineInfos.start);
-      if(+newStart !== +this.timelineViewport.start) {
+      if (+newStart !== +this.timelineViewport.start) {
         this.timelineViewport.start = newStart;
       }
       const newEnd = this.getViewedTimelineEnd(this.timelineInfos.end);
-      if(+newEnd !== +this.timelineViewport.end) {
+      if (+newEnd !== +this.timelineViewport.end) {
         this.timelineViewport.end = newEnd;
       }
     },
@@ -490,23 +509,24 @@ export default {
       console.log('METHODS • TimeLineView: setViewedTimelineWidthAndHeight');
 
       // récupérer la longueur de la timeline en TS
-      let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
+      let timeEllapsed =
+        this.timelineViewport.end - this.timelineViewport.start;
       // décomposer en secondes
-      let secondsEllapsed = timeEllapsed/1000;
+      let secondsEllapsed = timeEllapsed / 1000;
 
-      let w = Math.floor(secondsEllapsed/this.timelineViewport.scale);
+      let w = Math.floor(secondsEllapsed / this.timelineViewport.scale);
       let h = Math.floor(this.timelineHeight);
 
       // prevent viewport width to be 0
-      this.timelineViewport.width = Math.max(w,1);
+      this.timelineViewport.width = Math.max(w, 1);
       this.timelineViewport.height = h;
     },
     getViewedTimelineStart(timelineView_new_start) {
       // Sanitize new date
-      if(timelineView_new_start.isBefore(this.timelineInfos.start)) {
+      if (timelineView_new_start.isBefore(this.timelineInfos.start)) {
         return this.$moment(this.timelineInfos.start);
       }
-      if(timelineView_new_start.isAfter(this.timelineInfos.end)) {
+      if (timelineView_new_start.isAfter(this.timelineInfos.end)) {
         return this.$moment(this.timelineInfos.end);
       }
       // Sanitize new date
@@ -529,19 +549,27 @@ export default {
     updateMediaData() {
       console.log('METHODS • TimeLineView: updateMediaData');
 
-      Object.keys(this.medias).map((slugMediaName) => {
+      Object.keys(this.medias).map(slugMediaName => {
         let media = this.medias[slugMediaName];
-        let date_timeline = this.$moment.isMoment(media.date_timeline) ? media.date_timeline : this.$moment(media.date_timeline,'YYYY-MM-DD HH:mm:ss');
+        let date_timeline = this.$moment.isMoment(media.date_timeline)
+          ? media.date_timeline
+          : this.$moment(media.date_timeline, 'YYYY-MM-DD HH:mm:ss');
         let posX = this.getXPositionFromDate(+date_timeline, false);
 
-        if(media.duration !== undefined) {
-          let startRecordingDate = date_timeline.subtract(parseInt(media.duration), 'seconds');
-          let start_posX = this.getXPositionFromDate(+startRecordingDate, false)
+        if (media.duration !== undefined) {
+          let startRecordingDate = date_timeline.subtract(
+            parseInt(media.duration),
+            'seconds'
+          );
+          let start_posX = this.getXPositionFromDate(
+            +startRecordingDate,
+            false
+          );
 
           allMediasPosition[slugMediaName] = {
             started: start_posX,
             created: posX
-          }
+          };
         } else {
           allMediasPosition[slugMediaName] = {
             created: posX
@@ -550,88 +578,113 @@ export default {
       });
 
       // check if there is a justCreatedTextmediaID val
-      if(this.$root.justCreatedTextmediaID) {
+      if (this.$root.justCreatedTextmediaID) {
         // if there is, try to match it with mediaID of listed medias
-        let mediaJustCreatedSlug = Object.keys(this.medias).filter((x) => {
+        let mediaJustCreatedSlug = Object.keys(this.medias).filter(x => {
           return this.medias[x].mediaID === this.$root.justCreatedTextmediaID;
-        })[0];        
+        })[0];
 
         // do a findwhere in medias
-        if(mediaJustCreatedSlug !== undefined) {
+        if (mediaJustCreatedSlug !== undefined) {
           this.$root.justCreatedTextmediaID = false;
           this.$nextTick(() => {
             this.openMediaModal(mediaJustCreatedSlug);
           });
         }
       }
-
     },
     updateGridData() {
       console.log('METHODS • TimeLineView: updateGridData');
 
-      let timeEllapsed = this.timelineViewport.end - this.timelineViewport.start;
+      let timeEllapsed =
+        this.timelineViewport.end - this.timelineViewport.start;
       let overallGrid = { minutes: [], hours: [], days: [] };
 
       /****************************** make DAY ticks ******************************/
       let createDayTick = (thisDay, f = 'L') => {
         let xPos = this.getXPositionFromDate(thisDay);
-        if(xPos === false) { return; }
+        if (xPos === false) {
+          return;
+        }
         let caption = this.$moment(thisDay).format(f);
         overallGrid.days.push({ xPos, caption });
-      }
+      };
 
       createDayTick(this.timelineViewport.start, 'LLL');
-      let nextDay = this.$moment(this.$moment(this.timelineViewport.start).startOf('day').add(1, 'day'));
+      let nextDay = this.$moment(
+        this.$moment(this.timelineViewport.start)
+          .startOf('day')
+          .add(1, 'day')
+      );
 
       // we need to iterate by day (and not every 24 hours, because of possible daylight savings)
-      for (var d = nextDay; d.isSameOrBefore(this.$moment(this.timelineViewport.end)); d.add(1, 'days')) {
+      for (
+        var d = nextDay;
+        d.isSameOrBefore(this.$moment(this.timelineViewport.end));
+        d.add(1, 'days')
+      ) {
         createDayTick(d);
       }
 
-
       // only show HOUR and MINUTES for two screens on the left and right
       // to do that, we create a const for the current timestamp and another for the number of ms we show the grid
-      let thisDayStart = this.$moment(this.timelineViewport.visibleDay).subtract(2, 'days').startOf('day');
-      const timeEllapsedDay = 5 * 24*60*60*1000;
+      let thisDayStart = this.$moment(this.timelineViewport.visibleDay)
+        .subtract(2, 'days')
+        .startOf('day');
+      const timeEllapsedDay = 5 * 24 * 60 * 60 * 1000;
 
       /****************************** make HOUR ticks ******************************/
 
       let createHourTick = (currentHour, withCaption = false) => {
         let xPos = this.getXPositionFromDate(currentHour);
-        if(xPos === false) { return; }
-        if(!this.elesIsClose(xPos, 4)) { return; }
+        if (xPos === false) {
+          return;
+        }
+        if (!this.elesIsClose(xPos, 4)) {
+          return;
+        }
 
         let caption;
-        if(withCaption || this.timelineViewport.scale < 70) {
+        if (withCaption || this.timelineViewport.scale < 70) {
           caption = this.$moment(currentHour).format('LT');
         }
         overallGrid.hours.push({ xPos, caption });
-      }
+      };
 
       createHourTick(this.timelineViewport.start, true);
-      for(var h = 3600000; h < timeEllapsedDay; h +=  3600000) {
+      for (var h = 3600000; h < timeEllapsedDay; h += 3600000) {
         let currentHour = thisDayStart + h;
         createHourTick(currentHour);
       }
 
-      if(this.timelineViewport.scale <= 10) {
-
+      if (this.timelineViewport.scale <= 10) {
         /****************************** make MINUTES ticks ******************************/
-        let createMinuteTick = (currentMinute) => {
+        let createMinuteTick = currentMinute => {
           let xPos = this.getXPositionFromDate(currentMinute);
-          if(xPos === false) { return; }
-          const currentMinute_minutesOnly = new Date(currentMinute).getMinutes();
-          if(currentMinute_minutesOnly === 0) { return; }
-          if(!this.elesIsClose(xPos)) { return; }
+          if (xPos === false) {
+            return;
+          }
+          const currentMinute_minutesOnly = new Date(
+            currentMinute
+          ).getMinutes();
+          if (currentMinute_minutesOnly === 0) {
+            return;
+          }
+          if (!this.elesIsClose(xPos)) {
+            return;
+          }
 
           let caption;
-          if(currentMinute_minutesOnly%10 === 0 || this.timelineViewport.scale < 5) {
+          if (
+            currentMinute_minutesOnly % 10 === 0 ||
+            this.timelineViewport.scale < 5
+          ) {
             caption = this.$moment(currentMinute).format('LT');
           }
           overallGrid.minutes.push({ xPos, caption });
-        }
+        };
 
-        for(var m = 0; m < timeEllapsedDay; m += 60000) {
+        for (var m = 0; m < timeEllapsedDay; m += 60000) {
           let currentMinute = thisDayStart + m;
           createMinuteTick(currentMinute);
         }
@@ -642,40 +695,54 @@ export default {
 
     getXPositionFromDate(timestamp, removeFromTimelineIfOutOfBounds = true) {
       let msSinceStart = timestamp - this.timelineViewport.start;
-      let pc = msSinceStart/(this.timelineViewport.end - this.timelineViewport.start);
+      let pc =
+        msSinceStart /
+        (this.timelineViewport.end - this.timelineViewport.start);
 
       // What to do if the element (grid item or media) is out of the timeline
-      if(pc < 0 || pc > 1) {
-        if(removeFromTimelineIfOutOfBounds) { return false; }
+      if (pc < 0 || pc > 1) {
+        if (removeFromTimelineIfOutOfBounds) {
+          return false;
+        }
       }
       pc = Math.min(Math.max(parseFloat(pc), 0), 1);
       let posX = this.timelineViewport.width * pc;
       return Math.floor(posX);
     },
     getDateFromXPosition(posX) {
-      let pc = posX/this.timelineViewport.width;
-      let viewportLength = this.timelineViewport.end - this.timelineViewport.start;
+      let pc = posX / this.timelineViewport.width;
+      let viewportLength =
+        this.timelineViewport.end - this.timelineViewport.start;
       let timeSinceStart = pc * viewportLength;
       return this.$moment(timeSinceStart + this.timelineViewport.start);
     },
-    mediaIsClose(index,media) {
-      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimeLineView: mediaIsClose'); }
+    mediaIsClose(index, media) {
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • TimeLineView: mediaIsClose');
+      }
 
-      if(typeof this.$refs.timeline === 'undefined') { return false; }
+      if (typeof this.$refs.timeline === 'undefined') {
+        return false;
+      }
 
       // check if media has duration
-      if(media.duration !== undefined) {
+      if (media.duration !== undefined) {
         // calculate proximity for end
-        if(this.elesIsClose(this.getDurationMediaPosX(index, 'end'))) {
+        if (this.elesIsClose(this.getDurationMediaPosX(index, 'end'))) {
           return true;
         }
         // otherwise, calculate proximity for start (see method updateMediaData)
-        if(this.elesIsClose(this.getDurationMediaPosX(index, 'start'))) {
+        if (this.elesIsClose(this.getDurationMediaPosX(index, 'start'))) {
           return true;
         }
         // finally, let’s check whether we are in between those two dates
-        let centerOfTimeline = this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2;
-        if(this.getDurationMediaPosX(index, 'start') < centerOfTimeline && centerOfTimeline < this.getDurationMediaPosX(index, 'end')) {
+        let centerOfTimeline =
+          this.timelineViewport.scrollLeft +
+          this.timelineViewport.viewerWidth / 2;
+        if (
+          this.getDurationMediaPosX(index, 'start') < centerOfTimeline &&
+          centerOfTimeline < this.getDurationMediaPosX(index, 'end')
+        ) {
           return true;
         }
       } else {
@@ -685,8 +752,22 @@ export default {
       return false;
     },
     elesIsClose(xPos, screenMultiplier = 2) {
-      if(xPos < this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2 - window.innerWidth * screenMultiplier) { return false; }
-      if(xPos > this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2 + window.innerWidth * screenMultiplier) { return false; }
+      if (
+        xPos <
+        this.timelineViewport.scrollLeft +
+          this.timelineViewport.viewerWidth / 2 -
+          window.innerWidth * screenMultiplier
+      ) {
+        return false;
+      }
+      if (
+        xPos >
+        this.timelineViewport.scrollLeft +
+          this.timelineViewport.viewerWidth / 2 +
+          window.innerWidth * screenMultiplier
+      ) {
+        return false;
+      }
       return true;
     },
     onResize() {
@@ -701,11 +782,16 @@ export default {
     },
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
-      this.timelineHeight = window.innerHeight - this.topNavbarHeight - this.bottomScrollBar - this.systemBar;
-      this.sidebarHeight = window.innerHeight - this.topNavbarHeight - this.systemBar;
+      this.timelineHeight =
+        window.innerHeight -
+        this.topNavbarHeight -
+        this.bottomScrollBar -
+        this.systemBar;
+      this.sidebarHeight =
+        window.innerHeight - this.topNavbarHeight - this.systemBar;
     },
     onScroll() {
-      if(!this.isScrolling) {
+      if (!this.isScrolling) {
         console.log(`METHODS • TimeLineView: onScroll / scroll has started`);
         this.isScrolling = true;
       }
@@ -715,8 +801,7 @@ export default {
 
       // OR we update progressively, every once in a while when scroll is detected
 
-      
-      if(this.$root.settings.perf_mode === 'low') {
+      if (this.$root.settings.perf_mode === 'low') {
         console.log(`METHODS • TimeLineView: onScroll / is happening`);
         clearTimeout(isScrollingTimeout);
 
@@ -724,45 +809,51 @@ export default {
           console.log(`METHODS • TimeLineView: onScroll / has finished`);
           this.isScrolling = false;
           // the following line will trigger watch: scrollLeft (which takes care of everything)
-          this.$nextTick(() => {    
+          this.$nextTick(() => {
             this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
           });
         }, 100);
-
       } else {
         console.log(`METHODS • TimeLineView: onScroll / is happening`);
-        if(isScrollingTimeout === undefined) {
+        if (isScrollingTimeout === undefined) {
           isScrollingTimeout = setTimeout(() => {
             console.log(`METHODS • TimeLineView: onScroll / update`);
             this.isScrolling = false;
             // the following line will trigger watch: scrollLeft (which takes care of everything)
-            this.$nextTick(() => {    
+            this.$nextTick(() => {
               this.timelineViewport.scrollLeft = this.$refs.timeline.scrollLeft;
             });
             isScrollingTimeout = undefined;
           }, 150);
         }
       }
-
     },
     openMediaModal(slugMediaName) {
       // check if media exists first
-      if(window.state.dev_mode === 'debug') { console.log('METHODS • TimeLineView: openMediaModal'); }
-
-      if(!this.medias.hasOwnProperty(slugMediaName)) {
-        if(window.state.dev_mode === 'debug') { console.log('METHODS • TimeLineView: openMediaModal / missing media in timeline'); }
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • TimeLineView: openMediaModal');
       }
-      
+
+      if (!this.medias.hasOwnProperty(slugMediaName)) {
+        if (window.state.dev_mode === 'debug') {
+          console.log(
+            'METHODS • TimeLineView: openMediaModal / missing media in timeline'
+          );
+        }
+      }
+
       this.showMediaModalFor = slugMediaName;
     },
     closeMediaModal() {
       this.showMediaModalFor = '';
     },
     drawRealtimeRule() {
-      if(!this.isRealtime) { return; }
+      if (!this.isRealtime) {
+        return;
+      }
 
       let xPos = this.getXPositionFromDate(this.currentTime);
-      if(xPos === false) {
+      if (xPos === false) {
         this.todaysRule.xPos = false;
         return;
       }
@@ -782,7 +873,9 @@ export default {
       this.scrollToDate(this.currentTime);
     },
     scrollToMedia(slugMediaName) {
-      console.log(`METHODS • TimeLineView: scrollToMedia / slugMediaName: ${slugMediaName}`);
+      console.log(
+        `METHODS • TimeLineView: scrollToMedia / slugMediaName: ${slugMediaName}`
+      );
       let mediaToScrollTo = this.medias[slugMediaName];
       let mediaPosX = this.getMediaPosX(slugMediaName);
 
@@ -790,14 +883,16 @@ export default {
       this.scrollTimelineToXPos(mediaPosX);
     },
     scrollToDate(timestamp) {
-      console.log(`METHODS • TimeLineView: scrollToDate / timestamp: ${timestamp}`);
+      console.log(
+        `METHODS • TimeLineView: scrollToDate / timestamp: ${timestamp}`
+      );
       let xPos = this.getXPositionFromDate(timestamp, false);
 
       xPos = this.adjustPosXValueForScrollX(xPos);
       this.scrollTimelineToXPos(xPos);
     },
     adjustPosXValueForScrollX(xPos) {
-      xPos -= this.timelineViewport.viewerWidth/2;
+      xPos -= this.timelineViewport.viewerWidth / 2;
       xPos += this.timelineViewport.leftPadding;
       return xPos;
     },
@@ -808,16 +903,24 @@ export default {
     goToPrevDay() {
       console.log(`METHODS • TimeLineView: goToPrevDay`);
       let twentyFourHoursInSeconds = 24 * 60 * 60;
-      let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
-      this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft - twentyFourHoursInPixels);
+      let twentyFourHoursInPixels = Math.floor(
+        twentyFourHoursInSeconds / this.timelineViewport.scale
+      );
+      this.scrollTimelineToXPos(
+        this.$refs.timeline.scrollLeft - twentyFourHoursInPixels
+      );
     },
     goToNextDay() {
       console.log(`METHODS • TimeLineView: goToNextDay`);
       let twentyFourHoursInSeconds = 24 * 60 * 60;
-      let twentyFourHoursInPixels = Math.floor(twentyFourHoursInSeconds/this.timelineViewport.scale);
-      this.scrollTimelineToXPos(this.$refs.timeline.scrollLeft + twentyFourHoursInPixels);
+      let twentyFourHoursInPixels = Math.floor(
+        twentyFourHoursInSeconds / this.timelineViewport.scale
+      );
+      this.scrollTimelineToXPos(
+        this.$refs.timeline.scrollLeft + twentyFourHoursInPixels
+      );
     },
-/*
+    /*
     // TODO: recalc pos with this.timelineViewport.viewerWidth/2
     goToPrevScreen() {
       console.log(`METHODS • TimeLineView: goToPrevScreen`);
@@ -831,10 +934,12 @@ export default {
     },
 */
     scrollTimelineToXPos(xPos_new) {
-      console.log(`METHODS • TimeLineView: scrollTimelineToXPos / xPos_new = ${xPos_new}`);
+      console.log(
+        `METHODS • TimeLineView: scrollTimelineToXPos / xPos_new = ${xPos_new}`
+      );
 
       xPos_new = xPos_new;
-      if(this.currentScrollEvent !== undefined) {
+      if (this.currentScrollEvent !== undefined) {
         this.currentScrollEvent();
         return;
       }
@@ -843,7 +948,7 @@ export default {
         container: this.$refs.timeline,
         offset: xPos_new,
         cancelable: true,
-        easing: [0.45, 0.80, 0.58, 1.00],
+        easing: [0.45, 0.8, 0.58, 1.0],
         x: true,
         y: false,
         onDone: () => {
@@ -852,30 +957,45 @@ export default {
           // onScroll will update view
         },
         onCancel: () => {
-          console.log(`METHODS • TimeLineView: scrollTimelineToXPos / was canceled`);
+          console.log(
+            `METHODS • TimeLineView: scrollTimelineToXPos / was canceled`
+          );
           this.currentScrollEvent = undefined;
         }
       });
     },
     toggleSidebar() {
       console.log('METHODS • TimeLineView: toggleSidebar');
-      this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
+      this.$root.settings.has_sidebar_opened = !this.$root.settings
+        .has_sidebar_opened;
       this.$nextTick(() => {
         this.updateViewerWidth();
       });
     },
-    setVisibleDay(xPos = this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2) {
+    setVisibleDay(
+      xPos = this.timelineViewport.scrollLeft +
+        this.timelineViewport.viewerWidth / 2
+    ) {
       console.log('METHODS • TimeLineView: setVisibleDay');
       let dateFromPosX = this.getDateFromXPosition(xPos);
-      dateFromPosX = Math.min(this.timelineViewport.end, Math.max(dateFromPosX, this.timelineViewport.start));
-      if(dateFromPosX !== this.timelineViewport.visibleDay) {
+      dateFromPosX = Math.min(
+        this.timelineViewport.end,
+        Math.max(dateFromPosX, this.timelineViewport.start)
+      );
+      if (dateFromPosX !== this.timelineViewport.visibleDay) {
         this.timelineViewport.visibleDay = dateFromPosX;
       }
     },
     showZoomZone(val) {
       this.zoomZone.display = true;
-      this.zoomZone.width = Math.floor((val/this.timelineViewport.scale) * this.timelineViewport.viewerWidth);
-      this.zoomZone.xPos = this.timelineViewport.scrollLeft + this.timelineViewport.viewerWidth/2 - this.zoomZone.width/2 - this.timelineViewport.leftPadding;
+      this.zoomZone.width = Math.floor(
+        val / this.timelineViewport.scale * this.timelineViewport.viewerWidth
+      );
+      this.zoomZone.xPos =
+        this.timelineViewport.scrollLeft +
+        this.timelineViewport.viewerWidth / 2 -
+        this.zoomZone.width / 2 -
+        this.timelineViewport.leftPadding;
     },
     hideZoomZone() {
       this.zoomZone.display = false;
@@ -890,16 +1010,15 @@ export default {
       return {
         width: `${this.zoomZone.width}px`,
         transform: `translate(${this.zoomZone.xPos}px, 0px)`
-      }
+      };
     },
     startEditModal() {
-      if(this.folder.authorized) {
+      if (this.folder.authorized) {
         this.showEditFolderModal = true;
       }
     }
-
-  },
-}
+  }
+};
 </script>
 
 <style lang="sass">

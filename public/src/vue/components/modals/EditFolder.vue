@@ -75,20 +75,21 @@ export default {
     return {
       folderdata: {
         name: this.folder.name,
-        start: this.$moment(this.folder.start).isValid() ? this.folder.start:'',
-        end: this.$moment(this.folder.end).isValid() ? this.folder.end:'',
+        start: this.$moment(this.folder.start).isValid()
+          ? this.folder.start
+          : '',
+        end: this.$moment(this.folder.end).isValid() ? this.folder.end : '',
         authors: this.folder.authors
       }
-    }
+    };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-    editThisFolder: function (event) {
+    editThisFolder: function(event) {
       console.log('editThisFolder');
 
       // only if user changed the name of this folder
-      if(this.folderdata.name !== this.folder.name) {
+      if (this.folderdata.name !== this.folder.name) {
         function getAllFolderNames() {
           let allFoldersName = [];
           for (let slugFolderName in window.store.folders) {
@@ -100,22 +101,22 @@ export default {
         let allFoldersName = getAllFolderNames();
 
         // check if folder name (not slug) already exists
-        if(allFoldersName.indexOf(this.folderdata.name) >= 0) {
+        if (allFoldersName.indexOf(this.folderdata.name) >= 0) {
           // invalidate if it does
           alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t('notifications.folder_name_exists'))
-            ;
+            .error(this.$t('notifications.folder_name_exists'));
           return false;
         }
 
-        if(slug(this.folderdata.name).length === 0) {
+        if (slug(this.folderdata.name).length === 0) {
           alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t('notifications.folder_name_needs_alphanumeric_characters'))
-            ;
+            .error(
+              this.$t('notifications.folder_name_needs_alphanumeric_characters')
+            );
         }
       }
 
@@ -130,10 +131,9 @@ export default {
       this.$emit('close', '');
     }
   },
-  mounted() {
-  }
-}
-
+  mounted() {}
+};
 </script>
 <style>
+
 </style>

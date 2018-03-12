@@ -37,5 +37,5 @@ export default {
     Modal,
     Tableau
   }
-}
+};
 </script>

@@ -74,12 +74,11 @@ export default {
         password: '',
         authors: ''
       }
-    }
+    };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-    newFolder: function (event) {
+    newFolder: function(event) {
       console.log('newFolder');
 
       function getAllFolderNames() {
@@ -93,13 +92,12 @@ export default {
       let allFoldersName = getAllFolderNames();
 
       // check if folder name (not slug) already exists
-      if(allFoldersName.indexOf(this.folderdata.name) >= 0) {
+      if (allFoldersName.indexOf(this.folderdata.name) >= 0) {
         // invalidate if it does
         alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t('notifications.folder_name_exists'))
-          ;
+          .error(this.$t('notifications.folder_name_exists'));
 
         return false;
       }
@@ -113,9 +111,9 @@ export default {
       // then close that popover
       this.$emit('close', '');
     }
-  },
-}
-
+  }
+};
 </script>
 <style>
+
 </style>

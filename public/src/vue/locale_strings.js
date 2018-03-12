@@ -1,4 +1,4 @@
-module.exports = (function() {
+module.exports = (function () {
   // Ready translated locale messages
   const messages = {
     fr: {
@@ -207,7 +207,7 @@ module.exports = (function() {
         'failed_to_get_folder:': 'Failed to get the requested folder:'
       }
     }
-  };
+  }
 
-  return messages;
-})();
+  return messages
+})()

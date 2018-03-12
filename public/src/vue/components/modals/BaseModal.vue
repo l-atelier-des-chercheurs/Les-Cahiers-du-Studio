@@ -92,7 +92,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'BaseModal',
   props: {
@@ -107,8 +106,8 @@ export default {
   },
   data() {
     return {
-      showModal: false,
-    }
+      showModal: false
+    };
   },
   methods: {
     modalKeyListener: function(evt) {
@@ -124,7 +123,7 @@ export default {
       }, 500);
     }
   },
-  created: function () {
+  created: function() {
     window.addEventListener('keyup', this.modalKeyListener);
     document.body.classList.add('is_unscrollable');
     this.$root.settings.has_modal_opened = true;
@@ -136,8 +135,8 @@ export default {
     document.removeEventListener('keyup', this.modalKeyListener);
     document.body.classList.remove('is_unscrollable');
     this.$root.settings.has_modal_opened = false;
-  },
-}
+  }
+};
 </script>
 
 <style lang="sass">

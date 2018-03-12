@@ -59,7 +59,7 @@ export default {
   data() {
     return {
       file: null
-    }
+    };
   },
   mounted: function() {
     document.addEventListener('keyup', this.boitierPressed);
@@ -68,8 +68,7 @@ export default {
     document.removeEventListener('keyup', this.boitierPressed);
   },
   watch: {
-    file:  function() {
-    }
+    file: function() {}
   },
   methods: {
     addText() {
@@ -93,66 +92,61 @@ export default {
       console.log('METHODS • AddMediaButton: boitierPressed');
 
       // if there is a modal opened, let’s not do something
-      if(this.$root.settings.has_modal_opened === true) {
+      if (this.$root.settings.has_modal_opened === true) {
         return;
       }
 
-      if(event.target.tagName.toLowerCase() === 'input') {
+      if (event.target.tagName.toLowerCase() === 'input') {
         return;
       }
 
       var key = event.key;
-      if(key === 'y' || key === 'w' || key === 'z') {
+      if (key === 'y' || key === 'w' || key === 'z') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,
           type: 'marker',
-          color: 'blue',
+          color: 'blue'
         });
         this.$eventHub.$emit('timeline.scrollToToday');
-      } else
-      if(key === 'u' || key == 's') {
+      } else if (key === 'u' || key == 's') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,
           type: 'marker',
-          color: 'red',
+          color: 'red'
         });
         this.$eventHub.$emit('timeline.scrollToToday');
-      } else
-      if(key === 'i' || key === 'a' || key === 'q') {
+      } else if (key === 'i' || key === 'a' || key === 'q') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,
           type: 'marker',
-          color: 'green',
+          color: 'green'
         });
         this.$eventHub.$emit('timeline.scrollToToday');
-      } else
-      if(key === 'o') {
+      } else if (key === 'o') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,
           type: 'marker',
-          color: 'yellow',
+          color: 'yellow'
         });
         this.$eventHub.$emit('timeline.scrollToToday');
-      } else
-      if(key === 'p') {
+      } else if (key === 'p') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,
           type: 'marker',
-          color: 'orange',
+          color: 'orange'
         });
         this.$eventHub.$emit('timeline.scrollToToday');
-      } else
-      if(key === '6') {
+      } else if (key === '6') {
         this.$root.createTextMedia({
           slugFolderName: this.slugFolderName,
           type: 'marker',
-          color: 'purple',
+          color: 'purple'
         });
         this.$eventHub.$emit('timeline.scrollToToday');
       }
-    },
+    }
   }
-}
+};
 </script>
 <style>
 
