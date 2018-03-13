@@ -55,9 +55,8 @@ module.exports = function(electronApp) {
 
   server.listen(app.get('port'), () => {
     dev.log(
-      `Server up and running. Go to ${settings.protocol}://${settings.host}:${
-        global.appInfos.port
-      }`
+      `Server up and running. ` +
+        `Go to ${settings.protocol}://${settings.host}:${global.appInfos.port}`
     );
     dev.log(` `);
   });
