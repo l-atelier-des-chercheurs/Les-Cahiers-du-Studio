@@ -107,6 +107,10 @@ module.exports = (function() {
   function filterMedias(sessionId, foldersData, slugFolderName, mediasData) {
     dev.logfunction(`AUTH — filtering medias data for ${sessionId}.`);
 
+    if (mediasData === undefined) {
+      return;
+    }
+
     // we do this in order not to touch the original mediasData
     let filteredMediasData = JSON.parse(JSON.stringify(mediasData));
 
