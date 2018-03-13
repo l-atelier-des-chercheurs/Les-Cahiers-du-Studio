@@ -165,9 +165,8 @@ module.exports = (function() {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — getFolder: ${slugFolderName}`);
       let mainFolderPath = api.getFolderPath();
-      // on cherche tous les dossiers du dossier de contenu
+
       fs.readdir(mainFolderPath, function(err, filenames) {
-        //         dev.logverbose(`Found filenames: ${filenames}`);
         if (err) {
           dev.error(`Couldn't read content dir: ${err}`);
           reject(err);
@@ -197,8 +196,9 @@ module.exports = (function() {
             folders.length
           }. Folder(s) is(are) ${folders}`
         );
+
         if (folders.length === 0) {
-          reject('No such folder found');
+          resolve();
         }
 
         var allFoldersData = [];
@@ -284,23 +284,24 @@ module.exports = (function() {
       );
 
       let slugFolderName = api.slug(fdata.name);
+      if (slugFolderName.length <= 0) {
+        slugFolderName = api.slug('Untitled Folder');
+      }
+
       getFolder().then(
         foldersData => {
-          let allFoldersSlug = Object.keys(foldersData);
-          // créer un slug
-          let slugFolderName = api.slug(fdata.name);
-          if (slugFolderName.length <= 0) {
-            slugFolderName = api.slug('Untitled Folder');
-          }
+          if (foldersData !== undefined) {
+            let allFoldersSlug = Object.keys(foldersData);
 
-          let index = 0;
-          let newSlugFolderName = slugFolderName;
-          while (allFoldersSlug.indexOf(newSlugFolderName) !== -1) {
-            index++;
-            newSlugFolderName = `${newSlugFolderName}-${index}`;
+            let index = 0;
+            let newSlugFolderName = slugFolderName;
+            while (allFoldersSlug.indexOf(newSlugFolderName) !== -1) {
+              index++;
+              newSlugFolderName = `${newSlugFolderName}-${index}`;
+            }
+            slugFolderName = newSlugFolderName;
+            dev.logverbose(`All slugs: ${allFoldersSlug.join()}`);
           }
-          slugFolderName = newSlugFolderName;
-          dev.logverbose(`All slugs: ${allFoldersSlug.join()}`);
           dev.logverbose(`Proposed slug: ${slugFolderName}`);
 
           // créer un fichier meta avec : nom humain, date de création, date de début, date de fin, mot de passe hashé, nom des auteurs
