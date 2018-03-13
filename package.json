@@ -59,12 +59,12 @@
     "validator": "^9.4.0",
     "vue": "^2.5.13",
     "vue-i18n": "^7.4.2",
+    "electron-devtools-installer": "^2.2.3",
     "write-file-atomic": "^2.3.0"
   },
   "devDependencies": {
     "electron": "1.8.2",
     "electron-builder": "^19.56.0",
-    "electron-devtools-installer": "^2.2.3",
     "electron-prebuilt": "^1.4.13",
     "node-gyp": "^3.6.2"
   }
