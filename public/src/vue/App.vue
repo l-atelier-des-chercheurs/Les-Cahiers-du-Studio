@@ -13,10 +13,9 @@
 
           <ListView
             v-if="view === 'ListView'"
-            :slugFolderName="current_slugFolderName"
-            :folder="currentFolder"
             :presentationMD="$root.store.presentationMD"
             :read_only="!$root.state.connected"
+            :folders="$root.store.folders"
           >
           </ListView>
 

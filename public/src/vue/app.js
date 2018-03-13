@@ -236,7 +236,7 @@ Vue.prototype.$socketio = new Vue({
     _onListFolders(fdata) {
       console.log('Received _onListFolders packet.');
 
-      // to prevent override of fully formed medias, we copy back the ones we have already
+      // to prevent override of fully formed medias in folders, we copy back the ones we have already
       for (let slugFolderName in fdata) {
         if (window.store.folders.hasOwnProperty(slugFolderName)) {
           fdata[slugFolderName].medias =

@@ -283,6 +283,7 @@ module.exports = (function() {
         )}`
       );
 
+      let slugFolderName = api.slug(fdata.name);
       getFolder().then(
         foldersData => {
           let allFoldersSlug = Object.keys(foldersData);

@@ -79,6 +79,11 @@ module.exports = (function() {
         users_auth[sessionId]
       }.`
     );
+
+    if (foldersData === undefined) {
+      return;
+    }
+
     // we do this in order not to touch the original foldersData
     let filteredFoldersData = JSON.parse(JSON.stringify(foldersData));
 

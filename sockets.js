@@ -249,7 +249,7 @@ module.exports = (function() {
     file.getFolder(slugFolderName).then(
       foldersData => {
         // if folder creation, we get an ID to open the folder straight away
-        if (slugFolderName && folderID) {
+        if (foldersData !== undefined && slugFolderName && folderID) {
           foldersData[slugFolderName].folderID = folderID;
         }
 
@@ -262,15 +262,21 @@ module.exports = (function() {
           }
           let thisSocket = socket || io.sockets.connected[sid];
           let filteredFoldersData = auth.filterFolders(sid, foldersData);
-          for (let k in filteredFoldersData) {
-            // check if there is any password, if there is then send a placeholder
-            if (
-              filteredFoldersData[k].password &&
-              filteredFoldersData[k].password !== ''
-            ) {
-              filteredFoldersData[k].password = 'has_pass';
+
+          if (filteredFoldersData === undefined) {
+            filteredFoldersData = '';
+          } else {
+            for (let k in filteredFoldersData) {
+              // check if there is any password, if there is then send a placeholder
+              if (
+                filteredFoldersData[k].password &&
+                filteredFoldersData[k].password !== ''
+              ) {
+                filteredFoldersData[k].password = 'has_pass';
+              }
             }
           }
+
           if (slugFolderName) {
             api.sendEventWithContent(
               'listFolder',

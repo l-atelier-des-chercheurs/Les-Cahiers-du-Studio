@@ -126,37 +126,40 @@
       name="list-complete"
       class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large flex-wrap flex-vertically-start"
       >
-          <button
-            class="m_home--folders--card m_home--folders--card_createButton margin-small button-inline"
-            @click="showCreateFolderModal = true"
-            :disabled="read_only"
-            :key="'createButton'"
-          >
+        <button
+          class="m_home--folders--card m_home--folders--card_createButton margin-small button-inline"
+          @click="showCreateFolderModal = true"
+          :disabled="read_only"
+          :key="'createButton'"
+        >
 
-            <span class="margin-medium">
-              {{ $t('create_a_folder') }}
-            </span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
-              <circle cx="23.5" cy="23.5" r="23" transform="translate(-9.73 23.5) rotate(-45)" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-              <line x1="23.5" y1="8.86" x2="23.5" y2="38.13" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-              <line x1="8.86" y1="23.5" x2="38.13" y2="23.5" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
-            </svg>
+          <span class="margin-medium">
+            {{ $t('create_a_folder') }}
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
+            <circle cx="23.5" cy="23.5" r="23" transform="translate(-9.73 23.5) rotate(-45)" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+            <line x1="23.5" y1="8.86" x2="23.5" y2="38.13" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+            <line x1="8.86" y1="23.5" x2="38.13" y2="23.5" style="fill: none;stroke: #333;stroke-miterlimit: 10"/>
+          </svg>
+        </button>
 
-          </button>
-
+        <template
+          v-if="sortedFoldersSlug !== 'no-folders'"
+          v-for="sortedFolder in sortedFoldersSlug"
+        >
           <div
-            v-for="sortedFolder in sortedFoldersSlug"
-            :key="sortedFolder.slugFolderName"
             class="m_home--folders--card margin-small"
+            :key="sortedFolder.slugFolderName"
           >
             <Folder
               :slugFolderName="sortedFolder.slugFolderName"
-              :folder="$root.store.folders[sortedFolder.slugFolderName]"
+              :folder="folders[sortedFolder.slugFolderName]"
               :read_only="read_only"
               :sort_field="sort.field"
             >
             </Folder>
           </div>
+        </template>
       </transition-group>
 
     </section>
@@ -169,7 +172,11 @@ import CreateFolder from './components/modals/CreateFolder.vue';
 import VueMarkdown from 'vue-markdown';
 
 export default {
-  props: ['presentationMD', 'read_only'],
+  props: {
+    presentationMD: Object,
+    read_only: Boolean,
+    folders: Object
+  },
   components: {
     CreateFolder,
     Folder,
@@ -190,12 +197,12 @@ export default {
     currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
     },
-    '$root.store.folders': function() {
+    folders: function() {
       // check if there is a justCreatedFolderID val
 
       if (this.$root.justCreatedFolderID) {
-        Object.keys(this.$root.store.folders).map(slugFolderName => {
-          let folder = this.$root.store.folders[slugFolderName];
+        Object.keys(this.folders).map(slugFolderName => {
+          let folder = this.folders[slugFolderName];
           // if there is, try to match it with folderID
           if (
             folder.folderID &&
@@ -209,19 +216,24 @@ export default {
     }
   },
   computed: {
-    sortedFoldersSlug() {
+    sortedFoldersSlug: function() {
+      debugger;
+      if(this.folders.message === 'no-folders') {
+        return 'has-no-folders';
+      }
+
       var sortable = [];
 
-      for (let slugFolderName in this.$root.store.folders) {
+      for (let slugFolderName in this.folders) {
         let orderBy;
 
         if (this.sort.type === 'date') {
           orderBy = +this.$moment(
-            this.$root.store.folders[slugFolderName][this.sort.field],
+            this.folders[slugFolderName][this.sort.field],
             'YYYY-MM-DD HH:mm:ss'
           );
         } else if (this.sort.type === 'alph') {
-          orderBy = this.$root.store.folders[slugFolderName][this.sort.field];
+          orderBy = this.folders[slugFolderName][this.sort.field];
         }
         sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
       }
@@ -247,7 +259,7 @@ export default {
 
       return sortedSortable;
     },
-    presentationText() {
+    presentationText: function() {
       if (this.presentationMD.hasOwnProperty(this.currentLang)) {
         return this.presentationMD[this.currentLang];
       } else if (this.presentationMD.hasOwnProperty('content')) {
