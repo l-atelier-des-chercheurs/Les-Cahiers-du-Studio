@@ -34,7 +34,6 @@ app.commandLine.appendSwitch('--disable-http-cache');
 function createWindow() {
   console.log(`Starting app ${app.getName()}`);
   console.log(process.versions);
-
   var storageLocation = app.getPath('userData');
   global.nodeStorage = new JSONStorage(storageLocation);
 
@@ -45,6 +44,10 @@ function createWindow() {
   const debug = flags.get('debug');
   const verbose = flags.get('verbose');
   dev.init(debug, verbose);
+
+  if (dev.isDebug()) {
+    process.traceDeprecation = true;
+  }
 
   if (global.appInfos === undefined) {
     global.appInfos = {};
