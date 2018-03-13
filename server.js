@@ -4,12 +4,12 @@ var http = require('http');
 var path = require('path');
 var bodyParser = require('body-parser');
 
-var dev = require('./bin/dev-log');
+var dev = require('./core/dev-log');
 
 // var localtunnel = require('localtunnel');
 // var ngrok = require('ngrok');
 
-const sockets = require('./sockets'),
+const sockets = require('./core/sockets'),
   router = require('./router'),
   settings = require('./settings.json');
 

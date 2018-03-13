@@ -4,12 +4,12 @@ const path = require('path'),
   archiver = require('archiver');
 
 const settings = require('./settings.json'),
-  sockets = require('./sockets'),
-  dev = require('./bin/dev-log'),
-  cache = require('./bin/cache'),
-  api = require('./bin/api'),
-  file = require('./bin/file'),
-  exporter = require('./bin/exporter');
+  sockets = require('./core/sockets'),
+  dev = require('./core/dev-log'),
+  cache = require('./core/cache'),
+  api = require('./core/api'),
+  file = require('./core/file'),
+  exporter = require('./core/exporter');
 
 module.exports = function(app, io, m) {
   /**

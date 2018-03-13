@@ -16,7 +16,7 @@ const portscanner = require('portscanner');
 const server = require('./server');
 
 const settings = require('./settings.json'),
-  dev = require('./bin/dev-log');
+  dev = require('./core/dev-log');
 
 require('electron-context-menu')({
   prepend: (params, BrowserWindow) => [

@@ -1,8 +1,8 @@
-const dev = require('./bin/dev-log'),
-  api = require('./bin/api'),
-  auth = require('./bin/auth');
+const dev = require('./dev-log'),
+  api = require('./api'),
+  auth = require('./auth');
 
-const file = require('./bin/file');
+const file = require('./file');
 
 module.exports = (function() {
   dev.log(`Main module initialized at ${api.getCurrentDate()}`);
