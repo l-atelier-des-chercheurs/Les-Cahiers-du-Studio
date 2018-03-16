@@ -316,29 +316,31 @@ module.exports = (function() {
                 return;
               }
 
-              let thisSocket = socket || io.sockets.connected[sid];
-              let filteredMediasData = {
+              let filteredMediasData = auth.filterMedias(
+                sid,
+                foldersData,
+                slugFolderName,
+                mediasData
+              );
+
+              let folder_and_medias = {
                 [slugFolderName]: {
-                  medias: auth.filterMedias(
-                    sid,
-                    foldersData,
-                    slugFolderName,
-                    mediasData
-                  )
+                  medias: filteredMediasData
                 }
               };
 
+              let thisSocket = socket || io.sockets.connected[sid];
               if (slugMediaName) {
                 api.sendEventWithContent(
                   'listMedia',
-                  filteredMediasData,
+                  folder_and_medias,
                   io,
                   thisSocket
                 );
               } else {
                 api.sendEventWithContent(
                   'listMedias',
-                  filteredMediasData,
+                  folder_and_medias,
                   io,
                   thisSocket
                 );

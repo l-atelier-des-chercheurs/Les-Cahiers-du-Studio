@@ -129,6 +129,7 @@ module.exports = (function() {
         }
       }
     }
+
     return filteredMediasData;
   }
 

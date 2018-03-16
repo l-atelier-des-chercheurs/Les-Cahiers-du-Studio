@@ -44,6 +44,7 @@ html
         appVersion: "!{global.appInfos.version}",
         protocol: "!{protocol}",
         connected: false,
+        structure: !{JSON.stringify(structure, null, 4)},
         localNetworkInfos: !{JSON.stringify(localNetworkInfos, null, 4)},
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",

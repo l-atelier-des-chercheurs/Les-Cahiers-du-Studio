@@ -567,20 +567,6 @@ module.exports = (function() {
 
       getMedia(slugFolderName, slugMediaName).then(
         mediasData => {
-          const defaultReactiveMeta = {
-            date_timeline: '',
-            date_modified: '',
-            type: '',
-            color: '',
-            authors: '',
-            keywords: '',
-            caption: '',
-            public: false,
-            collapsed: false,
-            y: 0,
-            content: ''
-          };
-
           // sanitize each media — make sure they have all the reactive fields when sent, because otherwise vue.js can’t track changes when a key is added afterwards
           for (let slugMediaName in mediasData) {
             let mediaData = mediasData[slugMediaName];
@@ -607,27 +593,28 @@ module.exports = (function() {
             }
             /*******************************************************
             END
-          ******************************************************/
+            ******************************************************/
 
-            mediaData.date_timeline = api.parseDate(mediaData.date_timeline);
-            if (mediaData.hasOwnProperty('date_created')) {
-              mediaData.date_created = api.parseDate(mediaData.date_created);
+            // remove all EXIF fields — they take space and not used/shown front-end
+            if (mediaData.hasOwnProperty('exif')) {
+              delete mediaData.exif;
             }
-            if (mediaData.hasOwnProperty('date_upload')) {
-              mediaData.date_upload = api.parseDate(mediaData.date_upload);
-            }
-            if (mediaData.hasOwnProperty('date_modified')) {
-              mediaData.date_modified = api.parseDate(mediaData.date_modified);
-            }
+
+            Object.keys(mediaData).forEach(key => {
+              if (
+                settings.structure.media.hasOwnProperty(key) &&
+                settings.structure.media[key].hasOwnProperty('type') &&
+                settings.structure.media[key].type === 'date'
+              ) {
+                mediaData[key] = api.parseDate(mediaData[key]);
+              }
+            });
+
             if (mediaID) {
               mediaData.mediaID = mediaID;
             }
 
-            mediasData[slugMediaName] = Object.assign(
-              {},
-              defaultReactiveMeta,
-              mediaData
-            );
+            mediasData[slugMediaName] = mediaData;
           }
           resolve(mediasData);
         },
@@ -1034,6 +1021,8 @@ module.exports = (function() {
               fileCreationDate: api.parseDate(timeCreated)
             }
           };
+
+          // will be sanitized later in createMediaMeta
           if (mdata.hasOwnProperty('type')) {
             newMediaInfos.additionalMeta['type'] = mdata.type;
           }
@@ -1052,8 +1041,6 @@ module.exports = (function() {
       );
     });
   }
-
-  // This function basically checks
 
   function makeDefaultMetaFromStructure({
     type,
@@ -1075,7 +1062,7 @@ module.exports = (function() {
     let output_obj = {};
 
     Object.entries(struct).forEach(([key, val]) => {
-      dev.logverbose(`Iterating through struct entries, at key ${key}`);
+      // dev.logverbose(`Iterating through struct entries, at key ${key}`);
       if (!val.hasOwnProperty('type')) {
         dev.error(
           `Missing type property for field name ${key} in settings.json`

@@ -217,7 +217,6 @@ export default {
   },
   computed: {
     sortedFoldersSlug: function() {
-      debugger;
       if(this.folders.message === 'no-folders') {
         return 'has-no-folders';
       }

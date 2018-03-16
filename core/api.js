@@ -135,15 +135,18 @@ module.exports = (function() {
   }
 
   function sendEventWithContent(sendEvent, objectContent, io, socket) {
-    var eventAndContentJson = eventAndContent(sendEvent, objectContent);
+    let eventAndContentJson = eventAndContent(sendEvent, objectContent);
+    let eventAndContentJson_string = JSON.stringify(
+      eventAndContentJson,
+      null,
+      4
+    );
     if (socket) {
       // content sent only to one user
       dev.logpackets(
-        `eventAndContentJson for user ${socket.id} = ${JSON.stringify(
-          eventAndContentJson,
-          null,
-          4
-        )}`
+        `eventAndContentJson for user ${
+          socket.id
+        } = ${eventAndContentJson_string}`
       );
       socket.emit(
         eventAndContentJson['socketevent'],
@@ -152,18 +155,18 @@ module.exports = (function() {
     } else {
       // content broadcasted to all connected users
       dev.logpackets(
-        `eventAndContentJson for all users = ${JSON.stringify(
-          eventAndContentJson,
-          null,
-          4
-        )}`
+        `eventAndContentJson for all users = ${eventAndContentJson_string}`
       );
       io.sockets.emit(
         eventAndContentJson['socketevent'],
         eventAndContentJson['content']
       );
     }
-    dev.logpackets('packet sent');
+    dev.logpackets(
+      `eventAndContentJson — packet sent, string length: ${
+        eventAndContentJson_string.length
+      }`
+    );
   }
 
   // from http://stackoverflow.com/a/8440736
