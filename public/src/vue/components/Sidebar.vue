@@ -232,6 +232,12 @@ export default {
             order: 'descending'
           },
           {
+            field: 'caption',
+            name: this.$t('caption'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
             field: 'type',
             name: this.$t('type'),
             type: 'alph',
@@ -240,6 +246,12 @@ export default {
           {
             field: 'color',
             name: this.$t('color'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'keywords',
+            name: this.$t('keywords'),
             type: 'alph',
             order: 'ascending'
           },
@@ -258,12 +270,6 @@ export default {
           {
             field: 'content',
             name: this.$t('content'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'caption',
-            name: this.$t('caption'),
             type: 'alph',
             order: 'ascending'
           }
