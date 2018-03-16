@@ -717,7 +717,7 @@ export default {
       return this.$moment(timeSinceStart + this.timelineViewport.start);
     },
     mediaIsClose(index, media) {
-      if (window.state.dev_mode === 'debug') {
+      if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • TimeLineView: mediaIsClose');
       }
 
@@ -830,12 +830,12 @@ export default {
     },
     openMediaModal(slugMediaName) {
       // check if media exists first
-      if (window.state.dev_mode === 'debug') {
+      if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • TimeLineView: openMediaModal');
       }
 
       if (!this.medias.hasOwnProperty(slugMediaName)) {
-        if (window.state.dev_mode === 'debug') {
+        if (this.$root.state.dev_mode === 'debug') {
           console.log(
             'METHODS • TimeLineView: openMediaModal / missing media in timeline'
           );

@@ -70,10 +70,11 @@
       </div>
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
+<!-- Disabled for now: if an image or video is tagged as "text" or marked, a folder becomes unreadable -->
       <div class="margin-bottom-small">
         <label>{{ $t('type') }}</label>
         <select v-if="!read_only" ref="type" v-model="mediadata.type">
-          <option v-for="mediaType in ['image', 'video', 'audio', 'text', 'marker']" :key="mediaType">
+          <option v-for="mediaType in $root.state.structure.media.type.options" :key="mediaType">
             {{ mediaType }}
           </option>
         </select>
@@ -84,7 +85,7 @@
       <div class="margin-bottom-small">
         <label>{{ $t('color') }}</label>
         <select v-if="!read_only" ref="type" v-model="mediadata.color">
-          <option v-for="mediaColor in ['white', 'red', 'blue', 'green', 'purple', 'orange', 'yellow']" :key="mediaColor">
+          <option v-for="mediaColor in $root.state.structure.media.color.options" :key="mediaColor">
             {{ mediaColor }}
           </option>
         </select>

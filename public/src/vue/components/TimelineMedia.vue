@@ -166,7 +166,7 @@ export default {
     // set width and height for a media.
     // this shouldn’t need updating
     setMediaSize() {
-      if (window.state.dev_mode === 'debug') {
+      if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • TimelineMedia: setMediaSize');
       }
 
@@ -191,7 +191,7 @@ export default {
       }
     },
     getMediaSize() {
-      // if(window.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: getMediaSize'); }
+      // if(this.$root.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: getMediaSize'); }
       return {
         width: `${this.mediaStyles.w}px`,
         height: `${this.mediaStyles.h}px`
@@ -228,7 +228,7 @@ export default {
       if (this.is_dragged) {
         return;
       }
-      if (window.state.dev_mode === 'debug') {
+      if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • TimelineMedia: openMedia');
       }
       this.$emit('open');
