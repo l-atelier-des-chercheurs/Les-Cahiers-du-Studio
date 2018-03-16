@@ -567,7 +567,6 @@ module.exports = (function() {
 
       getMedia(slugFolderName, slugMediaName).then(
         mediasData => {
-          // sanitize each media — make sure they have all the reactive fields when sent, because otherwise vue.js can’t track changes when a key is added afterwards
           for (let slugMediaName in mediasData) {
             let mediaData = mediasData[slugMediaName];
 

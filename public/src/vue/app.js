@@ -188,7 +188,6 @@ Vue.prototype.$socketio = new Vue({
 
       //     let mediaData = Object.values(mdata[slugFolderName].medias)[0];
       //     let mediaName = Object.keys(mdata[slugFolderName].medias)[0];
-
       alertify
         .closeLogOnClick(true)
         .delay(4000)
