@@ -214,7 +214,7 @@ module.exports = (function() {
     dev.logfunction(
       `EVENT - onEditMedia for ${d.slugFolderName}/${d.slugMediaName}`
     );
-    file.editMedia(d).then(
+    file.editMediaMeta(d).then(
       slugFolderName => {
         sendMedias({ slugFolderName, slugMediaName: d.slugMediaName });
       },

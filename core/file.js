@@ -23,7 +23,7 @@ module.exports = (function() {
       gatherAllMedias(slugFolderName, slugMediaName, mediaID),
     createMediaMeta: (slugFolderName, slugMediaName, additionalMeta) =>
       createMediaMeta(slugFolderName, slugMediaName, additionalMeta),
-    editMedia: mdata => editMedia(mdata),
+    editMediaMeta: mdata => editMediaMeta(mdata),
     removeMedia: (slugFolderName, slugMediaName) =>
       removeMedia(slugFolderName, slugMediaName),
 
@@ -660,41 +660,11 @@ module.exports = (function() {
       fs.access(potentialMetaFile, fs.F_OK, function(err) {
         // if there's nothing at path, we’re all good
         if (err) {
-          // default media data
-          let mdata = {
-            date_timeline: api.getCurrentDate(),
-            // date_created is added if EXIF or modified date
-            date_upload: api.getCurrentDate(),
-            date_modified: api.getCurrentDate(),
-            public: false,
-            y: Math.random() * 0.5,
-            color: 'white',
-            type: 'other',
-            collapsed: false
-          };
-
-          let tasks = [];
-
+          // guess file type from filename
           if (
-            additionalMeta !== undefined &&
-            additionalMeta.hasOwnProperty('color')
+            additionalMeta === undefined ||
+            !additionalMeta.hasOwnProperty('type')
           ) {
-            mdata.color = validator.escape(additionalMeta.color);
-          }
-          if (
-            additionalMeta !== undefined &&
-            additionalMeta.hasOwnProperty('collapsed') &&
-            typeof additionalMeta.collapsed === 'boolean'
-          ) {
-            mdata.collapsed = additionalMeta.collapsed;
-          }
-
-          if (
-            additionalMeta !== undefined &&
-            additionalMeta.hasOwnProperty('type')
-          ) {
-            mdata.type = validator.escape(additionalMeta.type);
-          } else {
             let mediaFileExtension = new RegExp(
               settings.regexpGetFileExtension,
               'i'
@@ -710,25 +680,33 @@ module.exports = (function() {
               case '.tiff':
               case '.tif':
               case '.dng':
-                mdata.type = 'image';
+                additionalMeta.type = 'image';
                 break;
               case '.mp4':
               case '.mov':
               case '.webm':
-                mdata.type = 'video';
+                additionalMeta.type = 'video';
                 break;
               case '.mp3':
               case '.wav':
               case '.m4a':
-                mdata.type = 'audio';
+                additionalMeta.type = 'audio';
                 break;
               case '.md':
               case '.rtf':
-                mdata.type = 'text';
+                additionalMeta.type = 'text';
                 break;
             }
-            dev.logverbose(`Type determined to be: ${mdata.type}`);
+            dev.logverbose(`Type determined to be: ${additionalMeta.type}`);
           }
+
+          let mdata = makeDefaultMetaFromStructure({
+            type: 'media',
+            method: 'create',
+            existing: additionalMeta
+          });
+
+          let tasks = [];
 
           /***************************************************************************
               CREATED DATE
@@ -895,10 +873,10 @@ module.exports = (function() {
     });
   }
 
-  function editMedia(mdata) {
+  function editMediaMeta(mdata) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — editMedia : will edit media with ${JSON.stringify(
+        `COMMON — editMediaMeta : will edit media with ${JSON.stringify(
           mdata,
           null,
           4
@@ -908,51 +886,12 @@ module.exports = (function() {
       let slugFolderName = mdata.slugFolderName;
       let slugMediaName = mdata.slugMediaName;
 
-      let newMediaData = {};
+      let newMediaData = makeDefaultMetaFromStructure({
+        type: 'media',
+        method: 'update',
+        existing: mdata
+      });
 
-      /**************************************************************************
-        list here all possible edit properties and how to validate them
-      **************************************************************************/
-      if (mdata.hasOwnProperty('date_timeline')) {
-        newMediaData.date_timeline = api.convertDate(mdata.date_timeline);
-      }
-
-      if (mdata.hasOwnProperty('type')) {
-        newMediaData.type = validator.escape(mdata.type);
-      }
-
-      if (mdata.hasOwnProperty('color')) {
-        newMediaData.color = validator.escape(mdata.color);
-      }
-
-      if (mdata.hasOwnProperty('keywords')) {
-        newMediaData.keywords = validator.escape(mdata.keywords);
-      }
-
-      if (mdata.hasOwnProperty('caption')) {
-        newMediaData.caption = validator.escape(mdata.caption);
-      }
-
-      if (mdata.hasOwnProperty('authors')) {
-        newMediaData.authors = validator.escape(mdata.authors);
-      }
-
-      if (mdata.hasOwnProperty('public') && typeof mdata.public === 'boolean') {
-        newMediaData.public = mdata.public;
-      }
-
-      if (
-        mdata.hasOwnProperty('collapsed') &&
-        typeof mdata.collapsed === 'boolean'
-      ) {
-        newMediaData.collapsed = mdata.collapsed;
-      }
-
-      if (mdata.hasOwnProperty('y') && typeof mdata.y === 'number') {
-        newMediaData.y = api.clip(mdata.y, 0, 1);
-      }
-
-      newMediaData.date_modified = api.getCurrentDate();
       dev.logverbose(
         `Following datas will replace existing data for this media meta: ${JSON.stringify(
           newMediaData,
@@ -1112,6 +1051,127 @@ module.exports = (function() {
         }
       );
     });
+  }
+
+  // This function basically checks
+
+  function makeDefaultMetaFromStructure({
+    type,
+    method = 'create',
+    existing = {}
+  }) {
+    dev.logfunction(
+      `COMMON — makeDefaultMetaFromStructure : will create/update a new default meta object for type ${type} with existing = ${JSON.stringify(
+        existing,
+        null,
+        4
+      )}`
+    );
+    if (!settings.structure.hasOwnProperty(type)) {
+      dev.error(`Missing type ${type} in settings.json`);
+    }
+
+    let struct = settings.structure[type];
+    let output_obj = {};
+
+    Object.entries(struct).forEach(([key, val]) => {
+      dev.logverbose(`Iterating through struct entries, at key ${key}`);
+      if (!val.hasOwnProperty('type')) {
+        dev.error(
+          `Missing type property for field name ${key} in settings.json`
+        );
+      }
+      let type = val.type;
+
+      // if updating and "read_only", let’s stop right there for that key
+      if (
+        method === 'update' &&
+        val.hasOwnProperty('read_only') &&
+        val.read_only === true
+      ) {
+        return;
+      }
+
+      // if updating a meta file and the new meta doesn’t have the iterated value
+      // we stop except if that field has "override"
+      if (
+        method === 'update' &&
+        !existing.hasOwnProperty(key) &&
+        !(val.hasOwnProperty('override') && val.override === true)
+      ) {
+        return;
+      }
+
+      if (type === 'date') {
+        // "override" means "reapply default everytime we update this file"
+        if (
+          (!val.hasOwnProperty('override') || val.override === false) &&
+          existing.hasOwnProperty(key)
+        ) {
+          // get from original if it exists and if override is not set or set to false
+          output_obj[key] = api.convertDate(existing[key] + '');
+        } else if (val.hasOwnProperty('default')) {
+          // get from default if set
+          output_obj[key] =
+            val.default === 'current' ? api.getCurrentDate() : val.default;
+        }
+      } else if (type === 'boolean') {
+        if (
+          (!val.hasOwnProperty('override') || val.override === false) &&
+          existing.hasOwnProperty(key)
+        ) {
+          // get from original if it exists and if override is not set or set to false
+          output_obj[key] = validator.toBoolean(existing[key] + '');
+        } else if (
+          val.hasOwnProperty('default') &&
+          typeof val.default === 'boolean'
+        ) {
+          output_obj[key] = val.default;
+        }
+      } else if (type === 'string') {
+        if (
+          (!val.hasOwnProperty('override') || val.override === false) &&
+          existing.hasOwnProperty(key)
+        ) {
+          if (val.hasOwnProperty('options')) {
+            let new_val = validator.escape(existing[key] + '');
+            if (val.options.includes(new_val)) {
+              output_obj[key] = new_val;
+            } else if (val.hasOwnProperty('default')) {
+              output_obj[key] = val.default;
+            }
+          } else {
+            output_obj[key] = validator.escape(existing[key] + '');
+          }
+        } else if (val.hasOwnProperty('default')) {
+          output_obj[key] = val.default;
+        }
+      } else if (type === 'number') {
+        if (
+          (!val.hasOwnProperty('override') || val.override === false) &&
+          existing.hasOwnProperty(key)
+        ) {
+          if (val.hasOwnProperty('clip')) {
+            output_obj[key] = api.clip(
+              validator.toFloat(existing[key] + ''),
+              val.clip.min,
+              val.clip.max
+            );
+          } else {
+            output_obj[key] = validator.toFloat(existing[key] + '');
+          }
+        } else if (val.hasOwnProperty('default')) {
+          output_obj[key] =
+            val.default === 'random' ? Math.random() * 0.5 : val.default;
+        }
+      }
+    });
+
+    dev.logverbose(
+      `Finished creating output obj with ${JSON.stringify(output_obj, null, 4)}`
+    );
+
+    return output_obj;
   }
 
   return API;
