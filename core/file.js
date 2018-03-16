@@ -599,15 +599,7 @@ module.exports = (function() {
               delete mediaData.exif;
             }
 
-            Object.keys(mediaData).forEach(key => {
-              if (
-                settings.structure.media.hasOwnProperty(key) &&
-                settings.structure.media[key].hasOwnProperty('type') &&
-                settings.structure.media[key].type === 'date'
-              ) {
-                mediaData[key] = api.parseDate(mediaData[key]);
-              }
-            });
+            mediaData = _restoreMetaFromFile({ type: 'media', mediaData });
 
             if (mediaID) {
               mediaData.mediaID = mediaID;
@@ -686,7 +678,7 @@ module.exports = (function() {
             dev.logverbose(`Type determined to be: ${additionalMeta.type}`);
           }
 
-          let mdata = makeDefaultMetaFromStructure({
+          let mdata = _makeDefaultMetaFromStructure({
             type: 'media',
             method: 'create',
             existing: additionalMeta
@@ -872,7 +864,7 @@ module.exports = (function() {
       let slugFolderName = mdata.slugFolderName;
       let slugMediaName = mdata.slugMediaName;
 
-      let newMediaData = makeDefaultMetaFromStructure({
+      let newMediaData = _makeDefaultMetaFromStructure({
         type: 'media',
         method: 'update',
         existing: mdata
@@ -1041,13 +1033,13 @@ module.exports = (function() {
     });
   }
 
-  function makeDefaultMetaFromStructure({
+  function _makeDefaultMetaFromStructure({
     type,
     method = 'create',
     existing = {}
   }) {
     dev.logfunction(
-      `COMMON — makeDefaultMetaFromStructure : will create/update a new default meta object for type ${type} with existing = ${JSON.stringify(
+      `COMMON — _makeDefaultMetaFromStructure : will create/update a new default meta object for type ${type} with existing = ${JSON.stringify(
         existing,
         null,
         4
@@ -1158,6 +1150,22 @@ module.exports = (function() {
     );
 
     return output_obj;
+  }
+
+  function _restoreMetaFromFile({ type, mediaData }) {
+    Object.keys(mediaData).forEach(key => {
+      if (
+        settings.structure.media.hasOwnProperty(key) &&
+        settings.structure.media[key].hasOwnProperty('type')
+      ) {
+        if (settings.structure.media[key].type === 'date') {
+          mediaData[key] = api.parseDate(mediaData[key]);
+        } else if (settings.structure.media[key].type === 'string') {
+          mediaData[key] = validator.unescape(mediaData[key]);
+        }
+      }
+    });
+    return mediaData;
   }
 
   return API;
