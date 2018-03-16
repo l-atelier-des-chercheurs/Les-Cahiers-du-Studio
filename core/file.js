@@ -572,7 +572,7 @@ module.exports = (function() {
 
             /*******************************************************
             PRE 1.0.0 beta 3 legacy
-          ******************************************************/
+            ******************************************************/
             // LEGACY : rename 'created' to 'date_created', and set date_timeline
             {
               if (mediaData.hasOwnProperty('created')) {
