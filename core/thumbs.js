@@ -300,6 +300,7 @@ module.exports = (function() {
             .resize(thumbRes, thumbRes)
             .max()
             .withoutEnlargement()
+            .background({ r: 255, g: 255, b: 255 })
             .withMetadata()
             .toFormat(thumbExt, {
               quality: settings.mediaThumbQuality
