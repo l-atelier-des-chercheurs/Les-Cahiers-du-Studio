@@ -1,6 +1,9 @@
 <template>
   <div class="m_folder">
-    <h2 class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large">
+    <h2 
+    class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large"
+    @click="$root.openFolder(slugFolderName)"
+    >
       {{ folder.name }}
     </h2>
 
