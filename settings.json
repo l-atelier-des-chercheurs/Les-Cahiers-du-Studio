@@ -25,7 +25,28 @@
 
   "structure" : {
     "folder": {
-
+      "name": {
+        "type": "string"
+      },
+      "created": {
+        "type": "date",
+        "default": "current",
+        "read_only": true
+      },
+      "start": {
+        "type": "date",
+        "default": "current"
+      },
+      "end": {
+        "type": "date"
+      },
+      "password": {
+        "type": "string",
+        "read_only": true        
+      },
+      "authors": {
+        "type": "string"
+      }
     },
     "media": {
       "date_timeline": {
