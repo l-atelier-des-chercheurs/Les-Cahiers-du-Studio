@@ -116,7 +116,7 @@ module.exports = (function() {
     // check if allowed
     file.getFolder(d.slugFolderName).then(
       foldersData => {
-        if (!auth.hasFolderAuth(socket.id, foldersData, d.slugFolderName)) {
+        if (!auth.hasFolderAuth(socket.id, foldersData)) {
           return;
         }
 
@@ -135,7 +135,7 @@ module.exports = (function() {
     // check if allowed
     file.getFolder(slugFolderName).then(
       foldersData => {
-        if (!auth.hasFolderAuth(socket.id, foldersData, slugFolderName)) {
+        if (!auth.hasFolderAuth(socket.id, foldersData)) {
           return;
         }
         file.removeFolder(slugFolderName).then(
@@ -311,17 +311,19 @@ module.exports = (function() {
         file
           .gatherAllMedias(slugFolderName, slugMediaName, mediaID)
           .then(mediasData => {
+            dev.logverbose(`Got medias, now sending to the right clients`);
             Object.keys(io.sockets.connected).forEach(sid => {
-              if (socket && socket.id !== sid) {
+              if (!!socket && socket.id !== sid) {
                 return;
               }
 
-              let filteredMediasData = auth.filterMedias(
-                sid,
-                foldersData,
-                slugFolderName,
-                mediasData
-              );
+              // bug return object
+
+              let filteredMediasData = {};
+              if (auth.hasFolderAuth(sid, foldersData)) {
+                // let filteredMediasData = auth.filterMedias(mediasData);
+                filteredMediasData = JSON.parse(JSON.stringify(mediasData));
+              }
 
               let folder_and_medias = {
                 [slugFolderName]: {
@@ -329,22 +331,14 @@ module.exports = (function() {
                 }
               };
 
-              let thisSocket = socket || io.sockets.connected[sid];
-              if (slugMediaName) {
-                api.sendEventWithContent(
-                  'listMedia',
-                  folder_and_medias,
-                  io,
-                  thisSocket
-                );
-              } else {
-                api.sendEventWithContent(
-                  'listMedias',
-                  folder_and_medias,
-                  io,
-                  thisSocket
-                );
-              }
+              dev.logverbose(`${JSON.stringify(folder_and_medias, null, 4)}`);
+
+              api.sendEventWithContent(
+                !!slugMediaName ? 'listMedia' : 'listMedias',
+                folder_and_medias,
+                io,
+                socket || io.sockets.connected[sid]
+              );
             });
           });
       },

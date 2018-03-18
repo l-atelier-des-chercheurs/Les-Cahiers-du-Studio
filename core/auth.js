@@ -8,11 +8,11 @@ module.exports = (function() {
   const API = {
     setAuthenticate: (sessionId, admin_access) =>
       setAuthenticate(sessionId, admin_access),
-    hasFolderAuth: (socket, foldersData, slugFolderName) =>
-      hasFolderAuth(socket, foldersData, slugFolderName),
-    filterFolders: (sid, foldersData) => filterFolders(sid, foldersData),
-    filterMedias: (sessionId, foldersData, slugFolderName, mediasData) =>
-      filterMedias(sessionId, foldersData, slugFolderName, mediasData)
+    hasFolderAuth: (sessionId, foldersData) =>
+      hasFolderAuth(sessionId, foldersData),
+    filterFolders: (sessionId, foldersData) =>
+      filterFolders(sessionId, foldersData),
+    filterMedias: mediasData => filterMedias(mediasData)
   };
 
   function setAuthenticate(sessionId, admin_access) {
@@ -58,8 +58,16 @@ module.exports = (function() {
     });
   }
 
-  function hasFolderAuth(sessionId, foldersData, slugFolderName) {
-    //     dev.logfunction(`AUTH — hasFolderAuth: ${JSON.stringify(users_auth, null, 4)} & ${foldersData[slugFolderName].password}`);
+  function hasFolderAuth(sessionId, foldersData) {
+    dev.logfunction(
+      `AUTH — hasFolderAuth: ${JSON.stringify(
+        users_auth,
+        null,
+        4
+      )} & ${JSON.stringify(foldersData, null, 4)}`
+    );
+    let slugFolderName = Object.keys(foldersData)[0];
+
     if (
       (users_auth[sessionId] !== undefined &&
         users_auth[sessionId].indexOf(slugFolderName) >= 0) ||
@@ -89,7 +97,7 @@ module.exports = (function() {
 
     for (let slugFolderName in filteredFoldersData) {
       // find if sessionID has this folder
-      if (hasFolderAuth(sessionId, filteredFoldersData, slugFolderName)) {
+      if (hasFolderAuth(sessionId, filteredFoldersData)) {
         dev.logverbose(
           `For ${sessionId}, admin access authorized for ${slugFolderName}.`
         );
@@ -104,8 +112,8 @@ module.exports = (function() {
     return filteredFoldersData;
   }
 
-  function filterMedias(sessionId, foldersData, slugFolderName, mediasData) {
-    dev.logfunction(`AUTH — filtering medias data for ${sessionId}.`);
+  function filterMedias(mediasData) {
+    dev.logfunction(`AUTH — filtering medias data.`);
 
     if (mediasData === undefined) {
       return;
@@ -114,19 +122,17 @@ module.exports = (function() {
     // we do this in order not to touch the original mediasData
     let filteredMediasData = JSON.parse(JSON.stringify(mediasData));
 
-    if (!hasFolderAuth(sessionId, foldersData, slugFolderName)) {
-      // is public user (remove all non-public medias)
-      for (let slugMediaName in mediasData) {
-        if (
-          !mediasData[slugMediaName].hasOwnProperty('public') ||
-          !(
-            mediasData[slugMediaName].public === true ||
-            mediasData[slugMediaName].public === 'true'
-          )
-        ) {
-          dev.logverbose(`Removing media ${slugMediaName} for public user`);
-          delete filteredMediasData[slugMediaName];
-        }
+    // is public user (remove all non-public medias)
+    for (let slugMediaName in mediasData) {
+      if (
+        !mediasData[slugMediaName].hasOwnProperty('public') ||
+        !(
+          mediasData[slugMediaName].public === true ||
+          mediasData[slugMediaName].public === 'true'
+        )
+      ) {
+        dev.logverbose(`Removing media ${slugMediaName} for public user`);
+        delete filteredMediasData[slugMediaName];
       }
     }
 
