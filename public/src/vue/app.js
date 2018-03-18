@@ -102,6 +102,7 @@ Vue.prototype.$socketio = new Vue({
       this.socket.on('listMedias', this._onListMedias);
       this.socket.on('listFolder', this._onListFolder);
       this.socket.on('listFolders', this._onListFolders);
+      this.socket.on('notify', this._onNotify);
     },
     _onSocketConnect() {
       let sessionId = this.socket.io.engine.id;
@@ -244,6 +245,14 @@ Vue.prototype.$socketio = new Vue({
       }
       window.store.folders = Object.assign({}, fdata);
       window.dispatchEvent(new CustomEvent('socketio.folders_listed'));
+    },
+    _onNotify(msg) {
+      console.log('Received _onNotify packet.');
+
+      alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error(this.$t(`notifications[${msg}]`));
     },
 
     listFolders() {
