@@ -593,13 +593,10 @@ module.exports = (function() {
             /*******************************************************
             END
             ******************************************************/
-
-            // remove all EXIF fields — they take space and not used/shown front-end
-            if (mediaData.hasOwnProperty('exif')) {
-              delete mediaData.exif;
-            }
-
-            mediaData = _sanitizeMetaFromFile({ type: 'media', mediaData });
+            mediaData = _sanitizeMetaFromFile({
+              type: 'media',
+              meta: mediaData
+            });
 
             if (mediaID) {
               mediaData.mediaID = mediaID;
@@ -1153,20 +1150,33 @@ module.exports = (function() {
     return output_obj;
   }
 
-  function _sanitizeMetaFromFile({ type, mediaData }) {
-    Object.keys(mediaData).forEach(key => {
+  function _sanitizeMetaFromFile({ type, meta }) {
+    dev.logverbose(
+      `COMMON — _sanitizeMetaFromFile : 
+      will sanitize a new default meta object for type ${type} with existing = ${JSON.stringify(
+        meta
+      )}
+      `
+    );
+    let new_meta = {};
+    Object.keys(meta).forEach(key => {
       if (
-        settings.structure.media.hasOwnProperty(key) &&
-        settings.structure.media[key].hasOwnProperty('type')
+        settings.structure[type].hasOwnProperty(key) &&
+        settings.structure[type][key].hasOwnProperty('type')
       ) {
-        if (settings.structure.media[key].type === 'date') {
-          mediaData[key] = api.parseDate(mediaData[key]);
-        } else if (settings.structure.media[key].type === 'string') {
-          mediaData[key] = validator.unescape(mediaData[key]);
+        if (settings.structure[type][key].type === 'date') {
+          new_meta[key] = api.parseDate(meta[key]);
+        } else if (settings.structure[type][key].type === 'string') {
+          new_meta[key] = validator.unescape(meta[key]);
         }
       }
     });
-    return mediaData;
+    dev.logverbose(
+      `COMMON — _sanitizeMetaFromFile : 
+      sanitized to ${JSON.stringify(new_meta)}
+      `
+    );
+    return new_meta;
   }
 
   return API;
