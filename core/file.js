@@ -599,7 +599,7 @@ module.exports = (function() {
               delete mediaData.exif;
             }
 
-            mediaData = _restoreMetaFromFile({ type: 'media', mediaData });
+            mediaData = _sanitizeMetaFromFile({ type: 'media', mediaData });
 
             if (mediaID) {
               mediaData.mediaID = mediaID;
@@ -864,20 +864,6 @@ module.exports = (function() {
       let slugFolderName = mdata.slugFolderName;
       let slugMediaName = mdata.slugMediaName;
 
-      let newMediaData = _makeDefaultMetaFromStructure({
-        type: 'media',
-        method: 'update',
-        existing: mdata
-      });
-
-      dev.logverbose(
-        `Following datas will replace existing data for this media meta: ${JSON.stringify(
-          newMediaData,
-          null,
-          4
-        )}`
-      );
-
       readOrCreateMediaMeta(slugFolderName, slugMediaName).then(meta => {
         dev.logverbose(
           `Got meta, now updating for ${slugMediaName} with ${JSON.stringify(
@@ -886,6 +872,21 @@ module.exports = (function() {
             4
           )}`
         );
+
+        let newMediaData = _makeDefaultMetaFromStructure({
+          type: 'media',
+          method: 'update',
+          existing: mdata
+        });
+
+        dev.logverbose(
+          `Following datas will replace existing data for this media meta: ${JSON.stringify(
+            newMediaData,
+            null,
+            4
+          )}`
+        );
+
         // overwrite stored obj with new informations
         Object.assign(meta, newMediaData);
         let tasks = [];
@@ -1039,7 +1040,7 @@ module.exports = (function() {
     existing = {}
   }) {
     dev.logfunction(
-      `COMMON — _makeDefaultMetaFromStructure : will create/update a new default meta object for type ${type} with existing = ${JSON.stringify(
+      `COMMON — _makeDefaultMetaFromStructure : will '${method}' a new default meta object for type ${type} with existing = ${JSON.stringify(
         existing,
         null,
         4
@@ -1152,7 +1153,7 @@ module.exports = (function() {
     return output_obj;
   }
 
-  function _restoreMetaFromFile({ type, mediaData }) {
+  function _sanitizeMetaFromFile({ type, mediaData }) {
     Object.keys(mediaData).forEach(key => {
       if (
         settings.structure.media.hasOwnProperty(key) &&
