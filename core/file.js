@@ -82,9 +82,10 @@ module.exports = (function() {
           // let’s get creation date and modification date, guess the type, and return this whole thing afterwards
           let createNewMediaMeta = new Promise((resolve, reject) => {
             createMediaMeta(slugFolderName, slugMediaName).then(mediaData => {
-              delete mediaData.content;
               mediaData = _sanitizeMetaFromFile({
                 type: 'media',
+                meta: mediaData
+              });
               resolve(mediaData);
             });
           });
