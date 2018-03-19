@@ -45,7 +45,8 @@ module.exports = (function() {
   }
 
   function convertDate(date, f) {
-    return moment(date).format(f);
+    if (moment(date).isValid()) return moment(date).format(f);
+    else return '';
   }
   function parseUTCDate(date) {
     return moment.utc(date);

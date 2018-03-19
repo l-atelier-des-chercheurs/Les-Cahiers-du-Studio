@@ -119,10 +119,11 @@ module.exports = (function() {
         if (!auth.hasFolderAuth(socket.id, foldersData)) {
           return;
         }
-
-        file.editFolder(foldersData, d).then(slugFolderName => {
-          sendFolders({ slugFolderName });
-        });
+        file
+          .editFolder(foldersData[d.slugFolderName], d)
+          .then(slugFolderName => {
+            sendFolders({ slugFolderName });
+          });
       },
       function(err, p) {
         dev.error(`Failed to edit folder: ${err}`);

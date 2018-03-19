@@ -231,32 +231,21 @@ module.exports = (function() {
                 dev.error(
                   `Couldn’t read folder meta, most probably because it doesn’t exist: ${err}`
                 );
-                _makeFolderMeta(slugFolderName)
-                  .then(mdata => {
-                    let folderMetaPath = getMetaFileOfFolder(slugFolderName);
-                    api
-                      .storeData(folderMetaPath, mdata, 'create')
-                      .then(function(meta) {
-                        dev.logverbose(
-                          `New folder meta file created at path: ${folderMetaPath} with meta: ${JSON.stringify(
-                            meta,
-                            null,
-                            4
-                          )}`
-                        );
-                        let preparedMeta = prepareFolderMetaForClient(
-                          slugFolderName,
-                          meta
-                        );
-                        resolve(preparedMeta);
-                      })
-                      .catch(err => {
-                        reject(err);
-                      });
-                  })
-                  .catch(err => {
-                    reject(err);
-                  });
+                // edge case : creating folders in user dir
+                // createFolder(
+                //   { name: slugFolderName },
+                //   (folderAlreadyCreated = true)
+                // )
+                //   .then(meta => {
+                //     let preparedMeta = prepareFolderMetaForClient(
+                //       slugFolderName,
+                //       meta
+                //     );
+                //     resolve(preparedMeta);
+                //   })
+                //   .catch(err => {
+                //     reject(err);
+                //   });
               });
           });
           allFoldersData.push(fmeta);
@@ -287,26 +276,29 @@ module.exports = (function() {
         )}`
       );
 
-      let slugFolderName = api.slug(fdata.name);
-      if (slugFolderName.length <= 0) {
-        slugFolderName = api.slug('Untitled Folder');
+      if (!fdata.hasOwnProperty('name')) {
+        fdata.name = 'Untitled Folder';
       }
+
+      slugFolderName = api.slug(fdata.name);
 
       getFolder().then(
         foldersData => {
           if (foldersData !== undefined) {
             let allFoldersSlug = Object.keys(foldersData);
 
-            let index = 0;
-            let newSlugFolderName = slugFolderName;
-            while (allFoldersSlug.indexOf(newSlugFolderName) !== -1) {
-              index++;
-              newSlugFolderName = `${newSlugFolderName}-${index}`;
+            if (allFoldersSlug.length > 0) {
+              let index = 0;
+              let newSlugFolderName = slugFolderName;
+              while (allFoldersSlug.indexOf(newSlugFolderName) !== -1) {
+                index++;
+                newSlugFolderName = `${newSlugFolderName}-${index}`;
+              }
+              slugFolderName = newSlugFolderName;
+              dev.logverbose(`All slugs: ${allFoldersSlug.join()}`);
             }
-            slugFolderName = newSlugFolderName;
-            dev.logverbose(`All slugs: ${allFoldersSlug.join()}`);
+            dev.logverbose(`Proposed slug: ${slugFolderName}`);
           }
-          dev.logverbose(`Proposed slug: ${slugFolderName}`);
 
           // créer un fichier meta avec : nom humain, date de création, date de début, date de fin, mot de passe hashé, nom des auteurs
           dev.logverbose(
@@ -314,30 +306,29 @@ module.exports = (function() {
           );
           fs.mkdirp(
             api.getFolderPath(slugFolderName),
-            function(err) {
-              _makeFolderMeta(slugFolderName, fdata).then(
-                mdata => {
-                  let folderMetaPath = getMetaFileOfFolder(slugFolderName);
-                  api
-                    .storeData(folderMetaPath, mdata, 'create')
-                    .then(function(meta) {
-                      dev.logverbose(
-                        `New folder meta file created at path: ${folderMetaPath} with meta: ${JSON.stringify(
-                          meta,
-                          null,
-                          4
-                        )}`
-                      );
-                      resolve(slugFolderName);
-                    })
-                    .catch(err => {
-                      reject(err);
-                    });
-                },
-                function(err) {
-                  reject(`${err}`);
-                }
-              );
+            function() {
+              fdata = _makeDefaultMetaFromStructure({
+                type: 'folder',
+                method: 'create',
+                existing: fdata
+              });
+              let folderMetaPath = getMetaFileOfFolder(slugFolderName);
+
+              api
+                .storeData(folderMetaPath, fdata, 'create')
+                .then(function(meta) {
+                  dev.logverbose(
+                    `New folder meta file created at path: ${folderMetaPath} with meta: ${JSON.stringify(
+                      meta,
+                      null,
+                      4
+                    )}`
+                  );
+                  resolve(slugFolderName);
+                })
+                .catch(err => {
+                  reject(err);
+                });
             },
             function(err, p) {
               dev.error(`Failed to create folder ${slugFolderName}: ${err}`);
@@ -353,41 +344,50 @@ module.exports = (function() {
     });
   }
 
-  function editFolder(foldersData, fdata) {
+  function editFolder(foldersData, newFoldersData) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
-        `COMMON — editFolder : will edit folder: ${JSON.stringify(
-          fdata,
+        `COMMON — editFolder : will edit folder with ${JSON.stringify(
+          newFoldersData,
           null,
           4
         )} with existing data ${JSON.stringify(foldersData, null, 4)}`
       );
       // remove slugFolderKey
-      let slugFolderName = fdata.slugFolderName;
-      let existingPassword = foldersData[slugFolderName].password;
-      delete fdata['slugFolderName'];
+      let slugFolderName = foldersData.slugFolderName;
 
-      _makeFolderMeta(slugFolderName, fdata).then(mdata => {
-        // replace password key by original (since password can’t be edited client-side)
-        mdata.password = existingPassword;
-
-        let folderMetaPath = getMetaFileOfFolder(slugFolderName);
-        api.storeData(folderMetaPath, mdata, 'update').then(
-          function(meta) {
-            dev.logverbose(
-              `Update folder meta file at path: ${folderMetaPath} with meta: ${JSON.stringify(
-                meta,
-                null,
-                4
-              )}`
-            );
-            resolve(slugFolderName);
-          },
-          function(err) {
-            reject(`Couldn't update folder meta : ${err}`);
-          }
-        );
+      // cleaning up stored meta
+      foldersData = _makeDefaultMetaFromStructure({
+        type: 'folder',
+        method: 'create',
+        existing: foldersData
       });
+
+      newFoldersData = _makeDefaultMetaFromStructure({
+        type: 'folder',
+        method: 'update',
+        existing: newFoldersData
+      });
+
+      // overwrite stored obj with new informations
+      Object.assign(foldersData, newFoldersData);
+
+      let folderMetaPath = getMetaFileOfFolder(slugFolderName);
+      api.storeData(folderMetaPath, foldersData, 'update').then(
+        function(meta) {
+          dev.logverbose(
+            `Update folder meta file at path: ${folderMetaPath} with meta: ${JSON.stringify(
+              meta,
+              null,
+              4
+            )}`
+          );
+          resolve(slugFolderName);
+        },
+        function(err) {
+          reject(`Couldn't update folder meta: ${err}`);
+        }
+      );
     });
   }
 
@@ -415,58 +415,6 @@ module.exports = (function() {
         .catch(err => {
           reject(err);
         });
-    });
-  }
-
-  function _makeFolderMeta(slugFolderName, additionalMeta) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction(
-        `COMMON — _makeFolderMeta : will make a new meta for folder with name ${slugFolderName} and data ${additionalMeta}`
-      );
-
-      // this function is used both for create and update folder
-
-      // default data
-      let mdata = {
-        name: slugFolderName,
-        created: api.getCurrentDate(),
-        start: api.getCurrentDate(),
-        end: '',
-        password: '',
-        authors: ''
-      };
-
-      if (typeof additionalMeta === 'undefined') {
-        resolve(mdata);
-      }
-
-      mdata.name =
-        additionalMeta.name !== undefined
-          ? validator.escape(additionalMeta.name)
-          : mdata.name;
-
-      // convert date to local format
-      let start = api.convertDate(additionalMeta.start);
-      if (start) {
-        mdata.start = start;
-      }
-      // parse end
-      let end = api.convertDate(additionalMeta.end);
-      if (end) {
-        mdata.end = end;
-      }
-      // hash password
-      let hashedPassword = additionalMeta.password;
-      if (hashedPassword) {
-        mdata.password = additionalMeta.password;
-      }
-      // add authors
-      let authors = additionalMeta.authors;
-      if (authors) {
-        mdata.authors = authors;
-      }
-
-      resolve(mdata);
     });
   }
 
@@ -614,12 +562,12 @@ module.exports = (function() {
     });
   }
 
-  function createMediaMeta(slugFolderName, slugMediaName, additionalMeta) {
+  function createMediaMeta(slugFolderName, slugMediaName, additionalMeta = {}) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(
         `COMMON — createMediaMeta : will create a new meta file for media ${slugMediaName} in folder ${slugFolderName}`
       );
-      if (additionalMeta !== undefined) {
+      if (Object.keys(additionalMeta).length > 0) {
         dev.logverbose(
           `Has additional meta: ${JSON.stringify(additionalMeta, null, 4)}`
         );
@@ -636,10 +584,7 @@ module.exports = (function() {
         // if there's nothing at path, we’re all good
         if (err) {
           // guess file type from filename
-          if (
-            additionalMeta === undefined ||
-            !additionalMeta.hasOwnProperty('type')
-          ) {
+          if (!additionalMeta.hasOwnProperty('type')) {
             let mediaFileExtension = new RegExp(
               settings.regexpGetFileExtension,
               'i'
