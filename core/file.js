@@ -83,6 +83,8 @@ module.exports = (function() {
           let createNewMediaMeta = new Promise((resolve, reject) => {
             createMediaMeta(slugFolderName, slugMediaName).then(mediaData => {
               delete mediaData.content;
+              mediaData = _sanitizeMetaFromFile({
+                type: 'media',
               resolve(mediaData);
             });
           });
@@ -91,7 +93,10 @@ module.exports = (function() {
           dev.logverbose(`Found meta there: ${potentialMetaFile}`);
           let readMediaMeta = new Promise((resolve, reject) => {
             readMetaFile(potentialMetaFile).then(mediaData => {
-              delete mediaData.content;
+              mediaData = _sanitizeMetaFromFile({
+                type: 'media',
+                meta: mediaData
+              });
               resolve(mediaData);
             });
           });
@@ -205,11 +210,9 @@ module.exports = (function() {
         folders.forEach(slugFolderName => {
           let fmeta = new Promise((resolve, reject) => {
             let prepareFolderMetaForClient = (slugFolderName, meta) => {
+              meta = _sanitizeMetaFromFile({ type: 'folder', meta });
               meta.slugFolderName = slugFolderName;
               meta.medias = {};
-              meta.created = api.parseDate(meta.created);
-              meta.start = api.parseDate(meta.start);
-              meta.end = api.parseDate(meta.end);
               meta.fullFolderPath = api.getFolderPath(slugFolderName);
               return meta;
             };
@@ -593,10 +596,6 @@ module.exports = (function() {
             /*******************************************************
             END
             ******************************************************/
-            mediaData = _sanitizeMetaFromFile({
-              type: 'media',
-              meta: mediaData
-            });
 
             if (mediaID) {
               mediaData.mediaID = mediaID;
@@ -1168,6 +1167,14 @@ module.exports = (function() {
           new_meta[key] = api.parseDate(meta[key]);
         } else if (settings.structure[type][key].type === 'string') {
           new_meta[key] = validator.unescape(meta[key]);
+        } else if (settings.structure[type][key].type === 'number') {
+          new_meta[key] = validator.toFloat(meta[key]);
+        } else if (settings.structure[type][key].type === 'boolean') {
+          new_meta[key] = validator.toBoolean(meta[key]);
+        } else {
+          dev.error(
+            `Unexpected field type ${settings.structure[type][key].type}.`
+          );
         }
       }
     });
