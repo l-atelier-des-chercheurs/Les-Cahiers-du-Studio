@@ -870,6 +870,13 @@ module.exports = (function() {
           )}`
         );
 
+        // cleaning up stored meta
+        meta = _makeDefaultMetaFromStructure({
+          type: 'media',
+          method: 'create',
+          existing: meta
+        });
+
         let newMediaData = _makeDefaultMetaFromStructure({
           type: 'media',
           method: 'update',
@@ -916,12 +923,13 @@ module.exports = (function() {
           mdata.hasOwnProperty('content')
         ) {
           dev.logverbose(`Is text or marker and need to update content.`);
+          dev.logverbose(`New content: ${mdata.content}`);
           let updateTextMedia = new Promise((resolve, reject) => {
             let mediaPath = path.join(
               api.getFolderPath(slugFolderName),
               slugMediaName
             );
-            let content = validator.escape(mdata.content);
+            let content = validator.escape(mdata.content + '');
             api
               .storeData(mediaPath, content, 'update')
               .then(content => {
