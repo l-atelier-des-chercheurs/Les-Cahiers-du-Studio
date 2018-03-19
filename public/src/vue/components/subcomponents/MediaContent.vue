@@ -110,7 +110,7 @@ export default {
         preview_hovered: 360,
         default: 1600
       },
-      mediaURL: `./${this.slugFolderName}/${this.slugMediaName}`
+      mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
     };
   },
   mounted() {
@@ -144,7 +144,7 @@ export default {
       }
 
       return pathToSmallestThumb !== undefined
-        ? './' + pathToSmallestThumb
+        ? '/' + pathToSmallestThumb
         : this.mediaURL;
     },
     linkToHoveredThumb: function() {
@@ -152,7 +152,7 @@ export default {
         size: this.thumbResHovered
       }).path;
       return pathToSmallestThumb !== undefined
-        ? './' + pathToSmallestThumb
+        ? '/' + pathToSmallestThumb
         : this.mediaURL;
     },
     linkToVideoThumb: function() {
@@ -171,7 +171,7 @@ export default {
         size: this.thumbRes
       }).path;
       return pathToSmallestThumb !== undefined
-        ? './' + pathToSmallestThumb
+        ? '/' + pathToSmallestThumb
         : this.mediaURL;
     }
   }
