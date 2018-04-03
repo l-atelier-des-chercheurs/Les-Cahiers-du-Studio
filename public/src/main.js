@@ -50,7 +50,10 @@ document.body.addEventListener('click', openInNativeBrowser);
 
 function openInNativeBrowser(event) {
   event.path.every(item => {
-    if (item.classList.contains('js--openInBrowser')) {
+    if (
+      item.classList !== undefined &&
+      item.classList.contains('js--openInBrowser')
+    ) {
       if (window && window.process && window.process.type) {
         const shell = window.require('electron').shell;
         event.preventDefault();
