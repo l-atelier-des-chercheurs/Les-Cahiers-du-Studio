@@ -22,7 +22,7 @@
       </div>
 
       <div class="margin-bottom-small">
-        <label>{{ $t('date') }} <small>{{ $t('for_the_placement_on_timeline') }}</small></label>
+        <label>{{ $t('date') }} <small v-if="!read_only">{{ $t('for_the_placement_on_timeline') }}</small></label>
         <DateTime v-model="mediadata.date_timeline" :twowaybinding=true :read_only="read_only">
         </DateTime>
 
@@ -82,7 +82,7 @@
       </div>
 
 <!-- Color -->
-      <div class="margin-bottom-small">
+      <div v-if="!read_only" class="margin-bottom-small">
         <label>{{ $t('color') }}</label>
         <select v-if="!read_only" ref="type" v-model="mediadata.color">
           <option v-for="mediaColor in $root.state.structure.media.color.options" :key="mediaColor">

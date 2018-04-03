@@ -132,9 +132,6 @@ export default {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
-      let pathToSmallestThumb = _.findWhere(this.media.thumbs, {
-        size: this.thumbRes
-      }).path;
       // if image is gif and context is not 'preview', let’s show the original gif
       if (
         this.context !== 'preview' &&
@@ -143,17 +140,20 @@ export default {
         return this.mediaURL;
       }
 
-      return pathToSmallestThumb !== undefined
-        ? '/' + pathToSmallestThumb
-        : this.mediaURL;
+      const pathToSmallestThumb = _.findWhere(this.media.thumbs, {
+        size: this.thumbRes
+      }).path;
+      
+      let urlToThumb = this.makeUrlToThumb(pathToSmallestThumb, this.mediaURL);
+      return urlToThumb;
     },
     linkToHoveredThumb: function() {
-      let pathToSmallestThumb = _.findWhere(this.media.thumbs, {
+      const pathToSmallestThumb = _.findWhere(this.media.thumbs, {
         size: this.thumbResHovered
       }).path;
-      return pathToSmallestThumb !== undefined
-        ? '/' + pathToSmallestThumb
-        : this.mediaURL;
+      
+      let urlToThumb = this.makeUrlToThumb(pathToSmallestThumb, this.mediaURL);
+      return urlToThumb;
     },
     linkToVideoThumb: function() {
       if (this.media.thumbs.length === 0) {
@@ -170,10 +170,21 @@ export default {
       let pathToSmallestThumb = _.findWhere(timeMarkThumbs.thumbsData, {
         size: this.thumbRes
       }).path;
-      return pathToSmallestThumb !== undefined
-        ? '/' + pathToSmallestThumb
-        : this.mediaURL;
+
+      let urlToThumb = this.makeUrlToThumb(pathToSmallestThumb, this.mediaURL);
+      return urlToThumb;
     }
+  },
+  methods: {
+    makeUrlToThumb: function(pathToSmallestThumb, mediaUrl) {
+      let urlToThumb = pathToSmallestThumb !== undefined
+        ? pathToSmallestThumb
+        : this.mediaURL;
+      
+      urlToThumb = this.$root.state.mode === 'export' ? `./${urlToThumb}` : `/${urlToThumb}`
+      return urlToThumb;
+    }
+        
   }
 };
 </script>
