@@ -55,13 +55,21 @@ $.extend($.easing, {
 });
 
 // If click on a link with a specific class, open in the browser and not in electron.
-$('body').on('click', '.js--openInBrowser', function() {
-  if (window && window.process && window.process.type) {
-    const shell = window.require('electron').shell;
-    event.preventDefault();
-    shell.openExternal(event.target.href);
-  }
-});
+document.body.addEventListener('click', openInNativeBrowser);
+
+function openInNativeBrowser(event) {
+  event.path.every(item => {
+    if (item.classList.contains('js--openInBrowser')) {
+      if (window && window.process && window.process.type) {
+        const shell = window.require('electron').shell;
+        event.preventDefault();
+        shell.openExternal(item.href);
+      }
+      return false;
+    }
+    return true;
+  });
+}
 
 document.addEventListener(
   'dragover',
