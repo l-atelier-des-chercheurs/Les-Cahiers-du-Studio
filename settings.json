@@ -49,6 +49,10 @@
       }
     },
     "media": {
+      "created": {
+        "type": "date",
+        "read_only": true
+      },
       "date_timeline": {
         "type": "date",
         "default": "current"
