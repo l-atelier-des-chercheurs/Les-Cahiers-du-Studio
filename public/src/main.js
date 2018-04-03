@@ -45,15 +45,6 @@ auth.init();
   UTILS
 ***********/
 
-$.extend($.easing, {
-  easeInOutQuint: function(x, t, b, c, d) {
-    if ((t /= d / 2) < 1) {
-      return c / 2 * t * t * t * t * t + b;
-    }
-    return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;
-  }
-});
-
 // If click on a link with a specific class, open in the browser and not in electron.
 document.body.addEventListener('click', openInNativeBrowser);
 
