@@ -63,6 +63,23 @@ module.exports = (function() {
               })
             );
 
+            // Copier les dépendances : font dans un sous dossier.
+            tasks.push(
+              new Promise((resolve, reject) => {
+                let fontFolder = path.join(global.appRoot, 'public', 'fonts');
+                let fontFolderInCache = path.join(cachePath, 'fonts');
+                fs
+                  .copy(fontFolder, fontFolderInCache)
+                  .then(() => {
+                    resolve();
+                  })
+                  .catch(err => {
+                    dev.error(`Failed to copy font files.`);
+                    reject(err);
+                  });
+              })
+            );
+
             // Copie le dossier _thumbs/slugFolderName vers cache/_thumbs/slugFolderName
             tasks.push(
               new Promise((resolve, reject) => {

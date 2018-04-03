@@ -139,7 +139,7 @@ module.exports = function(app, io, m) {
 
                     //on stream closed we can end the request
                     archive.on('end', function() {
-                      dev.log('Archive wrote %d bytes', archive.pointer());
+                      console.log('Archive wrote %d bytes', archive.pointer());
                     });
 
                     //set the archive name
