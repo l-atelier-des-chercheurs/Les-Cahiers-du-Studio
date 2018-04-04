@@ -302,7 +302,9 @@ export default {
   },
   watch: {
     folder: function() {
-      console.log('WATCH • TimeLineView: folder');
+      if (window.state.dev_mode === 'debug') {
+        console.log('WATCH • TimeLineView: folder');
+      }
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
       this.setViewedTimelineWidthAndHeight();

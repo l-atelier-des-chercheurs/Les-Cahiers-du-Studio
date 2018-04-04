@@ -7,9 +7,7 @@
       >
 
         <div class="m_modal--container"
-          :class="[{
-            'is--large' : !!this.$slots['preview']
-          }, 'color-' + backgroundColor]"
+          :class="['typeOfModal-' + typeOfModal, 'color-' + backgroundColor]"
           @keyup.ctrl.enter="$emit('submit')"
           >
 
@@ -102,6 +100,10 @@ export default {
     read_only: {
       type: Boolean,
       default: true
+    },
+    typeOfModal: {
+      type: String,
+      default: 'EditMeta'
     }
   },
   data() {

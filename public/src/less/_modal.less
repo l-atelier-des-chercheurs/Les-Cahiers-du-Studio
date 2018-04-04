@@ -50,8 +50,22 @@
     margin: 50px 0;
   }
 
-  &.is--large {
+  &.typeOfModal-MediasList {
+    max-width: @t-panelWidth * 2;
+    // if it is medium, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
+    align-self: flex-start;
+
+
+  }
+
+  &.typeOfModal-EditMedia {
     max-width: @t-panelWidth * 3;
+    // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
+    align-self: flex-start;
+
+    .m_modal--preview {
+      height: 90vh;
+    }    
   }
 
   .m_modal--container--content {
@@ -72,10 +86,6 @@
       &.m_modal--sidebar {
         flex: 0 0 @t-panelWidth;
         max-height: 90vh;
-      }
-
-      &.m_modal--preview {
-        height: 90vh;
       }
     }
 

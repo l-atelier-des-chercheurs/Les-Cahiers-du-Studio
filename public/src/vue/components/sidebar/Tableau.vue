@@ -47,9 +47,15 @@
 
           <template v-if="display === 'table'">
             <td class="padding-small">
-              <template v-if="media.type === 'image'">
-                <img :src="linkToThumb(media)">
-              </template>
+              <MediaContent
+                v-model="media.content"
+                :context="'preview'"
+                :slugFolderName="slugFolderName"
+                :slugMediaName="media.slugMediaName"
+                :media="media"
+                :read_only="read_only"
+                >
+              </MediaContent>                
             </td>
             <td class="font-small padding-small">{{ media[sort.current.field] }}</td>
             <td class="font-small padding-small">
@@ -68,8 +74,8 @@
                 v-model="media.content"
                 class="margin-medium"
                 :context="'MediasList'"
-                :slugMediaName="media.slugMediaName"
                 :slugFolderName="slugFolderName"
+                :slugMediaName="media.slugMediaName"
                 :media="media"
               ></MediaContent>
             </td>
@@ -143,9 +149,13 @@ export default {
       let pathToSmallestThumb = _.findWhere(media.thumbs, {
         size: this.thumbSize
       }).path;
-      return pathToSmallestThumb !== undefined
-        ? './' + pathToSmallestThumb
-        : '';
+
+      if(pathToSmallestThumb === undefined) {
+        return '';
+      }
+
+      pathToSmallestThumb = this.$root.state.mode === 'export' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`
+      return pathToSmallestThumb;
     }
   }
 };

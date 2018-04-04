@@ -3,6 +3,7 @@
     @close="$emit('close')"
     @submit="newFolder"
     :read_only="read_only"
+    :typeOfModal="'EditMeta'"
     >
     <template slot="header">
       <span class="text-cap"> {{ $t('create_a_folder') }}</span>

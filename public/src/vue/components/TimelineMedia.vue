@@ -143,20 +143,26 @@ export default {
   },
   methods: {
     limitMediaYPos(yPos) {
-      console.log(`METHODS • TimelineMedia: limitMediaYPos`);
+      if (window.state.dev_mode === 'debug') {
+        console.log(`METHODS • TimelineMedia: limitMediaYPos`);
+      }
       if (this.media.type === 'marker') {
         return 50 / 2;
       }
       return Math.max(50, Math.min(this.timelineHeight - 100, yPos));
     },
     setMediaWidthFromDuration() {
-      console.log('METHODS • TimelineMedia: setMediaWidthFromDuration');
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • TimelineMedia: setMediaWidthFromDuration');
+      }
       this.mediaWidthFromDuration = Math.round(
         this.media.duration / this.timelineScale
       );
     },
     getMediaWidthFromDuration() {
-      console.log('METHODS • TimelineMedia: getMediaWidthFromDuration');
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • TimelineMedia: getMediaWidthFromDuration');
+      }
       if (this.media.duration !== undefined) {
         return { width: `${this.mediaWidthFromDuration}px` };
       }
@@ -198,22 +204,26 @@ export default {
       };
     },
     mousedown(event) {
-      console.log(
-        `METHODS • TimelineMedia: mousedown with is_dragged = ${
-          this.is_dragged
-        }`
-      );
+      if (window.state.dev_mode === 'debug') {
+        console.log(
+          `METHODS • TimelineMedia: mousedown with is_dragged = ${
+            this.is_dragged
+          }`
+        );
+      }
       if (!this.read_only) {
         window.addEventListener('mousemove', this.mousemove);
         window.addEventListener('mouseup', this.mouseup);
       }
     },
     mousemove(event) {
-      console.log(
-        `METHODS • TimelineMedia: mousemove with is_dragged = ${
-          this.is_dragged
-        }`
-      );
+      if (window.state.dev_mode === 'debug') {
+        console.log(
+          `METHODS • TimelineMedia: mousemove with is_dragged = ${
+            this.is_dragged
+          }`
+        );
+      }
       if (!this.is_dragged) {
         this.is_dragged = true;
 
@@ -234,8 +244,10 @@ export default {
       this.$emit('open');
     },
     mouseup(event) {
-      console.log(`METHODS • TimelineMedia: mouseup`);
-      console.log(`with is_dragged = ${this.is_dragged}`);
+      if (window.state.dev_mode === 'debug') {
+        console.log(`METHODS • TimelineMedia: mouseup`);
+        console.log(`with is_dragged = ${this.is_dragged}`);
+      }
       if (this.is_dragged) {
         let newY = this.mediaStylesOld.y + event.pageY - this.dragOffset.y;
         this.mediaStyles.y = this.limitMediaYPos(newY);
@@ -259,18 +271,24 @@ export default {
     },
 
     mouseover(event) {
-      console.log('METHODS • TimelineMedia: mouseover');
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • TimelineMedia: mouseover');
+      }
       this.is_hovered = true;
     },
     mouseleave(event) {
-      console.log('METHODS • TimelineMedia: mouseleave');
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • TimelineMedia: mouseleave');
+      }
       this.is_hovered = false;
     },
     toggleCollapseMedia(event) {
-      console.log(
-        'METHODS • TimelineMedia: toggleCollapseMedia with drag = ' +
-          this.is_dragged
-      );
+      if (window.state.dev_mode === 'debug') {
+        console.log(
+          'METHODS • TimelineMedia: toggleCollapseMedia with drag = ' +
+            this.is_dragged
+        );
+      }
       if (this.read_only) {
         return;
       }

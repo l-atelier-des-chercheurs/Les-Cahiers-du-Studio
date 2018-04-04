@@ -375,11 +375,22 @@ body {
     &.is--outOfScope {
       border-left: 6px solid @c-rouge_vif;
     }
+
+    .mediaContainer {
+      display: block;
+      width:50px;
+      height: 50px;
+      overflow: hidden;
+
+      img {
+        object-fit: contain;
+      }
+
+    }
   }
 
   table {
     td:first-child {
-      width:50px;
       background-color: @c-gris_verylight;
     }
     td:first-child img {
@@ -390,14 +401,29 @@ body {
   }
 }
 .m_sidebarList_mediasList {
+
+  .mediaContainer.mediaContainer {
+    position: relative;
+    margin: 0 auto;
+
+    &.type-image {
+      width: 100%;
+      height: auto;
+
+      img {
+        position: relative;
+        max-height: 60vh;
+        width:auto;
+        object-fit: contain;
+        object-position: left;
+      }
+    }
+  }
+
   table {
     table-layout: fixed;
     td {
       overflow: auto;
-
-      img {
-        max-height: 60vh;
-      }
     }
   }
 }
