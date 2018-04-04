@@ -52,6 +52,7 @@ function openInNativeBrowser(event) {
   event.path.every(item => {
     if (
       item.classList !== undefined &&
+      item.classList.length > 0 &&
       item.classList.contains('js--openInBrowser')
     ) {
       if (window && window.process && window.process.type) {
