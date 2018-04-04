@@ -62,10 +62,10 @@ export default {
     };
   },
   mounted: function() {
-    document.addEventListener('keyup', this.boitierPressed);
+    // document.addEventListener('keyup', this.boitierPressed);
   },
   destroyed: function() {
-    document.removeEventListener('keyup', this.boitierPressed);
+    // document.removeEventListener('keyup', this.boitierPressed);
   },
   watch: {
     file: function() {}
@@ -89,8 +89,10 @@ export default {
       this.$eventHub.$emit('timeline.scrollToToday');
     },
     boitierPressed(event) {
-      console.log('METHODS • AddMediaButton: boitierPressed');
-
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • AddMediaButton: boitierPressed');
+      }
+      
       // if there is a modal opened, let’s not do something
       if (this.$root.settings.has_modal_opened === true) {
         return;
