@@ -110,7 +110,6 @@ export default {
         preview_hovered: 360,
         default: 1600
       },
-      mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
     };
   },
   mounted() {
@@ -123,6 +122,9 @@ export default {
     }
   },
   computed: {
+    mediaURL: function() {
+      return this.makeUrlTo();
+    },
     thumbRes: function() {
       return this.context === 'preview'
         ? this.available_resolutions.preview
@@ -144,7 +146,7 @@ export default {
         size: this.thumbRes
       }).path;
       
-      let urlToThumb = this.makeUrlToThumb(pathToSmallestThumb, this.mediaURL);
+      let urlToThumb = this.makeUrlTo(pathToSmallestThumb);
       return urlToThumb;
     },
     linkToHoveredThumb: function() {
@@ -152,7 +154,7 @@ export default {
         size: this.thumbResHovered
       }).path;
       
-      let urlToThumb = this.makeUrlToThumb(pathToSmallestThumb, this.mediaURL);
+      let urlToThumb = this.makeUrlTo(pathToSmallestThumb);
       return urlToThumb;
     },
     linkToVideoThumb: function() {
@@ -171,18 +173,18 @@ export default {
         size: this.thumbRes
       }).path;
 
-      let urlToThumb = this.makeUrlToThumb(pathToSmallestThumb, this.mediaURL);
+      let urlToThumb = this.makeUrlTo(pathToSmallestThumb);
       return urlToThumb;
     }
   },
   methods: {
-    makeUrlToThumb: function(pathToSmallestThumb, mediaUrl) {
-      let urlToThumb = pathToSmallestThumb !== undefined
+    makeUrlTo: function(pathToSmallestThumb) {
+      let urlTo = pathToSmallestThumb !== undefined
         ? pathToSmallestThumb
-        : this.mediaURL;
+        : `${this.slugFolderName}/${this.slugMediaName}`;
       
-      urlToThumb = this.$root.state.mode === 'export' ? `./${urlToThumb}` : `/${urlToThumb}`
-      return urlToThumb;
+      urlTo = this.$root.state.mode === 'export' ? `./${urlTo}` : `/${urlTo}`
+      return urlTo;
     }
         
   }
