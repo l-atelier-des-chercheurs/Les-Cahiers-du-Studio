@@ -126,14 +126,14 @@ export default {
     }
   },
   created: function() {
-    window.addEventListener('keyup', this.modalKeyListener);
+    document.addEventListener('keyup', this.modalKeyListener);
     document.body.classList.add('is_unscrollable');
     this.$root.settings.has_modal_opened = true;
   },
   mounted: function() {
     this.showModal = true;
   },
-  destroyed: function() {
+  beforeDestroy: function() {
     document.removeEventListener('keyup', this.modalKeyListener);
     document.body.classList.remove('is_unscrollable');
     this.$root.settings.has_modal_opened = false;
