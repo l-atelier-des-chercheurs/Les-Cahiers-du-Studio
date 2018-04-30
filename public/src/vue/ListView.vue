@@ -208,8 +208,16 @@ export default {
             folder.folderID &&
             folder.folderID === this.$root.justCreatedFolderID
           ) {
-            this.$root.justCreatedFolderID = false;
+            if(this.$root.justCreatedFolderPassword !== false) {
+              auth.updateAdminAccess({
+                [slugFolderName]: this.$root.justCreatedFolderPassword
+              });
+              this.$socketio.sendAuth();
+              this.$root.justCreatedFolderPassword = false; 
+            }
             this.$root.openFolder(slugFolderName);
+
+            this.$root.justCreatedFolderID = false;
           }
         });
       }

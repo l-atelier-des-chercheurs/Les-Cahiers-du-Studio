@@ -19,9 +19,19 @@ window.auth = (function() {
 
   function init() {
     admin_access = localstore.get('admin_access') || {};
+    console.log(
+      `Auth / init with admin_access = ${JSON.stringify(admin_access, null, 4)}`
+    );
   }
 
   function updateAdminAccess(folderPass) {
+    console.log(
+      `Auth / updateAdminAccess with folderPass = ${JSON.stringify(
+        folderPass,
+        null,
+        4
+      )}`
+    );
     for (let slugFolderName in folderPass) {
       admin_access[slugFolderName] = folderPass[slugFolderName];
     }

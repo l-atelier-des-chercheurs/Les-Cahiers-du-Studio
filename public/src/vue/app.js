@@ -302,6 +302,7 @@ let vm = new Vue({
 
     justCreatedTextmediaID: false,
     justCreatedFolderID: false,
+    justCreatedFolderPassword: false,
 
     settings: {
       has_modal_opened: false,
@@ -401,6 +402,9 @@ let vm = new Vue({
           .toString(36)
           .substring(2, 15);
       this.justCreatedFolderID = fdata.folderID;
+      if (fdata.password !== '') {
+        this.justCreatedFolderPassword = fdata.password;
+      }
 
       this.$socketio.createFolder(fdata);
     },
