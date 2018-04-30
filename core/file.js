@@ -745,7 +745,7 @@ module.exports = (function() {
           }
 
           /***************************************************************************
-              DURATION
+              GET EXIF
           ***************************************************************************/
           if (mdata.type === 'image') {
             let getFullEXIF = new Promise((resolve, reject) => {
@@ -757,7 +757,8 @@ module.exports = (function() {
                 resolve();
               });
             });
-            tasks.push(getFullEXIF);
+            // temporarily disabled adding full exif meta to files — too much data to add
+            // tasks.push(getFullEXIF);
           }
 
           /***************************************************************************
