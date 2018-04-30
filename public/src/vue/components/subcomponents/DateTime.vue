@@ -41,7 +41,10 @@ export default {
   },
   methods: {
     updateDate() {
-      this.$emit('input', this.$moment(this.date + 'T' + this.time));
+      const newDateStr = this.date + 'T' + this.time;
+      if(this.$moment(newDateStr).isValid()) {
+        this.$emit('input', this.$moment(newDateStr));
+      }
     }
   }
 };
