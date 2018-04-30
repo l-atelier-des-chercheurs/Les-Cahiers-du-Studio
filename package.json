@@ -2,11 +2,9 @@
   "name": "les-cahiers-du-studio",
   "productName": "Les Cahiers du Studio",
   "version": "1.6.0-dev",
-  "description":
-    "A time-based documentation tool to collaboratively keep notes and capture media from live experiences.",
+  "description": "A time-based documentation tool to collaboratively keep notes and capture media from live experiences.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
-  "homepage":
-    "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio",
+  "homepage": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio",
   "license": "CC-BY-NC-SA-4.0",
   "main": "main.js",
   "private": true,
@@ -15,8 +13,7 @@
     "url": "git://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio"
   },
   "bugs": {
-    "url":
-      "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio/issues"
+    "url": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio/issues"
   },
   "scripts": {
     "start": "electron .",
