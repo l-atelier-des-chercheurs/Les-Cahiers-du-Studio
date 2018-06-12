@@ -311,7 +311,8 @@ let vm = new Vue({
       highlightMedia: '',
       is_loading_medias_for_folder: '',
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
-      perf_mode: 'low'
+      perf_mode: 'low',
+      keyboard_shortcuts: []
     },
 
     lang: {
@@ -330,6 +331,8 @@ let vm = new Vue({
     if (window.state.dev_mode === 'debug') {
       console.log('ROOT EVENT: created / checking for errors');
     }
+
+    this.settings.keyboard_shortcuts = this.getKeyboardShortcuts();
 
     if (this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {
@@ -558,6 +561,20 @@ let vm = new Vue({
         return viewportScrollLeft[slugFolderName];
       }
       return 0;
+    },
+    updateKeyboardShortcuts: function(keyboard_shortcuts) {
+      if (window.state.dev_mode === 'debug') {
+        console.log('ROOT EVENT: updateKeyboardShortcuts');
+      }
+      localstore.set('keyboard_shortcuts', keyboard_shortcuts);
+      this.settings.keyboard_shortcuts = keyboard_shortcuts;
+    },
+    getKeyboardShortcuts: function() {
+      if (window.state.dev_mode === 'debug') {
+        console.log('ROOT EVENT: getKeyboardShortcuts');
+      }
+      let kbs = localstore.get('keyboard_shortcuts') || [];
+      return kbs;
     }
   },
   watch: {

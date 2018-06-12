@@ -61,6 +61,29 @@
       </div>
     </SidebarSection>
     
+    <SidebarSection>
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t('keyboard_shortcuts') }}
+          <button
+            type="button"
+            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="showKeyboardShortcutsList = true"
+          >
+            {{ $t('open') }}
+          </button>
+        </h3>
+        {{ keyboard_shortcuts }}
+      </div>
+    </SidebarSection>
+        
+
+    <KeyboardShortcuts
+      v-if="showKeyboardShortcutsList === true"
+      @close="showKeyboardShortcutsList = false"
+    >
+    </KeyboardShortcuts>
+
     <SidebarSection v-if="$root.state.mode !== 'export'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
@@ -134,7 +157,7 @@
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="openListMediasModal()"
-            >
+          >
             {{ $t('fullscreen') }}
           </button>
         </h3>
@@ -179,6 +202,7 @@ import Calendrier from './sidebar/Calendrier.vue';
 import Tableau from './sidebar/Tableau.vue';
 import SidebarSection from './sidebar/SidebarSection.vue';
 import MediasList from './modals/MediasList.vue';
+import KeyboardShortcuts from './modals/KeyboardShortcuts.vue';
 import qrcode from '@xkeshi/vue-qrcode';
 
 export default {
@@ -186,6 +210,7 @@ export default {
     SidebarSection,
     Tableau,
     MediasList,
+    KeyboardShortcuts,
     qrcode
   },
   props: {
@@ -207,6 +232,7 @@ export default {
   data() {
     return {
       showMediasList: false,
+      showKeyboardShortcutsList: false,
       filter: '',
       currentLang: this.$root.lang.current,
 
@@ -485,7 +511,6 @@ export default {
     setFilter(newFilter) {
       this.filter = newFilter;
     },
-
     downloadExport() {
       window.location.replace(window.location.href + '/export');
     }

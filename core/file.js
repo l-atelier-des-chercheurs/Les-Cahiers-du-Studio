@@ -404,8 +404,7 @@ module.exports = (function() {
         slugFolderName
       );
 
-      fs
-        .move(folderPath, movedFolderPath, { overwrite: true })
+      fs.move(folderPath, movedFolderPath, { overwrite: true })
         .then(() => {
           dev.logfunction(
             `COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`
@@ -917,8 +916,7 @@ module.exports = (function() {
       let mediaMetaPath = mediaPath + settings.metaFileext;
       let movedMediaMetaPath = movedMediaPath + settings.metaFileext;
 
-      fs
-        .move(mediaPath, movedMediaPath, { overwrite: true })
+      fs.move(mediaPath, movedMediaPath, { overwrite: true })
         .then(() => {
           return fs.move(mediaMetaPath, movedMediaMetaPath, {
             overwrite: true
@@ -946,7 +944,10 @@ module.exports = (function() {
 
       let slugFolderName = mdata.slugFolderName;
       let timeCreated = api.getCurrentDate();
-      let textMediaName = timeCreated + '.md';
+      let textMediaName =
+        timeCreated +
+        (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2) +
+        '.md';
 
       if (mdata.hasOwnProperty('type')) {
         textMediaName = mdata.type + '-' + textMediaName;

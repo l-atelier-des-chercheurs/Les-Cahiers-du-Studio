@@ -62,10 +62,10 @@ export default {
     };
   },
   mounted: function() {
-    // document.addEventListener('keyup', this.boitierPressed);
+    document.addEventListener('keyup', this.boitierPressed);
   },
   destroyed: function() {
-    // document.removeEventListener('keyup', this.boitierPressed);
+    document.removeEventListener('keyup', this.boitierPressed);
   },
   watch: {
     file: function() {}
@@ -103,49 +103,17 @@ export default {
       }
 
       var key = event.key;
-      if (key === 'y' || key === 'w' || key === 'z') {
-        this.$root.createTextMedia({
-          slugFolderName: this.slugFolderName,
-          type: 'marker',
-          color: 'blue'
-        });
-        this.$eventHub.$emit('timeline.scrollToToday');
-      } else if (key === 'u' || key == 's') {
-        this.$root.createTextMedia({
-          slugFolderName: this.slugFolderName,
-          type: 'marker',
-          color: 'red'
-        });
-        this.$eventHub.$emit('timeline.scrollToToday');
-      } else if (key === 'i' || key === 'a' || key === 'q') {
-        this.$root.createTextMedia({
-          slugFolderName: this.slugFolderName,
-          type: 'marker',
-          color: 'green'
-        });
-        this.$eventHub.$emit('timeline.scrollToToday');
-      } else if (key === 'o') {
-        this.$root.createTextMedia({
-          slugFolderName: this.slugFolderName,
-          type: 'marker',
-          color: 'yellow'
-        });
-        this.$eventHub.$emit('timeline.scrollToToday');
-      } else if (key === 'p') {
-        this.$root.createTextMedia({
-          slugFolderName: this.slugFolderName,
-          type: 'marker',
-          color: 'orange'
-        });
-        this.$eventHub.$emit('timeline.scrollToToday');
-      } else if (key === '6') {
-        this.$root.createTextMedia({
-          slugFolderName: this.slugFolderName,
-          type: 'marker',
-          color: 'purple'
-        });
-        this.$eventHub.$emit('timeline.scrollToToday');
-      }
+
+      this.$root.settings.keyboard_shortcuts.forEach((k) => {
+        if(k.key === key && k.marker_color !== '') {
+          this.$root.createTextMedia({
+            slugFolderName: this.slugFolderName,
+            type: 'marker',
+            color: k.marker_color
+          });
+          this.$eventHub.$emit('timeline.scrollToToday');
+        }
+      });
     }
   }
 };
