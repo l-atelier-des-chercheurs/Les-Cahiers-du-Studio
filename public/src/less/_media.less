@@ -158,6 +158,14 @@
 
       transition: opacity 0.3s ease-out;
     }
+
+    .type-audio& {
+      .timelineMediaContent {
+        margin-right: -188px;
+      }
+      opacity: 1;
+    }
+
   }
 
 
@@ -186,6 +194,8 @@
 
     transition: transform .2s ease-out;
 
+
+
     .mediaContainer {
       pointer-events: none;
 
@@ -199,6 +209,10 @@
           top: 0;
           right: 0;
         }
+      }
+
+      &.type-audio {
+        pointer-events: auto;
       }
 
       &.type-audio {

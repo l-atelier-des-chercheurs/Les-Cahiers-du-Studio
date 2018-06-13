@@ -10,18 +10,17 @@
     @mousedown.prevent="mousedown"
     @mouseover="mouseover"
     @mouseleave="mouseleave"
-    @mouseup="openMedia"
-    >
+  >
 
     <div class="media">
 
       <div class="mediaScrubber"
-        :style="getMediaWidthFromDuration()"
-        >
+      :style="getMediaWidthFromDuration()"
+      >
         <!-- play media on click -->
         <template
-          v-if="media.duration !== undefined"
-          >
+        v-if="media.duration !== undefined"
+        >
           <button class="accroche accroche_gauche"></button>
           <div class="accrocheDurationLine"></div>
         </template>
@@ -33,32 +32,32 @@
       :style="getMediaSize()"
       >
         <MediaContent
-          v-if="!is_placeholder"
-          v-model="media.content"
-          :slugFolderName="slugFolderName"
-          :slugMediaName="slugMediaName"
-          :media="media"
-          :context="'preview'"
-          :is_hovered="is_hovered"
-          :read_only="read_only"
-          >
+        v-if="!is_placeholder"
+        v-model="media.content"
+        :slugFolderName="slugFolderName"
+        :slugMediaName="slugMediaName"
+        :media="media"
+        :context="'preview'"
+        :is_hovered="is_hovered"
+        :read_only="read_only"
+        >
         </MediaContent>
 
         <!-- <div class="mediaContour" /> -->
 
         <transition
-          name="slide"
-          enter-active-class="slideInUp"
-          leave-active-class="slideOutDown"
-          :duration="350"
-          >
+        name="slide"
+        enter-active-class="slideInUp"
+        leave-active-class="slideOutDown"
+        :duration="350"
+        >
           <button
-            type="button"
-            class="button_openmedia bg-noir c-blanc"
-            :class="{ 'padding-verysmall button-thin' : this.media.type === 'marker' }"
-            style="animation-duration: 0.3s"
-            v-if="!is_placeholder && is_hovered"
-            @mousedown.stop="openMedia"
+          type="button"
+          class="button_openmedia bg-noir c-blanc"
+          :class="{ 'padding-verysmall button-thin' : this.media.type === 'marker' }"
+          style="animation-duration: 0.3s"
+          v-if="!is_placeholder && is_hovered"
+          @mousedown.stop="openMedia"
           >
             {{ $t('open') }}
           </button>
@@ -132,11 +131,12 @@ export default {
     },
     timelineScale: function() {
       this.setMediaWidthFromDuration();
+      this.setMediaSize();
     }
   },
   mounted() {
-    this.setMediaSize();
     this.setMediaWidthFromDuration();
+    this.setMediaSize();
   },
   beforeDestroy() {
     window.removeEventListener('mouseup', this.mouseup);
@@ -186,13 +186,14 @@ export default {
         }
       }
 
-      // if there’s some ratio
+      // if there’s some duration
       if (this.media.duration > 0) {
-        if (this.media.type === 'audio') {
-          this.mediaStyles.h = 32;
-        }
         if (this.mediaWidthFromDuration > this.mediaStyles.w) {
           this.mediaStyles.w = this.mediaWidthFromDuration;
+        }
+        if (this.media.type === 'audio') {
+          this.mediaStyles.h = 32;
+          this.mediaStyles.w = this.mediaWidthFromDuration + 110 + 185;
         }
       }
     },
