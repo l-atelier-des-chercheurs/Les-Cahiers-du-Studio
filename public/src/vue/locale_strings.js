@@ -104,7 +104,8 @@ module.exports = (function() {
           'Ce nom de dossier existe déjà, utilisez-en un autre.',
         folder_name_needs_alphanumeric_characters:
           'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
-        'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:'
+        'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:',
+        folder_export_started: 'Préparation du fichier à exporter en cours…'
       }
     },
     en: {
@@ -189,7 +190,7 @@ module.exports = (function() {
       preview: 'Preview',
       filter: 'Filter',
 
-      export_folder: 'Export as a webpage',
+      export_folder: 'Export timeline and medias as a webpage',
       export: 'Export',
 
       last_modified: 'Last modified',
@@ -208,7 +209,8 @@ module.exports = (function() {
         folder_name_exists: 'Folder name already exists. Please use another.',
         folder_name_needs_alphanumeric_characters:
           'Folder names need to contain at least one alphanumeric character.',
-        'failed_to_get_folder:': 'Failed to get the requested folder:'
+        'failed_to_get_folder:': 'Failed to get the requested folder:',
+        folder_export_started: 'Export requested…'
       }
     }
   };

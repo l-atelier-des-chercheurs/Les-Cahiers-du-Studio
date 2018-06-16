@@ -61,7 +61,7 @@
       </div>
     </SidebarSection>
     
-    <SidebarSection>
+    <SidebarSection v-if="$root.state.mode !== 'export'">
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('keyboard_shortcuts') }}
@@ -69,6 +69,7 @@
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showKeyboardShortcutsList = true"
+            :disabled="read_only"            
           >
             {{ $t('open') }}
           </button>
@@ -204,6 +205,7 @@ import SidebarSection from './sidebar/SidebarSection.vue';
 import MediasList from './modals/MediasList.vue';
 import KeyboardShortcuts from './modals/KeyboardShortcuts.vue';
 import qrcode from '@xkeshi/vue-qrcode';
+import alertify from 'alertify.js';
 
 export default {
   components: {
@@ -512,6 +514,11 @@ export default {
       this.filter = newFilter;
     },
     downloadExport() {
+      alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .log(this.$t('notifications.folder_export_started'));
+
       window.location.replace(window.location.href + '/export');
     }
   }

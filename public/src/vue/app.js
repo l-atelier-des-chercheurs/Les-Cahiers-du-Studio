@@ -246,13 +246,13 @@ Vue.prototype.$socketio = new Vue({
       window.store.folders = Object.assign({}, fdata);
       window.dispatchEvent(new CustomEvent('socketio.folders_listed'));
     },
-    _onNotify(msg) {
+    _onNotify({ localized_string, not_localized_string }) {
       console.log('Received _onNotify packet.');
 
       alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .error(this.$t(`notifications[${msg}]`));
+        .log(this.$t(`notifications[${msg}]`));
     },
 
     listFolders() {
