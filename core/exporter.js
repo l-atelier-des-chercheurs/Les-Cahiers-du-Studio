@@ -7,7 +7,7 @@ const settings = require('../settings.json'),
 
 module.exports = (function() {
   return {
-    copyWebsiteContent: function({ html, slugFolderName }) {
+    copyWebsiteContent: ({ html, slugFolderName }) => {
       return new Promise(function(resolve, reject) {
         // create cache folder that we will need to copy the content
         let cacheFolderName =
@@ -17,7 +17,7 @@ module.exports = (function() {
           (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
 
         let cachePath = path.join(
-          global.appRoot,
+          global.tempStorage,
           settings.cacheDirname,
           cacheFolderName
         );
@@ -51,8 +51,7 @@ module.exports = (function() {
                   'dist'
                 );
                 let productionFolderInCache = path.join(cachePath, 'dist');
-                fs
-                  .copy(productionFolder, productionFolderInCache)
+                fs.copy(productionFolder, productionFolderInCache)
                   .then(() => {
                     resolve();
                   })
@@ -68,8 +67,7 @@ module.exports = (function() {
               new Promise((resolve, reject) => {
                 let fontFolder = path.join(global.appRoot, 'public', 'fonts');
                 let fontFolderInCache = path.join(cachePath, 'fonts');
-                fs
-                  .copy(fontFolder, fontFolderInCache)
+                fs.copy(fontFolder, fontFolderInCache)
                   .then(() => {
                     resolve();
                   })
@@ -96,8 +94,7 @@ module.exports = (function() {
                   relativePathToThumbFolder
                 );
 
-                fs
-                  .copy(fullThumbSlugFolderPath, thumbFolderInCache)
+                fs.copy(fullThumbSlugFolderPath, thumbFolderInCache)
                   .then(() => {
                     resolve();
                   })
@@ -114,8 +111,7 @@ module.exports = (function() {
                 let fullSlugFolderPath = api.getFolderPath(slugFolderName);
                 let slugFolderInCache = path.join(cachePath, slugFolderName);
 
-                fs
-                  .copy(fullSlugFolderPath, slugFolderInCache)
+                fs.copy(fullSlugFolderPath, slugFolderInCache)
                   .then(() => {
                     resolve();
                   })

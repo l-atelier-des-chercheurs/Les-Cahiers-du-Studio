@@ -6,11 +6,12 @@ module.exports = dev = (function() {
   let isVerboseMode = false;
   let logToFile = false;
 
-  logger.transports.console = false;
+  logger.transports.file.level = 'info';
+  logger.transports.console.level = false;
 
   const API = {
-    init: (isDebug, isVerbose) => {
-      return initModule(isDebug, isVerbose);
+    init: (isDebug, isVerbose, logToFile) => {
+      return initModule(isDebug, isVerbose, logToFile);
     },
     log: log,
     logverbose: logverbose,
@@ -20,10 +21,11 @@ module.exports = dev = (function() {
     isDebug: () => isDebugMode
   };
 
-  function initModule(d, v) {
+  function initModule(d, v, l) {
     isDebugMode = d;
     isVerboseMode = v;
-    logToFile = global.nodeStorage.getItem('logToFile');
+    logToFile = l;
+    console.log(`Init module with debug = ${d} and verbose = ${v}`);
 
     if (isDebugMode) {
       console.log('Debug mode is Enabled');

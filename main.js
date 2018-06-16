@@ -8,7 +8,6 @@ const {
 
 const path = require('path');
 const fs = require('fs-extra');
-const flags = require('flags');
 const { dialog } = require('electron');
 const JSONStorage = require('node-localstorage').JSONStorage;
 const portscanner = require('portscanner');
@@ -37,13 +36,13 @@ function createWindow() {
   var storageLocation = app.getPath('userData');
   global.nodeStorage = new JSONStorage(storageLocation);
 
-  flags.defineBoolean('debug');
-  flags.defineBoolean('verbose');
-  flags.parse();
+  const debug =
+    process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
+  const verbose =
+    process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
+  const logToFile = false;
 
-  const debug = flags.get('debug');
-  const verbose = flags.get('verbose');
-  dev.init(debug, verbose);
+  dev.init(debug, verbose, logToFile);
 
   if (dev.isDebug()) {
     process.traceDeprecation = true;
@@ -54,6 +53,7 @@ function createWindow() {
   }
 
   global.appRoot = path.resolve(__dirname);
+  global.tempStorage = app.getPath('temp');
   global.appInfos.version = app.getVersion();
   let pathToPresentationMd = path.join(
     `${__dirname.replace(`${path.sep}app.asar`, '')}`,
@@ -141,7 +141,7 @@ function createWindow() {
               // and load the base url of the app.
               win.loadURL(global.appInfos.homeURL);
 
-              if (dev.isDebug() || global.nodeStorage.getItem('logToFile')) {
+              if (dev.isDebug()) {
                 // win.webContents.openDevTools({mode: 'detach'});
                 installExtension(VUEJS_DEVTOOLS)
                   .then(name => console.log(`Added Extension:  ${name}`))
@@ -355,10 +355,15 @@ function copyAndRenameUserFolder() {
 
 function cleanCacheFolder() {
   return new Promise(function(resolve, reject) {
-    let cachePath = path.join(global.appRoot, settings.cacheDirname);
-    fs.emptyDir(cachePath).then(() => {
-      resolve();
-    });
+    let cachePath = path.join(global.tempStorage, settings.cacheDirname);
+    fs.emptyDir(cachePath)
+      .then(() => {
+        resolve();
+      })
+      .catch(err => {
+        dev.error(err);
+        return reject(err);
+      });
   });
 }
 
