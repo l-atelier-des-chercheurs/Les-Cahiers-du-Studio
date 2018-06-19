@@ -11,23 +11,54 @@
 
     <template slot="sidebar">
       <div class="margin-bottom-small">
-        <div>Associez ici l’appui sur des touches du clavier (ou d’un boîtier do•doc) à la création de markers colorés à ce moment précis dans la timeline :</div>
+        <div>
+          {{ $t('keyboard_shortcuts_instructions') }}
+        </div>
       </div>
       <div class="margin-bottom-small">
-        <div class="input-group" v-for="(ks, index) in new_keyboard_shortcuts" :key="ks.keys">
-          <input type="text" v-model="ks.key" />
-          <select v-model="ks.marker_color">
-            <option v-for="mediaColor in $root.state.structure.media.color.options" :key="mediaColor">
-              {{ mediaColor }}
-            </option>
-          </select>
-          <button type="button" class="button-small padding-small margin-none bg-transparent" @click="removeShortcut(index)">
-            Supprimer
-          </button>
-        </div>
-        <button type="button" class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent" @click="appendShortcut">
-          Ajouter
-        </button>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 50px">
+                Key
+              </th>
+              <th>
+                Marker color
+              </th>
+              <th></th>
+            </tr>
+          </thead>
+          <transition-group
+            tag="tbody"
+            name="list-complete"
+          >
+            <tr v-for="(ks, index) in new_keyboard_shortcuts" :key="index">
+              <td>
+                <input type="text" v-model="ks.key" />
+              </td>
+              <td>
+                <select v-model="ks.marker_color">
+                  <option v-for="mediaColor in $root.state.structure.media.color.options" :key="mediaColor">
+                    {{ mediaColor }}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <button type="button" class="button-small padding-small margin-none bg-transparent" @click="removeShortcut(index)">
+                  {{ $t('remove') }}
+                </button>
+              </td>  
+            </tr>          
+            <tr :key="'create'">
+              <td colspan=3 >
+                <button type="button" class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent" @click="appendShortcut">
+                  {{ $t('create') }}
+                </button>
+              </td>
+            </tr>
+          </transition-group>
+        </table>
+
       </div>
     </template>
 
