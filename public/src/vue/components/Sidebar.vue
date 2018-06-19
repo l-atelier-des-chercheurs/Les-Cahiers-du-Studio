@@ -219,8 +219,10 @@ export default {
     slugFolderName: String,
     folder: Object,
     medias: Object,
+    sortedMedias: Array,
     timelineInfos: Object,
     visibleDay: Number,
+    sort: Object,
     isRealtime: {
       type: Boolean,
       default: false
@@ -235,150 +237,15 @@ export default {
     return {
       showMediasList: false,
       showKeyboardShortcutsList: false,
-      filter: '',
       currentLang: this.$root.lang.current,
 
-      sort: {
-        current: {
-          field: 'date_timeline',
-          name: this.$t('date'),
-          type: 'date',
-          order: 'ascending'
-        },
-
-        available: [
-          {
-            field: 'date_timeline',
-            name: this.$t('date'),
-            type: 'date',
-            order: 'ascending'
-          },
-          {
-            field: 'date_modified',
-            name: this.$t('last_modified'),
-            type: 'date',
-            order: 'descending'
-          },
-          {
-            field: 'caption',
-            name: this.$t('caption'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'type',
-            name: this.$t('type'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'color',
-            name: this.$t('color'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'keywords',
-            name: this.$t('keywords'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'authors',
-            name: this.$t('author'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'public',
-            name: this.$t('public'),
-            type: 'alph',
-            order: 'descending'
-          },
-          {
-            field: 'content',
-            name: this.$t('content'),
-            type: 'alph',
-            order: 'ascending'
-          }
-        ]
-      }
     };
   },
   mounted() {
-    this.$eventHub.$on('setSort', this.setSort);
-    this.$eventHub.$on('setFilter', this.setFilter);
   },
   beforeDestroy() {
-    this.$eventHub.$off('setSort');
-    this.$eventHub.$off('setFilter');
   },
   computed: {
-    sortedMedias() {
-      var sortable = [];
-      for (let slugMediaName in this.medias) {
-        let mediaDataToOrderBy;
-
-        if (this.sort.current.type === 'date') {
-          mediaDataToOrderBy = +this.$moment(
-            this.medias[slugMediaName][this.sort.current.field],
-            'YYYY-MM-DD HH:mm:ss'
-          );
-        } else if (this.sort.current.type === 'alph') {
-          mediaDataToOrderBy = this.medias[slugMediaName][
-            this.sort.current.field
-          ];
-        }
-
-        sortable.push({
-          slugMediaName: slugMediaName,
-          mediaDataToOrderBy: mediaDataToOrderBy
-        });
-      }
-      let sortedSortable = sortable.sort(function(a, b) {
-        let valA = a.mediaDataToOrderBy;
-        let valB = b.mediaDataToOrderBy;
-        if (
-          typeof a.mediaDataToOrderBy === 'string' &&
-          typeof b.mediaDataToOrderBy === 'string'
-        ) {
-          valA = valA.toLowerCase();
-          valB = valB.toLowerCase();
-        }
-        if (valA < valB) {
-          return -1;
-        }
-        if (valA > valB) {
-          return 1;
-        }
-        return 0;
-      });
-
-      if (this.sort.current.order === 'descending') {
-        sortedSortable.reverse();
-      }
-
-      // array order is garanteed while objects properties aren’t,
-      // that’s why we use an array here
-      let sortedMedias = sortedSortable.reduce((result, d) => {
-        let sortedMediaObj = this.medias[d.slugMediaName];
-        sortedMediaObj.slugMediaName = d.slugMediaName;
-
-        if (this.filter.length > 0) {
-          // if there is a filter set, let’s only return medias whose mediaDataToOrderBy contain that string
-          let originalContentFromMedia =
-            sortedMediaObj[this.sort.current.field] + '';
-          if (originalContentFromMedia.indexOf(this.filter) !== -1) {
-            result.push(sortedMediaObj);
-          }
-        } else {
-          result.push(sortedMediaObj);
-        }
-
-        return result;
-      }, []);
-      return sortedMedias;
-    }
   },
 
   watch: {
@@ -506,13 +373,7 @@ export default {
     scrollToToday() {
       this.$eventHub.$emit('timeline.scrollToToday');
     },
-
-    setSort(newSort) {
-      this.sort.current = newSort;
-    },
-    setFilter(newFilter) {
-      this.filter = newFilter;
-    },
+    
     downloadExport() {
       alertify
         .closeLogOnClick(true)

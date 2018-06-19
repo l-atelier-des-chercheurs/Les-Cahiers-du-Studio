@@ -28,6 +28,8 @@
         :slugFolderName="slugFolderName"
         :visibleDay="timelineViewport.visibleDay"
         :medias="medias"
+        :sortedMedias="sortedMedias"
+        :sort="sort"
         :timelineInfos="timelineInfos"
         :isRealtime="isRealtime"
         :style="{ height: `${sidebarHeight}px` }"
@@ -148,18 +150,20 @@
         </div>
 
         <template v-if="Object.keys(medias).length > 0">
-          <TimelineMedia v-for="(media, index) in medias"
-            :key="index"
-            :ref="`media_${index}`"
+          <TimelineMedia
+            v-for="media in sortedMedias"
+            :key="media.slugMediaName"
+
+            :ref="`media_${media.slugMediaName}`"
             :slugFolderName="slugFolderName"
-            :slugMediaName="index"
-            :is_placeholder="!mediaIsClose(index,media)"
+            :slugMediaName="media.slugMediaName"
+            :is_placeholder="!mediaIsClose(media.slugMediaName,media)"
             :media="media"
             :timelineScale="timelineViewport.scale"
             :timelineHeight="timelineHeight"
-            :posX="getMediaPosX(index)"
-            :class="{ 'is--highlighted' : highlightedMedia === index }"
-            @open="openMediaModal(index)"
+            :posX="getMediaPosX(media.slugMediaName)"
+            :class="{ 'is--highlighted' : highlightedMedia === media.slugMediaName }"
+            @open="openMediaModal(media.slugMediaName)"
             :read_only="read_only"
           >
           </TimelineMedia>
@@ -177,7 +181,27 @@
             </code>
           </div>
         </template>
-
+      </div>
+      <div v-if="sort.current.field !== undefined"
+        class="m_filterIndicator">
+        <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
+          <button type="button" 
+            class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
+            v-html="'x'" 
+            @click="sort.current = {}; filter = '';"
+          />
+          <small>
+            <div class="">
+              <span v-html="$t('active_filter:')" />
+              {{ ' ' }}
+              <span v-html="sort.current.name" />
+            </div>
+            <div class="">
+              <span v-html="$t('medias_shown:')" />
+              <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
+            </div>
+          </small>
+        </div>
       </div>
 
       <AddMediaButton
@@ -297,6 +321,68 @@ export default {
         longestIntervalTS: 86400000 * 10,
         leftPadding: 0,
         viewerWidth: 0
+      },
+
+      filter: '',
+      sort: {
+        current: {},
+
+        available: [
+          {
+            field: 'date_timeline',
+            name: this.$t('date'),
+            type: 'date',
+            order: 'ascending'
+          },
+          {
+            field: 'date_modified',
+            name: this.$t('last_modified'),
+            type: 'date',
+            order: 'descending'
+          },
+          {
+            field: 'caption',
+            name: this.$t('caption'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'type',
+            name: this.$t('type'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'color',
+            name: this.$t('color'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'keywords',
+            name: this.$t('keywords'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'authors',
+            name: this.$t('author'),
+            type: 'alph',
+            order: 'ascending'
+          },
+          {
+            field: 'public',
+            name: this.$t('public'),
+            type: 'alph',
+            order: 'descending'
+          },
+          {
+            field: 'content',
+            name: this.$t('content'),
+            type: 'alph',
+            order: 'ascending'
+          }
+        ]
       }
     };
   },
@@ -392,6 +478,9 @@ export default {
     this.$eventHub.$on('timeline.showZoomZone', this.showZoomZone);
     this.$eventHub.$on('timeline.hideZoomZone', this.hideZoomZone);
 
+    this.$eventHub.$on('setSort', this.setSort);
+    this.$eventHub.$on('setFilter', this.setFilter);
+
     this.timelineViewport.leftPadding = parseInt(
       $(this.$refs.timeline).css('padding-left'),
       10
@@ -413,7 +502,7 @@ export default {
       }
 
       console.log(
-        `METHODS • TimeLineView: setInterval updating (timelineUpdateRoutine)`
+        `MOUNTED • TimeLineView: setInterval updating (timelineUpdateRoutine)`
       );
 
       this.currentTime = this.$moment().millisecond(0);
@@ -448,11 +537,85 @@ export default {
     this.$eventHub.$off('timeline.showZoomZone', this.showZoomZone);
     this.$eventHub.$off('timeline.hideZoomZone', this.hideZoomZone);
 
+    this.$eventHub.$off('setSort');
+    this.$eventHub.$off('setFilter');
+
     window.removeEventListener('resize', this.onResize);
 
     clearInterval(this.timelineUpdateRoutine);
   },
-  computed: {},
+  computed: {
+    sortedMedias() {
+      var sortable = [];
+      let current_sort = !!this.sort.current.type ? this.sort.current : this.sort.available[0];
+      for (let slugMediaName in this.medias) {
+        let mediaDataToOrderBy;
+
+        if(!this.medias[slugMediaName].hasOwnProperty(current_sort.field)) {
+          continue;
+        }
+
+        if (current_sort.type === 'date') {
+          mediaDataToOrderBy = +this.$moment(
+            this.medias[slugMediaName][current_sort.field],
+            'YYYY-MM-DD HH:mm:ss'
+          );
+        } else if (current_sort.type === 'alph') {
+          mediaDataToOrderBy = this.medias[slugMediaName][
+            current_sort.field
+          ];
+        }
+
+        sortable.push({
+          slugMediaName: slugMediaName,
+          mediaDataToOrderBy: mediaDataToOrderBy
+        });
+      }
+      let sortedSortable = sortable.sort(function(a, b) {
+        let valA = a.mediaDataToOrderBy;
+        let valB = b.mediaDataToOrderBy;
+        if (
+          typeof a.mediaDataToOrderBy === 'string' &&
+          typeof b.mediaDataToOrderBy === 'string'
+        ) {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        }
+        if (valA < valB) {
+          return -1;
+        }
+        if (valA > valB) {
+          return 1;
+        }
+        return 0;
+      });
+
+      if (current_sort.order === 'descending') {
+        sortedSortable.reverse();
+      }
+
+      // array order is garanteed while objects properties aren’t,
+      // that’s why we use an array here
+      let sortedMedias = sortedSortable.reduce((result, d) => {
+        let sortedMediaObj = this.medias[d.slugMediaName];
+        sortedMediaObj.slugMediaName = d.slugMediaName;
+
+        if (this.filter.length > 0) {
+          // if there is a filter set, let’s only return medias whose mediaDataToOrderBy contain that string
+          let originalContentFromMedia =
+            sortedMediaObj[current_sort.field] + '';
+          if (originalContentFromMedia.indexOf(this.filter) !== -1) {
+            result.push(sortedMediaObj);
+          }
+        } else {
+          result.push(sortedMediaObj);
+        }
+
+        return result;
+      }, []);
+      return sortedMedias;
+    }    
+  },
   methods: {
     /******************************************************************
         Updates timelineInfos with folder start and end
@@ -987,6 +1150,12 @@ export default {
       if (dateFromPosX !== this.timelineViewport.visibleDay) {
         this.timelineViewport.visibleDay = dateFromPosX;
       }
+    },
+    setSort(newSort) {
+      this.sort.current = newSort;
+    },
+    setFilter(newFilter) {
+      this.filter = newFilter;
     },
     showZoomZone(val) {
       this.zoomZone.display = true;

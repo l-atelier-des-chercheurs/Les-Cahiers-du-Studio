@@ -323,7 +323,7 @@ body {
   }
 
   &::-webkit-scrollbar-track {
-    background-color: transparent;
+    background-color: @c-gris_light;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -364,6 +364,19 @@ body {
     width: 100px;
     line-height: 0;
   }
+}
+
+.m_filterIndicator {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 300px;
+  background-color: @c-rouge;
+  padding: @t-spacing/4;
+
+  border-radius: 4px;
+
 }
 
 .m_sidebarList_table {

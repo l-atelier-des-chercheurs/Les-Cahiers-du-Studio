@@ -19,6 +19,8 @@ module.exports = (function() {
       download: 'Télécharger',
       caption: 'Légende',
       date: 'Date',
+      'active_filter:': 'Filtre actif&nbsp;:',
+      'medias_shown:': 'Médias affichés&nbsp;:',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -128,6 +130,8 @@ module.exports = (function() {
       download: 'Download',
       caption: 'Caption',
       date: 'Date',
+      'active_filter:': 'Active filter:',
+      'medias_shown:': 'Medias shown:',
 
       loading: 'loading',
       open: 'Open',

@@ -34,7 +34,6 @@
       </thead>
       <tbody>
         <tr
-          v-if="media.hasOwnProperty(sort.current.field) && media[sort.current.field] !== ''"
           v-for="media in sortedMedias"
           :key="media.slugMediaName"
           @mouseover="highlightMedia(media.slugMediaName)"
@@ -50,6 +49,7 @@
               <MediaContent
                 v-model="media.content"
                 :context="'preview'"
+                :thumbSize="50"
                 :slugFolderName="slugFolderName"
                 :slugMediaName="media.slugMediaName"
                 :media="media"

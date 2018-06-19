@@ -93,6 +93,10 @@ export default {
       default: 'preview'
       // preview, edit, ou autre (hi-res, pas de input text)
     },
+    thumbSize: {
+      type: Number,
+      default: 180
+    },
     value: {
       type: String,
       default: ''
@@ -106,7 +110,6 @@ export default {
   data() {
     return {
       available_resolutions: {
-        preview: 180,
         preview_hovered: 360,
         default: 1600
       },
@@ -126,9 +129,10 @@ export default {
       return this.makeUrlTo();
     },
     thumbRes: function() {
-      return this.context === 'preview'
-        ? this.available_resolutions.preview
-        : this.available_resolutions.default;
+      if(this.context === 'preview') {
+        return this.thumbSize;
+      }
+      return this.available_resolutions.default;
     },
     thumbResHovered: function() {
       return this.available_resolutions.preview_hovered;
