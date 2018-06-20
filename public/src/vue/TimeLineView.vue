@@ -182,13 +182,13 @@
           </div>
         </template>
       </div>
-      <div v-if="sort.current.field !== undefined"
+      <div v-if="sort.current.field !== 'date_timeline'"
         class="m_filterIndicator">
         <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
           <button type="button" 
             class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
             v-html="'x'" 
-            @click="sort.current = {}; filter = '';"
+            @click="sort.current = sort.available[0];"
           />
           <small>
             <div class="">
@@ -453,6 +453,8 @@ export default {
   created() {
     console.log('CREATED • TimeLineView: folder');
 
+    this.sort.current = this.sort.available[0];
+
     this.setTimelineBounds();
     this.setViewedTimelineBoundsFromInfos();
     this.setTimelineHeight();
@@ -548,6 +550,7 @@ export default {
     sortedMedias() {
       var sortable = [];
       let current_sort = !!this.sort.current.type ? this.sort.current : this.sort.available[0];
+
       for (let slugMediaName in this.medias) {
         let mediaDataToOrderBy;
 

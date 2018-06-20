@@ -76,6 +76,7 @@
     <template v-else-if="media.type === 'other'">
       {{ this.slugMediaName }}
     </template>
+
   </div>
 </template>
 <script>
@@ -165,15 +166,9 @@ export default {
       if (this.media.thumbs.length === 0) {
         return;
       }
-
-      let timeMark = 0;
-      let timeMarkThumbs = _.findWhere(this.media.thumbs, { timeMark });
-
-      if (timeMarkThumbs.length === 0) {
-        return;
-      }
-
-      let pathToSmallestThumb = _.findWhere(timeMarkThumbs.thumbsData, {
+      
+      // TODO : implement timemark logic
+      const pathToSmallestThumb = _.findWhere(this.media.thumbs, {
         size: this.thumbRes
       }).path;
 

@@ -117,7 +117,6 @@ module.exports = function(app, io, m) {
 
   function exportFolder(req, res) {
     let slugFolderName = req.param('folder');
-    debugger;
     generatePageData(req).then(pageData => {
       // get medias for a folder
       file.getFolder(slugFolderName).then(
@@ -129,7 +128,6 @@ module.exports = function(app, io, m) {
                 typeof req.query === 'object' &&
                 Object.keys(req.query).length > 0
               ) {
-                debugger;
                 Object.keys(mediasData).forEach(slugMediaName => {
                   const media = mediasData[slugMediaName];
                   Object.keys(req.query).forEach(k => {
@@ -150,7 +148,7 @@ module.exports = function(app, io, m) {
               pageData.mode = 'export';
 
               res.render('index', pageData, (err, html) => {
-                exporter.copyWebsiteContent({ html, slugFolderName }).then(
+                exporter.copyWebsiteContent({ html, foldersData }).then(
                   cachePath => {
                     var archive = archiver('zip');
 
@@ -174,7 +172,9 @@ module.exports = function(app, io, m) {
                     archive.finalize();
                   },
                   (err, p) => {
-                    dev.error('Failed while preparing/making a web export');
+                    dev.error(
+                      `Failed while preparing/making a web export: ${err}`
+                    );
                   }
                 );
               });

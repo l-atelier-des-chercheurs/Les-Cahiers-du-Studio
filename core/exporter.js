@@ -7,9 +7,12 @@ const settings = require('../settings.json'),
 
 module.exports = (function() {
   return {
-    copyWebsiteContent: ({ html, slugFolderName }) => {
+    copyWebsiteContent: ({ html, foldersData }) => {
       return new Promise(function(resolve, reject) {
         // create cache folder that we will need to copy the content
+        const slugFolderName = Object.keys(foldersData)[0];
+        const mediasToExport = foldersData[slugFolderName].medias;
+
         let cacheFolderName =
           api.getCurrentDate() +
           slugFolderName +
@@ -78,49 +81,53 @@ module.exports = (function() {
               })
             );
 
+            // récupère toutes les thumbs, les copie dans le cache
             // Copie le dossier _thumbs/slugFolderName vers cache/_thumbs/slugFolderName
-            tasks.push(
-              new Promise((resolve, reject) => {
-                const relativePathToThumbFolder = path.join(
-                  settings.thumbFolderName,
-                  slugFolderName
-                );
 
-                const fullThumbSlugFolderPath = api.getFolderPath(
-                  relativePathToThumbFolder
-                );
-                const thumbFolderInCache = path.join(
-                  cachePath,
-                  relativePathToThumbFolder
-                );
+            Object.keys(mediasToExport).forEach(slugMediaName => {
+              const thumbs = mediasToExport[slugMediaName].thumbs;
 
-                fs.copy(fullThumbSlugFolderPath, thumbFolderInCache)
-                  .then(() => {
-                    resolve();
+              if (typeof thumbs === 'object' && thumbs.length > 0) {
+                tasks.push(
+                  new Promise((resolve, reject) => {
+                    thumbs.map(t => {
+                      let tpath = t.path;
+
+                      fs.copy(
+                        api.getFolderPath(tpath),
+                        path.join(cachePath, tpath)
+                      )
+                        .then(() => {
+                          resolve();
+                        })
+                        .catch(err => {
+                          dev.error(`Failed to copy thumbs.`);
+                          reject(err);
+                        });
+                    });
                   })
-                  .catch(err => {
-                    dev.error(`Failed to copy thumbs JS and CSS.`);
-                    reject(err);
-                  });
-              })
-            );
+                );
+              }
 
-            // Copier tous les médias dans un dossier.
-            tasks.push(
-              new Promise((resolve, reject) => {
-                let fullSlugFolderPath = api.getFolderPath(slugFolderName);
-                let slugFolderInCache = path.join(cachePath, slugFolderName);
+              // Copier tous les médias dans un dossier.
+              tasks.push(
+                new Promise((resolve, reject) => {
+                  const pathToMedia = path.join(slugFolderName, slugMediaName);
 
-                fs.copy(fullSlugFolderPath, slugFolderInCache)
-                  .then(() => {
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`Failed to copy medias files.`);
-                    reject(err);
-                  });
-              })
-            );
+                  fs.copy(
+                    api.getFolderPath(pathToMedia),
+                    path.join(cachePath, pathToMedia)
+                  )
+                    .then(() => {
+                      resolve();
+                    })
+                    .catch(err => {
+                      dev.error(`Failed to copy medias files.`);
+                      reject(err);
+                    });
+                })
+              );
+            });
 
             Promise.all(tasks).then(d_array => {
               dev.log('Created complete archive of site.');

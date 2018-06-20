@@ -77,7 +77,7 @@ module.exports = (function() {
 
         if (mediaType === 'video') {
           // make screenshot
-          // TODO : take screenshot every 5 seconds
+          // TODO : take screenshot every X seconds
           let screenshotsTimemarks = [0];
           screenshotsTimemarks.forEach(timeMark => {
             let makeScreenshot = new Promise((resolve, reject) => {
@@ -107,7 +107,8 @@ module.exports = (function() {
                           .then(thumbPath => {
                             let thumbMeta = {
                               path: thumbPath,
-                              size: thumbRes
+                              size: thumbRes,
+                              timeMark
                             };
                             resolve(thumbMeta);
                           })
@@ -122,7 +123,7 @@ module.exports = (function() {
                     makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
                   });
                   Promise.all(makeThumbsFromScreenshot).then(thumbsData => {
-                    resolve({ timeMark, thumbsData });
+                    resolve(thumbsData);
                   });
                 })
                 .catch(err => {
@@ -136,6 +137,9 @@ module.exports = (function() {
 
         Promise.all(makeThumbs)
           .then(thumbData => {
+            if (mediaType === 'video') {
+              thumbData = thumbData[0];
+            }
             resolve(thumbData);
           })
           .catch(err => {
