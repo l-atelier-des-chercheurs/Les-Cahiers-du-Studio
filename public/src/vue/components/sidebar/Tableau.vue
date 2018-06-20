@@ -5,7 +5,6 @@
     <table class="margin-none border-none"
       :class="{ 'table-hoverable' : display === 'table' }"
       >
-
       <thead>
         <tr>
           <th class="font-small padding-medium">
@@ -110,7 +109,6 @@ export default {
     };
   },
   mounted: function() {},
-
   computed: {},
   watch: {
     currentSort: function() {
@@ -118,6 +116,12 @@ export default {
     },
     currentFilter: function() {
       this.$eventHub.$emit('setFilter', this.currentFilter);
+    },
+    'sort.current': function() {
+      this.currentSort = this.sort.current;
+    },
+    'filter': function() {
+      this.currentFilter = this.filter;
     }
   },
   methods: {

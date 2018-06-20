@@ -244,6 +244,7 @@ export default {
     timelineInfos: Object,
     visibleDay: Number,
     sort: Object,
+    filter: String,
     isRealtime: {
       type: Boolean,
       default: false

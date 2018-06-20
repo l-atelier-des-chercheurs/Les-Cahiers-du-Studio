@@ -30,6 +30,7 @@
         :medias="medias"
         :sortedMedias="sortedMedias"
         :sort="sort"
+        :filter="filter"
         :timelineInfos="timelineInfos"
         :isRealtime="isRealtime"
         :style="{ height: `${sidebarHeight}px` }"
@@ -188,7 +189,7 @@
           <button type="button" 
             class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
             v-html="'x'" 
-            @click="sort.current = sort.available[0];"
+            @click="setSort(sort.available[0]); setFilter('');"
           />
           <small>
             <div class="">
@@ -1155,9 +1156,11 @@ export default {
       }
     },
     setSort(newSort) {
+      console.log('METHODS • TimeLineView: setSort');
       this.sort.current = newSort;
     },
     setFilter(newFilter) {
+      console.log('METHODS • TimeLineView: setFilter');
       this.filter = newFilter;
     },
     showZoomZone(val) {
