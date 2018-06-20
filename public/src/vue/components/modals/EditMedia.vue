@@ -285,7 +285,7 @@ export default {
         authors: this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,
-        public: this.media.public == 'true',
+        public: this.media.public,
         content: this.media.content
       },
       mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`

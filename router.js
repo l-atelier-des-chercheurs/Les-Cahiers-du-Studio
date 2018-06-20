@@ -117,12 +117,33 @@ module.exports = function(app, io, m) {
 
   function exportFolder(req, res) {
     let slugFolderName = req.param('folder');
+    debugger;
     generatePageData(req).then(pageData => {
       // get medias for a folder
       file.getFolder(slugFolderName).then(
         foldersData => {
           file.gatherAllMedias(slugFolderName).then(
             mediasData => {
+              // if there is a query at the end of the URL, filter by this query
+              if (
+                typeof req.query === 'object' &&
+                Object.keys(req.query).length > 0
+              ) {
+                debugger;
+                Object.keys(mediasData).forEach(slugMediaName => {
+                  const media = mediasData[slugMediaName];
+                  Object.keys(req.query).forEach(k => {
+                    if (k === 'public') {
+                      if (media[k] !== (req.query[k] === 'true')) {
+                        delete mediasData[slugMediaName];
+                      }
+                    } else if (media[k] !== req.query[k]) {
+                      delete mediasData[slugMediaName];
+                    }
+                  });
+                });
+              }
+
               // recreate full object
               foldersData[slugFolderName].medias = mediasData;
               pageData.folderAndMediaData = foldersData;

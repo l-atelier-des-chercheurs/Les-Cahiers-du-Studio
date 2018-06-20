@@ -89,16 +89,37 @@
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('export_folder') }}
-          <button
-            v-if="folder.authorized"
-            type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="downloadExport()"
-            :disabled="read_only"
-          >
-            {{ $t('export') }}
-          </button>
         </h3>
+      </div>
+      <div slot="body">
+        <p>
+          {{ $t('select_type_of_export') }}
+          <ol>
+            <li class="margin-small">
+              <button
+                v-if="folder.authorized"
+                type="button"
+                class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+                @click="downloadExport({ filter: '' })"
+                :disabled="read_only"
+              >
+                {{ $t('export_with_all_medias') }}
+              </button>
+            </li>
+            <br>
+            <li class="margin-small">
+              <button
+                v-if="folder.authorized"
+                type="button"
+                class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+                @click="downloadExport({ filter: { public: true }})"
+                :disabled="read_only"
+              >
+                {{ $t('export_only_public_medias') }}
+              </button>
+            </li>
+          </ol>
+        </p>
       </div>
     </SidebarSection>
 
@@ -374,13 +395,13 @@ export default {
       this.$eventHub.$emit('timeline.scrollToToday');
     },
     
-    downloadExport() {
+    downloadExport({ filter }) {
       alertify
         .closeLogOnClick(true)
         .delay(4000)
         .log(this.$t('notifications.folder_export_started'));
-
-      window.location.replace(window.location.href + '/export');
+      let query = Object.entries(filter).map(([key, val]) => `${key}=${encodeURIComponent(val)}`).join('&');
+      window.location.replace(window.location.href + `/export?${query}`);
     }
   }
 };
