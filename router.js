@@ -150,10 +150,16 @@ module.exports = function(app, io, m) {
               res.render('index', pageData, (err, html) => {
                 exporter.copyWebsiteContent({ html, foldersData }).then(
                   cachePath => {
-                    var archive = archiver('zip');
+                    var archive = archiver('zip', {
+                      zlib: { level: 0 } //
+                    });
 
                     archive.on('error', function(err) {
                       res.status(500).send({ error: err.message });
+                    });
+
+                    archive.on('progress', function(msg) {
+                      // `${msg.fs.processedBytes}/${msg.fs.totalBytes}`;
                     });
 
                     //on stream closed we can end the request
