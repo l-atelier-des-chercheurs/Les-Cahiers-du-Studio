@@ -188,13 +188,16 @@ export default {
 
       // if there’s some duration
       if (this.media.duration > 0) {
+        if (this.media.type === 'audio') {
+          this.mediaStyles.h = 32;
+        }        
         if (this.mediaWidthFromDuration > this.mediaStyles.w) {
           this.mediaStyles.w = this.mediaWidthFromDuration;
         }
-        if (this.media.type === 'audio') {
-          this.mediaStyles.h = 32;
-          this.mediaStyles.w = this.mediaWidthFromDuration + 110 + 185;
-        }
+        // if (this.media.type === 'audio') {
+        //   this.mediaStyles.h = 32;
+        //   this.mediaStyles.w = this.mediaWidthFromDuration + 110 + 185;
+        // }
       }
     },
     getMediaSize() {

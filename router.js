@@ -17,7 +17,7 @@ module.exports = function(app, io, m) {
    */
   app.get('/', showIndex);
   app.get('/:folder', loadFolder);
-  app.get('/:folder/export', exportFolder);
+  app.get('/:folder/export/', exportFolder);
   app.post('/:folder/file-upload', postFile2);
 
   /**
@@ -130,12 +130,17 @@ module.exports = function(app, io, m) {
               ) {
                 Object.keys(mediasData).forEach(slugMediaName => {
                   const media = mediasData[slugMediaName];
+
+                  debugger;
                   Object.keys(req.query).forEach(k => {
                     if (k === 'public') {
                       if (media[k] !== (req.query[k] === 'true')) {
                         delete mediasData[slugMediaName];
                       }
-                    } else if (media[k] !== req.query[k]) {
+                    } else if (
+                      media.hasOwnProperty(k) &&
+                      media[k] !== req.query[k]
+                    ) {
                       delete mediasData[slugMediaName];
                     }
                   });
@@ -147,6 +152,19 @@ module.exports = function(app, io, m) {
               pageData.folderAndMediaData = foldersData;
               pageData.mode = 'export';
 
+              let socketid;
+              if (
+                Object.keys(req.query).length > 0 &&
+                req.query.hasOwnProperty('socketid')
+              ) {
+                socketid = req.query.socketid;
+              }
+
+              // sockets.notify({
+              //   socketid,
+              //   msg: `Creating a copy of this folder.`
+              // });
+
               res.render('index', pageData, (err, html) => {
                 exporter.copyWebsiteContent({ html, foldersData }).then(
                   cachePath => {
@@ -156,15 +174,63 @@ module.exports = function(app, io, m) {
 
                     archive.on('error', function(err) {
                       res.status(500).send({ error: err.message });
+                      sockets.notify({
+                        socketid,
+                        msg: `Failed to create zip: ${err.message}`
+                      });
                     });
 
+                    function formatBytes(a, b) {
+                      if (0 == a) return '0 Bytes';
+                      var c = 1024,
+                        d = b || 2,
+                        e = [
+                          'Bytes',
+                          'KB',
+                          'MB',
+                          'GB',
+                          'TB',
+                          'PB',
+                          'EB',
+                          'ZB',
+                          'YB'
+                        ],
+                        f = Math.floor(Math.log(a) / Math.log(c));
+                      return (
+                        parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f]
+                      );
+                    }
+
+                    let is_finished = false;
+                    let pbytes = 0;
+                    let tbytes = false;
+
+                    function informUserOfProgress() {
+                      if (is_finished) return;
+                      if (tbytes) {
+                        sockets.notify({
+                          socketid,
+                          msg: `${formatBytes(pbytes)}/${formatBytes(tbytes)}`
+                        });
+                      }
+                      setTimeout(informUserOfProgress, 1000);
+                    }
+
                     archive.on('progress', function(msg) {
-                      // `${msg.fs.processedBytes}/${msg.fs.totalBytes}`;
+                      pbytes = msg.fs.processedBytes;
+                      tbytes = msg.fs.totalBytes;
                     });
 
                     //on stream closed we can end the request
                     archive.on('end', function() {
+                      is_finished = true;
                       console.log('Archive wrote %d bytes', archive.pointer());
+                      sockets.notify({
+                        socketid,
+                        msg: `Archive finished, ${formatBytes(
+                          archive.pointer()
+                        )}`
+                      });
                     });
 
                     //set the archive name
@@ -172,6 +238,7 @@ module.exports = function(app, io, m) {
 
                     //this is the streaming magic
                     archive.pipe(res);
+                    informUserOfProgress();
 
                     archive.directory(cachePath, false);
 

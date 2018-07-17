@@ -249,10 +249,18 @@ Vue.prototype.$socketio = new Vue({
     _onNotify({ localized_string, not_localized_string }) {
       console.log('Received _onNotify packet.');
 
-      alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .log(this.$t(`notifications[${msg}]`));
+      if (not_localized_string) {
+        alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(not_localized_string);
+      }
+      if (localized_string) {
+        alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(this.$t(`notifications[${localized_string}]`));
+      }
     },
 
     listFolders() {
@@ -471,7 +479,10 @@ let vm = new Vue({
       }
       this.settings.current_slugFolderName = slugFolderName;
       this.settings.is_loading_medias_for_folder = slugFolderName;
-      this.$socketio.listMedias(slugFolderName);
+
+      this.$nextTick(() => {
+        this.$socketio.listMedias(slugFolderName);
+      });
 
       history.pushState(
         { slugFolderName },

@@ -100,7 +100,7 @@
                 v-if="folder.authorized"
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-                @click="downloadExport({ filter: '' })"
+                @click="downloadExport()"
                 :disabled="read_only"
               >
                 {{ $t('export_with_all_medias') }}
@@ -112,7 +112,7 @@
                 v-if="folder.authorized"
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-                @click="downloadExport({ filter: { public: true }})"
+                @click="downloadExport({ public: true })"
                 :disabled="read_only"
               >
                 {{ $t('export_only_public_medias') }}
@@ -396,12 +396,17 @@ export default {
       this.$eventHub.$emit('timeline.scrollToToday');
     },
     
-    downloadExport({ filter }) {
+    downloadExport(custom_data = {}) {
       alertify
         .closeLogOnClick(true)
         .delay(4000)
         .log(this.$t('notifications.folder_export_started'));
-      let query = Object.entries(filter).map(([key, val]) => `${key}=${encodeURIComponent(val)}`).join('&');
+      
+      debugger;
+      custom_data.socketid = this.$socketio.socket.id;
+
+      let query = Object.entries(custom_data).map(([key, val]) => `${key}=${encodeURIComponent(val)}`).join('&');
+      debugger;
       window.location.replace(window.location.href + `/export?${query}`);
     }
   }
