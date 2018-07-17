@@ -3,6 +3,7 @@ var http = require('http');
 // var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
+const compression = require('compression');
 
 var dev = require('./core/dev-log');
 
@@ -17,13 +18,14 @@ module.exports = function(electronApp) {
   dev.logverbose('Starting server 1');
 
   var app = express();
+  app.use(compression());
 
   /*
-  // only for HTTPS, works without asking for a certificate
-  const privateKey  = fs.readFileSync(path.join(__dirname, 'ssl', 'file.pem'), 'utf8');
-  const certificate = fs.readFileSync(path.join(__dirname, 'ssl', 'file.crt'), 'utf8');
-  const options = { key: privateKey, cert: certificate };
-*/
+    // only for HTTPS, works without asking for a certificate
+    const privateKey  = fs.readFileSync(path.join(__dirname, 'ssl', 'file.pem'), 'utf8');
+    const certificate = fs.readFileSync(path.join(__dirname, 'ssl', 'file.crt'), 'utf8');
+    const options = { key: privateKey, cert: certificate };
+  */
 
   let server = http.createServer(app);
   var io = require('socket.io').listen(server);
