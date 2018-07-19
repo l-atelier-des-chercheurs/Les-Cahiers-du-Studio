@@ -171,8 +171,22 @@
 
   &.is--hovered, &.is--dragged, &.is--highlighted {
     z-index: 1000;
+
     .accroche {
       background-color: @c-noir;
+    }
+
+    .timelineMediaContent {
+      &::before {
+        content: '';
+        position: absolute;
+        background-color: rgba(255,255,255,.2);
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        opacity: 0.2;
+      }  
     }
   }
 
@@ -187,14 +201,10 @@
     pointer-events: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
 
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-
+    cursor: move;
     border-radius: 4px;
 
     transition: transform .2s ease-out;
-
-
 
     .mediaContainer {
       pointer-events: none;

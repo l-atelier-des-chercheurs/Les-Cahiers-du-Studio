@@ -215,7 +215,7 @@ export default {
           }`
         );
       }
-      if (!this.read_only) {
+      if (!this.read_only || this.$root.state.mode === 'export') {
         window.addEventListener('mousemove', this.mousemove);
         window.addEventListener('mouseup', this.mouseup);
       }
@@ -263,7 +263,9 @@ export default {
           slugMediaName: this.slugMediaName
         };
 
-        this.$root.editMedia(values);
+        if(!this.read_only) {
+          this.$root.editMedia(values);
+        }
         this.is_dragged = false;
       }
 
