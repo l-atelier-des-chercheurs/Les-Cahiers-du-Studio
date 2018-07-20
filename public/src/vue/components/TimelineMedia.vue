@@ -191,9 +191,9 @@ export default {
         if (this.media.type === 'audio') {
           this.mediaStyles.h = 32;
         }        
-        if (this.mediaWidthFromDuration > this.mediaStyles.w) {
-          this.mediaStyles.w = this.mediaWidthFromDuration;
-        }
+        // if (this.mediaWidthFromDuration > this.mediaStyles.w) {
+        //   this.mediaStyles.w = this.mediaWidthFromDuration;
+        // }
         // if (this.media.type === 'audio') {
         //   this.mediaStyles.h = 32;
         //   this.mediaStyles.w = this.mediaWidthFromDuration + 110 + 185;
