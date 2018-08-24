@@ -559,38 +559,42 @@ export default {
           continue;
         }
 
+        let _timestamp = +this.$moment(
+          this.medias[slugMediaName]['date_timeline'],
+          'YYYY-MM-DD HH:mm:ss'
+        );
+
         if (current_sort.type === 'date') {
-          mediaDataToOrderBy = +this.$moment(
-            this.medias[slugMediaName][current_sort.field],
-            'YYYY-MM-DD HH:mm:ss'
-          );
+          mediaDataToOrderBy = _timestamp;
         } else if (current_sort.type === 'alph') {
           mediaDataToOrderBy = this.medias[slugMediaName][
             current_sort.field
-          ];
+          ].toLowerCase();
         }
 
         sortable.push({
-          slugMediaName: slugMediaName,
-          mediaDataToOrderBy: mediaDataToOrderBy
+          slugMediaName,
+          mediaDataToOrderBy,
+          _timestamp
         });
       }
-      let sortedSortable = sortable.sort(function(a, b) {
-        let valA = a.mediaDataToOrderBy;
-        let valB = b.mediaDataToOrderBy;
-        if (
-          typeof a.mediaDataToOrderBy === 'string' &&
-          typeof b.mediaDataToOrderBy === 'string'
-        ) {
-          valA = valA.toLowerCase();
-          valB = valB.toLowerCase();
-        }
-        if (valA < valB) {
+      let sortedSortable = sortable.sort((a, b) => {
+        if (a.mediaDataToOrderBy < b.mediaDataToOrderBy) {
           return -1;
         }
-        if (valA > valB) {
+        if (a.mediaDataToOrderBy > b.mediaDataToOrderBy) {
           return 1;
         }
+        if (a.mediaDataToOrderBy === b.mediaDataToOrderBy) {
+          debugger;
+          if(a._timestamp < b._timestamp) {
+            return -1;
+          }
+          if(a._timestamp > b._timestamp) {
+            return 1;
+          }
+        }
+
         return 0;
       });
 
