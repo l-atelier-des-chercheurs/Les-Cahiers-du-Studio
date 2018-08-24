@@ -32,12 +32,11 @@
 
     <template v-else-if="media.type === 'text'">
       <div v-if="context !== 'edit'" class="padding-small font-small">
-        <template v-if="value.length !== 0">
-          {{ value }}
-        </template>
-        <template v-else>
+        <span v-if="value.length !== 0" v-html="value"
+        />
+        <span v-else>
           …
-        </template>
+        </span>
       </div>
       <textarea
         v-else
