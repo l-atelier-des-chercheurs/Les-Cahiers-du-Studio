@@ -728,7 +728,7 @@ export default {
         let posX = this.getXPositionFromDate(+date_timeline, false);
 
         if (media.duration !== undefined) {
-          let startRecordingDate = date_timeline.subtract(
+          let startRecordingDate = date_timeline.clone().subtract(
             parseInt(media.duration),
             'seconds'
           );
@@ -898,12 +898,12 @@ export default {
 
       // check if media has duration
       if (media.duration !== undefined) {
-        // calculate proximity for end
-        if (this.elesIsClose(this.getDurationMediaPosX(index, 'end'))) {
+        // calculate proximity for end (created)
+        if (this.elesIsClose(this.getDurationMediaPosX(index, 'created'))) {
           return true;
         }
-        // otherwise, calculate proximity for start (see method updateMediaData)
-        if (this.elesIsClose(this.getDurationMediaPosX(index, 'start'))) {
+        // otherwise, calculate proximity for started
+        if (this.elesIsClose(this.getDurationMediaPosX(index, 'started'))) {
           return true;
         }
         // finally, let’s check whether we are in between those two dates
@@ -911,8 +911,8 @@ export default {
           this.timelineViewport.scrollLeft +
           this.timelineViewport.viewerWidth / 2;
         if (
-          this.getDurationMediaPosX(index, 'start') < centerOfTimeline &&
-          centerOfTimeline < this.getDurationMediaPosX(index, 'end')
+          this.getDurationMediaPosX(index, 'started') < centerOfTimeline &&
+          centerOfTimeline < this.getDurationMediaPosX(index, 'created')
         ) {
           return true;
         }
@@ -1170,6 +1170,8 @@ export default {
       this.zoomZone.width = Math.floor(
         val / this.timelineViewport.scale * this.timelineViewport.viewerWidth
       );
+      this.zoomZone.width = Math.min(this.zoomZone.width, window.innerWidth);
+
       this.zoomZone.xPos =
         this.timelineViewport.scrollLeft +
         this.timelineViewport.viewerWidth / 2 -
