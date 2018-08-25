@@ -32,16 +32,15 @@
       :style="getMediaSize()"
       >
         <MediaContent
-        v-if="!is_placeholder"
-        v-model="media.content"
-        :slugFolderName="slugFolderName"
-        :slugMediaName="slugMediaName"
-        :media="media"
-        :context="'preview'"
-        :is_hovered="is_hovered"
-        :read_only="read_only"
-        >
-        </MediaContent>
+          v-if="!is_placeholder"
+          v-model="media.content"
+          :slugFolderName="slugFolderName"
+          :slugMediaName="slugMediaName"
+          :media="media"
+          :context="'preview'"
+          :is_hovered="is_hovered"
+          :read_only="read_only"
+        />
 
         <!-- <div class="mediaContour" /> -->
 

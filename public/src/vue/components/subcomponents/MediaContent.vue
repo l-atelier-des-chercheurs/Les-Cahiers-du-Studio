@@ -8,9 +8,9 @@
     <template v-if="media.type === 'image'">
       <img :src="linkToImageThumb">
       <transition
-        name="fade"
-        :duration="850"
-        >
+      name="fade"
+      :duration="850"
+      >
         <img v-if="is_hovered && $root.state.is_electron" :src="linkToHoveredThumb">
       </transition>
     </template>
@@ -20,23 +20,26 @@
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video controls :src="mediaURL" :poster="linkToVideoThumb">
+        <video controls preload="none" :src="mediaURL" :poster="linkToVideoThumb">
         </video>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <audio controls :src="mediaURL">
-      </audio>
+      <template v-if="context === 'preview'">
+        <audio controls preload="none">
+        </audio>
+      </template>
+      <template v-else>
+        <audio controls preload="none" :src="mediaURL">
+        </audio>
+      </template>
     </template>
 
     <template v-else-if="media.type === 'text'">
       <div v-if="context !== 'edit'" class="padding-small font-small">
-        <span v-if="value.length !== 0" v-html="value"
-        />
-        <span v-else>
-          …
-        </span>
+        <span v-if="value.length !== 0" v-html="value" />
+        <span v-else v-html="'…'" />
       </div>
       <textarea
         v-else
@@ -99,7 +102,7 @@ export default {
     },
     value: {
       type: String,
-      default: ''
+      default: '…'
     },
     is_hovered: Boolean,
     read_only: {
