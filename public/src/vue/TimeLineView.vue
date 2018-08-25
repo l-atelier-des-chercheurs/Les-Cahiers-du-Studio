@@ -54,8 +54,7 @@
       :slugFolderName="slugFolderName"
       @close="showEditFolderModal = false"
       :read_only="read_only"
-    >
-    </EditFolder>
+    />
 
     <div class="m_timeline"
       ref="timeline"
@@ -272,7 +271,7 @@ export default {
           .getComputedStyle(document.querySelector('html'))
           .getPropertyValue('--sidebar-width')
       ),
-
+      
       showMediaModalFor: '',
       highlightedMedia: '',
       showEditFolderModal: false,
@@ -586,7 +585,6 @@ export default {
           return 1;
         }
         if (a.mediaDataToOrderBy === b.mediaDataToOrderBy) {
-          debugger;
           if(a._timestamp < b._timestamp) {
             return -1;
           }

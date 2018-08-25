@@ -35,9 +35,9 @@ module.exports = function(electronApp) {
 
   dev.logverbose('Starting express-settings');
 
-  app.set('port', global.appInfos.port); //Server's port number
-  app.set('views', __dirname); //Specify the views folder
-  app.set('view engine', 'pug'); //View engine is Pug
+  app.set('port', global.appInfos.port);
+  app.set('views', __dirname);
+  app.set('view engine', 'pug');
 
   app.use(function(req, res, next) {
     if (isURLToForbiddenFiles(req.url)) {

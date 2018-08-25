@@ -402,11 +402,9 @@ export default {
         .delay(4000)
         .log(this.$t('notifications.folder_export_started'));
       
-      debugger;
       custom_data.socketid = this.$socketio.socket.id;
 
       let query = Object.entries(custom_data).map(([key, val]) => `${key}=${encodeURIComponent(val)}`).join('&');
-      debugger;
       window.location.replace(window.location.href + `/export?${query}`);
     }
   }
