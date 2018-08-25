@@ -130,8 +130,6 @@ module.exports = function(app, io, m) {
               ) {
                 Object.keys(mediasData).forEach(slugMediaName => {
                   const media = mediasData[slugMediaName];
-
-                  debugger;
                   Object.keys(req.query).forEach(k => {
                     if (k === 'public') {
                       if (media[k] !== (req.query[k] === 'true')) {
@@ -277,6 +275,8 @@ module.exports = function(app, io, m) {
 
     // specify that we want to allow the user to upload multiple files in a single request
     form.multiples = false;
+
+    form.maxFileSize = 4096 * 1024 * 1024;
 
     // store all uploads in the folder directory
     form.uploadDir = api.getFolderPath(slugFolderName);
