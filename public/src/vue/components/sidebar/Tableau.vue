@@ -56,7 +56,9 @@
                 >
               </MediaContent>                
             </td>
-            <td class="font-small padding-small">{{ media[sort.current.field] }}</td>
+            <td class="font-small padding-small">
+              {{ media[sort.current.field] }}
+            </td>
             <td class="font-small padding-small">
               <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
                 @click.stop="openMediaModal(media.slugMediaName)"
