@@ -10,7 +10,7 @@
       :use-custom-dropzone-options=true
       :dropzone-options="customOptionsObject"
       :maxFileSizeInMB="4096"
-      :maxNumberOfFiles="50"
+      :maxNumberOfFiles="100"
     >
       <input type="hidden">
 <!--
