@@ -121,7 +121,7 @@ export default {
   },
   computed: {
     getVisibleDay: function() {
-      return `${this.$moment(this.visibleDay).format('LL')}`;
+      return `${this.$moment(this.visibleDay).format('dddd LL')}`;
     }
   },
   methods: {
