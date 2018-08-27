@@ -72,7 +72,7 @@
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
 <!-- Disabled for now: if an image or video is tagged as "text" or marked, a folder becomes unreadable -->
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('type') }}</label>
         <select v-if="!read_only" ref="type" v-model="mediadata.type">
           <option v-for="mediaType in $root.state.structure.media.type.options" :key="mediaType">
@@ -80,7 +80,7 @@
           </option>
         </select>
         <input type="text" v-else :value="mediadata.type" readonly>
-      </div>
+      </div> -->
 
 <!-- Color -->
       <div v-if="!read_only" class="margin-bottom-small">
