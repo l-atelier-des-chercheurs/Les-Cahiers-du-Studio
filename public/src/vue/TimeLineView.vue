@@ -564,7 +564,10 @@ export default {
         );
 
         if (current_sort.type === 'date') {
-          mediaDataToOrderBy = _timestamp;
+          mediaDataToOrderBy = +this.$moment(
+            this.medias[slugMediaName][current_sort.field],
+            'YYYY-MM-DD HH:mm:ss'
+          );
         } else if (current_sort.type === 'alph') {
           mediaDataToOrderBy = this.medias[slugMediaName][
             current_sort.field
@@ -577,6 +580,7 @@ export default {
           _timestamp
         });
       }
+
       let sortedSortable = sortable.sort((a, b) => {
         if (a.mediaDataToOrderBy < b.mediaDataToOrderBy) {
           return -1;
@@ -588,7 +592,7 @@ export default {
           if(a._timestamp < b._timestamp) {
             return -1;
           }
-          if(a._timestamp > b._timestamp) {
+          if(a._timestamp >= b._timestamp) {
             return 1;
           }
         }
@@ -736,7 +740,6 @@ export default {
             +startRecordingDate,
             false
           );
-
           allMediasPosition[slugMediaName] = {
             started: start_posX,
             created: posX
@@ -922,7 +925,7 @@ export default {
 
       return false;
     },
-    elesIsClose(xPos, screenMultiplier = 2) {
+    elesIsClose(xPos, screenMultiplier = 1.5) {
       if (
         xPos <
         this.timelineViewport.scrollLeft +
