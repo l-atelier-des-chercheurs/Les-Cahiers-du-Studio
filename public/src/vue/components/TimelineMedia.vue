@@ -15,11 +15,11 @@
     <div class="media">
 
       <div class="mediaScrubber"
-      :style="getMediaWidthFromDuration()"
+        :style="getMediaWidthFromDuration()"
       >
         <!-- play media on click -->
         <template
-        v-if="media.duration !== undefined"
+          v-if="media.duration !== undefined"
         >
           <button class="accroche accroche_gauche"></button>
           <div class="accrocheDurationLine"></div>
@@ -28,8 +28,8 @@
       </div>
 
       <div
-      class="timelineMediaContent"
-      :style="getMediaSize()"
+        class="timelineMediaContent"
+        :style="getMediaSize()"
       >
         <MediaContent
           v-if="!is_placeholder"
