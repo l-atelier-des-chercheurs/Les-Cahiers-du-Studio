@@ -20,19 +20,30 @@
         <img :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video controls preload="none" :src="mediaURL" :poster="linkToVideoThumb">
-        </video>
+        <video 
+          controls 
+          controlsList="nodownload"
+          preload="none" 
+          :src="mediaURL" 
+          :poster="linkToVideoThumb" 
+        />
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
       <template v-if="context === 'preview'">
-        <audio controls preload="none">
-        </audio>
+        <audio 
+          controls 
+          preload="none"
+        />
       </template>
       <template v-else>
-        <audio controls preload="none" :src="mediaURL">
-        </audio>
+        <audio 
+          controls 
+          controlsList="nodownload"
+          preload="none" 
+          :src="mediaURL"
+        />
       </template>
     </template>
 
