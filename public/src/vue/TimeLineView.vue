@@ -213,13 +213,13 @@
       </AddMediaButton>
 
       <EditMedia
-        v-if="showMediaModalFor !== ''"
+        v-if="showMediaModalFor"
         :slugFolderName="slugFolderName"
         :slugMediaName="showMediaModalFor"
         :media="medias[showMediaModalFor]"
         :isRealtime="isRealtime"
         :currentTime="currentTime"
-        @close="showMediaModalFor = ''"
+        @close="showMediaModalFor = false"
         :read_only="read_only"
       >
       </EditMedia>
@@ -272,7 +272,7 @@ export default {
           .getPropertyValue('--sidebar-width')
       ),
       
-      showMediaModalFor: '',
+      showMediaModalFor: false,
       highlightedMedia: '',
       showEditFolderModal: false,
 
@@ -480,6 +480,9 @@ export default {
     this.$eventHub.$on('timeline.showZoomZone', this.showZoomZone);
     this.$eventHub.$on('timeline.hideZoomZone', this.hideZoomZone);
 
+    this.$eventHub.$on('editmediamodal.nextmedia', this.editModalNextMedia);
+    this.$eventHub.$on('editmediamodal.previousmedia', this.editModalPreviousMedia);
+
     this.$eventHub.$on('setSort', this.setSort);
     this.$eventHub.$on('setFilter', this.setFilter);
 
@@ -538,6 +541,9 @@ export default {
     this.$eventHub.$off('timeline.openMediaModal', this.openMediaModal);
     this.$eventHub.$off('timeline.showZoomZone', this.showZoomZone);
     this.$eventHub.$off('timeline.hideZoomZone', this.hideZoomZone);
+
+    this.$eventHub.$off('editmediamodal.nextmedia', this.editModalNextMedia);
+    this.$eventHub.$off('editmediamodal.previousmedia', this.editModalPreviousMedia);
 
     this.$eventHub.$off('setSort');
     this.$eventHub.$off('setFilter');
@@ -1003,24 +1009,64 @@ export default {
       }
     },
     openMediaModal(slugMediaName) {
-      // check if media exists first
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • TimeLineView: openMediaModal');
       }
 
-      if (!this.medias.hasOwnProperty(slugMediaName)) {
-        if (this.$root.state.dev_mode === 'debug') {
-          console.log(
-            'METHODS • TimeLineView: openMediaModal / missing media in timeline'
-          );
-        }
-      }
 
-      this.showMediaModalFor = slugMediaName;
+      // this.$nextTick(() => {
+        // check if media exists first
+        if (!this.medias.hasOwnProperty(slugMediaName)) {
+          if (this.$root.state.dev_mode === 'debug') {
+            console.log(
+              'METHODS • TimeLineView: openMediaModal / missing media in timeline'
+            );
+          }
+        } else {
+          this.showMediaModalFor = slugMediaName;
+        }
+      // });
     },
     closeMediaModal() {
-      this.showMediaModalFor = '';
+      this.showMediaModalFor = false;
     },
+    editModalNextMedia() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log('METHODS • TimeLineView: editModalNextMedia');
+      }
+      
+      if(this.showMediaModalFor) {
+        // find in sortedMedias where this.showMediaModalFor and get the next one
+        const current_media_index = _.findIndex(this.sortedMedias, {
+          slugMediaName: this.showMediaModalFor
+        });
+        if(current_media_index < this.sortedMedias.length - 1) {
+          const new_media = this.sortedMedias[current_media_index + 1];
+          if(new_media.hasOwnProperty('slugMediaName')) {
+            this.openMediaModal(new_media.slugMediaName);
+          } 
+        }      
+      }
+    },
+    editModalPreviousMedia() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log('METHODS • TimeLineView: editModalPreviousMedia');
+      }
+
+      if(this.showMediaModalFor) {
+        // find in sortedMedias where this.showMediaModalFor and get the next one
+        const current_media_index = _.findIndex(this.sortedMedias, {
+          slugMediaName: this.showMediaModalFor
+        });
+        if(current_media_index > 0) {
+          const new_media = this.sortedMedias[current_media_index - 1];
+          if(new_media.hasOwnProperty('slugMediaName')) {
+            this.openMediaModal(new_media.slugMediaName);
+          } 
+        }      
+      }
+    },
+
     drawRealtimeRule() {
       if (!this.isRealtime) {
         return;

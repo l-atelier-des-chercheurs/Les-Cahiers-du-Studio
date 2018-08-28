@@ -5,13 +5,14 @@
     @submit="editThisMedia"
     :read_only="read_only"
     :typeOfModal="'EditMedia'"
-    >
+    @arrow_left="$eventHub.$emit('editmediamodal.previousmedia')"
+    @arrow_right="$eventHub.$emit('editmediamodal.nextmedia')"
+  >
     <template slot="header">
       <span class="text-cap"> {{ $t('edit_the_media') }}</span> <i>{{ slugMediaName }}</i>
     </template>
 
     <template slot="sidebar">
-
 <!-- Caption -->
       <div 
       v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
@@ -290,6 +291,25 @@ export default {
       },
       mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
     };
+  },
+  watch: {
+    slugMediaName: function() {
+      if (window.state.dev_mode === 'debug') {
+        console.log('WATCH • EditMedia: slugMediaName');
+      }
+
+      this.mediadata = {
+        date_timeline: this.media.date_timeline,
+        type: this.media.type,
+        color: this.media.color,
+        authors: this.media.authors,
+        caption: this.media.caption,
+        keywords: this.media.keywords,
+        public: this.media.public,
+        content: this.media.content
+      };
+      this.mediaURL = `/${this.slugFolderName}/${this.slugMediaName}`;
+    }
   },
   computed: {
     date_created_human() {

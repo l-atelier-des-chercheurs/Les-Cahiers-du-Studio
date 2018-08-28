@@ -158,7 +158,6 @@
   }
 }
 // if no preview, then sidebar takes the whole width
-
 .m_modal--preview {
   .mediaContainer {
     height: 100%;
@@ -214,6 +213,30 @@
     &:focus {
 
     }
+  }
+}
+
+.m_modal--arrow {
+  position: fixed;
+  top: 50%;
+  .bg-noir;
+  color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+
+  &:hover {
+    background-color: #fff;
+    color: @c-noir;
+  }
+
+  &.m_modal--arrow_left {
+    left: 0;
+    cursor: w-resize;
+  }
+
+  &.m_modal--arrow_right {
+    right: 0;
+    cursor: e-resize;
   }
 }
 
