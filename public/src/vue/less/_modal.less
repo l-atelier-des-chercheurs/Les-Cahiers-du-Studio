@@ -219,10 +219,13 @@
 .m_modal--arrow {
   position: fixed;
   top: 50%;
+  top: calc(50% - 2.5em);
   .bg-noir;
   color: #fff;
-  border-radius: 2px;
+  border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+
+  .padding-small;  
 
   &:hover {
     background-color: #fff;
@@ -232,11 +235,13 @@
   &.m_modal--arrow_left {
     left: 0;
     cursor: w-resize;
+    border-radius:  0 4px 4px 0;
   }
 
   &.m_modal--arrow_right {
     right: 0;
     cursor: e-resize;
+    border-radius: 4px 0 0 4px;
   }
 }
 

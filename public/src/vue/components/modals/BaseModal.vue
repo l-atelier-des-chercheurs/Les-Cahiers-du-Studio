@@ -13,7 +13,7 @@
 
           <div
             class="m_modal--container--content"
-            >
+          >
 
             <form v-if="!!this.$slots['sidebar']"
               class="m_modal--sidebar bg-noir_light c-blanc"
@@ -71,6 +71,15 @@
               </slot>
             </div>
 
+            <template v-if="typeOfModal === 'EditMedia'">
+              <button type="button" class="m_modal--arrow m_modal--arrow_left" @click="$emit('arrow_left')">
+                ←
+              </button>
+              <button type="button" class="m_modal--arrow m_modal--arrow_right" @click="$emit('arrow_right')">
+                →
+              </button>
+            </template>
+
           </div>
 
         </div>
@@ -104,6 +113,12 @@ export default {
     typeOfModal: {
       type: String,
       default: 'EditMeta'
+    },
+    arrow_left_link: {
+      type: String
+    },
+    arrow_right_link: {
+      type: String
     }
   },
   data() {
@@ -112,10 +127,24 @@ export default {
     };
   },
   methods: {
-    modalKeyListener: function(evt) {
+    modalKeyListener: function() {
       console.log('METHODS • BaseModal: modalKeyListener');
-      if (evt.keyCode === 27) {
+      if (event.key === 'Escape') {
         this.closeModal();
+        return
+      }
+
+      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+        return;
+      }      
+
+      if (event.key === 'ArrowRight') {
+        this.$emit('arrow_right');
+        return;
+      }
+      if (event.key === 'ArrowLeft') {
+        this.$emit('arrow_left');
+        return;
       }
     },
     closeModal: function() {
