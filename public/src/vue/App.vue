@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" v-if="$root.access">
 
     <SystemBar
       v-if="$root.settings.enable_system_bar"

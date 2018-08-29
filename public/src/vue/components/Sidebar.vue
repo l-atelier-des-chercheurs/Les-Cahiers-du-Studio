@@ -74,11 +74,9 @@
             {{ $t('open') }}
           </button>
         </h3>
-        {{ keyboard_shortcuts }}
       </div>
     </SidebarSection>
         
-
     <KeyboardShortcuts
       v-if="showKeyboardShortcutsList === true"
       @close="showKeyboardShortcutsList = false"
@@ -89,39 +87,24 @@
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('export_folder') }}
+          <button
+            type="button"
+            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="showExportTimelineModal = true"
+            :disabled="read_only"            
+          >
+            {{ $t('open') }}
+          </button>
         </h3>
       </div>
-      <div slot="body">
-        <p>
-          {{ $t('select_type_of_export') }}
-          <ol>
-            <li class="margin-small">
-              <button
-                v-if="folder.authorized"
-                type="button"
-                class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-                @click="downloadExport()"
-                :disabled="read_only"
-              >
-                {{ $t('export_with_all_medias') }}
-              </button>
-            </li>
-            <br>
-            <li class="margin-small">
-              <button
-                v-if="folder.authorized"
-                type="button"
-                class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-                @click="downloadExport({ public: true })"
-                :disabled="read_only"
-              >
-                {{ $t('export_only_public_medias') }}
-              </button>
-            </li>
-          </ol>
-        </p>
-      </div>
     </SidebarSection>
+
+    <ExportTimeline
+      v-if="showExportTimelineModal === true"
+      :folder="folder"
+      @close="showExportTimelineModal = false"
+    >
+    </ExportTimeline>
 
     <SidebarSection>
       <div slot="header">
@@ -225,6 +208,7 @@ import Tableau from './sidebar/Tableau.vue';
 import SidebarSection from './sidebar/SidebarSection.vue';
 import MediasList from './modals/MediasList.vue';
 import KeyboardShortcuts from './modals/KeyboardShortcuts.vue';
+import ExportTimeline from './modals/ExportTimeline.vue';
 import qrcode from '@xkeshi/vue-qrcode';
 import alertify from 'alertify.js';
 
@@ -234,6 +218,7 @@ export default {
     Tableau,
     MediasList,
     KeyboardShortcuts,
+    ExportTimeline,
     qrcode
   },
   props: {
@@ -259,6 +244,7 @@ export default {
     return {
       showMediasList: false,
       showKeyboardShortcutsList: false,
+      showExportTimelineModal: false,
       currentLang: this.$root.lang.current,
 
     };
@@ -394,19 +380,7 @@ export default {
 
     scrollToToday() {
       this.$eventHub.$emit('timeline.scrollToToday');
-    },
-    
-    downloadExport(custom_data = {}) {
-      alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .log(this.$t('notifications.folder_export_started'));
-      
-      custom_data.socketid = this.$socketio.socket.id;
-
-      let query = Object.entries(custom_data).map(([key, val]) => `${key}=${encodeURIComponent(val)}`).join('&');
-      window.location.replace(window.location.href + `/export?${query}`);
-    }
+    }    
   }
 };
 </script>

@@ -44,7 +44,7 @@
                 </select>
               </td>
               <td>
-                <button type="button" class="button-small padding-small margin-none bg-transparent" @click="removeShortcut(index)">
+                <button type="button" class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent" @click="removeShortcut(index)">
                   {{ $t('remove') }}
                 </button>
               </td>  

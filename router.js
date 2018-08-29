@@ -130,24 +130,41 @@ module.exports = function(app, io, m) {
               ) {
                 Object.keys(mediasData).forEach(slugMediaName => {
                   const media = mediasData[slugMediaName];
-                  Object.keys(req.query).forEach(k => {
-                    if (k === 'public') {
-                      if (media[k] !== (req.query[k] === 'true')) {
-                        delete mediasData[slugMediaName];
-                      }
-                    } else if (
-                      media.hasOwnProperty(k) &&
-                      media[k] !== req.query[k]
+
+                  if (
+                    req.query.hasOwnProperty('only_public') &&
+                    req.query['only_public'] === 'true'
+                  ) {
+                    if (
+                      !media.hasOwnProperty('public') ||
+                      media['public'] === false
                     ) {
                       delete mediasData[slugMediaName];
                     }
-                  });
+                  }
+                  // Object.keys(req.query).forEach(k => {
+                  //   if (
+                  //     k === 'only_public' &&
+                  //     req.query['only_public'] === 'true'
+                  //   ) {
+                  //     if (!media['public']) {
+                  //       delete mediasData[slugMediaName];
+                  //     }
+                  //   }
+                  //   //  else if (
+                  //   //   media.hasOwnProperty(k) &&
+                  //   //   media[k] !== req.query[k]
+                  //   // ) {
+                  //   //   delete mediasData[slugMediaName];
+                  //   // }
+                  // });
                 });
               }
 
               // recreate full object
               foldersData[slugFolderName].medias = mediasData;
               pageData.folderAndMediaData = foldersData;
+              pageData.export_options = req.query;
               pageData.mode = 'export';
 
               let socketid;

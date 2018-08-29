@@ -308,6 +308,8 @@ let vm = new Vue({
     store: window.store,
     state: window.state,
 
+    access: false,
+
     justCreatedTextmediaID: false,
     justCreatedFolderID: false,
     justCreatedFolderPassword: false,
@@ -341,6 +343,24 @@ let vm = new Vue({
     }
 
     this.settings.keyboard_shortcuts = this.getKeyboardShortcuts();
+
+    if (!!window.state.export_options.password_protect) {
+      let hashCode = function(s) {
+        return s.split('').reduce(function(a, b) {
+          a = (a << 5) - a + b.charCodeAt(0);
+          return a & a;
+        }, 0);
+      };
+
+      let mdp = prompt('Password for application :');
+
+      if ('' + hashCode(mdp) !== window.state.export_options.password_protect) {
+        window.alert('This password is not valid.');
+        return;
+      }
+    }
+
+    this.access = true;
 
     if (this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {

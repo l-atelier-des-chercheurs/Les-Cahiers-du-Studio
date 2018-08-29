@@ -747,16 +747,16 @@ module.exports = (function() {
               GET EXIF
           ***************************************************************************/
           if (mdata.type === 'image') {
-            let getFullEXIF = new Promise((resolve, reject) => {
-              dev.logverbose(`Will attempt to get media duration.`);
-              thumbs.getEXIFData(mediaPath).then(exifdata => {
-                if (exifdata) {
-                  mdata.exif = validator.escape(JSON.stringify(exifdata));
-                }
-                resolve();
-              });
-            });
             // temporarily disabled adding full exif meta to files — too much data to add
+            // let getFullEXIF = new Promise((resolve, reject) => {
+            //   dev.logverbose(`Will attempt to get media duration.`);
+            //   thumbs.getEXIFData(mediaPath).then(exifdata => {
+            //     if (exifdata) {
+            //       mdata.exif = validator.escape(JSON.stringify(exifdata));
+            //     }
+            //     resolve();
+            //   });
+            // });
             // tasks.push(getFullEXIF);
           }
 

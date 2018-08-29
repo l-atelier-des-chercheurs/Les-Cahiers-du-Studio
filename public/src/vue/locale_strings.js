@@ -89,10 +89,13 @@ module.exports = (function() {
 
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
+      only_public_medias: 'Seul les médias indiqués <em>publics</em>',
       select_type_of_export:
         'Sélectionnez ici le type d’export. Il est possible d’exporter tous les médias d’une timeline ou uniquement ceux indiqués comme Public.',
       export_with_all_medias: 'Exporter avec tous les médias',
       export_only_public_medias: 'Exporter les médias publics uniquement',
+      password_protect: 'Protéger l’accès par un mot de passe',
+      allow_media_download: 'Permettre le téléchargement des médias originaux',
 
       'with_all_medias:': 'Avec tous les médias',
       'only_public_medias:': 'Seulement les médias publics',
@@ -207,10 +210,13 @@ module.exports = (function() {
       preview: 'Preview',
       filter: 'Filter',
 
-      export_folder: 'Export timeline and medias as a webpage',
+      export_folder: 'Export timeline as a webpage',
       export: 'Export',
+      only_public_medias: 'Only medias marked <em>public</em>',
       select_type_of_export:
         'Select here the type of web export to get. It is possible to either export all medias of a timeline, or only the medias marked as "Public"',
+      password_protect: 'Protect access with a password',
+      allow_media_download: 'Allow download of original medias',
       export_with_all_medias: 'Export with all the medias',
       export_only_public_medias: 'Export only public medias',
 

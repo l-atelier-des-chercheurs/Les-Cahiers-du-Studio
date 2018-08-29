@@ -70,6 +70,7 @@ html
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",
         noticeOfError: "!{noticeOfError}",
+        export_options: !{ !!export_options ? JSON.stringify(export_options) : "{}" },
         is_electron: !!(window && window.process && window.process.type) && !{ mode === "export" ? false : true },
         is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true }
       };

@@ -5,7 +5,6 @@
         v-if="showModal"
         @click.self="closeModal"
       >
-
         <div class="m_modal--container"
           :class="['typeOfModal-' + typeOfModal, 'color-' + backgroundColor]"
           @keyup.ctrl.enter="$emit('submit')"
@@ -35,10 +34,11 @@
               </div>
 
               <button
+                v-if="!no_submit_button"
                 class="m_modal--save bg-vert_vif button-rectangle button-allwide button-inline margin-none padding-small"
                 type="submit"
                 :disabled="read_only"
-                >
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
                   <circle cx="24" cy="24" r="24" style="fill: transparent"/>
                   <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" style="fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px"/>
@@ -119,6 +119,10 @@ export default {
     },
     arrow_right_link: {
       type: String
+    },
+    no_submit_button: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

@@ -15,8 +15,8 @@
     <template slot="sidebar">
 <!-- Caption -->
       <div 
-      v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
-      class="margin-bottom-small" 
+        v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
+        class="margin-bottom-small" 
       >
         <label>{{ $t('caption') }}</label><br>
         <textarea v-model="mediadata.caption" :readonly="read_only">
@@ -116,12 +116,13 @@
         </span>
       </div>
 
-      <div v-if="!read_only" class="m_modal--buttonrow flex-wrap flex-vertically-start flex-space-between flex-same-basis">
+      <div class="m_modal--buttonrow flex-wrap flex-vertically-start flex-space-between flex-same-basis">
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click="removeMedia()"
           :disabled="read_only"
-          >
+          v-if="!read_only"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
@@ -151,7 +152,8 @@
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click.prevent="printMedia()"
-          >
+          v-if="!read_only"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
@@ -181,12 +183,11 @@
 
         <a :href="mediaURL" :title="slugMediaName" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
-          v-if="mediadata.type === 'image'"
-          :disabled="read_only"
-          >
+          v-if="mediadata.type === 'image' && !read_only"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
-              <g id="Editeur_txt" data-name="Editeur txt">
+              <g id="Editeur_txt" data-name="Zoom">
                 <g>
                   <g>
                     <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d"/>
@@ -208,8 +209,9 @@
 
         <a :download="slugMediaName" :href="mediaURL" :title="slugMediaName" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
-          :disabled="read_only"
-          >
+          v-if="$root.state.mode !== 'export' || $root.state.export_options.allow_download !== 'false'"
+          :disabled="$root.state.mode === 'live' && read_only"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
@@ -294,7 +296,7 @@ export default {
         public: this.media.public,
         content: this.media.content
       },
-      mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`,
+      mediaURL: this.$root.state.mode === 'export' ? `./${this.slugFolderName}/${this.slugMediaName}` : `/${this.slugFolderName}/${this.slugMediaName}`,
       alt_key_is_pressed: false
     };
   },
