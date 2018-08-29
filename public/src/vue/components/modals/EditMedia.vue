@@ -365,7 +365,11 @@ export default {
       if (window.confirm(this.$t('sureToRemoveMedia'))) {
         this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
         // then close that popover
-        this.$emit('close', '');
+        if(!this.alt_key_is_pressed) {
+          this.$emit('close', '');
+        } else {
+          this.$eventHub.$emit('editmediamodal.nextmedia');
+        }
       }
     },
     setMediaDateTimeline: function(newDate) {
