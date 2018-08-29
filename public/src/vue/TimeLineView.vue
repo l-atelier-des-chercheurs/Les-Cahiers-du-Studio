@@ -373,7 +373,7 @@ export default {
           {
             field: 'public',
             name: this.$t('public'),
-            type: 'alph',
+            type: 'bool',
             order: 'descending'
           },
           {
@@ -554,6 +554,7 @@ export default {
   },
   computed: {
     sortedMedias() {
+      console.log('METHODS • TimeLineView: sortedMedias');
       var sortable = [];
       let current_sort = !!this.sort.current.type ? this.sort.current : this.sort.available[0];
 
@@ -578,8 +579,12 @@ export default {
           mediaDataToOrderBy = this.medias[slugMediaName][
             current_sort.field
           ].toLowerCase();
+        } else if (current_sort.type === 'alph') {
+          mediaDataToOrderBy = this.medias[slugMediaName][
+            current_sort.field
+          ];
         }
-
+        
         sortable.push({
           slugMediaName,
           mediaDataToOrderBy,
