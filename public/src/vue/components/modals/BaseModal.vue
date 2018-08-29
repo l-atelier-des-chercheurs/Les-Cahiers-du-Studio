@@ -128,7 +128,10 @@ export default {
   },
   methods: {
     modalKeyListener: function() {
-      console.log('METHODS • BaseModal: modalKeyListener');
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • BaseModal: modalKeyListener');
+      }
+      
       if (event.key === 'Escape') {
         this.closeModal();
         return

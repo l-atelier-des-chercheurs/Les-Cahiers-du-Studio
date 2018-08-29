@@ -236,7 +236,12 @@
     </template>
 
     <template slot="submit_button">
-      {{ $t('save') }}
+      <template v-if="!alt_key_is_pressed">
+        {{ $t('save_and_close') }}
+      </template>
+      <template v-else>
+        {{ $t('save') }}
+      </template>
     </template>
 
     <template slot="preview">
@@ -289,7 +294,8 @@ export default {
         public: this.media.public,
         content: this.media.content
       },
-      mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
+      mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`,
+      alt_key_is_pressed: false
     };
   },
   watch: {
@@ -311,6 +317,12 @@ export default {
       this.mediaURL = `/${this.slugFolderName}/${this.slugMediaName}`;
     }
   },
+  mounted() {
+    document.addEventListener('keyup', this.keyPressed);
+  },
+  beforeDestroy: function() {
+    document.removeEventListener('keyup', this.keyPressed);
+  },
   computed: {
     date_created_human() {
       return this.$moment(this.media.date_created).format('l LTS');
@@ -323,6 +335,28 @@ export default {
     }
   },
   methods: {
+    keyPressed: function() {
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • EditMedia: keyPressed');
+      }
+
+      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+        return;
+      }      
+
+      if(event.key === 'Alt') {
+        this.alt_key_is_pressed = !this.alt_key_is_pressed;
+        return;
+      }
+
+      if(event.key === 'p' || event.key === 'P') {
+        this.mediadata.public = !this.mediadata.public;
+      }
+
+      if(event.key === 'Enter') {
+        this.editThisMedia(); 
+      }
+    },
     printMedia: function() {
       window.print();
     },
@@ -337,7 +371,7 @@ export default {
     setMediaDateTimeline: function(newDate) {
       this.mediadata.date_timeline = newDate;
     },
-    editThisMedia: function(event) {
+    editThisMedia: function() {
       console.log('editThisMedia');
 
       // copy all values
@@ -348,10 +382,11 @@ export default {
       this.$root.editMedia(values);
 
       // then close that popover
-      this.$emit('close', '');
+      if(!this.alt_key_is_pressed) {
+        this.$emit('close', '');
+      }
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 <style>
