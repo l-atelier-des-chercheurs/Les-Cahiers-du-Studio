@@ -98,7 +98,7 @@ export default {
         return;
       }
 
-      if (event.target.tagName.toLowerCase() === 'input') {
+      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
         return;
       }
 
