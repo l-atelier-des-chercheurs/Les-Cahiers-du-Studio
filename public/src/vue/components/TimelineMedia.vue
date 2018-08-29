@@ -143,7 +143,7 @@ export default {
   methods: {
     limitMediaYPos(yPos) {
       if (window.state.dev_mode === 'debug') {
-        console.log(`METHODS • TimelineMedia: limitMediaYPos`);
+        // console.log(`METHODS • TimelineMedia: limitMediaYPos`);
       }
       if (this.media.type === 'marker') {
         return 50 / 2;
