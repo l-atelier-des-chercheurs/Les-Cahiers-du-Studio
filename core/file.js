@@ -231,6 +231,7 @@ module.exports = (function() {
                 dev.error(
                   `Couldn’t read folder meta, most probably because it doesn’t exist: ${err}`
                 );
+                resolve({});
                 // edge case : creating folders in user dir
                 // createFolder(
                 //   { name: slugFolderName },
