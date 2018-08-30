@@ -362,6 +362,10 @@ let vm = new Vue({
 
     this.access = true;
 
+    if (this.state.mode === 'export') {
+      this.settings.has_sidebar_opened = true;
+    }
+
     if (this.store.noticeOfError) {
       if (this.store.noticeOfError === 'failed_to_find_folder') {
         alertify
