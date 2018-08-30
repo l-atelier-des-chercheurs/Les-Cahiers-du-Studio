@@ -259,7 +259,9 @@ module.exports = (function() {
           // reunite array items as a single big object
           let flatObjFoldersData = {};
           parsedFoldersData.forEach(fmeta => {
-            flatObjFoldersData[fmeta.slugFolderName] = fmeta;
+            if (Object.keys(fmeta).length > 0) {
+              flatObjFoldersData[fmeta.slugFolderName] = fmeta;
+            }
           });
           resolve(flatObjFoldersData);
         });
