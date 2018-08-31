@@ -209,7 +209,7 @@
 
         <a :download="slugMediaName" :href="mediaURL" :title="slugMediaName" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
-          v-if="$root.state.mode !== 'export' || $root.state.export_options.allow_download !== 'false'"
+          v-if="$root.state.mode !== 'export' || ($root.state.hasOwnProperty('export_options') && $root.state.export_options.allow_download !== 'false')"
           :disabled="$root.state.mode === 'live' && read_only"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">

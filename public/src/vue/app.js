@@ -344,7 +344,10 @@ let vm = new Vue({
 
     this.settings.keyboard_shortcuts = this.getKeyboardShortcuts();
 
-    if (!!window.state.export_options.password_protect) {
+    if (
+      window.state.hasOwnProperty('export_options') &&
+      !!window.state.export_options.password_protect
+    ) {
       let hashCode = function(s) {
         return s.split('').reduce(function(a, b) {
           a = (a << 5) - a + b.charCodeAt(0);
