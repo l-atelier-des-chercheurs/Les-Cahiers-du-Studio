@@ -337,7 +337,7 @@ export default {
     }
   },
   methods: {
-    keyPressed: function() {
+    keyPressed: function(event) {
       if (window.state.dev_mode === 'debug') {
         console.log('METHODS • EditMedia: keyPressed');
       }

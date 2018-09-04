@@ -131,7 +131,7 @@ export default {
     };
   },
   methods: {
-    modalKeyListener: function() {
+    modalKeyListener: function(event) {
       if (window.state.dev_mode === 'debug') {
         console.log('METHODS • BaseModal: modalKeyListener');
       }
