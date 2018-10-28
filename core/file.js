@@ -878,6 +878,13 @@ module.exports = (function() {
               slugMediaName
             );
             let content = validator.escape(mdata.content + '');
+
+            // EXPERIMENTAL : remove Line Separators and Paragraph Separators
+            // string to test with: 
+            // Comment rendre sensible à la vue ce qui n’est pas naturellement visible. Comment d’une manière pla
+            content = content.replace(/[\u2028]+/g, '\n');
+            content = content.replace(/[\u2029]+/g, '\n\n');
+
             api
               .storeData(mediaPath, content, 'update')
               .then(content => {
