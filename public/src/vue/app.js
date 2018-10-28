@@ -558,6 +558,9 @@ let vm = new Vue({
       ) {
         return viewportScale[slugFolderName];
       }
+      if (this.state.mode === 'export') {
+        return 50;
+      }
       return 20;
     },
 
