@@ -8,7 +8,8 @@
 
   background-color: rgba(255,255,255, .9);
   cursor: pointer;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   display: flex;
   align-items: center;
@@ -54,8 +55,11 @@
     max-width: @t-panelWidth * 2;
     // if it is medium, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
     align-self: flex-start;
-
-
+  }
+  &.typeOfModal-Writeup {
+    max-width: @t-panelWidth * 2;
+    // if it is medium, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
+    align-self: flex-start;
   }
 
   &.typeOfModal-EditMedia {

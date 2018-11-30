@@ -46,6 +46,29 @@
       </div>
     </SidebarSection>
 
+
+    <SidebarSection>
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t('writeup') }}
+          <button
+            type="button"
+            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="showWriteupModal = true"
+          >
+            {{ $t('open') }}
+          </button>
+        </h3>
+      </div>
+      <div slot="body">
+      </div>
+    </SidebarSection>
+
+    <WriteUp
+      v-if="showWriteupModal === true"
+      @close="showWriteupModal = false"
+    />
+
     <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
@@ -161,7 +184,7 @@
           <button
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="openListMediasModal()"
+            @click="this.showMediasListModal = true"
           >
             {{ $t('fullscreen') }}
           </button>
@@ -170,7 +193,7 @@
 
       <div slot="body" class="margin-sides-negative-medium">
         <Tableau
-          v-if="showMediasList === false"
+          v-if="showMediasListModal === false"
           :display="'table'"
           :filter="filter"
           :sort="sort"
@@ -183,13 +206,13 @@
     </SidebarSection>
 
     <MediasList
-      v-if="showMediasList === true"
+      v-if="showMediasListModal === true"
       :filter="filter"
       :sort="sort"
       :sortedMedias="sortedMedias"
       :slugFolderName="slugFolderName"
       :timelineInfos="timelineInfos"
-      @close="closeListMediasModal()"
+      @close="this.showMediasListModal = false"
     >
     </MediasList>
 
@@ -207,6 +230,7 @@ import Calendrier from './sidebar/Calendrier.vue';
 import Tableau from './sidebar/Tableau.vue';
 import SidebarSection from './sidebar/SidebarSection.vue';
 import MediasList from './modals/MediasList.vue';
+import WriteUp from './modals/WriteUp.vue';
 import KeyboardShortcuts from './modals/KeyboardShortcuts.vue';
 import ExportTimeline from './modals/ExportTimeline.vue';
 import qrcode from '@xkeshi/vue-qrcode';
@@ -215,6 +239,7 @@ import alertify from 'alertify.js';
 export default {
   components: {
     SidebarSection,
+    WriteUp,
     Tableau,
     MediasList,
     KeyboardShortcuts,
@@ -242,11 +267,11 @@ export default {
   },
   data() {
     return {
-      showMediasList: false,
+      showMediasListModal: false,
       showKeyboardShortcutsList: false,
+      showWriteupModal: false,
       showExportTimelineModal: false,
-      currentLang: this.$root.lang.current,
-
+      currentLang: this.$root.lang.current
     };
   },
   mounted() {
@@ -296,12 +321,6 @@ export default {
     },
     scrollToDate(timestamp) {
       this.$eventHub.$emit('scrollToDate', timestamp);
-    },
-    openListMediasModal() {
-      this.showMediasList = true;
-    },
-    closeListMediasModal() {
-      this.showMediasList = false;
     },
     folderDays() {
       console.log('METHODS • sidebar: getting folderDays');

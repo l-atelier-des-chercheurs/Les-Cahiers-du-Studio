@@ -39,6 +39,7 @@ module.exports = (function() {
       in_the_order: 'Dans l’ordre',
       public: 'Public',
       content: 'Contenu',
+      writeup: 'Compte-rendu',
 
       'lang:': 'Changer la langue&nbsp;:',
       lang: 'Changer la langue',
@@ -161,6 +162,7 @@ module.exports = (function() {
       in_the_order: 'In the order',
       public: 'Public',
       content: 'Content',
+      writeup: 'Write-up',
 
       'lang:': 'Select lang:',
       lang: 'Select lang',
