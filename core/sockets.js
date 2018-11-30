@@ -94,7 +94,7 @@ module.exports = (function() {
 
   function notify({ socket, socketid, msg }) {
     dev.logfunction(
-      `EVENT - pushMessage for socketid = ${socketid} with msg = ${msg} `
+      `EVENT - notify for socketid = ${socketid} with msg = ${msg} `
     );
     if (socketid || socket) {
       if (!socket) {
