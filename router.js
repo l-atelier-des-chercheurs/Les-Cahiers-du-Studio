@@ -52,24 +52,6 @@ module.exports = function(app, io, m) {
       });
       tasks.push(getPresentation);
 
-      let getLocalIP = new Promise((resolve, reject) => {
-        api.getLocalIP().then(
-          localNetworkInfos => {
-            pageData.localNetworkInfos = {
-              ip: [],
-              port: global.appInfos.port
-            };
-            pageData.localNetworkInfos.ip = Object.values(localNetworkInfos);
-            resolve();
-          },
-          function(err, p) {
-            dev.error(`Err while getting local IP: ${err}`);
-            reject(err);
-          }
-        );
-      });
-      tasks.push(getLocalIP);
-
       Promise.all(tasks).then(() => {
         resolve(pageData);
       });
@@ -346,7 +328,8 @@ module.exports = function(app, io, m) {
             renameMediaAndCreateMeta(
               form.uploadDir,
               slugFolderName,
-              allFilesMeta[i]
+              allFilesMeta[i],
+              socketid
             )
           );
         }
@@ -363,26 +346,56 @@ module.exports = function(app, io, m) {
     form.parse(req);
   }
 
-  function renameMediaAndCreateMeta(uploadDir, slugFolderName, fileMeta) {
+  function renameAndConvertMediaAndCreateMeta(
+    uploadDir,
+    slugProjectName,
+    fileMeta,
+    socketid
+  ) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction('ROUTER — renameAndConvertMediaAndCreateMeta');
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
         function(newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);
-          dev.logverbose(
-            `Has additional meta: ${JSON.stringify(
-              fileMeta.additionalMeta,
-              null,
-              4
-            )}`
-          );
-          let newPathToNewFileName = path.join(uploadDir, newFileName);
-          fs.renameSync(fileMeta.path, newPathToNewFileName);
-          sockets.createMediaMeta(
-            slugFolderName,
-            newFileName,
-            fileMeta.additionalMeta
-          );
-          resolve();
+
+          if (fileMeta.hasOwnProperty('additionalMeta')) {
+            dev.logverbose(
+              `Has additional meta: ${JSON.stringify(
+                fileMeta.additionalMeta,
+                null,
+                4
+              )}`
+            );
+          } else {
+            fileMeta.additionalMeta = {};
+          }
+
+          file
+            .convertAndSaveMedia({
+              uploadDir,
+              tempPath: fileMeta.path,
+              newFileName,
+              socketid
+            })
+            .then(newFileName => {
+              fileMeta.additionalMeta.media_filename = newFileName;
+              sockets.createMediaMeta({
+                type: 'projects',
+                slugFolderName: slugProjectName,
+                additionalMeta: fileMeta.additionalMeta
+              });
+              resolve();
+            })
+            .catch(err => {
+              dev.error(err);
+              fileMeta.additionalMeta.media_filename = newFileName;
+              sockets.createMediaMeta({
+                type: 'projects',
+                slugFolderName: slugProjectName,
+                additionalMeta: fileMeta.additionalMeta
+              });
+              resolve();
+            });
         },
         function(err) {
           reject(err);

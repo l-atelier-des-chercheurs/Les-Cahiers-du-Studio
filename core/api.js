@@ -4,10 +4,15 @@ const path = require('path'),
   fs = require('fs-extra'),
   slugg = require('slugg'),
   os = require('os'),
-  writeFileAtomic = require('write-file-atomic');
+  writeFileAtomic = require('write-file-atomic'),
+  ffmpegstatic = require('ffmpeg-static'),
+  ffmpeg = require('fluent-ffmpeg'),
+  pad = require('pad-left');
 
 const settings = require('../settings.json'),
   dev = require('./dev-log');
+
+ffmpeg.setFfmpegPath(ffmpegstatic.path);
 
 module.exports = (function() {
   const API = {
@@ -27,9 +32,15 @@ module.exports = (function() {
       eventAndContent(sendEvent, objectJson),
     sendEventWithContent: (sendEvent, objectContent, io, socket) =>
       sendEventWithContent(sendEvent, objectContent, io, socket),
-    getLocalIP: () => getLocalIP(),
+    getNetworkInfos: () => getNetworkInfos(),
     slug: term => slug(term),
-    clip: (value, min, max) => clip(value, min, max)
+    clip: (value, min, max) => clip(value, min, max),
+    decodeBase64Image: dataString => decodeBase64Image(dataString),
+    writeAudioToDisk: (slugProjectName, mediaName, dataURL) =>
+      writeAudioToDisk(slugProjectName, mediaName, dataURL),
+    writeVideoToDisk: (slugProjectName, mediaName, dataURL) =>
+      writeVideoToDisk(slugProjectName, mediaName, dataURL),
+    makeStopmotionFromImageSequence: d => makeStopmotionFromImageSequence(d)
   };
 
   function _getUserPath() {
@@ -66,7 +77,9 @@ module.exports = (function() {
       // let's find the extension if it exists
       var fileExtension = new RegExp(settings.regexpGetFileExtension, 'i').exec(
         fileName
-      )[0];
+      );
+      fileExtension = fileExtension === null ? '' : fileExtension[0];
+
       // remove extension
       var fileNameWithoutExtension = new RegExp(
         settings.regexpRemoveFileExtension,
@@ -173,16 +186,27 @@ module.exports = (function() {
   // from http://stackoverflow.com/a/8440736
   function getLocalIP() {
     return new Promise(function(resolve, reject) {
-      var ifaces = os.networkInterfaces();
-      var networkInfo = {};
+      const ifaces = os.networkInterfaces();
+      let ip_adresses = {};
       Object.keys(ifaces).forEach(function(ifname) {
         ifaces[ifname].forEach(function(iface) {
           if ('IPv4' === iface.family && iface.internal === false) {
-            networkInfo[ifname] = iface.address;
+            ip_adresses[ifname] = iface.address;
           }
         });
       });
-      resolve(networkInfo);
+      resolve(ip_adresses);
+    });
+  }
+
+  function getNetworkInfos() {
+    return new Promise(function(resolve, reject) {
+      getLocalIP().then(ip_adresses => {
+        resolve({
+          ip: Object.values(ip_adresses),
+          port: global.appInfos.port
+        });
+      });
     });
   }
 
@@ -192,6 +216,212 @@ module.exports = (function() {
 
   function clip(value, min, max) {
     return Math.max(min, Math.min(value, max));
+  }
+
+  // http://stackoverflow.com/a/20272545
+  function decodeBase64Image(dataString) {
+    dev.logfunction(
+      `COMMON — decodeBase64Image for dataString.length ${dataString.length}`
+    );
+    var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (matches.length !== 3) {
+      dev.error('Error parsing base64 image');
+      return new Error('Invalid input string');
+    }
+    // let response = {};
+    // response.type = matches[1];
+    // response.data = new Buffer(matches[2], 'base64');
+    let response = new Buffer(matches[2], 'base64');
+    dev.logverbose(`Just parsed string to bugger`);
+    return response;
+  }
+
+  function writeAudioToDisk(slugProjectName, mediaName, dataURL) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction('COMMON — writeAudioToDisk');
+      if (dataURL === undefined) {
+        dev.error('No media data content gotten for ' + mediaName);
+        reject('No media sent');
+      }
+      dataURL = dataURL.split(',').pop();
+      var fileBuffer = new Buffer(dataURL, 'base64');
+
+      let cachePath = path.join(
+        global.tempStorage,
+        settings.cacheDirname,
+        '_medias'
+      );
+      fs.mkdirp(cachePath, function() {
+        let pathToTempMedia = path.join(cachePath, mediaName);
+
+        fs.writeFile(pathToTempMedia, fileBuffer, function(err) {
+          if (err) reject(err);
+
+          let pathToMedia = path.join(
+            getFolderPath(slugProjectName),
+            mediaName
+          );
+          ffmpeg(pathToTempMedia)
+            .audioCodec('libmp3lame')
+            .save(pathToMedia)
+            .on('end', function() {
+              console.log('Processing finished !');
+              resolve();
+            });
+        });
+      });
+    });
+  }
+
+  function writeVideoToDisk(slugProjectName, mediaName, dataURL) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction('COMMON — writeVideoToDisk');
+      if (dataURL === undefined) {
+        dev.error('No media data content gotten for ' + mediaName);
+        reject('No media sent');
+      }
+      dataURL = dataURL.split(',').pop();
+      var fileBuffer = new Buffer(dataURL, 'base64');
+
+      let cachePath = path.join(
+        global.tempStorage,
+        settings.cacheDirname,
+        '_medias'
+      );
+      fs.mkdirp(cachePath, function() {
+        let pathToMedia = path.join(getFolderPath(slugProjectName), mediaName);
+        fs.writeFile(pathToMedia, fileBuffer, function(err) {
+          if (err) reject(err);
+          resolve();
+        });
+
+        // fs.writeFile(pathToTempMedia, fileBuffer, function(err) {
+        //   if (err) reject(err);
+
+        //   let pathToMedia = path.join(
+        //     getFolderPath(slugProjectName),
+        //     mediaName
+        //   );
+        //   ffmpeg(pathToTempMedia)
+        //     .audioCodec('aac')
+        //     .videoCodec('libx264')
+        //     .format('mp4')
+        //     .save(pathToMedia)
+        //     .on('end', function() {
+        //       console.log('Processing finished !');
+        //       resolve();
+        //     });
+        // });
+      });
+    });
+  }
+
+  function makeStopmotionFromImageSequence({
+    slugFolderName,
+    pathToMedia,
+    images,
+    slugStopmotionName,
+    frameRate
+  }) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction('COMMON — makeStopmotionFromImageSequence');
+
+      const numberOfImagesToProcess = images.length;
+
+      _copyToTempAndRenameImages({ slugStopmotionName, images })
+        .then(tempFolder => {
+          // ask ffmpeg to make a video from the cache images
+          var proc = new ffmpeg()
+            .input(path.join(tempFolder, 'img-%04d.jpeg'))
+            .inputFPS(frameRate)
+            .fps(frameRate)
+            .withVideoCodec('libx264')
+            .withVideoBitrate('8000k')
+            .addOptions(['-preset slow', '-tune animation'])
+            .noAudio()
+            .toFormat('mp4')
+            .output(pathToMedia)
+            .on('progress', progress => {
+              dev.logverbose(
+                `Processing new stopmotion: image ${
+                  progress.frames
+                }/${numberOfImagesToProcess}`
+              );
+            })
+            .on('end', () => {
+              dev.logverbose(`Stopmotion has been completed`);
+              resolve();
+            })
+            .on('error', function(err, stdout, stderr) {
+              dev.error('An error happened: ' + err.message);
+              dev.error('ffmpeg standard output:\n' + stdout);
+              dev.error('ffmpeg standard error:\n' + stderr);
+              reject(`couldn't create a stopmotion animation`);
+            })
+            .run();
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  function _copyToTempAndRenameImages({ slugStopmotionName, images }) {
+    return new Promise(function(resolve, reject) {
+      let cacheFolderName =
+        getCurrentDate(settings.metaDateFormat) +
+        slugStopmotionName +
+        '-' +
+        (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
+
+      let cachePath = path.join(
+        global.tempStorage,
+        settings.cacheDirname,
+        cacheFolderName
+      );
+
+      fs.mkdirp(
+        cachePath,
+        function() {
+          let slugStopmotionPath = getFolderPath(
+            path.join(
+              settings.structure['stopmotions'].path,
+              slugStopmotionName
+            )
+          );
+          let tasks = [];
+          images.forEach((image_filename, index) => {
+            tasks.push(
+              new Promise((resolve, reject) => {
+                const original_image_path = path.join(
+                  slugStopmotionPath,
+                  image_filename
+                );
+                const cache_image_path = path.join(
+                  cachePath,
+                  'img-' + pad(index, 4, '0') + '.jpeg'
+                );
+
+                fs.copy(original_image_path, cache_image_path)
+                  .then(() => {
+                    resolve();
+                  })
+                  .catch(err => {
+                    dev.error(`Failed to copy image to cache with seq name.`);
+                    reject(err);
+                  });
+              })
+            );
+
+            Promise.all(tasks)
+              .then(() => resolve(cachePath))
+              .catch(err => reject(err));
+          });
+        },
+        function(err, p) {
+          dev.error(`Failed to create cache folder: ${err}`);
+          reject(err);
+        }
+      );
+    });
   }
 
   return API;
