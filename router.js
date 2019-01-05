@@ -380,7 +380,7 @@ module.exports = function(app, io, m) {
             .then(newFileName => {
               fileMeta.additionalMeta.media_filename = newFileName;
               sockets.createMediaMeta({
-                type: 'projects',
+                type: 'folder',
                 slugFolderName: slugProjectName,
                 additionalMeta: fileMeta.additionalMeta
               });
@@ -390,7 +390,7 @@ module.exports = function(app, io, m) {
               dev.error(err);
               fileMeta.additionalMeta.media_filename = newFileName;
               sockets.createMediaMeta({
-                type: 'projects',
+                type: 'folder',
                 slugFolderName: slugProjectName,
                 additionalMeta: fileMeta.additionalMeta
               });

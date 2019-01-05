@@ -179,7 +179,7 @@ Vue.prototype.$socketio = new Vue({
       window.dispatchEvent(
         new CustomEvent('socketio.connected_and_authentified')
       );
-      this.listFolders();
+      this.listFolders({ type: 'folders' });
     },
 
     _onListMedia(mdata) {
@@ -219,33 +219,65 @@ Vue.prototype.$socketio = new Vue({
         })
       );
     },
-
-    _onListFolder(fdata) {
+    _onListFolder(data) {
       console.log('Received _onListFolder packet.');
-
-      // to prevent override of fully formed medias, we copy back the ones we have already
-      for (let slugFolderName in fdata) {
-        if (window.store.folders.hasOwnProperty(slugFolderName)) {
-          fdata[slugFolderName].medias =
-            window.store.folders[slugFolderName].medias;
-        }
-      }
-      window.store.folders = Object.assign({}, window.store.folders, fdata);
-    },
-
-    _onListFolders(fdata) {
-      console.log('Received _onListFolders packet.');
+      let type = Object.keys(data)[0];
+      let content = Object.values(data)[0];
 
       // to prevent override of fully formed medias in folders, we copy back the ones we have already
-      for (let slugFolderName in fdata) {
-        if (window.store.folders.hasOwnProperty(slugFolderName)) {
-          fdata[slugFolderName].medias =
-            window.store.folders[slugFolderName].medias;
+      for (let slugFolderName in content) {
+        if (
+          window.store[type].hasOwnProperty(slugFolderName) &&
+          window.store[type][slugFolderName].hasOwnProperty('medias')
+        ) {
+          content[slugFolderName].medias =
+            window.store[type][slugFolderName].medias;
+        }
+        if (content[slugFolderName].hasOwnProperty('id')) {
+          this.$eventHub.$emit(
+            'socketio.folder_created_or_updated',
+            content[slugFolderName]
+          );
         }
       }
-      window.store.folders = Object.assign({}, fdata);
-      window.dispatchEvent(new CustomEvent('socketio.folders_listed'));
+
+      window.store[type] = Object.assign({}, window.store[type], content);
+      this.$eventHub.$emit(`socketio.${type}.folder_listed`);
     },
+
+    // for projects, authors and publications
+    _onListFolders(data) {
+      console.log('Received _onListFolders packet.');
+
+      if (typeof data !== 'object') {
+        return;
+      }
+
+      let type = Object.keys(data)[0];
+      let content = Object.values(data)[0];
+
+      console.log(`Type is ${type}`);
+
+      // to prevent override of fully formed medias in folders, we copy back the ones we have already
+      for (let slugFolderName in content) {
+        if (
+          window.store[type].hasOwnProperty(slugFolderName) &&
+          window.store[type][slugFolderName].hasOwnProperty('medias')
+        ) {
+          content[slugFolderName].medias =
+            window.store[type][slugFolderName].medias;
+        }
+      }
+      window.store[type] = Object.assign({}, content);
+
+      this.$eventHub.$emit(`socketio.${type}.folders_listed`);
+    },
+
+    _onNewNetworkInfos(data) {
+      console.log('Received _onNewNetworkInfos packet.');
+      window.state.localNetworkInfos = data;
+    },
+
     _onNotify({ localized_string, not_localized_string }) {
       console.log('Received _onNotify packet.');
 
@@ -263,8 +295,11 @@ Vue.prototype.$socketio = new Vue({
       }
     },
 
-    listFolders() {
-      this.socket.emit('listFolders');
+    listFolders(fdata) {
+      this.socket.emit('listFolders', fdata);
+    },
+    listFolder(fdata) {
+      this.socket.emit('listFolder', fdata);
     },
     createFolder(fdata) {
       this.socket.emit('createFolder', fdata);

@@ -410,7 +410,7 @@ module.exports = (function() {
 
                   file
                     .readMediaList({
-                      type: 'projects',
+                      type: 'folders',
                       medias_list: list_of_linked_medias
                     })
                     .then(folders_and_medias => {

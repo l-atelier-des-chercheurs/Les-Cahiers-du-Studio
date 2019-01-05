@@ -18,23 +18,10 @@
       </div>
 
       <div slot="body">
-        <p class="font-small">
-          <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
-
-          <a v-for="(ip, index) in $root.state.localNetworkInfos.ip"
-            :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
-            class="js--openInBrowser qrSnippet button button-circled margin-vert-medium border-circled button-inline padding-small"
-            target="_blank"
-            :key="index"
-            >
-            <div class="qrSnippet--text">
-              {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
-            </div>
-            <div class="qrSnippet--motif">
-              <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
-            </div>
-          </a>
-        </p>
+        <CreateQRCode
+          :slugProjectName="slugFolderName"
+        >
+        </CreateQRCode>
         <p class="font-small" v-if="$root.state.is_electron">
           {{ $t('contents_are_stored') }}
           <template>
@@ -211,6 +198,8 @@ import KeyboardShortcuts from './modals/KeyboardShortcuts.vue';
 import ExportTimeline from './modals/ExportTimeline.vue';
 import qrcode from '@xkeshi/vue-qrcode';
 import alertify from 'alertify.js';
+import CreateQRCode from './qr/CreateQRCode.vue';
+
 
 export default {
   components: {
@@ -219,7 +208,7 @@ export default {
     MediasList,
     KeyboardShortcuts,
     ExportTimeline,
-    qrcode
+    CreateQRCode
   },
   props: {
     slugFolderName: String,
