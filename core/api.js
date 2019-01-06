@@ -151,7 +151,7 @@ module.exports = (function() {
   function sendEventWithContent(sendEvent, objectContent, io, socket) {
     let eventAndContentJson = eventAndContent(sendEvent, objectContent);
     let eventAndContentJson_string = JSON.stringify(
-      eventAndContentJson,
+      eventAndContentJson.socketevent,
       null,
       4
     );
@@ -178,7 +178,7 @@ module.exports = (function() {
     }
     dev.logpackets(
       `eventAndContentJson — packet sent, string length: ${
-        eventAndContentJson_string.length
+        eventAndContentJson.content.length
       }`
     );
   }

@@ -12,6 +12,7 @@ var dev = require('./core/dev-log');
 
 const sockets = require('./core/sockets'),
   router = require('./router'),
+  setup_realtime_collaboration = require('./server-realtime_text_collaboration.js'),
   settings = require('./settings.json');
 
 module.exports = function(electronApp) {
@@ -52,6 +53,8 @@ module.exports = function(electronApp) {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.locals.pretty = true;
+
+  setup_realtime_collaboration(server);
 
   router(app, io, m);
 
