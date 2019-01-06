@@ -5,6 +5,8 @@
   "userDirPath": "documents",
   "userDirname": "les-cahiers",
 
+  "process": "electron",
+
   "contentDirname" : "user",
   "cacheDirname" : "cache",
   "metaFileext" : ".txt",

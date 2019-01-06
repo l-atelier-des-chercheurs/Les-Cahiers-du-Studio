@@ -550,17 +550,17 @@ let vm = new Vue({
         );
       }
 
-      fdata.folderID =
+      if (fdata.password !== '') {
+        this.justCreatedFolderPassword = fdata.password;
+      }
+
+      this.justCreatedFolderID = fdata.id =
         Math.random()
           .toString(36)
           .substring(2, 15) +
         Math.random()
           .toString(36)
           .substring(2, 15);
-      this.justCreatedFolderID = fdata.folderID;
-      if (fdata.password !== '') {
-        this.justCreatedFolderPassword = fdata.password;
-      }
 
       this.$socketio.createFolder(fdata);
     },

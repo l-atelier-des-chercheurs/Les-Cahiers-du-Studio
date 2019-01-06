@@ -1,6 +1,8 @@
 var express = require('express');
+
 var http = require('http');
-// var fs = require('fs');
+var https = require('https');
+var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser');
 const compression = require('compression');
@@ -11,34 +13,43 @@ var dev = require('./core/dev-log');
 // var ngrok = require('ngrok');
 
 const sockets = require('./core/sockets'),
-  router = require('./router'),
   setup_realtime_collaboration = require('./server-realtime_text_collaboration.js'),
+  router = require('./router'),
   settings = require('./settings.json');
 
-module.exports = function(electronApp) {
+module.exports = function() {
   dev.logverbose('Starting server 1');
 
-  var app = express();
+  const app = express();
+
   app.use(compression());
 
-  /*
-    // only for HTTPS, works without asking for a certificate
-    const privateKey  = fs.readFileSync(path.join(__dirname, 'ssl', 'file.pem'), 'utf8');
-    const certificate = fs.readFileSync(path.join(__dirname, 'ssl', 'file.crt'), 'utf8');
-    const options = { key: privateKey, cert: certificate };
-  */
+  // only for HTTPS, works without asking for a certificate
+  const privateKey = fs.readFileSync(
+    path.join(__dirname, 'ssl', 'file.pem'),
+    'utf8'
+  );
+  const certificate = fs.readFileSync(
+    path.join(__dirname, 'ssl', 'file.crt'),
+    'utf8'
+  );
+  const options = { key: privateKey, cert: certificate };
 
-  let server = http.createServer(app);
+  let server =
+    settings.protocol === 'https'
+      ? https.createServer(options, app)
+      : http.createServer(app);
+
   var io = require('socket.io').listen(server);
-  dev.logverbose('Starting server 2');
 
-  var m = sockets.init(app, io, electronApp);
+  dev.logverbose('Starting server 2');
+  sockets.init(app, io);
 
   dev.logverbose('Starting express-settings');
 
-  app.set('port', global.appInfos.port);
-  app.set('views', __dirname);
-  app.set('view engine', 'pug');
+  app.set('port', global.appInfos.port); //Server's port number
+  app.set('views', __dirname); //Specify the views folder
+  app.set('view engine', 'pug'); //View engine is Pug
 
   app.use(function(req, res, next) {
     if (isURLToForbiddenFiles(req.url)) {
@@ -49,6 +60,7 @@ module.exports = function(electronApp) {
   });
   app.use(express.static(global.pathToUserContent));
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(__dirname, settings.cacheDirname)));
 
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
@@ -56,7 +68,7 @@ module.exports = function(electronApp) {
 
   setup_realtime_collaboration(server);
 
-  router(app, io, m);
+  router(app);
 
   server.listen(app.get('port'), () => {
     dev.log(

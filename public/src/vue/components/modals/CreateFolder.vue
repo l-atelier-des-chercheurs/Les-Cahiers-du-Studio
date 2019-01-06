@@ -103,14 +103,21 @@ export default {
         return false;
       }
 
-      // copy all values
-      let values = this.folderdata;
-      values.slugFolderName = this.slugFolderName;
+      this.$root.createFolder({
+        type: 'folders',
+        data: this.folderdata 
+      });
 
-      this.$root.createFolder(values);
-
-      // then close that popover
-      this.$emit('close', '');
+      this.$eventHub.$once('socketio.folder_created_or_updated', this.newFolderCreated);
+    },
+    newFolderCreated: function(fdata) {
+      if(fdata.id === this.$root.justCreatedFolderID) {
+        this.$root.justCreatedFolderID = false;
+        this.$nextTick(() => {
+          this.$emit('close', '');
+          this.$root.openFolder(fdata.slugFolderName);
+        });
+      }
     }
   }
 };

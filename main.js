@@ -1,21 +1,33 @@
+const getPath = require('platform-folders');
+const path = require('path');
+const fs = require('fs-extra');
+const portscanner = require('portscanner');
+const packagejson = require('./package.json');
+
+const server = require('./server');
+
+const settings = require('./settings.json'),
+  dev = require('./core/dev-log'),
+  api = require('./core/api'),
+  file = require('./core/file');
+
+global.appInfos = {
+  name: packagejson.name,
+  version: packagejson.version
+};
+
+let win;
 const electron = require('electron');
 const { app, BrowserWindow, Menu } = electron;
+const PDFWindow = require('electron-pdf-window');
 
 const {
   default: installExtension,
   VUEJS_DEVTOOLS
 } = require('electron-devtools-installer');
 
-const path = require('path');
-const fs = require('fs-extra');
 const { dialog } = require('electron');
 const JSONStorage = require('node-localstorage').JSONStorage;
-const portscanner = require('portscanner');
-
-const server = require('./server');
-
-const settings = require('./settings.json'),
-  dev = require('./core/dev-log');
 
 require('electron-context-menu')({
   prepend: (params, BrowserWindow) => [
@@ -26,46 +38,122 @@ require('electron-context-menu')({
   ]
 });
 
-let win;
-app.commandLine.appendSwitch('--ignore-certificate-errors');
-app.commandLine.appendSwitch('--disable-http-cache');
+if (settings.process === 'electron') {
+  // This method will be called when Electron has finished
+  // initialization and is ready to create browser windows.
+  // Some APIs can only be used after this event occurs.
+  app.on('ready', () => {
+    createWindow(win);
+  });
 
-function createWindow() {
-  console.log(`Starting app ${app.getName()}`);
-  console.log(process.versions);
+  // Quit when all windows are closed.
+  app.on('window-all-closed', () => {
+    // On macOS it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    // if (process.platform !== 'darwin') {
+    app.quit();
+    // }
+  });
+
+  app.on('activate', () => {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (win === null) {
+      createWindow(win);
+    }
+  });
+} else if (settings.process === 'node') {
+  setupApp().then(() => {
+    server();
+  });
+}
+
+function setupApp() {
+  return new Promise(function(resolve, reject) {
+    console.log(`Starting app ${global.appInfos.name}`);
+    console.log(process.versions);
+
+    const debug =
+      process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
+    const verbose =
+      process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
+    const logToFile = false;
+
+    dev.init(debug, verbose, logToFile);
+
+    if (dev.isDebug()) {
+      process.traceDeprecation = true;
+    }
+
+    global.appRoot = path.resolve(__dirname);
+    global.tempStorage = getPath.getCacheFolder();
+
+    dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
+
+    cleanCacheFolder().then(
+      () => {
+        copyAndRenameUserFolder().then(
+          function(pathToUserContent) {
+            global.pathToUserContent = pathToUserContent;
+            dev.log('Will store contents in: ' + global.pathToUserContent);
+
+            readSessionMetaFile().then(sessionMeta => {
+              if (
+                !!sessionMeta &&
+                sessionMeta.hasOwnProperty('session_password') &&
+                sessionMeta.session_password !== '' &&
+                typeof sessionMeta.session_password === 'string'
+              ) {
+                function hashCode(s) {
+                  return s.split('').reduce(function(a, b) {
+                    a = (a << 5) - a + b.charCodeAt(0);
+                    return a & a;
+                  }, 0);
+                }
+
+                global.session_password = hashCode(
+                  sessionMeta.session_password
+                );
+              }
+              portscanner
+                .findAPortNotInUse(settings.port, settings.port + 20)
+                .then(
+                  port => {
+                    global.appInfos.port = port;
+                    global.appInfos.homeURL = `${settings.protocol}://${
+                      settings.host
+                    }:${global.appInfos.port}`;
+
+                    dev.log(`main.js - Found available port: ${port}`);
+                    return resolve();
+                  },
+                  function(err) {
+                    dev.error('Failed to find available port: ' + err);
+                    return reject(err);
+                  }
+                );
+            });
+          },
+          function(err) {
+            dev.error('Failed to check existing content folder: ' + err);
+            return reject(err);
+          }
+        );
+      },
+      function(err) {
+        dev.error('Failed to clean cache folder: ' + err);
+        return reject(err);
+      }
+    );
+  });
+}
+
+function createWindow(win) {
+  app.commandLine.appendSwitch('--ignore-certificate-errors');
+  app.commandLine.appendSwitch('--disable-http-cache');
+
   var storageLocation = app.getPath('userData');
   global.nodeStorage = new JSONStorage(storageLocation);
-
-  const debug =
-    process.argv.length >= 4 ? process.argv[3] === '--debug' : false;
-  const verbose =
-    process.argv.length >= 5 ? process.argv[4] === '--verbose' : false;
-  const logToFile = false;
-
-  dev.init(debug, verbose, logToFile);
-
-  if (dev.isDebug()) {
-    process.traceDeprecation = true;
-  }
-
-  if (global.appInfos === undefined) {
-    global.appInfos = {};
-  }
-
-  global.appRoot = path.resolve(__dirname);
-  global.tempStorage = app.getPath('temp');
-  global.appInfos.version = app.getVersion();
-  let pathToPresentationMd = path.join(
-    `${__dirname.replace(`${path.sep}app.asar`, '')}`,
-    `${settings.contentDirname}`,
-    `presentation.md`
-  );
-  global.appInfos.presentationMd = fs.readFileSync(
-    pathToPresentationMd,
-    settings.textEncoding
-  );
-
-  dev.log(`——— Starting les-cahiers app version ${global.appInfos.version}`);
 
   var windowState = {};
   try {
@@ -92,9 +180,12 @@ function createWindow() {
     webPreferences: {
       allowDisplayingInsecureContent: true,
       allowRunningInsecureContent: true,
-      nodeIntegration: true
+      nodeIntegration: true,
+      plugins: true
     }
   });
+
+  PDFWindow.addSupport(win);
 
   if (windowState.isMaximized) {
     win.maximize();
@@ -109,7 +200,7 @@ function createWindow() {
     global.nodeStorage.setItem('windowstate', windowState);
   };
 
-  ['resize', 'move', 'close'].forEach(function(e) {
+  ['close'].forEach(function(e) {
     win.on(e, function() {
       try {
         storeWindowState();
@@ -119,77 +210,59 @@ function createWindow() {
     });
   });
 
+  if (process.platform == 'darwin') {
+    app.setAboutPanelOptions({
+      applicationName: global.appInfos.name,
+      applicationVersion: app.getVersion(),
+      copyright: 'Released under the Creative Commons license.'
+    });
+  }
+
   setApplicationMenu();
 
-  cleanCacheFolder().then(
-    () => {
-      copyAndRenameUserFolder().then(
-        function(pathToUserContent) {
-          global.pathToUserContent = pathToUserContent;
-          dev.log('Will store contents in: ' + global.pathToUserContent);
+  // Emitted when the window is closed.
+  win.on('closed', () => {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    win = null;
+  });
 
-          portscanner.findAPortNotInUse(settings.port, settings.port + 20).then(
-            port => {
-              dev.log(`main.js - Found available port: ${port}`);
-              global.appInfos.port = port;
-              global.appInfos.homeURL = `${settings.protocol}://${
-                settings.host
-              }:${global.appInfos.port}`;
+  win.on('ready-to-show', function() {
+    win.show();
+    win.focus();
+  });
 
-              app.server = server(app);
+  setupApp()
+    .then(() => {
+      server();
 
-              // and load the base url of the app.
-              win.loadURL(global.appInfos.homeURL);
+      win.loadURL(global.appInfos.homeURL);
 
-              if (dev.isDebug()) {
-                // win.webContents.openDevTools({mode: 'detach'});
-                installExtension(VUEJS_DEVTOOLS)
-                  .then(name => console.log(`Added Extension:  ${name}`))
-                  .catch(err => console.log('An error occurred: ', err));
-              }
-            },
-            function(err) {
-              dev.error('Failed to find available port: ' + err);
-              dialog.showErrorBox(
-                `The app ${app.getName()} wasn’t able to start`,
-                `It seems ports between ${settings.port} and ${settings.port +
-                  20} are not available.\nError code: ${err}`
-              );
-            }
-          );
-
-          // Emitted when the window is closed.
-          win.on('closed', () => {
-            // Dereference the window object, usually you would store windows
-            // in an array if your app supports multi windows, this is the time
-            // when you should delete the corresponding element.
-            win = null;
-          });
-
-          win.on('ready-to-show', function() {
-            win.show();
-            win.focus();
-          });
-        },
-        function(err) {
-          dev.error('Failed to check existing content folder: ' + err);
-        }
+      if (dev.isDebug()) {
+        // win.webContents.openDevTools({mode: 'detach'});
+        installExtension(VUEJS_DEVTOOLS)
+          .then(name => dev.logverbose(`Added Extension:  ${name}`))
+          .catch(err => dev.logverbose('An error occurred: ', err));
+      }
+    })
+    .catch(err => {
+      dialog.showErrorBox(
+        `The app ${app.getName()} wasn’t able to start`,
+        `It seems ports between ${settings.port} and ${settings.port +
+          20} are not available.\nError code: ${err}`
       );
-    },
-    function(err) {
-      dev.error('Failed to clean cache folder: ' + err);
-    }
-  );
+    });
 }
 
 function setApplicationMenu() {
   // Create the Application's main menu
   var template = [
     {
-      label: 'Electron',
+      label: 'Les Cahiers du Studio',
       submenu: [
         {
-          label: 'About Electron',
+          label: 'À propos de Les Cahiers du Studio',
           selector: 'orderFrontStandardAboutPanel:'
         },
         {
@@ -203,17 +276,17 @@ function setApplicationMenu() {
           type: 'separator'
         },
         {
-          label: 'Hide Electron',
+          label: 'Cacher Les Cahiers du Studio',
           accelerator: 'Command+H',
           selector: 'hide:'
         },
         {
-          label: 'Hide Others',
+          label: 'Cacher les autres applications',
           accelerator: 'Command+Shift+H',
           selector: 'hideOtherApplications:'
         },
         {
-          label: 'Show All',
+          label: 'Tout montrer',
           selector: 'unhideAllApplications:'
         },
         {
@@ -318,7 +391,11 @@ function setApplicationMenu() {
 }
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
-    const userDirPath = app.getPath(settings.userDirPath);
+    const userDirPath =
+      settings.process === 'electron'
+        ? app.getPath(settings.userDirPath)
+        : getPath.getDocumentsFolder();
+
     const pathToUserContent = path.join(userDirPath, settings.userDirname);
     fs.access(pathToUserContent, fs.F_OK, function(err) {
       // if userDir folder doesn't exist yet at destination
@@ -329,10 +406,19 @@ function copyAndRenameUserFolder() {
           } does not already exists in ${userDirPath}`
         );
         dev.log(`->duplicating ${settings.contentDirname} to create a new one`);
-        const sourcePathInApp = path.join(
-          `${__dirname.replace(`${path.sep}app.asar`, '')}`,
-          `${settings.contentDirname}`
-        );
+
+        let sourcePathInApp;
+        if (settings.process === 'electron') {
+          sourcePathInApp = path.join(
+            `${__dirname.replace(`${path.sep}app.asar`, '')}`,
+            `${settings.contentDirname}`
+          );
+        } else if (settings.process === 'node') {
+          sourcePathInApp = path.join(
+            `${__dirname}`,
+            `${settings.contentDirname}`
+          );
+        }
         fs.copy(sourcePathInApp, pathToUserContent, function(err) {
           if (err) {
             dev.error(`Failed to copy: ${err}`);
@@ -367,24 +453,17 @@ function cleanCacheFolder() {
   });
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
-
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  // if (process.platform !== 'darwin') {
-  app.quit();
-  // }
-});
-
-app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (win === null) {
-    createWindow();
-  }
-});
+function readSessionMetaFile() {
+  return new Promise(function(resolve, reject) {
+    var pathToSessionMeta = api.getFolderPath('meta.txt');
+    try {
+      var metaFileContent = fs.readFileSync(
+        pathToSessionMeta,
+        settings.textEncoding
+      );
+      return resolve(api.parseData(metaFileContent));
+    } catch (err) {
+      return resolve();
+    }
+  });
+}
