@@ -68,10 +68,10 @@ export default {
   },
   computed: {
     nameOfProject() {
-      if(!this.slugProjectName || !this.$root.store.projects[this.slugProjectName].hasOwnProperty('name')) {
+      if(!this.slugProjectName || !this.$root.store.folders[this.slugProjectName].hasOwnProperty('name')) {
         return false;
       }
-      return this.$root.store.projects[this.slugProjectName].name;
+      return this.$root.store.folders[this.slugProjectName].name;
     }
   },
   methods: {

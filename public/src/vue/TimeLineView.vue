@@ -314,7 +314,7 @@ export default {
         end: 0,
         width: 1,
         height: 1,
-        scale: this.$root.getProjectScale(this.slugFolderName),
+        scale: this.$root.getFolderScale(this.slugFolderName),
         visibleDay: 0,
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,

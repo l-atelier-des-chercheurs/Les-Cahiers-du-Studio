@@ -74,7 +74,10 @@ export default {
     addText() {
       this.$root.createTextMedia({
         slugFolderName: this.slugFolderName,
-        type: 'text'
+        type: 'folders',
+        additionalMeta: {
+          type: 'text',
+        }
       });
 
       this.$eventHub.$emit('timeline.scrollToToday');
@@ -82,9 +85,12 @@ export default {
     addMarker() {
       this.$root.createTextMedia({
         slugFolderName: this.slugFolderName,
-        type: 'marker',
-        color: 'red',
-        collapsed: true
+        type: 'folders',
+        additionalMeta: {
+          type: 'marker',
+          color: 'red',
+          collapsed: true
+        }
       });
       this.$eventHub.$emit('timeline.scrollToToday');
     },
@@ -108,8 +114,12 @@ export default {
         if(k.key === key && k.marker_color !== '') {
           this.$root.createTextMedia({
             slugFolderName: this.slugFolderName,
-            type: 'marker',
-            color: k.marker_color
+            type: 'folders',
+            additionalMeta: {
+              type: 'marker',
+              color: k.marker_color,
+              collapsed: true
+            }
           });
           this.$eventHub.$emit('timeline.scrollToToday');
         }

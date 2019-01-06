@@ -80,7 +80,7 @@ module.exports = function(app, io, m) {
       pageData => {
         pageData.slugFolderName = slugFolderName;
         // let’s make sure that folder exists first and return some meta
-        file.getFolder(slugFolderName).then(
+        file.getFolder({ type: 'folders', slugFolderName }).then(
           foldersData => {
             res.render('index', pageData);
           },
