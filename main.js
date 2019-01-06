@@ -173,7 +173,7 @@ function createWindow(win) {
     width: (windowState.bounds && windowState.bounds.width) || 1200,
     height: (windowState.bounds && windowState.bounds.height) || 800,
 
-    backgroundColor: '#333',
+    backgroundColor: '#EBEBEB',
     show: false,
     titleBarStyle: 'hidden',
 
