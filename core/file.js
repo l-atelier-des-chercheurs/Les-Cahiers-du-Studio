@@ -134,7 +134,10 @@ module.exports = (function() {
             }
           });
           Promise.all(allFoldersData).then(parsedFoldersData => {
-            dev.logverbose(`All folders meta have been processed`);
+            dev.logverbose(
+              `All folders meta have been processed`
+              // JSON.stringify(parsedFoldersData, null, 4)
+            );
 
             // on se balade dans l’array, on attrappe la key
             // et on merge tout ça dans un nouvel objet du type :
