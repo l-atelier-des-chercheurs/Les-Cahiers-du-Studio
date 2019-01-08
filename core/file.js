@@ -1690,14 +1690,14 @@ module.exports = (function() {
   }
 
   function _sanitizeMetaFromFile({ type, type_two, meta }) {
-    // dev.logverbose(
-    //   `COMMON — _sanitizeMetaFromFile :
-    //   will sanitize a new default meta object
-    //   for type ${type}
-    //   and type_two ${type_two}
-    //   with existing = ${JSON.stringify(meta)}
-    //   `
-    // );
+    dev.logverbose(
+      `COMMON — _sanitizeMetaFromFile :
+      will sanitize a new default meta object
+      for type ${type}
+      and type_two ${type_two}
+      with existing = ${JSON.stringify(meta)}
+      `
+    );
     let new_meta = {};
 
     const fields =
