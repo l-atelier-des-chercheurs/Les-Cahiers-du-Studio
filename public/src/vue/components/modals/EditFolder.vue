@@ -121,12 +121,11 @@ export default {
         }
       }
 
-      // copy all values
-      let values = this.folderdata;
-
-      values.slugFolderName = this.slugFolderName;
-
-      this.$root.editFolder(values);
+      this.$root.editFolder({
+        type: 'folders',
+        slugFolderName: this.slugProjectName, 
+        data: this.folderdata 
+      });
 
       // then close that popover
       this.$emit('close', '');

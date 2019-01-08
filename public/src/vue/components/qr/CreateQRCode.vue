@@ -49,7 +49,7 @@
 import qrcode from '@xkeshi/vue-qrcode';
 
 export default {
-  props: ['slugProjectName', 'media_filename'],
+  props: ['slugFolderName', 'media_filename'],
   components: {
     qrcode
   },
@@ -68,10 +68,10 @@ export default {
   },
   computed: {
     nameOfProject() {
-      if(!this.slugProjectName || !this.$root.store.folders[this.slugProjectName].hasOwnProperty('name')) {
+      if(!this.slugFolderName || !this.$root.store.folders[this.slugFolderName].hasOwnProperty('name')) {
         return false;
       }
-      return this.$root.store.folders[this.slugProjectName].name;
+      return this.$root.store.folders[this.slugFolderName].name;
     }
   },
   methods: {
@@ -80,8 +80,8 @@ export default {
     },
     getURLToApp(ip) {
       let url = `${this.$root.state.protocol}://${ip}:${this.$root.state.localNetworkInfos.port}`;
-      if(this.slugProjectName) {
-        url += `/${this.slugProjectName}`;
+      if(this.slugFolderName) {
+        url += `/${this.slugFolderName}`;
         if(this.media_filename) {
           url += `/media/${this.media_filename}`;
         }

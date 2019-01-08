@@ -161,7 +161,10 @@ export default {
     },
     removeFolder() {
       if (window.confirm(this.$t('sureToRemoveFolder'))) {
-        this.$root.removeFolder(this.slugFolderName);
+        this.$root.removeFolder({
+          type: 'folders',
+          slugFolderName: this.slugFolderName
+        });
       }
     },
     submitPassword() {

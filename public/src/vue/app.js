@@ -599,7 +599,7 @@ let vm = new Vue({
 
       this.$socketio.createTextMedia(mdata);
       this.$root.createMedia({
-        slugFolderName: this.slugProjectName,
+        slugFolderName: this.slugFolderName,
         type: 'projects'
       });
     },

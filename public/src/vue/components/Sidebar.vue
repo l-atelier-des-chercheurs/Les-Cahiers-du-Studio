@@ -19,7 +19,7 @@
 
       <div slot="body">
         <CreateQRCode
-          :slugProjectName="slugFolderName"
+          :slugFolderName="slugFolderName"
         >
         </CreateQRCode>
         <p class="font-small" v-if="$root.state.is_electron">
