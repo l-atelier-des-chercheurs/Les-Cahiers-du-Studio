@@ -194,6 +194,7 @@ module.exports = (function() {
 
   function onListMedias(socket, { type, slugFolderName }) {
     dev.logfunction(
+      `EVENT - onListMedias : type = ${type}, slugProjectName = ${slugFolderName}`
     );
     sendMedias({ type, slugFolderName, socket });
   }

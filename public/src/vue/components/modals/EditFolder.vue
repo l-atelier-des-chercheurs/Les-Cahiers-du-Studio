@@ -127,7 +127,6 @@ export default {
         data: this.folderdata 
       });
 
-      // then close that popover
       this.$emit('close', '');
     }
   },
