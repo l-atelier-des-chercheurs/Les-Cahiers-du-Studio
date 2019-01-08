@@ -17,7 +17,8 @@
   },
   "scripts": {
     "start": "electron .",
-    "debug": "electron --inspect=5858 . --debug --verbose",
+    "debug": "electron --inspect=5858 . --debug",
+    "verbose": "electron --inspect=5858 . --debug --verbose",
     "debug-brk": "electron --inspect=5858 . --debug-brk --verbose",
     "node-start": "node .",
     "node-debug": "node . --inspect=5858 --debug --verbose",
