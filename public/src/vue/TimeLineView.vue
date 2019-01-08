@@ -433,14 +433,14 @@ export default {
         this.isAnimated = true;
       });
 
-      this.$root.updateProjectScale(
+      this.$root.updateFolderScale(
         this.slugFolderName,
         this.timelineViewport.scale
       );
     },
     'timelineViewport.scrollLeft': function() {
       console.log('WATCH • TimeLineView: timelineViewport.scrollLeft');
-      this.$root.updateProjectScrollLeft(
+      this.$root.updateFolderScrollLeft(
         this.slugFolderName,
         this.timelineViewport.scrollLeft
       );

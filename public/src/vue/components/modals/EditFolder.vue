@@ -123,7 +123,7 @@ export default {
 
       this.$root.editFolder({
         type: 'folders',
-        slugFolderName: this.slugProjectName, 
+        slugFolderName: this.slugFolderName, 
         data: this.folderdata 
       });
 

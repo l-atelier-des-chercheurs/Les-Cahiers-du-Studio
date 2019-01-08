@@ -31,18 +31,19 @@
       <input name="audioCapture" class="button margin-bottom-small button_addFile button_addAudio" type="file" accept="audio/*" capture @change="addAudio">
 -->
 
-      <FileUpload
+      <UploadFile
+        v-if="showImportModal"
+        @close="showImportModal = false"
         :slugFolderName="slugFolderName"
-        :disabled="read_only"
-      >
-      </FileUpload>
-    </div>
+        :type="'folders'"
+        :read_only="read_only"
+      />
 
+    </div>
   </div>
 </template>
 <script>
-import FileUpload from './FileUpload.vue';
-import FileInput from './subcomponents/FileInput.vue';
+import UploadFile from './modals/UploadFile.vue';
 
 export default {
   props: {
@@ -53,12 +54,12 @@ export default {
     }
   },
   components: {
-    FileUpload,
-    FileInput
+    UploadFile
   },
   data() {
     return {
-      file: null
+      file: null,
+      showImportModal: false
     };
   },
   mounted: function() {

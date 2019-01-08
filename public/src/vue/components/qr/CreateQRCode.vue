@@ -33,8 +33,8 @@
             :src="'/images/i_logo.svg'" 
           />          
         
-          <template v-if="nameOfProject">
-            • {{ nameOfProject }} •<br><br>
+          <template v-if="nameOfFolder">
+            • {{ nameOfFolder }} •<br><br>
           </template>
           <span class="font-verysmall">
             {{ getURLToApp(ip) }}
@@ -67,7 +67,7 @@ export default {
   watch: {
   },
   computed: {
-    nameOfProject() {
+    nameOfFolder() {
       if(!this.slugFolderName || !this.$root.store.folders[this.slugFolderName].hasOwnProperty('name')) {
         return false;
       }

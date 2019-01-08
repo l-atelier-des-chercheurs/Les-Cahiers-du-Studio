@@ -137,7 +137,7 @@ Vue.prototype.$socketio = new Vue({
 
       // TODO : reenable auth for folders and publications
       this.listFolders({ type: 'folders' });
-      this.listFolders({ type: 'authors' });
+      // this.listFolders({ type: 'authors' });
       this.sendAuth();
     },
 
@@ -441,10 +441,11 @@ let vm = new Vue({
       current_slugFolderName: '',
       has_sidebar_opened: false,
       highlightMedia: '',
-      is_loading_medias_for_folder: '',
+      is_loading_medias_for_folder: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
       perf_mode: 'low',
-      keyboard_shortcuts: []
+      keyboard_shortcuts: [],
+      current_author: false
     },
 
     lang: {
@@ -521,7 +522,7 @@ let vm = new Vue({
         if (this.store.slugFolderName) {
           this.settings.current_slugFolderName = this.store.slugFolderName;
           this.settings.is_loading_medias_for_folder = this.store.slugFolderName;
-          this.$eventHub.$once('socketio.projects.folders_listed', () => {
+          this.$eventHub.$once('socketio.folders.folders_listed', () => {
             this.openFolder(this.store.slugFolderName);
           });
         }
@@ -600,7 +601,7 @@ let vm = new Vue({
       this.$socketio.createTextMedia(mdata);
       this.$root.createMedia({
         slugFolderName: this.slugFolderName,
-        type: 'projects'
+        type: 'folders'
       });
     },
     removeMedia: function(slugFolderName, slugMediaName) {
@@ -630,6 +631,7 @@ let vm = new Vue({
       this.settings.is_loading_medias_for_folder = slugFolderName;
 
       this.$nextTick(() => {
+        debugger;
         this.$socketio.listMedias({
           type: 'folders',
           slugFolderName
@@ -641,10 +643,8 @@ let vm = new Vue({
         this.store.folders[slugFolderName].name,
         '/' + slugFolderName
       );
-
       this.$eventHub.$once('socketio.folders.listMedias', () => {
-        debugger;
-        this.settings.is_loading_medias_for_folder = '';
+        this.settings.is_loading_medias_for_folder = false;
       });
     },
     closeFolder: function() {
@@ -654,9 +654,9 @@ let vm = new Vue({
       this.settings.current_slugFolderName = '';
       history.pushState({ slugFolderName: '' }, '', '/');
     },
-    updateProjectScale: function(slugFolderName, timelineViewport_scale) {
+    updateFolderScale: function(slugFolderName, timelineViewport_scale) {
       if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: updateProjectScale');
+        console.log('ROOT EVENT: updateFolderScale');
       }
 
       let viewportScale = localstore.get('viewport_scale') || {};
@@ -694,12 +694,12 @@ let vm = new Vue({
       localstore.set('language', newLangCode);
     },
 
-    updateProjectScrollLeft: function(
+    updateFolderScrollLeft: function(
       slugFolderName,
       timelineViewport_scrollLeft
     ) {
       if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: updateProjectScrollLeft');
+        console.log('ROOT EVENT: updateFolderScrollLeft');
       }
 
       let viewportScrollLeft = localstore.get('viewport_scrollLeft') || {};
