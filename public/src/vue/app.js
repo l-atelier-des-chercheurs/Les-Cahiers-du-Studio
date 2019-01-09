@@ -631,7 +631,6 @@ let vm = new Vue({
       this.settings.is_loading_medias_for_folder = slugFolderName;
 
       this.$nextTick(() => {
-        debugger;
         this.$socketio.listMedias({
           type: 'folders',
           slugFolderName

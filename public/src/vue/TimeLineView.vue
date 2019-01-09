@@ -79,7 +79,6 @@
           <div class="grid_overlay--wrapper">
 
             <div
-              v-if="overallGrid.days.length > 0"
               v-for="item in overallGrid.days"
               class="gridItem font-small gridItem_isday"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
@@ -92,7 +91,6 @@
             </div>
 
             <div
-              v-if="overallGrid.hours.length > 0"
               v-for="(item, index) in overallGrid.hours"
               class="gridItem font-small gridItem_ishour"
               :class="{ 'has--caption' : (item.caption !== undefined) }"
@@ -105,7 +103,6 @@
             </div>
 
             <div
-              v-if="overallGrid.minutes.length > 0"
               v-for="(item, index) in overallGrid.minutes"
               class="gridItem font-small gridItem_isminute"
               :class="{ 'has--caption' : (item.caption !== undefined) }"

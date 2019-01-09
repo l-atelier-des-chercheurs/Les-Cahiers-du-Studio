@@ -82,6 +82,9 @@
             "default": "current",
             "override": true
           },
+          "media_filename": {
+            "type": "string"
+          },
           "public": {
             "type": "boolean",
             "default": false

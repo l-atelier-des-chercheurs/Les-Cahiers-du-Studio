@@ -8,7 +8,7 @@
     <template v-if="media.type === 'image'">
       <img :src="linkToImageThumb">
       <transition name="fade" :duration="600">
-        <img v-if="is_hovered && $root.state.is_electron" :src="linkToHoveredThumb">
+        <img v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb" :src="linkToHoveredThumb">
       </transition>
     </template>
 
@@ -115,7 +115,7 @@ export default {
   data() {
     return {
       available_resolutions: {
-        preview_hovered: 600,
+        preview_hovered: 360,
         default: 1600
       },
       video_is_playing: false,
@@ -174,6 +174,8 @@ export default {
       return url;
     },
     linkToHoveredThumb: function() {
+      if(!this.media.hasOwnProperty('thumbs')) return false;
+
       let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbResHovered)[0].path;
 
       const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;

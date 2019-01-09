@@ -87,7 +87,7 @@
       <div v-if="!read_only" class="margin-bottom-small">
         <label>{{ $t('color') }}</label>
         <select v-if="!read_only" ref="type" v-model="mediadata.color">
-          <option v-for="mediaColor in $root.state.structure.media.color.options" :key="mediaColor">
+          <option v-for="mediaColor in $root.state.structure['folders'].medias.fields.color.options" :key="mediaColor">
             {{ mediaColor }}
           </option>
         </select>
@@ -380,12 +380,12 @@ export default {
     editThisMedia: function() {
       console.log('editThisMedia');
 
-      // copy all values
-      let values = this.mediadata;
-      values.slugFolderName = this.slugFolderName;
-      values.slugMediaName = this.slugMediaName;
-
-      this.$root.editMedia(values);
+      this.$root.editMedia({ 
+        type: 'folders',
+        slugFolderName: this.slugFolderName, 
+        slugMediaName: this.slugMediaName,
+        data: this.mediadata
+      });
 
       // then close that popover
       if(!this.alt_key_is_pressed) {

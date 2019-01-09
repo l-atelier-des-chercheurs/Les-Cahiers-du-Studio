@@ -62,10 +62,7 @@ module.exports = function(app, io, m) {
   function showIndex(req, res) {
     generatePageData(req).then(
       pageData => {
-        dev.logpackets(
-          `Rendering index with data `,
-          JSON.stringify(pageData, null, 4)
-        );
+        dev.logpackets(`Rendering index with data `, JSON.stringify(pageData));
         res.render('index', pageData);
       },
       err => {

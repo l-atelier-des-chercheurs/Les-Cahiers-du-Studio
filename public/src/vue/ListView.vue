@@ -21,10 +21,10 @@
           </div>
         </div>
         <div class="text-formatting flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-medium">
-          <vue-markdown
+          <VueMarkdown
             :html=true
             :source="presentationText"
-          ></vue-markdown>
+          />
         </div>
       </div>
     </header>
@@ -145,10 +145,10 @@
 
         <template
           v-if="sortedFoldersSlug !== 'no-folders'"
-          v-for="sortedFolder in sortedFoldersSlug"
         >
           <div
             class="m_home--folders--card margin-small"
+            v-for="sortedFolder in sortedFoldersSlug"
             :key="sortedFolder.slugFolderName"
           >
             <Folder

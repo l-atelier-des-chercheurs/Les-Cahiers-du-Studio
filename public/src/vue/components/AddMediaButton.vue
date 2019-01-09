@@ -30,6 +30,10 @@
       <input name="videoCapture" class="button margin-bottom-small button_addFile button_addVideo" type="file" accept="video/*" capture @change="addVideo">
       <input name="audioCapture" class="button margin-bottom-small button_addFile button_addAudio" type="file" accept="audio/*" capture @change="addAudio">
 -->
+      <button type="button" 
+        @click="showImportModal = !showImportModal"
+        v-html="'click'"
+      />
 
       <UploadFile
         v-if="showImportModal"
