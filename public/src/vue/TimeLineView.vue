@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m_navtimeline_wrapper">
 
     <NavbarTop
       :folder="folder"
@@ -21,207 +21,212 @@
       </div>
     </transition>
 
-    <transition name="sidebar-animation" :duration="350">
-      <Sidebar
-        v-if="$root.settings.has_sidebar_opened"
+    <div class="m_navtimeline_wrapper--timeline_wrapper">
+      <transition name="sidebar-animation" :duration="350">
+        <Sidebar
+          v-if="$root.settings.has_sidebar_opened"
+          :folder="folder"
+          :slugFolderName="slugFolderName"
+          :visibleDay="timelineViewport.visibleDay"
+          :medias="medias"
+          :sortedMedias="sortedMedias"
+          :sort="sort"
+          :filter="filter"
+          :timelineInfos="timelineInfos"
+          :isRealtime="isRealtime"
+          :style="{ height: `${sidebarHeight}px` }"
+          :read_only="read_only"
+        >
+        </Sidebar>
+      </transition>
+
+      <EditFolder
+        v-if="showEditFolderModal"
         :folder="folder"
         :slugFolderName="slugFolderName"
-        :visibleDay="timelineViewport.visibleDay"
-        :medias="medias"
-        :sortedMedias="sortedMedias"
-        :sort="sort"
-        :filter="filter"
-        :timelineInfos="timelineInfos"
-        :isRealtime="isRealtime"
-        :style="{ height: `${sidebarHeight}px` }"
+        @close="showEditFolderModal = false"
         :read_only="read_only"
-      >
-      </Sidebar>
-    </transition>
+      />
 
-    <button type="button"
-      class="button_sidebarToggle"
-      @click.prevent="toggleSidebar()"
-      :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
-    >
-      <template v-if="$root.settings.has_sidebar_opened">←</template>
-      <template v-else>→</template>
-    </button>
-
-    <EditFolder
-      v-if="showEditFolderModal"
-      :folder="folder"
-      :slugFolderName="slugFolderName"
-      @close="showEditFolderModal = false"
-      :read_only="read_only"
-    />
-
-    <div class="m_timeline"
-      ref="timeline"
-      @scroll="onScroll"
-      :class="{
-        'with--sidebar_opened' : $root.settings.has_sidebar_opened,
-        'is--animated': isAnimated,
-        'is--realtime': isRealtime
-      }"
-    >
-      <div class="m_timeline-container"
-        :style="{
-          width: `${timelineViewport.width}px`,
-          height: `${timelineViewport.height}px`
+      <div class="m_timeline"
+        ref="timeline"
+        @scroll="onScroll"
+        :class="{
+          'with--sidebar_opened' : $root.settings.has_sidebar_opened,
+          'is--animated': isAnimated,
+          'is--realtime': isRealtime
         }"
       >
-        <div class="timeline_track">
-        </div>
+        <button type="button"
+          class="button_sidebarToggle"
+          @click.prevent="toggleSidebar()"
+          :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
+        >
+          <template v-if="$root.settings.has_sidebar_opened">←</template>
+          <template v-else>→</template>
+        </button>
 
-        <!-- GRID -->
-        <div class="grid_overlay">
-          <div class="grid_overlay--wrapper">
+        <div class="m_timeline-container"
+          :style="{
+            width: `${timelineViewport.width}px`,
+            height: `${timelineViewport.height}px`
+          }"
+        >
+          <div class="timeline_track">
+          </div>
 
-            <div
-              v-for="item in overallGrid.days"
-              class="gridItem font-small gridItem_isday"
-              :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="item.caption"
-            >
-              <div v-if="item.caption !== undefined" class="gridItem--caption">
-                {{ item.caption }}
-              </div>
-            </div>
+          <!-- GRID -->
+          <div class="grid_overlay">
+            <div class="grid_overlay--wrapper">
 
-            <div
-              v-for="(item, index) in overallGrid.hours"
-              class="gridItem font-small gridItem_ishour"
-              :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="`hrs-${index}-${item.xPos}`"
-            >
-              <div v-if="item.caption !== undefined" class="gridItem--caption">
-                {{ item.caption }}
-              </div>
-            </div>
-
-            <div
-              v-for="(item, index) in overallGrid.minutes"
-              class="gridItem font-small gridItem_isminute"
-              :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="`min-${index}-${item.xPos}`"
-            >
-              <div v-if="item.caption !== undefined" class="gridItem--caption">
-                {{ item.caption }}
-              </div>
-            </div>
-
-            <div
-              v-if="isRealtime && $root.state.mode !== 'export'"
-              class="gridItem font-small gridItem_isrealtimerule"
-              :style="`transform: translate(${todaysRule.xPos}px, 0px)`"
-            >
-              <div class="gridItem--caption">
-                {{ todaysRule.caption }}
-              </div>
-              <button type="button" class="gridItem_isrealtimerule--autoscroll_checkbox button-small bg-rouge_vif border-circled button-thin button-wide padding-verysmall margin-none" >
-                <small>
-                  <label for="autoScroll" class="margin-none">
-                    <input
-                      type="checkbox"
-                      v-model="timelineViewport.autoscroll"
-                      id="autoScroll"
-                    ><span v-html="$t('auto_scroll')"></span>
-                  </label>
-                </small>
-              </button>
-            </div>
-
-            <transition name="fade" :duration="250">
               <div
-                v-if="zoomZone.display"
-                class="gridItem gridItem_zoomZone"
-                :style="zoomZoneStyle()"
+                v-for="item in overallGrid.days"
+                class="gridItem font-small gridItem_isday"
+                :class="{ 'has--caption' : (item.caption !== undefined) }"
+                :style="`transform: translate(${item.xPos}px, 0px)`"
+                :key="item.caption"
               >
+                <div v-if="item.caption !== undefined" class="gridItem--caption">
+                  {{ item.caption }}
+                </div>
               </div>
-            </transition>
+
+              <div
+                v-for="(item, index) in overallGrid.hours"
+                class="gridItem font-small gridItem_ishour"
+                :class="{ 'has--caption' : (item.caption !== undefined) }"
+                :style="`transform: translate(${item.xPos}px, 0px)`"
+                :key="`hrs-${index}-${item.xPos}`"
+              >
+                <div v-if="item.caption !== undefined" class="gridItem--caption">
+                  {{ item.caption }}
+                </div>
+              </div>
+
+              <div
+                v-for="(item, index) in overallGrid.minutes"
+                class="gridItem font-small gridItem_isminute"
+                :class="{ 'has--caption' : (item.caption !== undefined) }"
+                :style="`transform: translate(${item.xPos}px, 0px)`"
+                :key="`min-${index}-${item.xPos}`"
+              >
+                <div v-if="item.caption !== undefined" class="gridItem--caption">
+                  {{ item.caption }}
+                </div>
+              </div>
+
+              <div
+                v-if="isRealtime && $root.state.mode !== 'export'"
+                class="gridItem font-small gridItem_isrealtimerule"
+                :style="`transform: translate(${todaysRule.xPos}px, 0px)`"
+              >
+                <div class="gridItem--caption">
+                  {{ todaysRule.caption }}
+                </div>
+                <button type="button" class="gridItem_isrealtimerule--autoscroll_checkbox button-small bg-rouge_vif border-circled button-thin button-wide padding-verysmall margin-none" >
+                  <small>
+                    <label for="autoScroll" class="margin-none">
+                      <input
+                        type="checkbox"
+                        v-model="timelineViewport.autoscroll"
+                        id="autoScroll"
+                      ><span v-html="$t('auto_scroll')"></span>
+                    </label>
+                  </small>
+                </button>
+              </div>
+
+              <transition name="fade" :duration="250">
+                <div
+                  v-if="zoomZone.display"
+                  class="gridItem gridItem_zoomZone"
+                  :style="zoomZoneStyle()"
+                >
+                </div>
+              </transition>
+            </div>
+          </div>
+
+          <template v-if="Object.keys(medias).length > 0">
+            <TimelineMedia
+              v-for="media in sortedMedias"
+              :key="media.slugMediaName"
+
+              :ref="`media_${media.slugMediaName}`"
+              :slugFolderName="slugFolderName"
+              :slugMediaName="media.slugMediaName"
+              :is_placeholder="!mediaIsClose(media.slugMediaName,media)"
+              :media="media"
+              :timelineScale="timelineViewport.scale"
+              :timelineHeight="timelineHeight"
+              :posX="getMediaPosX(media.slugMediaName)"
+              :class="{ 'is--highlighted' : highlightedMedia === media.slugMediaName }"
+              @open="openMediaModal(media.slugMediaName)"
+              :read_only="read_only"
+            >
+            </TimelineMedia>
+          </template>
+
+          <template v-else>
+            <div class="nomediainfo">
+              <code>
+                <template v-if="folder.authorized">
+                  {{ $t('no_media_in_folder') }}
+                </template>
+                <template v-else>
+                  {{ $t('no_public_media_in_folder') }}
+                </template>
+              </code>
+            </div>
+          </template>
+        </div>
+        <div v-if="sort.current.field !== 'date_timeline'"
+          class="m_filterIndicator">
+          <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
+            <button type="button" 
+              class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
+              v-html="'x'" 
+              @click="setSort(sort.available[0]); setFilter('');"
+            />
+            <small>
+              <div class="">
+                <span v-html="$t('active_filter:')" />
+                {{ ' ' }}
+                <span v-html="sort.current.name" />
+              </div>
+              <div class="">
+                <span v-html="$t('medias_shown:')" />
+                <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
+              </div>
+            </small>
           </div>
         </div>
 
-        <template v-if="Object.keys(medias).length > 0">
-          <TimelineMedia
-            v-for="media in sortedMedias"
-            :key="media.slugMediaName"
+        <AddMediaButton
+          v-if="
+            ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+          :slugFolderName="slugFolderName"
+          :read_only="read_only"
+        >
+        </AddMediaButton>
 
-            :ref="`media_${media.slugMediaName}`"
-            :slugFolderName="slugFolderName"
-            :slugMediaName="media.slugMediaName"
-            :is_placeholder="!mediaIsClose(media.slugMediaName,media)"
-            :media="media"
-            :timelineScale="timelineViewport.scale"
-            :timelineHeight="timelineHeight"
-            :posX="getMediaPosX(media.slugMediaName)"
-            :class="{ 'is--highlighted' : highlightedMedia === media.slugMediaName }"
-            @open="openMediaModal(media.slugMediaName)"
-            :read_only="read_only"
-          >
-          </TimelineMedia>
-        </template>
+        <EditMedia
+          v-if="showMediaModalFor"
+          :slugFolderName="slugFolderName"
+          :slugMediaName="showMediaModalFor"
+          :media="medias[showMediaModalFor]"
+          :isRealtime="isRealtime"
+          :currentTime="currentTime"
+          @close="showMediaModalFor = false"
+          :read_only="read_only"
+        >
+        </EditMedia>
 
-        <template v-else>
-          <div class="nomediainfo">
-            <code>
-              <template v-if="folder.authorized">
-                {{ $t('no_media_in_folder') }}
-              </template>
-              <template v-else>
-                {{ $t('no_public_media_in_folder') }}
-              </template>
-            </code>
-          </div>
-        </template>
-      </div>
-      <div v-if="sort.current.field !== 'date_timeline'"
-        class="m_filterIndicator">
-        <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
-          <button type="button" 
-            class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
-            v-html="'x'" 
-            @click="setSort(sort.available[0]); setFilter('');"
-          />
-          <small>
-            <div class="">
-              <span v-html="$t('active_filter:')" />
-              {{ ' ' }}
-              <span v-html="sort.current.name" />
-            </div>
-            <div class="">
-              <span v-html="$t('medias_shown:')" />
-              <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
-            </div>
-          </small>
-        </div>
       </div>
 
-      <AddMediaButton
-        v-if="
-          ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
-        :slugFolderName="slugFolderName"
-        :read_only="read_only"
-      >
-      </AddMediaButton>
-
-      <EditMedia
-        v-if="showMediaModalFor"
-        :slugFolderName="slugFolderName"
-        :slugMediaName="showMediaModalFor"
-        :media="medias[showMediaModalFor]"
-        :isRealtime="isRealtime"
-        :currentTime="currentTime"
-        @close="showMediaModalFor = false"
-        :read_only="read_only"
-      >
-      </EditMedia>
 
     </div>
+
   </div>
 </template>
 <script>

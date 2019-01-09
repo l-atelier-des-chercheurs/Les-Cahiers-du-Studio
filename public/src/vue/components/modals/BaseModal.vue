@@ -28,6 +28,7 @@
             <template v-if="!this.$slots['sidebar']">
               <div class="m_modal--header">
                 <h3 class="margin-none">
+                  
                   <slot name="header">
                       default header
                   </slot>
@@ -141,7 +142,7 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-blanc m_modal--minimize_button padding-verysmall"
+          class="button-round bg-blanc m_modal--minimize padding-verysmall"
           @click="toggleMinimize"
           v-if="showModal && can_minimize"
           :class="{ 'is_minimized' : is_minimized }"
@@ -152,7 +153,7 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-blanc m_modal--nav_left padding-verysmall"
+          class="button-round bg-blanc m_modal--nav m_modal--nav_left padding-verysmall"
           @click="arrowLeft()"
           v-if="showModal && arrow_navigation && !is_minimized"
         >
@@ -162,7 +163,7 @@
 
       <transition name="fade" :duration="600">
         <button
-          class="button-round bg-blanc m_modal--nav_right padding-verysmall"
+          class="button-round bg-blanc m_modal--nav m_modal--nav_right padding-verysmall"
           @click="arrowRight()"
           v-if="showModal && arrow_navigation && !is_minimized"
         >

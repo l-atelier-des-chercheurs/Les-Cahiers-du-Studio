@@ -75,6 +75,7 @@
   // margin: 5vmin 5vmin;
   pointer-events: all;
   z-index: 1000;
+  .bg-blanc;
 
   transition: all .15s ease-out;
 
@@ -232,7 +233,7 @@
 
       .m_modal--container--content {
         flex-flow: column wrap;
-        // background-color: transparent;
+        background-color: transparent;
         // box-shadow: none;
         // border: none;
         height: 100%;
@@ -287,6 +288,10 @@
   
     border-radius: 50% 0 0 50%;
     line-height: 1;
+
+    @media screen and (max-width: 50rem) {
+      display: none;
+    }
   }
   
   .m_modal--metaOptions {
@@ -412,7 +417,7 @@
   }
 }
 
-.m_modal--minimize_button {
+.m_modal--minimize {
   position: fixed;
   bottom: 0;
   left: 0;
