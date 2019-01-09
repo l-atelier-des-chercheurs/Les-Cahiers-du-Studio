@@ -33,11 +33,11 @@
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <audio controls preload="none" :src="mediaURL" />
+      <audio controls preload="none" :src="mediaURL" controlsList="nodownload" />
     </template>
 
     <template v-else-if="media.type === 'text'">
-      <div v-if="context !== 'edit'" class="">
+      <div v-if="context !== 'edit'" class="padding-small font-small">
         <div v-if="value.length !== 0" v-html="value" />
         <p v-else v-html="'…'" />
       </div>
@@ -58,6 +58,30 @@
         :readonly="read_only"
       /> -->
     </template>
+
+    <template v-else-if="media.type === 'marker'">
+      <div v-if="context !== 'edit'" class="padding-small">
+        <template v-if="value.length > 0">
+          {{ value }}
+        </template>
+        <template v-else>
+          …
+        </template>
+      </div>
+
+      <input
+        v-else
+        type="text"
+        class="border-none bg-transparent"
+        placeholder="Étiquette"
+        name="label"
+        :value="value"
+        @input="$emit('input', $event.target.value)"
+        ref="textField"
+        :readonly="read_only"
+      >
+    </template>
+
     <template v-else-if="media.type === 'document'">
       <div v-if="context !== 'edit'" class="">
         <pre>
@@ -97,7 +121,7 @@ export default {
     },
     value: {
       type: String,
-      default: '…'
+      default: ''
     },
     is_hovered: Boolean,
     read_only: {
