@@ -120,6 +120,9 @@
 .m_modal--sidebar {
   display: flex;
   flex-flow: column nowrap;
+  .bg-noir_light;
+  .c-blanc;
+
 
   > * {
     flex: 0 0 auto;
@@ -128,6 +131,8 @@
   .m_modal--metaOptions {
     overflow-y: auto;
     flex: 1 1 auto;
+
+    .padding-medium;
 
     @scrollbar-height: 4px;
     @scrollbar-padding: 6px;
@@ -281,6 +286,25 @@
 }
 
 .m_modal--header {
+  .padding-medium;
+  .bg-noir;
+  .c-blanc;
+}
+
+.m_modal--buttons--save {
+  .bg-vert_vif;
+  .button-rectangle;
+  .button-allwide;
+  .button-inline;
+  .margin-none; 
+  .padding-small;
+
+  &:before {
+    content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><circle cx='24' cy='24' r='24' style='fill: transparent'/><polyline points='35.48 13.74 22.2 36.41 12.81 25.55' style='fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px'/></svg>");
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+  }
 }
 
 

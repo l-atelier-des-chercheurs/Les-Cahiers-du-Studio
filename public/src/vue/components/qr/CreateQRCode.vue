@@ -29,9 +29,7 @@
           :href="getURLToApp(ip)"
           target="_blank"
         >
-          <img 
-            :src="'/images/i_logo.svg'" 
-          />          
+          <!-- <img :src="'/images/i_logo.svg'" />           -->
         
           <template v-if="nameOfFolder">
             • {{ nameOfFolder }} •<br><br>

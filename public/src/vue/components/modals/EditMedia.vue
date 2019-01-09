@@ -5,8 +5,11 @@
     @submit="editThisMedia"
     :read_only="read_only"
     :typeOfModal="'EditMedia'"
-    @arrow_left="$eventHub.$emit('editmediamodal.previousmedia')"
-    @arrow_right="$eventHub.$emit('editmediamodal.nextmedia')"
+    :askBeforeClosingModal="askBeforeClosingModal"
+    :show_sidebar="$root.media_modal.show_sidebar"
+    :is_minimized="$root.media_modal.minimized"
+    :can_minimize="true"
+    :arrow_navigation="true"
   >
     <template slot="header">
       <span class="text-cap"> {{ $t('edit_the_media') }}</span> <i>{{ slugMediaName }}</i>

@@ -436,6 +436,12 @@ let vm = new Vue({
     justCreatedFolderID: false,
     justCreatedFolderPassword: false,
 
+    media_modal: {
+      open: false,
+      minimized: false,
+      show_sidebar: true
+    },
+
     settings: {
       has_modal_opened: false,
       current_slugFolderName: '',
