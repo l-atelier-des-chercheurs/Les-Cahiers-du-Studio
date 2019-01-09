@@ -94,7 +94,7 @@ export default {
     return {
       is_dragged: false,
       is_hovered: false,
-      is_collapsed: this.media.collapsed == 'true',
+      is_collapsed: this.media.collapsed == true,
       dragOffset: {
         x: '',
         y: ''
@@ -116,7 +116,7 @@ export default {
   watch: {
     media: function() {},
     'media.collapsed': function() {
-      this.is_collapsed = this.media.collapsed == 'true';
+      this.is_collapsed = this.media.collapsed == true;
     },
     'media.y': function() {
       this.mediaStyles.y = this.limitMediaYPos(
@@ -256,14 +256,15 @@ export default {
         this.mediaStyles.y = this.limitMediaYPos(newY);
         let getHeightInPercent = this.mediaStyles.y / this.timelineHeight;
 
-        let values = {
-          y: getHeightInPercent,
-          slugFolderName: this.slugFolderName,
-          slugMediaName: this.slugMediaName
-        };
-
         if(!this.read_only) {
-          this.$root.editMedia(values);
+          this.$root.editMedia({ 
+            type: 'folders',
+            slugFolderName: this.slugFolderName, 
+            slugMediaName: this.slugMediaName,
+            data: {
+              y: getHeightInPercent
+            }
+          });
         }
         this.is_dragged = false;
       }
@@ -307,11 +308,15 @@ export default {
       }
       this.is_collapsed = !this.is_collapsed;
 
-      let values = { collapsed: this.is_collapsed };
-      values.slugFolderName = this.slugFolderName;
-      values.slugMediaName = this.slugMediaName;
+      this.$root.editMedia({ 
+        type: 'folders',
+        slugFolderName: this.slugFolderName, 
+        slugMediaName: this.slugMediaName,
+        data: {
+          collapsed: this.is_collapsed
+        }
+      });
 
-      this.$root.editMedia(values);
 
       event.stopPropagation();
     }
