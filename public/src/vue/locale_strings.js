@@ -21,6 +21,7 @@ module.exports = (function() {
       date: 'Date',
       'active_filter:': 'Filtre actif&nbsp;:',
       'medias_shown:': 'Médias affichés&nbsp;:',
+      'file:': 'Fichier&nbsp;:',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -143,6 +144,7 @@ module.exports = (function() {
       date: 'Date',
       'active_filter:': 'Active filter:',
       'medias_shown:': 'Medias shown:',
+      'file:': 'File:',
 
       loading: 'loading',
       open: 'Open',

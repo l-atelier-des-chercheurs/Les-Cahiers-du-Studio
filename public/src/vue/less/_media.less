@@ -268,3 +268,90 @@
 }
 
 
+.quillWrapper {
+  display: flex;
+  flex-flow: column nowrap;
+
+  .ql-container {
+    font-family: inherit;
+  }
+  .ql-container.ql-snow {
+    border: none;
+  }
+  .ql-toolbar button {
+    min-height: 0;
+  }
+  .ql-toolbar.ql-snow {
+    background-color: white;
+    font-family: inherit;
+    border-color: #000;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  > * {
+    flex: 0 0 auto;
+  
+    &.ql-container {
+      flex: 1 1 auto;
+      height: auto;
+    }
+    .ql-editor {
+      min-height: 200px;
+
+      border-left: 2px solid transparent;
+      height: 100%;
+      border-left: solid var(--input-border-width) var(--input-border-color);
+      border-radius: var(--input-border-radius);
+      border-radius: 0;
+
+      background-color: white;
+
+      background: linear-gradient(transparent,transparent 28px,#91d1d3 0);
+      background-size: 30px 30px;
+      background: linear-gradient(transparent,transparent calc(1.35em - 2px),rgba(0,0,0,.15) calc(1.35em - 2px));
+      background-size: 1.35em 1.35em;
+      background-attachment: local;
+      background-position-y: 1.08em;
+            
+      font-size:14pt !important;
+  
+      // background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
+      // background-size: 30px 30px;
+      // background-attachment: local;
+  
+      // background: linear-gradient(transparent, transparent ~"calc(@{t-skipline} - 2px)", rgba(0,0,0,.15) ~"calc(@{t-skipline} - 2px)");
+      // background-size: @t-skipline @t-skipline;
+      // background-attachment: local;
+      // background-position-y: ~"calc(@{t-skipline} * 0.85)";
+
+      &:focus {
+        background-color: white;
+      }
+
+      > *:first-child {
+        margin-top: 0;
+      }
+
+      .ql-toolbar::before {
+        content: 'options :';
+        position: relative;
+        display: inline-block;
+        font-size:1rem;
+        vertical-align: middle;
+        font-weight: 400;
+        /* background-color: #333; */
+        /* left: -8px; */
+        margin:0;
+        /* padding: 11px; */
+        margin-bottom: 10px;
+        /* text-decoration: underline; */
+        font-size: .8rem;
+        /* text-transform: uppercase; */
+        margin-right: 15px;
+        /* font-style: italic; */
+      }         
+    }
+  } 
+}

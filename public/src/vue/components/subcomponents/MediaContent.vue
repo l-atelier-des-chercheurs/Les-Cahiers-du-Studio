@@ -93,11 +93,10 @@
 
     <template v-else-if="media.type === 'other'">
       <div class="padding-small font-small">
-        <pre>
-<span v-html="$t('file:')">
-</span>
-{{ media.media_filename }}
-        </pre>
+        <div>
+          <span v-html="$t('file:')"/><br>
+          {{ media.media_filename }}
+        </div>
       </div>
     </template>
 

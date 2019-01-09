@@ -342,7 +342,15 @@ export default {
         console.log('METHODS • EditMedia: keyPressed');
       }
 
-      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+      if (event.key === 'Escape') {
+        this.closeModal();
+        return
+      }
+
+      if (event.target.tagName.toLowerCase() === 'input' 
+        || event.target.tagName.toLowerCase() === 'textarea'
+        || event.target.className.includes('ql-editor')
+      ) {
         return;
       }      
 

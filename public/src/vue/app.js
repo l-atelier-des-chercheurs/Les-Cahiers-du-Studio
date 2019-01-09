@@ -432,7 +432,7 @@ let vm = new Vue({
 
     access: false,
 
-    justCreatedTextmediaID: false,
+    justCreatedMediaID: false,
     justCreatedFolderID: false,
     justCreatedFolderPassword: false,
 
@@ -580,37 +580,45 @@ let vm = new Vue({
       this.$socketio.removeFolder(slugFolderName);
     },
 
-    createTextMedia: function(mdata) {
+    createMedia: function(mdata) {
       if (window.state.dev_mode === 'debug') {
-        console.log(
-          `ROOT EVENT: createTextMedia: ${JSON.stringify(mdata, null, 4)}`
-        );
+        console.log(`ROOT EVENT: createMedia`);
+      }
+      this.justCreatedMediaID = mdata.id =
+        Math.random()
+          .toString(36)
+          .substring(2, 15) +
+        Math.random()
+          .toString(36)
+          .substring(2, 15);
+
+      if (this.settings.current_author.hasOwnProperty('name')) {
+        if (!mdata.hasOwnProperty('additionalMeta')) {
+          mdata.additionalMeta = {};
+        }
+        mdata.additionalMeta.authors = [
+          { name: this.$root.settings.current_author.name }
+        ];
       }
 
-      if (mdata.type === 'text') {
-        mdata.mediaID =
-          Math.random()
-            .toString(36)
-            .substring(2, 15) +
-          Math.random()
-            .toString(36)
-            .substring(2, 15);
-        this.justCreatedTextmediaID = mdata.mediaID;
-      }
-
-      this.$socketio.createTextMedia(mdata);
-      this.$root.createMedia({
-        slugFolderName: this.slugFolderName,
-        type: 'folders'
+      this.$nextTick(() => {
+        this.$socketio.createMedia(mdata);
       });
     },
-    removeMedia: function(slugFolderName, slugMediaName) {
+
+    removeMedia: function(mdata) {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          `ROOT EVENT: removeMedia: ${slugFolderName}/${slugMediaName}`
+          `ROOT EVENT: removeMedia: ${JSON.stringify(mdata, null, 4)}`
         );
       }
-      this.$socketio.removeMedia(slugFolderName, slugMediaName);
+      this.$socketio.removeMedia(mdata);
+    },
+    editMedia: function(mdata) {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`);
+      }
+      this.$socketio.editMedia(mdata);
     },
     editMedia: function(mdata) {
       if (window.state.dev_mode === 'debug') {

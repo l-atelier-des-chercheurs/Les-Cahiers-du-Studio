@@ -4,7 +4,7 @@
       <button
         type="button"
         class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addText"
-        @click="addText"
+        @click="createTextMedia"
         :disabled="read_only"
       >
         T
@@ -12,7 +12,7 @@
       <button
         type="button"
         class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addMarker"
-        @click="addMarker"
+        @click="createMarkerMedia"
         :disabled="read_only"
       >
         •
@@ -76,19 +76,36 @@ export default {
     file: function() {}
   },
   methods: {
-    addText() {
-      this.$root.createTextMedia({
+    createTextMedia() {
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • AddMediaButton: createTextMedia');
+      }
+      this.$eventHub.$on('socketio.media_created_or_updated', this.newTextMediaCreated);
+      this.$root.createMedia({
         slugFolderName: this.slugFolderName,
         type: 'folders',
         additionalMeta: {
-          type: 'text',
+          type: 'text'
         }
       });
-
-      this.$eventHub.$emit('timeline.scrollToToday');
+      // TODO : scroll to current date
+      // this.$eventHub.$emit('timeline.scrollToToday');
     },
-    addMarker() {
-      this.$root.createTextMedia({
+    newTextMediaCreated(mdata) {
+      debugger;
+      if (this.$root.justCreatedMediaID === mdata.id) {
+        this.$eventHub.$off('socketio.media_created_or_updated', this.newTextMediaCreated);
+        this.$root.justCreatedMediaID = false;
+        this.$nextTick(() => {
+          this.$eventHub.$emit('timeline.openMediaModal', mdata.metaFileName);
+        });
+      }
+    },
+    createMarkerMedia() {
+      if (window.state.dev_mode === 'debug') {
+        console.log('METHODS • AddMediaButton: createMarkerMedia');
+      }
+      this.$root.createMedia({
         slugFolderName: this.slugFolderName,
         type: 'folders',
         additionalMeta: {
@@ -97,7 +114,8 @@ export default {
           collapsed: true
         }
       });
-      this.$eventHub.$emit('timeline.scrollToToday');
+      // TODO aswell
+      // this.$eventHub.$emit('timeline.scrollToToday');
     },
     boitierPressed(event) {
       if (window.state.dev_mode === 'debug') {

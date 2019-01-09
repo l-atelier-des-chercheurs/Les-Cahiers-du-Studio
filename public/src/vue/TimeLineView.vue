@@ -1015,19 +1015,15 @@ export default {
         console.log('METHODS • TimeLineView: openMediaModal');
       }
 
-
-      // this.$nextTick(() => {
-        // check if media exists first
-        if (!this.medias.hasOwnProperty(slugMediaName)) {
-          if (this.$root.state.dev_mode === 'debug') {
-            console.log(
-              'METHODS • TimeLineView: openMediaModal / missing media in timeline'
-            );
-          }
-        } else {
-          this.showMediaModalFor = slugMediaName;
+      if (!this.medias.hasOwnProperty(slugMediaName)) {
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(
+            'METHODS • TimeLineView: openMediaModal / missing media in timeline'
+          );
         }
-      // });
+      } else {
+        this.showMediaModalFor = slugMediaName;
+      }
     },
     closeMediaModal() {
       this.showMediaModalFor = false;
