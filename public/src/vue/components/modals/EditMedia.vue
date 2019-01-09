@@ -4,7 +4,7 @@
     @close="$emit('close')"
     @submit="editThisMedia"
     :read_only="read_only"
-    :typeOfModal="'EditMedia'"
+    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"
     :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
@@ -12,7 +12,7 @@
     :arrow_navigation="true"
   >
     <template slot="header">
-      <span class="text-cap"> {{ $t('edit_the_media') }}</span> <i>{{ slugMediaName }}</i>
+      <span class="text-cap"> {{ $t('edit_the_media') }}</span><br><i>{{ slugMediaName }}</i>
     </template>
 
     <template slot="sidebar">

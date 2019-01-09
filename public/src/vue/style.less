@@ -324,7 +324,7 @@ body {
   }
 
   &::-webkit-scrollbar-track {
-    background-color: @c-gris_light;
+    background-color: @c-gris_clair;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -408,7 +408,7 @@ body {
 
   table {
     td:first-child {
-      background-color: @c-gris_verylight;
+      background-color: @c-gris_tresclair;
     }
     td:first-child img {
         min-width: 0;
@@ -473,11 +473,73 @@ body {
   }
 }
 
+.m_modal--header {
+  .padding-medium;
+  .bg-noir;
+  .c-blanc;
+  border: 0;
+
+  h3 {
+    margin: 0;
+    padding: 0;
+    .with-bullet;
+    font-weight: normal;
+    font-size: inherit;
+    line-height: 1.6;
+  }
+
+}
+
+.m_modal--sidebar {
+  .bg-noir_light;
+  .c-blanc;
+  border: 0;
+}
+
+.m_modal--metaOptions {
+  border: 0;
+}
+
+.m_modal--container { 
+  
+  &.color-white {
+
+  }
+
+}
+
+.m_modal--buttons {
+  padding: 0;
+  margin: 0;
+  border-top: 0px;
+
+  button {
+    margin: 0;
+  }
+  .m_modal--buttons--save {
+    .bg-vert_vif;
+    .c-blanc;
+    .button-rectangle;
+    .button-allwide;
+    .button-inline;
+    .margin-none; 
+    .padding-small;
+  
+    &:before {
+      content: url("data:image/svg+xml; utf8, <svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><circle cx='24' cy='24' r='24' style='fill: transparent'/><polyline points='35.48 13.74 22.2 36.41 12.81 25.55' style='fill: none;stroke: #fff;stroke-miterlimit: 10;stroke-width: 2px'/></svg>");
+      display: inline-block;
+      width: 48px;
+      height: 48px;
+    }
+  }  
+}
+
+
 
 .loader_folder {
   position: fixed;
   top: 0; left: 0;  right: 0; bottom: 0;
-  background-color: @c-gris_verylight;
+  background-color: @c-gris_tresclair;
   opacity: 1;
   z-index: 999;
   letter-spacing: 0.5em;
@@ -519,7 +581,7 @@ body {
     display: inline-block;
     position: relative;
     width: 100px;
-    border-top: 2px solid @c-gris_light;
+    border-top: 2px solid @c-gris_clair;
   }
 
   > * {
