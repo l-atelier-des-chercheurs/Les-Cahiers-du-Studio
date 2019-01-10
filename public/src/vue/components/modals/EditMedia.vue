@@ -323,10 +323,10 @@ export default {
     }
   },
   mounted() {
-    document.addEventListener('keyup', this.keyPressed);
+    // document.addEventListener('keyup', this.keyPressed);
   },
   beforeDestroy: function() {
-    document.removeEventListener('keyup', this.keyPressed);
+    // document.removeEventListener('keyup', this.keyPressed);
   },
   computed: {
     date_created_human() {
@@ -341,34 +341,30 @@ export default {
   },
   methods: {
     keyPressed: function(event) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('METHODS • EditMedia: keyPressed');
-      }
+      // if (window.state.dev_mode === 'debug') {
+      //   console.log('METHODS • EditMedia: keyPressed');
+      // }
 
-      if (event.key === 'Escape') {
-        this.closeModal();
-        return
-      }
 
-      if (event.target.tagName.toLowerCase() === 'input' 
-        || event.target.tagName.toLowerCase() === 'textarea'
-        || event.target.className.includes('ql-editor')
-      ) {
-        return;
-      }      
+      // if (event.target.tagName.toLowerCase() === 'input' 
+      //   || event.target.tagName.toLowerCase() === 'textarea'
+      //   || event.target.className.includes('ql-editor')
+      // ) {
+      //   return;
+      // }      
 
-      if(event.key === 'Alt') {
-        this.alt_key_is_pressed = !this.alt_key_is_pressed;
-        return;
-      }
+      // if(event.key === 'Alt') {
+      //   this.alt_key_is_pressed = !this.alt_key_is_pressed;
+      //   return;
+      // }
 
-      if(event.key === 'p' || event.key === 'P') {
-        this.mediadata.public = !this.mediadata.public;
-      }
+      // if(event.key === 'p' || event.key === 'P') {
+      //   this.mediadata.public = !this.mediadata.public;
+      // }
 
-      if(event.key === 'Enter') {
-        this.editThisMedia(); 
-      }
+      // if(event.key === 'Enter') {
+      //   this.editThisMedia(); 
+      // }
     },
     printMedia: function() {
       window.print();
