@@ -15,14 +15,21 @@
     <template slot="sidebar">
       <div class="margin-bottom-small">
         <label>{{ $t('import') }}</label><br>
-        <input type="file" id="addMedia" multiple class="inputfile-2" 
-          :name="'medias'" 
-          @change="updateSelectedFiles($event)"
-        >
-        <label for="addMedia">
-          <svg width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path></svg>
-          {{ $t('select_files_to_import') }}
-        </label>
+
+        <div ref="input_file_fields" v-for="field in input_file_fields" :key="field.value">
+          <label :for="`add_${field.key}`">
+            {{ field.label }}
+          </label>
+          <input type="file" multiple 
+            :id="`add_${field.key}`" 
+            :name="field.key" 
+            @change="updateInputFiles()"
+            :accept="field.accept"
+            :capture="field.capture"
+          >
+        </div>
+
+
       </div>
 
       <transition-group
@@ -71,6 +78,8 @@
         </div>
       </transition-group>
 
+      {{ selected_files }}
+
     </template>
 
     <template slot="submit_button" v-if="selected_files.length > 0">
@@ -97,7 +106,33 @@ export default {
     return {
       selected_files: false,
       selected_files_meta: {},
-      upload_percentages: 0
+      upload_percentages: 0,
+      input_file_fields: [
+        {
+          key: 'files',
+          label: 'Files',
+          accept: '',
+          capture: false
+        },
+        {
+          key: 'images',
+          label: 'Images',
+          accept: 'image/*',
+          capture: true
+        },
+        {
+          key: 'videos',
+          label: 'Vidéos',
+          accept: 'video/*',
+          capture: true
+        },
+        {
+          key: 'audios',
+          label: 'Audios',
+          accept: 'audio/*',
+          capture: true
+        }
+      ]
     };
   },
   watch: {
@@ -228,10 +263,11 @@ export default {
         return 'is--' + this.selected_files_meta[f.name].status;
       }
     },
-    updateSelectedFiles($event) {
+    updateInputFiles() {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • UploadFile / updateSelectedFiles`);
       }
+      debugger;
       this.selected_files = Array.from($event.target.files); 
       this.selected_files_meta = {};
     }

@@ -313,12 +313,15 @@
 
       background-color: white;
 
-      background: linear-gradient(transparent,transparent 28px,#91d1d3 0);
+      background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
       background-size: 30px 30px;
-      background: linear-gradient(transparent,transparent calc(1.35em - 2px),rgba(0,0,0,.15) calc(1.35em - 2px));
-      background-size: 1.35em 1.35em;
       background-attachment: local;
-      background-position-y: 1.08em;
+  
+      background: linear-gradient(transparent, transparent ~"calc(@{t-skipline} - 2px)", rgba(0,0,0,.15) ~"calc(@{t-skipline} - 2px)");
+      background-size: @t-skipline @t-skipline;
+      background-attachment: local;
+      background-position-y: ~"calc(@{t-skipline} * 0.8)";
+  
             
       font-size:14pt !important;
   

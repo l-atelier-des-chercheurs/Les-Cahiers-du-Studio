@@ -10,7 +10,7 @@
 
   background-color: fade(#fff, 92%);
   // cursor: pointer;
-  .custom_scrollbar(8px, 5px, 6px);
+  .custom_scrollbar(8px, 5px, 6px, @c-noir);
   
   display: flex;
   align-items: center;
@@ -20,7 +20,7 @@
 
   @media screen and (max-width: 50rem) {
     align-items: flex-start;
-    overflow: scroll !important;
+    overflow-y: scroll !important;
     padding: 0 !important;
     height: 100% !important;
     .bg-blanc;
