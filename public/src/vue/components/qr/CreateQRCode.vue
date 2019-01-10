@@ -12,16 +12,6 @@
           :value="getURLToApp(ip)" 
           :options="{ size: 400, foreground: '#333', background: 'transparent' }"
         ></qrcode>
-        <button type="button"
-          class="buttonLink hide_on_print"
-          @click.prevent="printQR"
-        >
-          {{ $t('print') }} 
-        </button>
-
-        <CreateQRCode 
-        >
-        </CreateQRCode>
       </div>
       <div class="m_qrSnippet--text">
         <a 

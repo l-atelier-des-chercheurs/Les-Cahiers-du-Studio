@@ -24,7 +24,6 @@
   </div>
 </template>
 <script>
-import Dropzone from 'vue2-dropzone';
 import alertify from 'alertify.js';
 
 export default {

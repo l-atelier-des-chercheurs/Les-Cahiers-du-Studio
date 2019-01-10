@@ -48,6 +48,17 @@
         :read_only="read_only"
       />
 
+      <div>
+        <button type="button"
+          class="button_sidebarToggle"
+          @click.prevent="toggleSidebar()"
+          :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
+        >
+          <template v-if="$root.settings.has_sidebar_opened">←</template>
+          <template v-else>→</template>
+        </button>
+      </div>
+
       <div class="m_timeline"
         ref="timeline"
         @scroll="onScroll"
@@ -57,15 +68,6 @@
           'is--realtime': isRealtime
         }"
       >
-        <button type="button"
-          class="button_sidebarToggle"
-          @click.prevent="toggleSidebar()"
-          :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
-        >
-          <template v-if="$root.settings.has_sidebar_opened">←</template>
-          <template v-else>→</template>
-        </button>
-
         <div class="m_timeline-container"
           :style="{
             width: `${timelineViewport.width}px`,
