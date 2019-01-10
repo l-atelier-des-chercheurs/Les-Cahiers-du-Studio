@@ -1,49 +1,46 @@
 <template>
-  <div>
-    <div class="m_addMedia">
-      <button
-        type="button"
-        class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addText"
-        @click="createTextMedia"
-        :disabled="read_only"
+  <div class="m_addMedias">
+    <button
+      type="button"
+      class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addText"
+      @click="createTextMedia"
+      :disabled="read_only"
+    >
+      T
+    </button>
+    <button
+      type="button"
+      class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addMarker"
+      @click="createMarkerMedia"
+      :disabled="read_only"
+    >
+      •
+    </button>
+
+    <div ref="input_file_fields" v-for="field in input_file_fields" :key="field.value">
+      <label :for="`add_${field.key}`">
+        {{ field.label }}
+      </label>
+      <input 
+        type="file" 
+        multiple 
+        :id="`add_${field.key}`" 
+        :name="field.key" 
+        @change="updateInputFiles($event)"
+        :accept="field.accept"
+        :capture="field.capture"
       >
-        T
-      </button>
-      <button
-        type="button"
-        class="button button-round button-round-small margin-bottom-small bg-noir c-blanc button_addMarker"
-        @click="createMarkerMedia"
-        :disabled="read_only"
-      >
-        •
-      </button>
-
-<!--
-      <FileInput
-        v-model="file"
-        :type="image"
-        :read_only="read_only"
-      >
-      </FileInput>
-
-      <input name="imageCapture" class="button margin-bottom-small button_addFile button_addImage" type="file" accept="image/*" capture @change="addImage">
-      <input name="videoCapture" class="button margin-bottom-small button_addFile button_addVideo" type="file" accept="video/*" capture @change="addVideo">
-      <input name="audioCapture" class="button margin-bottom-small button_addFile button_addAudio" type="file" accept="audio/*" capture @change="addAudio">
--->
-      <button type="button" 
-        @click="showImportModal = !showImportModal"
-        v-html="'click'"
-      />
-
-      <UploadFile
-        v-if="showImportModal"
-        @close="showImportModal = false"
-        :slugFolderName="slugFolderName"
-        :type="'folders'"
-        :read_only="read_only"
-      />
-
     </div>
+
+    <UploadFile
+      v-if="selected_files.length > 0"
+      @close="selected_files = []"
+      :read_only="read_only"
+      :slugFolderName="slugFolderName"
+      :type="'folders'"
+      :selected_files="selected_files"
+    />
+
   </div>
 </template>
 <script>
@@ -62,8 +59,36 @@ export default {
   },
   data() {
     return {
-      file: null,
-      showImportModal: false
+      showImportModal: false,
+
+      selected_files: [],
+      
+      input_file_fields: [
+        {
+          key: 'files',
+          label: 'Files',
+          accept: '',
+          capture: false
+        },
+        {
+          key: 'images',
+          label: 'Images',
+          accept: 'image/*',
+          capture: true
+        },
+        {
+          key: 'videos',
+          label: 'Vidéos',
+          accept: 'video/*',
+          capture: true
+        },
+        {
+          key: 'audios',
+          label: 'Audios',
+          accept: 'audio/*',
+          capture: true
+        }
+      ]
     };
   },
   mounted: function() {
@@ -92,7 +117,6 @@ export default {
       // this.$eventHub.$emit('timeline.scrollToToday');
     },
     newTextMediaCreated(mdata) {
-      debugger;
       if (this.$root.justCreatedMediaID === mdata.id) {
         this.$eventHub.$off('socketio.media_created_or_updated', this.newTextMediaCreated);
         this.$root.justCreatedMediaID = false;
@@ -127,9 +151,12 @@ export default {
         return;
       }
 
-      if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+      if (event.target.tagName.toLowerCase() === 'input' 
+        || event.target.tagName.toLowerCase() === 'textarea'
+        || event.target.className.includes('ql-editor')
+      ) {
         return;
-      }
+      }  
 
       var key = event.key;
 
@@ -147,10 +174,32 @@ export default {
           this.$eventHub.$emit('timeline.scrollToToday');
         }
       });
+    },
+    updateInputFiles($event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • UploadFile / updateSelectedFiles`);
+      }
+      this.selected_files = Array.from($event.target.files); 
+      $event.target.type = '';
+      $event.target.type = 'file';
+
     }
   }
 };
 </script>
-<style>
+<style lang="less" scoped>
+.m_addMedias {
+  position: fixed;
+  bottom: 0;
+  right: 0;
 
+  width: 200px;
+  height: 400px;
+
+  background-color: rgba(255,255,255,.7);
+  // color: var(--color-blanc);
+
+
+
+}
 </style>

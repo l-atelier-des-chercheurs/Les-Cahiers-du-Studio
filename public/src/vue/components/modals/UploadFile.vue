@@ -13,35 +13,17 @@
     </template>
 
     <template slot="sidebar">
-      <div class="margin-bottom-small">
-        <label>{{ $t('import') }}</label><br>
-
-        <div ref="input_file_fields" v-for="field in input_file_fields" :key="field.value">
-          <label :for="`add_${field.key}`">
-            {{ field.label }}
-          </label>
-          <input type="file" multiple 
-            :id="`add_${field.key}`" 
-            :name="field.key" 
-            @change="updateInputFiles()"
-            :accept="field.accept"
-            :capture="field.capture"
-          >
-        </div>
-
-
-      </div>
 
       <transition-group
         tag="div" 
         name="fileupload_list"
       >
         <div
-          v-for="(f, index) in selected_files" 
+          v-for="(f, index) in files_to_upload" 
           :key="f.name"
           class="m_uploadFile"
           :class="cssStatus(f)"
-          :style="`--progress-percent: ${selected_files_meta.hasOwnProperty(f.name) ? selected_files_meta[f.name].upload_percentages/100 : 0}`"
+          :style="`--progress-percent: ${files_to_upload_meta.hasOwnProperty(f.name) ? files_to_upload_meta[f.name].upload_percentages/100 : 0}`"
         >
           <!-- too heavy on memory on mobile devices -->
           <img 
@@ -58,19 +40,19 @@
             {{ formatBytes(f.size) }}
           </div>
           <div class="m_uploadFile--action"
-            v-if="selected_files_meta.hasOwnProperty(f.name)"
+            v-if="files_to_upload_meta.hasOwnProperty(f.name)"
           >
             <button type="button" class="buttonLink"
               @click="sendThisFile(f)"
-              :disabled="read_only || (selected_files_meta.hasOwnProperty(f.name) && selected_files_meta[f.name].status === 'success')"
+              :disabled="read_only || (files_to_upload_meta.hasOwnProperty(f.name) && files_to_upload_meta[f.name].status === 'success')"
             >
-              <template v-if="!selected_files_meta.hasOwnProperty(f.name)">
+              <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">
                 {{ $t('import') }}
               </template>
-              <template v-else-if="selected_files_meta[f.name].status === 'success'">
+              <template v-else-if="files_to_upload_meta[f.name].status === 'success'">
                 {{ $t('sent') }}
               </template>
-              <template v-else-if="selected_files_meta[f.name].status === 'failed'">
+              <template v-else-if="files_to_upload_meta[f.name].status === 'failed'">
                 {{ $t('retry') }}
               </template>
             </button>
@@ -78,11 +60,9 @@
         </div>
       </transition-group>
 
-      {{ selected_files }}
-
     </template>
 
-    <template slot="submit_button" v-if="selected_files.length > 0">
+    <template slot="submit_button" v-if="files_to_upload.length > 0">
       {{ $t('import_all_files') }}
     </template>
 
@@ -97,42 +77,17 @@ export default {
   props: {
     read_only: Boolean,
     slugFolderName: String,
-    type: String
+    type: String,
+    selected_files: Array
   },
   components: {
     Modal
   },
   data() {
     return {
-      selected_files: false,
-      selected_files_meta: {},
-      upload_percentages: 0,
-      input_file_fields: [
-        {
-          key: 'files',
-          label: 'Files',
-          accept: '',
-          capture: false
-        },
-        {
-          key: 'images',
-          label: 'Images',
-          accept: 'image/*',
-          capture: true
-        },
-        {
-          key: 'videos',
-          label: 'Vidéos',
-          accept: 'video/*',
-          capture: true
-        },
-        {
-          key: 'audios',
-          label: 'Audios',
-          accept: 'audio/*',
-          capture: true
-        }
-      ]
+      files_to_upload: this.selected_files,
+      files_to_upload_meta: {},
+      upload_percentages: 0
     };
   },
   watch: {
@@ -156,7 +111,7 @@ export default {
         const filename = f.name;
         const modified = f.lastModified;
 
-        this.$set(this.selected_files_meta, filename, {
+        this.$set(this.files_to_upload_meta, filename, {
           upload_percentages: 0,
           status: 'sending'
         });
@@ -182,7 +137,7 @@ export default {
         axios.post(this.uriToUploadMedia, formData,{
             headers: { 'Content-Type': 'multipart/form-data' },
             onUploadProgress: function( progressEvent ) {
-              this.selected_files_meta[filename].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
+              this.files_to_upload_meta[filename].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
             }.bind(this)            
           })
           .then(x => x.data)
@@ -191,8 +146,8 @@ export default {
               console.log(`METHODS • sendThisFile: name = ${filename} / success uploading`);
             }
 
-            this.selected_files_meta[filename].status = 'success';
-            this.selected_files_meta[filename].upload_percentages = 100;     
+            this.files_to_upload_meta[filename].status = 'success';
+            this.files_to_upload_meta[filename].upload_percentages = 100;     
 
             resolve();    
             // resolve(x.map(img => Object.assign({}, img, { url: `${BASE_URL}/images/${img.id}` })));
@@ -202,34 +157,34 @@ export default {
               console.log(`METHODS • sendThisFile: name = ${filename} / failed uploading`);
             }
 
-            this.selected_files_meta[filename].status = 'failed'; 
-            this.selected_files_meta[filename].upload_percentages = 0;   
+            this.files_to_upload_meta[filename].status = 'failed'; 
+            this.files_to_upload_meta[filename].upload_percentages = 0;   
             reject();      
           });
       });
     },
     sendAllFiles() {
       // TODO : start 1 by 1
-      // Array.from(Array(this.selected_files.length).keys())
+      // Array.from(Array(this.files_to_upload.length).keys())
       //   .map(x => {
-      //     await this.sendThisFile(this.selected_files[x]);
+      //     await this.sendThisFile(this.files_to_upload[x]);
       //   });
 
       const executeSequentially = (array) => {  
-        return this.sendThisFile(this.selected_files[array.shift()])
+        return this.sendThisFile(this.files_to_upload[array.shift()])
           .then(x => array.length == 0 ? x : executeSequentially(array));
       }
 
-      executeSequentially(Array.from(Array(this.selected_files.length).keys())).then(x => {
-        Object.keys(this.selected_files_meta).map(name => {
+      executeSequentially(Array.from(Array(this.files_to_upload.length).keys())).then(x => {
+        Object.keys(this.files_to_upload_meta).map(name => {
           let index = 1;
-          if(this.selected_files_meta[name].status === 'success') {
+          if(this.files_to_upload_meta[name].status === 'success') {
             setTimeout(() => {
-              this.selected_files = this.selected_files.filter(x => x.name !== name);
-              this.$delete(this.selected_files_meta, name);
+              this.files_to_upload = this.files_to_upload.filter(x => x.name !== name);
+              this.$delete(this.files_to_upload_meta, name);
 
               // check if there are anymore files to upload 
-              if(Object.keys(this.selected_files_meta).length === 0) {
+              if(Object.keys(this.files_to_upload_meta).length === 0) {
                 this.$emit('close');
               }
             }, 500 * index);
@@ -239,7 +194,7 @@ export default {
       });
 
       // const test = async () => {
-      //   for (let task of Array.from(Array(this.selected_files.length).keys()).map()) {
+      //   for (let task of Array.from(Array(this.files_to_upload.length).keys()).map()) {
       //     await sendThisFile(task);
       //   }
       // }
@@ -259,17 +214,9 @@ export default {
       return URL.createObjectURL(file);
     },
     cssStatus(f) {
-      if(this.selected_files_meta.hasOwnProperty(f.name)) {
-        return 'is--' + this.selected_files_meta[f.name].status;
+      if(this.files_to_upload_meta.hasOwnProperty(f.name)) {
+        return 'is--' + this.files_to_upload_meta[f.name].status;
       }
-    },
-    updateInputFiles() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • UploadFile / updateSelectedFiles`);
-      }
-      debugger;
-      this.selected_files = Array.from($event.target.files); 
-      this.selected_files_meta = {};
     }
   }
 };

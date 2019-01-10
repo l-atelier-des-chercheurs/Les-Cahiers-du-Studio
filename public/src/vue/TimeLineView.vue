@@ -204,13 +204,13 @@
           </div>
         </div>
 
-        <AddMediaButton
+        <AddMedias
           v-if="
             ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
           :slugFolderName="slugFolderName"
           :read_only="read_only"
         >
-        </AddMediaButton>
+        </AddMedias>
 
         <EditMedia
           v-if="showMediaModalFor"
@@ -234,7 +234,7 @@
 <script>
 import NavbarTop from './components/NavbarTop.vue';
 import Sidebar from './components/Sidebar.vue';
-import AddMediaButton from './components/AddMediaButton.vue';
+import AddMedias from './components/AddMedias.vue';
 import EditFolder from './components/modals/EditFolder.vue';
 
 import TimelineMedia from './components/TimelineMedia.vue';
@@ -260,7 +260,7 @@ export default {
     EditFolder,
     NavbarTop,
     Sidebar,
-    AddMediaButton,
+    AddMedias,
     DateTime
   },
   data() {
