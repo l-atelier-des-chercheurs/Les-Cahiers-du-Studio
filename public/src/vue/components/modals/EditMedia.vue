@@ -3,6 +3,8 @@
     :backgroundColor="mediadata.color"
     @close="$emit('close')"
     @submit="editThisMedia"
+    @arrow_left="$eventHub.$emit('editmediamodal.previousmedia')"
+    @arrow_right="$eventHub.$emit('editmediamodal.nextmedia')"
     :read_only="read_only"
     :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'"
     :askBeforeClosingModal="askBeforeClosingModal"

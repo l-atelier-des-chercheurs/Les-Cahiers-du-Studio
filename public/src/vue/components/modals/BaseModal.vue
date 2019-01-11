@@ -293,7 +293,7 @@ export default {
           return;
         }
       }
-      this.$eventHub.$emit('modal.arrow_left');
+      this.$emit('arrow_left');
     },
     arrowRight: function() {
       console.log(`METHODS • BaseModal: arrowRight with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
@@ -302,7 +302,7 @@ export default {
           return;
         }
       }
-      this.$eventHub.$emit('modal.arrow_right');
+      this.$emit('arrow_right');
     },
     toggleMinimize: function() {
       console.log(`METHODS • BaseModal: toggleMinimize`);

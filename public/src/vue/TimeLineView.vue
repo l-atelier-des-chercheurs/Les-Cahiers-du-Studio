@@ -1048,7 +1048,11 @@ export default {
         if(current_media_index < this.sortedMedias.length - 1) {
           const new_media = this.sortedMedias[current_media_index + 1];
           if(new_media.hasOwnProperty('slugMediaName')) {
-            this.openMediaModal(new_media.slugMediaName);
+
+            this.closeMediaModal();
+            this.$nextTick(() => {
+              this.openMediaModal(new_media.slugMediaName);
+            });
           } 
         }      
       }
@@ -1066,8 +1070,11 @@ export default {
         if(current_media_index > 0) {
           const new_media = this.sortedMedias[current_media_index - 1];
           if(new_media.hasOwnProperty('slugMediaName')) {
-            this.openMediaModal(new_media.slugMediaName);
-          } 
+            this.closeMediaModal();
+            this.$nextTick(() => {
+              this.openMediaModal(new_media.slugMediaName);
+            });          } 
+
         }      
       }
     },
