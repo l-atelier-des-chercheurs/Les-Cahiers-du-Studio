@@ -302,26 +302,17 @@ export default {
         content: this.media.content
       },
       mediaURL: this.$root.state.mode === 'export' ? `./${this.slugFolderName}/${this.slugMediaName}` : `/${this.slugFolderName}/${this.slugMediaName}`,
-      alt_key_is_pressed: false
+      alt_key_is_pressed: false,
+      askBeforeClosingModal: false
     };
   },
   watch: {
-    slugMediaName: function() {
-      if (window.state.dev_mode === 'debug') {
-        console.log('WATCH • EditMedia: slugMediaName');
-      }
-
-      this.mediadata = {
-        date_timeline: this.media.date_timeline,
-        type: this.media.type,
-        color: this.media.color,
-        authors: this.media.authors,
-        caption: this.media.caption,
-        keywords: this.media.keywords,
-        public: this.media.public,
-        content: this.media.content
-      };
-      this.mediaURL = `/${this.slugFolderName}/${this.slugMediaName}`;
+    'mediadata': {
+      handler() {
+        debugger;
+        this.askBeforeClosingModal = true;
+      },
+      deep: true
     }
   },
   mounted() {
