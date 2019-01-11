@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="hide_on_print" v-html="$t('toconnectwithanotherdevicetothisfolder')" />
+    
+    <p 
+      class="hide_on_print font-small" 
+      v-html="$t('toconnectwithanotherdevicetothisfolder')" 
+    />
 
     <div v-for="(ip, index) in $root.state.localNetworkInfos.ip"
       class="m_qrSnippet"
@@ -18,12 +22,10 @@
           class="break-long-lines js--openInBrowser"
           :href="getURLToApp(ip)"
           target="_blank"
-        >
-          <!-- <img :src="'/images/i_logo.svg'" />           -->
-        
-          <template v-if="nameOfFolder">
+        >        
+          <!-- <template v-if="nameOfFolder">
             • {{ nameOfFolder }} •<br><br>
-          </template>
+          </template> -->
           <span class="font-verysmall">
             {{ getURLToApp(ip) }}
           </span>

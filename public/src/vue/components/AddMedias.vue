@@ -2,10 +2,10 @@
   <div class="m_addMedias"
     @mouseenter="show_options = true"
     @mouseleave="show_options = false"
+    :class="{ 'is--showing_options' : show_options }"
   >
     <div 
       class="m_addMedias--options"
-      :class="{ 'is--shown' : show_options }"
     >
       <button
         key="add_text"
@@ -116,12 +116,12 @@ export default {
       showImportModal: false,
 
       selected_files: [],
-      show_options: false,
+      show_options: true,
       
       input_file_fields: [
         {
-          key: 'audios',
-          label: 'Audios',
+          key: 'audio',
+          label: 'Audio',
           accept: 'audio/*',
           capture: true,
           svg: `
@@ -142,8 +142,8 @@ export default {
           `
         },
         {
-          key: 'files',
-          label: 'Fichiers',
+          key: 'file',
+          label: 'Fichier',
           accept: '',
           capture: false,
           svg: `
@@ -154,8 +154,8 @@ export default {
           `
         },
         {
-          key: 'videos',
-          label: 'Vidéos',
+          key: 'video',
+          label: 'Vidéo',
           accept: 'video/*',
           capture: true,
           svg: `
@@ -167,8 +167,8 @@ export default {
           `
         },
         {
-          key: 'images',
-          label: 'Images',
+          key: 'image',
+          label: 'Image',
           accept: 'image/*',
           capture: true,
           svg : `
@@ -278,7 +278,8 @@ export default {
 <style lang="less" scoped>
 button {
   position: relative;
-  box-shadow: 2px 4px 13px #bbb;  
+  box-shadow: 2px 4px 13px #bbb; 
+  margin: .3em; 
 
   &:active {
     background-color: var(--color-vert_vif);
@@ -293,7 +294,10 @@ button {
 
   .text_label {
     opacity: 0;
-    pointer-events: none;
+  }
+
+  html.touchevents & .text_label {
+    opacity: 1;
   }
 
   &:hover {
@@ -323,32 +327,36 @@ button {
 
 .m_addMedias {
   position: fixed;
-  bottom: 4vh;
-  right: 4vh;
-  z-index: 1500;
+  bottom: 8vh;
+  right: 4vw;
+  z-index: 15000;
 
   width: 100px;
   height: auto;
   min-height: 100px;
+  max-height: 80vh;
 
   // color: var(--color-blanc);
 
   display: flex;
-  align-items: flex-end;
-  align-content: flex-end;
-  flex-flow: row wrap;
+  flex-flow: column nowrap;
+
+  align-items: center;
+  align-content: center;
   justify-content: center;
+
 
   > * {
 
-
     &.m_addMedias--options {
+      flex: 1 1 auto;
+      min-width: 100px;
+
       display: flex;
       flex-flow: column wrap;
       justify-content: center;
-      align-content: center;
+      align-content: flex-end;
       align-items: center;
-
 
       > * {
         opacity: 0;
@@ -368,12 +376,11 @@ button {
 
       // visibility: hidden;
       
+      pointer-events: none;
 
-      &.is--shown {
-        // visibility: visible;
-
+      .is--showing_options& {
+        pointer-events: auto;
         > * {
-          max-height: none;
           opacity: 1;
         }
       }
@@ -381,12 +388,14 @@ button {
 
     &.m_addMedias--openHideButton {
 
+      flex: 0 0 auto;
+
       svg {
         transition: transform cubic-bezier(0.19, 1, 0.22, 1) .8s;
         transform: rotate(0);
       }
 
-      &.is--shown {
+      .is--showing_options& {
         background-color: #999;
 
         svg {
@@ -409,10 +418,5 @@ button {
   padding: 0 20px;
 }
 
-.fade-enter-active {
-
-  
-
-}
 
 </style>
