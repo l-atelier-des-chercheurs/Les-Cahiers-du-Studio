@@ -9,7 +9,7 @@
   >
     <!-- @submit="uploadFiles" -->
     <template slot="header">
-      <span class="">{{ $t('import_medias') }}</span>
+      <span class=""> {{ $t('import_medias') }}</span>
     </template>
 
     <template slot="sidebar">
