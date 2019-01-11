@@ -63,7 +63,7 @@ button, .button {
   text-overflow: ellipsis;
 }
 
-.custom_scrollbar(@scrollbar-height, @scrollbar-padding, @scrollbar-border, @c-barbgcolor: transparent) {
+.custom_scrollbar(@scrollbar-height, @scrollbar-padding, @scrollbar-border, @c-barbgcolor: transparent, @c-thumbcolor: #fff) {
   
   &::-webkit-scrollbar {
     height: ((@scrollbar-padding * 2) + @scrollbar-height);
@@ -85,7 +85,7 @@ button, .button {
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: @c-blanc;
+    background-color: @c-thumbcolor;
     &:hover {
       background-color: @c-gris;
       border: @scrollbar-border solid rgba(255,255,255,0);

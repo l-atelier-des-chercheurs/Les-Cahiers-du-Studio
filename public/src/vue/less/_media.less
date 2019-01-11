@@ -275,6 +275,9 @@
 
   .ql-container {
     font-family: inherit;
+    overflow-y: auto;
+
+    .custom_scrollbar(4px, 6px, 6px, rgba(255,255,255,0), #000);    
   }
   .ql-container.ql-snow {
     border: none;
@@ -312,16 +315,6 @@
       border-radius: 0;
 
       background-color: white;
-
-      background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
-      background-size: 30px 30px;
-      background-attachment: local;
-  
-      background: linear-gradient(transparent, transparent ~"calc(@{t-skipline} - 2px)", rgba(0,0,0,.15) ~"calc(@{t-skipline} - 2px)");
-      background-size: @t-skipline @t-skipline;
-      background-attachment: local;
-      background-position-y: ~"calc(@{t-skipline} * 0.8)";
-  
             
       font-size:14pt !important;
   

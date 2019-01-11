@@ -1,6 +1,6 @@
 <template>
   <div class="m_addMedias"
-    @mouseenter="show_options = true"
+    @mouseenter="show_drop_container === false ? show_options = true : ''"
     @mouseleave="show_options = false"
     :class="{ 'is--showing_options' : show_options }"
   >
@@ -14,7 +14,7 @@
         @click="createTextMedia"
         :disabled="read_only"
       >
-        <span class="text_label">
+        <span class="text_label show_on_hover">
           Texte
         </span>
 
@@ -34,7 +34,7 @@
         @click="createMarkerMedia"
         :disabled="read_only"
       >
-        <span class="text_label">
+        <span class="text_label show_on_hover">
           Marker
         </span>
 
@@ -54,7 +54,7 @@
           :disabled="read_only"
         >
           <label :for="`add_${field.key}`">
-            <span class="text_label">
+            <span class="text_label show_on_hover">
               {{ field.label }}
             </span> 
             <div v-html="field.svg" />
@@ -76,10 +76,14 @@
     <button 
       type="button"
       class="button button-round margin-bottom-small padding-none bg-noir c-blanc button_addMedia m_addMedias--openHideButton"
-      :class="{ 'is--shown' : show_options }"
+      :class="{ 'is--shown' : show_options, 'is--dragover' : show_drop_container }"
       @click="show_options = !show_options"
+      @drop="dropHandler($event)"
       :disabled="read_only"
     >
+      <span class="text_label always_show" v-if="show_drop_container">
+        Déposez vos fichiers ici
+      </span>
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px"
         height="24px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
         <path style="fill:#ffffff;" d="M0,10.5h10.5V0h2.9v10.5H24v2.9H13.5V24h-2.9V13.5H0V10.5z"/>
@@ -99,6 +103,7 @@
 </template>
 <script>
 import UploadFile from './modals/UploadFile.vue';
+import debounce from 'debounce';
 
 export default {
   props: {
@@ -116,7 +121,8 @@ export default {
       showImportModal: false,
 
       selected_files: [],
-      show_options: true,
+      show_options: false,
+      show_drop_container: false,
       
       input_file_fields: [
         {
@@ -184,9 +190,13 @@ export default {
   },
   mounted: function() {
     document.addEventListener('keyup', this.boitierPressed);
+    document.addEventListener('dragover', this.ondragover);
+    this.cancelDragOver = debounce(this.cancelDragOver, 300);
+
   },
   destroyed: function() {
     document.removeEventListener('keyup', this.boitierPressed);
+    document.removeEventListener('dragover', this.ondragover);
   },
   watch: {
     file: function() {}
@@ -265,12 +275,41 @@ export default {
       });
     },
     updateInputFiles($event) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • UploadFile / updateSelectedFiles`);
-      }
+      if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / updateSelectedFiles`); }
       this.selected_files = Array.from($event.target.files); 
       $event.target.type = '';
       $event.target.type = 'file';
+    },
+
+    ondragover() {
+      if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / ondragover`); }
+      this.show_drop_container = true;
+      this.cancelDragOver();
+    },
+    cancelDragOver() {
+      if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / cancelDragOver`); }
+      this.show_drop_container = false;
+    },
+    dropHandler($event) {
+      if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / dropHandler`); }
+
+      // Prevent default behavior (Prevent file from being opened)
+      $event.preventDefault();
+
+      if ($event.dataTransfer.items) {
+        let files = [];
+        for (var i = 0; i < $event.dataTransfer.items.length; i++) {
+          if ($event.dataTransfer.items[i].kind === 'file') {
+            files.push($event.dataTransfer.items[i].getAsFile());
+          }
+        }
+        this.selected_files = files;
+      } else {
+        for (var i = 0; i < $event.dataTransfer.files.length; i++) {
+          this.selected_files = Array.from($event.dataTransfer.files); 
+        }
+      }
+
     }
   }
 };
@@ -279,7 +318,7 @@ export default {
 button {
   position: relative;
   box-shadow: 2px 4px 13px #bbb; 
-  margin: .3em; 
+  // margin: .3em; 
 
   &:active {
     background-color: var(--color-vert_vif);
@@ -290,28 +329,32 @@ button {
     display: block;
     position: absolute;
     top: 0;left: 0;
+    user-select: none;
   }
 
-  .text_label {
+  span {
+    margin-top: 0;
+  }
+
+  .text_label:not(.always_show) {
     opacity: 0;
-  }
+    transition: opacity .08s;
 
-  html.touchevents & .text_label {
-    opacity: 1;
-  }
-
-  &:hover {
-    
-    .text_label {
+    html.touchevents & {
       opacity: 1;
     }
   }
+
+  &:hover .text_label {
+    opacity: 1;
+  }
+  
+
 }
 
 .text_label {
   position: absolute;
-  right: calc(100% + 25px);
-  margin-top: 10px;
+  right: ~"calc(100% + 15px)";
 
   text-transform: lowercase;
   padding: 3px 4px;
@@ -323,6 +366,11 @@ button {
 
   background-color: white;
   color: black;
+
+  top: 50%;
+  transform: translate(0, -50%);
+  white-space: nowrap;
+
 }
 
 .m_addMedias {
@@ -389,8 +437,12 @@ button {
     &.m_addMedias--openHideButton {
 
       flex: 0 0 auto;
+      transition: all cubic-bezier(0.19, 1, 0.22, 1) .8s;
+
 
       svg {
+        width: 24px;
+        height: 24px;
         transition: transform cubic-bezier(0.19, 1, 0.22, 1) .8s;
         transform: rotate(0);
       }
@@ -402,8 +454,26 @@ button {
           transform: rotate(225deg);
         }
       }
+
+      &.is--dragover {
+        width: 128px;
+        height: 128px;
+      }
   
     }
+  }
+
+  .m_addMedias--dropContainer {
+    position: absolute;
+    z-index: 0;
+    bottom: 0;
+    right: 0;
+
+    border-radius: 6px;
+
+    width: 320px;
+    height: 320px;
+    background-color: var(--color-noir);
   }
 
 }

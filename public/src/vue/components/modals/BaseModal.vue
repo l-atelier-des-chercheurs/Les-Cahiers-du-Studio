@@ -51,7 +51,6 @@
             <button type="button" 
               class="m_modal--sidebar--toggle"
               @click="toggleSidebar"
-              v-if="can_minimize"
             > 
               &#x2630;
             </button>
