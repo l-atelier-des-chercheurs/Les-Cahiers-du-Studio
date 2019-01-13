@@ -98,9 +98,7 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
         </div>
       </div>
 
-      <div class="m_clientsList"> 
-        <Clients />
-      </div>
+      <Clients />
 
     </div>
   </nav>

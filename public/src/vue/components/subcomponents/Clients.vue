@@ -2,26 +2,38 @@
   <div>
     <template v-if="$root.state.connected">
       <div  class="m_clientsList">
-        Actuellement connecté comme :
-        <div class="input-group">
-          <input type="text" @change="updateName">
-          <button type="button" class="button">Submit</button>
+        <span>Actuellement connecté comme :</span>
+        <div class="m_clientsList--client">
+          <span v-if="!!current_client && current_client.data.hasOwnProperty('author')"
+            v-html="current_client.data.author.name"
+          />
+          <span v-else v-html="'anonyme'" />
+          
         </div>
 
-        <label>Autres utilisateurs ({{ clients.length - 1 }})</label>
-        <div 
-          class="m_clientsList--client"
-          :key="client.id"
-          v-for="client in clients_except_current"
-          
-        >
-          <template v-if="client.data.hasOwnProperty('author')">
-            {{ client.data.author.name }}
-          </template>
-          <template v-else>        
-            anonyme
-          </template>
+        <div class="input-group">
+          <span class="input-addon input-addon-xs">Nom</span>
+          <input type="text" ref="nameInput" class="input-xs">
+          <button type="button" class="button input-addon-xs" @click="updateName">Envoyer</button>
         </div>
+
+        &nbsp;•&nbsp;
+
+        <template v-if="clients_except_current.length > 0">
+          <label v-if="clients_except_current.length == 1">1 autre utilisateur&nbsp;:</label>
+          <label v-if="clients_except_current.length >= 2">{{ clients_except_current.length }} autres utilisateurs&nbsp;:</label>
+          <div 
+            class="m_clientsList--client"
+            :key="client.id"
+            v-for="client in clients_except_current"
+            
+          >
+            <span v-if="client.data.hasOwnProperty('author')"
+              v-html="client.data.author.name"
+            />
+            <span v-else v-html="'anonyme'" />
+          </div>
+        </template>
       </div>
     </template>
     <template v-else>
@@ -59,13 +71,17 @@ export default {
     },
     clients_except_current() {
       return this.clients.filter(c => c.id !== this.$root.$socketio.socket.id);
+    },
+    current_client() {
+      return this.clients.filter(c => c.id === this.$root.$socketio.socket.id)[0];
     }
   },
   methods: {
-    updateName(e) {
+    updateName() {
+      const name = this.$refs.nameInput.value;
       this.$socketio.socket.emit('updateClientInfo', { 
         author: { 
-          name: e.target.value 
+          name
         }
       });
     }

@@ -310,11 +310,51 @@ body {
   width: 100%;
   background-color: @c-gris_clair;
   .font-small;
-  color: white;
+  // color: white;
+  color: #000;
   .padding-vert-verysmall;  
   .padding-sides-small; 
   
   display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  > * {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: @t-skipline/2;
+  }
+
+  .input-group {
+    max-width: 300px;
+
+    button {
+      margin-bottom: 0;
+    }
+  }
+
+  hr {
+    width:1px;
+    height: 100%;
+    border-color: black;
+  }
+
+  .m_clientsList--client {
+
+    span {
+      background-color: white;
+      border-radius: 4px;
+      padding: 2px;
+      margin: 0;
+    }
+
+    + .m_clientsList--client {
+      // margin-left: 0;
+
+      &::before {
+      }
+    }
+  }
 }
 
 .m_connectionStatus {
