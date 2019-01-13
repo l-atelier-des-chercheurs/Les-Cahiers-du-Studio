@@ -57,7 +57,8 @@ html
       window.store = {
         presentationMD: !{JSON.stringify(presentationMD)},
         slugFolderName: "!{slugFolderName}",
-        folders: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" }
+        folders: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
+        authors: {},
       };
 
       /* state contains settings data, time and client specific data */
@@ -73,7 +74,8 @@ html
         noticeOfError: "!{noticeOfError}",
         export_options: !{ !!export_options ? JSON.stringify(export_options) : "{}" },
         is_electron: !!(window && window.process && window.process.type) && !{ mode === "export" ? false : true },
-        is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true }
+        is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true },
+        clients: {}
       };
 
 

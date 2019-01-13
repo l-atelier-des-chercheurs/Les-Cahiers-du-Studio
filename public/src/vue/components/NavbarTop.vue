@@ -97,14 +97,17 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
           </template>
         </div>
       </div>
-      <div class="m_connectionStatus" v-if="!$root.state.connected">
-        {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
-      </div>    
+
+      <div class="m_clientsList"> 
+        <Clients />
+      </div>
 
     </div>
   </nav>
 </template>
 <script>
+import Clients from './subcomponents/Clients.vue';
+
 export default {
   props: {
     folder: Object,
@@ -112,7 +115,9 @@ export default {
     visibleDay: Number,
     timelineViewport_scale: Number
   },
-  components: {},
+  components: {
+    Clients
+  },
   data() {
     return {
       show_menu: false,

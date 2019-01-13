@@ -308,7 +308,6 @@ export default {
   watch: {
     'mediadata': {
       handler() {
-        debugger;
         this.askBeforeClosingModal = true;
       },
       deep: true
