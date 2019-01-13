@@ -45,6 +45,7 @@
         <button 
         v-if="folder.authorized"
         type="button" 
+        :disabled="read_only"
         class="button-round margin-verysmall padding-verysmall" 
         @click="$root.openFolder(slugFolderName)">
           <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">

@@ -29,6 +29,11 @@
       </div>
     </header>
 
+    <div class="m_connectionStatus" v-if="!$root.state.connected">
+      {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
+    </div>    
+
+
 
     <section class="flex-wrap flex-vertically-start limited-width padding-vert-medium">
       <div class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-large">

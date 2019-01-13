@@ -81,6 +81,10 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
           </template>
         </div>
       </div>
+      <div class="m_connectionStatus" v-if="!$root.state.connected">
+        {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
+      </div>    
+
     </div>
   </nav>
 </template>

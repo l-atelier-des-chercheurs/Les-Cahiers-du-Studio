@@ -4,9 +4,9 @@
     autocorrect="off"
     autofocus="autofocus"
   >
-    connection_state : {{ connection_state }}<br>
     <div ref="editor"
     />
+    connection_state : {{ connection_state }}<br>
   </div>
 </template>
 <script>
