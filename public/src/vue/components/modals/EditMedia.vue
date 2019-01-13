@@ -365,13 +365,20 @@ export default {
     openMediaNewWindow: function() {},
     removeMedia: function() {
       if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
-        // then close that popover
-        if(!this.alt_key_is_pressed) {
-          this.$emit('close', '');
-        } else {
-          this.$eventHub.$emit('editmediamodal.nextmedia');
-        }
+
+        this.$root.removeMedia({ 
+          type: 'folders',
+          slugFolderName: this.slugFolderName, 
+          slugMediaName: this.slugMediaName,
+          data: this.mediadata
+        });
+        this.$emit('close', '');
+
+        // if(!this.alt_key_is_pressed) {
+        //   this.$emit('close', '');
+        // } else {
+        //   this.$eventHub.$emit('editmediamodal.nextmedia');
+        // }
       }
     },
     setMediaDateTimeline: function(newDate) {
