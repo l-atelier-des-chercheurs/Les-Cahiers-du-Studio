@@ -27,8 +27,21 @@
 <!-- End date -->
       <div class="margin-bottom-small">
         <label>{{ $t('capture_end') }}</label>
-        <DateTime v-model="folderdata.end" :read_only="read_only">
+        <DateTime v-model="folderdata.end" :twowaybinding=true :read_only="read_only">
         </DateTime>
+      </div>
+
+      <div class="margin-bottom-small">
+        <small>
+          {{ $t('currently') }}
+          <button
+            type="button"
+            class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+            @click="folderdata.end = $root.currentTime"
+          >
+            {{ $root.currentTime_human }}
+          </button>
+        </small>
       </div>
 
 <!-- Password -->
