@@ -35,7 +35,7 @@ export default {
       custom_toolbar: [
         [{ 'header': [false, 1, 2, 3, 4] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
-        ['bold', 'italic', 'underline', 'link', 'blockquote'],
+        ['italic', 'underline', 'link', 'blockquote'],
         [{ list: 'ordered' }, { list: 'bullet'} ],
         ['clean']  
       ],
@@ -75,7 +75,7 @@ export default {
   methods: {
     initWebsocketMode() {
       const params = new URLSearchParams({
-        'type': 'projects',
+        'type': 'folders',
         'slugFolderName': this.slugFolderName,
         'metaFileName': this.media.metaFileName
       });

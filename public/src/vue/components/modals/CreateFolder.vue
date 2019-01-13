@@ -4,6 +4,7 @@
     @submit="newFolder"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
+    :askBeforeClosingModal="askBeforeClosingModal"
     >
     <template slot="header">
       <span class="text-cap"> {{ $t('create_a_folder') }}</span>
@@ -81,6 +82,7 @@ export default {
   },
   data() {
     return {
+      askBeforeClosingModal: false,
       folderdata: {
         name: '',
         start: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -89,6 +91,14 @@ export default {
         authors: ''
       }
     };
+  },
+  watch: {
+    'folderdata': {
+      handler() {
+        this.askBeforeClosingModal = true;
+      },
+      deep: true
+    }
   },
   computed: {},
   methods: {

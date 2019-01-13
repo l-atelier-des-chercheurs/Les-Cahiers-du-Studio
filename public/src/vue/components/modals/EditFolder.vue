@@ -5,7 +5,8 @@
     @submit="editThisFolder"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
-    >
+    :askBeforeClosingModal="askBeforeClosingModal"
+  >
     <template slot="header">
       <span class="text-cap"> {{ $t('edit_folder') }}</span> <i>{{ folder.name }}</i>
     </template>
@@ -100,6 +101,7 @@ export default {
   },
   data() {
     return {
+      askBeforeClosingModal: false,
       folderdata: {
         name: this.folder.name,
         start: this.$moment(this.folder.start).isValid()
@@ -109,6 +111,14 @@ export default {
         authors: this.folder.authors
       }
     };
+  },
+  watch: {
+    'folderdata': {
+      handler() {
+        this.askBeforeClosingModal = true;
+      },
+      deep: true
+    }
   },
   computed: {},
   methods: {

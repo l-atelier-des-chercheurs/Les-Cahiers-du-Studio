@@ -1038,20 +1038,23 @@ export default {
       }
       
       if(this.showMediaModalFor) {
+
         // find in sortedMedias where this.showMediaModalFor and get the next one
         const current_media_index = _.findIndex(this.sortedMedias, {
           slugMediaName: this.showMediaModalFor
         });
+
+        this.closeMediaModal();
+
         if(current_media_index < this.sortedMedias.length - 1) {
           const new_media = this.sortedMedias[current_media_index + 1];
           if(new_media.hasOwnProperty('slugMediaName')) {
 
-            this.closeMediaModal();
             this.$nextTick(() => {
               this.openMediaModal(new_media.slugMediaName);
             });
           } 
-        }      
+        }
       }
     },
     editModalPreviousMedia() {
@@ -1060,18 +1063,21 @@ export default {
       }
 
       if(this.showMediaModalFor) {
+
         // find in sortedMedias where this.showMediaModalFor and get the next one
         const current_media_index = _.findIndex(this.sortedMedias, {
           slugMediaName: this.showMediaModalFor
         });
+
+        this.closeMediaModal();
+
         if(current_media_index > 0) {
           const new_media = this.sortedMedias[current_media_index - 1];
           if(new_media.hasOwnProperty('slugMediaName')) {
-            this.closeMediaModal();
             this.$nextTick(() => {
               this.openMediaModal(new_media.slugMediaName);
-            });          } 
-
+            });          
+          } 
         }      
       }
     },

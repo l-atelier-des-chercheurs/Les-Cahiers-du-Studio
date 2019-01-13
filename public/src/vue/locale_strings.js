@@ -57,6 +57,8 @@ module.exports = (function() {
         'Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ',
       sureToRemoveFolder: 'Êtes-vous sûr de vouloir supprimer ce dossier ?',
       sureToRemoveMedia: 'Êtes-vous sûr de vouloir supprimer ce média ?',
+      sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
+      sureToCloseModal: 'Êtes-vous sûr de vouloir fermer cette fenêtre ?',
 
       create_a_folder: 'Créer un dossier',
       edit_the_media: 'Éditer le média',
@@ -180,6 +182,8 @@ module.exports = (function() {
         'To access this folder in Les Cahiers with another device, connect to the same wifi network and type this adress in your browser:',
       sureToRemoveFolder: 'Do you really want to delete this folder?',
       sureToRemoveMedia: 'Do you really want to delete this media?',
+      sureToRemoveAuthor: 'Do you really want to delete this author?',
+      sureToCloseModal: 'Do you really want to close this window?',
 
       create_a_folder: 'Create a folder',
       edit_the_media: 'Edit media',

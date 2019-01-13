@@ -225,6 +225,11 @@
       }    
     }
   }
+  &.typeOfModal-EditMeta {
+    .m_modal--sidebar--toggle {
+      display: none;
+    }
+  }
   &.typeOfModal-LargeAndNoScrollWithButtons {
     .m_modal--container {   
       max-width: none;      
@@ -278,7 +283,7 @@
 
   .m_modal--sidebar--toggle {
     position: absolute;
-    top: @t-skipline * 0.6;
+    top: 0;
     right: 100%;
     .padding-small;
     font-weight: 700;
@@ -350,6 +355,7 @@
       > * {
         width: 100%;
         height: 100%;
+        background-color: transparent;
       }
     }
 
