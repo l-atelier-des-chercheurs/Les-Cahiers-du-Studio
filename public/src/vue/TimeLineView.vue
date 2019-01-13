@@ -218,7 +218,6 @@
           :slugMediaName="showMediaModalFor"
           :media="medias[showMediaModalFor]"
           :isRealtime="isRealtime"
-          :currentTime="currentTime"
           @close="showMediaModalFor = false"
           :read_only="read_only"
         >
@@ -288,7 +287,6 @@ export default {
 
       currentScrollEvent: undefined,
 
-      currentTime: this.$moment().millisecond(0),
       todaysRule: {
         caption: '',
         xPos: false
@@ -514,7 +512,6 @@ export default {
         `MOUNTED • TimeLineView: setInterval updating (timelineUpdateRoutine)`
       );
 
-      this.currentTime = this.$moment().millisecond(0);
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
       this.setViewedTimelineWidthAndHeight();
@@ -676,7 +673,7 @@ export default {
       } else {
         // there is no valid end, we set end to current time and set realtime
         this.isRealtime = true;
-        return this.currentTime;
+        return this.$root.currentTime;
       }
     },
 
@@ -866,7 +863,7 @@ export default {
           let caption;
           if (
             currentMinute_minutesOnly % 10 === 0 ||
-            this.timelineViewport.scale < 5
+            (this.timelineViewport.scale < 5 && currentMinute_minutesOnly % 5 === 0)
           ) {
             caption = this.$moment(currentMinute).format('LT');
           }
@@ -1084,14 +1081,14 @@ export default {
         return;
       }
 
-      let xPos = this.getXPositionFromDate(this.currentTime);
+      let xPos = this.getXPositionFromDate(this.$root.currentTime);
       if (xPos === false) {
         this.todaysRule.xPos = false;
         return;
       }
 
-      console.log('METHODS • TimeLineView: drawRealtimeRule');
-      let caption = this.currentTime.format('HH:mm:ss');
+      // console.log('METHODS • TimeLineView: drawRealtimeRule');
+      let caption = this.$root.currentTime.format('HH:mm:ss');
       this.todaysRule = {
         caption,
         xPos
@@ -1102,7 +1099,7 @@ export default {
     },
     scrollToToday() {
       console.log(`METHODS • TimeLineView: scrollToToday`);
-      this.scrollToDate(this.currentTime);
+      this.scrollToDate(this.$root.currentTime);
     },
     scrollToMedia(slugMediaName) {
       console.log(

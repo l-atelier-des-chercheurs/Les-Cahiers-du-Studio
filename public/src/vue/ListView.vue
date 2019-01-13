@@ -34,7 +34,6 @@
     </div>    
 
 
-
     <section class="flex-wrap flex-vertically-start limited-width padding-vert-medium">
       <div class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-large">
         <div class="border border-top-dashed">

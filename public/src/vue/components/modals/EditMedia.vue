@@ -66,9 +66,9 @@
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                @click="setMediaDateTimeline(currentTime)"
+                @click="setMediaDateTimeline($root.currentTime)"
                 >
-                {{ currentTime_human }}
+                {{ $root.currentTime_human }}
               </button>
             </small>
           </div>
@@ -278,7 +278,6 @@ export default {
     slugMediaName: String,
     media: Object,
     isRealtime: Boolean,
-    currentTime: Object,
     read_only: {
       type: Boolean,
       default: true
@@ -327,9 +326,6 @@ export default {
     },
     date_uploaded_human() {
       return this.$moment(this.media.date_upload).format('l LTS');
-    },
-    currentTime_human() {
-      return this.$moment(this.currentTime).format('l LTS');
     }
   },
   methods: {

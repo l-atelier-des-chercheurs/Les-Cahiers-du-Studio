@@ -432,6 +432,8 @@ let vm = new Vue({
 
     access: false,
 
+    currentTime: '',
+
     justCreatedMediaID: false,
     justCreatedFolderID: false,
     justCreatedFolderPassword: false,
@@ -515,6 +517,12 @@ let vm = new Vue({
           'ROOT EVENT: created / no erros, checking for content to load'
         );
       }
+
+      this.currentTime = this.$moment().millisecond(0);
+      setInterval(
+        () => (this.currentTime = this.$moment().millisecond(0)),
+        1000
+      );
 
       // if no error and if we have some content already loaded, let’s open it directly
       // (we are probably in an exported timeline)
@@ -773,6 +781,9 @@ let vm = new Vue({
         return this.store.folders[this.settings.current_slugFolderName];
       }
       return {};
+    },
+    currentTime_human() {
+      return this.$moment(this.currentTime).format('l LTS');
     }
   }
 });
