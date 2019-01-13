@@ -243,7 +243,6 @@ body {
 
     display: flex;
     align-items: center;
-
   }
   .menu_icon svg {
     display: block;
@@ -269,6 +268,23 @@ body {
   .breadcrumb > .breadcrumb--item + .breadcrumb--item::before {
     content: "›";
     margin: @t-spacing/2;
+  }
+
+  .menuButton {
+    display: block;
+    margin-left: auto;  
+    background-color: transparent;   
+    align-self: flex-end;
+    justify-self: flex-end;
+    flex: 0 0 55px;
+     
+    svg {
+      width: auto;
+      height: auto;
+      padding: @t-skipline/2 @t-skipline/2;
+      cursor: pointer;
+      fill: white;
+    }
   }
 
   .visibleDay {

@@ -453,7 +453,9 @@ let vm = new Vue({
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
       perf_mode: 'low',
       keyboard_shortcuts: [],
-      current_author: false
+      current_author: false,
+      windowHeight: window.innerHeight,
+      windowWidth: window.innerWidth
     },
 
     lang: {
@@ -474,6 +476,11 @@ let vm = new Vue({
     }
 
     this.settings.keyboard_shortcuts = this.getKeyboardShortcuts();
+
+    window.addEventListener('resize', () => {
+      this.settings.windowWidth = window.innerWidth;
+      this.settings.windowHeight = window.innerHeight;
+    });
 
     if (
       window.state.hasOwnProperty('export_options') &&
