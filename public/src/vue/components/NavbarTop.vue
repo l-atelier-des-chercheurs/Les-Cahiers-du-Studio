@@ -98,13 +98,16 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
         </div>
       </div>
 
-      <Clients />
+      <Authors 
+        :slugFolderName="slugFolderName"
+        :authors="folder.authors"
+      />
 
     </div>
   </nav>
 </template>
 <script>
-import Clients from './subcomponents/Clients.vue';
+import Authors from './subcomponents/Authors.vue';
 
 export default {
   props: {
@@ -114,7 +117,7 @@ export default {
     timelineViewport_scale: Number
   },
   components: {
-    Clients
+    Authors
   },
   data() {
     return {

@@ -455,7 +455,8 @@ let vm = new Vue({
       keyboard_shortcuts: [],
       current_author: false,
       windowHeight: window.innerHeight,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
+      current_author: false
     },
 
     lang: {
