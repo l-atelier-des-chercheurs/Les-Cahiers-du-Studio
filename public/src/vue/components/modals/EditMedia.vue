@@ -14,7 +14,7 @@
     :arrow_navigation="true"
   >
     <template slot="header">
-      <span class="text-cap"> {{ $t('edit_the_media') }}</span><br><i>{{ slugMediaName }}</i>
+      <span class="text-cap"> {{ $t('edit_the_media') }}</span><br><i>{{ media.media_filename }}</i>
     </template>
 
     <template slot="sidebar">
@@ -186,7 +186,7 @@
           </span>
         </button>
 
-        <a :href="mediaURL" :title="slugMediaName" target="_blank"
+        <a :href="mediaURL" :title="media.media_filename" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
           v-if="mediadata.type === 'image' && !read_only"
         >
@@ -212,7 +212,7 @@
           </span>
         </a>
 
-        <a :download="slugMediaName" :href="mediaURL" :title="slugMediaName" target="_blank"
+        <a :download="media.media_filename" :href="mediaURL" :title="media.media_filename" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
           v-if="$root.state.mode !== 'export' || ($root.state.hasOwnProperty('export_options') && $root.state.export_options.allow_download !== 'false')"
           :disabled="$root.state.mode === 'live' && read_only"
@@ -300,7 +300,7 @@ export default {
         public: this.media.public,
         content: this.media.content
       },
-      mediaURL: this.$root.state.mode === 'export' ? `./${this.slugFolderName}/${this.slugMediaName}` : `/${this.slugFolderName}/${this.slugMediaName}`,
+      mediaURL: this.$root.state.mode === 'export' ? `./${this.slugFolderName}/${this.media.media_filename}` : `/${this.slugFolderName}/${this.media.media_filename}`,
       alt_key_is_pressed: false,
       askBeforeClosingModal: false
     };
