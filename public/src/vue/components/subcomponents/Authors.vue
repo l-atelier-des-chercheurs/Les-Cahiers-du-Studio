@@ -1,29 +1,55 @@
 <template>
   <div>
     <template v-if="$root.state.connected">
-      clients : {{ clients }}<br>
-      authors : {{ authors }}
+      <!-- authors : {{ authors }}<br>
+      clients : {{ clients }}<br> -->
       <div  class="m_authors">
 
-        <div class="m_authors--currentAuthor">
-          <button type="button">
-            Louis
+        <div class="m_authors--currentAuthor"
+          v-if="current_author"
+        >
+          <button type="button"
+            :style="`background-color: ${current_author.color}`"
+            v-html="current_author.name"
+          >
           </button>
-          <!-- <span v-if="!!current_client && current_client.data.hasOwnProperty('author')"
-            v-html="current_client.data.author.name"
-          /> -->
+          
         </div>
 
-        <div class="m_authors--authorList">
-          <label>auteurs</label>
+        <transition-group class="m_authors--authorList"
+          name="list-complete"        
+        >
+          <label 
+            :key="'connected_auth_label'"
+            v-if="connected_authors.length > 0"
+          >
+            auteurs connectés
+          </label>
 
           <button type="button"
-            v-for="client in clients_except_current"
-            :key="client.name"
-            v-html="client.name"
+            v-for="author in connected_authors"
+            :key="author.name"
+            @click="setAuthor(author.name)"
+            :style="`background-color: ${author.color}`"
+            v-html="author.name"
           />
 
-        </div>
+          <label 
+            :key="'not_connected_auth_label'"
+            v-if="not_connected_authors.length > 0"
+          >
+            non connectés
+          </label>
+
+          <button type="button"
+            v-for="author in not_connected_authors"
+            :key="author.name"
+            @click="setAuthor(author.name)"
+            v-html="author.name"
+          />
+
+
+        </transition-group>
 
         <div class="m_authors--createButton">
           <template v-if="!add_author">
@@ -79,7 +105,7 @@
   </div>
 </template>
 <script>
-
+import randomColor from 'randomColor';
 
 export default {
   props: ['authors', 'slugFolderName'],
@@ -104,32 +130,61 @@ export default {
     clients() {
       return this.$root.state.clients;
     },
-    clients_except_current() {
-
-
-      return this.clients.filter(c => c.id !== this.$root.$socketio.socket.id);
+    authors_except_current() {
+      return this.authors.filter(c => c.name !== this.$root.settings.current_author_name);
     },
-    current_client() {
-      return this.clients.filter(c => c.id === this.$root.$socketio.socket.id)[0];
+    connected_authors() {
+      return this.authors_except_current.filter(a => {
+        const name = a.name;
+        return this.author_is_connected(name);
+      });
+    },
+    not_connected_authors() {
+      return this.authors_except_current.filter(a => {
+        const name = a.name;
+        return !this.author_is_connected(name);
+      });
+    },
+    current_author() {
+      return this.authors.filter(c => c.name === this.$root.settings.current_author_name)[0];
     }
   },
   methods: {
     createAuthor() {
       const name = this.$refs.nameInput.value;
 
-      debugger;
+      // check for existing name, refuse if already there
 
+      let _authors = [];
+      if(!!this.authors) {
+        _authors = this.authors.slice(0);
+      }
+      _authors.push({
+        name,
+        color: randomColor({luminosity: 'light'})
+      });
+      
       this.$root.editFolder({
         type: 'folders',
         slugFolderName: this.slugFolderName, 
-        data:  
-      });
-
-      this.$socketio.socket.emit('updateClientInfo', { 
-        author: { 
-          name
+        data: {
+          authors: _authors
         }
       });
+
+      this.add_author = false;
+    },
+    setAuthor(name) {
+      this.$root.settings.current_author_name = name;
+
+      this.$socketio.socket.emit('updateClientInfo', { 
+        author_name: name
+      });
+    },
+    author_is_connected(name) {
+      return this.clients.filter(c => {
+        return c.data.hasOwnProperty('author_name') && c.data.author_name === name;
+      }).length > 0;
     }
   }
 }

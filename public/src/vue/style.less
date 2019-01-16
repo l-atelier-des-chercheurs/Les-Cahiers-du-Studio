@@ -324,6 +324,7 @@ body {
   button {
     .margin-verysmall;
     background-color: #E5E5E5;
+    text-transform: initial;
   }
 
   .m_authors--currentAuthor {
@@ -349,9 +350,14 @@ body {
     align-items: center;
 
     label {
-      position: absolute;
       .font-verysmall;
       top: 0;
+      .padding-sides-verysmall;
+      margin-bottom: 0;
+    }
+
+    button {
+      background-color: @c-gris_tresclair;
     }
 
     > * {
