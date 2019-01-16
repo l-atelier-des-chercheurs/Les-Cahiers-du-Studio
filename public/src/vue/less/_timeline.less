@@ -103,6 +103,12 @@
     position: absolute;
     height: 100%;
 
+    color:  rgb(230,231,232);
+
+    .gridItem--caption {
+      color: #000;
+    }
+
 //     transition: all .4s;
 
     &.gridItem_isrealtimerule {
@@ -110,12 +116,12 @@
       z-index:10000;
       height: ~"calc(100% + 50px)";
       margin-top: -50px;
-      color: white;
       pointer-events: auto;
       left: -1px;
 
       .gridItem--caption {
         position: absolute;
+        color: white;
         right:0;
         background-color: @c-rouge_vif;
         padding: 1px 4px;
@@ -160,12 +166,12 @@
     }
 
     &.gridItem_isday {
-      border-left: 1px solid @c-noir_light;
+      border-left: 1px solid @c-gris_clair;
       z-index:100;
-      color: white;
 
       .gridItem--caption {
         display: block;
+        color: white;
         background-color: @c-noir_light;
         border: 2px solid @c-bg_timeline;
         padding: 2px 4px 0px;
@@ -179,7 +185,7 @@
     }
     &.gridItem_ishour {
       z-index:10;
-      border-left: 1px solid @c-gris_clair;
+      border-left: 2px solid currentColor;
 
       &.has--caption {
         // border-left: 1px solid @c-gris_clair;
@@ -197,12 +203,10 @@
     }
 
     &.gridItem_isminute {
-      color: #999;
-      border-left: 1px dashed @c-gris_clair;
+      border-left: 1px dashed currentColor;
       z-index:1;
 
       &.has--caption {
-        color: #333;
         // border-left: 1px solid @c-gris_clair;
 
         .gridItem--caption {
