@@ -461,7 +461,7 @@ let vm = new Vue({
       current_author: false,
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
-      current_author_name: false
+      folder_view_mode: 'timeline'
     },
 
     lang: {

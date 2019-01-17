@@ -6,7 +6,7 @@
         :duration="850"
         >
         <div
-          v-if="view === 'TimeLineView'"
+          v-if="view === 'FolderView'"
           class="titleText font-small text-centered c-blanc"
           @mousedown="mousedown"
           @mousemove="mousemove"

@@ -22,15 +22,15 @@
         </div>
       </div>
     </template>
-    <template v-else-if="view === 'TimeLineView' && currentFolder.hasOwnProperty('name')">
+    <template v-else-if="view === 'FolderView' && currentFolder.hasOwnProperty('name')">
 
-      <TimeLineView
+      <FolderView
         :slugFolderName="current_slugFolderName"
         :folder="currentFolder"
         :medias="currentFolder.medias"
         :read_only="!$root.state.connected"
       >
-      </TimeLineView>
+      </FolderView>
 
     </template>
 
@@ -51,7 +51,7 @@
 <script>
 import SystemBar from './SystemBar.vue';
 import ListView from './ListView.vue';
-import TimeLineView from './TimeLineView.vue';
+import FolderView from './FolderView.vue';
 import BottomFooter from './components/BottomFooter.vue';
 
 export default {
@@ -59,7 +59,7 @@ export default {
   components: {
     SystemBar,
     ListView,
-    TimeLineView,
+    FolderView,
     BottomFooter
   },
   props: ['current_slugFolderName', 'currentFolder'],
@@ -69,7 +69,7 @@ export default {
   computed: {
     view: function() {
       if (this.current_slugFolderName !== '') {
-        return 'TimeLineView';
+        return 'FolderView';
       }
       return 'ListView';
     }

@@ -268,7 +268,7 @@ export default {
   },
   data() {
     return {
-      systemBar: document.getElementById('systemBar') !== null ? 22 - 6 : 0,
+      systemBarHeight: document.getElementById('systemBar') !== null ? document.getElementById('systemBar').offsetHeight : 0,
       topNavbarHeight: 90,
       timelinetrackHeight: 50,
       timelineHeight: 0,
@@ -290,6 +290,8 @@ export default {
       isScrolling: false,
 
       currentScrollEvent: undefined,
+
+      current_mode: 'timeline',
 
       todaysRule: {
         caption: '',
@@ -991,9 +993,9 @@ export default {
         window.innerHeight -
         this.topNavbarHeight -
         this.bottomScrollBar -
-        this.systemBar;
+        this.systemBarHeight;
       this.sidebarHeight =
-        window.innerHeight - this.topNavbarHeight - this.systemBar;
+        window.innerHeight - this.topNavbarHeight - this.systemBarHeight;
     },
     onScroll() {
       if (!this.isScrolling) {

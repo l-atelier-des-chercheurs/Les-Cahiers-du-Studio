@@ -10,7 +10,6 @@
       <span 
         :style="`color: ${author.color}`"
       >•</span>
-
       {{ author.name }}
     </button>
     <!-- <VueTagsInput
