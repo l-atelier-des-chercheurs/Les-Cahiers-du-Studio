@@ -457,10 +457,14 @@ let vm = new Vue({
       is_loading_medias_for_folder: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
       perf_mode: 'low',
+
       keyboard_shortcuts: [],
+
       current_author_name: false,
+
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
+
       folder_view_mode: 'timeline'
     },
 

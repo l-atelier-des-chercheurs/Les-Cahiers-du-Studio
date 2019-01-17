@@ -11,6 +11,7 @@
           <button type="button"
             :style="`background-color: ${current_author.color}`"
             v-html="current_author.name"
+            @click="unsetAuthor"
           >
           </button>
           
@@ -193,9 +194,14 @@ export default {
 
       this.add_author = false;
     },
+    unsetAuthor() {
+      this.$root.settings.current_author_name = false;
+      this.$socketio.socket.emit('updateClientInfo', { 
+        author_name: false
+      });
+    },
     setAuthor(name) {
       this.$root.settings.current_author_name = name;
-
       this.$socketio.socket.emit('updateClientInfo', { 
         author_name: name
       });
