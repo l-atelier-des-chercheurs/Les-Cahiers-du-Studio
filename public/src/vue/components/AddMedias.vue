@@ -1,6 +1,6 @@
 <template>
   <div class="m_addMedias"
-    @mouseenter="show_drop_container === false ? show_options = true : ''"
+    @mouseenter="!is_touch && show_drop_container === false ? show_options = true : ''"
     @mouseleave="show_options = false"
     :class="{ 'is--showing_options' : show_options }"
   >
@@ -201,6 +201,11 @@ export default {
   watch: {
     file: function() {}
   },
+  computed: {
+    is_touch() {
+      return Modernizr.touchevents;
+    }
+  },
   methods: {
     createTextMedia() {
       if (window.state.dev_mode === 'debug') {
@@ -277,12 +282,12 @@ export default {
     updateInputFiles($event) {
       if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / updateSelectedFiles`); }
       this.selected_files = Array.from($event.target.files); 
-      $event.target.type = '';
-      $event.target.type = 'file';
+      $event.target.value = '';
     },
 
     ondragover() {
       if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / ondragover`); }
+
       this.show_drop_container = true;
       this.cancelDragOver();
     },

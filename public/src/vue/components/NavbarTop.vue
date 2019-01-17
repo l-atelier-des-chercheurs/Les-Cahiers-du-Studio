@@ -8,7 +8,7 @@
             <a 
             href="/" 
             @click.prevent="$root.closeFolder()" 
-            class="breadcrumb--item font-verylarge padding-left-small"
+            class="breadcrumb--item breadcrumb--item_backButton font-verylarge padding-left-small"
             >
               <svg version="1.1"
                 xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +100,7 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
 
       <Authors 
         :slugFolderName="slugFolderName"
-        :authors="folder.authors"
+        :authors="folder_authors"
       />
 
     </div>
@@ -153,6 +153,9 @@ export default {
     menu_is_enabled() {
       return this.$root.settings.windowWidth < 820 ? true : false;
     },
+    folder_authors() {
+      return this.folder.authors !== '' ? this.folder.authors : [];
+    }
   },
   methods: {
     updateScale: function(val) {

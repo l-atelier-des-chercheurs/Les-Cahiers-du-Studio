@@ -1,6 +1,6 @@
 <template>
   <Modal
-    :backgroundColor="mediadata.color"
+    :backgroundColor="color"
     @close="$emit('close')"
     @submit="editThisMedia"
     @arrow_left="$eventHub.$emit('editmediamodal.previousmedia')"
@@ -89,7 +89,7 @@
       </div> -->
 
 <!-- Color -->
-      <div v-if="!read_only" class="margin-bottom-small">
+      <!-- <div v-if="!read_only" class="margin-bottom-small">
         <label>{{ $t('color') }}</label>
         <select v-if="!read_only" ref="type" v-model="mediadata.color">
           <option v-for="mediaColor in $root.state.structure['folders'].medias.fields.color.options" :key="mediaColor">
@@ -97,7 +97,7 @@
           </option>
         </select>
         <input type="text" v-else :value="mediadata.color" readonly>
-      </div>
+      </div> -->
 
 <!-- Keywords -->
       <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
@@ -109,8 +109,11 @@
 <!-- Author(s) -->
       <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
         <label>{{ $t('author') }}</label>
-        <textarea v-model="mediadata.authors" :readonly="read_only">
-        </textarea>
+        <AuthorsInput
+          :currentAuthors="mediadata.authors"
+          :allAuthors="allAuthors"
+          @authorsChanged="newAuthors => mediadata.authors = newAuthors"
+        />
       </div>
 
 <!-- Public or private -->
@@ -271,6 +274,7 @@ import Modal from './BaseModal.vue';
 import alertify from 'alertify.js';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
@@ -278,22 +282,25 @@ export default {
     slugMediaName: String,
     media: Object,
     isRealtime: Boolean,
+    allAuthors: Array,
     read_only: {
       type: Boolean,
       default: true
-    }
+    },
+    color: String
   },
   components: {
     Modal,
     DateTime,
-    MediaContent
+    MediaContent,
+    AuthorsInput
   },
   data() {
     return {
       mediadata: {
         date_timeline: this.media.date_timeline,
         type: this.media.type,
-        color: this.media.color,
+        // color: this.media.color,
         authors: this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,

@@ -53,10 +53,14 @@
       </div>
 
 <!-- Author(s) -->
-      <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label><br>
-        <textarea v-model="folderdata.authors">
-        </textarea>
+      <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
+        <label>{{ $t('author') }}</label>
+        <AuthorsInput
+        />
+        <AuthorsInput
+          :currentAuthors="folderdata.authors"
+          @authorsChanged="newAuthors => folderdata.authors = newAuthors"
+        />
       </div>
 
     </template>
@@ -74,7 +78,7 @@ import alertify from 'alertify.js';
 
 export default {
   props: {
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     Modal,

@@ -7,6 +7,10 @@
       :class="{ 'is--active': authors.filter(a => a.name === author.name).length > 0 }"
       @click="toggleAuthorName(author.name)"
     >
+      <span 
+        :style="`color: ${author.color}`"
+      >•</span>
+
       {{ author.name }}
     </button>
     <!-- <VueTagsInput
@@ -21,21 +25,20 @@
 <script>
 export default {
   props: {
-    currentAuthors: Array
+    currentAuthors: Array,
+    allAuthors: Array
   },
   components: {
   },
   data() {
     return {
-      authors: this.currentAuthors !== undefined && this.currentAuthors !== '' ? this.currentAuthors : [],
-      allAuthors: []
+      authors: this.currentAuthors !== undefined && this.currentAuthors !== '' ? this.currentAuthors : []
     }
   },
   
   created() {
   },
   mounted() {
-    this.allAuthors = this.getAllUniqueAuthors();
   },
   beforeDestroy() {
   },
@@ -47,17 +50,6 @@ export default {
     }
   },
   methods: {
-    getAllUniqueAuthors() {
-      const allAuthors = this.authors.concat(this.$root.allAuthors);
-      let nameList = [];
-      return allAuthors.filter(a => {
-        if(nameList.indexOf(a.name) === -1) {
-          nameList.push(a.name);
-          return true;
-        }
-        return false;
-      });
-    },
     toggleAuthorName: function(authorName) {
       // authorName is already in authors, then remove it
       if(this.authors.filter(a => a.name === authorName).length > 0) {

@@ -31,8 +31,9 @@
             :key="author.name"
             @click="setAuthor(author.name)"
             :style="`background-color: ${author.color}`"
-            v-html="author.name"
-          />
+          >
+            {{author.name }}
+          </button>
 
           <label 
             :key="'not_connected_auth_label'"
@@ -45,9 +46,12 @@
             v-for="author in not_connected_authors"
             :key="author.name"
             @click="setAuthor(author.name)"
-            v-html="author.name"
-          />
-
+          >
+            <span 
+              :style="`color: ${author.color}`"
+            >•</span>
+            {{author.name }}
+          </button>
 
         </transition-group>
 
@@ -108,7 +112,15 @@
 import randomColor from 'randomColor';
 
 export default {
-  props: ['authors', 'slugFolderName'],
+  props: {
+    authors: {
+      type: Array,
+      default: []
+    },
+    slugFolderName: {
+      type: String
+    }
+  },
   components: {
   },
   data() {
@@ -153,10 +165,17 @@ export default {
     createAuthor() {
       const name = this.$refs.nameInput.value;
 
-      // check for existing name, refuse if already there
 
       let _authors = [];
       if(!!this.authors) {
+        // check for existing name, refuse if already there
+        if(this.authors.filter(a => a.name === name).length > 0) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t('notifications.author_name_exists'));  
+          return false;        
+        }
         _authors = this.authors.slice(0);
       }
       _authors.push({

@@ -264,6 +264,10 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 30px;
+
+    &.breadcrumb--item_backButton {
+      width: 30px;
+    }
   }
   .breadcrumb > .breadcrumb--item + .breadcrumb--item::before {
     content: "›";
@@ -311,6 +315,7 @@ body {
   background-color: @c-gris;
   background-color: #e0e0e0;
   background-color: #fff;
+  min-height: 40px;
 
   // min-height: 40px;
 
@@ -343,6 +348,7 @@ body {
 
     flex: 1 1 0;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     .padding-verysmall;
 
     display: flex;
@@ -371,6 +377,12 @@ body {
 
     .input-group {
       margin-bottom: 0;
+
+      button {
+        margin: 0;
+        background-color: @c-vert_vif;
+        color: white;
+      }
     }
 
   }
@@ -844,6 +856,43 @@ body {
       .padding-verysmall;
       .bg-blanc;
       width: 100%;
+    }
+  }
+}
+
+.m_authorField {
+  position: relative;
+  margin-bottom: 0;
+
+  letter-spacing: 0.04em;
+  display: flex;
+  flex-flow: row wrap;
+  text-transform: initial;
+
+  font-weight: 200;
+
+  > button, > span {
+    flex-basis: auto;
+    display: flex;
+    align-items: center;
+    min-height: 0;
+    border-radius: 4px !important; 
+    background-color: @c-gris_clair !important;
+    // color: white !important;
+    color: @c-noir !important;
+    font-size: inherit !important;
+    .padding-sides-verysmall !important;
+    .padding-vert-verysmall !important;
+    text-transform: initial;
+    font-weight: inherit;
+
+    font-weight: 400;
+    margin: 0 !important;
+    margin-right: @t-skipline/4 !important;
+    margin-bottom: @t-skipline/4 !important;
+
+    &.is--active {
+      background-color: @c-blanc !important;
     }
   }
 }

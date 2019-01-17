@@ -46,6 +46,7 @@
         :slugFolderName="slugFolderName"
         @close="showEditFolderModal = false"
         :read_only="read_only"
+        :allAuthors="folder.authors"
       />
 
       <div>
@@ -165,6 +166,7 @@
               :class="{ 'is--highlighted' : highlightedMedia === media.slugMediaName }"
               @open="openMediaModal(media.slugMediaName)"
               :read_only="read_only"
+              :color="getMediaColorFromFirstAuthor(media.authors)"
             >
             </TimelineMedia>
           </template>
@@ -220,6 +222,8 @@
           :isRealtime="isRealtime"
           @close="showMediaModalFor = false"
           :read_only="read_only"
+          :allAuthors="folder.authors"
+          :color="getMediaColorFromFirstAuthor(medias[showMediaModalFor].authors)"
         >
         </EditMedia>
 
@@ -265,7 +269,7 @@ export default {
   data() {
     return {
       systemBar: document.getElementById('systemBar') !== null ? 22 - 6 : 0,
-      topNavbarHeight: 50,
+      topNavbarHeight: 90,
       timelinetrackHeight: 50,
       timelineHeight: 0,
       bottomScrollBar: 20,
@@ -676,7 +680,22 @@ export default {
         return this.$root.currentTime;
       }
     },
+    getMediaColorFromFirstAuthor(media_authors) {
+      if(typeof media_authors !== 'object' 
+      || media_authors.length == 0
+      || typeof this.folder.authors !== 'object'
+      || this.folder.authors.length == 0
+      ) {
+        return '';
+      }
 
+      const full_authors_info = this.folder.authors.filter(a => a.name === media_authors[0].name);
+      if(full_authors_info.length == 0) {
+        return '';
+      }
+
+      return full_authors_info[0].color;
+    },
     /******************************************************************
         Updates viewed timeline with a start and end
     ******************************************************************/

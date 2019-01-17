@@ -11,7 +11,12 @@ import localstore from 'store';
 import VueScrollTo from 'vue-scrollto';
 import PortalVue from 'portal-vue';
 import VueI18n from 'vue-i18n';
+
 import alertify from 'alertify.js';
+Vue.prototype.$alertify = alertify;
+
+import slug from 'slugg';
+Vue.prototype.$slug = slug;
 
 import locale_strings from './locale_strings.js';
 

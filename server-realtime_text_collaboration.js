@@ -82,7 +82,6 @@ module.exports = function(server) {
     //       )[0].content;
     //       let rendered_text = quillRender([{ insert: text_content }]);
 
-    //       debugger;
     //       dev.logverbose(
     //         `server-realtime_text_collaboration • sharewss: now inserting = ${rendered_text}`
     //       );

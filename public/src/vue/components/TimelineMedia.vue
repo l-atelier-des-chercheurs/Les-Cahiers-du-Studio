@@ -1,12 +1,15 @@
 <template>
   <div class="mediaPreview font-small"
-    :style="`transform: translate(${posX}px, ${mediaStyles.y}px)`"
+    :style="{
+      transform: `translate(${posX}px, ${mediaStyles.y}px`,
+      '--media-color': color ? color : '#ffffff'
+    }"
     :class="[{
       'has--duration' : media.duration !== undefined,
       'is--hovered'   : is_hovered,
       'is--dragged'   : is_dragged,
       'is--collapsed' : is_collapsed,
-    }, 'type-' + media.type, 'color-' + media.color]"
+    }, 'type-' + media.type, class_from_first_author ]" 
     @mousedown.prevent="mousedown"
     @mouseover="mouseover"
     @mouseleave="mouseleave"
@@ -85,7 +88,8 @@ export default {
     read_only: {
       type: Boolean,
       default: true
-    }
+    },
+    color: String
   },
   components: {
     MediaContent
@@ -112,7 +116,8 @@ export default {
       }
     };
   },
-  computed: {},
+  computed: {
+  },
   watch: {
     media: function() {},
     'media.collapsed': function() {

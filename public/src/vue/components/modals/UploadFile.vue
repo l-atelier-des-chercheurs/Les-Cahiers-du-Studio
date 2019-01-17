@@ -185,6 +185,7 @@ export default {
 
               // check if there are anymore files to upload 
               if(Object.keys(this.files_to_upload_meta).length === 0) {
+                this.$eventHub.$emit('timeline.scrollToToday');
                 this.$emit('close');
               }
             }, 500 * index);

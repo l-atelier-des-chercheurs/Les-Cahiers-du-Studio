@@ -69,11 +69,15 @@
  -->
 
 <!-- Author(s) -->
-      <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label><br>
-        <textarea v-model="folderdata.authors" :readonly="read_only">
-        </textarea>
+      <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
+        <label>{{ $t('author') }}</label>
+        <AuthorsInput
+          :currentAuthors="folderdata.authors"
+          :allAuthors="allAuthors"
+          @authorsChanged="newAuthors => folderdata.authors = newAuthors"
+        />
       </div>
+
 
     </template>
 
@@ -87,17 +91,19 @@
 import Modal from './BaseModal.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import alertify from 'alertify.js';
-import slug from 'slugg';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
     slugFolderName: String,
     folder: Object,
-    read_only: Boolean
+    read_only: Boolean,
+    allAuthors: Array,
   },
   components: {
     Modal,
-    DateTime
+    DateTime,
+    AuthorsInput
   },
   data() {
     return {
@@ -147,7 +153,7 @@ export default {
           return false;
         }
 
-        if (slug(this.folderdata.name).length === 0) {
+        if (this.$slug(this.folderdata.name).length === 0) {
           alertify
             .closeLogOnClick(true)
             .delay(4000)

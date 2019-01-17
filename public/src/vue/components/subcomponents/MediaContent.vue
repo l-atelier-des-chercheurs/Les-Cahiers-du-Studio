@@ -176,7 +176,7 @@ export default {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
-      if(!this.media.hasOwnProperty('thumbs')) {
+      if(!this.media.hasOwnProperty('thumbs') || this.media.thumbs.length > 0) {
         return this.mediaURL;
       }
 

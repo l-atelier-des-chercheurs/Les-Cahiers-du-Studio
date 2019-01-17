@@ -93,6 +93,9 @@ module.exports = (function() {
       export_folder: 'Exporter en format WEB',
       export: 'Exporter',
       only_public_medias: 'Seul les médias indiqués <em>publics</em>',
+      import: 'Importer',
+      import_all_files: 'Importer tous les fichiers',
+      import_medias: 'Importer des médias',
       select_type_of_export:
         'Sélectionnez ici le type d’export. Il est possible d’exporter tous les médias d’une timeline ou uniquement ceux indiqués comme Public.',
       export_with_all_medias: 'Exporter avec tous les médias',
@@ -118,6 +121,8 @@ module.exports = (function() {
           'Le password n’est pas le bon pour le dossier&nbsp;:',
         'created_edited_media:':
           'Création ou édition d’un média pour le dossier&nbsp;:',
+        author_name_exists:
+          'Ce nom d’auteur existe déjà, utilisez-en un autre.',
         folder_name_exists:
           'Ce nom de dossier existe déjà, utilisez-en un autre.',
         folder_name_needs_alphanumeric_characters:
@@ -225,6 +230,9 @@ module.exports = (function() {
       allow_media_download: 'Allow download of original medias',
       export_with_all_medias: 'Export with all the medias',
       export_only_public_medias: 'Export only public medias',
+      import_medias: 'Import medias',
+      import_all_files: 'Import all files',
+      select_files_to_import: 'Select files to import',
 
       last_modified: 'Last modified',
 
@@ -239,6 +247,8 @@ module.exports = (function() {
         'wrong_password_for_folder:': 'Wrong password or folder missing for:',
         'created_edited_media:':
           'A media has been created or edited in folder:',
+        author_name_exists:
+          'Ce nom d’auteur existe déjà, utilisez-en un autre.',
         folder_name_exists: 'Folder name already exists. Please use another.',
         folder_name_needs_alphanumeric_characters:
           'Folder names need to contain at least one alphanumeric character.',

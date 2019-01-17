@@ -81,7 +81,7 @@
       .accroche {
         transform-origin: center center;
         transform: scale(0.7);
-        background-color: white;
+        // background-color: white;
 //         border-color: @c-noir_light;
       }
 
@@ -104,42 +104,15 @@
         right: 0;
         top: 0;
         height: 100vh;
-        background-color: #fff;
+        background-color: var(--media-color);
         pointer-events: none;
         z-index: -1;
       }
 
     }
 
-    .color-red& {
-      .timelineMediaContent, .accroche, &::after {
-        background-color: @c-rouge;
-      }
-    }
-    .color-blue& {
-      .timelineMediaContent, .accroche, &::after {
-        background-color: @c-bleu;
-      }
-    }
-    .color-green& {
-      .timelineMediaContent, .accroche, &::after {
-        background-color: @c-vert;
-      }
-    }
-    .color-yellow& {
-      .timelineMediaContent, .accroche, &::after {
-        background-color: @c-jaune;
-      }
-    }
-    .color-orange& {
-      .timelineMediaContent, .accroche, &::after {
-        background-color: @c-orange;
-      }
-    }
-    .color-purple& {
-      .timelineMediaContent, .accroche, &::after {
-        background-color: @c-violet;
-      }
+    .timelineMediaContent, .accroche, &::after {
+      background-color: var(--media-color);
     }
 
     .accrocheDurationLine {
