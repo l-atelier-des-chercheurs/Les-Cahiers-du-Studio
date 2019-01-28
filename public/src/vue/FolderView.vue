@@ -1,14 +1,14 @@
 <template>
   <div class="m_navtimeline_wrapper">
 
-    <NavbarTop
+    <!-- <NavbarTop
       :folder="folder"
       :slugFolderName="slugFolderName"
       :visibleDay="timelineViewport.visibleDay"
       @toggleSidebar="toggleSidebar()"
       :timelineViewport_scale="timelineViewport.scale"
     >
-    </NavbarTop>
+    </NavbarTop> -->
 
     <transition name="fade" :duration="350">
       <div
@@ -269,7 +269,7 @@ export default {
   data() {
     return {
       systemBarHeight: document.getElementById('systemBar') !== null ? document.getElementById('systemBar').offsetHeight : 0,
-      topNavbarHeight: 90,
+      topNavbarHeight: 0,
       timelinetrackHeight: 50,
       timelineHeight: 0,
       bottomScrollBar: 20,
