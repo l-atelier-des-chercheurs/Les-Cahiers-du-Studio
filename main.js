@@ -98,7 +98,7 @@ function setupApp() {
     global.appRoot = path.resolve(__dirname);
     global.tempStorage = getPath.getCacheFolder();
 
-    dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
+    dev.log(`——— Starting app version ${global.appInfos.version}`);
 
     cleanCacheFolder().then(
       () => {
@@ -406,6 +406,9 @@ function copyAndRenameUserFolder() {
       settings.process === 'electron'
         ? app.getPath(settings.userDirPath)
         : getPath.getDocumentsFolder();
+    const userDirPath = is_electron
+      ? app.getPath(settings.userDirPath)
+      : getPath.getDocumentsFolder();
 
     const pathToUserContent = path.join(userDirPath, settings.userDirname);
     fs.access(pathToUserContent, fs.F_OK, function(err) {
