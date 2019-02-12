@@ -27,7 +27,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
-    "electronVersion": "2.0.16",
+    "electronVersion": "2.0.17",
     "appId": "les-cahiers-du-studio",
     "productName": "Les Cahiers du Studio",
     "asar": false,
@@ -69,7 +69,7 @@
     "write-file-atomic": "^2.3.0"
   },
   "devDependencies": {
-    "electron": "^2.0.16",
+    "electron": "^2.0.17",
     "electron-builder": "^20.38.4",
     "electron-prebuilt": "^1.4.13",
     "node-gyp": "^3.8.0"
