@@ -134,10 +134,7 @@ module.exports = (function() {
             }
           });
           Promise.all(allFoldersData).then(parsedFoldersData => {
-            dev.logverbose(
-              `All folders meta have been processed`
-              // JSON.stringify(parsedFoldersData, null, 4)
-            );
+            dev.logverbose(`All folders meta have been processed`);
 
             // on se balade dans l’array, on attrappe la key
             // et on merge tout ça dans un nouvel objet du type :
@@ -469,7 +466,9 @@ module.exports = (function() {
       return new Promise(function(resolve, reject) {
         dev.logfunction(
           `COMMON — readMediaList: medias_list = ${JSON.stringify(
-            medias_list
+            medias_list,
+            null,
+            4
           )}}`
         );
 
@@ -1662,7 +1661,7 @@ module.exports = (function() {
           }
         } else if (val.hasOwnProperty('default')) {
           output_obj[key] =
-            val.default === 'random' ? Math.random() * 0.5 : val.default;
+            val.default === 'random' ? Math.random() : val.default;
         }
       } else if (type === 'array') {
         if (
@@ -1688,14 +1687,14 @@ module.exports = (function() {
   }
 
   function _sanitizeMetaFromFile({ type, type_two, meta }) {
-    dev.logverbose(
-      `COMMON — _sanitizeMetaFromFile :
-      will sanitize a new default meta object
-      for type ${type}
-      and type_two ${type_two}
-      with existing = ${JSON.stringify(meta)}
-      `
-    );
+    // dev.logverbose(
+    //   `COMMON — _sanitizeMetaFromFile :
+    //   will sanitize a new default meta object
+    //   for type ${type}
+    //   and type_two ${type_two}
+    //   with existing = ${JSON.stringify(meta)}
+    //   `
+    // );
     let new_meta = {};
 
     const fields =

@@ -15,7 +15,6 @@ module.exports = (function() {
     init: (app, io) => init(app, io),
     createMediaMeta: ({ type, slugFolderName, additionalMeta }) =>
       createMediaMeta({ type, slugFolderName, additionalMeta }),
-    pushMessage: msg => pushMessage(msg),
     notify: notify
   };
 
@@ -68,23 +67,19 @@ module.exports = (function() {
   function onAuthenticate(socket, d) {
     dev.logfunction(`EVENT - onAuthenticate for ${JSON.stringify(d, null, 4)}`);
     auth
-      .setAuthenticate(socket.id, d.admin_access)
-      .then(list_admin_folders => {
+      .setAuthenticate(d.folder_passwords)
+      .then(list_of_authorized_folders => {
+        socket._is_authorized_for_folders = list_of_authorized_folders;
         api.sendEventWithContent(
           'authentificated',
-          list_admin_folders,
+          list_of_authorized_folders,
           io,
           socket
         );
       })
       .catch(err => {
-        api.sendEventWithContent('authentificated', {}, io, socket);
+        dev.error(`Failed to auth: ${err}`);
       });
-  }
-
-  function pushMessage(msg) {
-    dev.logfunction(`EVENT - pushMessage ${msg}`);
-    api.sendEventWithContent('authentificated', {}, io, socket);
   }
 
   function notify({
@@ -144,9 +139,15 @@ module.exports = (function() {
     file
       .getFolder({ type, slugFolderName })
       .then(foldersData => {
-        if (!auth.hasFolderAuth(socket.id, foldersData)) {
+        if (!auth.canAdminFolder(socket, foldersData, type)) {
+          notify({
+            socket,
+            socketid: socket.id,
+            not_localized_string: `Not allowed to edit`
+          });
           return;
         }
+
         file
           .editFolder({
             type,
@@ -158,7 +159,7 @@ module.exports = (function() {
           });
       })
       .catch(err => {
-        dev.error('No folder found');
+        dev.error(`No folder found: ${err}`);
       });
   }
 
@@ -167,7 +168,12 @@ module.exports = (function() {
     file
       .getFolder({ type, slugFolderName })
       .then(foldersData => {
-        if (!auth.hasFolderAuth(socket.id, foldersData)) {
+        if (!auth.canAdminFolder(socket, foldersData, type)) {
+          notify({
+            socket,
+            socketid: socket.id,
+            not_localized_string: `Not allowed to remove`
+          });
           return;
         }
         file
@@ -186,7 +192,7 @@ module.exports = (function() {
           );
       })
       .catch(err => {
-        dev.error('No folder found');
+        dev.error(`No folder found: ${err}`);
       });
   }
 
@@ -194,7 +200,7 @@ module.exports = (function() {
 
   function onListMedias(socket, { type, slugFolderName }) {
     dev.logfunction(
-      `EVENT - onListMedias : type = ${type}, slugFolderName = ${slugFolderName}`
+      `EVENT - onListMedias : type = ${type}, slugProjectName = ${slugFolderName}`
     );
     sendMedias({ type, slugFolderName, socket });
   }
@@ -379,14 +385,20 @@ module.exports = (function() {
           }
           let thisSocket = socket || io.sockets.connected[sid];
 
-          let filteredFoldersData = auth.filterFolders(sid, foldersData);
+          let filteredFoldersData = auth.filterFolders(
+            thisSocket,
+            type,
+            foldersData
+          );
+
           if (filteredFoldersData === undefined) {
             filteredFoldersData = '';
           } else {
+            // remove password field
             for (let k in filteredFoldersData) {
               // check if there is any password, if there is then send a placeholder
               if (
-                filteredFoldersData[k].password &&
+                filteredFoldersData[k].hasOwnProperty('password') &&
                 filteredFoldersData[k].password !== ''
               ) {
                 filteredFoldersData[k].password = 'has_pass';
@@ -412,7 +424,7 @@ module.exports = (function() {
         });
       })
       .catch(err => {
-        dev.error('No folder found');
+        dev.error(`No folder found: ${err}`);
       });
   }
 
@@ -451,30 +463,27 @@ module.exports = (function() {
                   ].id = id;
                 }
 
+                foldersData[slugFolderName].medias =
+                  folders_and_medias[slugFolderName].medias;
+
                 Object.keys(io.sockets.connected).forEach(sid => {
                   if (!!socket && socket.id !== sid) {
                     return;
                   }
 
-                  // let filteredMediasData = {};
-                  // if (auth.hasFolderAuth(sid, foldersData)) {
-                  //   // let filteredMediasData = auth.filterMedias(mediasData);
-                  //   filteredMediasData = JSON.parse(JSON.stringify(mediasData));
-                  // }
+                  let thisSocket = socket || io.sockets.connected[sid];
 
-                  if (Object.keys(folders_and_medias).length === 0) {
-                    folders_and_medias = {
-                      [slugFolderName]: {
-                        medias: {}
-                      }
-                    };
-                  }
+                  let filtered_folders_and_medias = auth.filterMedias(
+                    thisSocket,
+                    type,
+                    foldersData
+                  );
 
                   api.sendEventWithContent(
                     !!metaFileName ? 'listMedia' : 'listMedias',
-                    { [type]: folders_and_medias },
+                    { [type]: filtered_folders_and_medias },
                     io,
-                    socket || io.sockets.connected[sid]
+                    thisSocket
                   );
                 });
               });
@@ -485,7 +494,7 @@ module.exports = (function() {
           });
       })
       .catch(err => {
-        dev.error('No folder found');
+        dev.error(`No folder found: ${err}`);
       });
   }
 
