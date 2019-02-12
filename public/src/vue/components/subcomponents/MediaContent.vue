@@ -180,11 +180,10 @@ export default {
         return this.mediaURL;
       }
 
-
       let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbRes)[0].path;
 
       if (
-      // if image is gif and context is not 'preview', let’s show the original gif
+        // if image is gif and context is not 'preview', let’s show the original gif
         (this.context !== 'preview' &&
         this.mediaURL.toLowerCase().endsWith('.gif'))
         ||

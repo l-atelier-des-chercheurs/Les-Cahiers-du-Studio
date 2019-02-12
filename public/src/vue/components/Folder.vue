@@ -1,5 +1,6 @@
 <template>
   <div class="m_folder">
+
     <h2 
     class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large"
     @click="$root.openFolder(slugFolderName)"
@@ -43,7 +44,7 @@
 
       <div class="margin-small flex-wrap flex-vertically-start flex-horizontally-start">
         <button 
-        v-if="folder.authorized"
+        v-if="can_admin_folder"
         type="button" 
         :disabled="read_only"
         class="button-round margin-verysmall padding-verysmall" 
@@ -66,19 +67,19 @@
           </span>
         </button>
 
-        <button v-if="!folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
+        <button v-if="!can_admin_folder" type="button" class="button-round margin-verysmall padding-verysmall" :readonly="read_only" @click="showInputPasswordField = !showInputPasswordField">
           <span class="text-cap font-verysmall">
             {{ $t('password') }}
           </span>
         </button>
   <!--
-        <button v-if="folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" @click="debugFolderContent = !debugFolderContent">
+        <button v-if="can_admin_folder" type="button" class="button-round margin-verysmall padding-verysmall" @click="debugFolderContent = !debugFolderContent">
           <span class="text-cap font-verysmall">
             Vue de debug
           </span>
         </button>
   -->
-        <button v-if="folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" @click="showEditFolderModal = true" :disabled="read_only">
+        <button v-if="can_admin_folder" type="button" class="button-round margin-verysmall padding-verysmall" @click="showEditFolderModal = true" :disabled="read_only">
           <svg xmlns="http://www.w3.org/2000/svg" width="46.99" height="46.99" viewBox="0 0 46.99 46.99">
             <g>
               <circle cx="23.5" cy="23.5" r="23" style="fill: #fff"/>
@@ -93,7 +94,7 @@
             {{ $t('edit') }}
           </span>
         </button>
-        <button v-if="folder.authorized" type="button" class="button-round margin-verysmall padding-verysmall" @click="removeFolder()" :disabled="read_only">
+        <button v-if="can_admin_folder" type="button" class="button-round margin-verysmall padding-verysmall" @click="removeFolder()" :disabled="read_only">
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g>
               <circle cx="24.5" cy="24.5" r="24" style="fill: #fff"/>
@@ -150,6 +151,14 @@ export default {
       showInputPasswordField: false
     };
   },
+  computed: {
+    can_admin_folder() {
+      return this.$root.canAdminFolder({
+        type: 'folders', 
+        slugFolderName: this.slugFolderName
+      })
+    }
+  },
   methods: {
     formatDateToHuman(date) {
       return this.$moment(date, 'YYYY-MM-DD HH:mm:ss').format('LLL');
@@ -169,12 +178,13 @@ export default {
       }
     },
     submitPassword() {
-      console.log('METHODS • Folder: submitPassword');
-      auth.updateAdminAccess({
-        [this.slugFolderName]: this.$refs.passwordField.value
+      console.log('METHODS • Project: submitPassword');
+      this.$auth.updateAdminAccess({
+        "folders": {
+          [this.slugFolderName]: this.$refs.passwordField.value
+        }
       });
       this.$socketio.sendAuth();
-      this.showInputPasswordField = false;
     }
   },
   watch: {}

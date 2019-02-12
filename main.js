@@ -402,10 +402,6 @@ function setApplicationMenu() {
 }
 function copyAndRenameUserFolder() {
   return new Promise(function(resolve, reject) {
-    const userDirPath =
-      settings.process === 'electron'
-        ? app.getPath(settings.userDirPath)
-        : getPath.getDocumentsFolder();
     const userDirPath = is_electron
       ? app.getPath(settings.userDirPath)
       : getPath.getDocumentsFolder();

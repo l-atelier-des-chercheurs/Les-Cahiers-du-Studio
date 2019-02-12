@@ -3,53 +3,6 @@ import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
 
 /** *********
-   AUTH
-***********/
-window.auth = (function() {
-  let admin_access;
-
-  const API = {
-    init: () => init(),
-    updateAdminAccess: folderPass => updateAdminAccess(folderPass),
-    removeKey: slugFolderName => removeKey(slugFolderName),
-    getAdminAccess: () => getAdminAccess()
-  };
-
-  function init() {
-    admin_access = localstore.get('admin_access') || {};
-    console.log(
-      `Auth / init with admin_access = ${JSON.stringify(admin_access, null, 4)}`
-    );
-  }
-
-  function updateAdminAccess(folderPass) {
-    console.log(
-      `Auth / updateAdminAccess with folderPass = ${JSON.stringify(
-        folderPass,
-        null,
-        4
-      )}`
-    );
-    for (let slugFolderName in folderPass) {
-      admin_access[slugFolderName] = folderPass[slugFolderName];
-    }
-    localstore.set('admin_access', admin_access);
-  }
-
-  function removeKey(slugFolderName) {
-    delete admin_access[slugFolderName];
-    localstore.set('admin_access', admin_access);
-  }
-
-  function getAdminAccess() {
-    return admin_access;
-  }
-
-  return API;
-})();
-auth.init();
-
-/** *********
   UTILS
 ***********/
 
