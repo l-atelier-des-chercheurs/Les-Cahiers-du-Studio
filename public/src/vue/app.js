@@ -659,8 +659,22 @@ let vm = new Vue({
       }
       if (!this.store.folders.hasOwnProperty(slugFolderName)) {
         console.log('Missing folder key on the page, aborting.');
+        this.closeFolder();
         return false;
       }
+
+      // prevent access to folder if user doesn’t have the password
+      if (
+        !this.canAdminFolder({
+          type: 'folders',
+          slugFolderName
+        })
+      ) {
+        console.log('Can’t access folder, not opening folder.');
+        this.closeFolder();
+        return false;
+      }
+
       this.settings.current_slugFolderName = slugFolderName;
       this.settings.is_loading_medias_for_folder = slugFolderName;
 
