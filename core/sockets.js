@@ -105,8 +105,9 @@ module.exports = (function() {
   /**************************************************************** FOLDER ********************************/
   function onListFolders(socket, data) {
     dev.logfunction(`EVENT - onListFolders`);
-    if (!data.hasOwnProperty('type')) {
+    if (!data || !data.hasOwnProperty('type')) {
       dev.error(`Missing type field`);
+      return;
     }
     const type = data.type;
     sendFolders({ type, socket });
