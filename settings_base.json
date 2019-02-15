@@ -2,6 +2,7 @@
   "protocol": "http",
   "host": "localhost",
   "port": 8080,
+  "http_port": "",
   "userDirPath": "documents",
   "userDirname": "les-cahiers",
 
@@ -12,6 +13,9 @@
   "thumbFormat": "jpeg",
   "folderMetaFilename" : "meta",
   "folderPreviewFilename" : "meta_preview",
+
+  "privateKeyPath": "",
+  "certificatePath": "",
 
   "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",

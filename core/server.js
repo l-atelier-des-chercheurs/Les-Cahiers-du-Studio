@@ -33,14 +33,18 @@ module.exports = function(router) {
     cert: fs.readFileSync(certificatePath)
   };
 
-  if (global.settings.protocol === 'https') {
-    // redirect from http (port 80) to https (port 443)
+  if (
+    global.settings.protocol === 'https' &&
+    global.settings.http_port !== ''
+  ) {
+    // redirect from http (port 80) to https (port 443) for example
     http
       .createServer((req, res) => {
-        res.writeHead(301, {
-          Location: 'https://' + req.headers['host'] + req.url
-        });
-        res.end();
+        // debugger;
+        // res.writeHead(301, {
+        //   Location: 'https://' + req.headers['host'] + req.url
+        // });
+        // res.end();
       })
       .listen(global.settings.http_port);
   }

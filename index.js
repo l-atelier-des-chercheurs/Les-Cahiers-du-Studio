@@ -15,6 +15,5 @@ global.settings = settings;
 const router = require('./router');
 
 require('./core/main')({
-  packagejson,
   router
 });

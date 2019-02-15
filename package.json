@@ -6,7 +6,7 @@
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio",
   "license": "CC-BY-NC-SA-4.0",
-  "main": "main.js",
+  "main": "index.js",
   "private": true,
   "repository": {
     "type": "git",
