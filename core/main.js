@@ -120,8 +120,8 @@ module.exports = function({ router }) {
                 }
                 portscanner
                   .findAPortNotInUse(
-                    global.settings.port,
-                    global.settings.port + 20
+                    global.settings.desired_port,
+                    global.settings.desired_port + 20
                   )
                   .then(
                     port => {
@@ -267,10 +267,10 @@ module.exports = function({ router }) {
     // Create the Application's main menu
     var template = [
       {
-        label: 'do•doc',
+        label: global.appInfos.productName,
         submenu: [
           {
-            label: 'About do•doc',
+            label: `À propos ${global.appInfos.productName}`,
             selector: 'orderFrontStandardAboutPanel:'
           },
           {
@@ -284,24 +284,24 @@ module.exports = function({ router }) {
             type: 'separator'
           },
           {
-            label: 'Hide do•doc',
+            label: `Cacher ${global.appInfos.productName}`,
             accelerator: 'Command+H',
             selector: 'hide:'
           },
           {
-            label: 'Hide Others',
+            label: 'Cacher les autres',
             accelerator: 'Command+Shift+H',
             selector: 'hideOtherApplications:'
           },
           {
-            label: 'Show All',
+            label: 'Montrer tout',
             selector: 'unhideAllApplications:'
           },
           {
             type: 'separator'
           },
           {
-            label: 'Quit',
+            label: 'Quitter',
             accelerator: 'Command+Q',
             click: function() {
               app.quit();
@@ -310,15 +310,15 @@ module.exports = function({ router }) {
         ]
       },
       {
-        label: 'Edit',
+        label: 'Edition',
         submenu: [
           {
-            label: 'Undo',
+            label: 'Annuler',
             accelerator: 'Command+Z',
             selector: 'undo:'
           },
           {
-            label: 'Redo',
+            label: 'Rétablir',
             accelerator: 'Shift+Command+Z',
             selector: 'redo:'
           },
@@ -326,39 +326,39 @@ module.exports = function({ router }) {
             type: 'separator'
           },
           {
-            label: 'Cut',
+            label: 'Couper',
             accelerator: 'Command+X',
             selector: 'cut:'
           },
           {
-            label: 'Copy',
+            label: 'Copier',
             accelerator: 'Command+C',
             selector: 'copy:'
           },
           {
-            label: 'Paste',
+            label: 'Coller',
             accelerator: 'Command+V',
             selector: 'paste:'
           },
           {
-            label: 'Select All',
+            label: 'Sélectionner tout',
             accelerator: 'Command+A',
             selector: 'selectAll:'
           }
         ]
       },
       {
-        label: 'View',
+        label: 'Affichage',
         submenu: [
           {
-            label: 'Reload',
+            label: 'Recharger',
             accelerator: 'Command+R',
             click: function() {
               BrowserWindow.getFocusedWindow().reload();
             }
           },
           {
-            label: 'Toggle DevTools',
+            label: 'Afficher les outils de développement',
             accelerator: 'Alt+Command+I',
             click: function() {
               BrowserWindow.getFocusedWindow().toggleDevTools();
@@ -367,15 +367,15 @@ module.exports = function({ router }) {
         ]
       },
       {
-        label: 'Window',
+        label: 'Fenêtre',
         submenu: [
           {
-            label: 'Minimize',
+            label: 'Réduire',
             accelerator: 'Command+M',
             selector: 'performMiniaturize:'
           },
           {
-            label: 'Close',
+            label: 'Fermer',
             accelerator: 'Command+W',
             selector: 'performClose:'
           },
@@ -383,13 +383,13 @@ module.exports = function({ router }) {
             type: 'separator'
           },
           {
-            label: 'Bring All to Front',
+            label: 'Mettre tout au premier plan',
             selector: 'arrangeInFront:'
           }
         ]
       },
       {
-        label: 'Help',
+        label: 'Aide',
         submenu: []
       }
     ];

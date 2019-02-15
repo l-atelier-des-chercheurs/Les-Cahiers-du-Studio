@@ -35,18 +35,17 @@ module.exports = function(router) {
 
   if (
     global.settings.protocol === 'https' &&
-    global.settings.http_port !== ''
+    global.settings.redirect_port !== ''
   ) {
     // redirect from http (port 80) to https (port 443) for example
     http
       .createServer((req, res) => {
-        // debugger;
-        // res.writeHead(301, {
-        //   Location: 'https://' + req.headers['host'] + req.url
-        // });
-        // res.end();
+        res.writeHead(301, {
+          Location: 'https://' + req.headers['host'] + req.url
+        });
+        res.end();
       })
-      .listen(global.settings.http_port);
+      .listen(global.settings.redirect_port);
   }
 
   let server =
