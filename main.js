@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const portscanner = require('portscanner');
 const packagejson = require('./package.json');
 
-const server = require('./server');
+const server = require('./core/server');
 
 const settings = require('./settings.json'),
   dev = require('./core/dev-log'),

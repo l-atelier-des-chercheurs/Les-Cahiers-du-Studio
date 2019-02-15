@@ -10,8 +10,8 @@ const uuid = require('uuid');
 const url = require('url');
 const { URLSearchParams } = require('url');
 
-const dev = require('./core/dev-log'),
-  file = require('./core/file');
+const dev = require('./dev-log'),
+  file = require('./file');
 
 module.exports = function(server) {
   dev.log(`server-realtime_text_collaboration • init`);

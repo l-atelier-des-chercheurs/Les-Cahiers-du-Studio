@@ -7,15 +7,12 @@ var path = require('path');
 var bodyParser = require('body-parser');
 const compression = require('compression');
 
-var dev = require('./core/dev-log');
+var dev = require('./dev-log');
 
-// var localtunnel = require('localtunnel');
-// var ngrok = require('ngrok');
-
-const sockets = require('./core/sockets'),
+const sockets = require('./sockets'),
   setup_realtime_collaboration = require('./server-realtime_text_collaboration.js'),
-  router = require('./router'),
-  settings = require('./settings.json');
+  router = require('../router'),
+  settings = require('../settings.json');
 
 module.exports = function() {
   dev.logverbose('Starting server 1');
@@ -25,15 +22,30 @@ module.exports = function() {
   app.use(compression());
 
   // only for HTTPS, works without asking for a certificate
-  const privateKey = fs.readFileSync(
-    path.join(__dirname, 'ssl', 'file.pem'),
-    'utf8'
-  );
-  const certificate = fs.readFileSync(
-    path.join(__dirname, 'ssl', 'file.crt'),
-    'utf8'
-  );
-  const options = { key: privateKey, cert: certificate };
+  const privateKeyPath = !!settings.privateKeyPath
+    ? settings.privateKeyPath
+    : path.join(__dirname, 'ssl', 'file.pem');
+
+  const certificatePath = !!settings.certificatePath
+    ? settings.certificatePath
+    : path.join(__dirname, 'ssl', 'file.crt');
+
+  const options = {
+    key: fs.readFileSync(privateKeyPath),
+    cert: fs.readFileSync(certificatePath)
+  };
+
+  if (settings.protocol === 'https') {
+    // redirect from http (port 80) to https (port 443)
+    http
+      .createServer((req, res) => {
+        res.writeHead(301, {
+          Location: 'https://' + req.headers['host'] + req.url
+        });
+        res.end();
+      })
+      .listen(settings.http_port);
+  }
 
   let server =
     settings.protocol === 'https'
@@ -48,7 +60,7 @@ module.exports = function() {
   dev.logverbose('Starting express-settings');
 
   app.set('port', global.appInfos.port); //Server's port number
-  app.set('views', __dirname); //Specify the views folder
+  app.set('views', global.appRoot); //Specify the views folder
   app.set('view engine', 'pug'); //View engine is Pug
 
   app.use(function(req, res, next) {
@@ -59,15 +71,14 @@ module.exports = function() {
     }
   });
   app.use(express.static(global.pathToUserContent));
-  app.use(express.static(path.join(__dirname, 'public')));
-  app.use(express.static(path.join(__dirname, settings.cacheDirname)));
+  app.use(express.static(path.join(global.appRoot, 'public')));
+  app.use(express.static(path.join(global.appRoot, settings.cacheDirname)));
 
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.locals.pretty = true;
 
-  setup_realtime_collaboration(server);
-
+  // setup_realtime_collaboration(server);
   router(app);
 
   server.listen(app.get('port'), () => {
