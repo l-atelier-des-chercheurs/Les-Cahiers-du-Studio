@@ -110,7 +110,7 @@ module.exports = (function() {
     type
   }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('ROUTER — renameAndConvertMediaAndCreateMeta');
+      dev.logfunction('IMPORTER — renameAndConvertMediaAndCreateMeta');
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
         function(newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);

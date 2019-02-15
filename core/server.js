@@ -10,11 +10,9 @@ const compression = require('compression');
 var dev = require('./dev-log');
 
 const sockets = require('./sockets'),
-  setup_realtime_collaboration = require('./server-realtime_text_collaboration.js'),
-  router = require('../router'),
-  settings = require('../settings.json');
+  setup_realtime_collaboration = require('./server-realtime_text_collaboration.js');
 
-module.exports = function() {
+module.exports = function(router) {
   dev.logverbose('Starting server 1');
 
   const app = express();
@@ -22,12 +20,12 @@ module.exports = function() {
   app.use(compression());
 
   // only for HTTPS, works without asking for a certificate
-  const privateKeyPath = !!settings.privateKeyPath
-    ? settings.privateKeyPath
+  const privateKeyPath = !!global.settings.privateKeyPath
+    ? global.settings.privateKeyPath
     : path.join(__dirname, 'ssl', 'file.pem');
 
-  const certificatePath = !!settings.certificatePath
-    ? settings.certificatePath
+  const certificatePath = !!global.settings.certificatePath
+    ? global.settings.certificatePath
     : path.join(__dirname, 'ssl', 'file.crt');
 
   const options = {
@@ -35,7 +33,7 @@ module.exports = function() {
     cert: fs.readFileSync(certificatePath)
   };
 
-  if (settings.protocol === 'https') {
+  if (global.settings.protocol === 'https') {
     // redirect from http (port 80) to https (port 443)
     http
       .createServer((req, res) => {
@@ -44,11 +42,11 @@ module.exports = function() {
         });
         res.end();
       })
-      .listen(settings.http_port);
+      .listen(global.settings.http_port);
   }
 
   let server =
-    settings.protocol === 'https'
+    global.settings.protocol === 'https'
       ? https.createServer(options, app)
       : http.createServer(app);
 
@@ -72,7 +70,9 @@ module.exports = function() {
   });
   app.use(express.static(global.pathToUserContent));
   app.use(express.static(path.join(global.appRoot, 'public')));
-  app.use(express.static(path.join(global.appRoot, settings.cacheDirname)));
+  app.use(
+    express.static(path.join(global.appRoot, global.settings.cacheDirname))
+  );
 
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
@@ -84,12 +84,14 @@ module.exports = function() {
   server.listen(app.get('port'), () => {
     dev.log(
       `Server up and running. ` +
-        `Go to ${settings.protocol}://${settings.host}:${global.appInfos.port}`
+        `Go to ${global.settings.protocol}://${global.settings.host}:${
+          global.appInfos.port
+        }`
     );
     dev.log(` `);
   });
 };
 
 function isURLToForbiddenFiles(url) {
-  return url.includes(settings.metaFileext);
+  return url.includes(global.settings.metaFileext);
 }

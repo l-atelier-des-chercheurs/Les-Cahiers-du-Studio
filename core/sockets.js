@@ -4,7 +4,6 @@ const dev = require('./dev-log'),
   exporter = require('./exporter');
 
 const file = require('./file');
-const settings = require('../settings.json');
 
 module.exports = (function() {
   dev.log(`Sockets module initialized at ${api.getCurrentDate()}`);

@@ -3,7 +3,7 @@ const path = require('path'),
   formidable = require('formidable'),
   archiver = require('archiver');
 
-const settings = require('./settings.json'),
+const settings = global.settings,
   sockets = require('./core/sockets'),
   dev = require('./core/dev-log'),
   cache = require('./core/cache'),
