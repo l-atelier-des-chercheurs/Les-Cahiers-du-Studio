@@ -6,7 +6,7 @@
   >
     <div ref="editor"
     />
-    connection_state : {{ connection_state }}<br>
+    <!-- connection_state : {{ connection_state }}<br> -->
   </div>
 </template>
 <script>
