@@ -495,6 +495,29 @@ export default {
     this.$eventHub.$on('setSort', this.setSort);
     this.$eventHub.$on('setFilter', this.setFilter);
 
+    const el = this.$refs.timeline;
+    function scrollHorizontally(e) {
+      e = window.event || e;
+      e.preventDefault();
+      el.scrollLeft -= (e.wheelDelta || -e.detail);
+    }
+
+    function init() {
+      if (!el) {
+        return;
+      }
+
+      if (el.addEventListener) {
+        el.addEventListener('mousewheel', scrollHorizontally, false);
+        el.addEventListener('DOMMouseScroll', scrollHorizontally, false);
+      } else {
+        el.attachEvent('onmousewheel', scrollHorizontally);
+      }
+    }
+
+    init();
+
+
     this.timelineViewport.leftPadding = parseInt(
       $(this.$refs.timeline).css('padding-left'),
       10
