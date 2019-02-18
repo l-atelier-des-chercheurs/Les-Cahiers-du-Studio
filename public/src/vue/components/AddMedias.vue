@@ -408,7 +408,6 @@ button {
       display: flex;
       flex-flow: column wrap;
       justify-content: center;
-      align-content: flex-end;
       align-items: center;
 
       > * {
