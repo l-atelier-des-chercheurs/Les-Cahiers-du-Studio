@@ -12,7 +12,7 @@ pids
 cache
 node_modules
 
-/dist/
+dist/build.js
 build/config.gypi
 
 ####### OSX ########
