@@ -1,5 +1,6 @@
 
 settings.json
+dist/build.js
 
 ####### NODE ########
 .tmp
@@ -12,7 +13,6 @@ pids
 cache
 node_modules
 
-dist/build.js
 build/config.gypi
 
 ####### OSX ########
