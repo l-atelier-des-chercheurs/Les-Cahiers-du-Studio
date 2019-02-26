@@ -6,7 +6,7 @@
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('folder_information') }}
           <button
-            v-if="folder.authorized"
+            v-if="can_admin_folder"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="openEditFolderModal()"
@@ -219,6 +219,7 @@ export default {
     visibleDay: Number,
     sort: Object,
     filter: String,
+    can_admin_folder: Boolean,
     isRealtime: {
       type: Boolean,
       default: false

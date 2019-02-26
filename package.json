@@ -1,12 +1,12 @@
 {
   "name": "les-cahiers-du-studio",
   "productName": "Les Cahiers du Studio",
-  "version": "2.0.2-dev",
+  "version": "2.0.6-dev",
   "description": "A time-based documentation tool to collaboratively keep notes and capture media from live experiences.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio",
   "license": "CC-BY-NC-SA-4.0",
-  "main": "main.js",
+  "main": "index.js",
   "private": true,
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
-    "electronVersion": "2.0.16",
+    "electronVersion": "2.0.17",
     "appId": "les-cahiers-du-studio",
     "productName": "Les Cahiers du Studio",
     "asar": false,
@@ -36,6 +36,7 @@
     }
   },
   "dependencies": {
+    "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git",
     "archiver": "^3.0.0",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
@@ -52,25 +53,27 @@
     "formidable": "^1.2.1",
     "fs-extra": "^7.0.1",
     "gulp-util": "^3.0.8",
-    "moment": "^2.23.0",
+    "moment": "^2.24.0",
     "node-localstorage": "^1.3.1",
     "pad-left": "^2.1.0",
     "platform-folders": "^0.2.7",
     "portscanner": "^2.2.0",
     "pug": "^2.0.3",
+    "puppeteer": "^1.12.2",
     "rich-text": "^3.1.0",
-    "sharedb": "^1.0.0-beta.17",
-    "sharp": "^0.21.2",
+    "sharedb": "^1.0.0-beta.19",
+    "sharp": "^0.21.3",
     "slugg": "^1.2.1",
     "socket.io": "^2.2.0",
+    "spark-md5": "^3.0.0",
     "uuid": "^3.3.2",
-    "validator": "^10.10.0",
+    "validator": "^10.11.0",
     "websocket-json-stream": "0.0.3",
-    "write-file-atomic": "^2.3.0"
+    "write-file-atomic": "^2.4.2"
   },
   "devDependencies": {
-    "electron": "^2.0.16",
-    "electron-builder": "^20.38.4",
+    "electron": "^2.0.17",
+    "electron-builder": "^20.38.5",
     "electron-prebuilt": "^1.4.13",
     "node-gyp": "^3.8.0"
   }

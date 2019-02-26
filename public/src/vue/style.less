@@ -111,7 +111,7 @@ body {
   margin: 0 auto;
 
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
 
   > * {
     flex: 1 1 auto;
@@ -348,8 +348,10 @@ body {
     position: relative; 
 
     flex: 1 1 0;
-    overflow-x: auto;
+    overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
+    .custom_scrollbar(1px, 3px, 2px, rgba(255,255,255,0), #ddd);    
+
     .padding-verysmall;
 
     display: flex;
@@ -600,6 +602,29 @@ body {
     }
   }
 }
+
+.mediaContainer {
+  position: relative;
+}
+
+.mediaContainer--videoPlay {
+  width: 100%;
+  height: 100%;
+  padding: 10px ~"calc(50% - 50px)";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  opacity: 0.95;
+  cursor: pointer;
+  background-image: linear-gradient(transparent, rgba(0,0,0,.1));
+  transition: opacity 150ms;
+
+  &.is--hidden {
+    opacity: 0;
+  }
+}
+
 
 .m_sidebarList--media {
 

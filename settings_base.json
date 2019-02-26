@@ -1,11 +1,10 @@
 {
   "protocol": "http",
   "host": "localhost",
-  "port": 8080,
+  "desired_port": 8080,
+  "redirect_port": "",
   "userDirPath": "documents",
   "userDirname": "les-cahiers",
-
-  "process": "electron",
 
   "contentDirname" : "user",
   "cacheDirname" : "cache",
@@ -15,12 +14,16 @@
   "folderMetaFilename" : "meta",
   "folderPreviewFilename" : "meta_preview",
 
+  "privateKeyPath": "",
+  "certificatePath": "",
+
   "metaDateFormat" : "YYYYMMDD_HHmmss",
   "textEncoding" : "UTF-8",
   "thumbFolderName" : "_thumbs",
   "deletedFolderName" : "_bin",
 
   "mediaThumbQuality" : 70,
+  "maxFileSizeForUpload": 10000, 
 
   "_comment" : "// see http://regexr.com/3d4t8",
   "regexpMatchFolderNames" : "^([^.]+)$",

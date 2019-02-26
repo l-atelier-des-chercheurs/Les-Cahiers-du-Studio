@@ -129,7 +129,7 @@ export default {
     },
     preview_size: {
       type: Number,
-      default: 360
+      default: 180
     }
   },
   components: {
@@ -176,14 +176,14 @@ export default {
       return this.available_resolutions.preview_hovered;
     },
     linkToImageThumb: function() {
-      if(!this.media.hasOwnProperty('thumbs') || this.media.thumbs.length > 0) {
+      if(!this.media.hasOwnProperty('thumbs') || this.media.thumbs.length == 0) {
         return this.mediaURL;
       }
 
       let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbRes)[0].path;
 
       if (
-      // if image is gif and context is not 'preview', let’s show the original gif
+        // if image is gif and context is not 'preview', let’s show the original gif
         (this.context !== 'preview' &&
         this.mediaURL.toLowerCase().endsWith('.gif'))
         ||

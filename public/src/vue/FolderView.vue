@@ -36,6 +36,7 @@
           :isRealtime="isRealtime"
           :style="{ height: `${sidebarHeight}px` }"
           :read_only="read_only"
+          :can_admin_folder="can_admin_folder"
         >
         </Sidebar>
       </transition>
@@ -174,7 +175,7 @@
           <template v-else>
             <div class="nomediainfo">
               <code>
-                <template v-if="folder.authorized">
+                <template v-if="can_admin_folder">
                   {{ $t('no_media_in_folder') }}
                 </template>
                 <template v-else>
@@ -208,7 +209,7 @@
 
         <AddMedias
           v-if="
-            ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
+            ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected"
           :slugFolderName="slugFolderName"
           :read_only="read_only"
         >
@@ -494,6 +495,29 @@ export default {
     this.$eventHub.$on('setSort', this.setSort);
     this.$eventHub.$on('setFilter', this.setFilter);
 
+    const el = this.$refs.timeline;
+    function scrollHorizontally(e) {
+      e = window.event || e;
+      e.preventDefault();
+      el.scrollLeft -= (e.wheelDelta || -e.detail);
+    }
+
+    function init() {
+      if (!el) {
+        return;
+      }
+
+      if (el.addEventListener) {
+        el.addEventListener('mousewheel', scrollHorizontally, false);
+        el.addEventListener('DOMMouseScroll', scrollHorizontally, false);
+      } else {
+        el.attachEvent('onmousewheel', scrollHorizontally);
+      }
+    }
+
+    init();
+
+
     this.timelineViewport.leftPadding = parseInt(
       $(this.$refs.timeline).css('padding-left'),
       10
@@ -560,6 +584,12 @@ export default {
     clearInterval(this.timelineUpdateRoutine);
   },
   computed: {
+    can_admin_folder() {
+      return this.$root.canAdminFolder({
+        type: 'folders', 
+        slugFolderName: this.slugFolderName
+      })
+    },
     sortedMedias() {
       console.log('METHODS • TimeLineView: sortedMedias');
       var sortable = [];
@@ -1279,7 +1309,7 @@ export default {
       };
     },
     startEditModal() {
-      if (this.folder.authorized) {
+      if (this.can_admin_folder) {
         this.showEditFolderModal = true;
       }
     }

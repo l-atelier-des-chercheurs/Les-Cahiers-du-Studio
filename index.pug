@@ -3,8 +3,10 @@ html
   head
     meta(charset='utf-8')
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    meta(name="robots" content="noindex")
 
     title #{pageTitle}
+    
     - if(mode === 'export')
       style.
         @font-face {
@@ -74,7 +76,8 @@ html
         export_options: !{ !!export_options ? JSON.stringify(export_options) : "{}" },
         is_electron: !!(window && window.process && window.process.type) && !{ mode === "export" ? false : true },
         is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true },
-        clients: {}
+        clients: [],
+        list_authorized_folders: []
       };
 
 

@@ -15,6 +15,10 @@ import VueI18n from 'vue-i18n';
 import alertify from 'alertify.js';
 Vue.prototype.$alertify = alertify;
 
+import auth from '../adc-core/auth-client.js';
+auth.init();
+Vue.prototype.$auth = auth;
+
 import slug from 'slugg';
 Vue.prototype.$slug = slug;
 
@@ -85,6 +89,7 @@ let i18n = new VueI18n({
 /** *********
   SOCKETIO
 ***********/
+// import socketio from '../adc-core/socketio.js';
 import io from 'socket.io-client';
 
 Vue.prototype.$socketio = new Vue({
@@ -141,12 +146,11 @@ Vue.prototype.$socketio = new Vue({
       }
 
       // TODO : reenable auth for folders and publications
-      this.listFolders({ type: 'folders' });
-      this.listFolders({ type: 'authors' });
       this.sendAuth();
     },
 
     _onReconnect() {
+      this.sendAuth();
       this.$eventHub.$emit('socketio.reconnect');
       console.log(`Reconnected`);
     },
@@ -156,11 +160,11 @@ Vue.prototype.$socketio = new Vue({
     },
 
     sendAuth() {
-      let admin_access = auth.getAdminAccess();
+      let folder_passwords = auth.getAdminAccess();
       console.log(
-        `Asking for auth with ${JSON.stringify(admin_access, null, 4)}`
+        `Asking for auth with ${JSON.stringify(folder_passwords, null, 4)}`
       );
-      this.socket.emit('authenticate', { admin_access });
+      this.socket.emit('authenticate', { folder_passwords });
     },
 
     _onSocketError(reason) {
@@ -183,37 +187,28 @@ Vue.prototype.$socketio = new Vue({
       //   );
     },
 
-    _authentificated(list_admin_folders) {
+    _authentificated(list_authorized_folders) {
       console.log(
-        `Admin for projects ${JSON.stringify(list_admin_folders, null, 4)}`
+        `Admin for folders ${JSON.stringify(list_authorized_folders, null, 4)}`
       );
+      window.state.list_authorized_folders = list_authorized_folders;
+      let folder_passwords = auth.getAdminAccess();
 
-      // compare local store and answer from server
-      // for each key that is not in the answer, let’s send and alert to notify that the password is most likely wrong or the folder name has changed
-      if (auth.getAdminAccess() !== undefined) {
-        let admin_access = Object.keys(auth.getAdminAccess());
-        admin_access.forEach(slugFolderName => {
-          if (
-            list_admin_folders === undefined ||
-            list_admin_folders.indexOf(slugFolderName) === -1
-          ) {
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error(
-                this.$t('notifications["wrong_password_for_folder:"]') +
-                  ' ' +
-                  slugFolderName
-              );
-            auth.removeKey(slugFolderName);
-          } else {
-          }
-        });
+      // got list of items admin for, update localstore with that info
+      let clean_folder_passwords = {};
+
+      /* 
+      {
+        folders: {
+          bonjour: mon-mot-de-passe
+          hello: mdp2
+        },
+        author: {
+          jean: Hello world !
+        }
       }
+      */
 
-      window.dispatchEvent(
-        new CustomEvent('socketio.connected_and_authentified')
-      );
       this.listFolders({ type: 'folders' });
     },
 
@@ -664,8 +659,22 @@ let vm = new Vue({
       }
       if (!this.store.folders.hasOwnProperty(slugFolderName)) {
         console.log('Missing folder key on the page, aborting.');
+        this.closeFolder();
         return false;
       }
+
+      // prevent access to folder if user doesn’t have the password
+      if (
+        !this.canAdminFolder({
+          type: 'folders',
+          slugFolderName
+        })
+      ) {
+        console.log('Can’t access folder, not opening folder.');
+        this.closeFolder();
+        return false;
+      }
+
       this.settings.current_slugFolderName = slugFolderName;
       this.settings.is_loading_medias_for_folder = slugFolderName;
 
@@ -771,6 +780,33 @@ let vm = new Vue({
       }
       let kbs = localstore.get('keyboard_shortcuts') || [];
       return kbs;
+    },
+    canAdminFolder: function({ type, slugFolderName }) {
+      if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
+
+      // if folder doesn’t have a password set
+      if (this.store[type][slugFolderName].password !== 'has_pass') {
+        return true;
+      }
+
+      const has_reference_to_folder = this.state.list_authorized_folders.filter(
+        i => {
+          if (
+            !!i &&
+            i.hasOwnProperty('type') &&
+            i.type === type &&
+            i.hasOwnProperty('allowed_slugFolderNames') &&
+            i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
+          )
+            return true;
+          return false;
+        }
+      );
+
+      if (has_reference_to_folder.length > 0) {
+        return true;
+      }
+      return false;
     }
   },
   watch: {

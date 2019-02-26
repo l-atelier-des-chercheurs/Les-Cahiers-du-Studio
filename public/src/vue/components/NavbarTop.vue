@@ -154,7 +154,7 @@ export default {
       return this.$root.settings.windowWidth < 820 ? true : false;
     },
     folder_authors() {
-      return this.folder.authors !== '' ? this.folder.authors : [];
+      return this.folder.hasOwnProperty('authors') && this.folder.authors !== '' ? this.folder.authors : [];
     }
   },
   methods: {

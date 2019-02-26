@@ -1,7 +1,7 @@
 <template>
   <Modal
     @close="$emit('close')"
-    :typeOfModal="'MediasList'"
+    :typeOfModal="'LargeAndScroll'"
     >
     <template slot="header">
       <span class="text-cap"> Flux</span>
