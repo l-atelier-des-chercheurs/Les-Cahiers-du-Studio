@@ -29,21 +29,28 @@
               :key="day.label"
               class="m_timeline--container--dates--day"
             >
-              <div class="m_timeline--container--dates--day--indicators">{{ day.label }}</div>
-              <div class="m_verticalmedias">
-                <div 
-                  v-for="media in day.medias"
-                  :key="media.slugMediaName"
-                >
-                  {{ media.date_created }}
-                  <MediaContent
-                    v-model="media.content"
-                    :slugFolderName="slugFolderName"
-                    :slugMediaName="media.slugMediaName"
-                    :media="media"
-                    :context="'preview'"
-                  />
+              <div class="m_timeline--container--dates--day--daylabel"><span>{{ day.label }}</span></div>
+              <div v-for="(medias, hour) in day.hours"
+                :key="hour"
+                class="m_timeline--container--dates--day--hours"
+              >
+                <div class="m_timeline--container--dates--day--hours--hourlabel"><span>{{ hour }}</span></div>
+                <div class="m_verticalmedias">
+                  <div 
+                    v-if="false"
+                    v-for="media in medias"
+                    :key="media.slugMediaName"
+                  >
+                    <MediaContent
+                      v-model="media.content"
+                      :slugFolderName="slugFolderName"
+                      :slugMediaName="media.slugMediaName"
+                      :media="media"
+                      :context="'preview'"
+                    />
+                  </div>
                 </div>
+
               </div>
             </div>
           </div>
@@ -302,16 +309,30 @@ export default {
     },
     groupedMedias() {
       console.log('METHODS • TimeLineView: groupedMedias');
+
+      // groupby day
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
-          if(media.hasOwnProperty('date_created')) {
-            var dateMoment = this.$moment(media.date_created);
-            return dateMoment.format('YYYY-MM-DD');
+        if(media.hasOwnProperty('date_timeline')) {
+          var dateMoment = this.$moment(media.date_timeline);
+          return dateMoment.format('YYYY-MM-DD');
+        }
+      });
+      mediaGroup = this.$_.toPairs(mediaGroup); 
+
+      mediaGroup = mediaGroup.map(([day, medias]) => {
+        let media_by_hours = this.$_.groupBy(medias, (media) => {
+          if(media.hasOwnProperty('date_timeline')) {
+            var dateMoment = this.$moment(media.date_timeline);
+            return dateMoment.format('HH') + ':00';
           }
         });
-      
-      mediaGroup = this.$_.toPairs(mediaGroup); 
-      mediaGroup = this.$_.sortBy(mediaGroup);
-      mediaGroup = mediaGroup.reverse();
+        // media_by_hours = this.$_.toPairs(media_by_hours); 
+        // media_by_hours = this.$_.sortBy(media_by_hours);
+        // media_by_hours = media_by_hours.reverse();
+
+        return [day, media_by_hours];   
+      });
+      // groupby hour in day
       return mediaGroup;  
     },
     timeline_start() {
@@ -356,7 +377,6 @@ export default {
       const lastDate = this.$moment(this.timeline_end).startOf('day');
 
       while(currDate.add(1, 'days').diff(lastDate) < 0) {
-        
         let this_date = currDate.clone();
         let medias_for_date = [];
 
@@ -366,16 +386,12 @@ export default {
           medias_for_date = has_media_for_date[0][1];
         }
 
-        let entry = {
+        let day = {
           label: this_date.format('L'),
-          medias: medias_for_date
+          hours: medias_for_date
         }
 
-        // add hours with medias 
-        
-        // add medias inside hours
-
-        date_interval.push(entry);
+        date_interval.push(day);
       }
 
       // days = days.map(d => d.format('L'));
@@ -411,24 +427,21 @@ export default {
   position: relative;
   height: 100%;
   min-width: 250px;
+  display: flex;
+  align-items: center;
 
-  border: 2px solid white;
+  // border: 2px solid white;
 
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    width: 100%;
-    padding-bottom: 5px;
-    border-top: 2px solid lighten(black, 92%);
-    z-index: -1;
-  }
-
-  > .m_timeline--container--dates--day--indicators {
+  > .m_timeline--container--dates--day--daylabel {
     position: relative;
-    background-color: #F1F2F0;
-    align-self: center;
-    justify-self: center;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    span {
+      background-color: #F1F2F0;
+      padding: 15px;
+    }
 
     &::before {
       content: '';
@@ -436,7 +449,8 @@ export default {
       top: 0;
       bottom: 0;
       left: 50%;
-      border-left: 2px solid lighten(black, 92%);
+      border-left: 2px solid lighten(black, 90%);
+      z-index: -1;
     }
   }
 
