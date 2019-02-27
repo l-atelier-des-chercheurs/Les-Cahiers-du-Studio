@@ -16,8 +16,7 @@
             :presentationMD="$root.store.presentationMD"
             :read_only="!$root.state.connected"
             :folders="$root.store.folders"
-          >
-          </ListView>
+          />
 
         </div>
       </div>
@@ -29,11 +28,19 @@
         :folder="currentFolder"
         :medias="currentFolder.medias"
         :read_only="!$root.state.connected"
-      >
-      </FolderView>
+      />
 
     </template>
+    <template v-else-if="view === 'TimelineView' && currentFolder.hasOwnProperty('name')">
 
+      <TimelineView
+        :slugFolderName="current_slugFolderName"
+        :folder="currentFolder"
+        :medias="currentFolder.medias"
+        :read_only="!$root.state.connected"
+      />
+
+    </template>
     <div class="container">
       <div class="row">
         <template>
@@ -52,6 +59,7 @@
 import SystemBar from './SystemBar.vue';
 import ListView from './ListView.vue';
 import FolderView from './FolderView.vue';
+import TimelineView from './TimelineView.vue';
 import BottomFooter from './components/BottomFooter.vue';
 
 export default {
@@ -60,6 +68,7 @@ export default {
     SystemBar,
     ListView,
     FolderView,
+    TimelineView,
     BottomFooter
   },
   props: ['current_slugFolderName', 'currentFolder'],
@@ -69,7 +78,7 @@ export default {
   computed: {
     view: function() {
       if (this.current_slugFolderName !== '') {
-        return 'FolderView';
+        return 'TimelineView';
       }
       return 'ListView';
     }

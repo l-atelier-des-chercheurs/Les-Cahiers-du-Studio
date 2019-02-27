@@ -1,12 +1,12 @@
 <template>
   <div id="systemBar">
     <div class="fixedBand">
-      <transition
+      <!-- <transition
         name="fade"
         :duration="850"
         >
         <div
-          v-if="view === 'FolderView'"
+          v-if="view === 'TimelineView'"
           class="titleText font-small text-centered c-blanc"
           @mousedown="mousedown"
           @mousemove="mousemove"
@@ -14,7 +14,7 @@
           >
           <i>Les Cahiers du Studio</i>
         </div>
-      </transition>
+      </transition> -->
     </div>
   </div>
 </template>

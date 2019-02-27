@@ -1,14 +1,14 @@
 <template>
   <div class="m_navtimeline_wrapper">
 
-    <!-- <NavbarTop
+    <NavbarTop
       :folder="folder"
       :slugFolderName="slugFolderName"
       :visibleDay="timelineViewport.visibleDay"
       @toggleSidebar="toggleSidebar()"
       :timelineViewport_scale="timelineViewport.scale"
     >
-    </NavbarTop> -->
+    </NavbarTop>
 
     <transition name="fade" :duration="350">
       <div

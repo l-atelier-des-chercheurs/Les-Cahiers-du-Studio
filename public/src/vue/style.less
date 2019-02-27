@@ -155,6 +155,8 @@ body {
 @t-systemBarHeight: 18px;
 
 #systemBar {
+  position: absolute;
+  z-index: 10;
   height: @t-systemBarHeight;
 
   > .fixedBand {
@@ -173,7 +175,7 @@ body {
     transition: background-color .2s ease-out;
 
     &:hover {
-      background-color: #000;
+      background-color: #fff;
     }
   }
 
