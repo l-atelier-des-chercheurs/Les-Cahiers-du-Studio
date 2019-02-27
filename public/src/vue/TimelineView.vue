@@ -26,10 +26,25 @@
           <div class="m_timeline--container--dates">
             <div 
               v-for="day in date_interval" 
-              :key="day"
+              :key="day.label"
               class="m_timeline--container--dates--day"
             >
-              <span>{{ day }}</span>
+              <div class="m_timeline--container--dates--day--indicators">{{ day.label }}</div>
+              <div class="m_verticalmedias">
+                <div 
+                  v-for="media in day.medias"
+                  :key="media.slugMediaName"
+                >
+                  {{ media.date_created }}
+                  <MediaContent
+                    v-model="media.content"
+                    :slugFolderName="slugFolderName"
+                    :slugMediaName="media.slugMediaName"
+                    :media="media"
+                    :context="'preview'"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -287,9 +302,18 @@ export default {
     },
     groupedMedias() {
       console.log('METHODS • TimeLineView: groupedMedias');
+      let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
+          if(media.hasOwnProperty('date_created')) {
+            var dateMoment = this.$moment(media.date_created);
+            return dateMoment.format('YYYY-MM-DD');
+          }
+        });
       
+      mediaGroup = this.$_.toPairs(mediaGroup); 
+      mediaGroup = this.$_.sortBy(mediaGroup);
+      mediaGroup = mediaGroup.reverse();
+      return mediaGroup;  
     },
-
     timeline_start() {
       const ts = this.folder.start;
       if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
@@ -332,12 +356,19 @@ export default {
       const lastDate = this.$moment(this.timeline_end).startOf('day');
 
       while(currDate.add(1, 'days').diff(lastDate) < 0) {
-        // create day entry, 
-        let entry = {
-          text: currDate.clone().format('L'),
-          medias: [
+        
+        let this_date = currDate.clone();
+        let medias_for_date = [];
 
-          ]
+        const has_media_for_date = this.groupedMedias.filter(i => this.$moment(i[0]).isSame(this_date, 'day'));
+
+        if(has_media_for_date.length > 0) {
+          medias_for_date = has_media_for_date[0][1];
+        }
+
+        let entry = {
+          label: this_date.format('L'),
+          medias: medias_for_date
         }
 
         // add hours with medias 
@@ -357,13 +388,6 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-.m_verticalmedias {
-  width: 250px;
-  > * {
-    box-shadow: 0 2px 8px rgba(0,0,0,.33);
-    border-radius: 4px;
-  }
-}
 
 .m_timeline {
   height: 100vh;
@@ -373,6 +397,7 @@ export default {
 .m_timeline--container {
   min-width: max-content;  
   height: 100%;
+  display: flex;
 }
 
 .m_timeline--container--dates {
@@ -385,10 +410,9 @@ export default {
 .m_timeline--container--dates--day {
   position: relative;
   height: 100%;
-  display: flex;
-  align-items: center;
   min-width: 250px;
 
+  border: 2px solid white;
 
   &::before {
     content: '';
@@ -400,9 +424,11 @@ export default {
     z-index: -1;
   }
 
-  > span {
+  > .m_timeline--container--dates--day--indicators {
     position: relative;
     background-color: #F1F2F0;
+    align-self: center;
+    justify-self: center;
 
     &::before {
       content: '';
@@ -412,6 +438,22 @@ export default {
       left: 50%;
       border-left: 2px solid lighten(black, 92%);
     }
+  }
+
+  .m_verticalmedias {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    height: 100%;
+
+    > * {
+      width: 150px;
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,.33);
+      border-radius: 4px;
+
+    }
+
   }
 }
 

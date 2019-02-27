@@ -22,6 +22,9 @@ Vue.prototype.$auth = auth;
 import slug from 'slugg';
 Vue.prototype.$slug = slug;
 
+import _ from 'lodash';
+Vue.prototype.$_ = _;
+
 import locale_strings from './locale_strings.js';
 
 Vue.config.silent = false;
