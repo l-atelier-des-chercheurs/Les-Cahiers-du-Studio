@@ -37,7 +37,6 @@
                 <div class="m_timeline--container--dates--day--hours--hourlabel"><span>{{ hour }}</span></div>
                 <div class="m_verticalmedias">
                   <div 
-                    v-if="false"
                     v-for="media in medias"
                     :key="media.slugMediaName"
                   >
@@ -454,14 +453,36 @@ export default {
     }
   }
 
+  .m_timeline--container--dates--day--hours {
+    height: 100%;
+  }
+
+  .m_timeline--container--dates--day--hours--hourlabel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    display: flex;
+    align-items: center;
+    z-index: 1;
+
+    span {
+      display: block;
+      // width: 100%;
+      padding-left: 50px;
+      background-color: #F1F2F0;
+      padding: 15px;
+    }
+  }
+
   .m_verticalmedias {
     display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
+    flex-flow: row wrap;
+    align-items: flex-start;
     height: 100%;
 
     > * {
-      width: 150px;
+      width: 250px;
       background-color: white;
       box-shadow: 0 2px 8px rgba(0,0,0,.33);
       border-radius: 4px;
