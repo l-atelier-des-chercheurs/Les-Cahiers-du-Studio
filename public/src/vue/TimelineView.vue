@@ -285,6 +285,10 @@ export default {
       }, []);
       return sortedMedias;
     },
+    groupedMedias() {
+      console.log('METHODS • TimeLineView: groupedMedias');
+      
+    },
 
     timeline_start() {
       const ts = this.folder.start;
@@ -329,12 +333,18 @@ export default {
 
       while(currDate.add(1, 'days').diff(lastDate) < 0) {
         // create day entry, 
-        
+        let entry = {
+          text: currDate.clone().format('L'),
+          medias: [
+
+          ]
+        }
+
         // add hours with medias 
         
         // add medias inside hours
 
-        date_interval.push(currDate.clone().format('L'));
+        date_interval.push(entry);
       }
 
       // days = days.map(d => d.format('L'));
