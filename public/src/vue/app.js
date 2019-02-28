@@ -22,6 +22,12 @@ Vue.prototype.$auth = auth;
 import slug from 'slugg';
 Vue.prototype.$slug = slug;
 
+import VuePackeryPlugin from 'vue-packery-plugin';
+Vue.use(VuePackeryPlugin);
+
+import VueDraggabillyPlugin from 'vue-packery-draggabilly-plugin';
+Vue.use(VueDraggabillyPlugin);
+
 import _ from 'lodash';
 Vue.prototype.$_ = _;
 

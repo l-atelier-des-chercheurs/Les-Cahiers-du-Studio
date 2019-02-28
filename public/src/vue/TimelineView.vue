@@ -12,6 +12,7 @@
         </span>
       </div>
     </transition>
+    
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
     <!-- {{ timeline_start }}<br>
@@ -35,7 +36,22 @@
                 class="m_timeline--container--dates--day--hours"
               >
                 <div class="m_timeline--container--dates--day--hours--hourlabel"><span>{{ hour }}</span></div>
-                <div class="m_verticalmedias">
+
+                <!-- <div class="m_verticalmedias" v-draggabilly v-packery='{itemSelector: ".packery-item", percentPosition: true}'>
+                  <div v-draggabilly v-packery-item class='packery-item'>
+                    PLOP<br>
+                    PLOP
+                    PLOP
+                  </div>
+                  <div v-draggabilly v-packery-item class='packery-item'>
+                    PLIP
+                  </div>
+                  <div v-draggabilly v-packery-item class='packery-item'>
+                    PLEP
+                  </div>
+                </div> -->
+
+                <!-- <div class="m_verticalmedias">
                   <div 
                     v-for="media in medias"
                     :key="media.slugMediaName"
@@ -48,7 +64,7 @@
                       :context="'preview'"
                     />
                   </div>
-                </div>
+                </div> -->
 
               </div>
             </div>
@@ -213,7 +229,6 @@ export default {
   },
   beforeDestroy() {
   },
-
   watch: {
   },
   computed: {
@@ -476,16 +491,16 @@ export default {
   }
 
   .m_verticalmedias {
-    display: flex;
-    flex-flow: row wrap;
-    align-items: flex-start;
-    height: 100%;
+    // display: flex;
+    // flex-flow: row wrap;
+    // align-items: flex-start;
+    // height: 100%;
 
     > * {
-      width: 250px;
-      background-color: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,.33);
-      border-radius: 4px;
+      // width: 250px;
+      // background-color: white;
+      // box-shadow: 0 2px 8px rgba(0,0,0,.33);
+      // border-radius: 4px;
 
     }
 
