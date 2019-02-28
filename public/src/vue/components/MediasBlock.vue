@@ -15,6 +15,7 @@
         v-for="media in medias" :key="media.metaFileName" v-draggabilly v-packery-item 
         class="packery-item"
         :media="media"
+        :folder="folder"
         :columnWidth="grid_options.columnWidth"
         :rowHeight="grid_options.rowHeight"
         :gutter="grid_options.gutter"
@@ -32,6 +33,7 @@ import {packeryEvents} from 'vue-packery-plugin';
 export default {
   props: {
     medias: Array,
+    folder: Object,
     slugFolderName: String
   },
   components: {
@@ -67,12 +69,14 @@ export default {
   methods: {
     triggerPackeryLayout() {
       console.log('Triggered packery layout');
-      packeryEvents.$emit('layout', this.$refs.packery);
+      this.$forceUpdate();
+
+      // packeryEvents.$emit('layout', this.$refs.packery);
     }
   }
 }
 </script>
-<style lang="scss">
+<style lang="less">
 .packery-container {
   /* background-color: #41f4a3; */
   height: 100vh;  
@@ -84,7 +88,8 @@ export default {
 .packery-item, .packery-item-content {
   width:  150px;
   height: 150px;
-  cursor: pointer;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
 }
 .packery-item {
   /* padding: 1rem; */
@@ -96,18 +101,23 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
+    border-radius: 4px;
 
-  transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1), height 0.4s cubic-bezier(0.19, 1, 0.22, 1);  
+  transition: all .4s cubic-bezier(.25,.8,.25,1);  
+
+  &.is--hovered {
+    // background-color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  }
 
   .mediaContainer {
     width: 100%;
     height: 100%;
     padding: 0;
     margin: 0;
-    overflow: hidden;
-    background-color: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,.33);
     border-radius: 4px;
+    overflow: hidden;
 
     img, video {
       width: 100%;

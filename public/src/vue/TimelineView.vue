@@ -12,7 +12,8 @@
         </span>
       </div>
     </transition>
-    
+
+    <button type="button" class="folder_backbutton" @click="$root.closeFolder()" v-html="'←'" />
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
     <!-- {{ timeline_start }}<br>
@@ -39,6 +40,7 @@
 
                 <MediasBlock 
                   :medias="medias"
+                  :folder="folder"
                   :slugFolderName="slugFolderName"
                 />
 
@@ -362,7 +364,7 @@ export default {
         }
 
         let day = {
-          label: this_date.format('L'),
+          label: this_date.format('dddd, MMMM D'),
           hours: medias_for_date
         }
 
@@ -378,11 +380,19 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 
 .m_timeline {
   height: 100vh;
   padding-left: 0;
+
+  --label-backgroundcolor: #000;
+  --label-color: white;
+
+  --timeline-bg: #F1F2F0;
+  --rule-color: #000;
+
+  background-color: var(--timeline-bg);
 }
 
 .m_timeline--container {
@@ -404,6 +414,7 @@ export default {
   min-width: 250px;
   display: flex;
   align-items: center;
+  // background-color: var(--label-backgroundcolor);
 
   // border: 2px solid white;
 
@@ -414,8 +425,10 @@ export default {
     align-items: center;
 
     span {
-      background-color: #F1F2F0;
-      padding: 15px;
+      background-color: var(--timeline-bg);
+      color: #000;
+      padding: 2px 8px;
+      transform: rotate(-90deg);
     }
 
     &::before {
@@ -423,9 +436,10 @@ export default {
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 50%;
-      border-left: 2px solid lighten(black, 90%);
-      z-index: -1;
+      left: calc(50% - 0px);
+      width: 0;
+      border-left: 1px solid var(--rule-color);
+      z-index: 0;
     }
   }
 
@@ -445,18 +459,29 @@ export default {
     pointer-events: none;
 
 
+
     span {
       display: block;
-      width: 100%;
-      padding-left: 50px;
-      // background-color: #F1F2F0;
-      padding: 0px;
+      // width: 100%;
+      background-color: var(--label-backgroundcolor);
+      color: var(--label-color);
+      padding: 2px 8px;
 
       transform: rotate(-15deg);
       transform-origin: left top;
       font-style: italic;    
 
     }
+
+    // &::before {
+    //   content: '';
+    //   position: absolute;
+    //   top: 0;
+    //   bottom: 0;
+    //   left: 0%;
+    //   border-left: 1px solid var(--label-color);
+    //   z-index: -1;
+    // }
   }
 
   .m_verticalmedias {
@@ -474,6 +499,18 @@ export default {
     }
 
   }
+}
+
+.folder_backbutton {
+  position: fixed;
+  top:30px;
+  left: 30px;
+  z-index: 100000;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+  background-color: black;
 }
 
 </style>
