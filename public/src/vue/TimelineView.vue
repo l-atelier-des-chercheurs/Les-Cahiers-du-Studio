@@ -22,6 +22,7 @@
 
       <div class="m_timeline"
         ref="timeline"
+        @mousewheel="onScroll"
       >
         <div class="m_timeline--container">
 
@@ -148,47 +149,6 @@ export default {
   created() {
   },
   mounted() {
-
-    const el = this.$refs.timeline;
-    // function scrollHorizontally(e) {
-    //   e = window.event || e;
-    //   e.preventDefault();
-    //   el.scrollLeft -= (e.wheelDelta || -e.detail);
-    // }
-    // function init() {
-    //   if (!el) {
-    //     return;
-    //   }
-
-    //   if (el.addEventListener) {
-    //     el.addEventListener('mousewheel', scrollHorizontally, false);
-    //     el.addEventListener('DOMMouseScroll', scrollHorizontally, false);
-    //   } else {
-    //     el.attachEvent('onmousewheel', scrollHorizontally);
-    //   }
-    // }
-    // init();
-
-    var isFirefox = !1;
-    var onScroll = (c) => {
-      c.preventDefault();
-      isFirefox ? 
-        this.translation += 2 * c.detail : 
-        (this.translation += c.deltaX, this.translation += c.deltaY)
-        ;
-
-      const timeline_width = el.children[0].offsetWidth - window.innerWidth;
-
-      this.translation = Math.max(this.translation, 0);
-      this.translation = Math.min(this.translation, timeline_width);
-
-      el.scrollLeft = this.translation;
-    };
-
-    var mousewheelevt = /Firefox/i.test(navigator.userAgent) ? "DOMMouseScroll" : "mousewheel"
-      , isFirefox = /Firefox/i.test(navigator.userAgent) ? !0 : !1;
-    document.attachEvent ? document.attachEvent("on" + mousewheelevt, onScroll) : document.addEventListener && document.addEventListener(mousewheelevt, onScroll, !1);
-
   },
   beforeDestroy() {
   },
@@ -202,7 +162,7 @@ export default {
       })
     },
     sortedMedias() {
-      console.log('METHODS • TimeLineView: sortedMedias');
+      console.log('COMPUTED • TimeLineView: sortedMedias');
       var sortable = [];
       let current_sort = !!this.sort.current.type ? this.sort.current : this.sort.available[0];
 
@@ -350,8 +310,8 @@ export default {
       // entre timeline_start et timeline_end
       let date_interval = [];
 
-      let currDate = this.$moment(this.timeline_start).startOf('day');
-      const lastDate = this.$moment(this.timeline_end).startOf('day');
+      let currDate = this.$moment(this.timeline_start).add(-1, 'days');
+      const lastDate = this.$moment(this.timeline_end);
 
       while(currDate.add(1, 'days').diff(lastDate) < 0) {
         let this_date = currDate.clone();
@@ -377,6 +337,20 @@ export default {
     }
   },
   methods: {
+    onScroll(event) {
+      event.preventDefault();
+      this.translation += event.deltaX; 
+      this.translation += event.deltaY;
+
+      const el = this.$refs.timeline;
+
+      const timeline_width = el.children[0].offsetWidth - window.innerWidth;
+
+      this.translation = Math.max(this.translation, 0);
+      this.translation = Math.min(this.translation, timeline_width);
+
+      el.scrollLeft = this.translation;
+    }    
   }
 }
 </script>
