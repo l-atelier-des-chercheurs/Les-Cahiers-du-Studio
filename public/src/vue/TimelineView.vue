@@ -37,34 +37,10 @@
               >
                 <div class="m_timeline--container--dates--day--hours--hourlabel"><span>{{ hour }}</span></div>
 
-                <!-- <div class="m_verticalmedias" v-draggabilly v-packery='{itemSelector: ".packery-item", percentPosition: true}'>
-                  <div v-draggabilly v-packery-item class='packery-item'>
-                    PLOP<br>
-                    PLOP
-                    PLOP
-                  </div>
-                  <div v-draggabilly v-packery-item class='packery-item'>
-                    PLIP
-                  </div>
-                  <div v-draggabilly v-packery-item class='packery-item'>
-                    PLEP
-                  </div>
-                </div> -->
-
-                <!-- <div class="m_verticalmedias">
-                  <div 
-                    v-for="media in medias"
-                    :key="media.slugMediaName"
-                  >
-                    <MediaContent
-                      v-model="media.content"
-                      :slugFolderName="slugFolderName"
-                      :slugMediaName="media.slugMediaName"
-                      :media="media"
-                      :context="'preview'"
-                    />
-                  </div>
-                </div> -->
+                <MediaBlock 
+                  :medias="medias"
+                  :slugFolderName="slugFolderName"
+                />
 
               </div>
             </div>
@@ -73,21 +49,6 @@
       </div>
 
     </div>
-
-    <!-- <div 
-      v-for="media in sortedMedias"
-      :key="media.slugMediaName"
-      class="m_verticalmedias"
-        :style="`margin-left: ${Math.random() * 80}vw`"
-    >
-      <MediaContent
-        v-model="media.content"
-        :slugFolderName="slugFolderName"
-        :slugMediaName="media.slugMediaName"
-        :media="media"
-        :context="'preview'"
-      />
-    </div> -->
 
     <!-- Ici le bouton +
 
@@ -100,7 +61,7 @@
   </div>
 </template>
 <script>
-import MediaContent from './components/subcomponents/MediaContent.vue';
+import MediaBlock from './components/MediaBlock.vue';
 
 export default {
   props: {
@@ -110,7 +71,7 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediaContent
+    MediaBlock
   },
   data() {
     return {
@@ -480,6 +441,7 @@ export default {
     display: flex;
     align-items: center;
     z-index: 1;
+    pointer-events: none;
 
     span {
       display: block;
