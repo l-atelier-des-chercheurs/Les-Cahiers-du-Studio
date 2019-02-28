@@ -37,7 +37,7 @@
               >
                 <div class="m_timeline--container--dates--day--hours--hourlabel"><span>{{ hour }}</span></div>
 
-                <MediaBlock 
+                <MediasBlock 
                   :medias="medias"
                   :slugFolderName="slugFolderName"
                 />
@@ -61,7 +61,7 @@
   </div>
 </template>
 <script>
-import MediaBlock from './components/MediaBlock.vue';
+import MediasBlock from './components/MediasBlock.vue';
 
 export default {
   props: {
@@ -71,7 +71,7 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediaBlock
+    MediasBlock
   },
   data() {
     return {
@@ -430,6 +430,7 @@ export default {
   }
 
   .m_timeline--container--dates--day--hours {
+    position: relative;
     height: 100%;
   }
 
@@ -443,12 +444,18 @@ export default {
     z-index: 1;
     pointer-events: none;
 
+
     span {
       display: block;
-      // width: 100%;
+      width: 100%;
       padding-left: 50px;
-      background-color: #F1F2F0;
-      padding: 15px;
+      // background-color: #F1F2F0;
+      padding: 0px;
+
+      transform: rotate(-15deg);
+      transform-origin: left top;
+      font-style: italic;    
+
     }
   }
 
