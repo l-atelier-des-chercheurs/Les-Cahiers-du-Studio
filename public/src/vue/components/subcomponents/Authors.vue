@@ -110,7 +110,7 @@
   </div>
 </template>
 <script>
-import randomColor from 'randomColor';
+import randomcolor from 'randomcolor';
 
 export default {
   props: {
@@ -181,7 +181,7 @@ export default {
       }
       _authors.push({
         name,
-        color: randomColor({luminosity: 'light'})
+        color: randomcolor({luminosity: 'light'})
       });
       
       this.$root.editFolder({
