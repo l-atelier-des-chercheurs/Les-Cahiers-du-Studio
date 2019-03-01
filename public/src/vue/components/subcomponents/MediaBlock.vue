@@ -11,10 +11,6 @@
       @mouseleave="is_hovered = false"
     >
 
-      <div class="author_indicator"
-        :style="`background-color: ${mediaColorFromFirstAuthor}`"
-      />
-    
       <MediaContent
         v-model="media.content"
         :slugFolderName="slugFolderName"
@@ -24,6 +20,10 @@
         :preview_size="360"
       />
 
+      <div class="author_indicator"
+        :style="`background-color: ${mediaColorFromFirstAuthor}`"
+      />
+    
       <template v-if="is_hovered">
         <div class="buttons_right">
           <button type="button" @click="changeItemWidth(1)">
@@ -167,10 +167,9 @@ export default {
     position: absolute;
     top: 4px;
     left: 4px;
-    width: 4px;
-    height: 4px;
+    width: 6px;
+    height: 6px;
     border-radius: 2px;
-    z-index: 10;
   }
 
   .mediaContainer {
@@ -195,7 +194,8 @@ export default {
 }
 
 .packery-drop-placeholder {
-  background-color: #ddd;
+  background-color: rgba(50,50,50,.2);
+  filter: blur(10px);
   -webkit-transition: -webkit-transform 0.2s;
           transition: transform 0.2s;
   z-index: 0;

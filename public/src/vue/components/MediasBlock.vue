@@ -16,8 +16,8 @@
         :media="media"
         :folder="folder"
         :slugFolderName="slugFolderName"
-        :columnWidth="edge_size"
-        :rowHeight="edge_size"
+        :columnWidth="grid_options.columnWidth"
+        :rowHeight="grid_options.rowHeight"
         :base_edge="base_edge"
         :gutter="grid_options.gutter"
         @triggerPackeryLayout="triggerPackeryLayout()"
@@ -46,8 +46,8 @@ export default {
         itemSelector: ".packery-item", 
         percentPosition: true,
         gutter: 5,
-        columnWidth: this.edge_size,
-        rowHeight: this.edge_size,
+        columnWidth: 50,
+        rowHeight: 50,
         horizontal: true,
         stamp: '.stamp',
         transitionDuration: '0.4s',
@@ -67,9 +67,6 @@ export default {
   watch: {
   },
   computed: {
-    edge_size() {
-      return 50
-    },
     base_edge() {
       if(this.medias.length > 5) {
         return 1;
