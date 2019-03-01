@@ -154,6 +154,7 @@ export default {
   width: 100%;
   height: 100%;
   border-radius: 4px;
+  background-color: white;
 
   transition: all .4s cubic-bezier(.25,.8,.25,1);  
 
@@ -206,6 +207,8 @@ export default {
   position: absolute;
   color: white;
   font-size: .8em;
+  line-height: 1;
+  font-weight: bold;
 
   button {
     background-color: #333;
@@ -215,6 +218,7 @@ export default {
     width: 15px;
     height: 15px;
     padding: 0;
+    margin: 4px;
     min-height: 0;
   }
 }
