@@ -25,6 +25,7 @@
     "alertify.js": "^1.0.12",
     "axios": "^0.18.0",
     "debounce": "^1.2.0",
+    "draggabilly": "^2.2.0",
     "i18n": "^0.8.3",
     "jquery": "^3.3.1",
     "lodash": "^4.17.11",

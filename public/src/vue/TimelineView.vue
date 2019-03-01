@@ -429,7 +429,7 @@ export default {
     top: 0;
     display: flex;
     align-items: center;
-    z-index: 1;
+    z-index: 100;
     pointer-events: none;
 
 

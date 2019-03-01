@@ -21,6 +21,7 @@
         :base_edge="base_edge"
         :gutter="grid_options.gutter"
         @triggerPackeryLayout="triggerPackeryLayout()"
+
       />
 
     </div>
@@ -78,7 +79,6 @@ export default {
     triggerPackeryLayout() {
       console.log('Triggered packery layout');
       this.$forceUpdate();
-
       // packeryEvents.$emit('layout', this.$refs.packery);
     }
   }
