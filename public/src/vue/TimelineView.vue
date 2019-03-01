@@ -477,8 +477,8 @@ export default {
 
 .folder_backbutton {
   position: fixed;
-  top:30px;
-  left: 30px;
+  top:20px;
+  left: 20px;
   z-index: 100000;
   width: 40px;
   height: 40px;

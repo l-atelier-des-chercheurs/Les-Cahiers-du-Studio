@@ -13,11 +13,12 @@
 
       <MediaBlock
         v-for="media in medias" :key="media.metaFileName" v-draggabilly v-packery-item 
-        class="packery-item"
         :media="media"
         :folder="folder"
-        :columnWidth="grid_options.columnWidth"
-        :rowHeight="grid_options.rowHeight"
+        :slugFolderName="slugFolderName"
+        :columnWidth="edge_size"
+        :rowHeight="edge_size"
+        :base_edge="base_edge"
         :gutter="grid_options.gutter"
         @triggerPackeryLayout="triggerPackeryLayout()"
       />
@@ -44,9 +45,9 @@ export default {
       grid_options: {
         itemSelector: ".packery-item", 
         percentPosition: true,
-        columnWidth: 75,
-        rowHeight: 75,
-        gutter: 15,
+        gutter: 5,
+        columnWidth: this.edge_size,
+        rowHeight: this.edge_size,
         horizontal: true,
         stamp: '.stamp',
         transitionDuration: '0.4s',
@@ -65,6 +66,15 @@ export default {
   watch: {
   },
   computed: {
+    edge_size() {
+      return 50
+    },
+    base_edge() {
+      if(this.medias.length > 5) {
+        return 1;
+      }
+      return 2;
+    }
   },
   methods: {
     triggerPackeryLayout() {
@@ -85,103 +95,23 @@ export default {
   width: 25px;
   height: 25px;
 } */
-.packery-item, .packery-item-content {
-  width:  150px;
-  height: 150px;
-  cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
-}
-.packery-item {
-  /* padding: 1rem; */
-  /* border: 0.2rem dashed #f4be41; */
-  box-sizing: border-box;
-}
-
-.packery-item-content {
-  position: relative;
-  width: 100%;
-  height: 100%;
-    border-radius: 4px;
-
-  transition: all .4s cubic-bezier(.25,.8,.25,1);  
-
-  &.is--hovered {
-    // background-color: white;
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  }
-
-  .mediaContainer {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    border-radius: 4px;
-    overflow: hidden;
-
-    img, video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center center;
-    }
-
-    p:first-child {
-      margin-top: 0;
-    }
-  }
-}
-
-.packery-item span{
-  display: block;
-  font-size: 1.4rem;
-  color: #f4be41;
-  margin-bottom: 1rem;
-}
-.packery-item input{
-  color: #fff;
-  font-size: 1rem;
-  padding: 0.5rem;
-  /* background-color: #f4be41; */
-  border: none;
-}
-.controls {
-  margin-top: 2rem;
-  text-align: center;
-}
-.controls input {
-  color: #fff;
-  font-size: 1rem;
-  padding: 0.5rem;
-  background-color: #444;
-  border: none;
-  margin: 0 1rem;
-}
-
-/* position stamp elements with CSS */
-.stamp {
-  position: absolute;
-  background: orange;
-  /* border: 4px dotted black; */
-}
-.stamp1 {
-  left: 0px;
-  top: 0px;
-  width: 250px;
-  height: 200px;
-}
-.stamp2 {
-  right: 10%;
-  top: 20px;
-  width: 70%;
-  height: 30px;
-}
-.packery-drop-placeholder {
-  outline: 3px dashed hsla(0, 0%, 0%, 0.2);
-  outline-offset: -6px;
-  -webkit-transition: -webkit-transform 0.2s;
-          transition: transform 0.2s;
-  z-index: -1;
-}
+// /* position stamp elements with CSS */
+// .stamp {
+//   position: absolute;
+//   background: orange;
+//   /* border: 4px dotted black; */
+// }
+// .stamp1 {
+//   left: 0px;
+//   top: 0px;
+//   width: 250px;
+//   height: 200px;
+// }
+// .stamp2 {
+//   right: 10%;
+//   top: 20px;
+//   width: 70%;
+//   height: 30px;
+// }
 
 </style>
