@@ -51,6 +51,7 @@ export default {
         horizontal: true,
         stamp: '.stamp',
         transitionDuration: '0.4s',
+        // originTop: false
         // stagger: 10
       },
     }

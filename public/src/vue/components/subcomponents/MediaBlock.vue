@@ -143,13 +143,17 @@ export default {
   /* padding: 1rem; */
   /* border: 0.2rem dashed #f4be41; */
   box-sizing: border-box;
+
+  &.is-dragging, &.is-positioning-post-drag {
+    z-index: 2;
+  }
 }
 
 .packery-item-content {
   position: relative;
   width: 100%;
   height: 100%;
-    border-radius: 4px;
+  border-radius: 4px;
 
   transition: all .4s cubic-bezier(.25,.8,.25,1);  
 
@@ -157,7 +161,6 @@ export default {
     // background-color: white;
     transform: translateY(-10px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-    z-index: 100;
   }
 
   .author_indicator {
@@ -192,11 +195,10 @@ export default {
 }
 
 .packery-drop-placeholder {
-  outline: 3px dashed hsla(0, 0%, 0%, 0.2);
-  outline-offset: -6px;
+  background-color: #ddd;
   -webkit-transition: -webkit-transform 0.2s;
           transition: transform 0.2s;
-  z-index: -1;
+  z-index: 0;
 }
 
 
