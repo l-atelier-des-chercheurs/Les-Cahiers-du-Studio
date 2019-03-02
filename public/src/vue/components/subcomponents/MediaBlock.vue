@@ -5,7 +5,7 @@
     :style="itemSize"
   >
     <div class="packery-item-content"
-      :class="{ 'is--hovered' : is_hovered || is_resized }"
+      :class="{ 'is--hovered' : is_hovered && !is_resized }"
       :style="itemStylesWithSize"
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
@@ -21,7 +21,6 @@
       />
 
       <div class="author_indicator"
-        :style="`background-color: ${mediaColorFromFirstAuthor}`"
       />
 
       <div class="draggabilly_handle" data-draggabilly_handle>
@@ -46,25 +45,34 @@
         </div>
       </template> -->
 
-      <div class="handle handle_resizeMedia"
-        @mousedown.stop.prevent="resizeMedia('mouse', 'bottomright')"
-        @touchstart.stop.prevent="resizeMedia('touch', 'bottomright')"
-      >
-        <!-- <svg version="1.1"
-          xmlns="http://www.w3.org/2000/svg" 
-          xmlns:xlink="http://www.w3.org/1999/xlink" 
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px" y="0px" width="77.5px" height="77.5px" viewBox="0 0 77.5 77.5" style="enable-background:new 0 0 77.5 77.5;"
-          xml:space="preserve">
-        <defs>
-        </defs>
-        <g>
-          <path d="M42.5,0l0.4,12.6l-9.3,0.1c-2.8,0-5.1,0-6.9-0.2c-1.8-0.2-3.6-0.6-5.7-1.2l45.3,45.3c-0.6-2-1-3.9-1.2-5.7
-            c-0.2-1.8-0.3-4-0.2-6.9v-9.4l12.6,0.4l-1.3,41.2l-41.2,1.3l-0.4-12.6l9.5,0c2.9,0,5.2,0.1,7,0.3c1.8,0.2,3.6,0.5,5.4,1.1
-           L11.3,21.1c0.5,1.8,0.9,3.6,1.1,5.4c0.2,1.8,0.3,4.1,0.3,7l-0.1,9.4L0,42.5L1.3,1.3L42.5,0z"/>
-        </g>
-        </svg> -->
-      </div>
+      <template v-if="is_hovered && !is_resized">
+        <div class="handle handle_resizeMedia handle_resizeMedia_bottomright">
+          <div
+            @mousedown.stop.prevent="resizeMedia('mouse', 'horizontal_vertical')"
+            @touchstart.stop.prevent="resizeMedia('touch', 'horizontal_vertical')"
+          >
+            <span></span>
+          </div>
+        </div>
+
+        <div class="handle handle_resizeMedia handle_resizeMedia_bottom">
+          <div
+            @mousedown.stop.prevent="resizeMedia('mouse', 'bottom_vertical')"
+            @touchstart.stop.prevent="resizeMedia('touch', 'bottom_vertical')"
+          >
+            <span></span>
+          </div>
+        </div>
+
+        <div class="handle handle_resizeMedia handle_resizeMedia_right">
+          <div
+            @mousedown.stop.prevent="resizeMedia('mouse', 'right_horizontal')"
+            @touchstart.stop.prevent="resizeMedia('touch', 'right_horizontal')"
+          >
+            <span></span>
+          </div>
+        </div>
+      </template>
 
     </div>
   </div>
@@ -93,10 +101,14 @@ export default {
       is_hovered: false,
       mediaSize: {
         width: Math.round(Math.random() * 2 + this.base_edge),
-        height: Math.round(Math.random() * 2 + this.base_edge)
+        height: Math.round(Math.random() * 2 + this.base_edge),
+        pwidth: 0,
+        pheight: 0
       },
 
       is_resized: false,
+
+      resizeType: undefined,
       resizeOffset: {
         x: 0,
         y: 0
@@ -138,7 +150,7 @@ export default {
     },
     itemStylesWithSize() {
       return Object.assign({
-        backgroundColor: this.mediaColorFromFirstAuthor
+        '--author-color': this.mediaColorFromFirstAuthor
       }, this.itemSize)
     },
     mediaColorFromFirstAuthor() {
@@ -192,6 +204,7 @@ export default {
         console.log(`METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`);
       }
       if (!this.read_only) {
+        this.resizeOrigin = origin;
         if(type === 'mouse') {
           window.addEventListener('mousemove', this.resizeMove);
           window.addEventListener('mouseup', this.resizeUp);
@@ -219,11 +232,17 @@ export default {
       } else {
         const deltaX = Math.round((pageX - this.resizeOffset.x) / this.columnWidth);
         let newWidth = this.mediaSize.pwidth + deltaX;
-        this.mediaSize.width = this.limitMediaWidth(newWidth);
+        
+        if(this.resizeOrigin.includes('horizontal')) {
+          this.mediaSize.width = this.limitMediaWidth(newWidth);
+        }
 
         const deltaY = Math.round((pageY - this.resizeOffset.y) / this.rowHeight);
         let newHeight = this.mediaSize.pheight + deltaY;
-        this.mediaSize.height = this.limitMediaHeight(newHeight);
+
+        if(this.resizeOrigin.includes('vertical')) {
+          this.mediaSize.height = this.limitMediaHeight(newHeight);
+        }
       }
     },
     resizeUp(event) {
@@ -281,6 +300,7 @@ export default {
   height: 100%;
   border-radius: 4px;
   background-color: white;
+  background-color: var(--author-color);
 
   transition: all .2s cubic-bezier(.25,.8,.25,1);  
 
@@ -292,11 +312,15 @@ export default {
 
   .author_indicator {
     position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 6px;
-    height: 6px;
-    border-radius: 2px;
+    top: 0;left: 0;
+    width: 0;
+    height: 100%;
+    border-top: 10px solid var(--author-color);
+    border-right: 10px solid transparent;
+    // border-left: none;
+    // transform: rotate(-45deg);
+    // border-radius: 2px 0 0 0;
+    // border-top-left-radius: 2px;
   }
 
   .mediaContainer {
@@ -377,38 +401,75 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-
-  > * {
-  }
 }
 
 .handle {
   position: absolute;
   z-index: 1;
-  width: 30px;
-  height: 30px;
-  bottom: 0;
-  right: 0;
-  cursor: nwse-resize;
-
-  pointer-events: auto;
+  width: 20px;
+  height: 20px;
+  top:0;
+  left:0;
+  pointer-events: none;
 
   border-style: inherit;
   border-width: 0px;
 
-  border-radius: 50%;
+  color: #fff;
   
+  --handle-width: 15px;
+  --handle-height: 5px;
+
   display: flex;
   justify-content: center;
   align-items: center;
 
-  svg {
-    width: 34px;
-    height: 34px;
-    padding: 6px;
-    border-style: inherit;
+  &.handle_resizeMedia_bottom {
+    width: 100%;
+    top: auto;
+    bottom: 0;
+    div > span {
+      height: var(--handle-height);
+      width: var(--handle-width);
+    }
+  }
+  &.handle_resizeMedia_bottomright {
+    right: 0;
+    top: auto;
+    left: auto;
+    bottom: 0;
+
+    div > span {
+      height: var(--handle-height);
+      width: var(--handle-height);
+    }
+  }
+  &.handle_resizeMedia_right {
+    height: 100%;
+    right: 0;
+    left: auto;
+
+    div > span {
+      height: var(--handle-width);
+      width: var(--handle-height);
+    }
+  }
+
+  > div {
+    position: relative;
+    pointer-events: auto;
+    cursor: nwse-resize;
+    padding: .4em;
     border-radius: 50%;
-    overflow: visible;    
+    // background-color: red;
+
+    > span {
+      display: block;
+      width: var(--handle-height);
+      height: var(--handle-height);
+      background-color: #000;
+      border-radius: var(--handle-height);
+    }
   }
 }
 

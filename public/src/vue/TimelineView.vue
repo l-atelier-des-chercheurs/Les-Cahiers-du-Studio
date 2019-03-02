@@ -457,22 +457,6 @@ export default {
     //   z-index: -1;
     // }
   }
-
-  .m_verticalmedias {
-    // display: flex;
-    // flex-flow: row wrap;
-    // align-items: flex-start;
-    // height: 100%;
-
-    > * {
-      // width: 250px;
-      // background-color: white;
-      // box-shadow: 0 2px 8px rgba(0,0,0,.33);
-      // border-radius: 4px;
-
-    }
-
-  }
 }
 
 .folder_backbutton {
