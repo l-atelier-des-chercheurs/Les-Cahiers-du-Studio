@@ -12,7 +12,7 @@
       <!-- <div class="stamp stamp2"></div> -->
 
       <MediaBlock
-        v-for="media in medias" :key="media.metaFileName" v-draggabilly v-packery-item 
+        v-for="media in medias" :key="media.metaFileName" v-packery-item 
         :media="media"
         :folder="folder"
         :slugFolderName="slugFolderName"
@@ -86,7 +86,6 @@ export default {
 </script>
 <style lang="less">
 .packery-container {
-  /* background-color: #41f4a3; */
   height: 100vh;  
 }
 /* .packery-grid-sizer {

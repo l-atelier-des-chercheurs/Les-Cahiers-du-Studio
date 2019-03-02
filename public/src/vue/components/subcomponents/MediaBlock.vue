@@ -5,7 +5,7 @@
     :style="itemSize"
   >
     <div class="packery-item-content"
-      :class="{ 'is--hovered' : is_hovered }"
+      :class="{ 'is--hovered' : is_hovered || is_resized }"
       :style="itemStylesWithSize"
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
@@ -27,7 +27,7 @@
       <div class="draggabilly_handle" data-draggabilly_handle>
       </div>
 
-      <template v-if="is_hovered">
+      <!-- <template v-if="is_hovered">
         <div class="buttons_right">
           <button type="button" @click="changeItemWidth(1)">
             +
@@ -44,13 +44,13 @@
             -
           </button>
         </div>
-      </template>
+      </template> -->
 
-      <!-- <div class="handle handle_resizeMedia"
+      <div class="handle handle_resizeMedia"
         @mousedown.stop.prevent="resizeMedia('mouse', 'bottomright')"
         @touchstart.stop.prevent="resizeMedia('touch', 'bottomright')"
       >
-        <svg version="1.1"
+        <!-- <svg version="1.1"
           xmlns="http://www.w3.org/2000/svg" 
           xmlns:xlink="http://www.w3.org/1999/xlink" 
           xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
@@ -63,8 +63,8 @@
             c-0.2-1.8-0.3-4-0.2-6.9v-9.4l12.6,0.4l-1.3,41.2l-41.2,1.3l-0.4-12.6l9.5,0c2.9,0,5.2,0.1,7,0.3c1.8,0.2,3.6,0.5,5.4,1.1
            L11.3,21.1c0.5,1.8,0.9,3.6,1.1,5.4c0.2,1.8,0.3,4.1,0.3,7l-0.1,9.4L0,42.5L1.3,1.3L42.5,0z"/>
         </g>
-        </svg>
-      </div> -->
+        </svg> -->
+      </div>
 
     </div>
   </div>
@@ -72,6 +72,8 @@
 <script>
 import MediaContent from './MediaContent.vue';
 import { setTimeout } from 'timers';
+import Draggabilly from 'draggabilly';
+import {packeryEvents} from 'vue-packery-plugin';
 
 export default {
   props: {
@@ -89,27 +91,49 @@ export default {
   data() {
     return {
       is_hovered: false,
+      mediaSize: {
+        width: Math.round(Math.random() * 2 + this.base_edge),
+        height: Math.round(Math.random() * 2 + this.base_edge)
+      },
+
       is_resized: false,
-      width: Math.round(Math.random() * 2 + this.base_edge),
-      height: Math.round(Math.random() * 2 + this.base_edge),
+      resizeOffset: {
+        x: 0,
+        y: 0
+      },
+
     }
   },
   
   created() {
   },
   mounted() {
-    debugger;
+    this.$el.draggie = new Draggabilly(this.$el, {
+      handle: '[data-draggabilly_handle]'
+    });
+    packeryEvents.$emit('draggie', {
+      draggie: this.$el.draggie,
+      node: this.$el.parentNode
+    });
   },
   beforeDestroy() {
+    this.$el.draggie.destroy();
+    this.$el.draggie = null;
   },
-
   watch: {
+    'mediaSize': { 
+      handler: function() {
+        this.$emit('triggerPackeryLayout');
+      },
+      deep: true
+    },
+
   },
   computed: {
     itemSize() {
       return {
-        width: this.width * this.columnWidth + (this.width-1) * this.gutter + 'px',
-        height: this.height * this.rowHeight + (this.height-1) * this.gutter + 'px',
+        width: this.mediaSize.width * this.columnWidth + (this.mediaSize.width-1) * this.gutter + 'px',
+        height: this.mediaSize.height * this.rowHeight + (this.mediaSize.height-1) * this.gutter + 'px',
       }
     },
     itemStylesWithSize() {
@@ -143,21 +167,27 @@ export default {
   methods: {
     changeItemWidth(increment) {
       console.log('MediaBlock changeItemWidth');
-      this.width += increment;
-      this.$nextTick(() => {
-        this.$emit('triggerPackeryLayout');
-      });
+      this.mediaSize.width += increment;
     },
     changeItemHeight(increment) {
       console.log('MediaBlock changeItemHeight');
-      this.height += increment;
-      this.$nextTick(() => {
-        this.$emit('triggerPackeryLayout');
-      });
+      this.mediaSize.height += increment;
+    },
+    limitMediaWidth(w) {
+      if(!this.limit_media_to_page) {
+        return w;
+      }
+      return Math.max(6, Math.min(1, w));
+    },
+    limitMediaHeight(h) {
+      if(!this.limit_media_to_page) {
+        return h;
+      }
+      return Math.max(6, Math.min(1, h));
     },
 
+
     resizeMedia(type, origin) {
-      debugger;
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`);
       }
@@ -179,22 +209,19 @@ export default {
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
 
-      const pageX_mm = pageX / this.pixelsPerMillimeters;
-      const pageY_mm = pageY / this.pixelsPerMillimeters;
-
       if (!this.is_resized) {
         this.is_resized = true;
         this.is_selected = true;
-        this.resizeOffset.x = pageX_mm;
-        this.resizeOffset.y = pageY_mm;
+        this.resizeOffset.x = pageX;
+        this.resizeOffset.y = pageY;
         this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
         this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
       } else {
-        const deltaX = (pageX_mm - this.resizeOffset.x) / this.$root.settings.publi_zoom;
+        const deltaX = Math.round((pageX - this.resizeOffset.x) / this.columnWidth);
         let newWidth = this.mediaSize.pwidth + deltaX;
         this.mediaSize.width = this.limitMediaWidth(newWidth);
 
-        const deltaY = (pageY_mm - this.resizeOffset.y) / this.$root.settings.publi_zoom;
+        const deltaY = Math.round((pageY - this.resizeOffset.y) / this.rowHeight);
         let newHeight = this.mediaSize.pheight + deltaY;
         this.mediaSize.height = this.limitMediaHeight(newHeight);
       }
@@ -204,13 +231,13 @@ export default {
         console.log(`METHODS • MediaPublication: resizeUp with is_resized = ${this.is_resized}`);
       }
       if (this.is_resized) {
-        this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
-        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
+        this.mediaSize.width = this.mediaSize.width;
+        this.mediaSize.height = this.mediaSize.height;
 
-        this.updateMediaPubliMeta({ 
-          width: this.mediaSize.width,
-          height: this.mediaSize.height 
-        });
+        // this.updateMediaPubliMeta({ 
+        //   width: this.mediaSize.width,
+        //   height: this.mediaSize.height 
+        // });
         this.is_resized = false;
       }
 
@@ -355,34 +382,34 @@ export default {
   }
 }
 
-// .handle {
-//   position: absolute;
-//   z-index: 1;
-//   width: 30px;
-//   height: 30px;
-//   bottom: 0;
-//   right: 0;
-//   cursor: nwse-resize;
+.handle {
+  position: absolute;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  bottom: 0;
+  right: 0;
+  cursor: nwse-resize;
 
-//   pointer-events: auto;
+  pointer-events: auto;
 
-//   border-style: inherit;
-//   border-width: 0px;
+  border-style: inherit;
+  border-width: 0px;
 
-//   border-radius: 50%;
+  border-radius: 50%;
   
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-//   svg {
-//     width: 34px;
-//     height: 34px;
-//     padding: 6px;
-//     border-style: inherit;
-//     border-radius: 50%;
-//     overflow: visible;    
-//   }
-// }
+  svg {
+    width: 34px;
+    height: 34px;
+    padding: 6px;
+    border-style: inherit;
+    border-radius: 50%;
+    overflow: visible;    
+  }
+}
 
 </style>
