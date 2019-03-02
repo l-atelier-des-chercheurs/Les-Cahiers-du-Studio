@@ -420,10 +420,11 @@ export default {
   .m_timeline--container--dates--day--hours {
     position: relative;
     height: 100%;
+    display: flex;
   }
 
   .m_timeline--container--dates--day--hours--hourlabel {
-    position: absolute;
+    position: relative;
     width: 100%;
     height: 100%;
     top: 0;
@@ -444,7 +445,6 @@ export default {
       transform: rotate(-15deg);
       transform-origin: left top;
       font-style: italic;    
-
     }
 
     // &::before {
