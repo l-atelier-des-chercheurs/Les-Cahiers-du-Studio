@@ -21,6 +21,7 @@
       />
 
       <div class="author_indicator"
+        v-if="mediaColorFromFirstAuthor"
       />
 
       <div class="draggabilly_handle" data-draggabilly_handle>
@@ -100,8 +101,8 @@ export default {
     return {
       is_hovered: false,
       mediaSize: {
-        width: Math.round(Math.random() * 2 + this.base_edge),
-        height: Math.round(Math.random() * 2 + this.base_edge),
+        width: undefined,
+        height: undefined,
         pwidth: 0,
         pheight: 0
       },
@@ -118,6 +119,19 @@ export default {
   },
   
   created() {
+    if(this.media.type === 'text') {
+      this.mediaSize.width = 1 + this.base_edge;
+      this.mediaSize.height = 1 + this.base_edge;
+    } else {
+      this.mediaSize.width = Math.round(Math.random() * 2 + this.base_edge);
+      if(this.media.hasOwnProperty('ratio') && typeof this.media.ratio === 'number') {
+        this.mediaSize.height = Math.round(this.mediaSize.width * this.media.ratio);
+      } else {
+        this.mediaSize.height = Math.round(Math.random() * 2 + this.base_edge);
+      }
+    }
+
+
   },
   mounted() {
     this.$el.draggie = new Draggabilly(this.$el, {
@@ -150,12 +164,12 @@ export default {
     },
     itemStylesWithSize() {
       return Object.assign({
-        '--author-color': this.mediaColorFromFirstAuthor
+        '--author-color': this.mediaColorFromFirstAuthor ? this.mediaColorFromFirstAuthor : '#fff'
       }, this.itemSize)
     },
     mediaColorFromFirstAuthor() {
       if(!this.media.hasOwnProperty('authors')) {
-        return '';
+        return false;
       }
 
       const media_authors = this.media.authors;
@@ -164,12 +178,12 @@ export default {
       || typeof this.folder.authors !== 'object'
       || this.folder.authors.length == 0
       ) {
-        return '';
+        return false;
       }
 
       const full_authors_info = this.folder.authors.filter(a => a.name === media_authors[0].name);
       if(full_authors_info.length == 0) {
-        return '';
+        return false;
       }
 
       return full_authors_info[0].color;
@@ -281,7 +295,7 @@ export default {
   /* padding: 1rem; */
   /* border: 0.2rem dashed #f4be41; */
   box-sizing: border-box;
-  padding: 5px;
+  // padding: 5px;
 
   &.is-dragging, &.is-positioning-post-drag {
     z-index: 2;

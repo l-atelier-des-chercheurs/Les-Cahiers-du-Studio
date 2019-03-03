@@ -32,12 +32,19 @@
               :key="day.label"
               class="m_timeline--container--dates--day"
             >
-              <div class="m_timeline--container--dates--day--daylabel"><span>{{ day.label }}</span></div>
+              <div class="m_timeline--container--dates--day--daylabel">
+                <span>
+                  {{ day.label }}
+                  <span>{{ day.number_of_medias }}</span>
+                </span>
+              </div>
               <div v-for="(medias, hour) in day.hours"
                 :key="hour"
                 class="m_timeline--container--dates--day--hours"
               >
-                <div class="m_timeline--container--dates--day--hours--hourlabel"><span>{{ hour }}</span></div>
+                <div class="m_timeline--container--dates--day--hours--hourlabel">
+                  <span>{{ hour }}</span>
+                </div>
 
                 <MediasBlock 
                   :medias="medias"
@@ -323,8 +330,11 @@ export default {
           medias_for_date = has_media_for_date[0][1];
         }
 
+        const number_of_medias = Object.values(medias_for_date).reduce((acc, element) => acc + element.length, 0);;
+
         let day = {
           label: this_date.format('dddd, MMMM D'),
+          number_of_medias,
           hours: medias_for_date
         }
 
@@ -338,6 +348,8 @@ export default {
   },
   methods: {
     onScroll(event) {
+      console.log('METHODS • TimeLineView: onScroll');
+
       event.preventDefault();
       this.translation += event.deltaX; 
       this.translation += event.deltaY;
@@ -398,11 +410,25 @@ export default {
     display: flex;
     align-items: center;
 
-    span {
+    > span {
       background-color: var(--timeline-bg);
       color: #000;
       padding: 2px 8px;
       transform: rotate(-90deg);
+
+      span {
+        display: inline-block;
+        background-color: #000;
+        border-radius: 50%;
+        color: white;
+        font-size:.7em;
+        width: 2em;
+        height: 2em;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 2;
+        font-weight: bold;
+      }
     }
 
     &::before {
@@ -428,6 +454,7 @@ export default {
     width: 100%;
     height: 100%;
     top: 0;
+    padding: 24px;
     display: flex;
     align-items: center;
     z-index: 100;

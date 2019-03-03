@@ -21,7 +21,6 @@
         :base_edge="base_edge"
         :gutter="grid_options.gutter"
         @triggerPackeryLayout="triggerPackeryLayout()"
-
       />
 
     </div>
@@ -46,9 +45,9 @@ export default {
       grid_options: {
         itemSelector: ".packery-item", 
         percentPosition: true,
-        gutter: 5,
-        columnWidth: 50,
-        rowHeight: 50,
+        gutter: 4,
+        columnWidth: 40,
+        rowHeight: 40,
         horizontal: true,
         stamp: '.stamp',
         transitionDuration: '0.4s',
@@ -70,9 +69,9 @@ export default {
   computed: {
     base_edge() {
       if(this.medias.length > 5) {
-        return 1;
+        return 2;
       }
-      return 2;
+      return 3;
     }
   },
   methods: {
