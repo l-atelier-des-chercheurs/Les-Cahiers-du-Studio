@@ -10,7 +10,7 @@
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
     >
-
+    
       <MediaContent
         v-model="media.content"
         :slugFolderName="slugFolderName"
@@ -115,6 +115,8 @@ export default {
         y: 0
       },
 
+      is_mounted: false,
+
     }
   },
   
@@ -130,8 +132,6 @@ export default {
         this.mediaSize.height = Math.round(Math.random() * 2 + this.base_edge);
       }
     }
-
-
   },
   mounted() {
     this.$el.draggie = new Draggabilly(this.$el, {
@@ -141,6 +141,11 @@ export default {
       draggie: this.$el.draggie,
       node: this.$el.parentNode
     });
+
+    this.$nextTick(() => {
+      this.is_mounted = true;
+    });
+
   },
   beforeDestroy() {
     this.$el.draggie.destroy();
@@ -149,11 +154,12 @@ export default {
   watch: {
     'mediaSize': { 
       handler: function() {
-        this.$emit('triggerPackeryLayout');
+        if(this.is_mounted) {
+          this.$emit('triggerPackeryLayout');
+        }
       },
       deep: true
     },
-
   },
   computed: {
     itemSize() {
@@ -442,9 +448,15 @@ export default {
     width: 100%;
     top: auto;
     bottom: 0;
-    div > span {
-      height: var(--handle-height);
-      width: var(--handle-width);
+    cursor: col-resize;
+
+    div {
+      cursor: row-resize;
+    
+      > span {
+        height: var(--handle-height);
+        width: var(--handle-width);
+      }
     }
   }
   &.handle_resizeMedia_bottomright {
@@ -453,9 +465,13 @@ export default {
     left: auto;
     bottom: 0;
 
-    div > span {
-      height: var(--handle-height);
-      width: var(--handle-height);
+    div {
+      cursor: nwse-resize;
+
+      span {
+        height: var(--handle-height);
+        width: var(--handle-height);
+      }
     }
   }
   &.handle_resizeMedia_right {
@@ -463,17 +479,20 @@ export default {
     right: 0;
     left: auto;
 
-    div > span {
-      height: var(--handle-width);
-      width: var(--handle-height);
+    div {
+      cursor: col-resize;
+    
+      > span {
+        height: var(--handle-width);
+        width: var(--handle-height);
+      }
     }
   }
 
   > div {
     position: relative;
     pointer-events: auto;
-    cursor: nwse-resize;
-    padding: .4em;
+    padding: 1em;
     border-radius: 50%;
     // background-color: red;
 
@@ -481,7 +500,9 @@ export default {
       display: block;
       width: var(--handle-height);
       height: var(--handle-height);
-      background-color: #000;
+      background-color: #fff;
+      box-shadow: 0 0px 4px rgba(0,0,0,.43);
+      // mix-blend-mode: multiply;
       border-radius: var(--handle-height);
     }
   }

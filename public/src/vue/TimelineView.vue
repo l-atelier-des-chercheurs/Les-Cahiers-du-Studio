@@ -22,7 +22,8 @@
 
       <div class="m_timeline"
         ref="timeline"
-        @mousewheel="onScroll"
+        @mousewheel="onMousewheel"
+        @mouseup.self="onMouseUp"
       >
         <div class="m_timeline--container">
 
@@ -72,6 +73,7 @@
 </template>
 <script>
 import MediasBlock from './components/MediasBlock.vue';
+import { setTimeout } from 'timers';
 
 export default {
   props: {
@@ -156,6 +158,7 @@ export default {
   created() {
   },
   mounted() {
+
   },
   beforeDestroy() {
   },
@@ -347,8 +350,8 @@ export default {
     }
   },
   methods: {
-    onScroll(event) {
-      console.log('METHODS • TimeLineView: onScroll');
+    onMousewheel(event) {
+      console.log('METHODS • TimeLineView: onMousewheel');
 
       event.preventDefault();
       this.translation += event.deltaX; 
@@ -362,6 +365,12 @@ export default {
       this.translation = Math.min(this.translation, timeline_width);
 
       el.scrollLeft = this.translation;
+    },
+    onMouseUp(event) {
+      console.log('METHODS • TimeLineView: onMouseUp');
+
+      const el = this.$refs.timeline; 
+      setTimeout(() => this.translation = el.scrollLeft, 300);
     }    
   }
 }
