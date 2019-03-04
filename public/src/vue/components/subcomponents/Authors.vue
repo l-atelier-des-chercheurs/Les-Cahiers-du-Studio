@@ -59,7 +59,7 @@
         <div class="m_authors--createButton">
           <template v-if="!add_author">
             <button type="button" @click="add_author = true">
-              Ajouter un auteur
+              {{ $t('add_author') }}
             </button>
           </template>
           <template v-else>

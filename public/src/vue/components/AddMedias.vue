@@ -371,6 +371,7 @@ button {
 
   background-color: white;
   color: black;
+  box-shadow: 2px 4px 13px #bbb;   
 
   top: 50%;
   transform: translate(0, -50%);

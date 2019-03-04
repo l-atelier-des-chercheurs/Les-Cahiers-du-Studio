@@ -317,8 +317,6 @@ body {
   background-color: #fff;
   min-height: 40px;
 
-  // min-height: 40px;
-
   // .font-small;
   color: #000;
   
@@ -347,11 +345,14 @@ body {
     position: relative; 
 
     flex: 1 1 0;
-    overflow-x: scroll;
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+
     .custom_scrollbar(1px, 3px, 2px, rgba(255,255,255,0), #ddd);    
 
-    .padding-verysmall;
+    // .padding-verysmall;
 
     display: flex;
     flex-flow: row nowrap;
@@ -362,10 +363,12 @@ body {
       top: 0;
       .padding-sides-verysmall;
       margin-bottom: 0;
+      .margin-verysmall;
     }
 
     button {
       background-color: @c-gris_tresclair;
+      .margin-verysmall;
     }
 
     > * {
@@ -379,6 +382,7 @@ body {
 
     .input-group {
       margin-bottom: 0;
+      font-size: 0.8em;
 
       button {
         margin: 0;
