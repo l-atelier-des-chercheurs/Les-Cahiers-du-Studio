@@ -44,10 +44,8 @@
         </svg>      
       </button>
 
-      <template
-      >
-        <button
-          type="button"
+      <template>
+        <div
           :key="`add_${field.key}`"
           class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
           v-for="field in input_file_fields"
@@ -69,7 +67,7 @@
             :capture="field.capture"
             style="width: 1px; height: 1px; overflow: hidden;"
           >
-        </button>
+        </div>
       </template>
     </div>
 
@@ -412,6 +410,8 @@ button {
       align-items: center;
 
       > * {
+        display: block;
+        position: relative;
         opacity: 0;
         transition: opacity .4s cubic-bezier(0.19, 1, 0.22, 1);
 
