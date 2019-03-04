@@ -14,8 +14,7 @@
         :presentationMD="$root.store.presentationMD"
         :read_only="!$root.state.connected"
         :folders="$root.store.folders"
-      >
-      </ListView>
+      />
 
     </template>
     <template v-else-if="view === 'FolderView' && currentFolder.hasOwnProperty('name')">
@@ -25,8 +24,7 @@
         :folder="currentFolder"
         :medias="currentFolder.medias"
         :read_only="!$root.state.connected"
-      >
-      </FolderView>
+      />
 
     </template>
 

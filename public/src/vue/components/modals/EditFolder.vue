@@ -42,8 +42,11 @@
 <!-- End date -->
       <div class="margin-bottom-small">
         <label>{{ $t('capture_end') }}</label>
-        <DateTime v-model="folderdata.end" :twowaybinding=true :read_only="read_only">
-        </DateTime>
+        <DateTime 
+          v-model="folderdata.end" 
+          :twowaybinding=true 
+          :read_only="read_only"
+        />
         <div class="margin-bottom-small">
           <small>
             {{ $t('currently') }}
