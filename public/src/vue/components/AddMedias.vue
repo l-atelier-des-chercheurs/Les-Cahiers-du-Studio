@@ -412,8 +412,13 @@ button {
       > * {
         display: block;
         position: relative;
+        cursor: pointer;
         opacity: 0;
         transition: opacity .4s cubic-bezier(0.19, 1, 0.22, 1);
+
+        label {
+          cursor: inherit;
+        }
 
         .delay_transition_up(@max, @counter) when (@counter < @max) {
           .delay_transition_up(@max, (@counter + 1));

@@ -95,7 +95,6 @@ export default {
   },
   mounted() {
     console.log('MOUNTED • TimeLineView: onScroll');
-
     this.sendAllFiles();
   },
   beforeDestroy() {
