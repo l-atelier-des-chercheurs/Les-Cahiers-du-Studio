@@ -17,7 +17,8 @@
           </svg>
 
           <div>
-            › <i>Les Cahiers du Studio</i>
+            › <i>Les Cahiers du Studio</i><br>
+            <small>v{{ $root.state.appVersion }}</small>
           </div>
         </div>
         <div class="text-formatting flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-medium">

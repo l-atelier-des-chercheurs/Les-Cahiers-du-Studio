@@ -24,19 +24,19 @@
         <label>{{ $t('capture_start') }}</label>
         <DateTime v-model="folderdata.start" :twowaybinding=true :read_only="read_only">
         </DateTime>
-      </div>
+        <div class="margin-bottom-small">
+          <small>
+            {{ $t('currently') }}
+            <button
+              type="button"
+              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+              @click="folderdata.start = $root.currentTime"
+            >
+              {{ $root.currentTime_human }}
+            </button>
+          </small>
+        </div>
 
-      <div class="margin-bottom-small">
-        <small>
-          {{ $t('currently') }}
-          <button
-            type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-            @click="folderdata.start = $root.currentTime"
-          >
-            {{ $root.currentTime_human }}
-          </button>
-        </small>
       </div>
 
 <!-- End date -->
@@ -44,19 +44,18 @@
         <label>{{ $t('capture_end') }}</label>
         <DateTime v-model="folderdata.end" :twowaybinding=true :read_only="read_only">
         </DateTime>
-      </div>
-
-      <div class="margin-bottom-small">
-        <small>
-          {{ $t('currently') }}
-          <button
-            type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-            @click="folderdata.end = $root.currentTime"
-          >
-            {{ $root.currentTime_human }}
-          </button>
-        </small>
+        <div class="margin-bottom-small">
+          <small>
+            {{ $t('currently') }}
+            <button
+              type="button"
+              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+              @click="folderdata.end = $root.currentTime"
+            >
+              {{ $root.currentTime_human }}
+            </button>
+          </small>
+        </div>
       </div>
 
 <!-- Password -->
@@ -69,7 +68,7 @@
  -->
 
 <!-- Author(s) -->
-      <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
+      <div v-if="!read_only || !!folderdata.authors" class="margin-bottom-small">
         <label>{{ $t('author') }}</label>
         <AuthorsInput
           :currentAuthors="folderdata.authors"
@@ -77,7 +76,6 @@
           @authorsChanged="newAuthors => folderdata.authors = newAuthors"
         />
       </div>
-
 
     </template>
 

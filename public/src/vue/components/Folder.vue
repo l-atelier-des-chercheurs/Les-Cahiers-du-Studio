@@ -124,6 +124,7 @@
         v-if="showEditFolderModal"
         :folder="folder"
         :slugFolderName="slugFolderName"
+        :allAuthors="folder.authors"
         @close="showEditFolderModal = false"
         :read_only="read_only"
       >

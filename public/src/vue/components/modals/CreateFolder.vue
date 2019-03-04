@@ -30,19 +30,18 @@
         <label>{{ $t('capture_end') }}</label>
         <DateTime v-model="folderdata.end" :twowaybinding=true :read_only="read_only">
         </DateTime>
-      </div>
-
-      <div class="margin-bottom-small">
-        <small>
-          {{ $t('currently') }}
-          <button
-            type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-            @click="folderdata.end = $root.currentTime"
-          >
-            {{ $root.currentTime_human }}
-          </button>
-        </small>
+        <div class="margin-bottom-small">
+          <small>
+            {{ $t('currently') }}
+            <button
+              type="button"
+              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+              @click="folderdata.end = $root.currentTime"
+            >
+              {{ $root.currentTime_human }}
+            </button>
+          </small>
+        </div>
       </div>
 
 <!-- Password -->
@@ -50,17 +49,6 @@
         <label>{{ $t('password') }}</label>
         <input type="password" v-model="folderdata.password">
         <small>{{ $t('password_instructions') }}</small>
-      </div>
-
-<!-- Author(s) -->
-      <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
-        <label>{{ $t('author') }}</label>
-        <AuthorsInput
-        />
-        <AuthorsInput
-          :currentAuthors="folderdata.authors"
-          @authorsChanged="newAuthors => folderdata.authors = newAuthors"
-        />
       </div>
 
     </template>

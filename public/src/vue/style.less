@@ -57,6 +57,10 @@ html {
 
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   font-family: 'STVitry', monospace;
   font-weight: 400;
@@ -108,6 +112,7 @@ body {
 
 #app {
   width: 100%;
+  height: 100%;
   margin: 0 auto;
 
   display: flex;
@@ -181,6 +186,9 @@ body {
 }
 
 .m_home {
+  overflow-y: scroll !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 
   .stvlogo {
     width: 75px;
