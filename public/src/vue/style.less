@@ -121,6 +121,10 @@ body {
   > * {
     flex: 1 1 auto;
     overflow: visible;
+
+    &.vue-portal-target  {
+      flex-grow: 0;
+    }
   }
 }
 
@@ -161,6 +165,7 @@ body {
 
 #systemBar {
   height: @t-systemBarHeight;
+  flex-grow: 0;
 
   > .fixedBand {
     -webkit-user-select: none;

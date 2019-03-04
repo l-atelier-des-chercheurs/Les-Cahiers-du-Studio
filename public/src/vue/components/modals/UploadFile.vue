@@ -94,6 +94,8 @@ export default {
   watch: {
   },
   mounted() {
+    console.log('MOUNTED • TimeLineView: onScroll');
+
     this.sendAllFiles();
   },
   beforeDestroy() {
