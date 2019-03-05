@@ -154,7 +154,6 @@ Vue.prototype.$socketio = new Vue({
         //   .success(this.$t('notifications.connection_active'));
       }
 
-      // TODO : reenable auth for folders and publications
       this.sendAuth();
     },
 

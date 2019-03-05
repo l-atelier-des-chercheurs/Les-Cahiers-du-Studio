@@ -425,6 +425,16 @@ export default {
   --rule-color: #000;
 
   background-color: var(--timeline-bg);
+
+  // TODO
+  // pour un futur mode nuit
+  // --label-backgroundcolor: #000;
+  // --label-color: white;
+
+  // --timeline-bg: #F1F2F0;
+  // --timeline-bg: #222;
+  // --rule-color: #fff;
+
 }
 
 .m_timeline--container {
@@ -475,7 +485,9 @@ export default {
         white-space: nowrap;
 
         span {
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;          
           background-color: #000;
           border-radius: 50%;
           color: white;
@@ -484,7 +496,7 @@ export default {
           height: 2em;
           text-align: center;
           vertical-align: middle;
-          line-height: 2;
+          // line-height: 2;
           font-weight: bold;
 
           &:empty {

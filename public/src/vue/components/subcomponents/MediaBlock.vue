@@ -320,9 +320,11 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 4px;
   background-color: white;
   background-color: var(--author-color);
+
+  border-radius: 4px;
+  border: 0px solid black;
 
   transition: all .2s cubic-bezier(.25,.8,.25,1);  
 
