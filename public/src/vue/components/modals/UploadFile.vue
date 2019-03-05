@@ -1,7 +1,6 @@
 <template>
   <Modal
     @close="$emit('close')"
-    @submit="sendAllFiles"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
     :askBeforeClosingModal="false"
@@ -62,9 +61,11 @@
 
     </template>
 
+<!-- 
     <template slot="submit_button" v-if="files_to_upload.length > 0">
       {{ $t('import_all_files') }}
-    </template>
+    </template> 
+-->
 
   </Modal>
 </template>
@@ -93,6 +94,8 @@ export default {
   watch: {
   },
   mounted() {
+    console.log('MOUNTED • TimeLineView: onScroll');
+    this.sendAllFiles();
   },
   beforeDestroy() {
   },
@@ -164,12 +167,6 @@ export default {
       });
     },
     sendAllFiles() {
-      // TODO : start 1 by 1
-      // Array.from(Array(this.files_to_upload.length).keys())
-      //   .map(x => {
-      //     await this.sendThisFile(this.files_to_upload[x]);
-      //   });
-
       const executeSequentially = (array) => {  
         return this.sendThisFile(this.files_to_upload[array.shift()])
           .then(x => array.length == 0 ? x : executeSequentially(array));

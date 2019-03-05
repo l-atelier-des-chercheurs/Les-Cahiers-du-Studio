@@ -40,6 +40,7 @@ module.exports = (function() {
       in_the_order: 'Dans l’ordre',
       public: 'Public',
       content: 'Contenu',
+      add_author: 'Ajouter un auteur',
 
       'lang:': 'Changer la langue&nbsp;:',
       lang: 'Changer la langue',
@@ -170,6 +171,7 @@ module.exports = (function() {
       in_the_order: 'In the order',
       public: 'Public',
       content: 'Content',
+      add_author: 'Add author',
 
       'lang:': 'Select lang:',
       lang: 'Select lang',

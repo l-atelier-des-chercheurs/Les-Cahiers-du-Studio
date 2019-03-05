@@ -99,7 +99,7 @@
           },
           "type": {
             "type": "string",
-            "options": ["image", "video", "audio", "text", "marker", "other"],
+            "options": ["image", "video", "audio", "text", "marker", "document", "other"],
             "default": "other"
           },
           "collapsed": {

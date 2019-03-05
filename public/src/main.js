@@ -10,17 +10,18 @@ window.$ = window.jQuery = jQuery;
 document.body.addEventListener('click', openInNativeBrowser);
 
 function openInNativeBrowser(event) {
+  if (!(window && window.process && window.process.type)) {
+    return;
+  }
   event.path.every(item => {
     if (
       item.classList !== undefined &&
       item.classList.length > 0 &&
       item.classList.contains('js--openInBrowser')
     ) {
-      if (window && window.process && window.process.type) {
-        const shell = window.require('electron').shell;
-        event.preventDefault();
-        shell.openExternal(item.href);
-      }
+      const shell = window.require('electron').shell;
+      event.preventDefault();
+      shell.openExternal(item.href);
       return false;
     }
     return true;

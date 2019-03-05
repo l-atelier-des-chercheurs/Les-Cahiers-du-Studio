@@ -8,18 +8,14 @@
     </SystemBar>
 
     <template v-if="view === 'ListView'">
-      <div class="container">
-        <div class="row">
+      
+      <ListView
+        v-if="view === 'ListView'"
+        :presentationMD="$root.store.presentationMD"
+        :read_only="!$root.state.connected"
+        :folders="$root.store.folders"
+      />
 
-          <ListView
-            v-if="view === 'ListView'"
-            :presentationMD="$root.store.presentationMD"
-            :read_only="!$root.state.connected"
-            :folders="$root.store.folders"
-          />
-
-        </div>
-      </div>
     </template>
     <template v-else-if="view === 'FolderView' && currentFolder.hasOwnProperty('name')">
 
@@ -41,15 +37,7 @@
       />
 
     </template>
-    <div class="container">
-      <div class="row">
-        <template>
-          <BottomFooter v-if="current_slugFolderName === ''">
-          </BottomFooter>
-        </template>
-      </div>
-    </div>
-
+    
     <portal-target name="modal_container" />
 
   </div>

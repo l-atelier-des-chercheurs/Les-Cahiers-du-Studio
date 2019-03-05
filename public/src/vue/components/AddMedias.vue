@@ -44,10 +44,8 @@
         </svg>      
       </button>
 
-      <template
-      >
-        <button
-          type="button"
+      <template>
+        <div
           :key="`add_${field.key}`"
           class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
           v-for="field in input_file_fields"
@@ -69,7 +67,7 @@
             :capture="field.capture"
             style="width: 1px; height: 1px; overflow: hidden;"
           >
-        </button>
+        </div>
       </template>
     </div>
 
@@ -371,6 +369,7 @@ button {
 
   background-color: white;
   color: black;
+  box-shadow: 2px 4px 13px #bbb;   
 
   top: 50%;
   transform: translate(0, -50%);
@@ -411,8 +410,15 @@ button {
       align-items: center;
 
       > * {
+        display: block;
+        position: relative;
+        cursor: pointer;
         opacity: 0;
         transition: opacity .4s cubic-bezier(0.19, 1, 0.22, 1);
+
+        label {
+          cursor: inherit;
+        }
 
         .delay_transition_up(@max, @counter) when (@counter < @max) {
           .delay_transition_up(@max, (@counter + 1));

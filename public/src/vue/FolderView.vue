@@ -207,14 +207,6 @@
           </div>
         </div>
 
-        <AddMedias
-          v-if="
-            ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected"
-          :slugFolderName="slugFolderName"
-          :read_only="read_only"
-        >
-        </AddMedias>
-
         <EditMedia
           v-if="showMediaModalFor"
           :slugFolderName="slugFolderName"
@@ -232,6 +224,14 @@
 
 
     </div>
+
+    <AddMedias
+      v-if="
+        ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected"
+      :slugFolderName="slugFolderName"
+      :read_only="read_only"
+    >
+    </AddMedias>
 
   </div>
 </template>
