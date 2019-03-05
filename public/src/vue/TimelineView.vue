@@ -60,7 +60,7 @@
                 </div>
               </template>
               <template v-else>
-                .
+                …
               </template>
             </div>
           </div>
@@ -500,6 +500,7 @@ export default {
           font-weight: bold;
 
           &:empty {
+            display: none;
             width: .5em;
             height: .5em;
           }
