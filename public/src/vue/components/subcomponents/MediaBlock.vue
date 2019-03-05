@@ -56,23 +56,25 @@
           </div>
         </div>
 
-        <div class="handle handle_resizeMedia handle_resizeMedia_bottom">
-          <div
-            @mousedown.stop.prevent="resizeMedia('mouse', 'bottom_vertical')"
-            @touchstart.stop.prevent="resizeMedia('touch', 'bottom_vertical')"
-          >
-            <span></span>
+        <template v-if="mediaSize.width >= 2 && mediaSize.height >= 2">
+          <div class="handle handle_resizeMedia handle_resizeMedia_bottom">
+            <div
+              @mousedown.stop.prevent="resizeMedia('mouse', 'bottom_vertical')"
+              @touchstart.stop.prevent="resizeMedia('touch', 'bottom_vertical')"
+            >
+              <span></span>
+            </div>
           </div>
-        </div>
 
-        <div class="handle handle_resizeMedia handle_resizeMedia_right">
-          <div
-            @mousedown.stop.prevent="resizeMedia('mouse', 'right_horizontal')"
-            @touchstart.stop.prevent="resizeMedia('touch', 'right_horizontal')"
-          >
-            <span></span>
+          <div class="handle handle_resizeMedia handle_resizeMedia_right">
+            <div
+              @mousedown.stop.prevent="resizeMedia('mouse', 'right_horizontal')"
+              @touchstart.stop.prevent="resizeMedia('touch', 'right_horizontal')"
+            >
+              <span></span>
+            </div>
           </div>
-        </div>
+        </template>
       </template>
 
     </div>
@@ -326,8 +328,8 @@ export default {
 
   &.is--hovered {
     // background-color: white;
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 46px rgba(0,0,0,0.23);
+    transform: translateY(-6px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.19), 0 6px 46px rgba(0,0,0,0.23);
   }
 
   .author_indicator {
@@ -495,6 +497,10 @@ export default {
     padding: 1em;
     border-radius: 50%;
     // background-color: red;
+
+    &:hover > span {
+      background-color: #aaa;
+    }
 
     > span {
       display: block;

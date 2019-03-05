@@ -33,27 +33,35 @@
               :key="day.label"
               class="m_timeline--container--dates--day"
             >
-              <div class="m_timeline--container--dates--day--daylabel">
-                <span>
-                  {{ day.label }}
-                  <span>{{ day.number_of_medias }}</span>
-                </span>
-              </div>
-              <div v-for="(medias, hour) in day.hours"
-                :key="hour"
-                class="m_timeline--container--dates--day--hours"
-              >
-                <div class="m_timeline--container--dates--day--hours--hourlabel">
-                  <span>{{ hour }}</span>
+              <template v-if="!day.hasOwnProperty('period') || day.period === false">
+                <div class="m_timeline--container--dates--day--daylabel">
+                  <div class="m_timeline--container--dates--day--daylabel--container">
+                    <span>
+                      {{ day.label }}
+                      <span v-if="day.number_of_medias > 0">{{ day.number_of_medias }}</span>
+                      <span v-else></span>
+                    </span>
+                  </div>
                 </div>
+                <div v-for="(medias, hour) in day.hours"
+                  :key="hour"
+                  class="m_timeline--container--dates--day--hours"
+                >
+                  <div class="m_timeline--container--dates--day--hours--hourlabel">
+                    <span>{{ hour }}</span>
+                  </div>
 
-                <MediasBlock 
-                  :medias="medias"
-                  :folder="folder"
-                  :slugFolderName="slugFolderName"
-                />
+                  <MediasBlock 
+                    :medias="medias"
+                    :folder="folder"
+                    :slugFolderName="slugFolderName"
+                  />
 
-              </div>
+                </div>
+              </template>
+              <template v-else>
+                .
+              </template>
             </div>
           </div>
         </div>
@@ -312,8 +320,7 @@ export default {
         return this.$root.currentTime;
       }
     },
-
-    date_interval() {
+    full_date_interval() {
       // itérer dans toutes les dates, 
       // et construire un array de date qui ressemble à ça :
 
@@ -347,6 +354,36 @@ export default {
       // days = days.map(d => d.format('L'));
 
       return date_interval;
+    },
+    date_interval() {
+      // check if multiple days (3+) in a row are empty
+      let date_interval = [];
+      let min_consecutive_empty_days = 3;
+
+      date_interval = this.full_date_interval.reduce((acc, day) => {
+        if(day.number_of_medias > 0 || acc.length === 0) {
+          acc.push(day);
+        } else {
+          // if last added day has 0
+          // acc.push(day);
+          const last_item = acc[acc.length - 1]; 
+          if(last_item.number_of_medias === 0) {
+            // check if last item is already a period
+            if(!last_item.hasOwnProperty('period') || !last_item.period) {
+              day.period = true;
+              acc.push(day);
+            }
+          } else {
+            acc.push(day);
+          }
+        }
+        return acc;
+      }, []);
+
+      debugger;
+
+      return date_interval;
+      // return this.full_date_interval;
     }
   },
   methods: {
@@ -406,7 +443,7 @@ export default {
 .m_timeline--container--dates--day {
   position: relative;
   height: 100%;
-  min-width: 250px;
+  // min-width: 250px;
   display: flex;
   align-items: center;
   // background-color: var(--label-backgroundcolor);
@@ -418,27 +455,47 @@ export default {
     height: 100%;
     display: flex;
     align-items: center;
+    justify-content: center;
 
-    > span {
-      background-color: var(--timeline-bg);
-      color: #000;
-      padding: 2px 8px;
+    .m_timeline--container--dates--day--daylabel--container {
+      position: relative;
       transform: rotate(-90deg);
+      // transform-origin: center center;
+      
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-      span {
-        display: inline-block;
-        background-color: #000;
-        border-radius: 50%;
-        color: white;
-        font-size:.7em;
-        width: 2em;
-        height: 2em;
-        text-align: center;
-        vertical-align: middle;
-        line-height: 2;
-        font-weight: bold;
+      > span {
+        display: block;
+        // min-width: 320px; 
+        background-color: var(--timeline-bg);
+        color: #000;
+        padding: 2px 8px;
+        white-space: nowrap;
+
+        span {
+          display: inline-block;
+          background-color: #000;
+          border-radius: 50%;
+          color: white;
+          font-size:.7em;
+          width: 2em;
+          height: 2em;
+          text-align: center;
+          vertical-align: middle;
+          line-height: 2;
+          font-weight: bold;
+
+          &:empty {
+            width: .5em;
+            height: .5em;
+          }
+        }
       }
+
     }
+
 
     &::before {
       content: '';
