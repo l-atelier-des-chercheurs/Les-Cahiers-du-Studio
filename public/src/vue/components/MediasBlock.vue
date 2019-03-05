@@ -3,8 +3,9 @@
 
     <div v-packery="grid_options" 
       class='packery-container'
+      :class="{ 'is--showing_grid' : show_grid }"
       ref="packery"
-      :style="`padding: ${grid_options.gutter/2}px`"
+      :style="`padding: ${grid_options.gutter/2}px; --gridstep: ${grid_options.columnWidth + grid_options.gutter}px`"
     >
       <!-- <div class="packery-grid-sizer"></div> -->
 
@@ -21,6 +22,10 @@
         :base_edge="base_edge"
         :gutter="grid_options.gutter"
         @triggerPackeryLayout="triggerPackeryLayout()"
+        @dragStarted="showGrid"
+        @dragEnded="hideGrid"
+        @resizeStarted="showGrid"
+        @resizeEnded="hideGrid"
       />
 
     </div>
@@ -42,6 +47,7 @@ export default {
   },
   data() {
     return {
+      show_grid: false,
       grid_options: {
         itemSelector: ".packery-item", 
         percentPosition: true,
@@ -79,13 +85,34 @@ export default {
       console.log('Triggered packery layout');
       this.$forceUpdate();
       // packeryEvents.$emit('layout', this.$refs.packery);
+    },
+    showGrid() {
+      this.show_grid = true;
+    },
+    hideGrid() {
+      this.show_grid = false;
     }
   }
 }
 </script>
-<style lang="less">
+<style lang="scss">
 .packery-container {
   height: 100vh;  
+
+  transition: all 2s cubic-bezier(0.19, 1, 0.22, 1);
+
+  // Configuration
+  --gridstep: 40px;
+  --gridstep_before: calc(var(--gridstep) - 1px);
+
+  background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  &:not(.is--showing_grid) {
+    background-image: none;
+  }    
+
 }
 /* .packery-grid-sizer {
   width: 25px;

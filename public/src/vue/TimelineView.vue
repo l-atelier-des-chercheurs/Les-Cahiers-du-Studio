@@ -56,7 +56,6 @@
                     :folder="folder"
                     :slugFolderName="slugFolderName"
                   />
-
                 </div>
               </template>
               <template v-else>
@@ -424,6 +423,9 @@ export default {
   --timeline-bg: #F1F2F0;
   --rule-color: #000;
 
+  --grid-color: #fff;
+  --grid-opacity: 1;
+
   background-color: var(--timeline-bg);
 
   // TODO
@@ -434,6 +436,7 @@ export default {
   // --timeline-bg: #F1F2F0;
   // --timeline-bg: #222;
   // --rule-color: #fff;
+
 
 }
 
@@ -463,6 +466,8 @@ export default {
   > .m_timeline--container--dates--day--daylabel {
     position: relative;
     height: 100%;
+    width: 50px;
+    margin-left: 30px;
     display: flex;
     align-items: center;
     justify-content: center;

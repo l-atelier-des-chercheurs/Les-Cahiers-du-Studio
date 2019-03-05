@@ -143,6 +143,12 @@ export default {
       draggie: this.$el.draggie,
       node: this.$el.parentNode
     });
+    this.$el.draggie.on('dragStart', () => {
+      this.$emit('dragStarted');      
+    });
+    this.$el.draggie.on('dragEnd', () => {
+      this.$emit('dragEnded');      
+    });
 
     this.$nextTick(() => {
       this.is_mounted = true;
@@ -227,6 +233,7 @@ export default {
       }
       if (!this.read_only) {
         this.resizeOrigin = origin;
+        this.$emit('resizeStarted');      
         if(type === 'mouse') {
           window.addEventListener('mousemove', this.resizeMove);
           window.addEventListener('mouseup', this.resizeUp);
@@ -280,6 +287,7 @@ export default {
         //   height: this.mediaSize.height 
         // });
         this.is_resized = false;
+        this.$emit('resizeEnded');      
       }
 
       event.stopPropagation();
