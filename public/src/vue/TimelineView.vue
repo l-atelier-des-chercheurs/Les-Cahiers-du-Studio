@@ -357,10 +357,10 @@ export default {
     date_interval() {
       // check if multiple days (3+) in a row are empty
       let date_interval = [];
-      let min_consecutive_empty_days = 3;
+      // let min_consecutive_empty_days = 3;
 
-      date_interval = this.full_date_interval.reduce((acc, day) => {
-        if(day.number_of_medias > 0 || acc.length === 0) {
+      date_interval = this.full_date_interval.reduce((acc, day, index) => {
+        if(day.number_of_medias > 0 || acc.length === 0 || index === this.full_date_interval.length - 1) {
           acc.push(day);
         } else {
           // if last added day has 0
@@ -378,8 +378,6 @@ export default {
         }
         return acc;
       }, []);
-
-      debugger;
 
       return date_interval;
       // return this.full_date_interval;
@@ -427,7 +425,7 @@ export default {
   --grid-color: rgb(241,241,241);
   --grid-opacity: 1;
 
-  background-color: var(--timeline-bg);
+  // background-color: #000;
 
   // TODO
   // pour un futur mode nuit
@@ -452,12 +450,17 @@ export default {
   height: 100%;
   position: relative;
 
+  margin: auto;
+  padding: 0 50px;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
+
   // Configuration
   --gridstep: 40px;
   --gridstep_before: calc(var(--gridstep) - 1px);
 
   // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
-  background-image: repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
+  background-image: repeating-linear-gradient(180deg,var(--timeline-bg),var(--timeline-bg) var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
   // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -547,7 +550,7 @@ export default {
 
   .m_timeline--container--dates--day--hours--hourlabel {
     position: relative;
-    width: 100%;
+    width: 44px;
     height: 100%;
     top: 0;
     padding: 24px;
