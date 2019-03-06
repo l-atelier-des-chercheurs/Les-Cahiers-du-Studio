@@ -459,10 +459,9 @@ export default {
   height: 100%;
   position: relative;
 
-  margin: auto;
-  padding: 0 50px;
-  border-left: 1px solid #fff;
-  border-right: 1px solid #fff;
+  margin: 8px 50px;
+  // border-left: 1px solid #fff;
+  // border-right: 1px solid #fff;
 
   // Configuration
   --gridstep: 40px;
