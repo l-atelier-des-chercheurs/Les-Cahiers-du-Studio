@@ -109,16 +109,25 @@ export default {
   // background-repeat: no-repeat;
   // background-size: 100% 100%;
 
+  // Configuration
+  --gridstep: 40px;
+  --gridstep_before: calc(var(--gridstep) - 1px);
+  --grid-color: rgb(235, 235, 235);
+
+  --grid-color-horizontal: var(--grid-color);
+  --grid-color-vertical: transparent;
+
+  // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
+  background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color-vertical) var(--gridstep_before),var(--grid-color-vertical) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color-horizontal) var(--gridstep_before),var(--grid-color-horizontal) var(--gridstep));
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
   &:not(.is--showing_grid) {
-    background-image: none;
+    // background-image: none;
   }    
 
   &.is--showing_grid {
-    --grid-color: rgb(235, 235, 235);
-
-    background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
+    --grid-color-vertical: var(--grid-color);
   }
 }
 /* .packery-grid-sizer {

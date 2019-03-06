@@ -461,18 +461,7 @@ export default {
 
   margin: 8px 50px;
   // border-left: 1px solid #fff;
-  // border-right: 1px solid #fff;
-
-  // Configuration
-  --gridstep: 40px;
-  --gridstep_before: calc(var(--gridstep) - 1px);
-
-  // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
-  background-image: repeating-linear-gradient(180deg,var(--timeline-bg),var(--timeline-bg) var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
-  // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-
+  border-right: 1px solid #000;
 }
 
 .m_timeline--container--dates--day {
@@ -489,7 +478,7 @@ export default {
     position: relative;
     height: 100%;
     width: 50px;
-    margin-left: 30px;
+    margin-left: 15px;
     margin-right: 15px;
     display: flex;
     align-items: center;
@@ -559,9 +548,10 @@ export default {
   .m_timeline--container--dates--day--hours--hourlabel {
     position: relative;
     width: 44px;
+    width: 0;
     height: 100%;
     top: 0;
-    padding: 24px;
+    // padding: 24px;
     display: flex;
     align-items: center;
     z-index: 100;
