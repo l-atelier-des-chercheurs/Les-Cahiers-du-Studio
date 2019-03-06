@@ -318,7 +318,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-button {
+button, .button {
   position: relative;
   box-shadow: 2px 4px 13px #bbb; 
   // margin: .3em; 
