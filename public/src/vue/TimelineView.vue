@@ -421,9 +421,10 @@ export default {
   --label-color: white;
 
   --timeline-bg: #F1F2F0;
+  --timeline-bg: #f8f8f8;
   --rule-color: #000;
 
-  --grid-color: #fff;
+  --grid-color: rgb(241,241,241);
   --grid-opacity: 1;
 
   background-color: var(--timeline-bg);
@@ -451,6 +452,16 @@ export default {
   height: 100%;
   position: relative;
 
+  // Configuration
+  --gridstep: 40px;
+  --gridstep_before: calc(var(--gridstep) - 1px);
+
+  // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
+  background-image: repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
+  // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
 }
 
 .m_timeline--container--dates--day {
@@ -468,6 +479,7 @@ export default {
     height: 100%;
     width: 50px;
     margin-left: 30px;
+    margin-right: 15px;
     display: flex;
     align-items: center;
     justify-content: center;

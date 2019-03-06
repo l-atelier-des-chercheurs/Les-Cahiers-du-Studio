@@ -339,7 +339,7 @@ export default {
   &.is--hovered {
     // background-color: white;
     transform: translateY(-6px);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.19), 0 6px 46px rgba(0,0,0,0.23);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.09), 0 6px 26px rgba(0,0,0,0.03);
   }
 
   .author_indicator {
@@ -385,7 +385,7 @@ export default {
 }
 
 .packery-drop-placeholder {
-  background-color: rgba(0,0,0,.3);
+  background-color: rgba(0,0,0,.1);
   filter: blur(10px);
   -webkit-transition: -webkit-transform 0.2s;
           transition: transform 0.2s;

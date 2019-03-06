@@ -99,20 +99,27 @@ export default {
 .packery-container {
   height: 100vh;  
 
-  transition: all 2s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all .4s cubic-bezier(0.19, 1, 0.22, 1);
 
-  // Configuration
+  // // Configuration
   --gridstep: 40px;
   --gridstep_before: calc(var(--gridstep) - 1px);
 
-  background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+  // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
+  // background-repeat: no-repeat;
+  // background-size: 100% 100%;
 
   &:not(.is--showing_grid) {
     background-image: none;
   }    
 
+  &.is--showing_grid {
+    --grid-color: rgb(235, 235, 235);
+
+    background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
 }
 /* .packery-grid-sizer {
   width: 25px;
