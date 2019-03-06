@@ -68,6 +68,13 @@
 
     </div>
 
+    <AddMedias
+      v-if="
+        ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected"
+      :slugFolderName="slugFolderName"
+      :read_only="read_only"
+    />
+
     <!-- Ici le bouton +
 
     Ici la minimap
@@ -80,6 +87,7 @@
 </template>
 <script>
 import MediasBlock from './components/MediasBlock.vue';
+import AddMedias from './components/AddMedias.vue';
 import { setTimeout } from 'timers';
 
 export default {
@@ -90,7 +98,8 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediasBlock
+    MediasBlock,
+    AddMedias
   },
   data() {
     return {
