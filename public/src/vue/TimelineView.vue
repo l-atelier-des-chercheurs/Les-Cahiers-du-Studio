@@ -459,7 +459,7 @@ export default {
   height: 100%;
   position: relative;
 
-  margin: 8px 50px;
+  padding: 8px 50px;
   // border-left: 1px solid #fff;
   border-right: 1px solid #000;
 }
@@ -557,17 +557,14 @@ export default {
     z-index: 100;
     pointer-events: none;
 
-
-
     span {
       display: block;
-      // width: 100%;
       background-color: var(--label-backgroundcolor);
       color: var(--label-color);
       padding: 2px 8px;
 
-      transform: rotate(-15deg);
-      transform-origin: left top;
+      transform: rotate(-15deg) translateX(-20px);
+      transform-origin: center center;
       font-style: italic;    
     }
 

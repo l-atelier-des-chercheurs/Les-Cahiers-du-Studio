@@ -334,11 +334,11 @@ export default {
   border-radius: 4px;
   border: 0px solid black;
 
-  transition: all .2s cubic-bezier(.25,.8,.25,1);  
+  transition: all .8s cubic-bezier(.25,.8,.25,1);  
 
   &.is--hovered {
     // background-color: white;
-    transform: translateY(-6px);
+    transform: translateY(-4px) scale(1.02);
     box-shadow: 0 5px 10px rgba(0,0,0,0.09), 0 6px 26px rgba(0,0,0,0.03);
   }
 
