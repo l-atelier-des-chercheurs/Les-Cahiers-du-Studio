@@ -4,9 +4,8 @@
     :class="`type-${media.type}`"
     :data-context="context"
   >
-
     <template v-if="media.type === 'image'">
-      <img :src="linkToImageThumb">
+      <img :srcset="imageSrcSetAttr" :sizes="imageSizesAttr" :src="linkToImageThumb">
       <transition name="fade" :duration="600">
         <img v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb" :src="linkToHoveredThumb">
       </transition>
@@ -14,7 +13,7 @@
 
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
-        <img :src="linkToVideoThumb">
+        <img :srcset="videostillSrcSetAttr" :sizes="imageSizesAttr" :src="linkToVideoThumb">
       </template>
       <template v-else>
         <video controls ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
@@ -131,6 +130,10 @@ export default {
     preview_size: {
       type: Number,
       default: 180
+    },
+    element_width: {
+      type: Number,
+      default: 0
     }
   },
   components: {
@@ -199,6 +202,48 @@ export default {
       let url = this.$root.state.mode === 'export_publication' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`;
       url += `?${(new Date()).getTime()}`;
       return url;
+    },
+    imageSrcSetAttr: function() {
+      if(this.element_width === 0) {
+        return;
+      }
+
+      // get all available sizes 
+      const img_srcset = this.media.thumbs.reduce((acc, t) => {
+        if(t.hasOwnProperty('path')) {
+          acc.push(t.path + ' ' + t.size + 'w');
+        }
+        return acc;
+      }, []);
+      return img_srcset.join(', ');
+    },
+    videostillSrcSetAttr: function() {
+      if(this.element_width === 0) {
+        return;
+      }
+
+      let timeMark = 0;
+      let timeMarkThumbs = this.media.thumbs.filter(t => !!t && t.timeMark === 0);
+
+      if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
+        return;
+      }
+
+      // get all available sizes 
+      const img_srcset = timeMarkThumbs[0].thumbsData.reduce((acc, t) => {
+        if(t.hasOwnProperty('path')) {
+          acc.push(t.path + ' ' + t.size + 'w');
+        }
+        return acc;
+      }, []);
+      
+      return img_srcset.join(', ');
+    },
+    imageSizesAttr: function() {
+      if(this.element_width === 0) {
+        return;
+      }
+      return this.element_width + 'px';
     },
     linkToHoveredThumb: function() {
       let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbResHovered)[0].path;

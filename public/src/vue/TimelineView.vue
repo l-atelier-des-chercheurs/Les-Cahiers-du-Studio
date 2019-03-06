@@ -478,8 +478,7 @@ export default {
     position: relative;
     height: 100%;
     width: 50px;
-    margin-left: 15px;
-    margin-right: 15px;
+    margin: 0 30px;
     display: flex;
     align-items: center;
     justify-content: center;

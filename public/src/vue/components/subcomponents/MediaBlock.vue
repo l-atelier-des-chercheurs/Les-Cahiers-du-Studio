@@ -17,7 +17,7 @@
         :slugMediaName="media.slugMediaName"
         :media="media"
         :context="'preview'"
-        :preview_size="360"
+        :element_width="mediaWidth"
       />
 
       <div class="author_indicator"
@@ -172,9 +172,15 @@ export default {
   computed: {
     itemSize() {
       return {
-        width: this.mediaSize.width * this.columnWidth + (this.mediaSize.width-1) * this.gutter + 'px',
-        height: this.mediaSize.height * this.rowHeight + (this.mediaSize.height-1) * this.gutter + 'px',
+        width: this.mediaWidth + 'px',
+        height: this.mediaHeight + 'px'
       }
+    },
+    mediaWidth() {
+      return this.mediaSize.width * this.columnWidth + (this.mediaSize.width-1) * this.gutter;
+    },
+    mediaHeight() {
+      return  this.mediaSize.height * this.rowHeight + (this.mediaSize.height-1) * this.gutter;
     },
     itemStylesWithSize() {
       return Object.assign({
@@ -214,16 +220,10 @@ export default {
       this.mediaSize.height += increment;
     },
     limitMediaWidth(w) {
-      if(!this.limit_media_to_page) {
-        return w;
-      }
-      return Math.max(6, Math.min(1, w));
+      return Math.max(1, Math.min(12, w));
     },
     limitMediaHeight(h) {
-      if(!this.limit_media_to_page) {
-        return h;
-      }
-      return Math.max(6, Math.min(1, h));
+      return Math.max(1, Math.min(12, h));
     },
 
 
@@ -338,8 +338,8 @@ export default {
 
   &.is--hovered {
     // background-color: white;
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 5px 10px rgba(0,0,0,0.09), 0 6px 26px rgba(0,0,0,0.03);
+    transform: translateY(-8px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
   }
 
   .author_indicator {
@@ -385,7 +385,7 @@ export default {
 }
 
 .packery-drop-placeholder {
-  background-color: rgba(0,0,0,.1);
+  background-color: rgba(0,0,0,.15);
   filter: blur(10px);
   -webkit-transition: -webkit-transform 0.2s;
           transition: transform 0.2s;
@@ -447,7 +447,7 @@ export default {
   border-style: inherit;
   border-width: 0px;
 
-  color: #fff;
+  color: rebeccapurple;
   
   --handle-width: 15px;
   --handle-height: 5px;
@@ -516,8 +516,8 @@ export default {
       display: block;
       width: var(--handle-height);
       height: var(--handle-height);
-      background-color: #fff;
-      box-shadow: 0 0px 4px rgba(0,0,0,.43);
+      background-color:#fff;
+      // box-shadow: 0 0px 4px rgba(0,0,0,.43);
       // mix-blend-mode: multiply;
       border-radius: var(--handle-height);
     }
