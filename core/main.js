@@ -30,15 +30,6 @@ module.exports = function({ router }) {
       ]
     });
 
-    const {
-      default: installExtension,
-      VUEJS_DEVTOOLS
-    } = require('electron-devtools-installer');
-
-    installExtension(VUEJS_DEVTOOLS)
-      .then(name => dev.logverbose(`Added Extension:  ${name}`))
-      .catch(err => dev.logverbose('An error occurred: ', err));
-
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
@@ -114,9 +105,11 @@ module.exports = function({ router }) {
                     }, 0);
                   }
 
-                  global.session_password = hashCode(
-                    sessionMeta.session_password
-                  );
+                  const pass = sessionMeta.session_password.trim();
+
+                  dev.log('Found session password in meta.txt set to: ' + pass);
+
+                  global.session_password = hashCode(pass);
                 }
                 portscanner
                   .findAPortNotInUse(
