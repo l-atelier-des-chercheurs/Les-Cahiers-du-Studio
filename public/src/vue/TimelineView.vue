@@ -37,7 +37,9 @@
               class="m_timeline--container--dates--day"
             >
               <template v-if="!day.hasOwnProperty('period') || day.period === false">
-                <div class="m_timeline--container--dates--day--daylabel">
+                <div class="m_timeline--container--dates--day--daylabel"
+                  :class="{ 'is--current_day' : day.is_current_day }"
+                >
                   <div class="m_timeline--container--dates--day--daylabel--container">
                     <span>
                       {{ day.label }}
@@ -46,16 +48,21 @@
                     </span>
                   </div>
                 </div>
-                <div v-for="(medias, hour) in day.hours"
-                  :key="hour"
+
+                <div v-for="hour in day.hours"
+                  :key="hour.label"
                   class="m_timeline--container--dates--day--hours"
                 >
-                  <div class="m_timeline--container--dates--day--hours--hourlabel">
-                    <span>{{ hour }}</span>
+                  <div class="m_timeline--container--dates--day--hours--hourlabel"
+                    :class="{ 
+                      'is--current_hour' : hour.hasOwnProperty('is_current_hour') && hour.is_current_hour
+                    }"
+                  >
+                    <span>{{ hour.label }}</span>
                   </div>
 
                   <MediasBlock 
-                    :medias="medias"
+                    :medias="hour.medias"
                     :folder="folder"
                     :slugFolderName="slugFolderName"
                   />
@@ -77,6 +84,7 @@
         ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected"
       :slugFolderName="slugFolderName"
       :read_only="read_only"
+      :is_realtime="is_realtime"
     />
 
     <!-- Ici le bouton +
@@ -294,13 +302,40 @@ export default {
             return dateMoment.format('HH') + ':00';
           }
         });
+
+        // from
+        // {
+        //   "10:00": [
+        //     {},
+        //     {}
+        //   ]
+        // };
+        // to 
+        // {
+        //   "10:00": {
+        //     medias: [
+        //       {},
+        //       {}
+        //     ]
+        //   }           
+        // };        
+
+        media_by_hours = Object.entries(media_by_hours).reduce((acc, [hour, medias]) => {
+          acc.push({
+            label: hour,
+            medias
+          });
+          return acc;
+        }, []);
         // media_by_hours = this.$_.toPairs(media_by_hours); 
         // media_by_hours = this.$_.sortBy(media_by_hours);
         // media_by_hours = media_by_hours.reverse();
-
-        return [day, media_by_hours];   
+        return {
+          day, 
+          hours: media_by_hours
+        };   
       });
-      // groupby hour in day
+        
       return mediaGroup;  
     },
     timeline_start() {
@@ -356,12 +391,20 @@ export default {
         let this_date = currDate.clone();
         let medias_for_date = [];
 
-        const has_media_for_date = this.groupedMedias.filter(i => this.$moment(i[0]).isSame(this_date, 'day'));
+        const has_media_for_date = this.groupedMedias.filter(i => this.$moment(i.day).isSame(this_date, 'day'));
+
         if(has_media_for_date.length > 0) {
-          medias_for_date = has_media_for_date[0][1];
+          medias_for_date = has_media_for_date[0].hours;
         }
 
-        const is_current_day = false;
+        const is_current_day = this.$moment(this.$root.currentTime_minute).isSame(this_date, 'day');
+        if(is_current_day) {
+          medias_for_date.map(m => {
+            if(m.label === this.$moment(this.$root.currentTime_minute).format('HH') + ':00') {
+              m.is_current_hour = true;
+            }
+          });          
+        }
 
         const number_of_medias = Object.values(medias_for_date).reduce((acc, element) => acc + element.length, 0);
         let day = {
@@ -388,7 +431,7 @@ export default {
       // let min_consecutive_empty_days = 3;
 
       date_interval = this.full_date_interval.reduce((acc, day, index) => {
-        if(day.number_of_medias > 0 || acc.length === 0 || index === this.full_date_interval.length - 1) {
+        if(day.number_of_medias > 0 || acc.length === 0 || index === this.full_date_interval.length - 1 || day.is_current_day) {
           acc.push(day);
         } else {
           // if last added day has 0
@@ -504,6 +547,12 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    --label-background: var(--timeline-bg);
+    --label-color: black;
+
+    &.is--current_day {
+      --label-color: #ff3b4c;
+    }
 
     .m_timeline--container--dates--day--daylabel--container {
       position: relative;
@@ -517,8 +566,8 @@ export default {
       > span {
         display: block;
         // min-width: 320px; 
-        background-color: var(--timeline-bg);
-        color: #000;
+        background-color: var(--label-background);
+        color: var(--label-color);
         padding: 2px 8px;
         white-space: nowrap;
 
@@ -589,6 +638,10 @@ export default {
     align-items: center;
     z-index: 100;
     pointer-events: none;
+
+    &.is--current_hour {
+      --label-backgroundcolor: #ff3b4c;
+    }
 
     span {
       display: block;

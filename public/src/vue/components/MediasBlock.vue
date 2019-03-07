@@ -100,7 +100,7 @@ export default {
 </script>
 <style lang="scss">
 .packery-container {
-  height: 100vh;  
+  height: 100%;  
 
   // transition: all .1s cubic-bezier(0.19, 1, 0.22, 1);
 

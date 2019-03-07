@@ -74,7 +74,11 @@
     <button 
       type="button"
       class="button button-round margin-bottom-small padding-none bg-noir c-blanc button_addMedia m_addMedias--openHideButton"
-      :class="{ 'is--shown' : show_options, 'is--dragover' : show_drop_container }"
+      :class="{ 
+        'is--shown' : show_options, 
+        'is--dragover' : show_drop_container,
+        'bg-rouge_vif' : is_realtime
+      }"
       @click="show_options = !show_options"
       @drop="dropHandler($event)"
       :disabled="read_only"
@@ -109,7 +113,11 @@ export default {
     read_only: {
       type: Boolean,
       default: true
-    }
+    },
+    is_realtime: {
+      type: Boolean,
+      default: false
+    },
   },
   components: {
     UploadFile
