@@ -499,6 +499,8 @@ export default {
   --grid-color: var(--rule-color);
   --grid-opacity: 1;
 
+  // background-color: #ddd;
+
   // background-color: #000;
 
   // TODO
@@ -525,8 +527,8 @@ export default {
   position: relative;
 
   margin: 0px 50px;
-  padding: 16px 50px;
-  border-right: 1px solid #000;
+  padding: 16px 120px;
+  // border-right: 1px solid #000;
 }
 
 .m_timeline--container--dates--day {
