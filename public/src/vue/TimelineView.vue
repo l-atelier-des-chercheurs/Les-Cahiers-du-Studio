@@ -16,9 +16,12 @@
     <button type="button" class="folder_backbutton" @click="$root.closeFolder()" v-html="'←'" />
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
-    <!-- {{ timeline_start }}<br>
-    {{ timeline_end }}<br> -->
-    <!-- translation : {{ translation }} -->
+
+      <br><br><br>
+    <!-- timeline_start = {{ timeline_start }}<br>
+    timeline_end = {{ timeline_end }}<br>
+    is_realtime = {{ is_realtime }}
+    currentTime_minute = {{ $root.currentTime_minute }} -->
 
       <div class="m_timeline"
         ref="timeline"
@@ -59,7 +62,8 @@
                 </div>
               </template>
               <template v-else>
-                …
+                <div class="m_timeline--container--dates--day--empty font-verylarge">
+                </div>
               </template>
             </div>
           </div>
@@ -105,6 +109,7 @@ export default {
     return {
 
       translation: 0,
+      is_realtime: false,
 
       filter: '',
       sort: {
@@ -301,7 +306,7 @@ export default {
     timeline_start() {
       const ts = this.folder.start;
       if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-        return this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+        return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
       } else {
         console.log(`WARNING: no timeline start. This can’t work.`);
         throw `Missing timeline start`;
@@ -310,25 +315,34 @@ export default {
     },
     timeline_end() {
       const ts = this.folder.end;
-      if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-        // if end is in the future
-        if (
-          this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isAfter(this.$moment())
-        ) {
-          this.isRealtime = true;
-          return this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
-          // if end is is in the present or past
+
+      const get_new_timeline_end = (ts) => {
+        if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+          // if end is in the future
+          if (
+            this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isAfter(this.$root.currentTime)
+          ) {
+            this.is_realtime = true;
+            return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+            // if end is is in the present or past
+          } else {
+            this.is_realtime = false;
+            return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+          }
         } else {
-          this.isRealtime = false;
-          return this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+          // there is no valid end, we set end to current time and set is_realtime
+          this.is_realtime = true;
+          return +this.$root.currentTime;
         }
-      } else {
-        // there is no valid end, we set end to current time and set realtime
-        this.isRealtime = true;
-        return this.$root.currentTime;
       }
+      const new_timeline_end = get_new_timeline_end(ts);
+      // if(new_timeline_end !== this.timeline_end) {
+      //   return new_timeline_end;
+      // }
+      return new_timeline_end;
     },
     full_date_interval() {
+      console.log('COMPUTED • TimeLineView: full_date_interval');
       // itérer dans toutes les dates, 
       // et construire un array de date qui ressemble à ça :
 
@@ -343,16 +357,17 @@ export default {
         let medias_for_date = [];
 
         const has_media_for_date = this.groupedMedias.filter(i => this.$moment(i[0]).isSame(this_date, 'day'));
-
         if(has_media_for_date.length > 0) {
           medias_for_date = has_media_for_date[0][1];
         }
 
-        const number_of_medias = Object.values(medias_for_date).reduce((acc, element) => acc + element.length, 0);;
+        const is_current_day = false;
 
+        const number_of_medias = Object.values(medias_for_date).reduce((acc, element) => acc + element.length, 0);
         let day = {
           label: this_date.format('dddd, MMMM D'),
           number_of_medias,
+          is_current_day,
           hours: medias_for_date
         }
 
@@ -364,6 +379,10 @@ export default {
       return date_interval;
     },
     date_interval() {
+      console.log('COMPUTED • TimeLineView: date_interval');
+
+      var t0 = performance.now();
+      
       // check if multiple days (3+) in a row are empty
       let date_interval = [];
       // let min_consecutive_empty_days = 3;
@@ -387,6 +406,9 @@ export default {
         }
         return acc;
       }, []);
+
+      var t1 = performance.now();
+      console.log('COMPUTED • TimeLineView: date_interval took ' + (t1 - t0) + " milliseconds.");
 
       return date_interval;
       // return this.full_date_interval;
@@ -429,9 +451,9 @@ export default {
 
   --timeline-bg: #F1F2F0;
   --timeline-bg: #f8f8f8;
-  --rule-color: #000;
+  --rule-color: rgb(220,220,220);
 
-  --grid-color: rgb(241,241,241);
+  --grid-color: var(--rule-color);
   --grid-opacity: 1;
 
   // background-color: #000;
@@ -459,8 +481,8 @@ export default {
   height: 100%;
   position: relative;
 
-  padding: 8px 50px;
-  // border-left: 1px solid #fff;
+  margin: 0px 50px;
+  padding: 16px 50px;
   border-right: 1px solid #000;
 }
 
@@ -538,9 +560,21 @@ export default {
     }
   }
 
+  > .m_timeline--container--dates--day--empty {
+    min-width: 140px;
+    height: 100%;
+    background: linear-gradient(to top left,
+             rgba(0,0,0,0) 0%,
+             rgba(0,0,0,0) calc(50% - .9px),
+             var(--rule-color) 50%,
+             rgba(0,0,0,0) calc(50% + .9px),
+             rgba(0,0,0,0) 100%),
+  }
+
   .m_timeline--container--dates--day--hours {
     position: relative;
     height: 100%;
+    min-width: 88px;
     display: flex;
   }
 

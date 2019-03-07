@@ -845,6 +845,9 @@ let vm = new Vue({
     },
     currentTime_human() {
       return this.$moment(this.currentTime).format('l LTS');
+    },
+    currentTime_minute() {
+      return this.$moment(this.currentTime).second(0);
     }
   }
 });

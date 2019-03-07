@@ -71,6 +71,9 @@ export default {
   },
 
   watch: {
+    'medias': function() {
+      this.triggerPackeryLayout();
+    }
   },
   computed: {
     base_edge() {
@@ -99,7 +102,7 @@ export default {
 .packery-container {
   height: 100vh;  
 
-  transition: all .4s cubic-bezier(0.19, 1, 0.22, 1);
+  // transition: all .1s cubic-bezier(0.19, 1, 0.22, 1);
 
   // // Configuration
   --gridstep: 40px;

@@ -183,11 +183,10 @@ export default {
       if(!this.media.hasOwnProperty('thumbs')) {
         return this.mediaURL;
       }
-
+      
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
-        (this.context !== 'preview' &&
-        this.mediaURL.toLowerCase().endsWith('.gif'))
+        this.mediaURL.toLowerCase().endsWith('.gif')
       ) {
         return this.mediaURL;
       }
@@ -208,10 +207,15 @@ export default {
         return;
       }
 
+      if (this.mediaURL.toLowerCase().endsWith('.gif')) {
+        return;
+      }
+
+
       // get all available sizes 
       const img_srcset = this.media.thumbs.reduce((acc, t) => {
         if(t.hasOwnProperty('path')) {
-          acc.push(t.path + ' ' + t.size + 'w');
+          acc.push(encodeURIComponent(t.path) + ' ' + t.size + 'w');
         }
         return acc;
       }, []);
