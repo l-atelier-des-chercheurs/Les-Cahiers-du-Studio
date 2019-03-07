@@ -406,7 +406,7 @@ export default {
           });          
         }
 
-        const number_of_medias = Object.values(medias_for_date).reduce((acc, element) => acc + element.length, 0);
+        const number_of_medias = Object.values(medias_for_date).reduce((acc, element) => acc + element.medias.length, 0);
         let day = {
           label: this_date.format('dddd, MMMM D'),
           number_of_medias,
