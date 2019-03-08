@@ -87,13 +87,22 @@
       :is_realtime="is_realtime"
     />
 
-    <!-- Ici le bouton +
+    <EditMedia
+      v-if="show_media_modal_for"
+      :slugFolderName="slugFolderName"
+      :slugMediaName="show_media_modal_for"
+      :media="medias[show_media_modal_for]"
+      :isRealtime="is_realtime"
+      @close="show_media_modal_for = false"
+      :read_only="read_only"
+      :allAuthors="folder.authors"
+      :color="getMediaColorFromFirstAuthor(medias[show_media_modal_for].authors)"
+    >
+    </EditMedia>
 
-    Ici la minimap
+    <!-- Ici la minimap -->
 
-    Ici le bouton retour et l’indication du nom de la timeline
-
-    Ici les médias -->
+    <!-- l’indication du nom de la timeline -->
 
   </div>
 </template>
@@ -101,23 +110,28 @@
 import MediasBlock from './components/MediasBlock.vue';
 import AddMedias from './components/AddMedias.vue';
 import { setTimeout } from 'timers';
+import EditMedia from './components/modals/EditMedia.vue';
 
 export default {
   props: {
     slugFolderName: String,
     folder: Object,
     medias: Object,
+    
     read_only: Boolean
   },
   components: {
     MediasBlock,
-    AddMedias
+    AddMedias,
+    EditMedia
   },
   data() {
     return {
 
       translation: 0,
       is_realtime: false,
+
+      show_media_modal_for: false,
 
       filter: '',
       sort: {
@@ -187,9 +201,11 @@ export default {
   created() {
   },
   mounted() {
+    this.$eventHub.$on('timeline.openMediaModal', this.openMediaModal);
 
   },
   beforeDestroy() {
+    this.$eventHub.$off('timeline.openMediaModal', this.openMediaModal);
   },
   watch: {
   },
@@ -284,7 +300,7 @@ export default {
       return sortedMedias;
     },
     groupedMedias() {
-      console.log('METHODS • TimeLineView: groupedMedias');
+      console.log('COMPUTED • TimeLineView: groupedMedias');
 
       // groupby day
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
@@ -479,7 +495,45 @@ export default {
 
       const el = this.$refs.timeline; 
       setTimeout(() => this.translation = el.scrollLeft, 300);
-    }    
+    }, 
+    openMediaModal(slugMediaName) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log('METHODS • TimeLineView: openMediaModal for ' + slugMediaName);
+      }
+
+      if (!this.medias.hasOwnProperty(slugMediaName)) {
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(
+            'METHODS • TimeLineView: openMediaModal / missing media in timeline'
+          );
+        }
+      } else {
+        this.show_media_modal_for = slugMediaName;
+      }
+    },
+    closeMediaModal() {
+      this.show_media_modal_for = false;
+    },
+    // prev / nav
+
+
+
+    getMediaColorFromFirstAuthor(media_authors) {
+      if(typeof media_authors !== 'object' 
+      || media_authors.length == 0
+      || typeof this.folder.authors !== 'object'
+      || this.folder.authors.length == 0
+      ) {
+        return '';
+      }
+
+      const full_authors_info = this.folder.authors.filter(a => a.name === media_authors[0].name);
+      if(full_authors_info.length == 0) {
+        return '';
+      }
+
+      return full_authors_info[0].color;
+    },
   }
 }
 </script>

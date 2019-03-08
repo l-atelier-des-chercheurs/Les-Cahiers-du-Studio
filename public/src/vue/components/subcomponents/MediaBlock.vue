@@ -24,8 +24,8 @@
         v-if="mediaColorFromFirstAuthor"
       />
 
-      <div class="draggabilly_handle" data-draggabilly_handle>
-      </div>
+      <div class="draggabilly_handle" data-draggabilly_handle
+      />
 
       <!-- <template v-if="is_hovered">
         <div class="buttons_right">
@@ -149,6 +149,9 @@ export default {
     this.$el.draggie.on('dragEnd', () => {
       this.$emit('dragEnded');      
     });
+    this.$el.draggie.on('staticClick', () => {
+      this.openMedia();
+    });
 
     this.$nextTick(() => {
       this.is_mounted = true;
@@ -225,8 +228,12 @@ export default {
     limitMediaHeight(h) {
       return Math.max(1, Math.min(12, h));
     },
-
-
+    openMedia() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log('METHODS • MediaBlock: openMedia');
+      }
+      this.$eventHub.$emit('timeline.openMediaModal', this.media.slugMediaName);
+    },
     resizeMedia(type, origin) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log(`METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`);
