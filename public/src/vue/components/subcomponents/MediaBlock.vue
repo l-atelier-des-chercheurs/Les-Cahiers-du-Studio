@@ -385,7 +385,7 @@ export default {
 }
 
 .packery-drop-placeholder {
-  background-color: rgba(0,0,0,.15);
+  background-color: rgba(0,0,0,.10);
   filter: blur(10px);
   -webkit-transition: -webkit-transform 0.2s;
           transition: transform 0.2s;

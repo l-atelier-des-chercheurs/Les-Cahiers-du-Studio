@@ -377,7 +377,7 @@ export default {
       return new_timeline_end;
     },
     full_date_interval() {
-      console.log('COMPUTED • TimeLineView: full_date_interval');
+      // console.log('COMPUTED • TimeLineView: full_date_interval');
       // itérer dans toutes les dates, 
       // et construire un array de date qui ressemble à ça :
 
@@ -422,7 +422,7 @@ export default {
       return date_interval;
     },
     date_interval() {
-      console.log('COMPUTED • TimeLineView: date_interval');
+      // console.log('COMPUTED • TimeLineView: date_interval');
 
       var t0 = performance.now();
       
