@@ -97,8 +97,7 @@
       :read_only="read_only"
       :allAuthors="folder.authors"
       :color="getMediaColorFromFirstAuthor(medias[show_media_modal_for].authors)"
-    >
-    </EditMedia>
+    />
 
     <!-- Ici la minimap -->
 
@@ -403,6 +402,8 @@ export default {
       let currDate = this.$moment(this.timeline_start).add(-1, 'days');
       const lastDate = this.$moment(this.timeline_end);
 
+      let index = 0;
+
       while(currDate.add(1, 'days').diff(lastDate) < 0) {
         let this_date = currDate.clone();
         let medias_for_date = [];
@@ -423,14 +424,25 @@ export default {
         }
 
         const number_of_medias = Object.values(medias_for_date).reduce((acc, element) => acc + element.medias.length, 0);
+
+        const format = index === 0 ? 
+          'LLLL' : 
+          this.$root.lang.current === 'fr' ? 
+            'dddd D MMMM':
+            'D dddd, MMMM';
+
+        const label = this_date.format(format);
+
         let day = {
-          label: this_date.format('dddd, MMMM D'),
+          label,
           number_of_medias,
           is_current_day,
           hours: medias_for_date
         }
 
         date_interval.push(day);
+
+        index++;
       }
 
       // days = days.map(d => d.format('L'));
