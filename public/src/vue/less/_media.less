@@ -259,7 +259,7 @@
     min-height: 0;
   }
   .ql-toolbar.ql-snow {
-    background-color: white;
+    background-color: transparent;
     font-family: inherit;
     border-color: #000;
     border-top: none;
@@ -281,16 +281,17 @@
     .ql-editor {
       min-height: 200px;
 
-      border-left: 2px solid transparent;
+      border-left: 0px solid transparent;
       height: 100%;
-      border-left: solid var(--input-border-width) var(--input-border-color);
       border-radius: var(--input-border-radius);
       border-radius: 0;
       border-bottom: 1px solid #000;
 
-      background-color: white;
+      background-color: transparent;
             
       font-size:14pt !important;
+
+      transition: all .4s;
   
       // background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
       // background-size: 30px 30px;
@@ -302,7 +303,9 @@
       // background-position-y: ~"calc(@{t-skipline} * 0.85)";
 
       &:focus {
+        // border-left-color: var(--background-color);
         background-color: white;
+        // border-left-width: 2px;
       }
 
       > *:first-child {

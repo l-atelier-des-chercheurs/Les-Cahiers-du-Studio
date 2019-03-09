@@ -12,13 +12,12 @@
     >
       <div class="m_modal--container"
         :class="[
-          'color-' + backgroundColor, 
           { 'is_invisible' : !showModal },
           { 'is_minimized' : is_minimized }
         ]"
+        :style="!!backgroundColor ? `--background-color: ${backgroundColor}` : ''"
         @keyup.ctrl.enter="$emit('submit')"
       >
-
         <div
           class="m_modal--container--content"
           ref="modalContent"
@@ -119,6 +118,7 @@
                 </slot>
               </span>
             </button>
+
 
           </form>
 

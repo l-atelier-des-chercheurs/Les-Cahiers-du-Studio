@@ -92,11 +92,11 @@
       :slugFolderName="slugFolderName"
       :slugMediaName="show_media_modal_for"
       :media="medias[show_media_modal_for]"
+      :folder="folder"
       :isRealtime="is_realtime"
       @close="show_media_modal_for = false"
       :read_only="read_only"
       :allAuthors="folder.authors"
-      :color="getMediaColorFromFirstAuthor(medias[show_media_modal_for].authors)"
     />
 
     <!-- Ici la minimap -->
@@ -527,25 +527,6 @@ export default {
       this.show_media_modal_for = false;
     },
     // prev / nav
-
-
-
-    getMediaColorFromFirstAuthor(media_authors) {
-      if(typeof media_authors !== 'object' 
-      || media_authors.length == 0
-      || typeof this.folder.authors !== 'object'
-      || this.folder.authors.length == 0
-      ) {
-        return '';
-      }
-
-      const full_authors_info = this.folder.authors.filter(a => a.name === media_authors[0].name);
-      if(full_authors_info.length == 0) {
-        return '';
-      }
-
-      return full_authors_info[0].color;
-    },
   }
 }
 </script>

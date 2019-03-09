@@ -281,13 +281,13 @@ export default {
     slugFolderName: String,
     slugMediaName: String,
     media: Object,
+    folder: Object,
     isRealtime: Boolean,
     allAuthors: Array,
     read_only: {
       type: Boolean,
       default: true
-    },
-    color: String
+    }
   },
   components: {
     Modal,
@@ -332,7 +332,22 @@ export default {
     },
     date_uploaded_human() {
       return this.$moment(this.media.date_upload).format('l LTS');
-    }
+    },
+    color() {
+      const media_authors = this.mediadata.authors;
+      if(typeof media_authors !== 'object' 
+      || media_authors.length == 0
+      || typeof this.folder.authors !== 'object'
+      || this.folder.authors.length == 0
+      ) {
+        return '';
+      }
+      const full_authors_info = this.folder.authors.filter(a => a.name === media_authors[0].name);
+      if(full_authors_info.length == 0) {
+        return '';
+      }
+      return full_authors_info[0].color;
+    },
   },
   methods: {
     keyPressed: function(event) {
