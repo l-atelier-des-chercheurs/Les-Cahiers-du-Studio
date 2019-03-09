@@ -77,14 +77,20 @@
       :class="{ 
         'is--shown' : show_options, 
         'is--dragover' : show_drop_container,
-        'bg-rouge_vif' : is_realtime
       }"
+      :style="addMediaStyles"
       @click="show_options = !show_options"
       @drop="dropHandler($event)"
       :disabled="read_only"
     >
       <span class="text_label always_show" v-if="show_drop_container">
         Déposez vos fichiers ici
+      </span>
+      <!-- scroll to now au click -->
+      <span class="text_label always_show" v-if="current_author_name && !show_drop_container"
+        :style="addMediaStyles"
+      >
+        {{ current_author_name }}
       </span>
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px"
         height="24px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
@@ -118,6 +124,10 @@ export default {
       type: Boolean,
       default: false
     },
+    current_author: {
+      type: Object,
+      default: {}
+    }
   },
   components: {
     UploadFile
@@ -210,6 +220,19 @@ export default {
   computed: {
     is_touch() {
       return Modernizr.touchevents;
+    },
+    addMediaStyles() {
+      let props = {};
+      if(this.current_author.hasOwnProperty('color')) {
+        props.backgroundColor = this.current_author.color;
+      }
+      return props;
+    },
+    current_author_name() {
+      if(!this.current_author.hasOwnProperty('name')) {
+        return false;
+      }
+      return this.current_author.name;
     }
   },
   methods: {
@@ -367,7 +390,7 @@ button, .button {
   position: absolute;
   right: ~"calc(100% + 15px)";
 
-  text-transform: lowercase;
+  text-transform: initial;
   padding: 3px 4px;
   line-height: 1;
 
@@ -422,7 +445,8 @@ button, .button {
         position: relative;
         cursor: pointer;
         opacity: 0;
-        transition: opacity .4s cubic-bezier(0.19, 1, 0.22, 1);
+        transform: translateY(5px);
+        transition: all .4s cubic-bezier(0.19, 1, 0.22, 1);
 
         label {
           cursor: inherit;
@@ -431,13 +455,10 @@ button, .button {
         .delay_transition_up(@max, @counter) when (@counter < @max) {
           .delay_transition_up(@max, (@counter + 1));
           &:nth-child(@{counter}) {
-            transition-delay: ((@max - @counter) * .02s);
+            transition-delay: ((@max - @counter) * .025s);
           }
         }
-
         .delay_transition_up(6, 0);
-
-
       }
 
       // visibility: hidden;
@@ -448,6 +469,7 @@ button, .button {
         pointer-events: auto;
         > * {
           opacity: 1;
+          transform: translateY(0px);;
         }
       }
     }

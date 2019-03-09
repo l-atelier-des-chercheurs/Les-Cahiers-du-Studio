@@ -13,11 +13,12 @@
       </div>
     </transition>
 
+
     <button type="button" class="folder_backbutton" @click="$root.closeFolder()" v-html="'←'" />
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
 
-      <br><br><br>
+      <!-- <br><br><br> -->
     <!-- timeline_start = {{ timeline_start }}<br>
     timeline_end = {{ timeline_end }}<br>
     is_realtime = {{ is_realtime }}
@@ -78,6 +79,10 @@
       </div>
 
     </div>
+    <Authors 
+      :slugFolderName="slugFolderName"
+      :authors="folder_authors"
+    />
 
     <AddMedias
       v-if="
@@ -85,6 +90,7 @@
       :slugFolderName="slugFolderName"
       :read_only="read_only"
       :is_realtime="is_realtime"
+      :current_author="current_author"
     />
 
     <EditMedia
@@ -110,6 +116,7 @@ import MediasBlock from './components/MediasBlock.vue';
 import AddMedias from './components/AddMedias.vue';
 import { setTimeout } from 'timers';
 import EditMedia from './components/modals/EditMedia.vue';
+import Authors from './components/subcomponents/Authors.vue';
 
 export default {
   props: {
@@ -122,7 +129,8 @@ export default {
   components: {
     MediasBlock,
     AddMedias,
-    EditMedia
+    EditMedia,
+    Authors
   },
   data() {
     return {
@@ -214,6 +222,12 @@ export default {
         type: 'folders', 
         slugFolderName: this.slugFolderName
       })
+    },
+    folder_authors() {
+      return this.folder.hasOwnProperty('authors') && this.folder.authors !== '' ? this.folder.authors : [];
+    },
+    current_author() {
+      return this.folder_authors.filter(c => c.name === this.$root.settings.current_author_name)[0];      
     },
     sortedMedias() {
       console.log('COMPUTED • TimeLineView: sortedMedias');
