@@ -1,121 +1,146 @@
 <template>
-  <div class="m_addMedias"
-    @mouseenter="!is_touch && show_drop_container === false ? show_options = true : ''"
-    @mouseleave="show_options = false"
-    :class="{ 'is--showing_options' : show_options }"
-  >
-    <div 
-      class="m_addMedias--options"
+  <div class="m_addMedias">
+
+    <div class="menu_encart"
+      :class="{ 'is--showing_options' : show_authors_options }"
+      @mouseleave="show_authors_options = false"
     >
-      <button
-        key="add_text"
+      <div class="menu_encart--options menu_encart--options_authors">
+        <Authors 
+          class="menu_encart--options--authors"
+          :slugFolderName="slugFolderName"
+          :authors="folder_authors"
+        />
+      </div>
+
+      <button type="button" class="menu_encart--button"
+        @mouseenter="!is_touch && show_drop_container === false ? show_authors_options = true : ''"
+        @click="show_authors_options = !show_authors_options"
+        :style="addMediaStyles"
+      >
+        <template v-if="current_author_name">
+          {{ current_author_name }}
+        </template>
+        <template v-else>
+          {{ $t('author') }}
+        </template>
+      </button>
+    </div>
+
+    <div class="menu_encart"
+      @mouseenter="!is_touch && show_drop_container === false ? show_addmedia_options = true : ''"
+      @mouseleave="show_addmedia_options = false"
+      :class="{ 'is--showing_options' : show_addmedia_options }"
+      :style="addMediaStyles"
+    >
+      <div class="menu_encart--options">
+        <button
+          key="add_text"
+          type="button"
+          class="button button-round button-round-small margin-bottom-small padding-none bg-noir c-blanc"
+          @click="createTextMedia"
+          :disabled="read_only"
+        >
+          <span class="text_label show_on_hover">
+            Texte
+          </span>
+
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+            <path d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z" style="fill: #fff"/>
+            <line x1="15.21" y1="14.41" x2="24.71" y2="14.41" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
+            <line x1="15.21" y1="17.88" x2="24.71" y2="17.88" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
+            <line x1="15.21" y1="21.26" x2="24.71" y2="21.26" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
+            <line x1="15.21" y1="24.62" x2="22.88" y2="24.62" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
+          </svg>
+        </button>
+
+        <button
+          key="add_marker"
+          type="button"
+          class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
+          @click="createMarkerMedia"
+          :disabled="read_only"
+        >
+          <span class="text_label show_on_hover">
+            Marker
+          </span>
+
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+            <path d="M20,11.59A8.41,8.41,0,1,1,11.59,20,8.42,8.42,0,0,1,20,11.59m0-1A9.41,9.41,0,1,0,29.41,20,9.41,9.41,0,0,0,20,10.59Z" style="fill: #fff"/>
+            <circle cx="20" cy="20" r="4.74" style="fill: #fff"/>
+          </svg>      
+        </button>
+
+        <template>
+          <div
+            :key="`add_${field.key}`"
+            class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
+            v-for="field in input_file_fields"
+            :disabled="read_only"
+          >
+            <label :for="`add_${field.key}`">
+              <span class="text_label show_on_hover">
+                {{ field.label }}
+              </span> 
+              <div v-html="field.svg" />
+            </label>
+            <input 
+              type="file" 
+              multiple 
+              :id="`add_${field.key}`" 
+              :name="field.key" 
+              @change="updateInputFiles($event)"
+              :accept="field.accept"
+              :capture="field.capture"
+              style="width: 1px; height: 1px; overflow: hidden;"
+            >
+          </div>
+        </template>
+      </div>
+        
+      <button 
         type="button"
-        class="button button-round button-round-small margin-bottom-small padding-none bg-noir c-blanc"
-        @click="createTextMedia"
+        class="menu_encart--button button button-round margin-bottom-small padding-none bg-noir c-blanc button_addMedia m_addMedias--buttons--openHideButton"
+        :class="{ 
+          'is--shown' : show_addmedia_options, 
+          'is--dragover' : show_drop_container,
+        }"
+        :style="addMediaStyles"
+        @click="show_addmedia_options = !show_addmedia_options"
+        @drop="dropHandler($event)"
         :disabled="read_only"
       >
-        <span class="text_label show_on_hover">
-          Texte
+        <span class="text_label always_show" v-if="show_drop_container">
+          Déposez vos fichiers ici
         </span>
-
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-          <path d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z" style="fill: #fff"/>
-          <line x1="15.21" y1="14.41" x2="24.71" y2="14.41" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-          <line x1="15.21" y1="17.88" x2="24.71" y2="17.88" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-          <line x1="15.21" y1="21.26" x2="24.71" y2="21.26" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-          <line x1="15.21" y1="24.62" x2="22.88" y2="24.62" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
+        <!-- TODO scroll to now au click -->
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px"
+          height="24px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+          <path style="fill:#ffffff;" d="M0,10.5h10.5V0h2.9v10.5H24v2.9H13.5V24h-2.9V13.5H0V10.5z"/>
         </svg>
       </button>
 
-      <button
-        key="add_marker"
-        type="button"
-        class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
-        @click="createMarkerMedia"
-        :disabled="read_only"
-      >
-        <span class="text_label show_on_hover">
-          Marker
-        </span>
-
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-          <path d="M20,11.59A8.41,8.41,0,1,1,11.59,20,8.42,8.42,0,0,1,20,11.59m0-1A9.41,9.41,0,1,0,29.41,20,9.41,9.41,0,0,0,20,10.59Z" style="fill: #fff"/>
-          <circle cx="20" cy="20" r="4.74" style="fill: #fff"/>
-        </svg>      
-      </button>
-
-      <template>
-        <div
-          :key="`add_${field.key}`"
-          class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
-          v-for="field in input_file_fields"
-          :disabled="read_only"
-        >
-          <label :for="`add_${field.key}`">
-            <span class="text_label show_on_hover">
-              {{ field.label }}
-            </span> 
-            <div v-html="field.svg" />
-          </label>
-          <input 
-            type="file" 
-            multiple 
-            :id="`add_${field.key}`" 
-            :name="field.key" 
-            @change="updateInputFiles($event)"
-            :accept="field.accept"
-            :capture="field.capture"
-            style="width: 1px; height: 1px; overflow: hidden;"
-          >
-        </div>
-      </template>
+      <UploadFile
+        v-if="selected_files.length > 0"
+        @close="selected_files = []"
+        :read_only="read_only"
+        :slugFolderName="slugFolderName"
+        :type="'folders'"
+        :selected_files="selected_files"
+      />
     </div>
-
-    <button 
-      type="button"
-      class="button button-round margin-bottom-small padding-none bg-noir c-blanc button_addMedia m_addMedias--openHideButton"
-      :class="{ 
-        'is--shown' : show_options, 
-        'is--dragover' : show_drop_container,
-      }"
-      :style="addMediaStyles"
-      @click="show_options = !show_options"
-      @drop="dropHandler($event)"
-      :disabled="read_only"
-    >
-      <span class="text_label always_show" v-if="show_drop_container">
-        Déposez vos fichiers ici
-      </span>
-      <!-- scroll to now au click -->
-      <span class="text_label always_show" v-if="current_author_name && !show_drop_container"
-        :style="addMediaStyles"
-      >
-        {{ current_author_name }}
-      </span>
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px"
-        height="24px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-        <path style="fill:#ffffff;" d="M0,10.5h10.5V0h2.9v10.5H24v2.9H13.5V24h-2.9V13.5H0V10.5z"/>
-      </svg>
-    </button>
-
-    <UploadFile
-      v-if="selected_files.length > 0"
-      @close="selected_files = []"
-      :read_only="read_only"
-      :slugFolderName="slugFolderName"
-      :type="'folders'"
-      :selected_files="selected_files"
-    />
 
   </div>
 </template>
 <script>
 import UploadFile from './modals/UploadFile.vue';
 import debounce from 'debounce';
+import Authors from './subcomponents/Authors.vue';
 
 export default {
   props: {
     slugFolderName: String,
+    folder: Object,
     read_only: {
       type: Boolean,
       default: true
@@ -126,18 +151,21 @@ export default {
     },
     current_author: {
       type: Object,
-      default: {}
+      default: () => {}
     }
   },
   components: {
-    UploadFile
+    UploadFile,
+    Authors
   },
   data() {
     return {
       showImportModal: false,
 
       selected_files: [],
-      show_options: false,
+      show_addmedia_options: false,
+      show_authors_options: false,
+
       show_drop_container: false,
       
       input_file_fields: [
@@ -221,15 +249,18 @@ export default {
     is_touch() {
       return Modernizr.touchevents;
     },
+    folder_authors() {
+      return this.folder.hasOwnProperty('authors') && this.folder.authors !== '' ? this.folder.authors : [];
+    },
     addMediaStyles() {
       let props = {};
-      if(this.current_author.hasOwnProperty('color')) {
-        props.backgroundColor = this.current_author.color;
+      if(this.current_author && this.current_author.hasOwnProperty('color')) {
+        props['--buttons-color'] = this.current_author.color;
       }
       return props;
     },
     current_author_name() {
-      if(!this.current_author.hasOwnProperty('name')) {
+      if(!this.current_author || !this.current_author.hasOwnProperty('name')) {
         return false;
       }
       return this.current_author.name;
@@ -414,7 +445,7 @@ button, .button {
   right: 4vw;
   z-index: 15000;
 
-  width: 100px;
+  // width: 100px;
   height: auto;
   min-height: 100px;
   max-height: 80vh;
@@ -422,16 +453,20 @@ button, .button {
   // color: var(--color-blanc);
 
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
 
-  align-items: center;
+  align-items: flex-end;
   align-content: center;
   justify-content: center;
 
+  pointer-events: none;
 
-  > * {
 
-    &.m_addMedias--options {
+  .menu_encart {
+    pointer-events: none;
+    --buttons-color: white;
+
+    .menu_encart--options {
       flex: 1 1 auto;
       min-width: 100px;
 
@@ -440,12 +475,19 @@ button, .button {
       justify-content: center;
       align-items: center;
 
+      // pointer-events: none;
+
+      &.menu_encart--options_authors {
+        pointer-events: none;
+      }
+
       > * {
         display: block;
         position: relative;
         cursor: pointer;
         opacity: 0;
         transform: translateY(5px);
+        background-color: var(--buttons-color);
         transition: all .4s cubic-bezier(0.19, 1, 0.22, 1);
 
         label {
@@ -461,24 +503,35 @@ button, .button {
         .delay_transition_up(6, 0);
       }
 
-      // visibility: hidden;
-      
-      pointer-events: none;
-
-      .is--showing_options& {
-        pointer-events: auto;
-        > * {
-          opacity: 1;
-          transform: translateY(0px);;
-        }
+      > .menu_encart--options--authors {
+        background-color: transparent;
       }
     }
+    &.is--showing_options {
+      pointer-events: auto;
 
-    &.m_addMedias--openHideButton {
+      .menu_encart--options_authors {
+        pointer-events: auto;
+      }
 
+      .menu_encart--options > * {
+        opacity: 1;
+        transform: translateY(0px);;
+      }
+    }    
+
+    .menu_encart--button {
+      // height: 2em;
       flex: 0 0 auto;
       transition: all cubic-bezier(0.19, 1, 0.22, 1) .8s;
+      display: block;
+      margin-left: auto;
+      margin-right: 0;
+      margin-bottom: 22px;
+      text-transform: initial;
+      pointer-events: auto;
 
+      background-color: var(--buttons-color);
 
       svg {
         width: 24px;
@@ -486,21 +539,20 @@ button, .button {
         transition: transform cubic-bezier(0.19, 1, 0.22, 1) .8s;
         transform: rotate(0);
       }
-
-      .is--showing_options& {
-        background-color: #999;
-
-        svg {
-          transform: rotate(225deg);
-        }
-      }
-
       &.is--dragover {
         width: 128px;
         height: 128px;
       }
-  
     }
+
+    &.is--showing_options {
+      // background-color: #999;
+
+      svg {
+        transform: rotate(225deg);
+      }
+    }
+
   }
 
   .m_addMedias--dropContainer {
@@ -526,7 +578,29 @@ button, .button {
   width: 64px;
   height: 64px;  
   padding: 0 20px;
+  margin: 0 auto !important;
+  --buttons-color: rgb(51,51,51);
 }
 
+</style>
+<style lang="scss">
+.m_authors {
+  flex-flow: column nowrap;
+  width: 300px;
+  height: 250px;
+  box-shadow: 2px 4px 13px #bbb; 
+  margin-bottom: 15px;  
+}
+// .m_authors--currentAuthor{
+//   display: none;
+// }
+
+.m_authors .m_authors--authorList {
+  flex-flow: row wrap;
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  align-content: flex-start;
+  
+}
 
 </style>

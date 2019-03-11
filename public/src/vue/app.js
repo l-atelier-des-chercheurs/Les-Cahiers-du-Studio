@@ -534,7 +534,7 @@ let vm = new Vue({
     } else {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          'ROOT EVENT: created / no erros, checking for content to load'
+          'ROOT EVENT: created / no errors, checking for content to load'
         );
       }
 

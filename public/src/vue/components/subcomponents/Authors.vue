@@ -11,49 +11,73 @@
           <button type="button"
             :style="`background-color: ${current_author.color}`"
             v-html="current_author.name"
-            @click="unsetAuthor"
           >
           </button>
-          
+
+          <br>
+
+          <button type="button" class="m_authors--currentAuthor--changeColor"
+            @click="change_color_menu = !change_color_menu"
+          >
+            {{ $t('change_color') }}
+          </button>
+
+          <button type="button" class="m_authors--currentAuthor--changeColor"
+            @click="unsetAuthor"
+          >
+            {{ $t('disconnect') }}
+          </button>
+
         </div>
 
         <transition-group class="m_authors--authorList"
           name="list-complete"        
         >
-          <label 
-            :key="'connected_auth_label'"
-            v-if="connected_authors.length > 0"
-          >
-            auteurs connectés
-          </label>
 
-          <button type="button"
-            v-for="author in connected_authors"
-            :key="author.name"
-            @click="setAuthor(author.name)"
-            :style="`background-color: ${author.color}`"
-          >
-            {{author.name }}
-          </button>
+          <template v-if="change_color_menu">
+            <div
+              v-for="color in sortedRandomColorArray"
+              :key="color"  
+              @click="changeColor(color)"
+            >
+              <div class="color_item" :style="`background-color: ${color}`" />
+            </div>
+          </template>
+          <template v-else>
+            <label 
+              :key="'connected_auth_label'"
+              v-if="connected_authors.length > 0"
+            >
+              auteurs connectés
+            </label>
 
-          <label 
-            :key="'not_connected_auth_label'"
-            v-if="not_connected_authors.length > 0"
-          >
-            non connectés
-          </label>
+            <button type="button"
+              v-for="author in connected_authors"
+              :key="author.name"
+              @click="setAuthor(author.name)"
+              :style="`background-color: ${author.color}`"
+            >
+              {{author.name }}
+            </button>
 
-          <button type="button"
-            v-for="author in not_connected_authors"
-            :key="author.name"
-            @click="setAuthor(author.name)"
-          >
-            <span 
-              :style="`color: ${author.color}`"
-            >•</span>
-            {{author.name }}
-          </button>
+            <label 
+              :key="'not_connected_auth_label'"
+              v-if="not_connected_authors.length > 0"
+            >
+              non connectés
+            </label>
 
+            <button type="button"
+              v-for="author in not_connected_authors"
+              :key="author.name"
+              @click="setAuthor(author.name)"
+            >
+              <span 
+                :style="`color: ${author.color}`"
+              >•</span>
+              {{author.name }}
+            </button>
+          </template>
         </transition-group>
 
         <div class="m_authors--createButton">
@@ -111,6 +135,7 @@
 </template>
 <script>
 import randomcolor from 'randomcolor';
+import hexSorter from 'hexSorter';
 
 export default {
   props: {
@@ -126,7 +151,8 @@ export default {
   },
   data() {
     return {
-      add_author: false
+      add_author: false,
+      change_color_menu: false
     }
   },
   
@@ -160,12 +186,28 @@ export default {
     },
     current_author() {
       return this.authors.filter(c => c.name === this.$root.settings.current_author_name)[0];
-    }
+    },
+    randomColorArray() {
+      let random_color = randomcolor({
+        luminosity: 'light',
+        count: 25
+      });
+      return random_color;
+    },
+    sortedRandomColorArray() {
+      let sorted_color_array = [];
+      let input = this.randomColorArray;
+      for (let i = input.length - 1; i >= 0; i--) {
+        let color = hexSorter.mostBrightColor(input);
+        input.splice(input.indexOf(color), 1);
+        sorted_color_array.push(color);
+      }
+      return sorted_color_array;
+    },
   },
   methods: {
     createAuthor() {
       const name = this.$refs.nameInput.value;
-
 
       let _authors = [];
       if(!!this.authors) {
@@ -196,6 +238,7 @@ export default {
     },
     unsetAuthor() {
       this.$root.settings.current_author_name = false;
+      this.change_color_menu = false;
       this.$socketio.socket.emit('updateClientInfo', { 
         author_name: false
       });
@@ -210,10 +253,28 @@ export default {
       return this.clients.filter(c => {
         return c.data.hasOwnProperty('author_name') && c.data.author_name === name;
       }).length > 0;
+    },
+
+    changeColor(color) {
+      this.current_author.color = color;
+
+      this.$root.editFolder({
+        type: 'folders',
+        slugFolderName: this.slugFolderName, 
+        data: {
+          authors: this.authors
+        }
+      });
+
+      this.change_color_menu = false;
     }
   }
 }
 </script>
 <style>
-
+.color_item {
+  width:  35px;
+  height: 35px;
+  margin: 5px;
+}
 </style>

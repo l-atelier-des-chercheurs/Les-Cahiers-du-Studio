@@ -22,6 +22,8 @@ module.exports = (function() {
       'active_filter:': 'Filtre actif&nbsp;:',
       'medias_shown:': 'Médias affichés&nbsp;:',
       'file:': 'Fichier&nbsp;:',
+      change_color: 'Modifier la couleur',
+      disconnect: 'Se déconnecter',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -153,6 +155,8 @@ module.exports = (function() {
       'active_filter:': 'Active filter:',
       'medias_shown:': 'Medias shown:',
       'file:': 'File:',
+      change_color: 'Change color',
+      disconnect: 'Disconnect',
 
       loading: 'loading',
       open: 'Open',

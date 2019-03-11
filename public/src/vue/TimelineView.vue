@@ -18,7 +18,7 @@
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
 
-      <!-- <br><br><br> -->
+    <!-- <br><br><br> -->
     <!-- timeline_start = {{ timeline_start }}<br>
     timeline_end = {{ timeline_end }}<br>
     is_realtime = {{ is_realtime }}
@@ -79,15 +79,12 @@
       </div>
 
     </div>
-    <Authors 
-      :slugFolderName="slugFolderName"
-      :authors="folder_authors"
-    />
 
     <AddMedias
       v-if="
         ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected"
       :slugFolderName="slugFolderName"
+      :folder="folder"
       :read_only="read_only"
       :is_realtime="is_realtime"
       :current_author="current_author"
@@ -116,7 +113,6 @@ import MediasBlock from './components/MediasBlock.vue';
 import AddMedias from './components/AddMedias.vue';
 import { setTimeout } from 'timers';
 import EditMedia from './components/modals/EditMedia.vue';
-import Authors from './components/subcomponents/Authors.vue';
 
 export default {
   props: {
@@ -130,7 +126,6 @@ export default {
     MediasBlock,
     AddMedias,
     EditMedia,
-    Authors
   },
   data() {
     return {
@@ -456,6 +451,10 @@ export default {
 
         date_interval.push(day);
 
+        if(index === 0) {
+          currDate.startOf('day');
+        }
+
         index++;
       }
 
@@ -614,7 +613,9 @@ export default {
     --label-color: black;
 
     &.is--current_day {
-      --label-color: #ff3b4c;
+      span > span {
+        background-color: #ff3b4c;
+      }
     }
 
     .m_timeline--container--dates--day--daylabel--container {

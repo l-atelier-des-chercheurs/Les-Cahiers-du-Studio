@@ -126,6 +126,9 @@ export default {
     if(this.media.type === 'text') {
       this.mediaSize.width = 1 + this.base_edge;
       this.mediaSize.height = 1 + this.base_edge;
+    } else if(this.media.type === 'marker') {
+      this.mediaSize.width = 1 + this.base_edge;
+      this.mediaSize.height = 1;
     } else {
       this.mediaSize.width = Math.round(Math.random() * 2 + this.base_edge);
       if(this.media.hasOwnProperty('ratio') && typeof this.media.ratio === 'number') {
