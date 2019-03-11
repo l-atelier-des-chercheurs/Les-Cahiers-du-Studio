@@ -175,13 +175,13 @@ export default {
         if(this.is_mounted) {
           this.$emit('triggerPackeryLayout');
         }
-
-        if(['text', 'marker'].includes(this.media.type)) {        
-          this.text_is_overflowing = this.mediaHeight < this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
-        }
+        this.checkTextOverflow();
       },
       deep: true
     },
+    'media.content': function() {
+      this.checkTextOverflow();
+    }
   },
   computed: {
     itemSize() {
@@ -224,6 +224,15 @@ export default {
     },
   },
   methods: {
+    checkTextOverflow() {
+      if(['text', 'marker'].includes(this.media.type)) {        
+        if(this.mediaSize.height === 1) {
+          return this.text_is_overflowing = false;
+        }
+
+        this.text_is_overflowing = this.mediaHeight < this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
+      }
+    },
     changeItemWidth(increment) {
       console.log('MediaBlock changeItemWidth');
       this.mediaSize.width += increment;
