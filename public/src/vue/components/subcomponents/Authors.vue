@@ -135,7 +135,7 @@
 </template>
 <script>
 import randomcolor from 'randomcolor';
-import hexSorter from 'hexSorter';
+import hexsorter from 'hexsorter';
 
 export default {
   props: {
@@ -198,7 +198,7 @@ export default {
       let sorted_color_array = [];
       let input = this.randomColorArray;
       for (let i = input.length - 1; i >= 0; i--) {
-        let color = hexSorter.mostBrightColor(input);
+        let color = hexsorter.mostBrightColor(input);
         input.splice(input.indexOf(color), 1);
         sorted_color_array.push(color);
       }
