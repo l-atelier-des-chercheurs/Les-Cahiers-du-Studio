@@ -5,7 +5,10 @@
     :style="itemSize"
   >
     <div class="packery-item-content"
-      :class="{ 'is--hovered' : is_hovered && !is_resized }"
+      :class="{ 
+        'is--hovered' : is_hovered && !is_resized,
+        'is--text_overflowing' : text_is_overflowing
+      }"
       :style="itemStylesWithSize"
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
@@ -18,6 +21,7 @@
         :media="media"
         :context="'preview'"
         :element_width="mediaWidth"
+        ref="MediaContent"
       />
 
       <div class="author_indicator"
@@ -118,7 +122,7 @@ export default {
       },
 
       is_mounted: false,
-
+      text_is_overflowing: false
     }
   },
   
@@ -171,6 +175,10 @@ export default {
         if(this.is_mounted) {
           this.$emit('triggerPackeryLayout');
         }
+
+        if(['text', 'marker'].includes(this.media.type)) {        
+          this.text_is_overflowing = this.mediaHeight < this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
+        }
       },
       deep: true
     },
@@ -214,7 +222,6 @@ export default {
 
       return full_authors_info[0].color;
     },
-
   },
   methods: {
     changeItemWidth(increment) {
@@ -352,6 +359,24 @@ export default {
     box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
   }
 
+  &.is--text_overflowing {
+
+    &::after {
+      content: '…';
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      // background-color: var(--author-color);
+      background-image: linear-gradient(transparent 0%, var(--author-color) 20%);
+      height: 2em;
+      padding-top:.5em;
+      // border-top: 1px solid black;
+      margin: 0 10px;
+    }
+  }
+
   .author_indicator {
     position: absolute;
     top: 0;left: 0;
@@ -382,6 +407,9 @@ export default {
 
     p:first-child {
       margin-top: 0;
+    }
+    p:last-child {
+      margin-bottom: 0;
     }
   }
 }
@@ -456,8 +484,6 @@ export default {
 
   border-style: inherit;
   border-width: 0px;
-
-  color: rebeccapurple;
   
   --handle-width: 15px;
   --handle-height: 5px;
@@ -527,7 +553,7 @@ export default {
       width: var(--handle-height);
       height: var(--handle-height);
       background-color:#fff;
-      // box-shadow: 0 0px 4px rgba(0,0,0,.43);
+      box-shadow: 0 0px 4px rgba(0,0,0,.43);
       // mix-blend-mode: multiply;
       border-radius: var(--handle-height);
     }
