@@ -475,6 +475,7 @@ button, .button {
       justify-content: center;
       align-items: center;
 
+      --buttons-color: #333;
       // pointer-events: none;
 
       &.menu_encart--options_authors {
@@ -530,8 +531,6 @@ button, .button {
       margin-bottom: 22px;
       text-transform: initial;
       pointer-events: auto;
-
-      --buttons-color: #333;
       background-color: var(--buttons-color);
 
       svg {
