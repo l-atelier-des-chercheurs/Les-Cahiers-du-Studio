@@ -98,7 +98,7 @@
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('calendar') }}
           <button
-            v-if="isRealtime"
+            v-if="is_realtime"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
@@ -220,7 +220,7 @@ export default {
     sort: Object,
     filter: String,
     can_admin_folder: Boolean,
-    isRealtime: {
+    is_realtime: {
       type: Boolean,
       default: false
     },

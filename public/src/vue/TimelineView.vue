@@ -18,23 +18,62 @@
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
 
-    <!-- <br><br><br> -->
-    <!-- timeline_start = {{ timeline_start }}<br>
-    timeline_end = {{ timeline_end }}<br>
-    is_realtime = {{ is_realtime }}
-    currentTime_minute = {{ $root.currentTime_minute }} -->
+      <transition name="sidebar-animation" :duration="350">
+        <Sidebar
+          v-if="$root.settings.has_sidebar_opened"
+          :folder="folder"
+          :slugFolderName="slugFolderName"
+          :visibleDay="visible_day"
+          :medias="medias"
+          :sortedMedias="sortedMedias"
+          :sort="sort"
+          :filter="filter"
+          :is_realtime="is_realtime"
+          :read_only="read_only"
+          :can_admin_folder="can_admin_folder"
+        >
+        </Sidebar>
+      </transition>
+
+      <EditFolder
+        v-if="show_edit_folder_modal"
+        :folder="folder"
+        :slugFolderName="slugFolderName"
+        @close="show_edit_folder_modal = false"
+        :read_only="read_only"
+        :allAuthors="folder.authors"
+      />
+
+      <div>
+        <button type="button"
+          class="button_sidebarToggle"
+          @click.prevent="toggleSidebar()"
+          :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
+        >
+          <template v-if="$root.settings.has_sidebar_opened">←</template>
+          <template v-else>→</template>
+        </button>
+      </div>
+
+      <div class="m_floater">
+        <div>
+          {{ visible_day }}
+        </div>
+      </div>
 
       <div class="m_timeline"
         ref="timeline"
         @mousewheel="onMousewheel"
         @mouseup.self="onMouseUp"
+        @scroll="onTimelineScroll"
       >
         <div class="m_timeline--container">
 
-          <div class="m_timeline--container--dates">
+          <div class="m_timeline--container--dates" ref="timeline_dates">
             <div 
               v-for="day in date_interval" 
               :key="day.label"
+              :data-timestamp="day.timestamp"
               class="m_timeline--container--dates--day"
             >
               <template v-if="!day.hasOwnProperty('period') || day.period === false">
@@ -110,6 +149,8 @@
 </template>
 <script>
 import MediasBlock from './components/MediasBlock.vue';
+import Sidebar from './components/Sidebar.vue';
+import EditFolder from './components/modals/EditFolder.vue';
 import AddMedias from './components/AddMedias.vue';
 import { setTimeout } from 'timers';
 import EditMedia from './components/modals/EditMedia.vue';
@@ -126,6 +167,8 @@ export default {
     MediasBlock,
     AddMedias,
     EditMedia,
+    Sidebar,
+    EditFolder,
   },
   data() {
     return {
@@ -134,7 +177,8 @@ export default {
       is_realtime: false,
 
       show_media_modal_for: false,
-
+      show_edit_folder_modal: false,   
+      
       filter: '',
       sort: {
         current: {},
@@ -307,6 +351,18 @@ export default {
       }, []);
       return sortedMedias;
     },
+    visible_day() {
+      console.log('COMPUTED • TimeLineView: visible_day');
+      this.translation;
+      if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
+        return '';
+      }
+      const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > this.translation + this.$refs.timeline.offsetWidth/2 - 25);
+      if(first_day.dataset.hasOwnProperty('timestamp')){
+        return this.$moment(Number(first_day.dataset.timestamp)).format('LLL');
+      }
+      return false;
+    },
     groupedMedias() {
       console.log('COMPUTED • TimeLineView: groupedMedias');
 
@@ -444,6 +500,7 @@ export default {
 
         let day = {
           label,
+          timestamp: +this_date,
           number_of_medias,
           is_current_day,
           hours: medias_for_date
@@ -500,7 +557,7 @@ export default {
   },
   methods: {
     onMousewheel(event) {
-      console.log('METHODS • TimeLineView: onMousewheel');
+      // console.log('METHODS • TimeLineView: onMousewheel');
 
       event.preventDefault();
       this.translation += event.deltaX; 
@@ -539,6 +596,15 @@ export default {
     closeMediaModal() {
       this.show_media_modal_for = false;
     },
+    toggleSidebar() {
+      console.log('METHODS • TimeLineView: toggleSidebar');
+      this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
+    },
+    onTimelineScroll() {
+      // console.log('METHODS • TimeLineView: onTimelineScroll');
+      const el = this.$refs.timeline;
+      this.translation = el.scrollLeft;
+    }
     // prev / nav
   }
 }
@@ -586,7 +652,7 @@ export default {
   height: 100%;
   position: relative;
 
-  margin: 0px 50px;
+  margin: 0px 0px;
   padding: 16px 120px;
   // border-right: 1px solid #000;
 }
@@ -734,12 +800,30 @@ export default {
   position: fixed;
   top:20px;
   left: 20px;
-  z-index: 100000;
+  z-index: 10000;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   color: white;
   background-color: black;
+}
+
+.m_floater {
+  position: fixed;
+  bottom: 50px;
+  width: 100%;
+  z-index: 150;
+  pointer-events: none;
+
+  > * {
+    margin: 0 auto;
+    width: 250px;
+    height: 50px;
+    background-color: black;
+    color: white;
+    pointer-events: auto;
+
+  }
 }
 
 </style>
