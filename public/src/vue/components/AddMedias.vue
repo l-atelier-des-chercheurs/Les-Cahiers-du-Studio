@@ -531,6 +531,7 @@ button, .button {
       text-transform: initial;
       pointer-events: auto;
 
+      --buttons-color: #333;
       background-color: var(--buttons-color);
 
       svg {
