@@ -359,7 +359,12 @@ export default {
       }
       const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > this.translation + this.$refs.timeline.offsetWidth/2 - 25);
       if(first_day.dataset.hasOwnProperty('timestamp')){
-        return this.$moment(Number(first_day.dataset.timestamp)).format('LLL');
+        const format =  this.$root.lang.current === 'fr' ? 
+            'dddd D MMMM':
+            'D dddd, MMMM';
+
+        return this.$moment(Number(first_day.dataset.timestamp)).format(format);
+        
       }
       return false;
     },
@@ -818,10 +823,16 @@ export default {
   > * {
     margin: 0 auto;
     width: 250px;
-    height: 50px;
-    background-color: black;
+    height: 40px;
+    background-color: #333;
     color: white;
     pointer-events: auto;
+    border-radius: 4px;
+
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
 
   }
 }
