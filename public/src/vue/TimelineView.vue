@@ -57,7 +57,7 @@
 
       <div class="m_floater">
         <div>
-          {{ visible_day }}
+          {{ visible_day_human }}
         </div>
       </div>
 
@@ -355,18 +355,19 @@ export default {
       console.log('COMPUTED • TimeLineView: visible_day');
       this.translation;
       if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
-        return '';
+        return this.timeline_start;
       }
       const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > this.translation + this.$refs.timeline.offsetWidth/2 - 25);
       if(first_day.dataset.hasOwnProperty('timestamp')){
-        const format =  this.$root.lang.current === 'fr' ? 
-            'dddd D MMMM':
-            'D dddd, MMMM';
-
-        return this.$moment(Number(first_day.dataset.timestamp)).format(format);
-        
+        return this.$moment(Number(first_day.dataset.timestamp));
       }
-      return false;
+      return this.$moment();
+    },
+    visible_day_human() {
+      const format =  this.$root.lang.current === 'fr' ? 
+          'dddd D MMMM':
+          'D dddd, MMMM';
+      return this.$moment(this.visible_day).format(format);
     },
     groupedMedias() {
       console.log('COMPUTED • TimeLineView: groupedMedias');

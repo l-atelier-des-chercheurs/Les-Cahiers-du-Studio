@@ -101,7 +101,8 @@ export default {
     sort: Object,
     slugFolderName: String,
     sortedMedias: Array,
-    timelineInfos: Object
+    timeline_start: Number,
+    timeline_end: Number
   },
   data() {
     return {
@@ -144,8 +145,8 @@ export default {
     },
     mediaIsOutOfScope(media) {
       if (
-        this.$moment(media.date_timeline).isBefore(this.timelineInfos.start) ||
-        this.$moment(media.date_timeline).isAfter(this.timelineInfos.end)
+        this.$moment(media.date_timeline).isBefore(this.timeline_start) ||
+        this.$moment(media.date_timeline).isAfter(this.timeline_end)
       ) {
         return true;
       }

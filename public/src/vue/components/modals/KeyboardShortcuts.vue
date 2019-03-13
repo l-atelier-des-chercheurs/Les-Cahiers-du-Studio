@@ -38,7 +38,7 @@
               </td>
               <td>
                 <select v-model="ks.marker_color">
-                  <option v-for="mediaColor in $root.state.structure.media.color.options" :key="mediaColor">
+                  <option v-for="mediaColor in $root.state.structure.folders.medias.fields.color.options" :key="mediaColor">
                     {{ mediaColor }}
                   </option>
                 </select>

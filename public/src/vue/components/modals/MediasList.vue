@@ -13,7 +13,8 @@
         :filter="filter"
         :sort="sort"
         :sortedMedias="sortedMedias"
-        :timelineInfos="timelineInfos"
+        :timeline_start="timeline_start"
+        :timeline_end="timeline_end"
         :slugFolderName="slugFolderName"
         @setSort="$emit('setSort')"
         @setFilter="$emit('setFilter')"
@@ -31,7 +32,8 @@ export default {
     filter: String,
     sort: Object,
     sortedMedias: Array,
-    timelineInfos: Object,
+    timeline_start: Number,
+    timeline_end: Number,
     slugFolderName: String
   },
   components: {

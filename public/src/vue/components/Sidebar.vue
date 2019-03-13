@@ -163,7 +163,8 @@
           :sort="sort"
           :sortedMedias="sortedMedias"
           :slugFolderName="slugFolderName"
-          :timelineInfos="timelineInfos"
+          :timeline_start="timeline_start"
+          :timeline_end="timeline_end"
           >
         </Tableau>
       </div>
@@ -175,7 +176,8 @@
       :sort="sort"
       :sortedMedias="sortedMedias"
       :slugFolderName="slugFolderName"
-      :timelineInfos="timelineInfos"
+      :timeline_start="timeline_start"
+      :timeline_end="timeline_end"
       @close="closeListMediasModal()"
     >
     </MediasList>
@@ -215,7 +217,8 @@ export default {
     folder: Object,
     medias: Object,
     sortedMedias: Array,
-    timelineInfos: Object,
+    timeline_start: Number,
+    timeline_end: Number,
     visibleDay: Number,
     sort: Object,
     filter: String,
@@ -296,8 +299,8 @@ export default {
     folderDays() {
       console.log('METHODS • sidebar: getting folderDays');
       const allDays = this.enumerateDaysBetweenDates(
-        this.timelineInfos.start,
-        this.timelineInfos.end
+        this.timeline_start,
+        this.timeline_end
       );
       if (allDays.length === 0) {
         return;
