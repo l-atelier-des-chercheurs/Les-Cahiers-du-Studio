@@ -23,6 +23,8 @@
           v-if="$root.settings.has_sidebar_opened"
           :folder="folder"
           :slugFolderName="slugFolderName"
+          :timeline_start="timeline_start"
+          :timeline_end="timeline_end"
           :visibleDay="visible_day"
           :medias="medias"
           :sortedMedias="sortedMedias"

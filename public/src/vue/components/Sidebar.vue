@@ -298,6 +298,7 @@ export default {
     },
     folderDays() {
       console.log('METHODS • sidebar: getting folderDays');
+      
       const allDays = this.enumerateDaysBetweenDates(
         this.timeline_start,
         this.timeline_end
