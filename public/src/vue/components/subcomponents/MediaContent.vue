@@ -5,7 +5,8 @@
     :data-context="context"
   >
     <template v-if="media.type === 'image'">
-      <img :srcset="imageSrcSetAttr" :sizes="imageSizesAttr" :src="linkToImageThumb">
+      <img :srcset="imageSrcSetAttr" :sizes="imageSizesAttr" :src="linkToImageThumb"
+      >
       <transition name="fade" :duration="600">
         <img v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb" :src="linkToHoveredThumb">
       </transition>
@@ -13,7 +14,9 @@
 
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
-        <img :srcset="videostillSrcSetAttr" :sizes="imageSizesAttr" :src="linkToVideoThumb">
+        <img :srcset="videostillSrcSetAttr" :sizes="imageSizesAttr" :src="linkToVideoThumb"
+
+        >
       </template>
       <template v-else>
         <video controls ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
@@ -131,7 +134,11 @@ export default {
       type: Number,
       default: 180
     },
-    element_width: {
+    element_width_for_sizes: {
+      type: Number,
+      default: 0
+    },
+    element_height: {
       type: Number,
       default: 0
     }
@@ -203,14 +210,9 @@ export default {
       return url;
     },
     imageSrcSetAttr: function() {
-      if(this.element_width === 0) {
-        return;
-      }
-
       if (this.mediaURL.toLowerCase().endsWith('.gif')) {
         return;
       }
-
 
       // get all available sizes 
       const img_srcset = this.media.thumbs.reduce((acc, t) => {
@@ -222,7 +224,7 @@ export default {
       return img_srcset.join(', ');
     },
     videostillSrcSetAttr: function() {
-      if(this.element_width === 0) {
+      if(this.element_width_for_sizes === 0) {
         return;
       }
 
@@ -244,10 +246,10 @@ export default {
       return img_srcset.join(', ');
     },
     imageSizesAttr: function() {
-      if(this.element_width === 0) {
+      if(this.element_width_for_sizes === 0) {
         return;
       }
-      return this.element_width + 'px';
+      return this.element_width_for_sizes + 'px';
     },
     linkToHoveredThumb: function() {
       let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbResHovered)[0].path;

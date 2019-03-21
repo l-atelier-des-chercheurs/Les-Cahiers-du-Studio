@@ -20,7 +20,7 @@
         :slugMediaName="media.slugMediaName"
         :media="media"
         :context="'preview'"
-        :element_width="mediaWidth"
+        :element_width_for_sizes="widthForSizes"
         ref="MediaContent"
       />
 
@@ -195,6 +195,16 @@ export default {
     },
     mediaHeight() {
       return  this.mediaSize.height * this.rowHeight + (this.mediaSize.height-1) * this.gutter;
+    },
+    widthForSizes() {
+      // TODO
+      // should check the actual width the image will be displayed at, 
+      // considering that the image is in an object-fit: cover configuration
+      if(this.mediaWidth > this.mediaHeight) {
+        return this.mediaWidth;
+      } else {
+        return this.mediaHeight;
+      }
     },
     itemStylesWithSize() {
       return Object.assign({
