@@ -31,6 +31,7 @@
           :is_realtime="is_realtime"
           :read_only="read_only"
           :can_admin_folder="can_admin_folder"
+          @modal_edit_folder="can_admin_folder ? show_edit_folder_modal = true : ''"
         >
         </Sidebar>
       </transition>
@@ -359,9 +360,9 @@ export default {
       }
       const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > this.translation + this.$refs.timeline.offsetWidth/2 - 25);
       if(first_day.dataset.hasOwnProperty('timestamp')){
-        return this.$moment(Number(first_day.dataset.timestamp));
+        return +this.$moment(Number(first_day.dataset.timestamp));
       }
-      return this.$moment();
+      return +this.$moment();
     },
     visible_day_human() {
       const format =  this.$root.lang.current === 'fr' ? 

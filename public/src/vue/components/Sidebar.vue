@@ -9,7 +9,7 @@
             v-if="can_admin_folder"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="openEditFolderModal()"
+            @click="$emit('modal_edit_folder')"
             :disabled="read_only"
           >
             {{ $t('edit') }}
@@ -365,10 +365,6 @@ export default {
       }, 0);
 
       return total;
-    },
-
-    openEditFolderModal() {
-      this.$eventHub.$emit('showEditFolderModal');
     },
 
     scrollToToday() {
