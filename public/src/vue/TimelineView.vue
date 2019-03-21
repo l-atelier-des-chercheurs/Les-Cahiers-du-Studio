@@ -278,27 +278,42 @@ export default {
 
       for (let slugMediaName in this.medias) {
         let mediaDataToOrderBy;
+        const media = this.medias[slugMediaName];
 
-        if(!this.medias[slugMediaName].hasOwnProperty(current_sort.field)) {
-          continue;
+        // legacy to account for medias without date_timeline but with date_created
+        if(!media.hasOwnProperty(current_sort.field)) {
+          if(current_sort.field === 'date_timeline') {
+            if(!media.hasOwnProperty('date_created')) {
+              continue;
+            }
+          } else {
+            continue;
+          }
+        }
+
+        let date_to_reference_to = 0;
+        if(media.hasOwnProperty('date_timeline')) {
+          date_to_reference_to = media.date_timeline
+        } else if(media.hasOwnProperty('date_created')) {
+          date_to_reference_to = media.date_created
         }
 
         let _timestamp = +this.$moment(
-          this.medias[slugMediaName]['date_timeline'],
+          date_to_reference_to,
           'YYYY-MM-DD HH:mm:ss'
         );
 
         if (current_sort.type === 'date') {
           mediaDataToOrderBy = +this.$moment(
-            this.medias[slugMediaName][current_sort.field],
+            media[current_sort.field],
             'YYYY-MM-DD HH:mm:ss'
           );
         } else if (current_sort.type === 'alph') {
-          mediaDataToOrderBy = this.medias[slugMediaName][
+          mediaDataToOrderBy = media[
             current_sort.field
           ].toLowerCase();
         } else if (current_sort.type === 'alph') {
-          mediaDataToOrderBy = this.medias[slugMediaName][
+          mediaDataToOrderBy = media[
             current_sort.field
           ];
         }
@@ -377,19 +392,31 @@ export default {
 
       // groupby day
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
+
+        let date_to_reference_to = 0;
         if(media.hasOwnProperty('date_timeline')) {
-          var dateMoment = this.$moment(media.date_timeline);
-          return dateMoment.format('YYYY-MM-DD');
+          date_to_reference_to = media.date_timeline
+        } else if(media.hasOwnProperty('date_created')) {
+          date_to_reference_to = media.date_created
         }
+
+        const dateMoment = this.$moment(date_to_reference_to);
+        return dateMoment.format('YYYY-MM-DD');
       });
       mediaGroup = this.$_.toPairs(mediaGroup); 
 
       mediaGroup = mediaGroup.map(([day, medias]) => {
         let media_by_hours = this.$_.groupBy(medias, (media) => {
+
+          let date_to_reference_to = 0;
           if(media.hasOwnProperty('date_timeline')) {
-            var dateMoment = this.$moment(media.date_timeline);
-            return dateMoment.format('HH') + ':00';
+            date_to_reference_to = media.date_timeline
+          } else if(media.hasOwnProperty('date_created')) {
+            date_to_reference_to = media.date_created
           }
+
+          var dateMoment = this.$moment(date_to_reference_to);
+          return dateMoment.format('HH') + ':00';
         });
 
         // from

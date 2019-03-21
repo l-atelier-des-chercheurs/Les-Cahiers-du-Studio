@@ -358,7 +358,15 @@ export default {
 
       const total = Object.entries(this.medias).reduce((acc, pair) => {
         const [key, value] = pair;
-        let created_day = this.$moment(value.date_timeline);
+
+        let date_to_reference_to = 0;
+        if(value.hasOwnProperty('date_timeline')) {
+          date_to_reference_to = value.date_timeline
+        } else if(value.hasOwnProperty('date_created')) {
+          date_to_reference_to = value.date_created
+        }
+
+        let created_day = this.$moment(date_to_reference_to);
         if (created_day.isSame(date, 'day')) {
           acc++;
         }
