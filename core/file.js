@@ -1611,7 +1611,7 @@ module.exports = (function() {
       }
 
       // if updating a meta file and the new meta doesn’t have the iterated value
-      // we stop except if that field has "override"
+      // we return except if that field has "override"
       if (
         method === 'update' &&
         !existing.hasOwnProperty(key) &&
@@ -1722,18 +1722,33 @@ module.exports = (function() {
         : global.settings.structure[type][type_two].fields;
 
     Object.keys(meta).forEach(key => {
+      const meta_key = meta[key];
+
+      // check if key is_replaced_by
+      if (
+        fields.hasOwnProperty(key) &&
+        fields[key].hasOwnProperty('is_replaced_by')
+      ) {
+        // if new_meta doesnt have that key yet,
+        // lets replace that meta_key
+        const is_replaced_by = fields[key].is_replaced_by;
+        if (!new_meta.hasOwnProperty(is_replaced_by)) {
+          key = is_replaced_by;
+        }
+      }
+
       if (fields.hasOwnProperty(key) && fields[key].hasOwnProperty('type')) {
         const fieldType = fields[key].type;
         if (fieldType === 'date') {
-          new_meta[key] = api.parseDate(meta[key]);
+          new_meta[key] = api.parseDate(meta_key);
         } else if (fieldType === 'string') {
-          new_meta[key] = validator.unescape(meta[key]);
+          new_meta[key] = validator.unescape(meta_key);
         } else if (fieldType === 'number') {
-          new_meta[key] = validator.toFloat(meta[key]);
+          new_meta[key] = validator.toFloat(meta_key);
         } else if (fieldType === 'boolean') {
-          new_meta[key] = validator.toBoolean(meta[key]);
+          new_meta[key] = validator.toBoolean(meta_key);
         } else if (fieldType === 'array') {
-          new_meta[key] = meta[key];
+          new_meta[key] = meta_key;
         } else {
           dev.error(`Unexpected field type ${fieldType}.`);
         }

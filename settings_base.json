@@ -64,7 +64,8 @@
         "fields": {
           "created": {
             "type": "date",
-            "read_only": true
+            "read_only": true,
+            "is_replaced_by": "date_created"
           },
           "date_timeline": {
             "type": "date",
