@@ -151,9 +151,6 @@ body {
   flex-flow: row nowrap;
 
   > * {
-    position: relative;
-    flex: 1 1 auto;
-
     &.m_sidebar {
       position: relative;
       flex: 0 0 320px;
@@ -475,8 +472,9 @@ body {
   position: absolute;
   max-width: @t-sidebarWidth;
   width: 100%;
-  height: 100vh;
-  height: ~"calc(100vh - 60px)";
+  // height: 100vh;
+  // height: 100%;
+  // height: ~"calc(100vh - 60px)";
   overflow-y: auto;
 
   background-color: @c-bg_sidebar;

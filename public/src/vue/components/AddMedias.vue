@@ -475,7 +475,7 @@ button, .button {
       justify-content: center;
       align-items: center;
 
-      --buttons-color: #333;
+      --buttons-color: var(--color-noir);
       // pointer-events: none;
 
       &.menu_encart--options_authors {
@@ -579,15 +579,15 @@ button, .button {
   height: 64px;  
   padding: 0 20px;
   margin: 0 auto !important;
-  --buttons-color: rgb(51,51,51);
+  --buttons-color: var(--color-noir);
 }
 
 </style>
 <style lang="scss">
 .m_authors {
   flex-flow: column nowrap;
-  width: 300px;
-  height: 250px;
+  max-width: 300px;
+  max-height: 250px;
   box-shadow: 2px 4px 13px #bbb; 
   margin-bottom: 15px;  
 }

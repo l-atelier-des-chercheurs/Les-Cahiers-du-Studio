@@ -47,7 +47,7 @@
         :allAuthors="folder.authors"
       />
 
-      <div>
+      <div style="position: relative;">
         <button type="button"
           class="button_sidebarToggle"
           @click.prevent="toggleSidebar()"
@@ -58,7 +58,9 @@
         </button>
       </div>
 
-      <div class="m_floater">
+      <div class="m_floater"
+        @mousewheel="onMousewheel"
+      >
         <div>
           {{ visible_day_human }}
         </div>
@@ -118,6 +120,29 @@
             </div>
           </div>
         </div>
+
+        <div v-if="sort.current.field !== 'date_timeline'"
+          class="m_filterIndicator">
+          <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
+            <button type="button" 
+              class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
+              v-html="'x'" 
+              @click="setSort(sort.available[0]); setFilter('');"
+            />
+            <small>
+              <div class="">
+                <span v-html="$t('active_filter:')" />
+                {{ ' ' }}
+                <span v-html="sort.current.name" />
+              </div>
+              <div class="">
+                <span v-html="$t('medias_shown:')" />
+                <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
+              </div>
+            </small>
+          </div>
+        </div>
+        
       </div>
 
     </div>
@@ -131,6 +156,7 @@
       :is_realtime="is_realtime"
       :current_author="current_author"
     />
+
 
     <EditMedia
       v-if="show_media_modal_for"
@@ -248,13 +274,19 @@ export default {
   },
   
   created() {
+    this.sort.current = this.sort.available[0];
   },
   mounted() {
     this.$eventHub.$on('timeline.openMediaModal', this.openMediaModal);
+    this.$eventHub.$on('setSort', this.setSort);
+    this.$eventHub.$on('setFilter', this.setFilter);
 
   },
   beforeDestroy() {
     this.$eventHub.$off('timeline.openMediaModal', this.openMediaModal);
+    this.$eventHub.$off('setSort');
+    this.$eventHub.$off('setFilter');
+
   },
   watch: {
   },
@@ -371,7 +403,10 @@ export default {
     },
     visible_day() {
       console.log('COMPUTED • TimeLineView: visible_day');
+      
+      // IMPORTANT : to make sure visible_day is called when this.translation changes
       this.translation;
+
       if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
         return this.timeline_start;
       }
@@ -459,6 +494,7 @@ export default {
       if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
         return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
       } else {
+        // guess timeline_start from medias : get medias
         console.log(`WARNING: no timeline start. This can’t work.`);
         throw `Missing timeline start`;
       }
@@ -596,17 +632,22 @@ export default {
       // console.log('METHODS • TimeLineView: onMousewheel');
 
       event.preventDefault();
-      this.translation += event.deltaX; 
-      this.translation += event.deltaY;
+
+      let new_translation = this.translation;
+      new_translation += event.deltaX; 
+      new_translation += event.deltaY;
 
       const el = this.$refs.timeline;
 
-      const timeline_width = el.children[0].offsetWidth - window.innerWidth;
+      const timeline_width = el.children[0].offsetWidth - el.offsetWidth;
 
-      this.translation = Math.max(this.translation, 0);
-      this.translation = Math.min(this.translation, timeline_width);
+      new_translation = Math.max(new_translation, 0);
+      new_translation = Math.min(new_translation, timeline_width);
 
-      el.scrollLeft = this.translation;
+      if(new_translation !== this.translation) {
+        this.translation = new_translation;
+        el.scrollLeft = this.translation;
+      }
     },
     onMouseUp(event) {
       console.log('METHODS • TimeLineView: onMouseUp');
@@ -640,18 +681,27 @@ export default {
       // console.log('METHODS • TimeLineView: onTimelineScroll');
       const el = this.$refs.timeline;
       this.translation = el.scrollLeft;
-    }
+    },
     // prev / nav
+    setSort(newSort) {
+      console.log('METHODS • TimeLineView: setSort');
+      this.sort.current = newSort;
+    },
+    setFilter(newFilter) {
+      console.log('METHODS • TimeLineView: setFilter');
+      this.filter = newFilter;
+    },
+
   }
 }
 </script>
 <style lang="scss">
 
 .m_timeline {
-  height: 100vh;
+
   padding-left: 0;
 
-  --label-backgroundcolor: #000;
+  --label-backgroundcolor: var(--color-noir);
   --label-color: white;
 
   --timeline-bg: #F1F2F0;
@@ -741,7 +791,7 @@ export default {
           display: inline-flex;
           align-items: center;
           justify-content: center;          
-          background-color: #000;
+          background-color: var(--color-noir);
           border-radius: 50%;
           color: white;
           font-size:.7em;
@@ -841,7 +891,7 @@ export default {
   height: 40px;
   border-radius: 50%;
   color: white;
-  background-color: black;
+  background-color: var(--color-noir);
 }
 
 .m_floater {
@@ -855,7 +905,7 @@ export default {
     margin: 0 auto;
     width: 250px;
     height: 40px;
-    background-color: #333;
+    background-color: var(--color-noir);
     color: white;
     pointer-events: auto;
     border-radius: 4px;
