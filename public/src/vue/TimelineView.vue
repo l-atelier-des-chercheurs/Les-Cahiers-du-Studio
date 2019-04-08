@@ -13,8 +13,17 @@
       </div>
     </transition>
 
+    {{ collapse_foldername }}
 
-    <button type="button" class="folder_backbutton" @click="$root.closeFolder()" v-html="'←'" />
+
+    <button type="button" class="folder_backbutton" @click="$root.closeFolder()"
+      @mouseover="collapse_foldername = false"
+      @mouseleave="collapse_foldername = true"
+      :class="{ 'is--collapsed' : collapse_foldername }"
+    >
+      <span class="icon">←</span>
+      <span class="project_name">{{ folder.name }}</span>
+    </button>
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
 
@@ -208,6 +217,7 @@ export default {
       translation: 0,
       is_realtime: false,
       timeline_height: 0,
+      collapse_foldername: false,
 
       show_media_modal_for: false,
       show_edit_folder_modal: false,   
@@ -290,6 +300,7 @@ export default {
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener('resize', this.onResize);
 
+    setTimeout(() => { this.collapse_foldername = true }, 2000);
   },
   beforeDestroy() {
     this.$eventHub.$off('timeline.openMediaModal', this.openMediaModal);
@@ -714,7 +725,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="less">
 
 .m_timeline {
 
@@ -903,14 +914,57 @@ export default {
 
 .folder_backbutton {
   position: fixed;
-  top:20px;
-  left: 20px;
+  top: 20px;
+  left: 18px;
   z-index: 10000;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  border-radius: 22px;
+
+  padding: 0;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-start;
+
+  border: 2px solid var(--color-noir);
   color: white;
   background-color: var(--color-noir);
+
+  body.has_systembar & {
+    top: 40px;
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 22px;
+    
+    color: white;
+  // border: 2px solid white;
+    background-color: var(--color-noir);
+
+    font-size: 1.5em;
+  }
+
+  .project_name{
+    padding: 4px 16px 4px 4px;
+    text-transform: initial;
+    max-width: 340px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: padding .4s ease-out;
+
+    .is--collapsed& {
+      padding-left: 0;
+      padding-right: 0;
+      max-width: 0px;
+    }
+  }
 }
 
 .m_floater {

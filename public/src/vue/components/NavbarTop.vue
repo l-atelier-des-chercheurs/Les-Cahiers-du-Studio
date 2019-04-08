@@ -50,11 +50,11 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
               </svg>
             </div>
           </template>
-<!--
+<!-- 
           <a href="/" @click.prevent="$root.closeFolder()" class="breadcrumb--item padding-small">
             <i>Les Cahiers du Studio</i>
-          </a>
--->
+          </a> -->
+
           <div class="breadcrumb--item padding-small"  v-if="typeof folder !== 'undefined'">{{ folder.name }}</div>
         </div>
 
