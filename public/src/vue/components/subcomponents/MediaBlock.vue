@@ -265,7 +265,7 @@ export default {
     },
     resizeMedia(type, origin) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`);
+        console.log(`METHODS • MediaBlock: resizeMedia with is_resized = ${this.is_resized}`);
       }
       if (!this.read_only) {
         this.resizeOrigin = origin;
@@ -281,7 +281,7 @@ export default {
     },
     resizeMove(event) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaPublication: resizeMove with is_resized = ${this.is_resized}`);
+        console.log(`METHODS • MediaBlock: resizeMove with is_resized = ${this.is_resized}`);
       }
 
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
@@ -312,11 +312,13 @@ export default {
     },
     resizeUp(event) {
       if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaPublication: resizeUp with is_resized = ${this.is_resized}`);
+        console.log(`METHODS • MediaBlock: resizeUp with is_resized = ${this.is_resized}`);
       }
       if (this.is_resized) {
-        this.mediaSize.width = this.mediaSize.width;
-        this.mediaSize.height = this.mediaSize.height;
+        console.log(`METHODS • MediaBlock: this.mediaSize.width = ${this.mediaSize.width} and this.mediaSize.height = ${this.mediaSize.height}`);
+
+        // this.mediaSize.width = this.mediaSize.width;
+        // this.mediaSize.height = this.mediaSize.height;
 
         // this.updateMediaPubliMeta({ 
         //   width: this.mediaSize.width,
