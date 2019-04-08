@@ -22,7 +22,7 @@
           {{ current_author_name }}
         </template>
         <template v-else>
-          {{ $t('author') }}
+          {{ $t('login').toLowerCase() }}
         </template>
       </button>
     </div>

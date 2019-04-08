@@ -24,6 +24,7 @@ module.exports = (function() {
       'file:': 'Fichier&nbsp;:',
       change_color: 'Modifier la couleur',
       disconnect: 'Se déconnecter',
+      login: 'S’identifier',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -157,6 +158,7 @@ module.exports = (function() {
       'file:': 'File:',
       change_color: 'Change color',
       disconnect: 'Disconnect',
+      login: 'Login',
 
       loading: 'loading',
       open: 'Open',
