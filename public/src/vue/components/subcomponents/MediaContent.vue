@@ -14,32 +14,23 @@
 
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
-        <img :srcset="videostillSrcSetAttr" :sizes="imageSizesAttr" :src="linkToVideoThumb"
-
-        >
+        <img :srcset="videostillSrcSetAttr" :sizes="imageSizesAttr" :src="linkToVideoThumb">
       </template>
       <template v-else>
-        <video controls ref="video" preload="none" :src="mediaURL" :poster="linkToVideoThumb" />
-        <svg 
-          ref="playIcon" 
-          v-if="!video_is_playing"
-          class="mediaContainer--videoPlay" 
-          viewBox="0 0 200 200" 
-          alt="Play video"
-          @click="togglePlayVideo()"
-        >
-          <circle cx="100" cy="100" r="90" fill="#fff" stroke-width="15" stroke="#fff"></circle>
-          <polygon points="70, 55 70, 145 145, 100" fill="#353535"></polygon>
-        </svg>
+        <vue-plyr :options="plyr_options">
+          <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" />
+        </vue-plyr>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <audio controls preload="none" :src="mediaURL" controlsList="nodownload" />
+      <vue-plyr :options="plyr_options">
+        <audio :src="mediaURL" preload="none" />
+      </vue-plyr>
     </template>
 
     <template v-else-if="media.type === 'text'">
-      <div v-if="context !== 'edit'" class="padding-small font-small">
+      <div v-if="context !== 'edit'" class="">
         <div v-if="value.length !== 0" v-html="value" />
         <p v-else v-html="'…'" />
       </div>
@@ -152,8 +143,12 @@ export default {
         preview_hovered: 360,
         default: 1600
       },
-      video_is_playing: false,
-      htmlForEditor: this.value
+      htmlForEditor: this.value,
+
+      plyr_options: {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        iconUrl: '/images/plyr.svg'
+      }
     };
   },
   mounted() {
@@ -193,12 +188,13 @@ export default {
       
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
-        this.mediaURL.toLowerCase().endsWith('.gif')
+        (this.context !== 'preview' &&
+        this.mediaURL.toLowerCase().endsWith('.gif'))
       ) {
         return this.mediaURL;
       }
 
-      const small_thumb = this.media.thumbs.filter(m => !!m && m.hasOwnProperty('size') && m.size === this.thumbRes);
+      const small_thumb = this.media.thumbs.filter(m => m.size === this.thumbRes);
       if(small_thumb.length == 0) {
         return this.mediaURL;
       }
@@ -206,18 +202,18 @@ export default {
       let pathToSmallestThumb = small_thumb[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`;
-      url += `?${(new Date()).getTime()}`;
       return url;
     },
     imageSrcSetAttr: function() {
-      if (this.mediaURL.toLowerCase().endsWith('.gif')) {
+      if (this.element_width_for_sizes === 0 || this.mediaURL.toLowerCase().endsWith('.gif')) {
         return;
       }
-
+      
       // get all available sizes 
       const img_srcset = this.media.thumbs.reduce((acc, t) => {
         if(t.hasOwnProperty('path')) {
-          acc.push(encodeURIComponent(t.path) + ' ' + t.size + 'w');
+          // acc.push(encodeURIComponent(t.path) + ' ' + t.size + 'w');
+          acc.push(t.path + ' ' + t.size + 'w');
         }
         return acc;
       }, []);
@@ -274,20 +270,12 @@ export default {
       let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(m => m.size === this.thumbRes)[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
-      url += `?${(new Date()).getTime()}`;
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
     }
   },
   methods: {
-    togglePlayVideo() {
-      if(this.video_is_playing === false) {
-        this.video_is_playing = true;
-        this.$refs.video.play();
-        // this.$refs.video.setAttribute('controls', 'controls')      
-      }
-    }
   }
 };
 </script>

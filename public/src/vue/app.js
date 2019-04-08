@@ -25,6 +25,9 @@ Vue.prototype.$slug = slug;
 import VuePackeryPlugin from 'vue-packery-plugin';
 Vue.use(VuePackeryPlugin);
 
+import VuePlyr from 'vue-plyr';
+Vue.use(VuePlyr);
+
 // import VueDraggabillyPlugin from './vue-packery-draggabilly-plugin';
 // Vue.use(VueDraggabillyPlugin);
 
