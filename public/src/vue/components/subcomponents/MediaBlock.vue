@@ -141,7 +141,12 @@ export default {
         this.mediaSize.height = Math.round(Math.random() * 2 + this.base_edge);
       }
     }
+
+    // override with actual media w and h if it exists
+    this.setMediaSizeFromMeta();
+
   },
+
   mounted() {
     this.$el.draggie = new Draggabilly(this.$el, {
       handle: '[data-draggabilly_handle]'
@@ -181,6 +186,12 @@ export default {
     },
     'media.content': function() {
       this.checkTextOverflow();
+    },
+    'media.w': function() {
+      this.setMediaSizeFromMeta();
+    },
+    'media.h': function() {
+      this.setMediaSizeFromMeta();
     }
   },
   computed: {
@@ -241,6 +252,14 @@ export default {
         }
 
         this.text_is_overflowing = this.mediaHeight < this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
+      }
+    },
+    setMediaSizeFromMeta() {
+      if(this.media.hasOwnProperty('w') && typeof this.media.w === 'number') {
+        this.mediaSize.width = this.media.w;
+      }
+      if(this.media.hasOwnProperty('h') && typeof this.media.h === 'number') {
+        this.mediaSize.height = this.media.h;
       }
     },
     changeItemWidth(increment) {
@@ -320,10 +339,16 @@ export default {
         // this.mediaSize.width = this.mediaSize.width;
         // this.mediaSize.height = this.mediaSize.height;
 
-        // this.updateMediaPubliMeta({ 
-        //   width: this.mediaSize.width,
-        //   height: this.mediaSize.height 
-        // });
+        this.$root.editMedia({ 
+          type: 'folders',
+          slugFolderName: this.slugFolderName, 
+          slugMediaName: this.media.slugMediaName,
+          data: {
+            w: this.mediaSize.width,
+            h: this.mediaSize.height
+          }
+        });
+
         this.is_resized = false;
         this.$emit('resizeEnded');      
       }
