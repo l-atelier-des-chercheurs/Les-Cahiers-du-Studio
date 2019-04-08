@@ -31,7 +31,7 @@
     "npm": "*"
   },
   "build": {
-    "electronVersion": "4.1.4",
+    "electronVersion": "4.0.3",
     "appId": "les-cahiers-du-studio",
     "productName": "Les Cahiers du Studio",
     "asar": false,
@@ -73,9 +73,9 @@
     "write-file-atomic": "^2.4.2"
   },
   "devDependencies": {
-    "electron": "^4.1.4",
-    "electron-builder": "^20.39.0",
-    "electron-prebuilt": "^1.4.13",
+    "electron": "4.0.3",
+    "electron-builder": "^20.38.5",
+    "electron-rebuild": "^1.8.4",
     "node-gyp": "^3.8.0"
   }
 }
