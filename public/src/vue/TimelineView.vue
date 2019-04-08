@@ -110,6 +110,7 @@
                     :medias="hour.medias"
                     :folder="folder"
                     :slugFolderName="slugFolderName"
+                    :timeline_height="timeline_height"
                   />
                 </div>
               </template>
@@ -184,6 +185,8 @@ import AddMedias from './components/AddMedias.vue';
 import { setTimeout } from 'timers';
 import EditMedia from './components/modals/EditMedia.vue';
 
+import debounce from 'debounce';
+
 export default {
   props: {
     slugFolderName: String,
@@ -204,6 +207,7 @@ export default {
 
       translation: 0,
       is_realtime: false,
+      timeline_height: 0,
 
       show_media_modal_for: false,
       show_edit_folder_modal: false,   
@@ -281,11 +285,18 @@ export default {
     this.$eventHub.$on('setSort', this.setSort);
     this.$eventHub.$on('setFilter', this.setFilter);
 
+    this.setTimelineHeight();
+
+    this.onResize = debounce(this.onResize, 300);
+    window.addEventListener('resize', this.onResize);
+
   },
   beforeDestroy() {
     this.$eventHub.$off('timeline.openMediaModal', this.openMediaModal);
     this.$eventHub.$off('setSort');
     this.$eventHub.$off('setFilter');
+
+    window.removeEventListener('resize', this.onResize);
 
   },
   watch: {
@@ -655,6 +666,14 @@ export default {
       const el = this.$refs.timeline; 
       setTimeout(() => this.translation = el.scrollLeft, 300);
     }, 
+    onResize() {
+      console.log(`METHODS • TimeLineView: onResize`);
+      this.setTimelineHeight();
+    },
+    setTimelineHeight() {
+      console.log(`METHODS • TimeLineView: setTimelineHeight`);
+      this.timeline_height = window.innerHeight;
+    },
     openMediaModal(slugMediaName) {
       if (this.$root.state.dev_mode === 'debug') {
         console.log('METHODS • TimeLineView: openMediaModal for ' + slugMediaName);
