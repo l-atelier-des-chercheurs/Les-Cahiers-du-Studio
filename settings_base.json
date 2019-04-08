@@ -5,6 +5,7 @@
   "redirect_port": "",
   "userDirPath": "documents",
   "userDirname": "les-cahiers",
+  "cache_content": true,
 
   "contentDirname" : "user",
   "cacheDirname" : "cache",
