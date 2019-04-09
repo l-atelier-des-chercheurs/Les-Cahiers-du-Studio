@@ -67,7 +67,7 @@
       </div>
 
       <div class="m_floater"
-        @mousewheel="onMousewheel"
+        @wheel="onMousewheel"
       >
         <div>
           {{ visible_day_human }}
@@ -76,7 +76,7 @@
 
       <div class="m_timeline"
         ref="timeline"
-        @mousewheel="onMousewheel"
+        @wheel="onMousewheel"
         @mouseup.self="onMouseUp"
         @scroll="onTimelineScroll"
       >
