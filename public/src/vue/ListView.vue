@@ -238,7 +238,6 @@ export default {
 
       for (let slugFolderName in this.folders) {
         let orderBy;
-
         if (this.sort.type === 'date') {
           orderBy = +this.$moment(
             this.folders[slugFolderName][this.sort.field],
@@ -247,7 +246,11 @@ export default {
         } else if (this.sort.type === 'alph') {
           orderBy = this.folders[slugFolderName][this.sort.field];
         }
-        sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
+        if(Number.isNaN(orderBy)) {
+          orderBy = 0;
+        }
+
+        sortable.push({ slugFolderName, orderBy });
       }
       let sortedSortable = sortable.sort(function(a, b) {
         let valA = a.orderBy;
