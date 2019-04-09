@@ -478,7 +478,7 @@ button, .button {
         position: relative;
         cursor: pointer;
         opacity: 0;
-        transform: translateY(5px);
+        transform: translateY(5px) scale(0.8);
         background-color: var(--buttons-color);
         transition: all .4s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -489,7 +489,7 @@ button, .button {
         .delay_transition_up(@max, @counter) when (@counter < @max) {
           .delay_transition_up(@max, (@counter + 1));
           &:nth-child(@{counter}) {
-            transition-delay: ((@max - @counter) * .025s);
+            transition-delay: ((@max - @counter) * .035s);
           }
         }
         .delay_transition_up(6, 0);
@@ -508,7 +508,7 @@ button, .button {
 
       .menu_encart--options > * {
         opacity: 1;
-        transform: translateY(0px);;
+        transform: translateY(0px) scale(1);
       }
     }    
 
@@ -539,7 +539,7 @@ button, .button {
     &.is--showing_options {
       // background-color: #999;
 
-      svg {
+      .menu_encart--button svg {
         transform: rotate(225deg);
       }
     }
