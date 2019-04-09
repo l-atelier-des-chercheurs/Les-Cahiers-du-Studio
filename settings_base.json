@@ -44,8 +44,7 @@
           "read_only": true
         },
         "start": {
-          "type": "date",
-          "default": "current"
+          "type": "date"
         },
         "end": {
           "type": "date"
