@@ -566,6 +566,19 @@ let vm = new Vue({
       }
     }
 
+    this.$eventHub.$on('socketio.reconnect', () => {
+      if (this.settings.current_slugFolderName) {
+        this.$socketio.listFolder({
+          type: 'folders',
+          slugFolderName: this.settings.current_slugFolderName
+        });
+        this.$socketio.listMedias({
+          type: 'folders',
+          slugFolderName: this.settings.current_slugFolderName
+        });
+      }
+    });
+
     window.onpopstate = event => {
       console.log(
         `ROOT EVENT: popstate with event.state.slugFolderName = ${
