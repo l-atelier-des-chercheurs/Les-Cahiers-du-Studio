@@ -415,11 +415,11 @@ module.exports = (function() {
               withoutEnlargement: true,
               background: 'white'
             })
+            .flatten()
             .withMetadata()
             .toFormat(global.settings.thumbFormat, {
               quality: global.settings.mediaThumbQuality
             })
-            .flatten()
             .toFile(fullThumbPath)
             .then(() => resolve())
             .catch(err => reject(err));

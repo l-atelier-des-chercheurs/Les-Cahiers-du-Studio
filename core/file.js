@@ -866,9 +866,8 @@ module.exports = (function() {
           let finalPath = path.join(uploadDir, newFileName);
           sharp(tempPath)
             .rotate()
-            .withMetadata()
-            .background({ r: 255, g: 255, b: 255 })
             .flatten()
+            .withMetadata()
             .jpeg({
               quality: 90
             })
@@ -1609,11 +1608,13 @@ module.exports = (function() {
             .rotate()
             .resize(
               global.settings.structure[type].preview.width,
-              global.settings.structure[type].preview.height
+              global.settings.structure[type].preview.height,
+              {
+                fit: 'inside',
+                withoutEnlargement: true,
+                background: 'white'
+              }
             )
-            .max()
-            .withoutEnlargement()
-            .background({ r: 255, g: 255, b: 255 })
             .flatten()
             .withMetadata()
             .toFormat(global.settings.thumbFormat, {
