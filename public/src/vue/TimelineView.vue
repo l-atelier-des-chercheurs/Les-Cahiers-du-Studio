@@ -323,6 +323,9 @@ export default {
       return this.folder.hasOwnProperty('authors') && this.folder.authors !== '' ? this.folder.authors : [];
     },
     current_author() {
+      if(typeof this.folder_authors !== 'object') {
+        return {};
+      }
       return this.folder_authors.filter(c => c.name === this.$root.settings.current_author_name)[0];      
     },
     sortedMedias() {
@@ -803,7 +806,6 @@ export default {
 
     &.is--current_day {
       span > span {
-        background-color: #ff3b4c;
       }
     }
 
@@ -865,11 +867,13 @@ export default {
   > .m_timeline--container--dates--day--empty {
     min-width: 140px;
     height: 100%;
+
+    @t-bandwidth: 0.4%;
     background: linear-gradient(to top left,
              rgba(0,0,0,0) 0%,
-             rgba(0,0,0,0) calc(50% - .9px),
+             rgba(0,0,0,0) ~"calc(50% - @{t-bandwidth})",
              var(--rule-color) 50%,
-             rgba(0,0,0,0) calc(50% + .9px),
+             rgba(0,0,0,0) ~"calc(50% + @{t-bandwidth})",
              rgba(0,0,0,0) 100%),
   }
 
