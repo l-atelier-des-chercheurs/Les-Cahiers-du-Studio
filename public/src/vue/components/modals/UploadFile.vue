@@ -73,6 +73,7 @@
 import Modal from './BaseModal.vue';
 import * as axios from 'axios';
 import { setTimeout } from 'timers';
+import UAparser from 'ua-parser-js';
 
 export default {
   props: {
@@ -121,10 +122,24 @@ export default {
 
         let formData = new FormData();
         formData.append('files', f, filename);
-        const meta = {
+
+        let meta = {
           fileCreationDate: modified,
           authors: this.$root.settings.current_author_name ? [{ name: this.$root.settings.current_author_name }] : '' 
         }
+
+        const parser = new UAparser();
+        const result = parser.getResult();
+        if(result) {
+          meta.device_infos = [];
+
+          const browser = Object.assign(result.browser, { type: 'browser' });
+          const device = Object.assign(result.device, { type: 'device' });
+          const os = Object.assign(result.os, { type: 'os' });
+          meta.device_infos.push(browser, device, os);
+          debugger;
+        }
+
         formData.append(filename, JSON.stringify(meta));
 
         const socketid = this.$socketio.socket.id;

@@ -117,6 +117,9 @@
           "authors": {
             "type": "array"
           },
+          "device_infos": {
+            "type": "array"
+          },
           "keywords": {
             "type": "string"
           },
