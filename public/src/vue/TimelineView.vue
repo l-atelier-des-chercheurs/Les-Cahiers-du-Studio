@@ -797,12 +797,17 @@ export default {
   // min-width: 250px;
   display: flex;
   align-items: center;
-  margin-left: 30px;
+  margin: 0 20px;
   // background-color: var(--label-backgroundcolor);
 
   // border: 2px solid white;
 
+  &:not(.is-empty) {
+    margin-left: 10px;
+  }
+
   &.is--empty {
+    margin-right: 0;
   }
   &.is--empty + &.is--empty {
     // margin-left: 30px;
@@ -810,8 +815,8 @@ export default {
   }
 
   &:not(.is--empty) + &.is--empty {
-    border-left: 1px solid var(--rule-color);
-    padding-left: 30px;
+    // border-left: 1px solid var(--rule-color);
+    padding-left: 10px;
   }
 
   > .m_timeline--container--dates--day--daylabel {
