@@ -1,11 +1,12 @@
 <template>
   <div class="m_authorField">
     <button 
-      v-for="author in allAuthors" 
+      v-for="author in allAuthorsExceptWhenReadOnly"
       type="button"
       :key="author.name"
       :class="{ 'is--active': authors.filter(a => a.name === author.name).length > 0 }"
-      @click="toggleAuthorName(author.name)"
+      @click="!read_only ? toggleAuthorName(author.name) : ''"
+      :disabled="read_only"
     >
       <span 
         :style="`color: ${author.color}`"
@@ -25,7 +26,11 @@
 export default {
   props: {
     currentAuthors: Array,
-    allAuthors: Array
+    allAuthors: Array,
+    read_only: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
   },
@@ -45,7 +50,12 @@ export default {
   watch: {
   },
   computed: {
-    filteredAuthors() {
+    allAuthorsExceptWhenReadOnly() {
+      if(this.read_only) {
+        return this.allAuthors.filter(a => this.currentAuthors.map(a => a.name).includes(a.name));
+      } else {
+        return this.allAuthors
+      }
     }
   },
   methods: {

@@ -16,7 +16,7 @@
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input type="text" v-model="folderdata.name" required :readonly="read_only">
+        <input type="text" v-model="folderdata.name" required :readonly="folderdata.archived">
       </div>
 
 <!-- Start date -->
@@ -69,16 +69,28 @@
       </div>
  -->
 
-<!-- Author(s) -->
+<!-- Archive switch -->
+      <div class="margin-bottom-small">
+        <span class="switch">
+          <input type="checkbox" class="switch" id="archivedswitch" v-model="folderdata.archived" :readonly="read_only">
+          <label for="archivedswitch">{{ $t('archive_this_folder') }}</label>
+        </span>
+        <div class="margin-bottom-small">
+          <small>
+            {{ $t('archive_instructions') }}
+          </small>
+        </div>
+      </div>
 
-      <div v-if="!read_only && !!folderdata.authors" class="margin-bottom-small">
+<!-- Author(s) -->
+      <!-- <div v-if="!read_only && !!folderdata.authors" class="margin-bottom-small">
         <label>{{ $t('author') }}</label>
         <AuthorsInput
           :currentAuthors="folderdata.authors"
           :allAuthors="allAuthors"
           @authorsChanged="newAuthors => folderdata.authors = newAuthors"
         />
-      </div>
+      </div> -->
 
     </template>
 
@@ -115,7 +127,8 @@ export default {
           ? this.folder.start
           : '',
         end: this.$moment(this.folder.end).isValid() ? this.folder.end : '',
-        authors: this.folder.authors
+        authors: this.folder.authors,
+        archived: this.folder.hasOwnProperty('archived') ?  this.folder.archived : false
       }
     };
   },

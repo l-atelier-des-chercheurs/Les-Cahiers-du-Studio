@@ -39,7 +39,6 @@
           type="button"
           class="button button-round button-round-small margin-bottom-small padding-none bg-noir c-blanc"
           @click="createTextMedia"
-          :disabled="read_only"
         >
           <span class="text_label show_on_hover">
             Texte
@@ -59,7 +58,6 @@
           type="button"
           class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
           @click="createMarkerMedia"
-          :disabled="read_only"
         >
           <span class="text_label show_on_hover">
             Marker
@@ -76,7 +74,6 @@
             :key="`add_${field.key}`"
             class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
             v-for="field in input_file_fields"
-            :disabled="read_only"
           >
             <label :for="`add_${field.key}`">
               <span class="text_label show_on_hover">
@@ -108,7 +105,6 @@
         :style="addMediaStyles"
         @click="show_addmedia_options = !show_addmedia_options"
         @drop="dropHandler($event)"
-        :disabled="read_only"
       >
         <span class="text_label always_show" v-if="show_drop_container">
           Déposez vos fichiers ici
@@ -123,7 +119,6 @@
       <UploadFile
         v-if="selected_files.length > 0"
         @close="selected_files = []"
-        :read_only="read_only"
         :slugFolderName="slugFolderName"
         :type="'folders'"
         :selected_files="selected_files"
@@ -141,10 +136,6 @@ export default {
   props: {
     slugFolderName: String,
     folder: Object,
-    read_only: {
-      type: Boolean,
-      default: true
-    },
     is_realtime: {
       type: Boolean,
       default: false

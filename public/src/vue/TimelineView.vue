@@ -51,7 +51,7 @@
         :folder="folder"
         :slugFolderName="slugFolderName"
         @close="show_edit_folder_modal = false"
-        :read_only="read_only"
+        :folder_is_archived="folder_is_archived"
         :allAuthors="folder.authors"
       />
 
@@ -152,17 +152,15 @@
             </small>
           </div>
         </div>
-        
       </div>
-
     </div>
 
     <AddMedias
       v-if="
-        ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected"
+        ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected && !folder_is_archived"
       :slugFolderName="slugFolderName"
       :folder="folder"
-      :read_only="read_only"
+      :folder_is_archived="folder_is_archived"
       :is_realtime="is_realtime"
       :current_author="current_author"
     />
@@ -176,7 +174,7 @@
       :folder="folder"
       :isRealtime="is_realtime"
       @close="show_media_modal_for = false"
-      :read_only="read_only"
+      :read_only="!$root.state.connected || folder_is_archived"
       :allAuthors="folder.authors"
     />
 
@@ -199,7 +197,6 @@ export default {
     slugFolderName: String,
     folder: Object,
     medias: Object,
-    
     read_only: Boolean
   },
   components: {
@@ -317,6 +314,9 @@ export default {
         slugFolderName: this.slugFolderName
       })
     },
+    folder_is_archived() {
+      return this.folder.hasOwnProperty('archived') && this.folder.archived ? true : false;
+    },  
     folder_authors() {
       return this.folder.hasOwnProperty('authors') && this.folder.authors !== '' ? this.folder.authors : [];
     },

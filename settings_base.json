@@ -56,6 +56,10 @@
         },
         "authors": {
           "type": "array"
+        },
+        "archived": {
+          "type": "boolean",
+          "default": false
         }
       },
       "medias": {
