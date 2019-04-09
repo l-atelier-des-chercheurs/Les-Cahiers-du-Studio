@@ -250,7 +250,7 @@ export default {
       return Modernizr.touchevents;
     },
     folder_authors() {
-      return this.folder.hasOwnProperty('authors') && this.folder.authors !== '' ? this.folder.authors : [];
+      return this.folder.hasOwnProperty('authors') && typeof this.folder.authors === 'object' ? this.folder.authors : [];
     },
     addMediaStyles() {
       let props = {};
