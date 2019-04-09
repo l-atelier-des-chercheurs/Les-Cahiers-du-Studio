@@ -517,8 +517,15 @@ export default {
         return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
       } else {
         // guess timeline_start from medias : get medias
-        console.log(`WARNING: no timeline start. This can’t work.`);
-        throw `Missing timeline start`;
+        console.log(`No timeline start. Getting it from oldest media.`);
+        if(this.sortedMedias.length > 0) {
+          return +this.$moment(
+            this.sortedMedias[0].date_timeline,
+            'YYYY-MM-DD HH:mm:ss'
+          );
+        } else {
+          return +this.$root.currentTime;
+        }
       }
       return false;
     },
