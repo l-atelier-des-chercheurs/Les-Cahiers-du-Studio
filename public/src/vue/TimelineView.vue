@@ -977,7 +977,7 @@ export default {
 .folder_backbutton {
   position: fixed;
   top: 20px;
-  left: 18px;
+  left: 20px;
   z-index: 10000;
   border-radius: 22px;
 
@@ -993,7 +993,7 @@ export default {
   background-color: var(--color-noir);
 
   body.has_systembar & {
-    top: 40px;
+    top: 35px;
   }
 
   .icon {
