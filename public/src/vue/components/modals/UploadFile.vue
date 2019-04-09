@@ -132,12 +132,10 @@ export default {
         const result = parser.getResult();
         if(result) {
           meta.device_infos = [];
-
           const browser = Object.assign(result.browser, { type: 'browser' });
           const device = Object.assign(result.device, { type: 'device' });
           const os = Object.assign(result.os, { type: 'os' });
           meta.device_infos.push(browser, device, os);
-          debugger;
         }
 
         formData.append(filename, JSON.stringify(meta));

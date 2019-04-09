@@ -809,9 +809,13 @@ export default {
   &.is--empty {
   }
   &.is--empty + &.is--empty {
-    // border-left: 1px solid var(--rule-color);
     // margin-left: 30px;
     margin: 0;
+  }
+
+  &:not(.is--empty) + &.is--empty {
+    border-left: 1px solid var(--rule-color);
+    padding-left: 30px;
   }
 
   > .m_timeline--container--dates--day--daylabel {
@@ -892,7 +896,6 @@ export default {
     display: flex;
     align-items: center;
 
-
     // @t-bandwidth: 0.4%;
     // background: linear-gradient(to top left,
     //          rgba(0,0,0,0) 0%,
@@ -910,8 +913,8 @@ export default {
       border-left-color: var(--rule-color);
       
       border-radius: 50%;
-      width: 10px;
-      height: 10px;
+      width: 20px;
+      height: 20px;
 
       // background-color: red;
 
@@ -924,9 +927,7 @@ export default {
       transform: rotate(225deg);
       // margin-left: -1px;
     }
-
   }
-
   .m_timeline--container--dates--day--hours {
     position: relative;
     height: 100%;
