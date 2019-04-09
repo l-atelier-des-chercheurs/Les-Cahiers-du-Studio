@@ -19,14 +19,14 @@
       </div>
 
 <!-- Start date -->
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('capture_start') }}</label>
         <DateTime v-model="folderdata.start" :read_only="read_only">
         </DateTime>
-      </div>
+      </div> -->
 
 <!-- End date -->
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('capture_end') }}</label>
         <DateTime v-model="folderdata.end" :twowaybinding=true :read_only="read_only">
         </DateTime>
@@ -42,13 +42,16 @@
             </button>
           </small>
         </div>
-      </div>
+      </div> -->
 
 <!-- Password -->
       <div class="margin-bottom-small">
-        <label>{{ $t('password') }}</label>
-        <input type="password" v-model="folderdata.password">
-        <small>{{ $t('password_instructions') }}</small>
+        <input type="checkbox" id="enable_password" v-model="show_password_field">
+        <label for="enable_password">{{ $t('password') }}</label>
+        <template v-if="show_password_field">
+          <input type="password" v-model="folderdata.password">
+          <small>{{ $t('password_instructions') }}</small>
+        </template>
       </div>
 
     </template>
@@ -75,10 +78,9 @@ export default {
   data() {
     return {
       askBeforeClosingModal: false,
+      show_password_field: false,
       folderdata: {
         name: '',
-        start: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        end: '',
         password: '',
         authors: ''
       }

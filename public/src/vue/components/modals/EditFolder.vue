@@ -20,7 +20,7 @@
       </div>
 
 <!-- Start date -->
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('capture_start') }}</label>
         <DateTime v-model="folderdata.start" :twowaybinding=true :read_only="read_only">
         </DateTime>
@@ -36,11 +36,10 @@
             </button>
           </small>
         </div>
-
-      </div>
+      </div> -->
 
 <!-- End date -->
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('capture_end') }}</label>
         <DateTime 
           v-model="folderdata.end" 
@@ -59,7 +58,7 @@
             </button>
           </small>
         </div>
-      </div>
+      </div> -->
 
 <!-- Password -->
 <!--
@@ -71,7 +70,8 @@
  -->
 
 <!-- Author(s) -->
-      <div v-if="!read_only || !!folderdata.authors" class="margin-bottom-small">
+
+      <div v-if="!read_only && !!folderdata.authors" class="margin-bottom-small">
         <label>{{ $t('author') }}</label>
         <AuthorsInput
           :currentAuthors="folderdata.authors"
