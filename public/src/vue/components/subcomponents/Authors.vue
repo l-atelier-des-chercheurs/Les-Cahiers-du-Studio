@@ -48,7 +48,7 @@
               :key="'connected_auth_label'"
               v-if="connected_authors.length > 0"
             >
-              auteurs connectés
+              {{ $t('author_connected') }}
             </label>
 
             <button type="button"
@@ -64,7 +64,7 @@
               :key="'not_connected_auth_label'"
               v-if="not_connected_authors.length > 0"
             >
-              non connectés
+              {{ $t('not_connected') }}
             </label>
 
             <button type="button"

@@ -44,6 +44,8 @@ module.exports = (function() {
       public: 'Public',
       content: 'Contenu',
       add_author: 'Ajouter un auteur',
+      not_connected: 'Non connecté(s)',
+      author_connected: 'Auteurs connectés',
 
       'lang:': 'Changer la langue&nbsp;:',
       lang: 'Changer la langue',
@@ -181,6 +183,8 @@ module.exports = (function() {
       public: 'Public',
       content: 'Content',
       add_author: 'Add author',
+      not_connected: 'Not connected',
+      author_connected: 'Connected author',
 
       'lang:': 'Select lang:',
       lang: 'Select lang',
