@@ -13,6 +13,8 @@
       </div>
     </transition>
 
+    <!-- <pre>{{ full_date_interval }}</pre> -->
+
     <button type="button" class="folder_backbutton" @click="$root.closeFolder()"
       @mouseover="collapse_foldername = false"
       @mouseleave="collapse_foldername = true"
@@ -86,8 +88,9 @@
               :key="day.label"
               :data-timestamp="day.timestamp"
               class="m_timeline--container--dates--day"
+              :class="{ 'is--empty' : day.is_empty }"
             >
-              <template v-if="!day.hasOwnProperty('period') || day.period === false">
+              <template v-if="!day.is_empty">
                 <div class="m_timeline--container--dates--day--daylabel"
                   :class="{ 'is--current_day' : day.is_current_day }"
                 >
@@ -178,8 +181,6 @@
     />
 
     <!-- Ici la minimap -->
-
-    <!-- l’indication du nom de la timeline -->
 
   </div>
 </template>
@@ -512,50 +513,64 @@ export default {
       return mediaGroup;  
     },
     timeline_start() {
-      const ts = this.folder.start;
-      if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-        return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
-      } else {
-        // guess timeline_start from medias : get medias
-        console.log(`No timeline start. Getting it from oldest media.`);
-        if(this.sortedMedias.length > 0) {
-          return +this.$moment(
-            this.sortedMedias[0].date_timeline,
-            'YYYY-MM-DD HH:mm:ss'
-          );
-        } else {
-          return +this.$root.currentTime;
-        }
+      if(this.sortedMedias.length > 0) {
+        return +this.$moment(
+          this.sortedMedias[0].date_timeline,
+          'YYYY-MM-DD HH:mm:ss'
+        );
       }
       return false;
+      // const ts = this.folder.start;
+      // if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+      //   return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+      // } else {
+      //   // guess timeline_start from medias : get medias
+      //   console.log(`No timeline start. Getting it from oldest media.`);
+      //   if(this.sortedMedias.length > 0) {
+      //     return +this.$moment(
+      //       this.sortedMedias[0].date_timeline,
+      //       'YYYY-MM-DD HH:mm:ss'
+      //     );
+      //   } else {
+      //     return +this.$root.currentTime;
+      //   }
+      // }
+      // return false;
     },
     timeline_end() {
-      const ts = this.folder.end;
-
-      const get_new_timeline_end = (ts) => {
-        if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-          // if end is in the future
-          if (
-            this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isAfter(this.$root.currentTime)
-          ) {
-            this.is_realtime = true;
-            return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
-            // if end is is in the present or past
-          } else {
-            this.is_realtime = false;
-            return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
-          }
-        } else {
-          // there is no valid end, we set end to current time and set is_realtime
-          this.is_realtime = true;
-          return +this.$root.currentTime;
-        }
+      if(this.sortedMedias.length > 0) {
+        return +this.$moment(
+          this.sortedMedias[this.sortedMedias.length - 1].date_timeline,
+          'YYYY-MM-DD HH:mm:ss'
+        );
       }
-      const new_timeline_end = get_new_timeline_end(ts);
-      // if(new_timeline_end !== this.timeline_end) {
-      //   return new_timeline_end;
+      return false;
+
+      // const ts = this.folder.end;
+      // const get_new_timeline_end = (ts) => {
+      //   if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+      //     // if end is in the future
+      //     if (
+      //       this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isAfter(this.$root.currentTime)
+      //     ) {
+      //       this.is_realtime = true;
+      //       // return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+      //       // if end is is in the present or past
+      //     } else {
+      //       this.is_realtime = false;
+      //       return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+      //     }
+      //   } else {
+      //     // there is no valid end, we set end to current time and set is_realtime
+      //     this.is_realtime = true;
+      //     return +this.$root.currentTime;
+      //   }
       // }
-      return new_timeline_end;
+      // const new_timeline_end = get_new_timeline_end(ts);
+      // // if(new_timeline_end !== this.timeline_end) {
+      // //   return new_timeline_end;
+      // // }
+      // return new_timeline_end;
     },
     full_date_interval() {
       // console.log('COMPUTED • TimeLineView: full_date_interval');
@@ -636,12 +651,12 @@ export default {
           // if last added day has 0
           // acc.push(day);
           const last_item = acc[acc.length - 1]; 
-          if(last_item.number_of_medias === 0) {
+          if(day.number_of_medias === 0) {
             // check if last item is already a period
-            if(!last_item.hasOwnProperty('period') || !last_item.period) {
-              day.period = true;
-              acc.push(day);
-            }
+            // if(!last_item.hasOwnProperty('period') || !last_item.period) {
+            day.is_empty = true;
+            acc.push(day);
+            // }
           } else {
             acc.push(day);
           }
@@ -786,15 +801,25 @@ export default {
   // min-width: 250px;
   display: flex;
   align-items: center;
+  margin-left: 30px;
   // background-color: var(--label-backgroundcolor);
 
   // border: 2px solid white;
+
+  &.is--empty {
+  }
+  &.is--empty + &.is--empty {
+    // border-left: 1px solid var(--rule-color);
+    // margin-left: 30px;
+    margin: 0;
+  }
 
   > .m_timeline--container--dates--day--daylabel {
     position: relative;
     height: 100%;
     width: 50px;
-    margin: 0 30px;
+    margin-right: 30px;
+    // margin: 0 30px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -862,16 +887,44 @@ export default {
   }
 
   > .m_timeline--container--dates--day--empty {
-    min-width: 140px;
+    min-width: 0;
     height: 100%;
+    display: flex;
+    align-items: center;
 
-    @t-bandwidth: 0.4%;
-    background: linear-gradient(to top left,
-             rgba(0,0,0,0) 0%,
-             rgba(0,0,0,0) ~"calc(50% - @{t-bandwidth})",
-             var(--rule-color) 50%,
-             rgba(0,0,0,0) ~"calc(50% + @{t-bandwidth})",
-             rgba(0,0,0,0) 100%),
+
+    // @t-bandwidth: 0.4%;
+    // background: linear-gradient(to top left,
+    //          rgba(0,0,0,0) 0%,
+    //          rgba(0,0,0,0) ~"calc(50% - @{t-bandwidth})",
+    //          var(--rule-color) 50%,
+    //          rgba(0,0,0,0) ~"calc(50% + @{t-bandwidth})",
+    //          rgba(0,0,0,0) 100%);
+
+    &::before, &::after {
+      content: '';
+      display: block;
+      border: 1px solid transparent;
+
+      border-top-color: var(--rule-color);
+      border-left-color: var(--rule-color);
+      
+      border-radius: 50%;
+      width: 10px;
+      height: 10px;
+
+      // background-color: red;
+
+      transform-origin: center center;
+    }
+    &::before {
+      transform: rotate(45deg);
+    }
+    &::after {
+      transform: rotate(225deg);
+      // margin-left: -1px;
+    }
+
   }
 
   .m_timeline--container--dates--day--hours {
