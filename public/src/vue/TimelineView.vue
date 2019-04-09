@@ -103,20 +103,20 @@
                   </div>
                 </div>
 
-                <div v-for="hour in day.hours"
-                  :key="hour.label"
-                  class="m_timeline--container--dates--day--hours"
+                <div v-for="segment in day.segments"
+                  :key="segment.label"
+                  class="m_timeline--container--dates--day--mediasblock"
                 >
-                  <div class="m_timeline--container--dates--day--hours--hourlabel"
+                  <div class="m_timeline--container--dates--day--mediasblock--label"
                     :class="{ 
-                      'is--current_hour' : hour.hasOwnProperty('is_current_hour') && hour.is_current_hour
                     }"
                   >
-                    <span>{{ hour.label }}</span>
+                      <!-- 'is--current_hour' : hour.hasOwnProperty('is_current_hour') && hour.is_current_hour -->
+                    <span>{{ segment.label }}</span>
                   </div>
 
                   <MediasBlock 
-                    :medias="hour.medias"
+                    :medias="segment.medias"
                     :folder="folder"
                     :slugFolderName="slugFolderName"
                     :timeline_height="timeline_height"
@@ -212,6 +212,8 @@ export default {
 
       show_media_modal_for: false,
       show_edit_folder_modal: false,   
+
+      make_mediasblock_with: 'markers',
       
       filter: '',
       sort: {
@@ -444,9 +446,12 @@ export default {
     groupedMedias() {
       console.log('COMPUTED • TimeLineView: groupedMedias');
 
+      if(this.sortedMedias.length === 0) {
+        return [];
+      }
+
       // groupby day
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
-
         let date_to_reference_to = 0;
         if(media.hasOwnProperty('date_timeline')) {
           date_to_reference_to = media.date_timeline
@@ -459,52 +464,83 @@ export default {
       });
       mediaGroup = this.$_.toPairs(mediaGroup); 
 
-      mediaGroup = mediaGroup.map(([day, medias]) => {
-        let media_by_hours = this.$_.groupBy(medias, (media) => {
+      if(this.make_mediasblock_with === 'hours') {
+        mediaGroup = mediaGroup.map(([day, medias]) => {
+          let medias_by_hours = this.$_.groupBy(medias, (media) => {
+            let date_to_reference_to = 0;
+            if(media.hasOwnProperty('date_timeline')) {
+              date_to_reference_to = media.date_timeline
+            } else if(media.hasOwnProperty('date_created')) {
+              date_to_reference_to = media.date_created
+            }
 
-          let date_to_reference_to = 0;
-          if(media.hasOwnProperty('date_timeline')) {
-            date_to_reference_to = media.date_timeline
-          } else if(media.hasOwnProperty('date_created')) {
-            date_to_reference_to = media.date_created
-          }
-
-          var dateMoment = this.$moment(date_to_reference_to);
-          return dateMoment.format('HH') + ':00';
-        });
-
-        // from
-        // {
-        //   "10:00": [
-        //     {},
-        //     {}
-        //   ]
-        // };
-        // to 
-        // {
-        //   "10:00": {
-        //     medias: [
-        //       {},
-        //       {}
-        //     ]
-        //   }           
-        // };        
-
-        media_by_hours = Object.entries(media_by_hours).reduce((acc, [hour, medias]) => {
-          acc.push({
-            label: hour,
-            medias
+            var dateMoment = this.$moment(date_to_reference_to);
+            return dateMoment.format('HH') + ':00';
           });
-          return acc;
-        }, []);
-        // media_by_hours = this.$_.toPairs(media_by_hours); 
-        // media_by_hours = this.$_.sortBy(media_by_hours);
-        // media_by_hours = media_by_hours.reverse();
-        return {
-          day, 
-          hours: media_by_hours
-        };   
-      });
+
+          // from
+          // {
+          //   "10:00": [
+          //     {},
+          //     {}
+          //   ]
+          // };
+          // to 
+          // {
+          //   label: "11:00"
+          //   medias: [
+          //     {},
+          //     {}
+          //   ]           
+          // };        
+          medias_by_hours = Object.entries(medias_by_hours).reduce((acc, [hour, medias]) => {
+            acc.push({
+              label: hour,
+              medias
+            });
+            return acc;
+          }, []);
+          // medias_by_hours = this.$_.toPairs(medias_by_hours); 
+          // medias_by_hours = this.$_.sortBy(medias_by_hours);
+          // medias_by_hours = medias_by_hours.reverse();
+
+          return {
+            day, 
+            segments: medias_by_hours
+          };   
+        });
+      } else if(this.make_mediasblock_with === 'markers') {
+        mediaGroup = mediaGroup.map(([day, medias]) => {
+
+          console.log('medias.length ' + medias.length);
+          let medias_by_markers = medias.reduce((acc, media) => {
+            // avancer dans l’array, en ajoutant dans un accumulator 
+            if(media.type === 'marker') {
+              acc.push({
+                label: media.content,
+                color: media.color,
+                medias: []
+              })
+            }
+            acc[acc.length - 1].medias.push(media);
+            return acc;
+          }, [{ label: '', medias: [] }]);
+
+
+          // {
+          //   label: "Début des répétitions"
+          //   medias: [
+          //     {},
+          //     {}
+          //   ]           
+          // };        
+
+          return {
+            day, 
+            segments: medias_by_markers
+          };             
+        });
+      }
         
       return mediaGroup;  
     },
@@ -588,7 +624,7 @@ export default {
         const has_media_for_date = this.groupedMedias.filter(i => this.$moment(i.day).isSame(this_date, 'day'));
 
         if(has_media_for_date.length > 0) {
-          medias_for_date = has_media_for_date[0].hours;
+          medias_for_date = has_media_for_date[0].segments;
         }
 
         const is_current_day = this.$moment(this.$root.currentTime_minute).isSame(this_date, 'day');
@@ -615,7 +651,7 @@ export default {
           timestamp: +this_date,
           number_of_medias,
           is_current_day,
-          hours: medias_for_date
+          segments: medias_for_date
         }
 
         date_interval.push(day);
@@ -942,14 +978,14 @@ export default {
     }
     
   }
-  .m_timeline--container--dates--day--hours {
+  .m_timeline--container--dates--day--mediasblock {
     position: relative;
     height: 100%;
     min-width: 88px;
     display: flex;
   }
 
-  .m_timeline--container--dates--day--hours--hourlabel {
+  .m_timeline--container--dates--day--mediasblock--label {
     position: relative;
     width: 44px;
     width: 0;

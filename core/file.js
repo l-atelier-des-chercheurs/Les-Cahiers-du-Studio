@@ -1079,7 +1079,10 @@ module.exports = (function() {
               });
               tasks.push(updateMediaMeta);
 
-              if (meta.type === 'text' && data.hasOwnProperty('content')) {
+              if (
+                (meta.type === 'text' || meta.type === 'marker') &&
+                data.hasOwnProperty('content')
+              ) {
                 dev.logverbose(`Is text and need to update content.`);
                 dev.logverbose(`New content: ${data.content}`);
 
@@ -1334,7 +1337,10 @@ module.exports = (function() {
               });
             })
           );
-        } else if (additionalMeta.type === 'text') {
+        } else if (
+          additionalMeta.type === 'text' ||
+          additionalMeta.type === 'marker'
+        ) {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += '.md';
@@ -1436,7 +1442,7 @@ module.exports = (function() {
             }
 
             if (
-              mediaData.type === 'text' &&
+              (mediaData.type === 'text' || mediaData.type === 'marker') &&
               mediaData.hasOwnProperty('media_filename')
             ) {
               // get text content
