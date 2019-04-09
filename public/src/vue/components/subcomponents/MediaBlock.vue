@@ -408,16 +408,16 @@ export default {
   &.is--text_overflowing {
 
     &::after {
-      content: '…';
+      content: '';
       display: block;
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
       // background-color: var(--author-color);
-      background-image: linear-gradient(transparent 0%, var(--author-color) 20%);
+      background-image: linear-gradient(transparent 0%, var(--author-color) 40%);
       height: 2em;
-      padding-top:.5em;
+      // padding-top:.5em;
       // border-top: 1px solid black;
       margin: 0 10px;
     }
@@ -439,7 +439,6 @@ export default {
   .mediaContainer {
     width: 100%;
     height: 100%;
-    padding: 0;
     margin: 0;
     border-radius: 4px;
     overflow: hidden;
