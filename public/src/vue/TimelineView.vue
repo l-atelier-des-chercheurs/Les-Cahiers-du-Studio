@@ -13,9 +13,6 @@
       </div>
     </transition>
 
-    {{ collapse_foldername }}
-
-
     <button type="button" class="folder_backbutton" @click="$root.closeFolder()"
       @mouseover="collapse_foldername = false"
       @mouseleave="collapse_foldername = true"
