@@ -123,10 +123,6 @@
                   />
                 </div>
               </template>
-              <template v-else>
-                <div class="m_timeline--container--dates--day--empty font-verylarge">
-                </div>
-              </template>
             </div>
           </div>
         </div>
@@ -890,7 +886,7 @@ export default {
     }
   }
 
-  > .m_timeline--container--dates--day--empty {
+  &.is--empty {
     min-width: 0;
     height: 100%;
     display: flex;
@@ -905,7 +901,7 @@ export default {
     //          rgba(0,0,0,0) 100%);
 
     &::before, &::after {
-      content: '';
+      // content: '';
       display: block;
       border: 1px solid transparent;
 
@@ -927,6 +923,19 @@ export default {
       transform: rotate(225deg);
       // margin-left: -1px;
     }
+
+    &:nth-of-type(2n + 0) {
+      &::before {
+        content: '';
+      }
+    }
+    &:nth-of-type(2n + 1) {
+      &::after {
+        content: '';
+        // border-color: blue !important;
+      }
+    }
+    
   }
   .m_timeline--container--dates--day--hours {
     position: relative;
