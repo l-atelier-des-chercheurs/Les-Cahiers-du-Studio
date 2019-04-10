@@ -531,8 +531,8 @@ button, .button {
         transform: rotate(0);
       }
       &.is--dragover {
-        width: 128px;
-        height: 128px;
+        width: 256px;
+        height: 256px;
       }
     }
 
