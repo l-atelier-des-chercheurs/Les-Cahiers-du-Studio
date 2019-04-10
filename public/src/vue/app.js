@@ -889,6 +889,9 @@ let vm = new Vue({
     },
     currentTime_minute() {
       return this.$moment(this.currentTime).second(0);
+    },
+    currentTime_day() {
+      return this.$moment(this.currentTime).startOf('day');
     }
   }
 });

@@ -1,6 +1,5 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-
     <SidebarSection v-if="$root.state.mode !== 'export'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
@@ -110,7 +109,7 @@
 
       <div slot="body" class="m_calendar">
         <div
-        v-for="(days, month) in folderDays()"
+        v-for="(days, month) in calendar"
         class="m_calendar--month"
         :key="month"
         >
@@ -122,9 +121,9 @@
             v-for="(daymeta, index) in days"
             class="m_calendar--days--day padding-sides-verysmall padding-bottom-small"
             :class="{
-              'is--visibleDay' : daymeta.isVisibleDay,
               'has--noMedia' : !daymeta.numberOfMedias,
-              'is--today': daymeta.isToday
+              'is--visibleDay' : isVisibleDay(daymeta.timestamp),
+              'is--today' : isDayToday(daymeta.timestamp),
             }"
             @click="scrollToDate(daymeta.timestamp)"
             :key="index"
@@ -219,7 +218,7 @@ export default {
     sortedMedias: Array,
     timeline_start: Number,
     timeline_end: Number,
-    visibleDay: Number,
+    visible_day: Number,
     sort: Object,
     filter: String,
     can_admin_folder: Boolean,
@@ -247,6 +246,49 @@ export default {
   beforeDestroy() {
   },
   computed: {
+    all_days() {
+      const all_days = this.enumerateDaysBetweenDates(
+        this.timeline_start,
+        this.timeline_end
+      );
+      if (all_days.length === 0) {
+        return [];
+      }
+      return all_days;
+    },
+    calendar() {
+      console.log('COMPUTED • Sidebar: calendar');
+
+      /*
+      {
+        "septembre": {
+          21: {
+            medias: 12
+          },
+          22: {
+          },
+        }
+      */
+
+      var dayGroupedByMonth = this.all_days.reduce((acc, cur, i) => {
+        let monthName = this.$moment(cur).format('MMMM');
+        let day = this.$moment(cur).date();
+
+        let dayData = {
+          dayNumber: day,
+          numberOfMedias: this.getNumberOfMediasCreatedOnThisDate(cur),
+          timestamp: this.$moment(cur)
+        };
+
+        if (typeof acc[monthName] === 'undefined') {
+          acc[monthName] = [];
+        }
+        acc[monthName].push(dayData);
+        return acc;
+      }, {});
+
+      return dayGroupedByMonth;
+    }
   },
 
   watch: {
@@ -274,6 +316,20 @@ export default {
       return dates;
     },
 
+    isDayToday(timestamp) {
+      if (this.$moment(this.$root.currentTime_day).isSame(timestamp, 'day')) {
+        return true;
+      }
+      return false;
+    },
+    
+    isVisibleDay(timestamp) {
+      if (this.$moment(this.visible_day).isSame(timestamp, 'day')) {
+        return true;
+      }
+      return false;
+    },
+
     getURLToApp(ip, port) {
       return `${this.$root.state.protocol}://${ip}:${port}/${
         this.slugFolderName
@@ -284,9 +340,6 @@ export default {
       event.preventDefault();
       shell.showItemInFolder(thisPath);
     },
-    getVisibleDay() {
-      return this.$moment(this.visibleDay).format('DD/MM/YYYY');
-    },
     scrollToDate(timestamp) {
       this.$eventHub.$emit('scrollToDate', timestamp);
     },
@@ -295,60 +348,6 @@ export default {
     },
     closeListMediasModal() {
       this.showMediasList = false;
-    },
-    folderDays() {
-      console.log('METHODS • sidebar: getting folderDays');
-      
-      const allDays = this.enumerateDaysBetweenDates(
-        this.timeline_start,
-        this.timeline_end
-      );
-      if (allDays.length === 0) {
-        return;
-      }
-
-      /*
-      {
-        "septembre": {
-          21: {
-            medias: 12
-          },
-          22: {
-          },
-        }
-      */
-
-      var dayGroupedByMonth = allDays.reduce((acc, cur, i) => {
-        let monthName = this.$moment(cur).format('MMMM');
-        let day = this.$moment(cur).date();
-
-        let fullDate = this.$moment(cur).format('DD/MM/YYYY');
-        let isVisibleDay = false;
-        if (fullDate === this.getVisibleDay()) {
-          isVisibleDay = true;
-        }
-        let isToday = false;
-        let todaysDate = this.$moment().format('DD/MM/YYYY');
-        if (todaysDate === fullDate) {
-          isToday = true;
-        }
-
-        let dayData = {
-          dayNumber: day,
-          numberOfMedias: this.getNumberOfMediasCreatedOnThisDate(cur),
-          timestamp: this.$moment(cur),
-          isVisibleDay,
-          isToday
-        };
-
-        if (typeof acc[monthName] === 'undefined') {
-          acc[monthName] = [];
-        }
-        acc[monthName].push(dayData);
-        return acc;
-      }, {});
-
-      return dayGroupedByMonth;
     },
 
     getNumberOfMediasCreatedOnThisDate(date) {

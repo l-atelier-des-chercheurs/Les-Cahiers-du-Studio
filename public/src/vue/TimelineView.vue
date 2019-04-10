@@ -13,6 +13,12 @@
       </div>
     </transition>
 
+    <br>
+    <br>
+    {{ translation }}
+    <br>
+    {{ debounce_translation }}
+
     <!-- <pre>{{ full_date_interval }}</pre> -->
 
     <button type="button" class="folder_backbutton" @click="$root.closeFolder()"
@@ -33,7 +39,7 @@
           :slugFolderName="slugFolderName"
           :timeline_start="timeline_start"
           :timeline_end="timeline_end"
-          :visibleDay="visible_day"
+          :visible_day="visible_day"
           :medias="medias"
           :sortedMedias="sortedMedias"
           :sort="sort"
@@ -213,6 +219,12 @@ export default {
     return {
 
       translation: 0,
+      // translation but refreshed at specific interval
+      debounce_translation: 0,
+      // -
+      debounce_translation_delay: 300,
+      debounce_translation_fct: undefined,
+
       is_realtime: false,
       timeline_height: 0,
       collapse_foldername: false,
@@ -682,12 +694,12 @@ export default {
       console.log('COMPUTED • TimeLineView: visible_day');
       
       // IMPORTANT : to make sure visible_day is called when this.translation changes
-      this.translation;
+      this.debounce_translation;
 
       if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
         return this.timeline_start;
       }
-      const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > this.translation + this.$refs.timeline.offsetWidth/2 - 25);
+      const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > this.debounce_translation + this.$refs.timeline.offsetWidth/2 - 25);
       if(!!first_day && first_day.dataset.hasOwnProperty('timestamp')){
         return +this.$moment(Number(first_day.dataset.timestamp));
       }
@@ -735,7 +747,16 @@ export default {
       if(new_translation !== this.translation) {
         this.translation = new_translation;
         el.scrollLeft = this.translation;
+
+        if(!this.debounce_translation_fct) {
+          this.debounce_translation_fct = setTimeout(() => {
+            this.debounce_translation = this.translation;
+            this.debounce_translation_fct = undefined;
+          }, this.debounce_translation_delay);
+        }
       }
+
+
     },
     onMouseUp(event) {
       console.log('METHODS • TimeLineView: onMouseUp');
@@ -970,10 +991,10 @@ export default {
       transform-origin: center center;
     }
     &::before {
-      transform: rotate(45deg);
+      transform: rotate(225deg);
     }
     &::after {
-      transform: rotate(225deg);
+      transform: rotate(45deg);
       // margin-left: -1px;
     }
 
