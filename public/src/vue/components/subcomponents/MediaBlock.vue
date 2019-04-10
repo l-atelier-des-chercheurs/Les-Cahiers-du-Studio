@@ -17,7 +17,7 @@
       <MediaContent
         v-model="media.content"
         :slugFolderName="slugFolderName"
-        :slugMediaName="media.slugMediaName"
+        :data-slugmedianame="media.slugMediaName"
         :media="media"
         :context="'preview'"
         :element_width_for_sizes="widthForSizes"

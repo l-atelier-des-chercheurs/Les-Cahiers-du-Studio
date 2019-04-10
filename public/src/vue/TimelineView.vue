@@ -824,7 +824,21 @@ export default {
       const x = this.findPosXForDate(timestamp);
       this.scrollTimelineToXPos(x);
     },
+    scrollToMedia(slugMediaName) {
+      console.log(
+        `METHODS • TimeLineView: scrollToMedia / slugMediaName: ${slugMediaName}`
+      );
 
+      const $medias = this.$refs.timeline.getElementsByClassName('mediaContainer');
+
+      if($medias.length === 0) {
+        return false;
+      }
+
+      const media_in_timeline = Array.from($medias).find(m => m.dataset.hasOwnProperty('slugmedianame') && m.dataset.slugmedianame === slugMediaName);
+      const x = media_in_timeline.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.offsetLeft + media_in_timeline.parentElement.parentElement.parentElement.parentElement.parentElement.offsetLeft + media_in_timeline.parentElement.parentElement.offsetLeft;
+      this.scrollTimelineToXPos(x);
+    },
     scrollTimelineToXPos(xPos_new) {
       console.log(
         `METHODS • TimeLineView: scrollTimelineToXPos / xPos_new = ${xPos_new}`
@@ -1129,7 +1143,7 @@ export default {
           display: inline;
           background-color: var(--label-backgroundcolor);
           color: var(--label-color);
-          box-shadow: -.1em .2em 1em rgba(0,0,0,.2);
+          box-shadow: -.1em .2em 1em rgba(0,0,0,.15);
           padding: 4px 8px;
 
   
