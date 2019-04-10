@@ -13,12 +13,6 @@
       </div>
     </transition>
 
-    <br>
-    <br>
-    {{ translation }}
-    <br>
-    {{ debounce_translation }}
-
     <!-- <pre>{{ full_date_interval }}</pre> -->
 
     <button type="button" class="folder_backbutton" @click="$root.closeFolder()"
@@ -82,6 +76,7 @@
 
       <div class="m_timeline"
         ref="timeline"
+        v-dragscroll
         @wheel="onMousewheel"
         @mouseup.self="onMouseUp"
         @scroll="onTimelineScroll"
@@ -823,7 +818,9 @@ export default {
 
   --timeline-bg: #F1F2F0;
   --timeline-bg: #f8f8f8;
-  --rule-color: rgb(220,220,220);
+  
+  // --rule-color: rgb(220,220,220);
+  --rule-color: rgb(210,210,210);
 
   --grid-color: var(--rule-color);
   --grid-opacity: 1;
@@ -849,6 +846,7 @@ export default {
 .m_timeline--container {
   min-width: max-content;  
   height: 100%;
+  height: ~"calc(100% - 20px)";
   display: flex;
 }
 

@@ -28,6 +28,9 @@ Vue.use(VuePackeryPlugin);
 import VuePlyr from 'vue-plyr';
 Vue.use(VuePlyr);
 
+import VueDragscroll from 'vue-dragscroll';
+Vue.use(VueDragscroll);
+
 // import VueDraggabillyPlugin from './vue-packery-draggabilly-plugin';
 // Vue.use(VueDraggabillyPlugin);
 
