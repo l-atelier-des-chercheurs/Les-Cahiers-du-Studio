@@ -217,8 +217,9 @@ export default {
       // translation but refreshed at specific interval
       debounce_translation: 0,
       // -
-      debounce_translation_delay: 300,
+      debounce_translation_delay: 100,
       debounce_translation_fct: undefined,
+      current_scroll_event: undefined,
 
       is_realtime: false,
       timeline_height: 0,
@@ -298,9 +299,12 @@ export default {
     this.sort.current = this.sort.available[0];
   },
   mounted() {
+    this.$eventHub.$on('scrollToMedia', this.scrollToMedia);
+    this.$eventHub.$on('scrollToDate', this.scrollToDate);
     this.$eventHub.$on('timeline.openMediaModal', this.openMediaModal);
     this.$eventHub.$on('setSort', this.setSort);
     this.$eventHub.$on('setFilter', this.setFilter);
+    this.$eventHub.$on('timeline.scrollToToday', this.scrollToToday);
 
     this.setTimelineHeight();
 
@@ -310,14 +314,27 @@ export default {
     setTimeout(() => { this.collapse_foldername = true }, 2000);
   },
   beforeDestroy() {
+    this.$eventHub.$off('scrollToMedia', this.scrollToMedia);
+    this.$eventHub.$off('scrollToDate', this.scrollToDate);
     this.$eventHub.$off('timeline.openMediaModal', this.openMediaModal);
     this.$eventHub.$off('setSort');
     this.$eventHub.$off('setFilter');
+    this.$eventHub.$off('timeline.scrollToToday', this.scrollToToday);
 
     window.removeEventListener('resize', this.onResize);
 
   },
   watch: {
+    'translation': function() {
+      this.$refs.timeline.scrollLeft = this.translation;
+
+      if(!this.debounce_translation_fct) {
+        this.debounce_translation_fct = setTimeout(() => {
+          this.debounce_translation = this.translation;
+          this.debounce_translation_fct = undefined;
+        }, this.debounce_translation_delay);
+      }
+    }
   },
   computed: {
     can_admin_folder() {
@@ -596,13 +613,13 @@ export default {
       // entre timeline_start et timeline_end
       let date_interval = [];
 
-      let currDate = this.$moment(this.timeline_start).add(-1, 'days');
+      let startDate = this.$moment(this.timeline_start).add(-1, 'days');
       const lastDate = this.$moment(this.timeline_end);
 
       let index = 0;
 
-      while(currDate.add(1, 'days').diff(lastDate) <= 0) {
-        let this_date = currDate.clone();
+      while(startDate.add(1, 'days').diff(lastDate) <= 0) {
+        let this_date = startDate.clone();
         let medias_for_date = [];
 
         const has_media_for_date = this.groupedMedias.filter(i => this.$moment(i.day).isSame(this_date, 'day'));
@@ -640,7 +657,7 @@ export default {
         date_interval.push(day);
 
         if(index === 0) {
-          currDate.startOf('day');
+          startDate.startOf('day');
         }
 
         index++;
@@ -690,15 +707,7 @@ export default {
       
       // IMPORTANT : to make sure visible_day is called when this.translation changes
       this.debounce_translation;
-
-      if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
-        return this.timeline_start;
-      }
-      const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > this.debounce_translation + this.$refs.timeline.offsetWidth/2 - 25);
-      if(!!first_day && first_day.dataset.hasOwnProperty('timestamp')){
-        return +this.$moment(Number(first_day.dataset.timestamp));
-      }
-      return +this.$moment();
+      return this.findDayAtPosX(this.debounce_translation);
     },
     visible_day_human() {
       if(this.$root.lang.current === 'fr') {
@@ -741,17 +750,7 @@ export default {
 
       if(new_translation !== this.translation) {
         this.translation = new_translation;
-        el.scrollLeft = this.translation;
-
-        if(!this.debounce_translation_fct) {
-          this.debounce_translation_fct = setTimeout(() => {
-            this.debounce_translation = this.translation;
-            this.debounce_translation_fct = undefined;
-          }, this.debounce_translation_delay);
-        }
       }
-
-
     },
     onMouseUp(event) {
       console.log('METHODS • TimeLineView: onMouseUp');
@@ -766,6 +765,29 @@ export default {
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
       this.timeline_height = window.innerHeight;
+    },
+    scrollToToday() {
+      this.findPosXForDate(+this.$root.currentTime_day);
+    },
+    findDayAtPosX(posX) {
+      if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
+        return this.timeline_start;
+      }
+      const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > posX + this.$refs.timeline.offsetWidth/2 - 25);
+      if(!!first_day && first_day.dataset.hasOwnProperty('timestamp')){
+        return +this.$moment(Number(first_day.dataset.timestamp));
+      }
+      return +this.$moment();
+    },
+    findPosXForDate(day) {
+      if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
+        return 0;
+      }
+      const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.dataset.hasOwnProperty('timestamp') && Number(d.dataset.timestamp) >= day);
+      if(!!first_day){
+        return first_day.offsetLeft;
+      }
+      return 0;
     },
     openMediaModal(slugMediaName) {
       if (this.$root.state.dev_mode === 'debug') {
@@ -789,6 +811,47 @@ export default {
       console.log('METHODS • TimeLineView: toggleSidebar');
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
     },
+    scrollToDate(timestamp) {
+      console.log(
+        `METHODS • TimeLineView: scrollToDate / timestamp: ${timestamp}`
+      );
+      const x = this.findPosXForDate(timestamp);
+      this.scrollTimelineToXPos(x);
+
+    },
+
+
+    scrollTimelineToXPos(xPos_new) {
+      console.log(
+        `METHODS • TimeLineView: scrollTimelineToXPos / xPos_new = ${xPos_new}`
+      );
+
+      if (this.current_scroll_event !== undefined) {
+        this.current_scroll_event();
+        return;
+      }
+
+      this.current_scroll_event = this.$scrollTo('.m_timeline', 500, {
+        container: this.$refs.timeline,
+        offset: xPos_new,
+        cancelable: true,
+        easing: [0.45, 0.8, 0.58, 1.0],
+        x: true,
+        y: false,
+        onDone: () => {
+          console.log(`METHODS • TimeLineView: scrollTimelineToXPos / is done`);
+          this.current_scroll_event = undefined;
+          // onScroll will update view
+        },
+        onCancel: () => {
+          console.log(
+            `METHODS • TimeLineView: scrollTimelineToXPos / was canceled`
+          );
+          this.current_scroll_event = undefined;
+        }
+      });
+    },
+
     onTimelineScroll() {
       // console.log('METHODS • TimeLineView: onTimelineScroll');
       const el = this.$refs.timeline;
@@ -856,7 +919,7 @@ export default {
   position: relative;
 
   margin: 0px 0px;
-  padding: 16px 40vw;
+  padding: 16px 20vw;
   // border-right: 1px solid #000;
 }
 
