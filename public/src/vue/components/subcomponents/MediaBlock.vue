@@ -383,6 +383,7 @@ export default {
 
   &.is--hovered {
     // background-color: white;
+    z-index: 1;
     transform: translateY(-8px);
     box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
   }
@@ -406,12 +407,18 @@ export default {
   }
 
   .author_indicator {
+    $t-button_size: 5px;
+    
     position: absolute;
-    top: 0;left: 0;
-    width: 0;
-    height: 100%;
-    border-top: 10px solid var(--author-color);
-    border-right: 10px solid transparent;
+    top: 5px;left: 5px;
+    width: $t-button_size;
+    height: $t-button_size;
+    background-color: var(--author-color);
+    border-radius: $t-button_size;
+    // height: 100%;
+    
+    // border-top: 10px solid var(--author-color);
+    // border-right: 10px solid transparent;
     // border-left: none;
     // transform: rotate(-45deg);
     // border-radius: 2px 0 0 0;

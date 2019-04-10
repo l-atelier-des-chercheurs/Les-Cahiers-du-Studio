@@ -1007,7 +1007,6 @@ export default {
     background-color: transparent;
     // padding: 24px;
     display: flex;
-    align-items: left;
     align-items: center;
 
     z-index: 100;
@@ -1016,9 +1015,8 @@ export default {
 
     div {
       display: block;
-
       transform: rotate(-15deg) translateX(-20px);
-      transform-origin: center center;
+      transform-origin: left center;
       font-style: italic;    
 
       button {
@@ -1030,10 +1028,11 @@ export default {
         text-align: left;
 
         transition: all .8s cubic-bezier(.25,.8,.25,1);  
+        transform-origin: center bottom;
 
         &:hover {
-          transform: scale(1.1);
-          box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
+          transform: scale(1.05);
+          // box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
         }
 
         span {
@@ -1042,7 +1041,7 @@ export default {
           display: inline;
           background-color: var(--label-backgroundcolor);
           color: var(--label-color);
-          box-shadow: -.1em .2em 1em rgba(0,0,0,.25);
+          box-shadow: -.1em .2em 1em rgba(0,0,0,.2);
           padding: 4px 8px;
 
   
