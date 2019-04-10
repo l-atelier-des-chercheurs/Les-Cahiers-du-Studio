@@ -1,6 +1,7 @@
 const electron = require('electron');
-
 const { app, BrowserWindow, Menu } = electron;
+
+const electronPDFWindow = require('electron-pdf-window');
 
 const { dialog } = require('electron');
 const JSONStorage = require('node-localstorage').JSONStorage;
@@ -78,7 +79,7 @@ module.exports = (function() {
         }
       });
 
-      require('electron-pdf-window').addSupport(win);
+      electronPDFWindow.addSupport(win);
 
       if (windowState.isMaximized) {
         win.maximize();
