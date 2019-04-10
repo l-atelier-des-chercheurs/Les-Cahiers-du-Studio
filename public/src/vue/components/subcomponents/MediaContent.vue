@@ -78,7 +78,7 @@
     <template v-else-if="media.type === 'document'">
       <div v-if="context !== 'edit'" class="">
         <pre>
-  {{ media.media_filename }}
+{{ media.media_filename }}
         </pre>
       </div>
       <iframe v-else :src="mediaURL" />
