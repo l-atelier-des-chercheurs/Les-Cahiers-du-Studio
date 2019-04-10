@@ -828,6 +828,8 @@ export default {
   --grid-color: var(--rule-color);
   --grid-opacity: 1;
 
+  user-select: none;
+
   // background-color: #ddd;
 
   // background-color: #000;
