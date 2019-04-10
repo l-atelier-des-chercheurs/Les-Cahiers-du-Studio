@@ -190,7 +190,28 @@
           </span>
         </button>
 
-        <a :href="mediaURL" :title="media.media_filename" target="_blank"
+        <template v-if="showQRModal">
+          <hr>
+          <CreateQRCode
+            :slugFolderName="slugFolderName"
+            :media_filename="media.media_filename"
+          />
+        </template>
+
+        <button type="button" class="buttonLink c-noir" @click="showQRModal = !showQRModal">
+          <svg version="1.1" class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+            x="0px" y="0px" width="20px" height="20px" viewBox="0 0 90 90" style="enable-background:new 0 0 90 90;" xml:space="preserve">
+            <path d="M48,0v42h42V0H48z M84,36H54V6h30V36z M13,77h16V61H13V77z M0,90h42V48H0V90z M6,54h30v30H6V54z M63,48H48v13h15V48z M69,54
+              h8v7h-8v12h-8v-8h-9v8h5v9h-9v8h21v-8h13v-9h-5v-8h13V48H69V54z M0,42h42V0H0V42z M6,6h30v30H6V6z M90,90v-8h-8v8H90z M13,29h16V13
+              H13V29z M77,13H61v16h16V13z"/>
+          </svg>
+          <span class>
+            Partage
+          </span>
+        </button>
+
+        <!-- <a :href="mediaURL" :title="media.media_filename" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
           v-if="mediadata.type === 'image' && !read_only"
         >
@@ -214,7 +235,7 @@
           <span class="text-cap font-verysmall">
             {{ $t('zoom') }}
           </span>
-        </a>
+        </a> -->
 
         <a :download="media.media_filename" :href="mediaURL" :title="media.media_filename" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
@@ -275,6 +296,7 @@ import alertify from 'alertify.js';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import AuthorsInput from '../subcomponents/AuthorsInput.vue';
+import CreateQRCode from './../qr/CreateQRCode.vue';
 
 export default {
   props: {
@@ -293,7 +315,8 @@ export default {
     Modal,
     DateTime,
     MediaContent,
-    AuthorsInput
+    AuthorsInput,
+    CreateQRCode
   },
   data() {
     return {
@@ -309,7 +332,8 @@ export default {
       },
       mediaURL: this.$root.state.mode === 'export' ? `./${this.slugFolderName}/${this.media.media_filename}` : `/${this.slugFolderName}/${this.media.media_filename}`,
       alt_key_is_pressed: false,
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
+      showQRModal: false
     };
   },
   watch: {

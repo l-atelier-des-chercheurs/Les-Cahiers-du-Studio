@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="hide_on_print" v-html="$t('toconnectwithanotherdevice')" />
-
     <div v-for="(ip, index) in $root.state.localNetworkInfos.ip"
       class="m_qrSnippet"
       :key="index"
@@ -91,9 +90,8 @@ export default {
         url.hostname = ip;        
       }
       // et si on est sur un nom de domaine alors on ne fait rien
-
-      if(this.slugProjectName) {
-        url.pathname = this.slugProjectName;
+      if(this.slugFolderName) {
+        url.pathname = this.slugFolderName;
         if(this.media_filename) {
           url.pathname += `/media/${this.media_filename}`;
         }

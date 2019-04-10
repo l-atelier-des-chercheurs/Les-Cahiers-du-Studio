@@ -17,8 +17,9 @@ module.exports = function(app, io, m) {
    * routing event
    */
   app.get('/', showIndex);
-  app.get('/:folder', loadFolder);
-  app.get('/:folder/export/', exportFolder);
+  app.get('/:slugFolderName', loadFolderOrMedia);
+  app.get('/:slugFolderName/media/:metaFileName', loadFolderOrMedia);
+  app.get('/:slugFolderName/export/', exportFolder);
   app.post('/file-upload/:type/:slugFolderName', postFile2);
 
   /**
@@ -71,22 +72,33 @@ module.exports = function(app, io, m) {
     );
   }
 
-  function loadFolder(req, res) {
-    let slugFolderName = req.param('folder');
+  function loadFolderOrMedia(req, res) {
+    let slugFolderName = req.param('slugFolderName');
+    let metaFileName = req.param('metaFileName');
+
     generatePageData(req).then(
       pageData => {
-        pageData.slugFolderName = slugFolderName;
         // let’s make sure that folder exists first and return some meta
-        file.getFolder({ type: 'folders', slugFolderName }).then(
-          foldersData => {
-            res.render('index', pageData);
-          },
-          (err, p) => {
-            dev.error(`Failed to get folder: ${err}`);
-            pageData.noticeOfError = 'failed_to_find_folder';
-            res.render('index', pageData);
-          }
-        );
+        file
+          .getFolder({ type: 'folders', slugFolderName })
+          .then(
+            foldersData => {
+              pageData.slugFolderName = slugFolderName;
+              pageData.folderAndMediaData = foldersData;
+              if (metaFileName) {
+                pageData.metaFileName = metaFileName;
+              }
+              res.render('index', pageData);
+            },
+            (err, p) => {
+              dev.error(`Failed to get folder: ${err}`);
+              pageData.noticeOfError = 'failed_to_find_folder';
+              res.render('index', pageData);
+            }
+          )
+          .catch(err => {
+            dev.error('No folder found');
+          });
       },
       err => {
         dev.error(`Err while getting index data: ${err}`);
@@ -95,7 +107,7 @@ module.exports = function(app, io, m) {
   }
 
   function exportFolder(req, res) {
-    let slugFolderName = req.param('folder');
+    let slugFolderName = req.param('slugFolderName');
     generatePageData(req).then(pageData => {
       // get medias for a folder
       file.getFolder(slugFolderName).then(

@@ -532,7 +532,7 @@ let vm = new Vue({
           .error(
             this.$t('notifications["failed_to_get_folder:"]') +
               ' ' +
-              this.store.slugFolderName
+              this.store.request.slugFolderName
           );
       }
     } else {
@@ -548,20 +548,21 @@ let vm = new Vue({
         1000
       );
 
-      // if no error and if we have some content already loaded, let’s open it directly
-      // (we are probably in an exported timeline)
-      if (Object.keys(this.store.folders).length > 0) {
-        this.settings.current_slugFolderName = Object.keys(
-          this.store.folders
-        )[0];
-      } else {
-        // if a slugfoldername is requested, load the content of that folder rightaway
-        // we are probably in a webbrowser that accesses a subfolder
-        if (this.store.slugFolderName) {
-          this.settings.current_slugFolderName = this.store.slugFolderName;
-          this.settings.is_loading_medias_for_folder = this.store.slugFolderName;
-          this.$eventHub.$once('socketio.folders.folders_listed', () => {
-            this.openFolder(this.store.slugFolderName);
+      if (this.store.request.slugFolderName) {
+        this.settings.current_slugFolderName = this.store.request.slugFolderName;
+        this.settings.is_loading_medias_for_folder = this.store.request.slugFolderName;
+        this.$eventHub.$once('socketio.folders.folders_listed', () => {
+          this.openFolder(this.store.request.slugFolderName);
+        });
+        // requesting edit of a media
+        if (this.store.request.metaFileName) {
+          this.$eventHub.$once('socketio.folders.listMedias', () => {
+            this.$nextTick(() => {
+              this.$eventHub.$emit(
+                'timeline.openMediaModal',
+                this.store.request.metaFileName + '.txt'
+              );
+            });
           });
         }
       }
@@ -715,6 +716,7 @@ let vm = new Vue({
         this.store.folders[slugFolderName].name,
         '/' + slugFolderName
       );
+
       this.$eventHub.$once('socketio.folders.listMedias', () => {
         this.settings.is_loading_medias_for_folder = false;
       });
