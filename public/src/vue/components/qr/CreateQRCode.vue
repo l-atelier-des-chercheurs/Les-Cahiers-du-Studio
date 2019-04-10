@@ -12,7 +12,7 @@
           :options="{ size: 400, foreground: '#333', background: 'transparent' }"
         ></qrcode>
         <button type="button"
-          class="buttonLink hide_on_print padding-none"
+          class="buttonLink hide_on_print padding-none bg-transparent"
           @click.prevent="printQR"
         >
           <small class="text-cap">{{ $t('print') }} </small>

@@ -432,6 +432,37 @@ export default {
     border-radius: 4px;
     overflow: hidden;
 
+    > * {
+      position: absolute;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+
+      .plyr {
+        width: 100%;
+        height: 100%;
+        min-width: 0;
+        pointer-events: none;
+
+        .plyr__controls {
+          position: absolute;
+          background: transparent;
+        }
+
+        .plyr__control {
+          pointer-events: auto;
+        }
+
+        .plyr__video-wrapper {
+          width: 100%;
+          height: 100%;
+        }
+        .plyr__poster {
+          background-size: cover;
+        }
+      }
+    }
+
     img, video {
       width: 100%;
       height: 100%;

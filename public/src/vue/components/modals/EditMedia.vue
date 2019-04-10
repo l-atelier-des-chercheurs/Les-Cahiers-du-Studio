@@ -198,15 +198,21 @@
           />
         </template>
 
-        <button type="button" class="buttonLink c-noir" @click="showQRModal = !showQRModal">
-          <svg version="1.1" class="inline-svg"
-            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-            x="0px" y="0px" width="20px" height="20px" viewBox="0 0 90 90" style="enable-background:new 0 0 90 90;" xml:space="preserve">
-            <path d="M48,0v42h42V0H48z M84,36H54V6h30V36z M13,77h16V61H13V77z M0,90h42V48H0V90z M6,54h30v30H6V54z M63,48H48v13h15V48z M69,54
-              h8v7h-8v12h-8v-8h-9v8h5v9h-9v8h21v-8h13v-9h-5v-8h13V48H69V54z M0,42h42V0H0V42z M6,6h30v30H6V6z M90,90v-8h-8v8H90z M13,29h16V13
-              H13V29z M77,13H61v16h16V13z"/>
+        <button type="button" 
+          class="bg-transparent button-round margin-verysmall padding-verysmall"
+          @click="showQRModal = !showQRModal"
+        >
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="49px"
+            height="49px" viewBox="0 0 49 49" style="enable-background:new 0 0 49 49;" xml:space="preserve">
+            <g>
+              <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d"/>
+              <circle cx="24.5" cy="24.5" r="24" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
+            </g>
+            <path style="fill: none;stroke: #fff;stroke-miterlimit: 10" d="M25.7,14v9.2H35V14H25.7z M16.7,32.3h3.9v-3.9h-3.9V32.3z M14,35h9.2v-9.2H14V35z M14,23.3h9.2V14H14V23.3z
+              M29,25.7h-3.3v2.9H29V25.7z M30.4,27.1h1.8v1.5h-1.8v2.6h-1.8v-1.8h-2v1.8h1.1v2h-2V35h4.6v-1.8h2.9v-2h-1.1v-1.8H35v-3.7h-4.6
+              V27.1z M35,35v-1.8h-1.8V35H35z M16.7,20.6h3.9v-3.9h-3.9V20.6z M32.3,16.7h-3.9v3.9h3.9V16.7z"/>
           </svg>
-          <span class>
+          <span class="text-cap font-verysmall">
             Partage
           </span>
         </button>

@@ -348,15 +348,14 @@
     height: 100%;
     overflow: hidden;
     position: relative;
-    padding: 0;
+    // .bg-blanc;
+    // .bg-gris_clair;
     .bg-blanc;
-    .bg-gris_clair;
 
     &[data-context="edit"] {
       > * {
         width: 100%;
         height: 100%;
-        background-color: transparent;
       }
     }
 
@@ -370,12 +369,42 @@
       object-position: center;
     }
 
-    video {
-      margin: 0;
+    .plyr--video, .plyr__video-wrapper, .plyr__poster {
+      background-color: transparent;
     }
+    .plyr--video .plyr__controls {
+      // background: linear-gradient(fade(@c-gris, 0%),fade(@c-gris, 100%));
+    }
+
+    .plyr--audio {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+      .plyr__controls {
+        // background-color: @c-noir;
+        // background: transparent;
+        // color: @c-noir;
+        width: 80%;
+        margin: 0 auto;
+
+      }
+    }
+    
+    
 
     &.type-text {
       .font-large;
+    }
+
+    &.type-audio {
+
+
+      audio {
+        width: 500px;
+        margin: auto;
+        height:50%;
+      }
     }
 
     pre {
@@ -404,6 +433,7 @@
   }
 
 }
+
 
 .m_modal--close_button {
   position: fixed;

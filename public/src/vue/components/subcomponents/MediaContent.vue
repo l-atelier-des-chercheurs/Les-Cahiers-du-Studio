@@ -14,19 +14,28 @@
 
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
-        <img :srcset="videostillSrcSetAttr" :sizes="imageSizesAttr" :src="linkToVideoThumb">
+        <vue-plyr :options="plyr_options['preview']">
+          <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" />
+        </vue-plyr>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options">
+        <vue-plyr :options="plyr_options['edit']">
           <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" />
         </vue-plyr>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
-      <vue-plyr :options="plyr_options">
-        <audio :src="mediaURL" preload="none" />
-      </vue-plyr>
+      <template v-if="context === 'preview'">
+        <vue-plyr :options="plyr_options['preview']">
+          <audio :src="mediaURL" preload="none" />
+        </vue-plyr>
+      </template>
+      <template v-else>
+        <vue-plyr :options="plyr_options['edit']">
+          <audio :src="mediaURL" preload="none" />
+        </vue-plyr>
+      </template>
     </template>
 
     <template v-else-if="media.type === 'text'">
@@ -146,9 +155,16 @@ export default {
       htmlForEditor: this.value,
 
       plyr_options: {
-        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-        iconUrl: '/images/plyr.svg'
-      }
+        preview: {
+          controls: ['play'],
+          iconUrl: '/images/plyr.svg',
+          hideControls: false
+        },
+        edit: {
+          controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+          iconUrl: '/images/plyr.svg'
+        },
+      },
     };
   },
   mounted() {
