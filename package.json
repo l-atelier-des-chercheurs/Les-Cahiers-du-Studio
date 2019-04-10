@@ -27,11 +27,11 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
-    "node": "10.11.0",
+    "node": "8.9.3",
     "npm": "*"
   },
   "build": {
-    "electronVersion": "4.0.3",
+    "electronVersion": "2.0.18",
     "appId": "les-cahiers-du-studio",
     "productName": "Les Cahiers du Studio",
     "asar": false,
@@ -73,7 +73,7 @@
     "write-file-atomic": "^2.4.2"
   },
   "devDependencies": {
-    "electron": "4.0.3",
+    "electron": "^2.0.18",
     "electron-builder": "^20.38.5",
     "electron-rebuild": "^1.8.4",
     "node-gyp": "^3.8.0"
