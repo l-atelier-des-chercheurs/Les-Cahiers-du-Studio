@@ -223,26 +223,8 @@ export default {
       }, this.itemSize)
     },
     mediaColorFromFirstAuthor() {
-      if(!this.media.hasOwnProperty('authors')) {
-        return false;
-      }
-
-      const media_authors = this.media.authors;
-      if(typeof media_authors !== 'object' 
-      || media_authors.length == 0
-      || typeof this.folder.authors !== 'object'
-      || this.folder.authors.length == 0
-      ) {
-        return false;
-      }
-
-      const full_authors_info = this.folder.authors.filter(a => a.name === media_authors[0].name);
-      if(full_authors_info.length == 0) {
-        return false;
-      }
-
-      return full_authors_info[0].color;
-    },
+      return this.$root.mediaColorFromFirstAuthor(this.media, this.folder);
+    }
   },
   methods: {
     checkTextOverflow() {

@@ -806,6 +806,30 @@ let vm = new Vue({
       let kbs = localstore.get('keyboard_shortcuts') || [];
       return kbs;
     },
+    mediaColorFromFirstAuthor(media, folder) {
+      if (!media.hasOwnProperty('authors')) {
+        return false;
+      }
+
+      const media_authors = media.authors;
+      if (
+        typeof media_authors !== 'object' ||
+        media_authors.length == 0 ||
+        typeof folder.authors !== 'object' ||
+        folder.authors.length == 0
+      ) {
+        return false;
+      }
+
+      const full_authors_info = folder.authors.filter(
+        a => a.name === media_authors[0].name
+      );
+      if (full_authors_info.length == 0) {
+        return false;
+      }
+
+      return full_authors_info[0].color;
+    },
     canAdminFolder: function({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 

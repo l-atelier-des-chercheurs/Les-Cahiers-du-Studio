@@ -103,17 +103,16 @@
                 </div>
 
                 <div v-for="segment in day.segments"
-                  :key="segment.label"
+                  :key="segment.timestamp"
                   class="m_timeline--container--dates--day--mediasblock"
                 >
-                  <div class="m_timeline--container--dates--day--mediasblock--label"
+                  <button type="button" class="m_timeline--container--dates--day--mediasblock--label"
                     v-if="!segment.hasOwnProperty('hide') || !segment.hide"
-                    :class="{ 
-                    }"
+                    :style="`--label-backgroundcolor: ${segment.color}`"
+                    @click="openMediaModal(segment.marker_meta_slugMediaName)"
                   >
-                      <!-- 'is--current_hour' : hour.hasOwnProperty('is_current_hour') && hour.is_current_hour -->
                     <span>{{ segment.label }}</span>
-                  </div>
+                  </button>
 
                   <MediasBlock 
                     :medias="segment.medias"
@@ -438,7 +437,6 @@ export default {
       return +this.$moment();
     },
     visible_day_human() {
-
       if(this.$root.lang.current === 'fr') {
         return this.$moment(this.visible_day).calendar(null,{
           lastDay : '[hier]',
@@ -529,21 +527,23 @@ export default {
         });
       } else if(this.make_mediasblock_with === 'markers') {
         mediaGroup = mediaGroup.map(([day, medias]) => {
-
-          console.log('medias.length ' + medias.length);
           let medias_by_markers = medias.reduce((acc, media) => {
             // avancer dans l’array, en ajoutant dans un accumulator 
             if(media.type === 'marker') {
+              const color = this.$root.mediaColorFromFirstAuthor(media, this.folder) ? this.$root.mediaColorFromFirstAuthor(media, this.folder) : 'var(--color-noir)';
+              const label = !!media.content ? media.content : '…'; 
               acc.push({
-                label: media.content,
-                color: media.color,
+                label,
+                color,
+                timestamp: media.date_timeline,
+                marker_meta_slugMediaName: media.slugMediaName,
                 medias: []
               })
+            } else {
+              acc[acc.length - 1].medias.push(media);
             }
-            acc[acc.length - 1].medias.push(media);
             return acc;
           }, [{ label: '', medias: [], hide: true }]);
-
 
           // {
           //   label: "Début des répétitions"
@@ -635,7 +635,7 @@ export default {
 
       let index = 0;
 
-      while(currDate.add(1, 'days').diff(lastDate) < 0) {
+      while(currDate.add(1, 'days').diff(lastDate) <= 0) {
         let this_date = currDate.clone();
         let medias_for_date = [];
 
@@ -1004,24 +1004,25 @@ export default {
 
   .m_timeline--container--dates--day--mediasblock--label {
     position: relative;
-    width: 44px;
-    width: 0;
+    width: 20ch;
     height: 100%;
     top: 0;
+    padding: 0;
+    margin-right: -20ch;
+    background-color: transparent;
     // padding: 24px;
     display: flex;
-    align-items: center;
+    align-items: left;
     z-index: 100;
-    pointer-events: none;
-
-    &.is--current_hour {
-      --label-backgroundcolor: #ff3b4c;
-    }
+    text-transform: initial;
+    text-align: left;
+    // pointer-events: none;
 
     span {
-      display: block;
-      min-width: 2em;
-      min-height: 2em;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;  
+      min-height: 1em;
       background-color: var(--label-backgroundcolor);
       color: var(--label-color);
       padding: 2px 8px;
