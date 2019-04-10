@@ -106,13 +106,21 @@
                   :key="segment.timestamp"
                   class="m_timeline--container--dates--day--mediasblock"
                 >
-                  <button type="button" class="m_timeline--container--dates--day--mediasblock--label"
+                  <div class="m_timeline--container--dates--day--mediasblock--label"
                     v-if="!segment.hasOwnProperty('hide') || !segment.hide"
-                    :style="`--label-backgroundcolor: ${segment.color}`"
-                    @click="openMediaModal(segment.marker_meta_slugMediaName)"
                   >
-                    <span>{{ segment.label }}</span>
-                  </button>
+                    <div>
+                      <button type="button" 
+                        @click="openMediaModal(segment.marker_meta_slugMediaName)"
+                        :style="`
+                          --label-backgroundcolor: ${segment.color};
+                          --label-color: ${segment.color === 'var(--color-noir)' ? 'var(--color-blanc)' : 'var(--color-noir)' };
+                          `"
+                      >
+                        <span v-html="segment.label" />
+                      </button>
+                    </div>
+                  </div>
 
                   <MediasBlock 
                     :medias="segment.medias"
@@ -332,28 +340,19 @@ export default {
         let mediaDataToOrderBy;
         const media = this.medias[slugMediaName];
 
-        // legacy to account for medias without date_timeline but with date_created
+
+        // legacy to account for medias without date_timeline but with date_created or created
         if(!media.hasOwnProperty(current_sort.field)) {
           if(current_sort.field === 'date_timeline') {
-            if(!media.hasOwnProperty('date_created')) {
-              continue;
+            if(media.hasOwnProperty('date_created')){
+              this.medias[slugMediaName].date_timeline = media.date_created;
+            } else if(media.hasOwnProperty('created')) {
+              this.medias[slugMediaName].date_timeline = media.created;
             }
           } else {
             continue;
           }
         }
-
-        let date_to_reference_to = 0;
-        if(media.hasOwnProperty('date_timeline')) {
-          date_to_reference_to = media.date_timeline
-        } else if(media.hasOwnProperty('date_created')) {
-          date_to_reference_to = media.date_created
-        }
-
-        let _timestamp = +this.$moment(
-          date_to_reference_to,
-          'YYYY-MM-DD HH:mm:ss'
-        );
 
         if (current_sort.type === 'date') {
           mediaDataToOrderBy = +this.$moment(
@@ -369,28 +368,19 @@ export default {
             current_sort.field
           ];
         }
-        
+
         sortable.push({
           slugMediaName,
           mediaDataToOrderBy,
-          _timestamp
         });
+        
       }
-
       let sortedSortable = sortable.sort((a, b) => {
         if (a.mediaDataToOrderBy < b.mediaDataToOrderBy) {
           return -1;
         }
         if (a.mediaDataToOrderBy > b.mediaDataToOrderBy) {
           return 1;
-        }
-        if (a.mediaDataToOrderBy === b.mediaDataToOrderBy) {
-          if(a._timestamp < b._timestamp) {
-            return -1;
-          }
-          if(a._timestamp >= b._timestamp) {
-            return 1;
-          }
         }
 
         return 0;
@@ -421,46 +411,9 @@ export default {
       }, []);
       return sortedMedias;
     },
-    visible_day() {
-      console.log('COMPUTED • TimeLineView: visible_day');
-      
-      // IMPORTANT : to make sure visible_day is called when this.translation changes
-      this.translation;
-
-      if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
-        return this.timeline_start;
-      }
-      const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > this.translation + this.$refs.timeline.offsetWidth/2 - 25);
-      if(!!first_day && first_day.dataset.hasOwnProperty('timestamp')){
-        return +this.$moment(Number(first_day.dataset.timestamp));
-      }
-      return +this.$moment();
-    },
-    visible_day_human() {
-      if(this.$root.lang.current === 'fr') {
-        return this.$moment(this.visible_day).calendar(null,{
-          lastDay : '[hier]',
-          sameDay : '[aujourd’hui]',
-          nextDay : '[demain]',
-          lastWeek : 'dddd [dernier]',
-          nextWeek : 'dddd [prochain]',
-          sameElse : 'dddd D MMMM'
-        });
-      } else if(this.$root.lang.current === 'en') {
-        return this.$moment(this.visible_day).calendar(null,{
-          lastDay : '[yesterday]',
-          sameDay : '[today]',
-          nextDay : '[tomorrow]',
-          lastWeek : '[last] dddd',
-          nextWeek : '[next] dddd',
-          sameElse : 'dddd, MMMM D'
-        });
-      }
-
-
-    },
     groupedMedias() {
       console.log('COMPUTED • TimeLineView: groupedMedias');
+
 
       if(this.sortedMedias.length === 0) {
         return [];
@@ -473,6 +426,8 @@ export default {
           date_to_reference_to = media.date_timeline
         } else if(media.hasOwnProperty('date_created')) {
           date_to_reference_to = media.date_created
+        } else if(media.hasOwnProperty('created')) {
+          date_to_reference_to = media.created
         }
 
         const dateMoment = this.$moment(date_to_reference_to);
@@ -488,6 +443,8 @@ export default {
               date_to_reference_to = media.date_timeline
             } else if(media.hasOwnProperty('date_created')) {
               date_to_reference_to = media.date_created
+            } else if(media.hasOwnProperty('created')) {
+              date_to_reference_to = media.created
             }
 
             var dateMoment = this.$moment(date_to_reference_to);
@@ -531,7 +488,9 @@ export default {
             // avancer dans l’array, en ajoutant dans un accumulator 
             if(media.type === 'marker') {
               const color = this.$root.mediaColorFromFirstAuthor(media, this.folder) ? this.$root.mediaColorFromFirstAuthor(media, this.folder) : 'var(--color-noir)';
-              const label = !!media.content ? media.content : '…'; 
+              
+              const label = this.$moment(media.date_timeline).format('HH:mm') + '<br>' + (!!media.content ? media.content : ''); 
+
               acc.push({
                 label,
                 color,
@@ -718,6 +677,42 @@ export default {
 
       return date_interval;
       // return this.full_date_interval;
+    },
+    visible_day() {
+      console.log('COMPUTED • TimeLineView: visible_day');
+      
+      // IMPORTANT : to make sure visible_day is called when this.translation changes
+      this.translation;
+
+      if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
+        return this.timeline_start;
+      }
+      const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > this.translation + this.$refs.timeline.offsetWidth/2 - 25);
+      if(!!first_day && first_day.dataset.hasOwnProperty('timestamp')){
+        return +this.$moment(Number(first_day.dataset.timestamp));
+      }
+      return +this.$moment();
+    },
+    visible_day_human() {
+      if(this.$root.lang.current === 'fr') {
+        return this.$moment(this.visible_day).calendar(null,{
+          lastDay : '[hier]',
+          sameDay : '[aujourd’hui]',
+          nextDay : '[demain]',
+          lastWeek : 'dddd [dernier]',
+          nextWeek : 'dddd [prochain]',
+          sameElse : 'dddd D MMMM'
+        });
+      } else if(this.$root.lang.current === 'en') {
+        return this.$moment(this.visible_day).calendar(null,{
+          lastDay : '[yesterday]',
+          sameDay : '[today]',
+          nextDay : '[tomorrow]',
+          lastWeek : '[last] dddd',
+          nextWeek : '[next] dddd',
+          sameElse : 'dddd, MMMM D'
+        });
+      }
     }
   },
   methods: {
@@ -1004,32 +999,61 @@ export default {
 
   .m_timeline--container--dates--day--mediasblock--label {
     position: relative;
-    width: 20ch;
+    width: 25ch;
     height: 100%;
     top: 0;
     padding: 0;
-    margin-right: -20ch;
+    margin-right: -25ch;
     background-color: transparent;
     // padding: 24px;
     display: flex;
     align-items: left;
-    z-index: 100;
-    text-transform: initial;
-    text-align: left;
-    // pointer-events: none;
+    align-items: center;
 
-    span {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;  
-      min-height: 1em;
-      background-color: var(--label-backgroundcolor);
-      color: var(--label-color);
-      padding: 2px 8px;
+    z-index: 100;
+    line-height: 1.4;
+    pointer-events: none;
+
+    div {
+      display: block;
 
       transform: rotate(-15deg) translateX(-20px);
       transform-origin: center center;
       font-style: italic;    
+
+      button {
+        padding: 0;
+        background-color: transparent;
+        appearance: none;
+        border: 0;
+        text-transform: initial;
+        text-align: left;
+
+        transition: all .8s cubic-bezier(.25,.8,.25,1);  
+
+        &:hover {
+          transform: scale(1.1);
+          box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
+        }
+
+        span {
+          border-radius: 0;
+  
+          display: inline;
+          background-color: var(--label-backgroundcolor);
+          color: var(--label-color);
+          box-shadow: -.1em .2em 1em rgba(0,0,0,.25);
+          padding: 4px 8px;
+
+  
+          -webkit-box-decoration-break: clone;
+          -ms-box-decoration-break: clone;
+          -o-box-decoration-break: clone;
+          box-decoration-break: clone;
+
+          pointer-events: auto;
+        }
+      }
     }
 
     // &::before {
