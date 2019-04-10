@@ -1,6 +1,4 @@
 import localstore from 'store';
-import jQuery from 'jquery';
-window.$ = window.jQuery = jQuery;
 
 /** *********
   UTILS
