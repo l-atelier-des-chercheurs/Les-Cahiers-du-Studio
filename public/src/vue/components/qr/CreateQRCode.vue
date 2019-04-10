@@ -1,10 +1,6 @@
 <template>
   <div>
-    
-    <p 
-      class="hide_on_print font-small" 
-      v-html="$t('toconnectwithanotherdevicetothisfolder')" 
-    />
+    <div class="hide_on_print" v-html="$t('toconnectwithanotherdevice')" />
 
     <div v-for="(ip, index) in $root.state.localNetworkInfos.ip"
       class="m_qrSnippet"
@@ -16,6 +12,12 @@
           :value="getURLToApp(ip)" 
           :options="{ size: 400, foreground: '#333', background: 'transparent' }"
         ></qrcode>
+        <button type="button"
+          class="buttonLink hide_on_print padding-none"
+          @click.prevent="printQR"
+        >
+          <small class="text-cap">{{ $t('print') }} </small>
+        </button>
       </div>
       <div class="m_qrSnippet--text">
         <a 
@@ -26,6 +28,7 @@
           <!-- <template v-if="nameOfFolder">
             • {{ nameOfFolder }} •<br><br>
           </template> -->
+        
           <span class="font-verysmall">
             {{ getURLToApp(ip) }}
           </span>
@@ -69,11 +72,30 @@ export default {
       window.print();
     },
     getURLToApp(ip) {
-      let url = `${this.$root.state.protocol}://${ip}:${this.$root.state.localNetworkInfos.port}`;
-      if(this.slugFolderName) {
-        url += `/${this.slugFolderName}`;
+
+      let url = new URL(window.location);
+
+      function isIP( address ){ 
+        const r = RegExp('((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])');
+        return r.test( address )
+      }
+
+      // si on est en localhost (cas de electron et navigateur connecté à electron)
+      // alors on remplace localhost par l’IP
+      if(url.hostname === 'localhost') {
+        url.hostname = ip;        
+      } 
+      // si on est sur une ip (cas d’un hébergement en ligne, ou d’un navigateur connecté à electron)
+      // alors on remplace par l’IP
+      else if(isIP(url.hostname)) {
+        url.hostname = ip;        
+      }
+      // et si on est sur un nom de domaine alors on ne fait rien
+
+      if(this.slugProjectName) {
+        url.pathname = this.slugProjectName;
         if(this.media_filename) {
-          url += `/media/${this.media_filename}`;
+          url.pathname += `/media/${this.media_filename}`;
         }
       }
       return url;        
