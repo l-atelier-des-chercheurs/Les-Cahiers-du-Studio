@@ -754,8 +754,11 @@ let vm = new Vue({
       if (window.state.dev_mode === 'debug') {
         console.log('ROOT EVENT: updateLocalLang');
       }
+
       i18n.locale = newLangCode;
       moment.locale(newLangCode);
+
+      this.lang.current = newLangCode;
 
       const html = document.documentElement; // returns the html tag
       html.setAttribute('lang', newLangCode);

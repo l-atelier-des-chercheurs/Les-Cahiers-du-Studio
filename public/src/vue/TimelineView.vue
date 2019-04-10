@@ -92,7 +92,6 @@
             >
               <template v-if="!day.is_empty">
                 <div class="m_timeline--container--dates--day--daylabel"
-                  :class="{ 'is--current_day' : day.is_current_day }"
                 >
                   <div class="m_timeline--container--dates--day--daylabel--container">
                     <span>
@@ -108,6 +107,7 @@
                   class="m_timeline--container--dates--day--mediasblock"
                 >
                   <div class="m_timeline--container--dates--day--mediasblock--label"
+                    v-if="!segment.hasOwnProperty('hide') || !segment.hide"
                     :class="{ 
                     }"
                   >
@@ -432,16 +432,34 @@ export default {
         return this.timeline_start;
       }
       const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > this.translation + this.$refs.timeline.offsetWidth/2 - 25);
-      if(first_day.dataset.hasOwnProperty('timestamp')){
+      if(!!first_day && first_day.dataset.hasOwnProperty('timestamp')){
         return +this.$moment(Number(first_day.dataset.timestamp));
       }
       return +this.$moment();
     },
     visible_day_human() {
-      const format =  this.$root.lang.current === 'fr' ? 
-          'dddd D MMMM':
-          'D dddd, MMMM';
-      return this.$moment(this.visible_day).format(format);
+
+      if(this.$root.lang.current === 'fr') {
+        return this.$moment(this.visible_day).calendar(null,{
+          lastDay : '[hier]',
+          sameDay : '[aujourd’hui]',
+          nextDay : '[demain]',
+          lastWeek : 'dddd [dernier]',
+          nextWeek : 'dddd [prochain]',
+          sameElse : 'dddd D MMMM'
+        });
+      } else if(this.$root.lang.current === 'en') {
+        return this.$moment(this.visible_day).calendar(null,{
+          lastDay : '[yesterday]',
+          sameDay : '[today]',
+          nextDay : '[tomorrow]',
+          lastWeek : '[last] dddd',
+          nextWeek : '[next] dddd',
+          sameElse : 'dddd, MMMM D'
+        });
+      }
+
+
     },
     groupedMedias() {
       console.log('COMPUTED • TimeLineView: groupedMedias');
@@ -524,7 +542,7 @@ export default {
             }
             acc[acc.length - 1].medias.push(media);
             return acc;
-          }, [{ label: '', medias: [] }]);
+          }, [{ label: '', medias: [], hide: true }]);
 
 
           // {
@@ -627,14 +645,14 @@ export default {
           medias_for_date = has_media_for_date[0].segments;
         }
 
-        const is_current_day = this.$moment(this.$root.currentTime_minute).isSame(this_date, 'day');
-        if(is_current_day) {
-          medias_for_date.map(m => {
-            if(m.label === this.$moment(this.$root.currentTime_minute).format('HH') + ':00') {
-              m.is_current_hour = true;
-            }
-          });          
-        }
+        // const is_current_day = this.$moment(this.$root.currentTime_minute).isSame(this_date, 'day');
+        // if(is_current_day) {
+        //   medias_for_date.map(m => {
+        //     if(m.label === this.$moment(this.$root.currentTime_minute).format('HH') + ':00') {
+        //       m.is_current_hour = true;
+        //     }
+        //   });          
+        // }
 
         const number_of_medias = Object.values(medias_for_date).reduce((acc, element) => acc + element.medias.length, 0);
 
@@ -642,7 +660,7 @@ export default {
           'LLLL' : 
           this.$root.lang.current === 'fr' ? 
             'dddd D MMMM':
-            'D dddd, MMMM';
+            'dddd, MMMM D';
 
         const label = this_date.format(format);
 
@@ -650,7 +668,6 @@ export default {
           label,
           timestamp: +this_date,
           number_of_medias,
-          is_current_day,
           segments: medias_for_date
         }
 
@@ -677,7 +694,7 @@ export default {
       // let min_consecutive_empty_days = 3;
 
       date_interval = this.full_date_interval.reduce((acc, day, index) => {
-        if(day.number_of_medias > 0 || acc.length === 0 || index === this.full_date_interval.length - 1 || day.is_current_day) {
+        if(day.number_of_medias > 0 || acc.length === 0 || index === this.full_date_interval.length - 1) {
           acc.push(day);
         } else {
           // if last added day has 0
@@ -823,7 +840,7 @@ export default {
   position: relative;
 
   margin: 0px 0px;
-  padding: 16px 120px;
+  padding: 16px 40vw;
   // border-right: 1px solid #000;
 }
 
@@ -1003,6 +1020,8 @@ export default {
 
     span {
       display: block;
+      min-width: 2em;
+      min-height: 2em;
       background-color: var(--label-backgroundcolor);
       color: var(--label-color);
       padding: 2px 8px;
