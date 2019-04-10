@@ -305,6 +305,7 @@ export default {
     this.$eventHub.$on('setSort', this.setSort);
     this.$eventHub.$on('setFilter', this.setFilter);
     this.$eventHub.$on('timeline.scrollToToday', this.scrollToToday);
+    this.$eventHub.$on('timeline.scrollToEnd', this.scrollToEnd);
 
     this.setTimelineHeight();
 
@@ -320,6 +321,7 @@ export default {
     this.$eventHub.$off('setSort');
     this.$eventHub.$off('setFilter');
     this.$eventHub.$off('timeline.scrollToToday', this.scrollToToday);
+    this.$eventHub.$off('timeline.scrollToEnd', this.scrollToEnd);
 
     window.removeEventListener('resize', this.onResize);
 
@@ -767,7 +769,11 @@ export default {
       this.timeline_height = window.innerHeight;
     },
     scrollToToday() {
-      this.findPosXForDate(+this.$root.currentTime_day);
+      this.scrollToDate(+this.$root.currentTime_day);
+    },
+    scrollToEnd() {
+      const x = this.$refs.timeline.children[0].offsetWidth - this.$refs.timeline.offsetWidth;
+      this.scrollTimelineToXPos(x);
     },
     findDayAtPosX(posX) {
       if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
@@ -817,9 +823,7 @@ export default {
       );
       const x = this.findPosXForDate(timestamp);
       this.scrollTimelineToXPos(x);
-
     },
-
 
     scrollTimelineToXPos(xPos_new) {
       console.log(

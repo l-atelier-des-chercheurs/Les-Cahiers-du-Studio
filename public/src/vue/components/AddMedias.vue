@@ -270,7 +270,7 @@ export default {
           type: 'text'
         }
       });
-      this.$eventHub.$emit('timeline.scrollToToday');
+      this.$eventHub.$emit('timeline.scrollToEnd');
     },
     newTextMediaCreated(mdata) {
       if (this.$root.justCreatedMediaID === mdata.id) {
@@ -294,7 +294,7 @@ export default {
           collapsed: true
         }
       });
-      this.$eventHub.$emit('timeline.scrollToToday');
+      this.$eventHub.$emit('timeline.scrollToEnd');
     },
     boitierPressed(event) {
       if (window.state.dev_mode === 'debug') {
@@ -326,7 +326,7 @@ export default {
               collapsed: true
             }
           });
-          this.$eventHub.$emit('timeline.scrollToToday');
+          this.$eventHub.$emit('timeline.scrollToEnd');
         }
       });
     },
