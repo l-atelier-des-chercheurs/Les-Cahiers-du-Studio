@@ -1,16 +1,8 @@
-import localstore from 'store';
-
-/** *********
+/***********
   UTILS
 ***********/
 
-// If click on a link with a specific class, open in the browser and not in electron.
-document.body.addEventListener('click', openInNativeBrowser);
-
 function openInNativeBrowser(event) {
-  if (!(window && window.process && window.process.type)) {
-    return;
-  }
   event.path.every(item => {
     if (
       item.classList !== undefined &&
@@ -24,6 +16,14 @@ function openInNativeBrowser(event) {
     }
     return true;
   });
+}
+
+function openRightClickMenu() {}
+
+if (window && window.process && window.process.type) {
+  document.body.addEventListener('click', openInNativeBrowser);
+
+  openRightClickMenu();
 }
 
 document.addEventListener(
