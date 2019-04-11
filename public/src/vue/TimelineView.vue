@@ -554,7 +554,7 @@ export default {
           'YYYY-MM-DD HH:mm:ss'
         );
       }
-      return false;
+      return +this.$moment();
       // const ts = this.folder.start;
       // if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
       //   return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
@@ -579,7 +579,7 @@ export default {
           'YYYY-MM-DD HH:mm:ss'
         );
       }
-      return false;
+      return +this.$moment();
 
       // const ts = this.folder.end;
       // const get_new_timeline_end = (ts) => {
@@ -697,9 +697,10 @@ export default {
         }
         return acc;
       }, []);
-
+      
       var t1 = performance.now();
       console.log('COMPUTED • TimeLineView: date_interval took ' + (t1 - t0) + " milliseconds.");
+      
 
       return date_interval;
       // return this.full_date_interval;
