@@ -222,6 +222,8 @@ Vue.prototype.$socketio = new Vue({
       */
 
       this.listFolders({ type: 'folders' });
+
+      this.$eventHub.$emit(`socketio.auth_complete`);
     },
 
     _onListMedia(data) {

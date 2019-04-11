@@ -130,9 +130,42 @@ export default {
     newFolderCreated: function(fdata) {
       if(fdata.id === this.$root.justCreatedFolderID) {
         this.$root.justCreatedFolderID = false;
+
         this.$nextTick(() => {
-          this.$emit('close', '');
-          this.$root.openFolder(fdata.slugFolderName);
+          if(this.folderdata.password !== false) {
+            this.$auth.updateAdminAccess({
+              [fdata.slugFolderName]: this.$root.justCreatedFolderPassword
+            });
+            this.$socketio.sendAuth();
+            this.$eventHub.$once('socketio.auth_complete', () => {
+              this.$emit('close', '');
+              this.$root.openFolder(fdata.slugFolderName);
+              this.$root.createMedia({
+                slugFolderName: fdata.slugFolderName,
+                type: 'folders',
+                additionalMeta: {
+                  type: 'marker',
+                  content: 'Création du dossier',
+                  color: 'red',
+                  collapsed: true
+                }
+              });            
+
+            });
+          } else {
+            this.$emit('close', '');
+            this.$root.openFolder(fdata.slugFolderName);
+            this.$root.createMedia({
+              slugFolderName,
+              type: 'folders',
+              additionalMeta: {
+                type: 'marker',
+                content: 'Création du dossier',
+                color: 'red',
+                collapsed: true
+              }
+            });            
+          }
         });
       }
     }

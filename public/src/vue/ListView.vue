@@ -203,29 +203,6 @@ export default {
       this.$root.updateLocalLang(this.currentLang);
     },
     folders: function() {
-      // check if there is a justCreatedFolderID val
-
-      if (this.$root.justCreatedFolderID) {
-        Object.keys(this.folders).map(slugFolderName => {
-          let folder = this.folders[slugFolderName];
-          // if there is, try to match it with folderID
-          if (
-            folder.folderID &&
-            folder.folderID === this.$root.justCreatedFolderID
-          ) {
-            if(this.$root.justCreatedFolderPassword !== false) {
-              auth.updateAdminAccess({
-                [slugFolderName]: this.$root.justCreatedFolderPassword
-              });
-              this.$socketio.sendAuth();
-              this.$root.justCreatedFolderPassword = false; 
-            }
-            this.$root.openFolder(slugFolderName);
-
-            this.$root.justCreatedFolderID = false;
-          }
-        });
-      }
     }
   },
   computed: {
