@@ -73,6 +73,17 @@ body {
   background-color: @c-bg_timeline;
 }
 
+.plyr--video, .plyr--audio {
+  .plyr__control.plyr__tab-focus, 
+  .plyr__control:hover,
+  .plyr__control[aria-expanded=true] {
+    box-shadow: 0 0 0 5px fade(@c-vert_vif, 20%);
+    box-shadow: none;
+    background: @c-noir;
+  }
+}
+
+
 
 /******************
   Mixins
