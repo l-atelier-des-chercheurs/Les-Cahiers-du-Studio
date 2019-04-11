@@ -442,7 +442,7 @@ video {
 
 .m_connectionStatus {
   width: 100%;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   background-color: @c-rouge_vif;
   text-align: center;
   .font-verysmall;
@@ -480,9 +480,8 @@ video {
   z-index:  998;
 
   @media screen and (max-width: 50rem) {
-    bottom: 30px;
+    bottom: 45%;
     top:auto;
-
 
   }
 
@@ -499,7 +498,7 @@ video {
 .m_sidebar {
   position: absolute;
   max-width: @t-sidebarWidth;
-  width: 100%;
+  width: 90%;
   // height: 100vh;
   height: auto;
   // height: ~"calc(100vh - 60px)";
@@ -538,7 +537,7 @@ video {
 
 
   @media screen and (max-width: 50rem) {
-    width:300px;
+    max-width:290px;
   }
 
   .intro {

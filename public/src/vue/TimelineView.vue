@@ -13,6 +13,10 @@
       </div>
     </transition>
 
+    <div class="m_connectionStatus" v-if="!$root.state.connected">
+      {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
+    </div>    
+
     <!-- <pre>{{ full_date_interval }}</pre> -->
 
     <button type="button" class="folder_backbutton" @click="$root.closeFolder()"
@@ -1281,6 +1285,11 @@ export default {
   z-index: 150;
   pointer-events: none;
 
+  @media screen and (max-width: 50rem) {
+    bottom: 0;
+    font-size:.7em;
+  }
+
   > * {
     margin: 0 auto;
     width: 250px;
@@ -1295,6 +1304,11 @@ export default {
     justify-content: center;
     align-items: center;
 
+    @media screen and (max-width: 50rem) {
+      width: 100%;
+      border-radius: 0;
+      height: 20px;
+    }
   }
 }
 
