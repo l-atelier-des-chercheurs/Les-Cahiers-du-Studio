@@ -306,6 +306,8 @@ export default {
     this.$eventHub.$on('setFilter', this.setFilter);
     this.$eventHub.$on('timeline.scrollToToday', this.scrollToToday);
     this.$eventHub.$on('timeline.scrollToEnd', this.scrollToEnd);
+    this.$eventHub.$on('editmediamodal.nextmedia', this.editModalNextMedia);
+    this.$eventHub.$on('editmediamodal.previousmedia', this.editModalPreviousMedia);
 
     this.setTimelineHeight();
 
@@ -322,6 +324,8 @@ export default {
     this.$eventHub.$off('setFilter');
     this.$eventHub.$off('timeline.scrollToToday', this.scrollToToday);
     this.$eventHub.$off('timeline.scrollToEnd', this.scrollToEnd);
+    this.$eventHub.$off('editmediamodal.nextmedia', this.editModalNextMedia);
+    this.$eventHub.$off('editmediamodal.previousmedia', this.editModalPreviousMedia);
 
     window.removeEventListener('resize', this.onResize);
 
@@ -814,6 +818,51 @@ export default {
     closeMediaModal() {
       this.show_media_modal_for = false;
     },
+    editModalNextMedia() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log('METHODS • TimeLineView: editModalNextMedia');
+      }
+      
+      if(this.show_media_modal_for) {
+
+        // find in sortedMedias where this.show_media_modal_for and get the next one
+        const current_media_index = this.sortedMedias.findIndex(m => m.slugMediaName === this.show_media_modal_for);
+
+        this.closeMediaModal();
+
+        if(current_media_index < this.sortedMedias.length - 1) {
+          const new_media = this.sortedMedias[current_media_index + 1];
+          if(new_media.hasOwnProperty('slugMediaName')) {
+            this.$nextTick(() => {
+              this.openMediaModal(new_media.slugMediaName);
+            });
+          } 
+        }
+      }
+    },
+    editModalPreviousMedia() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log('METHODS • TimeLineView: editModalPreviousMedia');
+      }
+
+      if(this.show_media_modal_for) {
+
+        // find in sortedMedias where this.show_media_modal_for and get the next one
+        const current_media_index = this.sortedMedias.findIndex(m => m.slugMediaName === this.show_media_modal_for);
+
+        this.closeMediaModal();
+
+        if(current_media_index > 0) {
+          const new_media = this.sortedMedias[current_media_index - 1];
+          if(new_media.hasOwnProperty('slugMediaName')) {
+            this.$nextTick(() => {
+              this.openMediaModal(new_media.slugMediaName);
+            });          
+          } 
+        }      
+      }
+    },
+
     toggleSidebar() {
       console.log('METHODS • TimeLineView: toggleSidebar');
       this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
