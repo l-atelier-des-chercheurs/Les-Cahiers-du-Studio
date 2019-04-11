@@ -17,7 +17,7 @@
       {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
     </div>    
 
-    <!-- <pre>{{ full_date_interval }}</pre> -->
+    <!-- <pre>{{ sortedMedias }}</pre> -->
 
     <button type="button" class="folder_backbutton" @click="$root.closeFolder()"
       @mouseover="collapse_foldername = false"
@@ -112,7 +112,7 @@
                   class="m_timeline--container--dates--day--mediasblock"
                 >
                   <div class="m_timeline--container--dates--day--mediasblock--label"
-                    v-if="!segment.hasOwnProperty('hide') || !segment.hide"
+                    v-if="!segment.hasOwnProperty('hidelabel') || !segment.hidelabel"
                   >
                     <div>
                       <button type="button" 
@@ -536,7 +536,7 @@ export default {
               acc[acc.length - 1].medias.push(media);
             }
             return acc;
-          }, [{ label: '', medias: [], hide: true }]);
+          }, [{ label: '', medias: [], hidelabel: true }]);
 
           // {
           //   label: "Début des répétitions"
@@ -989,6 +989,7 @@ export default {
   display: flex;
   height: 100%;
   position: relative;
+  min-width: 100vw;
 
   margin: 0px 0px;
   padding: 16px 20vw;
@@ -1280,7 +1281,7 @@ export default {
 
 .m_floater {
   position: fixed;
-  bottom: 50px;
+  bottom: 30px;
   width: 100%;
   z-index: 150;
   pointer-events: none;
