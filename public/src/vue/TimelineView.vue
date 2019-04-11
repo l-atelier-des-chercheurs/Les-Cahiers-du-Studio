@@ -76,11 +76,11 @@
 
       <div class="m_timeline"
         ref="timeline"
-        v-dragscroll
         @wheel="onMousewheel"
         @mouseup.self="onMouseUp"
         @scroll="onTimelineScroll"
       >
+        <!-- v-dragscroll -->
         <div class="m_timeline--container">
 
           <div class="m_timeline--container--dates" ref="timeline_dates">
