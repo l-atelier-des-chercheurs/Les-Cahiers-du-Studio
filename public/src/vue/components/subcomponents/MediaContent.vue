@@ -204,8 +204,7 @@ export default {
       
       if (
       // if image is gif and context is not 'preview', let’s show the original gif
-        (this.context !== 'preview' &&
-        this.mediaURL.toLowerCase().endsWith('.gif'))
+        this.mediaURL.toLowerCase().endsWith('.gif')
       ) {
         return this.mediaURL;
       }
@@ -275,6 +274,7 @@ export default {
       if (!this.media['thumbs'] || typeof this.media.thumbs === 'object' && this.media.thumbs.length === 0) {
         return this.mediaURL;
       }
+      
 
       let timeMark = 0;
       let timeMarkThumbs = this.media.thumbs.filter(t => !!t && t.timeMark === 0);
@@ -283,7 +283,12 @@ export default {
         return this.mediaURL;
       }
 
-      let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(m => m.size === this.thumbRes)[0].path;
+      let thumbRes = this.thumbRes;
+      if (this.element_width_for_sizes !== 0) {
+        thumbRes = [180,360,720, 1080, 1600].find(r => r/2 >= this.element_width_for_sizes);
+      }
+
+      let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(m => m.size === thumbRes)[0].path;
 
       let url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined
