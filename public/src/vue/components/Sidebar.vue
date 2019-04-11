@@ -87,7 +87,7 @@
 
     <ExportTimeline
       v-if="showExportTimelineModal === true"
-      :folder="folder"
+      :slugFolderName="slugFolderName"
       @close="showExportTimelineModal = false"
     >
     </ExportTimeline>

@@ -43,7 +43,7 @@ import alertify from 'alertify.js';
 export default {
   props: {
     read_only: Boolean,
-    folder: Object
+    slugFolderName: String
   },
   components: {
     Modal
@@ -79,7 +79,7 @@ export default {
       }
 
       let query = Object.entries(this.export_options).map(([key, val]) => `${key}=${encodeURIComponent(val)}`).join('&');
-      window.location.replace(window.location.href + `/export?${query}`);
+      window.location.replace(window.location.origin + `/export/folders/${this.slugFolderName}?${query}`);
       this.$emit('close');
     }
   }
