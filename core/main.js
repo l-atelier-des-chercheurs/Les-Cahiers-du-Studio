@@ -7,14 +7,15 @@ const server = require('./server');
 
 const dev = require('./dev-log'),
   api = require('./api'),
-  cache = require('./cache'),
-  electron = require('./electron');
+  cache = require('./cache');
 
 module.exports = function({ router }) {
   const is_electron = process.versions.hasOwnProperty('electron');
 
+  console.log(`App is electron : ${is_electron}`);
+
   if (is_electron) {
-    electron
+    require('./electron')
       .init()
       .then(win => {
         setupApp().then(() => {
