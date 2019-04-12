@@ -161,7 +161,7 @@ export default {
         return '';
       }
 
-      pathToSmallestThumb = this.$root.state.mode === 'export' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`
+      pathToSmallestThumb = this.$root.state.mode === 'export_web' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`
       return pathToSmallestThumb;
     }
   }

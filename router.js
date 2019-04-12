@@ -19,7 +19,7 @@ module.exports = function(app, io, m) {
   app.get('/', showIndex);
   app.get('/:slugFolderName', loadFolderOrMedia);
   app.get('/:slugFolderName/media/:metaFileName', loadFolderOrMedia);
-  app.get('/:slugFolderName/export/', exportFolder);
+  app.get('/export/:type/:slugFolderName', exportFolderWithMedias);
   app.post('/file-upload/:type/:slugFolderName', postFile2);
 
   /**
@@ -106,171 +106,184 @@ module.exports = function(app, io, m) {
     );
   }
 
-  function exportFolder(req, res) {
+  function exportFolderWithMedias(req, res) {
     let slugFolderName = req.param('slugFolderName');
+    let type = req.param('type');
     generatePageData(req).then(pageData => {
       // get medias for a folder
-      file.getFolder(slugFolderName).then(
-        foldersData => {
-          file.gatherAllMedias(slugFolderName).then(
-            mediasData => {
-              // if there is a query at the end of the URL, filter by this query
-              if (
-                typeof req.query === 'object' &&
-                Object.keys(req.query).length > 0
-              ) {
-                Object.keys(mediasData).forEach(slugMediaName => {
-                  const media = mediasData[slugMediaName];
 
-                  if (
-                    req.query.hasOwnProperty('only_public') &&
-                    req.query['only_public'] === 'true'
-                  ) {
+      file.getFolder({ type, slugFolderName }).then(foldersData => {
+        if (foldersData === undefined) return;
+
+        file
+          .getMediaMetaNames({
+            type,
+            slugFolderName
+          })
+          .then(list_metaFileName => {
+            let medias_list = list_metaFileName.map(_metaFileName => {
+              return {
+                slugFolderName,
+                metaFileName: _metaFileName
+              };
+            });
+            file
+              .readMediaList({ type, medias_list })
+              .then(folders_and_medias => {
+                let mediasData = folders_and_medias[slugFolderName].medias;
+                if (
+                  typeof req.query === 'object' &&
+                  Object.keys(req.query).length > 0
+                ) {
+                  Object.keys(mediasData).forEach(slugMediaName => {
+                    const media = mediasData[slugMediaName];
+
                     if (
-                      !media.hasOwnProperty('public') ||
-                      media['public'] === false
+                      req.query.hasOwnProperty('only_public') &&
+                      req.query['only_public'] === 'true'
                     ) {
-                      delete mediasData[slugMediaName];
-                    }
-                  }
-                  // Object.keys(req.query).forEach(k => {
-                  //   if (
-                  //     k === 'only_public' &&
-                  //     req.query['only_public'] === 'true'
-                  //   ) {
-                  //     if (!media['public']) {
-                  //       delete mediasData[slugMediaName];
-                  //     }
-                  //   }
-                  //   //  else if (
-                  //   //   media.hasOwnProperty(k) &&
-                  //   //   media[k] !== req.query[k]
-                  //   // ) {
-                  //   //   delete mediasData[slugMediaName];
-                  //   // }
-                  // });
-                });
-              }
-
-              // recreate full object
-              foldersData[slugFolderName].medias = mediasData;
-              pageData.folderAndMediaData = foldersData;
-              pageData.export_options = req.query;
-              pageData.mode = 'export';
-
-              let socketid;
-              if (
-                Object.keys(req.query).length > 0 &&
-                req.query.hasOwnProperty('socketid')
-              ) {
-                socketid = req.query.socketid;
-              }
-
-              // sockets.notify({
-              //   socketid,
-              //   msg: `Creating a copy of this folder.`
-              // });
-
-              res.render('index', pageData, (err, html) => {
-                exporter.copyWebsiteContent({ html, foldersData }).then(
-                  cachePath => {
-                    var archive = archiver('zip', {
-                      zlib: { level: 0 } //
-                    });
-
-                    archive.on('error', function(err) {
-                      res.status(500).send({ error: err.message });
-                      sockets.notify({
-                        socketid,
-                        msg: `Failed to create zip: ${err.message}`
-                      });
-                    });
-
-                    function formatBytes(a, b) {
-                      if (0 == a) return '0 Bytes';
-                      var c = 1024,
-                        d = b || 2,
-                        e = [
-                          'Bytes',
-                          'KB',
-                          'MB',
-                          'GB',
-                          'TB',
-                          'PB',
-                          'EB',
-                          'ZB',
-                          'YB'
-                        ],
-                        f = Math.floor(Math.log(a) / Math.log(c));
-                      return (
-                        parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f]
-                      );
-                    }
-
-                    let is_finished = false;
-                    let pbytes = 0;
-                    let tbytes = false;
-
-                    function informUserOfProgress() {
-                      if (is_finished) return;
-                      if (tbytes) {
-                        sockets.notify({
-                          socketid,
-                          msg: `${formatBytes(pbytes)}/${formatBytes(tbytes)}`
-                        });
+                      if (
+                        !media.hasOwnProperty('public') ||
+                        media['public'] === false
+                      ) {
+                        delete mediasData[slugMediaName];
                       }
-                      setTimeout(informUserOfProgress, 1000);
                     }
+                  });
+                }
 
-                    archive.on('progress', function(msg) {
-                      pbytes = msg.fs.processedBytes;
-                      tbytes = msg.fs.totalBytes;
-                    });
+                // recreate full object
+                foldersData[slugFolderName].medias = mediasData;
+                pageData.folderAndMediaData = foldersData;
+                pageData.export_options = req.query;
+                pageData.mode = 'export_web';
 
-                    //on stream closed we can end the request
-                    archive.on('end', function() {
-                      is_finished = true;
-                      console.log('Archive wrote %d bytes', archive.pointer());
-                      sockets.notify({
-                        socketid,
-                        msg: `Archive finished, ${formatBytes(
-                          archive.pointer()
-                        )}`
-                      });
-                    });
+                let socketid;
+                if (
+                  Object.keys(req.query).length > 0 &&
+                  req.query.hasOwnProperty('socketid')
+                ) {
+                  socketid = req.query.socketid;
+                }
 
-                    //set the archive name
-                    res.attachment(slugFolderName + '.zip');
+                // sockets.notify({
+                //   socketid,
+                //   msg: `Creating a copy of this folder.`
+                // });
 
-                    //this is the streaming magic
-                    archive.pipe(res);
-                    informUserOfProgress();
+                res.render('index', pageData, (err, html) => {
+                  exporter
+                    .copyFolderContent({
+                      html,
+                      folders_and_medias,
+                      slugFolderName,
+                      type: 'folders'
+                    })
+                    .then(
+                      cachePath => {
+                        var archive = archiver('zip', {
+                          zlib: { level: 0 } //
+                        });
 
-                    archive.directory(cachePath, false);
+                        archive.on('error', function(err) {
+                          res.status(500).send({ error: err.message });
+                          sockets.notify({
+                            socketid,
+                            msg: `Failed to create zip: ${err.message}`
+                          });
+                        });
 
-                    archive.finalize();
-                  },
-                  (err, p) => {
-                    dev.error(
-                      `Failed while preparing/making a web export: ${err}`
+                        function formatBytes(a, b) {
+                          if (0 == a) return '0 Bytes';
+                          var c = 1024,
+                            d = b || 2,
+                            e = [
+                              'Bytes',
+                              'KB',
+                              'MB',
+                              'GB',
+                              'TB',
+                              'PB',
+                              'EB',
+                              'ZB',
+                              'YB'
+                            ],
+                            f = Math.floor(Math.log(a) / Math.log(c));
+                          return (
+                            parseFloat((a / Math.pow(c, f)).toFixed(d)) +
+                            ' ' +
+                            e[f]
+                          );
+                        }
+
+                        let is_finished = false;
+                        let pbytes = 0;
+                        let tbytes = false;
+
+                        function informUserOfProgress() {
+                          if (is_finished) return;
+                          if (tbytes) {
+                            sockets.notify({
+                              socketid,
+                              msg: `${formatBytes(pbytes)}/${formatBytes(
+                                tbytes
+                              )}`
+                            });
+                          }
+                          setTimeout(informUserOfProgress, 1000);
+                        }
+
+                        archive.on('progress', function(msg) {
+                          pbytes = msg.fs.processedBytes;
+                          tbytes = msg.fs.totalBytes;
+                        });
+
+                        //on stream closed we can end the request
+                        archive.on('end', function() {
+                          is_finished = true;
+                          console.log(
+                            'Archive wrote %d bytes',
+                            archive.pointer()
+                          );
+                          sockets.notify({
+                            socketid,
+                            msg: `Archive finished, ${formatBytes(
+                              archive.pointer()
+                            )}`
+                          });
+                        });
+
+                        //set the archive name
+                        res.attachment(slugFolderName + '.zip');
+
+                        //this is the streaming magic
+                        archive.pipe(res);
+                        informUserOfProgress();
+
+                        archive.directory(cachePath, false);
+
+                        archive.finalize();
+                      },
+                      (err, p) => {
+                        dev.error(
+                          `Failed while preparing/making a web export: ${err}`
+                        );
+                      }
                     );
-                  }
-                );
+                });
+              })
+              .catch((err, p) => {
+                dev.error(`Failed to gather medias: ${err}`);
+                pageData.noticeOfError = 'failed_to_find_folder';
+                res.render('index', pageData);
               });
-            },
-            (err, p) => {
-              dev.error(`Failed to gather medias: ${err}`);
-              pageData.noticeOfError = 'failed_to_find_folder';
-              res.render('index', pageData);
-            }
-          );
-        },
-        (err, p) => {
-          dev.error(`Failed to get folder: ${err}`);
-          pageData.noticeOfError = 'failed_to_find_folder';
-          res.render('index', pageData);
-        }
-      );
+          })
+          .catch((err, p) => {
+            dev.error(`Failed to get folder: ${err}`);
+            pageData.noticeOfError = 'failed_to_find_folder';
+            res.render('index', pageData);
+          });
+      });
     });
   }
 

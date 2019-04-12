@@ -245,7 +245,7 @@
 
         <a :download="media.media_filename" :href="mediaURL" :title="media.media_filename" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
-          v-if="$root.state.mode !== 'export' || ($root.state.hasOwnProperty('export_options') && $root.state.export_options.allow_download !== 'false')"
+          v-if="$root.state.mode !== 'export_web' || ($root.state.hasOwnProperty('export_options') && $root.state.export_options.allow_download !== 'false')"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
@@ -336,7 +336,7 @@ export default {
         public: this.media.public,
         content: this.media.content
       },
-      mediaURL: this.$root.state.mode === 'export' ? `./${this.slugFolderName}/${this.media.media_filename}` : `/${this.slugFolderName}/${this.media.media_filename}`,
+      mediaURL: this.$root.state.mode === 'export_web' ? `./${this.slugFolderName}/${this.media.media_filename}` : `/${this.slugFolderName}/${this.media.media_filename}`,
       alt_key_is_pressed: false,
       askBeforeClosingModal: false,
       showQRModal: false

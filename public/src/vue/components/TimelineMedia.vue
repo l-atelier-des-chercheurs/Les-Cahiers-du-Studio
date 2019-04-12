@@ -219,7 +219,7 @@ export default {
           }`
         );
       }
-      if (!this.read_only || this.$root.state.mode === 'export') {
+      if (!this.read_only || this.$root.state.mode === 'export_web') {
         window.addEventListener('mousemove', this.mousemove);
         window.addEventListener('mouseup', this.mouseup);
       }

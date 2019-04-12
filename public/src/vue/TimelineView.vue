@@ -13,7 +13,7 @@
       </div>
     </transition>
 
-    <div class="m_connectionStatus" v-if="!$root.state.connected">
+    <div class="m_connectionStatus" v-if="!$root.state.connected && $root.state.mode !== 'export_web'">
       {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
     </div>    
 

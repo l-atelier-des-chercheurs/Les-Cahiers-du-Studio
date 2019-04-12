@@ -120,7 +120,7 @@
               </div>
 
               <div
-                v-if="isRealtime && $root.state.mode !== 'export'"
+                v-if="isRealtime && $root.state.mode !== 'export_web'"
                 class="gridItem font-small gridItem_isrealtimerule"
                 :style="`transform: translate(${todaysRule.xPos}px, 0px)`"
               >

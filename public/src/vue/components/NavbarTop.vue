@@ -4,7 +4,7 @@
       <div class="bloccontainer">
 
         <div class="breadcrumb padding-none">
-          <template v-if="$root.state.mode !== 'export'">
+          <template v-if="$root.state.mode !== 'export_web'">
             <a 
             href="/" 
             @click.prevent="$root.closeFolder()" 

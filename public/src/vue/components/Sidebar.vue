@@ -1,6 +1,6 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-    <SidebarSection v-if="$root.state.mode !== 'export'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('folder_information') }}
@@ -47,7 +47,7 @@
       </div>
     </SidebarSection>
     
-    <SidebarSection v-if="$root.state.mode !== 'export'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web'">
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('keyboard_shortcuts') }}
@@ -69,7 +69,7 @@
     >
     </KeyboardShortcuts>
 
-    <SidebarSection v-if="$root.state.mode !== 'export'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('export_folder') }}

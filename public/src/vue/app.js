@@ -522,8 +522,13 @@ let vm = new Vue({
 
     this.access = true;
 
-    if (this.state.mode === 'export') {
-      this.settings.has_sidebar_opened = true;
+    if (this.state.mode === 'export_web') {
+      // this.settings.has_sidebar_opened = true;
+      if (Object.keys(this.store.folders).length > 0) {
+        this.settings.current_slugFolderName = Object.keys(
+          this.store.folders
+        )[0];
+      }
     }
 
     if (this.store.noticeOfError) {
@@ -751,7 +756,7 @@ let vm = new Vue({
       ) {
         return viewportScale[slugFolderName];
       }
-      if (this.state.mode === 'export') {
+      if (this.state.mode === 'export_web') {
         return 50;
       }
       return 20;

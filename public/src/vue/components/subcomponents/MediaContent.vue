@@ -157,12 +157,12 @@ export default {
       plyr_options: {
         preview: {
           controls: ['play'],
-          iconUrl: '/images/plyr.svg',
+          iconUrl: this.$root.state.mode !== 'export_web' ? '/images/plyr.svg' : './_images/plyr.svg',
           hideControls: false
         },
         edit: {
           controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-          iconUrl: '/images/plyr.svg'
+          iconUrl: this.$root.state.mode !== 'export_web' ? '/images/plyr.svg' : './_images/plyr.svg',
         },
       },
     };
@@ -185,7 +185,7 @@ export default {
   },
   computed: {
     mediaURL: function() {
-      return this.$root.state.mode === 'export_publication' 
+      return this.$root.state.mode === 'export_web' 
         ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}` 
         : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
     },
@@ -216,7 +216,7 @@ export default {
 
       let pathToSmallestThumb = small_thumb[0].path;
 
-      let url = this.$root.state.mode === 'export_publication' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`;
+      let url = this.$root.state.mode === 'export_web' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`;
       return url;
     },
     imageSrcSetAttr: function() {
@@ -265,7 +265,7 @@ export default {
     linkToHoveredThumb: function() {
       let pathToSmallestThumb = this.media.thumbs.filter(m => m.size === this.thumbResHovered)[0].path;
 
-      const url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
+      const url = this.$root.state.mode === 'export_web' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
@@ -290,7 +290,7 @@ export default {
 
       let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(m => m.size === thumbRes)[0].path;
 
-      let url = this.$root.state.mode === 'export_publication' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
+      let url = this.$root.state.mode === 'export_web' ? './' + pathToSmallestThumb : '/' + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined
         ? url
         : this.mediaURL;
