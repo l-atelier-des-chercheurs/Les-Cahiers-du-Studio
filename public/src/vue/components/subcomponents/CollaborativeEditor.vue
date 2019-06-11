@@ -1,8 +1,9 @@
 <template>
   <div
     class="mediaTextContent quillWrapper" 
-    autocorrect="off"
     autofocus="autofocus"
+    :autocorrect="spellcheckIsEnabled"
+    :spellcheck="spellcheckIsEnabled"
   >
     <!-- connection_state : {{ connection_state }}<br> -->
     <div ref="editor"
@@ -76,6 +77,9 @@ export default {
   watch: {
   },
   computed: {
+    spellcheckIsEnabled() {
+      return !(this.$root.state.mode === 'export_web');
+    }
   },
   methods: {
     initWebsocketMode() {
