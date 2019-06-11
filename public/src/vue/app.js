@@ -819,6 +819,13 @@ let vm = new Vue({
       return kbs;
     },
     mediaColorFromFirstAuthor(media, folder) {
+      const author = this.mediaFirstAuthor(media, folder);
+      if (author) {
+        return author.color;
+      }
+      return false;
+    },
+    mediaFirstAuthor(media, folder) {
       if (!media.hasOwnProperty('authors')) {
         return false;
       }
@@ -840,7 +847,7 @@ let vm = new Vue({
         return false;
       }
 
-      return full_authors_info[0].color;
+      return full_authors_info[0];
     },
     canAdminFolder: function({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;

@@ -121,6 +121,7 @@
                           --label-backgroundcolor: ${segment.color};
                           --label-color: ${segment.color === 'var(--color-noir)' ? 'var(--color-blanc)' : 'var(--color-noir)' };
                           `"
+                        :data-has_author="!!segment.marker_author"
                       >
                         <span v-html="segment.label" />
                       </button>
@@ -521,15 +522,16 @@ export default {
           let medias_by_markers = medias.reduce((acc, media) => {
             // avancer dans l’array, en ajoutant dans un accumulator 
             if(media.type === 'marker') {
-              const color = this.$root.mediaColorFromFirstAuthor(media, this.folder) ? this.$root.mediaColorFromFirstAuthor(media, this.folder) : 'var(--color-noir)';
-              
               const label = this.$moment(media.date_timeline).format('HH:mm') + '<br>' + (!!media.content ? media.content : ''); 
+              const color = this.$root.mediaColorFromFirstAuthor(media, this.folder) ? this.$root.mediaColorFromFirstAuthor(media, this.folder) : 'var(--color-noir)';
+              const marker_author = this.$root.mediaFirstAuthor(media, this.folder) ? this.$root.mediaFirstAuthor(media, this.folder).name : false;
 
               acc.push({
                 label,
                 color,
                 timestamp: media.date_timeline,
                 marker_meta_slugMediaName: media.slugMediaName,
+                marker_author,
                 medias: []
               })
             } else {
@@ -1046,10 +1048,6 @@ export default {
       transform: rotate(-90deg);
       // transform-origin: center center;
       
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
       > span {
         display: block;
         // min-width: 320px; 
@@ -1196,11 +1194,12 @@ export default {
           border-radius: 0;
   
           display: inline;
-          background-color: var(--label-backgroundcolor);
-          color: var(--label-color);
-          box-shadow: -.1em .2em 1em rgba(0,0,0,.15);
+          background-color: var(--color-noir);
+          color: white;
+          // background-color: var(--label-backgroundcolor);
+          // color: var(--label-color);
+          box-shadow: -.1em .2em 1em rgba(0,0,0,.2);
           padding: 4px 8px;
-
   
           -webkit-box-decoration-break: clone;
           -ms-box-decoration-break: clone;
@@ -1208,6 +1207,12 @@ export default {
           box-decoration-break: clone;
 
           pointer-events: auto;
+
+        }
+        &[data-has_author="true"] span::before {
+          content:'• ';
+          color: var(--label-backgroundcolor);
+          position: relative;
         }
       }
     }

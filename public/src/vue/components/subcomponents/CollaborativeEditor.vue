@@ -6,8 +6,7 @@
     :spellcheck="spellcheckIsEnabled"
   >
     <!-- connection_state : {{ connection_state }}<br> -->
-    <div ref="editor"
-    />
+    <div ref="editor" />
   </div>
 </template>
 <script>
