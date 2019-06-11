@@ -14,10 +14,10 @@
       </div>
 
       <button type="button" class="menu_encart--button"
-        @mouseenter="!is_touch && show_drop_container === false ? show_authors_options = true : ''"
         @click="show_authors_options = !show_authors_options"
         :style="addMediaStyles"
       >
+        <!-- @mouseenter="!is_touch && show_drop_container === false ? show_authors_options = true : ''" -->
         <template v-if="current_author_name">
           {{ current_author_name }}
         </template>
@@ -28,11 +28,11 @@
     </div>
 
     <div class="menu_encart"
-      @mouseenter="!is_touch && show_drop_container === false ? show_addmedia_options = true : ''"
       @mouseleave="show_addmedia_options = false"
       :class="{ 'is--showing_options' : show_addmedia_options }"
       :style="addMediaStyles"
     >
+      <!-- @mouseenter="!is_touch && show_drop_container === false ? show_addmedia_options = true : ''" -->
       <div class="menu_encart--options">
         <button
           key="add_text"
