@@ -1,9 +1,8 @@
 const dev = require('./dev-log'),
   api = require('./api'),
   auth = require('./auth'),
-  exporter = require('./exporter');
-
-const file = require('./file');
+  exporter = require('./exporter'),
+  file = require('./file');
 
 module.exports = (function() {
   dev.log(`Sockets module initialized at ${api.getCurrentDate()}`);
@@ -23,7 +22,19 @@ module.exports = (function() {
     app = thisApp;
     io = thisIO;
 
-    io.on('connection', function(socket) {
+    io.use(function(socket, next) {
+      if (
+        auth.checkForSessionPassword(
+          socket.handshake.query.hashed_session_password
+        )
+      ) {
+        dev.log(`CONNECTION ALLOWED`);
+        next();
+      } else {
+        dev.error(`CONNECTION DENIED`);
+        next(new Error('Authentication error'));
+      }
+    }).on('connection', function(socket) {
       dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
       socket._data = {};
 
@@ -56,6 +67,7 @@ module.exports = (function() {
       socket.on('downloadStopmotionPubli', d =>
         onDownloadStopmotionPubli(socket, d)
       );
+      socket.on('addTempMediaToFolder', d => onAddTempMediaToFolder(socket, d));
       socket.on('updateNetworkInfos', d => onUpdateNetworkInfos(socket, d));
 
       socket.on('updateClientInfo', d => onUpdateClientInfo(socket, d));
@@ -88,7 +100,8 @@ module.exports = (function() {
     socket,
     socketid,
     not_localized_string,
-    localized_string
+    localized_string,
+    type
   }) {
     dev.logfunction(`EVENT - notify for socketid = ${socketid}`);
     if (socketid || socket) {
@@ -97,7 +110,7 @@ module.exports = (function() {
       }
       api.sendEventWithContent(
         'notify',
-        { not_localized_string, localized_string },
+        { not_localized_string, localized_string, type },
         io,
         socket
       );
@@ -310,7 +323,8 @@ module.exports = (function() {
         slugFolderName,
         metaFileName: slugMediaName,
         data,
-        recipe_with_data
+        recipe_with_data,
+        socket
       })
       .then(
         slugFolderName => {
@@ -354,6 +368,12 @@ module.exports = (function() {
       slugPubliName = ${slugPubliName}`
     );
     exporter.makePDFForPubli({ slugPubliName }).then(({ pdfName, pdfPath }) => {
+      notify({
+        socket,
+        localized_string: `finished_creating_recipe`,
+        type: 'success'
+      });
+
       api.sendEventWithContent(
         'publiPDFGenerated',
         { pdfName, pdfPath },
@@ -371,13 +391,30 @@ module.exports = (function() {
 
     exporter
       .makeVideoForPubli({ slugPubliName, socket })
-      .then(({ videoName }) => {
+      .then(videoName => {
+        notify({
+          socket,
+          localized_string: `finished_creating_recipe`,
+          type: 'success'
+        });
+
         api.sendEventWithContent(
           'publiVideoGenerated',
           { videoName },
           io,
           socket
         );
+      })
+      .catch(error_msg => {
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `video_creation_failed`,
+          not_localized_string: error_msg,
+          type: 'error'
+        });
+
+        api.sendEventWithContent('publiVideoFailed', {}, io, socket);
       });
   }
 
@@ -390,12 +427,53 @@ module.exports = (function() {
     exporter
       .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
       .then(videoName => {
+        notify({
+          socket,
+          localized_string: `finished_creating_recipe`,
+          type: 'success'
+        });
+
         api.sendEventWithContent(
           'publiStopmotionIsGenerated',
           { videoName },
           io,
           socket
         );
+      })
+      .catch(error => {
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `video_creation_failed`,
+          not_localized_string: error.message,
+          type: 'error'
+        });
+
+        api.sendEventWithContent('publiStopmotionFailed', {}, io, socket);
+      });
+  }
+
+  function onAddTempMediaToFolder(socket, { from, to }) {
+    dev.logfunction(
+      `EVENT - onAddTempMediaToFolder with 
+      from = ${JSON.stringify(from)} and to = ${JSON.stringify(to)}`
+    );
+
+    file
+      .addTempMediaToFolder({ from, to })
+      .then(() => {
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `media_has_been_added_successfully`
+        });
+      })
+      .catch(err => {
+        notify({
+          socket,
+          socketid: socket.id,
+          not_localized_string: `Error adding temp media to folder: ${err}`
+        });
       });
   }
 
@@ -495,7 +573,7 @@ module.exports = (function() {
         .getFolder({ type, slugFolderName })
         .then(foldersData => {
           if (foldersData === undefined) {
-            return;
+            return reject();
           }
           file
             .getMediaMetaNames({
@@ -526,6 +604,14 @@ module.exports = (function() {
                         metaFileName
                       ].id = id;
                     }
+
+                    if (
+                      foldersData[slugFolderName].hasOwnProperty('password') &&
+                      foldersData[slugFolderName].password !== ''
+                    ) {
+                      foldersData[slugFolderName].password = 'has_pass';
+                    }
+
                     foldersData[slugFolderName].medias =
                       folders_and_medias[slugFolderName].medias;
                   }
