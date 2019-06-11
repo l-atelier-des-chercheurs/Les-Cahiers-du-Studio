@@ -458,41 +458,43 @@ video {
 
 @t-button_sidebartoggle: 60px;
 
-.button_sidebarToggle {
+.m_sidebarToggleButton {
   position: absolute;
-/*
-  top: 46%;
-  top:~"calc(50% - @{t-button_sidebartoggle}/3)";
-*/
-  top: 140px;
+  height: 100%;
+  width: 0em;
 
-  width: @t-button_sidebartoggle;
-  height: @t-button_sidebartoggle;
-  left: -@t-button_sidebartoggle/2;
-  background-color: @c-noir;
-  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  text-align: right;
-  border-radius: 4px;
+  pointer-events: none;
+
+  text-align: center;
 
   transform: translateX(0);
   transition: transform .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
 
   z-index:  998;
 
-  @media screen and (max-width: 50rem) {
-    bottom: 45%;
-    top:auto;
-
+  &.is--sidebarOpened {
+    transform: translateX(@t-sidebarWidth);
+    transition: transform .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
   }
 
-  &.is--collapsed {
-    // transform: translateX(-@t-sidebarWidth);
-    transition: transform .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
+  > button {
+    position: relative;
+    display: block;
+    transform: rotate(-90deg);   
+    transform-origin: top center; 
+    pointer-events: auto;
 
-    @media screen and (max-width: 50rem) {
-      // transform: translateX(-300px - @t-button_sidebartoggle/2);
-    }
+    background-color: @c-noir;
+    color: white;
+    
+    left: -1px;
+    border-radius: 0 0 4px 4px;
+
+    padding: .6em .8em;
   }
 }
 
