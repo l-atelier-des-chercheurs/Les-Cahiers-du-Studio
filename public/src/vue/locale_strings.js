@@ -140,7 +140,7 @@ module.exports = (function() {
           'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
         'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:',
         folder_export_started: 'Préparation du fichier à exporter en cours…',
-        connected_to_lescahiers: 'Connecté aux Cahiers active'
+        connected_to_lescahiers: 'Connection aux Cahiers active'
       }
     },
     en: {
