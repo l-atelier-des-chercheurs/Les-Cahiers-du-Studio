@@ -121,7 +121,7 @@ module.exports = (function() {
 
             /* 
             {
-              projects: {
+              folders: {
                 bonjour: mon-mot-de-passe
                 hello: mdp2
               },
@@ -236,23 +236,6 @@ module.exports = (function() {
             console.log('Received _onPubliVideoGenerated packet.');
             this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
           },
-          _onPubliVideoFailed() {
-            console.log('Received _onPubliVideoFailed packet.');
-            this.$eventHub.$emit('socketio.publication.videoFailedToGenerate');
-          },
-
-          _onPubliStopmotionGenerated(data) {
-            console.log('Received _onPubliStopmotionGenerated packet.');
-            this.$eventHub.$emit(
-              'socketio.publication.publiStopmotionIsGenerated',
-              data
-            );
-          },
-
-          _onPubliStopmotionFailed() {
-            console.log('Received _onPubliStopmotionFailed packet.');
-            this.$eventHub.$emit('socketio.publication.publiStopmotionFailed');
-          },
 
           _listClients(data) {
             console.log('Received _listClients packet.');
@@ -317,37 +300,19 @@ module.exports = (function() {
             console.log('Received _onNewNetworkInfos packet.');
             window.state.localNetworkInfos = data;
           },
-          _onNotify({ localized_string, not_localized_string, type = 'log' }) {
+          _onNotify({ localized_string, not_localized_string }) {
             console.log('Received _onNotify packet.');
-            let msg = '';
-            if (localized_string && not_localized_string) {
-              msg +=
-                this.$t(`notifications['${localized_string}']`) +
-                '<br>' +
-                '<i>' +
-                not_localized_string +
-                '</i>';
-            } else if (not_localized_string) {
-              msg += '<i>' + not_localized_string + '</i>';
-            } else if (localized_string) {
-              msg += this.$t(`notifications['${localized_string}']`);
+            if (not_localized_string) {
+              alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .log(not_localized_string);
             }
-
-            if (type === 'success') {
+            if (localized_string) {
               alertify
                 .closeLogOnClick(true)
                 .delay(4000)
-                .success(msg);
-            } else if (type === 'error') {
-              alertify
-                .closeLogOnClick(true)
-                .delay(10000)
-                .error(msg);
-            } else {
-              alertify
-                .closeLogOnClick(true)
-                .delay(4000)
-                .log(msg);
+                .log(this.$t(`notifications['${localized_string}']`));
             }
           },
           listFolders(fdata) {
@@ -386,12 +351,6 @@ module.exports = (function() {
           },
           downloadVideoPubli(pdata) {
             this.socket.emit('downloadVideoPubli', pdata);
-          },
-          downloadStopmotionPubli(pdata) {
-            this.socket.emit('downloadStopmotionPubli', pdata);
-          },
-          addTempMediaToFolder(pdata) {
-            this.socket.emit('addTempMediaToFolder', pdata);
           },
           updateNetworkInfos() {
             this.socket.emit('updateNetworkInfos');
