@@ -125,19 +125,23 @@ export default {
         data: this.folderdata 
       });
 
-      this.$eventHub.$once('socketio.folder_created_or_updated', this.newFolderCreated);
+      this.$eventHub.$on('socketio.folder_created_or_updated', this.newFolderCreated);
     },
     newFolderCreated: function(fdata) {
       if(fdata.id === this.$root.justCreatedFolderID) {
+        this.$eventHub.$off('socketio.folder_created_or_updated', this.newFolderCreated);
         this.$root.justCreatedFolderID = false;
 
         this.$nextTick(() => {
-          if(this.folderdata.password !== false) {
-            this.$auth.updateAdminAccess({
-              [fdata.slugFolderName]: this.$root.justCreatedFolderPassword
+          if(fdata.password === 'has_pass') {
+            this.$auth.updateFoldersPasswords({
+              "projects": {
+                [fdata.slugFolderName]: this.projectdata.password
+              }
             });
             this.$socketio.sendAuth();
-            this.$eventHub.$once('socketio.auth_complete', () => {
+
+            this.$eventHub.$once('socketio.authentificated', () => {
               this.$emit('close', '');
               this.$root.openFolder(fdata.slugFolderName);
               this.$root.createMedia({
@@ -150,19 +154,16 @@ export default {
                   collapsed: true
                 }
               });            
-
             });
           } else {
             this.$emit('close', '');
             this.$root.openFolder(fdata.slugFolderName);
             this.$root.createMedia({
-              slugFolderName,
+              slugFolderName: fdata.slugFolderName,
               type: 'folders',
               additionalMeta: {
                 type: 'marker',
-                content: 'Création du dossier',
-                color: 'red',
-                collapsed: true
+                content: this.$t('creation_of_the_timeline')
               }
             });            
           }

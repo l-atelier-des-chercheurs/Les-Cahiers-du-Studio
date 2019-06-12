@@ -343,12 +343,12 @@ export default {
     'translation': function() {
       this.$refs.timeline.scrollLeft = this.translation;
 
-      if(!this.debounce_translation_fct) {
-        this.debounce_translation_fct = setTimeout(() => {
-          this.debounce_translation = this.translation;
-          this.debounce_translation_fct = undefined;
-        }, this.debounce_translation_delay);
-      }
+      // if(!this.debounce_translation_fct) {
+      //   this.debounce_translation_fct = setTimeout(() => {
+      //     this.debounce_translation = this.translation;
+      //     this.debounce_translation_fct = undefined;
+      //   }, this.debounce_translation_delay);
+      // }
     }
   },
   computed: {

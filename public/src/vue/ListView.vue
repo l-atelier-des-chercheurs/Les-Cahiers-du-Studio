@@ -1,6 +1,5 @@
 <template>
   <main class="m_home">
-
     <header class="bg-noir c-blanc font-large padding-vert-medium">
       <div class="flex-wrap flex-vertically-centered limited-width">
         <div class="flex-size-2/5 flex-collapse-on-mobile padding-sides-medium padding-vert-medium flex-wrap flex-vertically-centered">

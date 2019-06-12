@@ -26,6 +26,7 @@ module.exports = (function() {
       disconnect: 'Se déconnecter',
       login: 'S’identifier',
       options: 'Options',
+      creation_of_the_timeline: 'Création du dossier',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -138,7 +139,8 @@ module.exports = (function() {
         folder_name_needs_alphanumeric_characters:
           'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
         'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:',
-        folder_export_started: 'Préparation du fichier à exporter en cours…'
+        folder_export_started: 'Préparation du fichier à exporter en cours…',
+        connected_to_lescahiers: 'Connecté aux Cahiers active'
       }
     },
     en: {
@@ -166,6 +168,7 @@ module.exports = (function() {
       disconnect: 'Disconnect',
       login: 'Login',
       options: 'Options',
+      creation_of_the_timeline: 'Creation of the timeline',
 
       loading: 'loading',
       open: 'Open',
