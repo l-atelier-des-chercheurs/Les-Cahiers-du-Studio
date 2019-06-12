@@ -112,6 +112,7 @@
                 <div v-for="segment in day.segments"
                   :key="segment.timestamp"
                   class="m_timeline--container--dates--day--mediasblock"
+                  v-if="(!segment.hasOwnProperty('hidelabel') || !segment.hidelabel) || (segment.medias.length > 0)"
                 >
                   <div class="m_timeline--container--dates--day--mediasblock--label"
                     v-if="!segment.hasOwnProperty('hidelabel') || !segment.hidelabel"
@@ -131,6 +132,7 @@
                   </div>
 
                   <MediasBlock 
+                    v-if="segment.medias.length > 0"
                     :medias="segment.medias"
                     :folder="folder"
                     :slugFolderName="slugFolderName"
@@ -461,8 +463,6 @@ export default {
         return [];
       }
 
-      debugger;
-
       // groupby day
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
         let date_to_reference_to = 0;
@@ -531,7 +531,6 @@ export default {
           let medias_by_markers = medias.reduce((acc, media) => {
             // avancer dans l’array, en ajoutant dans un accumulator 
             if(media.type === 'marker') {
-
               const label = this.$moment(media.date_timeline).format('HH:mm') + '<br>' + (!!media.content ? media.content : ''); 
               const color = this.$root.mediaColorFromFirstAuthor(media, this.folder) ? this.$root.mediaColorFromFirstAuthor(media, this.folder) : 'var(--color-noir)';
               const marker_author = this.$root.mediaFirstAuthor(media, this.folder) ? this.$root.mediaFirstAuthor(media, this.folder).name : false;
@@ -549,22 +548,20 @@ export default {
             }
             return acc;
           }, [{ label: '', medias: [], hidelabel: true }]);
-
           // {
           //   label: "Début des répétitions"
           //   medias: [
           //     {},
           //     {}
           //   ]           
-          // };        
-
+          // };      
           return {
             day, 
             segments: medias_by_markers
           };             
         });
       }
-        
+
       return mediaGroup;  
     },
     timeline_start() {
@@ -639,7 +636,6 @@ export default {
         let this_date = startDate.clone();
         let medias_for_date = [];
 
-
         const has_media_for_date = this.groupedMedias.filter(i => this.$moment(i.day).isSame(this_date, 'day'));
 
         if(has_media_for_date.length > 0) {
@@ -682,7 +678,6 @@ export default {
       }
 
       // days = days.map(d => d.format('L'));
-
       return date_interval;
     },
     date_interval() {
