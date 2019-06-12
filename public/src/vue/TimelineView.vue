@@ -59,14 +59,16 @@
         :allAuthors="folder.authors"
       />
 
-      <div style="position: relative;">
+      <div class="m_sidebarToggleButton"
+        :class="{ 'is--sidebarOpened' : $root.settings.has_sidebar_opened }"
+      >
         <button type="button"
-          class="button_sidebarToggle"
           @click.prevent="toggleSidebar()"
-          :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
         >
-          <template v-if="$root.settings.has_sidebar_opened">←</template>
-          <template v-else>→</template>
+          <span>
+            {{ $t('options') }}<template v-if="$root.settings.has_sidebar_opened">&nbsp;×</template>
+          </span>
+          <!-- <template v-else>→</template> -->
         </button>
       </div>
 
@@ -390,10 +392,15 @@ export default {
         }
 
         if (current_sort.type === 'date') {
-          mediaDataToOrderBy = +this.$moment(
+          const _date = this.$moment(
             media[current_sort.field],
             'YYYY-MM-DD HH:mm:ss'
           );
+          if(_date.isValid()) {
+            mediaDataToOrderBy = +_date;
+          } else {
+            mediaDataToOrderBy = false;
+          }
         } else if (current_sort.type === 'alph') {
           mediaDataToOrderBy = media[
             current_sort.field
@@ -444,15 +451,17 @@ export default {
 
         return result;
       }, []);
+
       return sortedMedias;
     },
     groupedMedias() {
       console.log('COMPUTED • TimeLineView: groupedMedias');
 
-
       if(this.sortedMedias.length === 0) {
         return [];
       }
+
+      debugger;
 
       // groupby day
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
@@ -522,6 +531,7 @@ export default {
           let medias_by_markers = medias.reduce((acc, media) => {
             // avancer dans l’array, en ajoutant dans un accumulator 
             if(media.type === 'marker') {
+
               const label = this.$moment(media.date_timeline).format('HH:mm') + '<br>' + (!!media.content ? media.content : ''); 
               const color = this.$root.mediaColorFromFirstAuthor(media, this.folder) ? this.$root.mediaColorFromFirstAuthor(media, this.folder) : 'var(--color-noir)';
               const marker_author = this.$root.mediaFirstAuthor(media, this.folder) ? this.$root.mediaFirstAuthor(media, this.folder).name : false;
@@ -559,35 +569,30 @@ export default {
     },
     timeline_start() {
       if(this.sortedMedias.length > 0) {
-        return +this.$moment(
-          this.sortedMedias[0].date_timeline,
-          'YYYY-MM-DD HH:mm:ss'
-        );
+        let index = 0;
+        let ref_date = '';
+        while(!this.$moment(this.sortedMedias[index].date_timeline, 'YYYY-MM-DD HH:mm:ss').isValid()) {
+          index++;
+          if(index == this.sortedMedias.length) {
+            break;
+          }
+        }
+        return +this.$moment(this.sortedMedias[index].date_timeline, 'YYYY-MM-DD HH:mm:ss');
       }
       return +this.$moment();
-      // const ts = this.folder.start;
-      // if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-      //   return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
-      // } else {
-      //   // guess timeline_start from medias : get medias
-      //   console.log(`No timeline start. Getting it from oldest media.`);
-      //   if(this.sortedMedias.length > 0) {
-      //     return +this.$moment(
-      //       this.sortedMedias[0].date_timeline,
-      //       'YYYY-MM-DD HH:mm:ss'
-      //     );
-      //   } else {
-      //     return +this.$root.currentTime;
-      //   }
-      // }
-      // return false;
+
     },
     timeline_end() {
       if(this.sortedMedias.length > 0) {
-        return +this.$moment(
-          this.sortedMedias[this.sortedMedias.length - 1].date_timeline,
-          'YYYY-MM-DD HH:mm:ss'
-        );
+        let index = 1;
+        let ref_date = '';
+        while(!this.$moment(this.sortedMedias[this.sortedMedias.length - index].date_timeline, 'YYYY-MM-DD HH:mm:ss').isValid()) {
+          index++;
+          if(index >= this.sortedMedias.length) {
+            break;
+          }
+        }
+        return +this.$moment(this.sortedMedias[this.sortedMedias.length - index].date_timeline, 'YYYY-MM-DD HH:mm:ss');
       }
       return +this.$moment();
 
@@ -633,6 +638,7 @@ export default {
       while(startDate.add(1, 'days').diff(lastDate) <= 0) {
         let this_date = startDate.clone();
         let medias_for_date = [];
+
 
         const has_media_for_date = this.groupedMedias.filter(i => this.$moment(i.day).isSame(this_date, 'day'));
 

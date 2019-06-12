@@ -25,6 +25,7 @@ module.exports = (function() {
       change_color: 'Modifier la couleur',
       disconnect: 'Se déconnecter',
       login: 'S’identifier',
+      options: 'Options',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -164,6 +165,7 @@ module.exports = (function() {
       change_color: 'Change color',
       disconnect: 'Disconnect',
       login: 'Login',
+      options: 'Options',
 
       loading: 'loading',
       open: 'Open',
