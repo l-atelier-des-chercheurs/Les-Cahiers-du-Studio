@@ -117,7 +117,7 @@
                       <button type="button" 
                         @click="openMediaModal(segment.marker_meta_slugMediaName)"
                         :style="`
-                          --label-backgroundcolor: ${segment.color};
+                          --color-author: ${segment.color};
                           --label-color: ${segment.color === 'var(--color-noir)' ? 'var(--color-blanc)' : 'var(--color-noir)' };
                           `"
                         :data-has_author="!!segment.marker_author"
@@ -166,14 +166,14 @@
 
     <AddMedias
       v-if="
-        ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected && !folder_is_archived"
+        ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && !folder_is_archived"
       :slugFolderName="slugFolderName"
       :folder="folder"
       :folder_is_archived="folder_is_archived"
       :is_realtime="is_realtime"
       :current_author="current_author"
+      :read_only="!$root.state.connected"
     />
-
 
     <EditMedia
       v-if="show_media_modal_for"
@@ -947,7 +947,7 @@ export default {
 
   padding-left: 0;
 
-  --label-backgroundcolor: var(--color-noir);
+  --color-author: var(--color-noir);
   --label-color: white;
 
   --timeline-bg: #F1F2F0;
@@ -967,7 +967,7 @@ export default {
 
   // TODO
   // pour un futur mode nuit
-  // --label-backgroundcolor: #000;
+  // --color-author: #000;
   // --label-color: white;
 
   // --timeline-bg: #F1F2F0;
@@ -1002,7 +1002,7 @@ export default {
   display: flex;
   align-items: center;
   margin: 0 20px;
-  // background-color: var(--label-backgroundcolor);
+  // background-color: var(--color-author);
 
   // border: 2px solid white;
 
@@ -1193,7 +1193,7 @@ export default {
           display: inline;
           background-color: var(--color-noir);
           color: white;
-          // background-color: var(--label-backgroundcolor);
+          // background-color: var(--color-author);
           // color: var(--label-color);
           box-shadow: -.1em .2em 1em rgba(0,0,0,.2);
           padding: 4px 8px;
@@ -1208,7 +1208,7 @@ export default {
         }
         &[data-has_author="true"] span::before {
           content:'• ';
-          color: var(--label-backgroundcolor);
+          color: var(--color-author);
           position: relative;
         }
       }

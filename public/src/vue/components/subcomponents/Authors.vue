@@ -260,10 +260,29 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
 .color_item {
   width:  35px;
   height: 35px;
   margin: 5px;
 }
+.m_authors {
+  flex-flow: column nowrap;
+  max-width: 300px;
+  max-height: 250px;
+  box-shadow: 2px 4px 13px #bbb; 
+  margin-bottom: 15px;  
+  background-color: #fff;
+  pointer-events: auto;
+}
+
+.m_authors .m_authors--authorList {
+  flex-flow: row wrap;
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  align-content: flex-start;
+  
+}
+
+
 </style>

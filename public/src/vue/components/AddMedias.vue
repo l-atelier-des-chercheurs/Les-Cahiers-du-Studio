@@ -5,7 +5,7 @@
       :class="{ 'is--showing_options' : show_authors_options }"
       @mouseleave="show_authors_options = false"
     >
-      <div class="menu_encart--options menu_encart--options_authors">
+      <div class="">
         <Authors 
           class="menu_encart--options--authors"
           :slugFolderName="slugFolderName"
@@ -16,6 +16,7 @@
       <button type="button" class="menu_encart--button"
         @click="show_authors_options = !show_authors_options"
         :style="addMediaStyles"
+        :disabled="read_only"
       >
         <!-- @mouseenter="!is_touch && show_drop_container === false ? show_authors_options = true : ''" -->
         <template v-if="current_author_name">
@@ -39,17 +40,18 @@
           type="button"
           class="button button-round button-round-small margin-bottom-small padding-none bg-noir c-blanc"
           @click="createTextMedia"
+          :disabled="read_only"
         >
           <span class="text_label show_on_hover">
             Texte
           </span>
 
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-            <path d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z" style="fill: #fff"/>
-            <line x1="15.21" y1="14.41" x2="24.71" y2="14.41" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-            <line x1="15.21" y1="17.88" x2="24.71" y2="17.88" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-            <line x1="15.21" y1="21.26" x2="24.71" y2="21.26" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
-            <line x1="15.21" y1="24.62" x2="22.88" y2="24.62" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
+            <path d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z" style="fill: currentColor"/>
+            <line x1="15.21" y1="14.41" x2="24.71" y2="14.41" style="fill: none;stroke: currentColor;stroke-miterlimit: 10"/>
+            <line x1="15.21" y1="17.88" x2="24.71" y2="17.88" style="fill: none;stroke: currentColor;stroke-miterlimit: 10"/>
+            <line x1="15.21" y1="21.26" x2="24.71" y2="21.26" style="fill: none;stroke: currentColor;stroke-miterlimit: 10"/>
+            <line x1="15.21" y1="24.62" x2="22.88" y2="24.62" style="fill: none;stroke: currentColor;stroke-miterlimit: 10"/>
           </svg>
         </button>
 
@@ -58,14 +60,15 @@
           type="button"
           class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
           @click="createMarkerMedia"
+          :disabled="read_only"
         >
           <span class="text_label show_on_hover">
             Marker
           </span>
 
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-            <path d="M20,11.59A8.41,8.41,0,1,1,11.59,20,8.42,8.42,0,0,1,20,11.59m0-1A9.41,9.41,0,1,0,29.41,20,9.41,9.41,0,0,0,20,10.59Z" style="fill: #fff"/>
-            <circle cx="20" cy="20" r="4.74" style="fill: #fff"/>
+            <path d="M20,11.59A8.41,8.41,0,1,1,11.59,20,8.42,8.42,0,0,1,20,11.59m0-1A9.41,9.41,0,1,0,29.41,20,9.41,9.41,0,0,0,20,10.59Z" style="fill: currentColor"/>
+            <circle cx="20" cy="20" r="4.74" style="fill: currentColor"/>
           </svg>      
         </button>
 
@@ -74,6 +77,7 @@
             :key="`add_${field.key}`"
             class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
             v-for="field in input_file_fields"
+            :disabled="read_only"
           >
             <label :for="`add_${field.key}`">
               <span class="text_label show_on_hover">
@@ -112,7 +116,7 @@
         <!-- TODO scroll to now au click -->
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px"
           height="24px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-          <path style="fill:#ffffff;" d="M0,10.5h10.5V0h2.9v10.5H24v2.9H13.5V24h-2.9V13.5H0V10.5z"/>
+          <path style="fill: currentColor;" d="M0,10.5h10.5V0h2.9v10.5H24v2.9H13.5V24h-2.9V13.5H0V10.5z"/>
         </svg>
       </button>
 
@@ -143,6 +147,10 @@ export default {
     current_author: {
       type: Object,
       default: () => {}
+    },
+    read_only: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
@@ -155,7 +163,7 @@ export default {
 
       selected_files: [],
       show_addmedia_options: false,
-      show_authors_options: false,
+      show_authors_options: true,
 
       show_drop_container: false,
       
@@ -167,18 +175,18 @@ export default {
           capture: true,
           svg: `
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-            <line x1="5.83" y1="21.69" x2="5.83" y2="18.31" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="8.41" y1="16.52" x2="8.41" y2="23.48" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="10.99" y1="17.83" x2="10.99" y2="22.17" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="13.56" y1="24.94" x2="13.56" y2="15.06" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="16.14" y1="22.53" x2="16.14" y2="17.47" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="18.71" y1="16.9" x2="18.71" y2="23.1" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="21.29" y1="18.06" x2="21.29" y2="21.94" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="23.86" y1="22.67" x2="23.86" y2="17.33" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="26.44" y1="26.02" x2="26.44" y2="13.98" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="29.01" y1="22.73" x2="29.01" y2="17.27" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="31.59" y1="23.73" x2="31.59" y2="16.27" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="34.17" y1="21.43" x2="34.17" y2="18.57" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="5.83" y1="21.69" x2="5.83" y2="18.31" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="8.41" y1="16.52" x2="8.41" y2="23.48" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="10.99" y1="17.83" x2="10.99" y2="22.17" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="13.56" y1="24.94" x2="13.56" y2="15.06" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="16.14" y1="22.53" x2="16.14" y2="17.47" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="18.71" y1="16.9" x2="18.71" y2="23.1" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="21.29" y1="18.06" x2="21.29" y2="21.94" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="23.86" y1="22.67" x2="23.86" y2="17.33" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="26.44" y1="26.02" x2="26.44" y2="13.98" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="29.01" y1="22.73" x2="29.01" y2="17.27" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="31.59" y1="23.73" x2="31.59" y2="16.27" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <line x1="34.17" y1="21.43" x2="34.17" y2="18.57" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
             </svg>
           `
         },
@@ -189,8 +197,8 @@ export default {
           capture: false,
           svg: `
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-              <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: #fff"/>
-              <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
+              <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: currentColor"/>
+              <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
             </svg>
           `
         },
@@ -202,8 +210,8 @@ export default {
           svg: `
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px"
               height="40px" viewBox="0 0 40 40" style="enable-background:new 0 0 40 40;" xml:space="preserve">
-              <rect style="fill:none;stroke:#FFFFFF" x="12.3" y="11" transform="matrix(-1.836970e-16 1 -1 -1.836970e-16 40 3.552714e-15)" style="fill:none;stroke:#FFFFFF" width="15.3" height="18"/>
-              <polygon  style="fill:none;stroke:#FFFFFF" style="fill:none;stroke:#FFFFFF" points="23.8,20 17.4,23.6 17.4,16.4 "/>
+              <rect style="fill:none;stroke:currentColor" x="12.3" y="11" transform="matrix(-1.836970e-16 1 -1 -1.836970e-16 40 3.552714e-15)" style="fill:none;stroke:currentColor" width="15.3" height="18"/>
+              <polygon  style="fill:none;stroke:currentColor" style="fill:none;stroke:currentColor" points="23.8,20 17.4,23.6 17.4,16.4 "/>
             </svg>
           `
         },
@@ -214,9 +222,9 @@ export default {
           capture: true,
           svg : `
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-              <path d="M28,13.35v13.3H12V13.35H28m1-1H11v15.3H29V12.35Z" style="fill: #fff"/>
-              <line x1="13.85" y1="14.99" x2="26.48" y2="25.12" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
-              <line x1="13.85" y1="25.12" x2="26.48" y2="14.99" style="fill: none;stroke: #fff;stroke-linecap: round;stroke-linejoin: round"/>
+              <path d="M28,13.35v13.3H12V13.35H28m1-1H11v15.3H29V12.35Z" style="fill: currentColor"/>
+              <line x1="13.85" y1="14.99" x2="26.48" y2="25.12" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+              <line x1="13.85" y1="25.12" x2="26.48" y2="14.99" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
             </svg>
           `
         }
@@ -246,7 +254,10 @@ export default {
     addMediaStyles() {
       let props = {};
       if(this.current_author && this.current_author.hasOwnProperty('color')) {
-        props['--buttons-color'] = this.current_author.color;
+        props['--color-author'] = this.current_author.color;
+        props['--color-text_on_author_color'] = 'var(--color-noir)';
+      } else {
+        props['--color-text_on_author_color'] = '#fff';
       }
       return props;
     },
@@ -335,7 +346,6 @@ export default {
       this.selected_files = Array.from($event.target.files); 
       $event.target.value = '';
     },
-
     ondragover() {
       if (this.$root.state.dev_mode === 'debug') { console.log(`METHODS • AddMedia / ondragover`); }
 
@@ -387,7 +397,7 @@ button, .button {
     top: 0;left: 0;
     user-select: none;
   }
-
+  
   span {
     margin-top: 0;
   }
@@ -419,9 +429,10 @@ button, .button {
   border-radius: 3px;
   background-color: var(--color-noir);
   color: #fff;
+  // color: --color-noir;
 
-  background-color: white;
-  color: black;
+  // background-color: white;
+  // color: black;
   box-shadow: 2px 4px 13px #bbb;   
 
   top: 50%;
@@ -455,7 +466,8 @@ button, .button {
 
   .menu_encart {
     pointer-events: none;
-    --buttons-color: white;
+    // --color-author: white;
+    --color-author: var(--color-noir);
 
     .menu_encart--options {
       flex: 1 1 auto;
@@ -466,7 +478,6 @@ button, .button {
       justify-content: center;
       align-items: center;
 
-      --buttons-color: var(--color-noir);
       // pointer-events: none;
 
       &.menu_encart--options_authors {
@@ -479,7 +490,8 @@ button, .button {
         cursor: pointer;
         opacity: 0;
         transform: translateY(5px) scale(0.8);
-        background-color: var(--buttons-color);
+        background-color: var(--color-author);
+        color: var(--color-noir);
         transition: all .4s cubic-bezier(0.19, 1, 0.22, 1);
 
         label {
@@ -496,7 +508,7 @@ button, .button {
       }
 
       > .menu_encart--options--authors {
-        background-color: transparent;
+        // background-color: transparent;
       }
     }
     &.is--showing_options {
@@ -509,6 +521,12 @@ button, .button {
       .menu_encart--options > * {
         opacity: 1;
         transform: translateY(0px) scale(1);
+
+        &[disabled] {
+          // opacity: 0.4;
+          cursor: not-allowed;
+          background-color: #999;
+        }
       }
     }    
 
@@ -522,7 +540,8 @@ button, .button {
       margin-bottom: 22px;
       text-transform: initial;
       pointer-events: auto;
-      background-color: var(--buttons-color);
+      background-color: var(--color-author);
+      color: var(--color-text_on_author_color);
 
       svg {
         width: 24px;
@@ -570,28 +589,7 @@ button, .button {
   height: 64px;  
   padding: 0 20px;
   margin: 0 auto !important;
-  --buttons-color: var(--color-noir);
-}
-
-</style>
-<style lang="scss">
-.m_authors {
-  flex-flow: column nowrap;
-  max-width: 300px;
-  max-height: 250px;
-  box-shadow: 2px 4px 13px #bbb; 
-  margin-bottom: 15px;  
-}
-// .m_authors--currentAuthor{
-//   display: none;
-// }
-
-.m_authors .m_authors--authorList {
-  flex-flow: row wrap;
-  flex: 1 1 auto;
-  justify-content: flex-start;
-  align-content: flex-start;
-  
+  background-color: var(--color-author);
 }
 
 </style>
