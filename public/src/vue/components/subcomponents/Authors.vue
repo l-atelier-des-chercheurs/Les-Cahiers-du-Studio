@@ -1,136 +1,125 @@
 <template>
-  <div>
-    <template v-if="$root.state.connected">
-      <!-- authors : {{ authors }}<br>
-      clients : {{ clients }}<br> -->
-      <div  class="m_authors">
+  <div  class="m_authors">
 
-        <div class="m_authors--currentAuthor"
-          v-if="current_author"
+    <div class="m_authors--currentAuthor"
+      v-if="current_author"
+    >
+      <button type="button"
+        :style="`background-color: ${current_author.color}`"
+        v-html="current_author.name"
+      >
+      </button>
+
+      <br>
+
+      <button type="button" class="m_authors--currentAuthor--changeColor"
+        @click="change_color_menu = !change_color_menu"
+      >
+        {{ $t('change_color') }}
+      </button>
+
+      <button type="button" class="m_authors--currentAuthor--changeColor"
+        @click="unsetAuthor"
+      >
+        {{ $t('disconnect') }}
+      </button>
+
+    </div>
+
+    <transition-group class="m_authors--authorList"
+      name="list-complete"        
+    >
+
+      <template v-if="change_color_menu">
+        <div
+          v-for="color in sortedRandomColorArray"
+          :key="color"  
+          @click="changeColor(color)"
         >
-          <button type="button"
-            :style="`background-color: ${current_author.color}`"
-            v-html="current_author.name"
-          >
-          </button>
-
-          <br>
-
-          <button type="button" class="m_authors--currentAuthor--changeColor"
-            @click="change_color_menu = !change_color_menu"
-          >
-            {{ $t('change_color') }}
-          </button>
-
-          <button type="button" class="m_authors--currentAuthor--changeColor"
-            @click="unsetAuthor"
-          >
-            {{ $t('disconnect') }}
-          </button>
-
+          <div class="color_item" :style="`background-color: ${color}`" />
         </div>
-
-        <transition-group class="m_authors--authorList"
-          name="list-complete"        
+      </template>
+      <template v-else>
+        <label 
+          :key="'connected_auth_label'"
+          v-if="connected_authors.length > 0"
         >
+          {{ $t('author_connected') }}
+        </label>
 
-          <template v-if="change_color_menu">
-            <div
-              v-for="color in sortedRandomColorArray"
-              :key="color"  
-              @click="changeColor(color)"
-            >
-              <div class="color_item" :style="`background-color: ${color}`" />
-            </div>
-          </template>
-          <template v-else>
-            <label 
-              :key="'connected_auth_label'"
-              v-if="connected_authors.length > 0"
-            >
-              {{ $t('author_connected') }}
-            </label>
+        <button type="button"
+          v-for="author in connected_authors"
+          :key="author.name"
+          @click="setAuthor(author.name)"
+          :style="`background-color: ${author.color}`"
+        >
+          {{author.name }}
+        </button>
 
-            <button type="button"
-              v-for="author in connected_authors"
-              :key="author.name"
-              @click="setAuthor(author.name)"
-              :style="`background-color: ${author.color}`"
-            >
-              {{author.name }}
-            </button>
+        <label 
+          :key="'not_connected_auth_label'"
+          v-if="not_connected_authors.length > 0"
+        >
+          {{ $t('not_connected') }}
+        </label>
 
-            <label 
-              :key="'not_connected_auth_label'"
-              v-if="not_connected_authors.length > 0"
-            >
-              {{ $t('not_connected') }}
-            </label>
+        <button type="button"
+          v-for="author in not_connected_authors"
+          :key="author.name"
+          @click="setAuthor(author.name)"
+        >
+          <span 
+            :style="`color: ${author.color}`"
+          >•</span>
+          {{author.name }}
+        </button>
+      </template>
+    </transition-group>
 
-            <button type="button"
-              v-for="author in not_connected_authors"
-              :key="author.name"
-              @click="setAuthor(author.name)"
-            >
-              <span 
-                :style="`color: ${author.color}`"
-              >•</span>
-              {{author.name }}
-            </button>
-          </template>
-        </transition-group>
-
-        <div class="m_authors--createButton">
-          <template v-if="!add_author">
-            <button type="button" @click="add_author = true">
-              {{ $t('add_author') }}
-            </button>
-          </template>
-          <template v-else>
-            <div class="input-group">
-              <span class="input-addon input-addon-xs">Nom</span>
-              <input type="text" ref="nameInput" class="input-xs">
-              <button 
-                type="button" 
-                class="button input-addon-xs" 
-                @click="createAuthor"
-              >
-                Valider
-              </button>
-            </div>
-          </template>
-        </div>
-
-        <!-- <template v-if="clients_except_current.length > 0">
-          <label v-if="clients_except_current.length == 1">1 autre utilisateur&nbsp;:</label>
-          <label v-if="clients_except_current.length >= 2">{{ clients_except_current.length }} autres utilisateurs&nbsp;:</label>
-          <div 
-            class="m_authors--client"
-            :key="client.id"
-            v-for="client in clients_except_current"
-            
-          >
-            <span v-if="client.data.hasOwnProperty('author')"
-              v-html="client.data.author.name"
-            />
-            <span v-else v-html="'anonyme'" />
-          </div>
-        </template> -->
-
-        <!-- <div class="input-group">
+    <div class="m_authors--createButton">
+      <template v-if="!add_author">
+        <button type="button" @click="add_author = true">
+          {{ $t('add_author') }}
+        </button>
+      </template>
+      <template v-else>
+        <div class="input-group">
           <span class="input-addon input-addon-xs">Nom</span>
           <input type="text" ref="nameInput" class="input-xs">
-          <button type="button" class="button input-addon-xs" @click="updateName">Envoyer</button>
+          <button 
+            type="button" 
+            class="button input-addon-xs" 
+            @click="createAuthor"
+          >
+            Valider
+          </button>
         </div>
- -->
- 
+      </template>
+    </div>
+
+    <!-- <template v-if="clients_except_current.length > 0">
+      <label v-if="clients_except_current.length == 1">1 autre utilisateur&nbsp;:</label>
+      <label v-if="clients_except_current.length >= 2">{{ clients_except_current.length }} autres utilisateurs&nbsp;:</label>
+      <div 
+        class="m_authors--client"
+        :key="client.id"
+        v-for="client in clients_except_current"
+        
+      >
+        <span v-if="client.data.hasOwnProperty('author')"
+          v-html="client.data.author.name"
+        />
+        <span v-else v-html="'anonyme'" />
       </div>
-    </template>
-    <template v-else>
-      <div class="m_connectionStatus">
-        {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
-      </div>   
-    </template>
+    </template> -->
+
+    <!-- <div class="input-group">
+      <span class="input-addon input-addon-xs">Nom</span>
+      <input type="text" ref="nameInput" class="input-xs">
+      <button type="button" class="button input-addon-xs" @click="updateName">Envoyer</button>
+    </div>
+-->
+
   </div>
 </template>
 <script>
