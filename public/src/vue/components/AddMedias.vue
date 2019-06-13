@@ -1,19 +1,19 @@
 <template>
   <div class="m_addMedias">
 
-    <div class="menu_encart"
-      :class="{ 'is--showing_options' : show_authors_options }"
+    <div class="m_authorMenu"
       @mouseleave="show_authors_options = false"
     >
-      <div class="">
+      <transition name="slideupfrombottomright">
         <Authors 
-          class="menu_encart--options--authors"
+          v-if="show_authors_options"
+          class="m_authorMenu--options--authors"
           :slugFolderName="slugFolderName"
           :authors="folder_authors"
         />
-      </div>
+      </transition>
 
-      <button type="button" class="menu_encart--button"
+      <button type="button" class="m_authorMenu--button"
         @click="show_authors_options = !show_authors_options"
         :style="addMediaStyles"
         :disabled="read_only"
@@ -162,8 +162,8 @@ export default {
       showImportModal: false,
 
       selected_files: [],
-      show_addmedia_options: false,
-      show_authors_options: true,
+      show_addmedia_options: true,
+      show_authors_options: false,
 
       show_drop_container: false,
       
@@ -479,11 +479,6 @@ button, .button {
       align-items: center;
 
       // pointer-events: none;
-
-      &.menu_encart--options_authors {
-        pointer-events: none;
-      }
-
       > * {
         display: block;
         position: relative;
@@ -491,7 +486,7 @@ button, .button {
         opacity: 0;
         transform: translateY(5px) scale(0.8);
         background-color: var(--color-author);
-        color: var(--color-noir);
+      color: var(--color-text_on_author_color);
         transition: all .4s cubic-bezier(0.19, 1, 0.22, 1);
 
         label {
@@ -506,17 +501,9 @@ button, .button {
         }
         .delay_transition_up(6, 0);
       }
-
-      > .menu_encart--options--authors {
-        // background-color: transparent;
-      }
     }
     &.is--showing_options {
       pointer-events: auto;
-
-      .menu_encart--options_authors {
-        pointer-events: auto;
-      }
 
       .menu_encart--options > * {
         opacity: 1;
@@ -562,7 +549,6 @@ button, .button {
         transform: rotate(225deg);
       }
     }
-
   }
 
   .m_addMedias--dropContainer {
@@ -579,6 +565,25 @@ button, .button {
   }
 
 }
+
+
+.m_authorMenu {
+  pointer-events: auto;
+  --color-author: var(--color-noir);
+
+  .m_authorMenu--button {
+    flex: 0 0 auto;
+    transition: all cubic-bezier(0.19, 1, 0.22, 1) .8s;
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+    margin-bottom: 22px;
+    text-transform: initial;
+    pointer-events: auto;
+    background-color: var(--color-author);
+    color: var(--color-text_on_author_color);
+  }
+}    
 
 .picto {
   background-color: var(--color-noir);  

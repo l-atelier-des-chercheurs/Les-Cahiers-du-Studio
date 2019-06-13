@@ -58,7 +58,7 @@ export default {
         stamp: '.stamp',
         transitionDuration: '0.4s',
         // originTop: false
-        // stagger: 10
+        // stagger: 30
       },
     }
   },

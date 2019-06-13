@@ -1059,6 +1059,19 @@ video {
   transition: opacity .2s ease-out;
 }
 
+.slideupfrombottomright-enter-active, .slideupfrombottomright-leave-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transform-origin: bottom right;
+  transition: opacity .2s ease-out, transform .2s ease-out;
+}
+.slideupfrombottomright-enter, .slideupfrombottomright-leave-to {
+  opacity: 0;
+  transform: translateY(15px) scale(.95);
+  transform-origin: bottom right;
+  transition: opacity .2s ease-out, transform .2s ease-out;
+}
+
 
 .mediareveal-enter-active, .mediareveal-leave-active {
   opacity: 1;
