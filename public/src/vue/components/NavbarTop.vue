@@ -4,11 +4,11 @@
       <div class="bloccontainer">
 
         <div class="breadcrumb padding-none">
-          <template v-if="$root.state.mode !== 'export'">
+          <template v-if="$root.state.mode !== 'export_web'">
             <a 
             href="/" 
             @click.prevent="$root.closeFolder()" 
-            class="breadcrumb--item font-verylarge padding-left-small"
+            class="breadcrumb--item breadcrumb--item_backButton font-verylarge padding-left-small"
             >
               <svg version="1.1"
                 xmlns="http://www.w3.org/2000/svg"
@@ -50,21 +50,37 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
               </svg>
             </div>
           </template>
-<!--
+<!-- 
           <a href="/" @click.prevent="$root.closeFolder()" class="breadcrumb--item padding-small">
             <i>Les Cahiers du Studio</i>
-          </a>
--->
+          </a> -->
+
           <div class="breadcrumb--item padding-small"  v-if="typeof folder !== 'undefined'">{{ folder.name }}</div>
         </div>
 
-        <div class="visibleDay padding-none" v-if="typeof visibleDay !== 'undefined'">
+        <button type="button" class="menuButton"
+          v-if="menu_is_enabled"
+          @click="show_menu = !show_menu"
+        >
+          <svg version="1.1"
+              xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+              x="0px" y="0px" width="20px" height="20px" viewBox="0 0 90 90" style="enable-background:new 0 0 90 90;" xml:space="preserve">
+            <rect class="st0" width="108.2" height="8"/>
+            <rect y="36.5" class="st0" width="108.2" height="8"/>
+            <rect y="73" class="st0" width="108.2" height="8"/>
+          </svg>
+        </button>
+
+        <div 
+          class="visibleDay padding-none" 
+          v-if="typeof visibleDay !== 'undefined' && (!menu_is_enabled || (menu_is_enabled && show_menu))"
+        >
           <button class="bg-transparent" @click.prevent="goToPrevDay()">‹</button>
             {{ getVisibleDay }}
           <button class="bg-transparent" @click.prevent="goToNextDay()">›</button>
         </div>
 
-        <div class="scaleSwitch padding-none">
+        <div class="scaleSwitch padding-none" v-if="!menu_is_enabled || (menu_is_enabled && show_menu)">
           <span class="padding-small" v-html="$t('scale')">
           </span>
           <template v-for="(btns, index) in scaleBtns">
@@ -81,10 +97,18 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4" style="fill:#FFFFFF"/>
           </template>
         </div>
       </div>
+
+      <Authors 
+        :slugFolderName="slugFolderName"
+        :authors="folder_authors"
+      />
+
     </div>
   </nav>
 </template>
 <script>
+import Authors from './subcomponents/Authors.vue';
+
 export default {
   props: {
     folder: Object,
@@ -92,9 +116,12 @@ export default {
     visibleDay: Number,
     timelineViewport_scale: Number
   },
-  components: {},
+  components: {
+    Authors
+  },
   data() {
     return {
+      show_menu: false,
       scaleBtns: [
         {
           name: this.$t('scale_items.second'),
@@ -122,6 +149,12 @@ export default {
   computed: {
     getVisibleDay: function() {
       return `${this.$moment(this.visibleDay).format('dddd LL')}`;
+    },
+    menu_is_enabled() {
+      return this.$root.settings.windowWidth < 820 ? true : false;
+    },
+    folder_authors() {
+      return this.folder.hasOwnProperty('authors') && this.folder.authors !== '' ? this.folder.authors : [];
     }
   },
   methods: {

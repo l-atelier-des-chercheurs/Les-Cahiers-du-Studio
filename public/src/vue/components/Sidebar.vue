@@ -1,15 +1,14 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-
-    <SidebarSection v-if="$root.state.mode !== 'export'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('folder_information') }}
           <button
-            v-if="folder.authorized"
+            v-if="can_admin_folder"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="openEditFolderModal()"
+            @click="$emit('modal_edit_folder')"
             :disabled="read_only"
           >
             {{ $t('edit') }}
@@ -18,23 +17,10 @@
       </div>
 
       <div slot="body">
-        <p class="font-small">
-          <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
-
-          <a v-for="(ip, index) in $root.state.localNetworkInfos.ip"
-            :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
-            class="js--openInBrowser qrSnippet button button-circled margin-vert-medium border-circled button-inline padding-small"
-            target="_blank"
-            :key="index"
-            >
-            <div class="qrSnippet--text">
-              {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
-            </div>
-            <div class="qrSnippet--motif">
-              <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
-            </div>
-          </a>
-        </p>
+        <CreateQRCode
+          :slugFolderName="slugFolderName"
+        >
+        </CreateQRCode>
         <p class="font-small" v-if="$root.state.is_electron">
           {{ $t('contents_are_stored') }}
           <template>
@@ -84,7 +70,7 @@
       </div>
     </SidebarSection>
     
-    <SidebarSection v-if="$root.state.mode !== 'export'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web'">
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('keyboard_shortcuts') }}
@@ -106,7 +92,7 @@
     >
     </KeyboardShortcuts>
 
-    <SidebarSection v-if="$root.state.mode !== 'export'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('export_folder') }}
@@ -124,7 +110,7 @@
 
     <ExportTimeline
       v-if="showExportTimelineModal === true"
-      :folder="folder"
+      :slugFolderName="slugFolderName"
       @close="showExportTimelineModal = false"
     >
     </ExportTimeline>
@@ -134,7 +120,7 @@
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('calendar') }}
           <button
-            v-if="isRealtime"
+            v-if="is_realtime"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
@@ -146,7 +132,7 @@
 
       <div slot="body" class="m_calendar">
         <div
-        v-for="(days, month) in folderDays()"
+        v-for="(days, month) in calendar"
         class="m_calendar--month"
         :key="month"
         >
@@ -158,9 +144,9 @@
             v-for="(daymeta, index) in days"
             class="m_calendar--days--day padding-sides-verysmall padding-bottom-small"
             :class="{
-              'is--visibleDay' : daymeta.isVisibleDay,
               'has--noMedia' : !daymeta.numberOfMedias,
-              'is--today': daymeta.isToday
+              'is--visibleDay' : isVisibleDay(daymeta.timestamp),
+              'is--today' : isDayToday(daymeta.timestamp),
             }"
             @click="scrollToDate(daymeta.timestamp)"
             :key="index"
@@ -199,7 +185,8 @@
           :sort="sort"
           :sortedMedias="sortedMedias"
           :slugFolderName="slugFolderName"
-          :timelineInfos="timelineInfos"
+          :timeline_start="timeline_start"
+          :timeline_end="timeline_end"
           >
         </Tableau>
       </div>
@@ -211,8 +198,9 @@
       :sort="sort"
       :sortedMedias="sortedMedias"
       :slugFolderName="slugFolderName"
-      :timelineInfos="timelineInfos"
-      @close="this.showMediasListModal = false"
+      :timeline_start="timeline_start"
+      :timeline_end="timeline_end"
+      @close="closeListMediasModal()"
     >
     </MediasList>
 
@@ -235,6 +223,8 @@ import KeyboardShortcuts from './modals/KeyboardShortcuts.vue';
 import ExportTimeline from './modals/ExportTimeline.vue';
 import qrcode from '@xkeshi/vue-qrcode';
 import alertify from 'alertify.js';
+import CreateQRCode from './qr/CreateQRCode.vue';
+
 
 export default {
   components: {
@@ -244,18 +234,20 @@ export default {
     MediasList,
     KeyboardShortcuts,
     ExportTimeline,
-    qrcode
+    CreateQRCode
   },
   props: {
     slugFolderName: String,
     folder: Object,
     medias: Object,
     sortedMedias: Array,
-    timelineInfos: Object,
-    visibleDay: Number,
+    timeline_start: Number,
+    timeline_end: Number,
+    visible_day: Number,
     sort: Object,
     filter: String,
-    isRealtime: {
+    can_admin_folder: Boolean,
+    is_realtime: {
       type: Boolean,
       default: false
     },
@@ -279,6 +271,49 @@ export default {
   beforeDestroy() {
   },
   computed: {
+    all_days() {
+      const all_days = this.enumerateDaysBetweenDates(
+        this.timeline_start,
+        this.timeline_end
+      );
+      if (all_days.length === 0) {
+        return [];
+      }
+      return all_days;
+    },
+    calendar() {
+      console.log('COMPUTED • Sidebar: calendar');
+
+      /*
+      {
+        "septembre": {
+          21: {
+            medias: 12
+          },
+          22: {
+          },
+        }
+      */
+
+      var dayGroupedByMonth = this.all_days.reduce((acc, cur, i) => {
+        let monthName = this.$moment(cur).format('MMMM');
+        let day = this.$moment(cur).date();
+
+        let dayData = {
+          dayNumber: day,
+          numberOfMedias: this.getNumberOfMediasCreatedOnThisDate(cur),
+          timestamp: this.$moment(cur)
+        };
+
+        if (typeof acc[monthName] === 'undefined') {
+          acc[monthName] = [];
+        }
+        acc[monthName].push(dayData);
+        return acc;
+      }, {});
+
+      return dayGroupedByMonth;
+    }
   },
 
   watch: {
@@ -306,6 +341,20 @@ export default {
       return dates;
     },
 
+    isDayToday(timestamp) {
+      if (this.$moment(this.$root.currentTime_day).isSame(timestamp, 'day')) {
+        return true;
+      }
+      return false;
+    },
+    
+    isVisibleDay(timestamp) {
+      if (this.$moment(this.visible_day).isSame(timestamp, 'day')) {
+        return true;
+      }
+      return false;
+    },
+
     getURLToApp(ip, port) {
       return `${this.$root.state.protocol}://${ip}:${port}/${
         this.slugFolderName
@@ -316,64 +365,14 @@ export default {
       event.preventDefault();
       shell.showItemInFolder(thisPath);
     },
-    getVisibleDay() {
-      return this.$moment(this.visibleDay).format('DD/MM/YYYY');
-    },
     scrollToDate(timestamp) {
       this.$eventHub.$emit('scrollToDate', timestamp);
     },
-    folderDays() {
-      console.log('METHODS • sidebar: getting folderDays');
-      const allDays = this.enumerateDaysBetweenDates(
-        this.timelineInfos.start,
-        this.timelineInfos.end
-      );
-      if (allDays.length === 0) {
-        return;
-      }
-
-      /*
-      {
-        "septembre": {
-          21: {
-            medias: 12
-          },
-          22: {
-          },
-        }
-      */
-
-      var dayGroupedByMonth = allDays.reduce((acc, cur, i) => {
-        let monthName = this.$moment(cur).format('MMMM');
-        let day = this.$moment(cur).date();
-
-        let fullDate = this.$moment(cur).format('DD/MM/YYYY');
-        let isVisibleDay = false;
-        if (fullDate === this.getVisibleDay()) {
-          isVisibleDay = true;
-        }
-        let isToday = false;
-        let todaysDate = this.$moment().format('DD/MM/YYYY');
-        if (todaysDate === fullDate) {
-          isToday = true;
-        }
-
-        let dayData = {
-          dayNumber: day,
-          numberOfMedias: this.getNumberOfMediasCreatedOnThisDate(cur),
-          timestamp: this.$moment(cur),
-          isVisibleDay,
-          isToday
-        };
-
-        if (typeof acc[monthName] === 'undefined') {
-          acc[monthName] = [];
-        }
-        acc[monthName].push(dayData);
-        return acc;
-      }, {});
-
-      return dayGroupedByMonth;
+    openListMediasModal() {
+      this.showMediasList = true;
+    },
+    closeListMediasModal() {
+      this.showMediasList = false;
     },
 
     getNumberOfMediasCreatedOnThisDate(date) {
@@ -383,7 +382,15 @@ export default {
 
       const total = Object.entries(this.medias).reduce((acc, pair) => {
         const [key, value] = pair;
-        let created_day = this.$moment(value.date_timeline);
+
+        let date_to_reference_to = 0;
+        if(value.hasOwnProperty('date_timeline')) {
+          date_to_reference_to = value.date_timeline
+        } else if(value.hasOwnProperty('date_created')) {
+          date_to_reference_to = value.date_created
+        }
+
+        let created_day = this.$moment(date_to_reference_to);
         if (created_day.isSame(date, 'day')) {
           acc++;
         }
@@ -391,10 +398,6 @@ export default {
       }, 0);
 
       return total;
-    },
-
-    openEditFolderModal() {
-      this.$eventHub.$emit('showEditFolderModal');
     },
 
     scrollToToday() {

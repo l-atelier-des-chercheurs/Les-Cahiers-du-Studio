@@ -32,13 +32,13 @@
             tag="tbody"
             name="list-complete"
           >
-            <tr v-for="(ks, index) in new_keyboard_shortcuts" :key="index">
+            <tr v-for="(ks, index) in new_keyboard_shortcuts" :key="ks.key">
               <td>
                 <input type="text" v-model="ks.key" />
               </td>
               <td>
                 <select v-model="ks.marker_color">
-                  <option v-for="mediaColor in $root.state.structure.media.color.options" :key="mediaColor">
+                  <option v-for="mediaColor in $root.state.structure.folders.medias.fields.color.options" :key="mediaColor">
                     {{ mediaColor }}
                   </option>
                 </select>

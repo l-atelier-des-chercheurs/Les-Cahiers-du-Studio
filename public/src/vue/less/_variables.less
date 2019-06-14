@@ -5,9 +5,10 @@
 @t-lineheight: 1.35;
 @t-skipline: @t-fontsize * @t-lineheight;
 
+
 @t-navbarheight: 50px;
 @t-timelinetrackheight: 50px;
-@t-sidebarWidth: 460px;
+@t-sidebarWidth: 320px;
 @t-buttonradius: 6px;
 
 @t-spacing: 20px;
@@ -23,14 +24,15 @@
 @c-violet: #bec6e7;
 @c-orange: #ffb888;
 
-@c-gris_light: #C6C6C6;
-@c-gris_verylight: #f2f2f2;
+@c-blanc: #fff;
 @c-gris: #89898c;
+@c-gris_clair: #C6C6C6;
+@c-gris_tresclair: #f2f2f2;
 @c-noir_light: #4d4d4d;
-@c-noir: #333;
+@c-noir: #222;
 
 @c-border: #000;
-@c-bg_timeline: #e6e6e6;
+@c-bg_timeline: #f8f8f8;
 @c-bg_sidebar: #fff;
 
 
@@ -39,9 +41,19 @@
   --body-bg-color: #fff;
   --table-stripe-bg-color: #eee;
   --color-primary: #666;
+  
   --font-family: 'STVitry';
   --font-size: 1rem; /* Most browsers use a default font size of 16px */
   --input-font-size: 1rem;
   --sidebar-width: @t-sidebarWidth;
   --input-box-shadow: none;
+  --input-readonly-bg-color: #ccc;
+
+  --color-noir: @c-noir;
+  --color-blanc: @c-blanc;
+  --color-rouge_vif: @c-rouge_vif;
+  --color-vert_vif: @c-vert_vif;
+
+  --size-skipline: @t-skipline;
+
 }

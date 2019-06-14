@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m_navtimeline_wrapper">
 
     <NavbarTop
       :folder="folder"
@@ -21,216 +21,224 @@
       </div>
     </transition>
 
-    <transition name="sidebar-animation" :duration="350">
-      <Sidebar
-        v-if="$root.settings.has_sidebar_opened"
+    <div class="m_navtimeline_wrapper--timeline_wrapper">
+      <transition name="sidebar-animation" :duration="350">
+        <Sidebar
+          v-if="$root.settings.has_sidebar_opened"
+          :folder="folder"
+          :slugFolderName="slugFolderName"
+          :visibleDay="timelineViewport.visibleDay"
+          :medias="medias"
+          :sortedMedias="sortedMedias"
+          :sort="sort"
+          :filter="filter"
+          :timelineInfos="timelineInfos"
+          :isRealtime="isRealtime"
+          :style="{ height: `${sidebarHeight}px` }"
+          :read_only="read_only"
+          :can_admin_folder="can_admin_folder"
+        >
+        </Sidebar>
+      </transition>
+
+      <EditFolder
+        v-if="showEditFolderModal"
         :folder="folder"
         :slugFolderName="slugFolderName"
-        :visibleDay="timelineViewport.visibleDay"
-        :medias="medias"
-        :sortedMedias="sortedMedias"
-        :sort="sort"
-        :filter="filter"
-        :timelineInfos="timelineInfos"
-        :isRealtime="isRealtime"
-        :style="{ height: `${sidebarHeight}px` }"
+        @close="showEditFolderModal = false"
         :read_only="read_only"
-      >
-      </Sidebar>
-    </transition>
+        :allAuthors="folder.authors"
+      />
 
-    <button type="button"
-      class="button_sidebarToggle"
-      @click.prevent="toggleSidebar()"
-      :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
-    >
-      <template v-if="$root.settings.has_sidebar_opened">←</template>
-      <template v-else>→</template>
-    </button>
+      <div>
+        <button type="button"
+          class="button_sidebarToggle"
+          @click.prevent="toggleSidebar()"
+          :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
+        >
+          <template v-if="$root.settings.has_sidebar_opened">←</template>
+          <template v-else>→</template>
+        </button>
+      </div>
 
-    <EditFolder
-      v-if="showEditFolderModal"
-      :folder="folder"
-      :slugFolderName="slugFolderName"
-      @close="showEditFolderModal = false"
-      :read_only="read_only"
-    />
-
-    <div class="m_timeline"
-      ref="timeline"
-      @scroll="onScroll"
-      :class="{
-        'with--sidebar_opened' : $root.settings.has_sidebar_opened,
-        'is--animated': isAnimated,
-        'is--realtime': isRealtime
-      }"
-    >
-      <div class="m_timeline-container"
-        :style="{
-          width: `${timelineViewport.width}px`,
-          height: `${timelineViewport.height}px`
+      <div class="m_timeline"
+        ref="timeline"
+        @scroll="onScroll"
+        :class="{
+          'with--sidebar_opened' : $root.settings.has_sidebar_opened,
+          'is--animated': isAnimated,
+          'is--realtime': isRealtime
         }"
       >
-        <div class="timeline_track">
-        </div>
+        <div class="m_timeline-container"
+          :style="{
+            width: `${timelineViewport.width}px`,
+            height: `${timelineViewport.height}px`
+          }"
+        >
+          <div class="timeline_track">
+          </div>
 
-        <!-- GRID -->
-        <div class="grid_overlay">
-          <div class="grid_overlay--wrapper">
+          <!-- GRID -->
+          <div class="grid_overlay">
+            <div class="grid_overlay--wrapper">
 
-            <div
-              v-if="overallGrid.days.length > 0"
-              v-for="item in overallGrid.days"
-              class="gridItem font-small gridItem_isday"
-              :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="item.caption"
-            >
-              <div v-if="item.caption !== undefined" class="gridItem--caption">
-                {{ item.caption }}
-              </div>
-            </div>
-
-            <div
-              v-if="overallGrid.hours.length > 0"
-              v-for="(item, index) in overallGrid.hours"
-              class="gridItem font-small gridItem_ishour"
-              :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="`hrs-${index}-${item.xPos}`"
-            >
-              <div v-if="item.caption !== undefined" class="gridItem--caption">
-                {{ item.caption }}
-              </div>
-            </div>
-
-            <div
-              v-if="overallGrid.minutes.length > 0"
-              v-for="(item, index) in overallGrid.minutes"
-              class="gridItem font-small gridItem_isminute"
-              :class="{ 'has--caption' : (item.caption !== undefined) }"
-              :style="`transform: translate(${item.xPos}px, 0px)`"
-              :key="`min-${index}-${item.xPos}`"
-            >
-              <div v-if="item.caption !== undefined" class="gridItem--caption">
-                {{ item.caption }}
-              </div>
-            </div>
-
-            <div
-              v-if="isRealtime && $root.state.mode !== 'export'"
-              class="gridItem font-small gridItem_isrealtimerule"
-              :style="`transform: translate(${todaysRule.xPos}px, 0px)`"
-            >
-              <div class="gridItem--caption">
-                {{ todaysRule.caption }}
-              </div>
-              <button type="button" class="gridItem_isrealtimerule--autoscroll_checkbox button-small bg-rouge_vif border-circled button-thin button-wide padding-verysmall margin-none" >
-                <small>
-                  <label for="autoScroll" class="margin-none">
-                    <input
-                      type="checkbox"
-                      v-model="timelineViewport.autoscroll"
-                      id="autoScroll"
-                    ><span v-html="$t('auto_scroll')"></span>
-                  </label>
-                </small>
-              </button>
-            </div>
-
-            <transition name="fade" :duration="250">
               <div
-                v-if="zoomZone.display"
-                class="gridItem gridItem_zoomZone"
-                :style="zoomZoneStyle()"
+                v-for="item in overallGrid.days"
+                class="gridItem font-small gridItem_isday"
+                :class="{ 'has--caption' : (item.caption !== undefined) }"
+                :style="`transform: translate(${item.xPos}px, 0px)`"
+                :key="item.caption"
               >
+                <div v-if="item.caption !== undefined" class="gridItem--caption">
+                  {{ item.caption }}
+                </div>
               </div>
-            </transition>
+
+              <div
+                v-for="(item, index) in overallGrid.hours"
+                class="gridItem font-small gridItem_ishour"
+                :class="{ 'has--caption' : (item.caption !== undefined) }"
+                :style="`transform: translate(${item.xPos}px, 0px)`"
+                :key="`hrs-${index}-${item.xPos}`"
+              >
+                <div v-if="item.caption !== undefined" class="gridItem--caption">
+                  {{ item.caption }}
+                </div>
+              </div>
+
+              <div
+                v-for="(item, index) in overallGrid.minutes"
+                class="gridItem font-small gridItem_isminute"
+                :class="{ 'has--caption' : (item.caption !== undefined) }"
+                :style="`transform: translate(${item.xPos}px, 0px)`"
+                :key="`min-${index}-${item.xPos}`"
+              >
+                <div v-if="item.caption !== undefined" class="gridItem--caption">
+                  {{ item.caption }}
+                </div>
+              </div>
+
+              <div
+                v-if="isRealtime && $root.state.mode !== 'export_web'"
+                class="gridItem font-small gridItem_isrealtimerule"
+                :style="`transform: translate(${todaysRule.xPos}px, 0px)`"
+              >
+                <div class="gridItem--caption">
+                  {{ todaysRule.caption }}
+                </div>
+                <button type="button" class="gridItem_isrealtimerule--autoscroll_checkbox button-small bg-rouge_vif border-circled button-thin button-wide padding-verysmall margin-none" >
+                  <small>
+                    <label for="autoScroll" class="margin-none">
+                      <input
+                        type="checkbox"
+                        v-model="timelineViewport.autoscroll"
+                        id="autoScroll"
+                      ><span v-html="$t('auto_scroll')"></span>
+                    </label>
+                  </small>
+                </button>
+              </div>
+
+              <transition name="fade" :duration="250">
+                <div
+                  v-if="zoomZone.display"
+                  class="gridItem gridItem_zoomZone"
+                  :style="zoomZoneStyle()"
+                >
+                </div>
+              </transition>
+            </div>
+          </div>
+
+          <template v-if="Object.keys(medias).length > 0">
+            <TimelineMedia
+              v-for="media in sortedMedias"
+              :key="media.slugMediaName"
+
+              :ref="`media_${media.slugMediaName}`"
+              :slugFolderName="slugFolderName"
+              :slugMediaName="media.slugMediaName"
+              :is_placeholder="!mediaIsClose(media.slugMediaName,media)"
+              :media="media"
+              :timelineScale="timelineViewport.scale"
+              :timelineHeight="timelineHeight"
+              :posX="getMediaPosX(media.slugMediaName)"
+              :class="{ 'is--highlighted' : highlightedMedia === media.slugMediaName }"
+              @open="openMediaModal(media.slugMediaName)"
+              :read_only="read_only"
+              :color="getMediaColorFromFirstAuthor(media.authors)"
+            >
+            </TimelineMedia>
+          </template>
+
+          <template v-else>
+            <div class="nomediainfo">
+              <code>
+                <template v-if="can_admin_folder">
+                  {{ $t('no_media_in_folder') }}
+                </template>
+                <template v-else>
+                  {{ $t('no_public_media_in_folder') }}
+                </template>
+              </code>
+            </div>
+          </template>
+        </div>
+        <div v-if="sort.current.field !== 'date_timeline'"
+          class="m_filterIndicator">
+          <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
+            <button type="button" 
+              class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
+              v-html="'x'" 
+              @click="setSort(sort.available[0]); setFilter('');"
+            />
+            <small>
+              <div class="">
+                <span v-html="$t('active_filter:')" />
+                {{ ' ' }}
+                <span v-html="sort.current.name" />
+              </div>
+              <div class="">
+                <span v-html="$t('medias_shown:')" />
+                <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
+              </div>
+            </small>
           </div>
         </div>
 
-        <template v-if="Object.keys(medias).length > 0">
-          <TimelineMedia
-            v-for="media in sortedMedias"
-            :key="media.slugMediaName"
+        <EditMedia
+          v-if="showMediaModalFor"
+          :slugFolderName="slugFolderName"
+          :slugMediaName="showMediaModalFor"
+          :media="medias[showMediaModalFor]"
+          :isRealtime="isRealtime"
+          @close="showMediaModalFor = false"
+          :read_only="read_only"
+          :allAuthors="folder.authors"
+          :color="getMediaColorFromFirstAuthor(medias[showMediaModalFor].authors)"
+        >
+        </EditMedia>
 
-            :ref="`media_${media.slugMediaName}`"
-            :slugFolderName="slugFolderName"
-            :slugMediaName="media.slugMediaName"
-            :is_placeholder="!mediaIsClose(media.slugMediaName,media)"
-            :media="media"
-            :timelineScale="timelineViewport.scale"
-            :timelineHeight="timelineHeight"
-            :posX="getMediaPosX(media.slugMediaName)"
-            :class="{ 'is--highlighted' : highlightedMedia === media.slugMediaName }"
-            @open="openMediaModal(media.slugMediaName)"
-            :read_only="read_only"
-          >
-          </TimelineMedia>
-        </template>
-
-        <template v-else>
-          <div class="nomediainfo">
-            <code>
-              <template v-if="folder.authorized">
-                {{ $t('no_media_in_folder') }}
-              </template>
-              <template v-else>
-                {{ $t('no_public_media_in_folder') }}
-              </template>
-            </code>
-          </div>
-        </template>
-      </div>
-      <div v-if="sort.current.field !== 'date_timeline'"
-        class="m_filterIndicator">
-        <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
-          <button type="button" 
-            class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
-            v-html="'x'" 
-            @click="setSort(sort.available[0]); setFilter('');"
-          />
-          <small>
-            <div class="">
-              <span v-html="$t('active_filter:')" />
-              {{ ' ' }}
-              <span v-html="sort.current.name" />
-            </div>
-            <div class="">
-              <span v-html="$t('medias_shown:')" />
-              <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
-            </div>
-          </small>
-        </div>
       </div>
 
-      <AddMediaButton
-        v-if="
-          ((folder.password === 'has_pass' && folder.authorized) || folder.password !== 'has_pass') && $root.state.connected"
-        :slugFolderName="slugFolderName"
-        :read_only="read_only"
-      >
-      </AddMediaButton>
-
-      <EditMedia
-        v-if="showMediaModalFor"
-        :slugFolderName="slugFolderName"
-        :slugMediaName="showMediaModalFor"
-        :media="medias[showMediaModalFor]"
-        :isRealtime="isRealtime"
-        :currentTime="currentTime"
-        @close="showMediaModalFor = false"
-        :read_only="read_only"
-      >
-      </EditMedia>
 
     </div>
+
+    <AddMedias
+      v-if="
+        ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected"
+      :slugFolderName="slugFolderName"
+      :read_only="read_only"
+    >
+    </AddMedias>
+
   </div>
 </template>
 <script>
 import NavbarTop from './components/NavbarTop.vue';
 import Sidebar from './components/Sidebar.vue';
-import AddMediaButton from './components/AddMediaButton.vue';
+import AddMedias from './components/AddMedias.vue';
 import EditFolder from './components/modals/EditFolder.vue';
 
 import TimelineMedia from './components/TimelineMedia.vue';
@@ -256,13 +264,13 @@ export default {
     EditFolder,
     NavbarTop,
     Sidebar,
-    AddMediaButton,
+    AddMedias,
     DateTime
   },
   data() {
     return {
-      systemBar: document.getElementById('systemBar') !== null ? 22 - 6 : 0,
-      topNavbarHeight: 50,
+      systemBarHeight: document.getElementById('systemBar') !== null ? document.getElementById('systemBar').offsetHeight : 0,
+      topNavbarHeight: 0,
       timelinetrackHeight: 50,
       timelineHeight: 0,
       bottomScrollBar: 20,
@@ -284,7 +292,8 @@ export default {
 
       currentScrollEvent: undefined,
 
-      currentTime: this.$moment().millisecond(0),
+      current_mode: 'timeline',
+
       todaysRule: {
         caption: '',
         xPos: false
@@ -314,7 +323,7 @@ export default {
         end: 0,
         width: 1,
         height: 1,
-        scale: this.$root.getProjectScale(this.slugFolderName),
+        scale: this.$root.getFolderScale(this.slugFolderName),
         visibleDay: 0,
         scrollLeft: this.$root.getScrollLeft(this.slugFolderName),
         autoscroll: false,
@@ -433,14 +442,14 @@ export default {
         this.isAnimated = true;
       });
 
-      this.$root.updateProjectScale(
+      this.$root.updateFolderScale(
         this.slugFolderName,
         this.timelineViewport.scale
       );
     },
     'timelineViewport.scrollLeft': function() {
       console.log('WATCH • TimeLineView: timelineViewport.scrollLeft');
-      this.$root.updateProjectScrollLeft(
+      this.$root.updateFolderScrollLeft(
         this.slugFolderName,
         this.timelineViewport.scrollLeft
       );
@@ -486,6 +495,29 @@ export default {
     this.$eventHub.$on('setSort', this.setSort);
     this.$eventHub.$on('setFilter', this.setFilter);
 
+    const el = this.$refs.timeline;
+    function scrollHorizontally(e) {
+      e = window.event || e;
+      e.preventDefault();
+      el.scrollLeft -= (e.wheelDelta || -e.detail);
+    }
+
+    function init() {
+      if (!el) {
+        return;
+      }
+
+      if (el.addEventListener) {
+        el.addEventListener('mousewheel', scrollHorizontally, false);
+        el.addEventListener('DOMMouseScroll', scrollHorizontally, false);
+      } else {
+        el.attachEvent('onmousewheel', scrollHorizontally);
+      }
+    }
+
+    init();
+
+
     this.timelineViewport.leftPadding = parseInt(
       $(this.$refs.timeline).css('padding-left'),
       10
@@ -510,7 +542,6 @@ export default {
         `MOUNTED • TimeLineView: setInterval updating (timelineUpdateRoutine)`
       );
 
-      this.currentTime = this.$moment().millisecond(0);
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
       this.setViewedTimelineWidthAndHeight();
@@ -553,6 +584,12 @@ export default {
     clearInterval(this.timelineUpdateRoutine);
   },
   computed: {
+    can_admin_folder() {
+      return this.$root.canAdminFolder({
+        type: 'folders', 
+        slugFolderName: this.slugFolderName
+      })
+    },
     sortedMedias() {
       console.log('METHODS • TimeLineView: sortedMedias');
       var sortable = [];
@@ -672,10 +709,25 @@ export default {
       } else {
         // there is no valid end, we set end to current time and set realtime
         this.isRealtime = true;
-        return this.currentTime;
+        return this.$root.currentTime;
       }
     },
+    getMediaColorFromFirstAuthor(media_authors) {
+      if(typeof media_authors !== 'object' 
+      || media_authors.length == 0
+      || typeof this.folder.authors !== 'object'
+      || this.folder.authors.length == 0
+      ) {
+        return '';
+      }
 
+      const full_authors_info = this.folder.authors.filter(a => a.name === media_authors[0].name);
+      if(full_authors_info.length == 0) {
+        return '';
+      }
+
+      return full_authors_info[0].color;
+    },
     /******************************************************************
         Updates viewed timeline with a start and end
     ******************************************************************/
@@ -862,7 +914,7 @@ export default {
           let caption;
           if (
             currentMinute_minutesOnly % 10 === 0 ||
-            this.timelineViewport.scale < 5
+            (this.timelineViewport.scale < 5 && currentMinute_minutesOnly % 5 === 0)
           ) {
             caption = this.$moment(currentMinute).format('LT');
           }
@@ -971,9 +1023,9 @@ export default {
         window.innerHeight -
         this.topNavbarHeight -
         this.bottomScrollBar -
-        this.systemBar;
+        this.systemBarHeight;
       this.sidebarHeight =
-        window.innerHeight - this.topNavbarHeight - this.systemBar;
+        window.innerHeight - this.topNavbarHeight - this.systemBarHeight;
     },
     onScroll() {
       if (!this.isScrolling) {
@@ -1018,19 +1070,15 @@ export default {
         console.log('METHODS • TimeLineView: openMediaModal');
       }
 
-
-      // this.$nextTick(() => {
-        // check if media exists first
-        if (!this.medias.hasOwnProperty(slugMediaName)) {
-          if (this.$root.state.dev_mode === 'debug') {
-            console.log(
-              'METHODS • TimeLineView: openMediaModal / missing media in timeline'
-            );
-          }
-        } else {
-          this.showMediaModalFor = slugMediaName;
+      if (!this.medias.hasOwnProperty(slugMediaName)) {
+        if (this.$root.state.dev_mode === 'debug') {
+          console.log(
+            'METHODS • TimeLineView: openMediaModal / missing media in timeline'
+          );
         }
-      // });
+      } else {
+        this.showMediaModalFor = slugMediaName;
+      }
     },
     closeMediaModal() {
       this.showMediaModalFor = false;
@@ -1041,16 +1089,23 @@ export default {
       }
       
       if(this.showMediaModalFor) {
+
         // find in sortedMedias where this.showMediaModalFor and get the next one
         const current_media_index = _.findIndex(this.sortedMedias, {
           slugMediaName: this.showMediaModalFor
         });
+
+        this.closeMediaModal();
+
         if(current_media_index < this.sortedMedias.length - 1) {
           const new_media = this.sortedMedias[current_media_index + 1];
           if(new_media.hasOwnProperty('slugMediaName')) {
-            this.openMediaModal(new_media.slugMediaName);
+
+            this.$nextTick(() => {
+              this.openMediaModal(new_media.slugMediaName);
+            });
           } 
-        }      
+        }
       }
     },
     editModalPreviousMedia() {
@@ -1059,14 +1114,20 @@ export default {
       }
 
       if(this.showMediaModalFor) {
+
         // find in sortedMedias where this.showMediaModalFor and get the next one
         const current_media_index = _.findIndex(this.sortedMedias, {
           slugMediaName: this.showMediaModalFor
         });
+
+        this.closeMediaModal();
+
         if(current_media_index > 0) {
           const new_media = this.sortedMedias[current_media_index - 1];
           if(new_media.hasOwnProperty('slugMediaName')) {
-            this.openMediaModal(new_media.slugMediaName);
+            this.$nextTick(() => {
+              this.openMediaModal(new_media.slugMediaName);
+            });          
           } 
         }      
       }
@@ -1077,14 +1138,14 @@ export default {
         return;
       }
 
-      let xPos = this.getXPositionFromDate(this.currentTime);
+      let xPos = this.getXPositionFromDate(this.$root.currentTime);
       if (xPos === false) {
         this.todaysRule.xPos = false;
         return;
       }
 
-      console.log('METHODS • TimeLineView: drawRealtimeRule');
-      let caption = this.currentTime.format('HH:mm:ss');
+      // console.log('METHODS • TimeLineView: drawRealtimeRule');
+      let caption = this.$root.currentTime.format('HH:mm:ss');
       this.todaysRule = {
         caption,
         xPos
@@ -1095,7 +1156,7 @@ export default {
     },
     scrollToToday() {
       console.log(`METHODS • TimeLineView: scrollToToday`);
-      this.scrollToDate(this.currentTime);
+      this.scrollToDate(this.$root.currentTime);
     },
     scrollToMedia(slugMediaName) {
       console.log(
@@ -1248,7 +1309,7 @@ export default {
       };
     },
     startEditModal() {
-      if (this.folder.authorized) {
+      if (this.can_admin_folder) {
         this.showEditFolderModal = true;
       }
     }

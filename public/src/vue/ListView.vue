@@ -1,6 +1,5 @@
 <template>
   <main class="m_home">
-
     <header class="bg-noir c-blanc font-large padding-vert-medium">
       <div class="flex-wrap flex-vertically-centered limited-width">
         <div class="flex-size-2/5 flex-collapse-on-mobile padding-sides-medium padding-vert-medium flex-wrap flex-vertically-centered">
@@ -17,17 +16,22 @@
           </svg>
 
           <div>
-            › <i>Les Cahiers du Studio</i>
+            › <i>Les Cahiers du Studio</i><br>
+            <small>v{{ $root.state.appVersion }}</small>
           </div>
         </div>
         <div class="text-formatting flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-medium">
-          <vue-markdown
+          <VueMarkdown
             :html=true
             :source="presentationText"
-          ></vue-markdown>
+          />
         </div>
       </div>
     </header>
+
+    <div class="m_connectionStatus" v-if="!$root.state.connected && $root.state.mode !== 'export_web'">
+      {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
+    </div>    
 
 
     <section class="flex-wrap flex-vertically-start limited-width padding-vert-medium">
@@ -145,10 +149,10 @@
 
         <template
           v-if="sortedFoldersSlug !== 'no-folders'"
-          v-for="sortedFolder in sortedFoldersSlug"
         >
           <div
             class="m_home--folders--card margin-small"
+            v-for="sortedFolder in sortedFoldersSlug"
             :key="sortedFolder.slugFolderName"
           >
             <Folder
@@ -198,29 +202,6 @@ export default {
       this.$root.updateLocalLang(this.currentLang);
     },
     folders: function() {
-      // check if there is a justCreatedFolderID val
-
-      if (this.$root.justCreatedFolderID) {
-        Object.keys(this.folders).map(slugFolderName => {
-          let folder = this.folders[slugFolderName];
-          // if there is, try to match it with folderID
-          if (
-            folder.folderID &&
-            folder.folderID === this.$root.justCreatedFolderID
-          ) {
-            if(this.$root.justCreatedFolderPassword !== false) {
-              auth.updateAdminAccess({
-                [slugFolderName]: this.$root.justCreatedFolderPassword
-              });
-              this.$socketio.sendAuth();
-              this.$root.justCreatedFolderPassword = false; 
-            }
-            this.$root.openFolder(slugFolderName);
-
-            this.$root.justCreatedFolderID = false;
-          }
-        });
-      }
     }
   },
   computed: {
@@ -233,7 +214,6 @@ export default {
 
       for (let slugFolderName in this.folders) {
         let orderBy;
-
         if (this.sort.type === 'date') {
           orderBy = +this.$moment(
             this.folders[slugFolderName][this.sort.field],
@@ -242,7 +222,11 @@ export default {
         } else if (this.sort.type === 'alph') {
           orderBy = this.folders[slugFolderName][this.sort.field];
         }
-        sortable.push({ slugFolderName: slugFolderName, orderBy: orderBy });
+        if(Number.isNaN(orderBy)) {
+          orderBy = 0;
+        }
+
+        sortable.push({ slugFolderName, orderBy });
       }
       let sortedSortable = sortable.sort(function(a, b) {
         let valA = a.orderBy;

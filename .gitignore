@@ -1,3 +1,7 @@
+
+settings.json
+dist/*
+
 ####### NODE ########
 .tmp
 .sass-cache
@@ -9,7 +13,6 @@ pids
 cache
 node_modules
 
-/dist/
 build/config.gypi
 
 ####### OSX ########
@@ -34,3 +37,4 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+public/dist/build.js

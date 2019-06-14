@@ -7,42 +7,41 @@
     >
     </SystemBar>
 
+    <div class="m_connectionStatus" v-if="!$root.state.connected && $root.state.mode !== 'export_web'">
+      {{ $t('notifications.connection_lost') }} {{ $t('notifications.contents_wont_be_editable') }}      
+    </div>
+
     <template v-if="view === 'ListView'">
-      <div class="container">
-        <div class="row">
+      
+      <ListView
+        v-if="view === 'ListView'"
+        :presentationMD="$root.store.presentationMD"
+        :read_only="!$root.state.connected"
+        :folders="$root.store.folders"
+      />
 
-          <ListView
-            v-if="view === 'ListView'"
-            :presentationMD="$root.store.presentationMD"
-            :read_only="!$root.state.connected"
-            :folders="$root.store.folders"
-          >
-          </ListView>
-
-        </div>
-      </div>
     </template>
-    <template v-else-if="view === 'TimeLineView' && currentFolder.hasOwnProperty('name')">
+    <template v-else-if="view === 'FolderView' && currentFolder.hasOwnProperty('name')">
 
-      <TimeLineView
+      <FolderView
         :slugFolderName="current_slugFolderName"
         :folder="currentFolder"
         :medias="currentFolder.medias"
         :read_only="!$root.state.connected"
-      >
-      </TimeLineView>
+      />
 
     </template>
+    <template v-else-if="view === 'TimelineView' && currentFolder.hasOwnProperty('name')">
 
-    <div class="container">
-      <div class="row">
-        <template>
-          <BottomFooter v-if="current_slugFolderName === ''">
-          </BottomFooter>
-        </template>
-      </div>
-    </div>
+      <TimelineView
+        :slugFolderName="current_slugFolderName"
+        :folder="currentFolder"
+        :medias="currentFolder.medias"
+        :read_only="!$root.state.connected"
+      />
 
+    </template>
+    
     <portal-target name="modal_container" />
 
   </div>
@@ -51,7 +50,8 @@
 <script>
 import SystemBar from './SystemBar.vue';
 import ListView from './ListView.vue';
-import TimeLineView from './TimeLineView.vue';
+import FolderView from './FolderView.vue';
+import TimelineView from './TimelineView.vue';
 import BottomFooter from './components/BottomFooter.vue';
 
 export default {
@@ -59,7 +59,8 @@ export default {
   components: {
     SystemBar,
     ListView,
-    TimeLineView,
+    FolderView,
+    TimelineView,
     BottomFooter
   },
   props: ['current_slugFolderName', 'currentFolder'],
@@ -69,7 +70,7 @@ export default {
   computed: {
     view: function() {
       if (this.current_slugFolderName !== '') {
-        return 'TimeLineView';
+        return 'TimelineView';
       }
       return 'ListView';
     }

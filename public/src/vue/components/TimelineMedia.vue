@@ -1,12 +1,15 @@
 <template>
   <div class="mediaPreview font-small"
-    :style="`transform: translate(${posX}px, ${mediaStyles.y}px)`"
+    :style="{
+      transform: `translate(${posX}px, ${mediaStyles.y}px`,
+      '--media-color': color ? color : '#ffffff'
+    }"
     :class="[{
       'has--duration' : media.duration !== undefined,
       'is--hovered'   : is_hovered,
       'is--dragged'   : is_dragged,
       'is--collapsed' : is_collapsed,
-    }, 'type-' + media.type, 'color-' + media.color]"
+    }, 'type-' + media.type, class_from_first_author ]" 
     @mousedown.prevent="mousedown"
     @mouseover="mouseover"
     @mouseleave="mouseleave"
@@ -85,7 +88,8 @@ export default {
     read_only: {
       type: Boolean,
       default: true
-    }
+    },
+    color: String
   },
   components: {
     MediaContent
@@ -94,7 +98,7 @@ export default {
     return {
       is_dragged: false,
       is_hovered: false,
-      is_collapsed: this.media.collapsed == 'true',
+      is_collapsed: this.media.collapsed == true,
       dragOffset: {
         x: '',
         y: ''
@@ -112,11 +116,12 @@ export default {
       }
     };
   },
-  computed: {},
+  computed: {
+  },
   watch: {
     media: function() {},
     'media.collapsed': function() {
-      this.is_collapsed = this.media.collapsed == 'true';
+      this.is_collapsed = this.media.collapsed == true;
     },
     'media.y': function() {
       this.mediaStyles.y = this.limitMediaYPos(
@@ -214,7 +219,7 @@ export default {
           }`
         );
       }
-      if (!this.read_only || this.$root.state.mode === 'export') {
+      if (!this.read_only || this.$root.state.mode === 'export_web') {
         window.addEventListener('mousemove', this.mousemove);
         window.addEventListener('mouseup', this.mouseup);
       }
@@ -256,14 +261,15 @@ export default {
         this.mediaStyles.y = this.limitMediaYPos(newY);
         let getHeightInPercent = this.mediaStyles.y / this.timelineHeight;
 
-        let values = {
-          y: getHeightInPercent,
-          slugFolderName: this.slugFolderName,
-          slugMediaName: this.slugMediaName
-        };
-
         if(!this.read_only) {
-          this.$root.editMedia(values);
+          this.$root.editMedia({ 
+            type: 'folders',
+            slugFolderName: this.slugFolderName, 
+            slugMediaName: this.slugMediaName,
+            data: {
+              y: getHeightInPercent
+            }
+          });
         }
         this.is_dragged = false;
       }
@@ -307,11 +313,15 @@ export default {
       }
       this.is_collapsed = !this.is_collapsed;
 
-      let values = { collapsed: this.is_collapsed };
-      values.slugFolderName = this.slugFolderName;
-      values.slugMediaName = this.slugMediaName;
+      this.$root.editMedia({ 
+        type: 'folders',
+        slugFolderName: this.slugFolderName, 
+        slugMediaName: this.slugMediaName,
+        data: {
+          collapsed: this.is_collapsed
+        }
+      });
 
-      this.$root.editMedia(values);
 
       event.stopPropagation();
     }

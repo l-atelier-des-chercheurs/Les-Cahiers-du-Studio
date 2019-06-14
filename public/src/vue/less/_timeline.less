@@ -2,7 +2,7 @@
   position: absolute;
   height: @t-timelinetrackheight;
   width: 100%;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid @c-noir;
   z-index: -1;
 }
 
@@ -21,7 +21,7 @@
   background: white;
   padding: 15px;
   z-index: 1500;
-  border: 1px solid @c-noir;
+  border: 1px solid var(--color-noir);
 }
 
 .m_timeline {
@@ -33,33 +33,58 @@
   padding-left: @t-skipline * 10;
 
   &::-webkit-scrollbar {
-    width: 80px;
     height: 20px;
+    width: 20px;
+    background-color: rgba(255,255,255,0);
+  }
 
-    &:hover {
-      cursor: -webkit-grab;
-      cursor: -moz-grab;
-    }
-
-    * {
-      background-color: transparent;
-    }
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb {
+    border: 10px solid var(--color-noir);
+    // border-radius: 5px;
+    background-clip: padding-box;
   }
 
   &::-webkit-scrollbar-track {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    background-color: @c-gris_light;
+    background-color: @c-gris_clair;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: @c-noir;
-    outline: 1px solid @c-bleu;
+    background-color: var(--timeline-bg);
+    border: 5px solid var(--timeline-bg);
+    &:hover {
+    }
   }
+
+
+  // &::-webkit-scrollbar {
+  //   width: 80px;
+  //   height: 20px;
+
+  //   &:hover {
+  //     cursor: -webkit-grab;
+  //     cursor: -moz-grab;
+  //   }
+
+  //   * {
+  //     background-color: transparent;
+  //   }
+  // }
+
+  // &::-webkit-scrollbar-track {
+  //   -webkit-box-shadow: none;
+  //   box-shadow: none;
+  //   background-color: @c-bg_timeline;
+  // }
+
+  // &::-webkit-scrollbar-thumb {
+  //   background-color: #000;
+  //   // outline: 1px solid @c-bleu;
+  // }
 //   margin-right:   50px;
 
   &.with--sidebar_opened {
-    margin-left: @t-sidebarWidth;
+    // margin-left: @t-sidebarWidth;
   }
 
   .m_timeline-container {
@@ -103,6 +128,12 @@
     position: absolute;
     height: 100%;
 
+    color:  rgb(230,231,232);
+
+    .gridItem--caption {
+      color: #000;
+    }
+
 //     transition: all .4s;
 
     &.gridItem_isrealtimerule {
@@ -110,12 +141,12 @@
       z-index:10000;
       height: ~"calc(100% + 50px)";
       margin-top: -50px;
-      color: white;
       pointer-events: auto;
       left: -1px;
 
       .gridItem--caption {
         position: absolute;
+        color: white;
         right:0;
         background-color: @c-rouge_vif;
         padding: 1px 4px;
@@ -160,25 +191,29 @@
     }
 
     &.gridItem_isday {
-      border-left: 1px solid @c-noir_light;
+      border-left: 1px solid @c-noir;
       z-index:100;
-      color: white;
 
       .gridItem--caption {
         display: block;
+        color: white;
         background-color: @c-noir_light;
         border: 2px solid @c-bg_timeline;
         padding: 2px 4px 0px;
         margin-top: -38px;
         border-radius: 3px;
       }
+
+      &:first-child {
+        z-index: 200;
+      }
     }
     &.gridItem_ishour {
       z-index:10;
-      border-left: 1px solid @c-gris_light;
+      border-left: 2px solid currentColor;
 
       &.has--caption {
-        border-left: 1px solid @c-gris_light;
+        // border-left: 1px solid @c-gris_clair;
       }
 
       .gridItem--caption {
@@ -193,13 +228,11 @@
     }
 
     &.gridItem_isminute {
-      color: #999;
-      border-left: 1px dashed @c-gris_light;
+      border-left: 1px dashed currentColor;
       z-index:1;
 
       &.has--caption {
-        color: #333;
-        border-left: 1px solid @c-gris_light;
+        // border-left: 1px solid @c-gris_clair;
 
         .gridItem--caption {
           display: block;
