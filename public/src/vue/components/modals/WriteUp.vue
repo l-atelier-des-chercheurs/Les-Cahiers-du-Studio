@@ -64,6 +64,10 @@
         </button>
       </div> -->
 
+      <hr>
+
+      <h5>{{ current_writeup_media_metaFileName }}</h5>
+
       <CollaborativeEditor 
         v-if="current_writeup_media_metaFileName"
         v-model="writeupContent"
@@ -149,7 +153,10 @@ export default {
         console.log(`METHODS • WriteUp: openWriteupMedia / ${metaFileName}`);
       }
 
-      this.current_writeup_media_metaFileName = metaFileName;
+      this.current_writeup_media_metaFileName = false;
+      this.$nextTick(() => {
+        this.current_writeup_media_metaFileName = metaFileName;
+      });
     }
   }
 }

@@ -55,6 +55,9 @@ export default {
   created() {
   },
   mounted() {
+
+    console.log(`MOUNTED • CollaborativeEditor`);
+    
     this.editor = new Quill(this.$refs.editor, {
       modules: {
         toolbar: this.custom_toolbar
@@ -62,17 +65,19 @@ export default {
       theme: 'snow',
       formats: ['bold', 'underline', 'header', 'italic']
     });
+
     this.editor.root.innerHTML = this.value;
 
     this.$nextTick(() => {
       if(this.enable_collaboration) {
+        // set connection to sharedb / wss
+        // so sharedb will send last version of that medias’ content
         this.initWebsocketMode();
       }
 
       this.editor.on('text-change', (delta, oldDelta, source) => {
         this.$emit('input', this.editor.getText() ? this.editor.root.innerHTML : '');
       });
-
     });
 
   },
@@ -105,13 +110,13 @@ export default {
         + requested_querystring
       ;
 
-      console.log(`MOUNTED • CollaborativeEditor: will connect to ws server with ${this.requested_resource_url}`);
+      console.log(`METHODS • CollaborativeEditor: initWebsocketMode for ${this.requested_resource_url}`);
 
       this.socket = new ReconnectingWebSocket(this.requested_resource_url);
       const connection = new ShareDB.Connection(this.socket);
       connection.on('state', this.wsState);
 
-      const doc = connection.get('textMedias', requested_querystring);
+      const doc = connection.get('writeup', requested_querystring);
 
       doc.subscribe((err) => {
         if (err) {
