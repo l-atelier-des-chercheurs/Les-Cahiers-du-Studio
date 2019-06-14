@@ -339,12 +339,12 @@ export default {
     'translation': function() {
       this.$refs.timeline.scrollLeft = this.translation;
 
-      // if(!this.debounce_translation_fct) {
-      //   this.debounce_translation_fct = setTimeout(() => {
-      //     this.debounce_translation = this.translation;
-      //     this.debounce_translation_fct = undefined;
-      //   }, this.debounce_translation_delay);
-      // }
+      if(!this.debounce_translation_fct) {
+        this.debounce_translation_fct = setTimeout(() => {
+          this.debounce_translation = this.translation;
+          this.debounce_translation_fct = undefined;
+        }, this.debounce_translation_delay);
+      }
     }
   },
   computed: {
@@ -1283,10 +1283,15 @@ export default {
 
 .m_floater {
   position: fixed;
-  bottom: 30px;
+  top: 20px;
+  // bottom: 0px;
   width: 100%;
   z-index: 150;
   pointer-events: none;
+
+  body.has_systembar & {
+    top: 35px;
+  }
 
   @media screen and (max-width: 50rem) {
     bottom: 0;
@@ -1300,7 +1305,7 @@ export default {
     background-color: var(--color-noir);
     color: white;
     pointer-events: auto;
-    border-radius: 4px;
+    border-radius: 20px;
 
     display: flex;
     align-content: center;

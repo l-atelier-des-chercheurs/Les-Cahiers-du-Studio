@@ -162,7 +162,7 @@ export default {
       showImportModal: false,
 
       selected_files: [],
-      show_addmedia_options: true,
+      show_addmedia_options: false,
       show_authors_options: false,
 
       show_drop_container: false,
@@ -383,7 +383,7 @@ export default {
 <style lang="less" scoped>
 button, .button {
   position: relative;
-  box-shadow: 2px 4px 13px #bbb; 
+  box-shadow: -.1em .2em 1em rgba(0,0,0,.35);
   // margin: .3em; 
 
   &:active {
@@ -486,7 +486,7 @@ button, .button {
         opacity: 0;
         transform: translateY(5px) scale(0.8);
         background-color: var(--color-author);
-      color: var(--color-text_on_author_color);
+        color: var(--color-text_on_author_color);
         transition: all .4s cubic-bezier(0.19, 1, 0.22, 1);
 
         label {
