@@ -5,7 +5,9 @@
     :autocorrect="spellcheckIsEnabled"
     :spellcheck="spellcheckIsEnabled"
   >
-    <!-- connection_state : {{ connection_state }}<br> -->
+    <template v-if="enable_collaboration">
+      connection_state : {{ connection_state }}<br>
+    </template>
     <div ref="editor" />
   </div>
 </template>
@@ -22,8 +24,12 @@ export default {
       type: String,
       default: '…'
     },
-    media: Object,
-    slugFolderName: String
+    media_metaFileName: String,
+    slugFolderName: String,
+    enable_collaboration: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
   },
@@ -42,7 +48,7 @@ export default {
 
       socket: null,
       connection_state: undefined,
-      requested_resource_url: undefined
+      requested_resource_url: undefined,
     }
   },
   
@@ -59,7 +65,9 @@ export default {
     this.editor.root.innerHTML = this.value;
 
     this.$nextTick(() => {
-      // this.initWebsocketMode();
+      if(this.enable_collaboration) {
+        this.initWebsocketMode();
+      }
 
       this.editor.on('text-change', (delta, oldDelta, source) => {
         this.$emit('input', this.editor.getText() ? this.editor.root.innerHTML : '');
@@ -85,7 +93,7 @@ export default {
       const params = new URLSearchParams({
         'type': 'folders',
         'slugFolderName': this.slugFolderName,
-        'metaFileName': this.media.metaFileName
+        'metaFileName': this.media_metaFileName
       });
 
       const requested_querystring = '?' + params.toString();
@@ -108,6 +116,7 @@ export default {
       doc.subscribe((err) => {
         if (err) {
           console.error(`ON • CollaborativeEditor: err ${err}`);
+          return;
         }
         console.log(`ON • CollaborativeEditor: subscribe`);
 

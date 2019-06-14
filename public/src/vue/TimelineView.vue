@@ -375,6 +375,9 @@ export default {
         let mediaDataToOrderBy;
         const media = this.medias[slugMediaName];
 
+        if(media.hasOwnProperty('type') && media.type === 'writeup') {
+          continue;
+        }
 
         // legacy to account for medias without date_timeline but with date_created or created
         if(!media.hasOwnProperty(current_sort.field)) {

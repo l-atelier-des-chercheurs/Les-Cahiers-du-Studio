@@ -52,6 +52,8 @@
 
     <WriteUp
       v-if="showWriteupModal === true"
+      :slugFolderName="slugFolderName"
+      :medias="medias"
       @close="showWriteupModal = false"
     />
 
@@ -313,7 +315,7 @@ export default {
       }, {});
 
       return dayGroupedByMonth;
-    }
+    },
   },
 
   watch: {

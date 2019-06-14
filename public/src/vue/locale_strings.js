@@ -19,6 +19,7 @@ module.exports = (function() {
       download: 'Télécharger',
       caption: 'Légende',
       date: 'Date',
+      action: 'Action',
       'active_filter:': 'Filtre actif&nbsp;:',
       'medias_shown:': 'Médias affichés&nbsp;:',
       'file:': 'Fichier&nbsp;:',
@@ -27,6 +28,7 @@ module.exports = (function() {
       login: 'S’identifier',
       options: 'Options',
       creation_of_the_timeline: 'Création du dossier',
+      untitled_document: 'Document sans-titre',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -130,8 +132,9 @@ module.exports = (function() {
           'Le password n’est pas le bon pour le dossier&nbsp;:',
         'created_edited_media:':
           'Création ou édition d’un média pour le dossier&nbsp;:',
-        author_name_exists:
-          'Ce nom d’auteur existe déjà, utilisez-en un autre.',
+        author_name_exists: 'Ce nom d’auteur existe déjà.',
+        document_name_exists:
+          'Ce nom de document existe déjà, utilisez-en un autre.',
         folder_name_exists:
           'Ce nom de dossier existe déjà, utilisez-en un autre.',
         folder_name_needs_alphanumeric_characters:
@@ -159,6 +162,7 @@ module.exports = (function() {
       download: 'Download',
       caption: 'Caption',
       date: 'Date',
+      action: 'Action',
       'active_filter:': 'Active filter:',
       'medias_shown:': 'Medias shown:',
       'file:': 'File:',
@@ -167,6 +171,7 @@ module.exports = (function() {
       login: 'Login',
       options: 'Options',
       creation_of_the_timeline: 'Creation of the timeline',
+      untitled_document: 'Untitled document',
 
       loading: 'loading',
       open: 'Open',
@@ -267,8 +272,9 @@ module.exports = (function() {
         'wrong_password_for_folder:': 'Wrong password or folder missing for:',
         'created_edited_media:':
           'A media has been created or edited in folder:',
-        author_name_exists:
-          'Ce nom d’auteur existe déjà, utilisez-en un autre.',
+        author_name_exists: 'This name is already created.',
+        document_name_exists:
+          'This document name already exists, please use another one.',
         folder_name_exists: 'Folder name already exists. Please use another.',
         folder_name_needs_alphanumeric_characters:
           'Folder names need to contain at least one alphanumeric character.',
