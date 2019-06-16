@@ -52,9 +52,9 @@
 
     <WriteUp
       v-if="showWriteupModal === true"
+      @close="showWriteupModal = false"
       :slugFolderName="slugFolderName"
       :medias="medias"
-      @close="showWriteupModal = false"
     />
 
     <SidebarSection>

@@ -38,6 +38,7 @@ module.exports = (function() {
       print: 'Imprimer',
       create: 'Créer',
       remove: 'Suppr.',
+      rename: 'Renommer',
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
@@ -118,6 +119,7 @@ module.exports = (function() {
       'with_all_medias:': 'Avec tous les médias',
 
       last_modified: 'Dernière modification',
+      save_changes: 'Enregistrer',
 
       notifications: {
         file_was_sent: 'Le fichier a été envoyé.',
@@ -181,6 +183,7 @@ module.exports = (function() {
       print: 'Print',
       create: 'Create',
       remove: 'Remove',
+      rename: 'Rename',
       password: 'Mot de passe',
       protected_by_pass: 'protected by password',
       password_instructions:
@@ -260,6 +263,7 @@ module.exports = (function() {
       select_files_to_import: 'Select files to import',
 
       last_modified: 'Last modified',
+      save_changes: 'Save changes',
 
       notifications: {
         file_was_sent: 'The file was sent.',

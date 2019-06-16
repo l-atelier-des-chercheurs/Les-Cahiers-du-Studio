@@ -7,17 +7,19 @@
       <span class="text-cap"> {{ $t('writeup') }}</span>
     </template>
     <template slot="preview">
-      <div class="padding-sides-small">
-        <table class="">
+      <div class="padding-small bg-noir_light c-blanc">
+        <table class="" v-if="mode === 'writeup_list'">
           <thead>
             <tr>
               <th style="">
                 {{ $t('name') }}
               </th>
               <th>
-                {{ $t('action') }}
+                {{ $t('last_modified') }}
               </th>
-              <th></th>
+              <th>
+                <!-- {{ $t('action') }} -->
+              </th>
             </tr>
           </thead>
           <transition-group
@@ -29,59 +31,59 @@
                 {{ w.name }}
               </td>
               <td>
+                {{ $moment(w.date_modified).format('l LTS') }}
+              </td>
+              <td>
                 <button type="button" class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent" @click="openWriteupMedia(w.metaFileName)">
                   {{ $t('open') }}
                 </button>
               </td>  
             </tr>          
             <tr :key="'create'">
-              <td>
-                <input type="text" class="input-xs" ref="nameInput">
-              </td>
-              <td>
-                <button type="button" class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent" 
-                  @click="createWriteupMedia"
-                >
-                  {{ $t('create') }}
-                </button>
-              </td>
+              <template v-if="!show_createwriteup_section">
+                <td colspan="3">
+                  <button type="button" class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent" 
+                    @click="show_createwriteup_section = !show_createwriteup_section"
+                  >
+                    {{ $t('create') }}
+                  </button>
+                </td>
+              </template>
+
+              <template v-else>
+                <td colspan="2">
+                  <input type="text" class="input-xs" ref="nameInput">
+                </td>
+                <td>
+                  <button type="button" class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent" 
+                    @click="createWriteupMedia"
+                  >
+                    {{ $t('create') }}
+                  </button>
+                </td>
+              </template>
+              
             </tr>
           </transition-group>
         </table>
+        <div v-else-if="mode === 'single_writeup'">
+          {{ $t('back_to_list') }}
+          retour à la liste
+        </div>
       </div>
 
-      <!-- <div class="input-group">
-        <span class="input-addon input-addon-xs">
-          {{ $t('name') }}
-        </span>
-        <input type="text" class="input-xs" ref="nameInput">
-        <button 
-          type="button" 
-          class="button input-addon-xs" 
-          @click="createWriteupMedia"
-        >
-          {{ $t('create') }}
-        </button>
-      </div> -->
-
-      <hr>
-
-      <h5>{{ current_writeup_media_metaFileName }}</h5>
-
-      <CollaborativeEditor 
-        v-if="current_writeup_media_metaFileName"
-        v-model="writeupContent"
-        :media_metaFileName="current_writeup_media_metaFileName"
+      <WriteUpEditor
+        v-if="current_writeup_media"
         :slugFolderName="slugFolderName"
-        :enable_collaboration="true"
-        ref="textField"
+        :media="current_writeup_media"
       />
+
     </template>
   </Modal>
 </template>
 <script>
 import Modal from './BaseModal.vue';
-import CollaborativeEditor from '../subcomponents/CollaborativeEditor.vue'
+import WriteUpEditor from '../subcomponents/WriteUpEditor.vue';
 
 export default {
   props: {
@@ -90,11 +92,11 @@ export default {
   },
   components: {
     Modal,
-    CollaborativeEditor
+    WriteUpEditor
   },
   data() {
     return {
-      writeupContent: '',
+      show_createwriteup_section: false,
       current_writeup_media_metaFileName: false
     }
   },
@@ -107,12 +109,20 @@ export default {
   },
 
   watch: {
-    'writeupContent': function() {
-    }
   },
   computed: {
     writeup_medias() {
-      return Object.values(this.medias).filter(m => m.type === "writeup")
+      return Object.values(this.medias).filter(m => m.type === "writeup").sort((a, b) => a.date_modified.localeCompare(b.date_modified));
+    },
+    current_writeup_media() {
+      if(this.current_writeup_media_metaFileName === false) return false;
+      return Object.values(this.medias).filter(m => m.metaFileName === this.current_writeup_media_metaFileName)[0];
+    },
+    mode() {
+      if(this.current_writeup_media_metaFileName) {
+        return 'single_writeup';
+      }
+      return 'writeup_list';
     }
   },
   methods: {
@@ -137,7 +147,7 @@ export default {
         return false;        
       }
 
-
+      this.show_createwriteup_section = false;
       // this.$eventHub.$on('socketio.media_created_or_updated', this.newTextMediaCreated);
       this.$root.createMedia({
         slugFolderName: this.slugFolderName,
@@ -157,7 +167,7 @@ export default {
       this.$nextTick(() => {
         this.current_writeup_media_metaFileName = metaFileName;
       });
-    }
+    },
   }
 }
 </script>

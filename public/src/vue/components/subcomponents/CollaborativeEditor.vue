@@ -5,9 +5,9 @@
     :autocorrect="spellcheckIsEnabled"
     :spellcheck="spellcheckIsEnabled"
   >
-    <template v-if="enable_collaboration">
+    <!-- <template v-if="enable_collaboration">
       connection_state : {{ connection_state }}<br>
-    </template>
+    </template> -->
     <div ref="editor" />
   </div>
 </template>
@@ -55,7 +55,6 @@ export default {
   created() {
   },
   mounted() {
-
     console.log(`MOUNTED • CollaborativeEditor`);
     
     this.editor = new Quill(this.$refs.editor, {
@@ -79,7 +78,6 @@ export default {
         this.$emit('input', this.editor.getText() ? this.editor.root.innerHTML : '');
       });
     });
-
   },
   beforeDestroy() {
     if(!!this.socket) {
@@ -153,6 +151,13 @@ export default {
     wsState(state, reason) {
       console.log(`METHODS • CollaborativeEditor: wsState with state = ${state} and reason = ${reason}`);
       this.connection_state = state.toString();
+      this.$emit('connectionStateChanged', this.connection_state);
+
+      if(this.connection_state === 'connected') {
+        this.editor.enable(true);   // Disables user input
+      } else {
+        this.editor.enable(false);   // Disables user input
+      } 
       // 'connecting' 'connected' 'disconnected' 'closed' 'stopped'
     }
   }

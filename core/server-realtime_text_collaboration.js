@@ -95,69 +95,69 @@ module.exports = function(server) {
     });
   }, 5000);
 
-  share.use('connect', (ctx, cb) => {
-    // ('?type=projects&slugFolderName=publi&metaFileName=text-20181228_122605-shl.md.txt');
+  // share.use('readSnapshots', (ctx, cb) => {
+  //   // ('?type=projects&slugFolderName=publi&metaFileName=text-20181228_122605-shl.md.txt');
 
-    const requested_querystring = req.url.substring(1);
-    const requested_textmedia_infos = new URLSearchParams(
-      requested_querystring
-    );
-    const textmedia_infos = {
-      type: requested_textmedia_infos.get('type'),
-      slugFolderName: requested_textmedia_infos.get('slugFolderName'),
-      metaFileName: requested_textmedia_infos.get('metaFileName')
-    };
+  //   const requested_querystring = req.url.substring(1);
+  //   const requested_textmedia_infos = new URLSearchParams(
+  //     requested_querystring
+  //   );
+  //   const textmedia_infos = {
+  //     type: requested_textmedia_infos.get('type'),
+  //     slugFolderName: requested_textmedia_infos.get('slugFolderName'),
+  //     metaFileName: requested_textmedia_infos.get('metaFileName')
+  //   };
 
-    dev.logverbose(
-      `—> requested textMedias ${JSON.stringify(textmedia_infos, null, 4)}`
-    );
+  //   dev.logverbose(
+  //     `—> requested textMedias ${JSON.stringify(textmedia_infos, null, 4)}`
+  //   );
 
-    if (sharedoc.data == null) {
-      // parse requested_resource from search params
-      file
-        .readMediaList({
-          type: textmedia_infos.type,
-          medias_list: [
-            {
-              slugFolderName: textmedia_infos.slugFolderName,
-              metaFileName: textmedia_infos.metaFileName
-            }
-          ]
-        })
-        .then(mediaData => {
-          dev.logverbose(
-            `server-realtime_text_collaboration • wss: got base text media`
-          );
+  // if (sharedoc.data == null) {
+  //   // parse requested_resource from search params
+  //   file
+  //     .readMediaList({
+  //       type: textmedia_infos.type,
+  //       medias_list: [
+  //         {
+  //           slugFolderName: textmedia_infos.slugFolderName,
+  //           metaFileName: textmedia_infos.metaFileName
+  //         }
+  //       ]
+  //     })
+  //     .then(mediaData => {
+  //       dev.logverbose(
+  //         `server-realtime_text_collaboration • wss: got base text media`
+  //       );
 
-          const text_content = Object.values(
-            Object.values(mediaData)[0].medias
-          )[0].content;
-          let rendered_text = quillRender([{ insert: text_content }]);
+  //       const text_content = Object.values(
+  //         Object.values(mediaData)[0].medias
+  //       )[0].content;
+  //       let rendered_text = quillRender([{ insert: text_content }]);
 
-          dev.logverbose(
-            `server-realtime_text_collaboration • wss: now inserting = ${rendered_text}`
-          );
+  //       dev.logverbose(
+  //         `server-realtime_text_collaboration • wss: now inserting = ${rendered_text}`
+  //       );
 
-          // and add this parsed content to that doc
-          sharedoc.create(rendered_text, 'rich-text', function(err) {
-            if (err) return dev.error(err);
+  //       // and add this parsed content to that doc
+  //       sharedoc.create(rendered_text, 'rich-text', function(err) {
+  //         if (err) return dev.error(err);
 
-            dev.logverbose(
-              `server-realtime_text_collaboration • wss: doc created`
-            );
+  //         dev.logverbose(
+  //           `server-realtime_text_collaboration • wss: doc created`
+  //         );
 
-            var stream = new WebSocketJSONStream(ws);
-            share.listen(stream);
+  //         var stream = new WebSocketJSONStream(ws);
+  //         share.listen(stream);
 
-            sharedoc.on('op', ops => {
-              dev.logverbose(
-                `server-realtime_text_collaboration • wss: new op for requested_querystring = ${requested_querystring}`
-              );
-            });
-          });
-        });
-    }
-  });
+  //         sharedoc.on('op', ops => {
+  //           dev.logverbose(
+  //             `server-realtime_text_collaboration • wss: new op for requested_querystring = ${requested_querystring}`
+  //           );
+  //         });
+  //       });
+  //     });
+  // }
+  // });
 
   // app.use('connect', (res, req, next) => {
   //   dev.log(`server-realtime_text_collaboration • loaded document`);
