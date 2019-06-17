@@ -135,7 +135,10 @@ export default {
 <style lang="scss">
 .pinp-container {
   height: 100% !important;  
+  min-width: 44px;
 
+  box-sizing: content-box !important;
+  padding-right: 50px;  
   // transition: all .1s cubic-bezier(0.19, 1, 0.22, 1);
 
   // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
@@ -154,6 +157,7 @@ export default {
   background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color-vertical) var(--gridstep_before),var(--grid-color-vertical) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color-horizontal) var(--gridstep_before),var(--grid-color-horizontal) var(--gridstep));
   background-repeat: no-repeat;
   background-size: 100% 100%;
+  background-position: top left;
 
   &:not(.is--showing_grid) {
     // background-image: none;
