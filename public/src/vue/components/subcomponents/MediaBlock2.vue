@@ -27,7 +27,7 @@
         v-if="mediaColorFromFirstAuthor"
       />
 
-      <div class="draggabilly_handle" data-draggabilly_handle
+      <div class="handle" ref="draggabilly_handle"
       />
 
       <!-- <template v-if="is_hovered">
@@ -49,7 +49,7 @@
         </div>
       </template> -->
 
-      <!-- <template v-if="is_hovered && !is_resized">
+      <template v-if="is_hovered && !is_resized">
         <div class="handle handle_resizeMedia handle_resizeMedia_bottomright">
           <div
             @mousedown.stop.prevent="resizeMedia('mouse', 'horizontal_vertical')"
@@ -78,7 +78,7 @@
             </div>
           </div>
         </template>
-      </template> -->
+      </template>
 
     </div>
   </div>
@@ -152,21 +152,26 @@ export default {
   mounted() {
     console.log(`MOUNTED • MediaBlock2: mounted`);
     this.$el.pinp = this.pinp_grid.add(this.$el);
-    debugger;
-    this.$el.draggie =   this.$el.pinp.dragInstance;
+    this.$el.draggie = this.$el.pinp.dragInstance;
+
+    this.$el.draggie.handles = [
+      this.$refs.draggabilly_handle
+    ];
+    this.$emit('triggerPackeryLayout');
 
     // this.$el.draggie = new Draggabilly(this.$el, {
     //   handle: '[data-draggabilly_handle]'
     // });
-    // this.$el.draggie.on('dragStart', () => {
-    //   this.$emit('dragStarted');      
-    // });
-    // this.$el.draggie.on('dragEnd', () => {
-    //   this.$emit('dragEnded');      
-    // });
-    // this.$el.draggie.on('staticClick', () => {
-    //   this.openMedia();
-    // });
+    this.$el.draggie.on('dragStart', () => {
+      this.$emit('dragStarted');      
+    });
+    this.$el.draggie.on('dragEnd', () => {
+      this.$emit('dragEnded');      
+    });
+    this.$el.draggie.on('staticClick', () => {
+      this.openMedia();
+    });
+
     // packeryEvents.$emit('draggie', {
     //   draggie: this.$el.draggie,
     //   node: this.$el.parentNode
@@ -365,8 +370,9 @@ export default {
   box-sizing: border-box;
   transition: all .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
 
-  &.is-dragging, &.is-positioning-post-drag {
+  &.is-dragging, &.is-positioning-post-drag, &.last-dragged {
     z-index: 2;
+    // transition: none;
 
     .packery-item-content {
       box-shadow: none !important;

@@ -13,6 +13,7 @@
       <!-- <div class="stamp stamp2"></div> -->
 
       <MediaBlock2
+        v-if="pinp_grid"
         v-for="media in medias" :key="media.metaFileName"
         :pinp_grid="pinp_grid"
         :media="media"
@@ -26,6 +27,7 @@
         @dragEnded="hideGrid"
         @resizeStarted="showGrid"
         @resizeEnded="hideGrid"
+        @triggerPackeryLayout="triggerPackeryLayout"
       />
 
         <!-- <div 
@@ -42,7 +44,7 @@
 <script>
 import MediaBlock2 from './subcomponents/MediaBlock2.vue';
 // import {packeryEvents} from 'vue-packery-plugin';
-import pinp from './pinp/index.js';
+import pinp from 'pinp';
 
 export default {
   props: {
@@ -76,7 +78,7 @@ export default {
         grid: [40, 40],
         maxSolverIterations: 999, 
         noOOB: true,
-        pushBehavior: 'both', // 'horizontal', 'vertical' or 'both'
+        pushBehavior: 'horizontal', // 'horizontal', 'vertical' or 'both'
         updateContainerHeight: false,
         updateContainerWidth: true,
       
@@ -88,20 +90,20 @@ export default {
   
   created() {
     console.log(`MOUNTED • MediasBlock2: created`);
-    this.pinp_options.container = this.$refs.pinp_container;
-    this.pinp_grid = new pinp(this.pinp_options);
-    this.triggerPackeryLayout();
   },
   mounted() {
     console.log(`MOUNTED • MediasBlock2: mounted`);
 
+    this.pinp_options.container = this.$refs.pinp_container;
+    this.pinp_grid = new pinp(this.pinp_options);
+    this.triggerPackeryLayout();
   },
   beforeDestroy() {
   },
 
   watch: {
     'medias': function() {
-      // this.triggerPackeryLayout();
+      this.triggerPackeryLayout();
     }
   },
   computed: {
@@ -135,10 +137,6 @@ export default {
   height: 100% !important;  
 
   // transition: all .1s cubic-bezier(0.19, 1, 0.22, 1);
-
-  // // Configuration
-  --gridstep: 40px;
-  --gridstep_before: calc(var(--gridstep) - 1px);
 
   // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
   // background-repeat: no-repeat;
