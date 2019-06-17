@@ -14,6 +14,7 @@
 
       <MediaBlock2
         v-for="media in medias" :key="media.metaFileName"
+        :pinp_grid="pinp_grid"
         :media="media"
         :folder="folder"
         :slugFolderName="slugFolderName"
@@ -26,7 +27,6 @@
         @resizeStarted="showGrid"
         @resizeEnded="hideGrid"
       />
-
 
         <!-- <div 
           class="packery-item" 
@@ -77,7 +77,7 @@ export default {
         maxSolverIterations: 999, 
         noOOB: true,
         pushBehavior: 'both', // 'horizontal', 'vertical' or 'both'
-        updateContainerHeight: true,
+        updateContainerHeight: false,
         updateContainerWidth: true,
       
         willUpdate: function () {}, 
@@ -87,18 +87,21 @@ export default {
   },
   
   created() {
-  },
-  mounted() {
+    console.log(`MOUNTED • MediasBlock2: created`);
     this.pinp_options.container = this.$refs.pinp_container;
     this.pinp_grid = new pinp(this.pinp_options);
     this.triggerPackeryLayout();
+  },
+  mounted() {
+    console.log(`MOUNTED • MediasBlock2: mounted`);
+
   },
   beforeDestroy() {
   },
 
   watch: {
     'medias': function() {
-      this.triggerPackeryLayout();
+      // this.triggerPackeryLayout();
     }
   },
   computed: {
@@ -112,14 +115,7 @@ export default {
   methods: {
     triggerPackeryLayout() {      
       if(this.pinp_grid) {
-        this.$nextTick(() => {
-          var boxes = this.$refs.pinp_container.querySelectorAll('.packery-item');
-          this.pinp_grid.update();    
-          for (var index = 0; index < boxes.length; index++) {
-            this.pinp_grid.add(boxes[index])
-          }
-          this.pinp_grid.update();    
-        });
+        this.pinp_grid.update();    
       }
       
       // this.$forceUpdate();

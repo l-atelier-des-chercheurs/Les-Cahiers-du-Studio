@@ -92,6 +92,7 @@ import { setTimeout } from 'timers';
 export default {
   props: {
     media: Object,
+    pinp_grid: Object,
     folder: Object,
     slugFolderName: String,
     base_edge: Number,
@@ -150,6 +151,10 @@ export default {
 
   mounted() {
     console.log(`MOUNTED • MediaBlock2: mounted`);
+    this.$el.pinp = this.pinp_grid.add(this.$el);
+    debugger;
+    this.$el.draggie =   this.$el.pinp.dragInstance;
+
     // this.$el.draggie = new Draggabilly(this.$el, {
     //   handle: '[data-draggabilly_handle]'
     // });
@@ -166,6 +171,7 @@ export default {
     //   draggie: this.$el.draggie,
     //   node: this.$el.parentNode
     // });
+
 
     this.$nextTick(() => {
       this.is_mounted = true;
