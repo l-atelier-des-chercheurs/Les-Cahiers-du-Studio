@@ -27,7 +27,7 @@
         v-if="mediaColorFromFirstAuthor"
       />
 
-      <div class="handle" data-draggabilly_handle ref="handle"
+      <div class="draggabilly_handle" data-draggabilly_handle
       />
 
       <!-- <template v-if="is_hovered">
@@ -558,6 +558,19 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
+}
+
+.draggabilly_handle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;left: 0;
+  // z-index: 1;
+  // background-color: yellow;
+
+  html.touchevents & {
+    display: none;
+  }
 }
 
 .handle {
