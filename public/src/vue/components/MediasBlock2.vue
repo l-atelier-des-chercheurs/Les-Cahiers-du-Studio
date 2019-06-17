@@ -2,17 +2,17 @@
   <div>
 
     <div
-      class='packery-container'
+      class='pinp-container'
       :class="{ 'is--showing_grid' : show_grid }"
       ref="packery"
-      :style="`padding: ${grid_options.gutter/2}px; --gridstep: ${grid_options.columnWidth + grid_options.gutter}px`"
     >
+      <!-- :style="`padding: ${grid_options.gutter/2}px; --gridstep: ${grid_options.columnWidth + grid_options.gutter}px`" -->
       <!-- <div class="packery-grid-sizer"></div> -->
 
       <!-- <div class="stamp stamp1"></div> -->
       <!-- <div class="stamp stamp2"></div> -->
 
-      <MediaBlock
+      <MediaBlock2
         v-for="media in medias" :key="media.metaFileName"
         :media="media"
         :folder="folder"
@@ -21,21 +21,27 @@
         :rowHeight="grid_options.rowHeight"
         :base_edge="base_edge"
         :gutter="grid_options.gutter"
-        @triggerPackeryLayout="triggerPackeryLayout()"
         @dragStarted="showGrid"
         @dragEnded="hideGrid"
         @resizeStarted="showGrid"
         @resizeEnded="hideGrid"
       />
 
+
+
+        <!-- <div class="pinp-box" style="width: 100px; height: 100px; background-color: rgb(142,44,163)"></div>
+        <div class="pinp-box" style="width: 200px; height: 200px; background-color: rgb(0,179,149)"></div>
+        <div class="pinp-box" style="width: 50px; height: 50px; background-color: rgb(255,244,155)"></div>
+        <div class="pinp-box" style="width: 200px; height: 200px; background-color: rgb(91,3,41)"></div> -->
+
     </div>
     
   </div>
 </template>
 <script>
-import MediaBlock from './subcomponents/MediaBlock.vue';
+import MediaBlock2 from './subcomponents/MediaBlock2.vue';
 // import {packeryEvents} from 'vue-packery-plugin';
-import pinp from 'pinp';
+import pinp from './pinp/index.js';
 
 export default {
   props: {
@@ -44,7 +50,7 @@ export default {
     slugFolderName: String
   },
   components: {
-    MediaBlock
+    MediaBlock2
   },
   data() {
     return {
@@ -61,14 +67,16 @@ export default {
         // originTop: false
         // stagger: 30
       },
+
+      pinp_grid: undefined,
       pinp_options: {
-        container: '.packery-container', // can be HTMLElement or string selector
-        debug: true,
-        grid: [50, 50],
+        container: '.pinp-container', // can be HTMLElement or string selector
+        debug: false,
+        grid: [40, 40],
         maxSolverIterations: 999, 
         noOOB: true,
         pushBehavior: 'both', // 'horizontal', 'vertical' or 'both'
-        updateContainerHeight: true,
+        updateContainerHeight: false,
         updateContainerWidth: true,
       
         willUpdate: function () {}, 
@@ -80,19 +88,15 @@ export default {
   created() {
   },
   mounted() {
-    const grid = pinp(this.options);
-    var boxes = document.querySelectorAll('.packery-item')
-    for (var index = 0; index < boxes.length; index++) {
-      grid.add(boxes[index])
-    }
-    grid.update();    
+    this.pinp_grid = pinp(this.pinp_options);
+    this.triggerPackeryLayout();
   },
   beforeDestroy() {
   },
 
   watch: {
     'medias': function() {
-      // this.triggerPackeryLayout();
+      this.triggerPackeryLayout();
     }
   },
   computed: {
@@ -104,8 +108,19 @@ export default {
     }
   },
   methods: {
-    triggerPackeryLayout() {
-      console.log('Triggered packery layout');
+    triggerPackeryLayout() {      
+      if(this.pinp_grid) {
+        this.$nextTick(() => {
+          var boxes = document.querySelectorAll('.packery-item');
+          for (var index = 0; index < boxes.length; index++) {
+            this.pinp_grid.add(boxes[index])
+          }
+
+          debugger;
+          this.pinp_grid.update();    
+        });
+      }
+      
       // this.$forceUpdate();
       // packeryEvents.$emit('layout', this.$refs.packery);
     },
@@ -119,8 +134,8 @@ export default {
 }
 </script>
 <style lang="scss">
-.packery-container {
-  height: 100%;  
+.pinp-container {
+  height: 100% !important;  
 
   // transition: all .1s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -153,27 +168,9 @@ export default {
     --grid-color-vertical: var(--grid-color);
   }
 }
-/* .packery-grid-sizer {
-  width: 25px;
-  height: 25px;
-} */
-// /* position stamp elements with CSS */
-// .stamp {
-//   position: absolute;
-//   background: orange;
-//   /* border: 4px dotted black; */
-// }
-// .stamp1 {
-//   left: 0px;
-//   top: 0px;
-//   width: 250px;
-//   height: 200px;
-// }
-// .stamp2 {
-//   right: 10%;
-//   top: 20px;
-//   width: 70%;
-//   height: 30px;
-// }
 
+
+.pinp-box {
+  pointer-events: auto;
+}
 </style>

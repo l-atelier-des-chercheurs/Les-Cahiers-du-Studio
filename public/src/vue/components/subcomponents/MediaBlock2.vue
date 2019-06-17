@@ -50,7 +50,7 @@
         </div>
       </template> -->
 
-      <template v-if="is_hovered && !is_resized">
+      <!-- <template v-if="is_hovered && !is_resized">
         <div class="handle handle_resizeMedia handle_resizeMedia_bottomright">
           <div
             @mousedown.stop.prevent="resizeMedia('mouse', 'horizontal_vertical')"
@@ -79,7 +79,7 @@
             </div>
           </div>
         </template>
-      </template>
+      </template> -->
 
     </div>
   </div>
@@ -127,6 +127,8 @@ export default {
   },
   
   created() {
+    console.log(`MOUNTED • MediaBlock2: created`);
+
     if(this.media.type === 'text') {
       this.mediaSize.width = 1 + this.base_edge;
       this.mediaSize.height = 1 + this.base_edge;
@@ -148,12 +150,9 @@ export default {
   },
 
   mounted() {
+    console.log(`MOUNTED • MediaBlock2: mounted`);
     // this.$el.draggie = new Draggabilly(this.$el, {
     //   handle: '[data-draggabilly_handle]'
-    // });
-    // packeryEvents.$emit('draggie', {
-    //   draggie: this.$el.draggie,
-    //   node: this.$el.parentNode
     // });
     // this.$el.draggie.on('dragStart', () => {
     //   this.$emit('dragStarted');      
@@ -164,6 +163,10 @@ export default {
     // this.$el.draggie.on('staticClick', () => {
     //   this.openMedia();
     // });
+    // packeryEvents.$emit('draggie', {
+    //   draggie: this.$el.draggie,
+    //   node: this.$el.parentNode
+    // });
 
     this.$nextTick(() => {
       this.is_mounted = true;
@@ -171,8 +174,8 @@ export default {
 
   },
   beforeDestroy() {
-    this.$el.draggie.destroy();
-    this.$el.draggie = null;
+    // this.$el.draggie.destroy();
+    // this.$el.draggie = null;
   },
   watch: {
     'mediaSize': { 
@@ -180,12 +183,12 @@ export default {
         if(this.is_mounted) {
           // this.$emit('triggerPackeryLayout');
         }
-        this.checkTextOverflow();
+        // this.checkTextOverflow();
       },
       deep: true
     },
     'media.content': function() {
-      this.checkTextOverflow();
+      // this.checkTextOverflow();
     },
     'media.w': function() {
       this.setMediaSizeFromMeta();
@@ -353,11 +356,10 @@ export default {
   cursor: -moz-grabbing;
 }
 .packery-item {
-  /* padding: 1rem; */
-  /* border: 0.2rem dashed #f4be41; */
+  border: 0.2rem dashed #f4be41;
   box-sizing: border-box;
   transition: all .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
-  // padding: 5px;
+  // margin: 4px;
 
   &.is-dragging, &.is-positioning-post-drag {
     z-index: 2;

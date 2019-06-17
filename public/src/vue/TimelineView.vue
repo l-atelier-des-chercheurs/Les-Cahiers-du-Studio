@@ -127,7 +127,7 @@
                     </div>
                   </div>
 
-                  <MediasBlock 
+                  <MediasBlock2
                     v-if="segment.medias.length > 0"
                     :medias="segment.medias"
                     :folder="folder"
@@ -193,6 +193,7 @@
 </template>
 <script>
 import MediasBlock from './components/MediasBlock.vue';
+import MediasBlock2 from './components/MediasBlock2.vue';
 import Sidebar from './components/Sidebar.vue';
 import EditFolder from './components/modals/EditFolder.vue';
 import AddMedias from './components/AddMedias.vue';
@@ -209,7 +210,7 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediasBlock,
+    MediasBlock2,
     AddMedias,
     EditMedia,
     Sidebar,
