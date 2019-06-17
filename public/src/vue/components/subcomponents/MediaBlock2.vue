@@ -27,7 +27,7 @@
         v-if="mediaColorFromFirstAuthor"
       />
 
-      <div class="handle" ref="draggabilly_handle"
+      <div class="handle" data-draggabilly_handle ref="handle"
       />
 
       <!-- <template v-if="is_hovered">
@@ -151,12 +151,11 @@ export default {
 
   mounted() {
     console.log(`MOUNTED • MediaBlock2: mounted`);
-    this.$el.pinp = this.pinp_grid.add(this.$el);
+    this.$el.pinp = this.pinp_grid.add(this.$el, {
+      handle: '[data-draggabilly_handle]'
+    });
     this.$el.draggie = this.$el.pinp.dragInstance;
 
-    this.$el.draggie.handles = [
-      this.$refs.draggabilly_handle
-    ];
     this.$emit('triggerPackeryLayout');
 
     // this.$el.draggie = new Draggabilly(this.$el, {
@@ -370,15 +369,17 @@ export default {
   box-sizing: border-box;
   transition: all .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
 
-  &.is-dragging, &.is-positioning-post-drag, &.last-dragged {
+  &.is-dragging, &.is-positioning-post-drag {
     z-index: 2;
-    // transition: none;
 
     .packery-item-content {
       box-shadow: none !important;
       // transform: translateY(0px);
       transition: none;  
     }
+  }
+  &:not(.is-dragging).last-dragged {
+    transition: none;
   }
 }
 
@@ -566,7 +567,6 @@ export default {
   height: 20px;
   top:0;
   left:0;
-  pointer-events: none;
 
   border-style: inherit;
   border-width: 0px;
