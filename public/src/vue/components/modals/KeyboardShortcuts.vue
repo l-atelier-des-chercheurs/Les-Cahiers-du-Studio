@@ -19,11 +19,11 @@
         <table>
           <thead>
             <tr>
-              <th style="width: 50px">
-                Key
+              <th style="width: 150px">
+                {{ $t('key') }}
               </th>
               <th>
-                Marker color
+                {{ $t('author_name') }}
               </th>
               <th></th>
             </tr>
@@ -37,9 +37,12 @@
                 <input type="text" v-model="ks.key" />
               </td>
               <td>
-                <select v-model="ks.marker_color">
-                  <option v-for="mediaColor in $root.state.structure.folders.medias.fields.color.options" :key="mediaColor">
-                    {{ mediaColor }}
+                <select v-model="ks.author_name">
+                  <option :key="'none'">
+                    {{ $t('none') }}
+                  </option>
+                  <option v-for="author_name in allAuthors" :key="author_name">
+                    {{ author_name }}
                   </option>
                 </select>
               </td>
@@ -75,6 +78,7 @@ import alertify from 'alertify.js';
 export default {
   props: {
     read_only: Boolean,
+    folder: Object,
     keyboard_shortcuts: Array
   },
   components: {
@@ -88,6 +92,9 @@ export default {
   mounted() {
   },
   computed: {
+    allAuthors() {
+      return this.folder.hasOwnProperty('authors') && this.folder.authors.length > 0 ? this.folder.authors.map(f => f.name) : []
+    }
   },
   methods: {
     appendShortcut: function() {
@@ -95,7 +102,7 @@ export default {
       this.new_keyboard_shortcuts.push(
         { 
           key: '', 
-          marker_color: '' 
+          author_name: 'none' 
         }
       );
     },

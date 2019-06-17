@@ -327,16 +327,22 @@ export default {
       var key = event.key;
 
       this.$root.settings.keyboard_shortcuts.forEach((k) => {
-        if(k.key === key && k.marker_color !== '') {
-          this.$root.createMedia({
+        if(k.key === key) {
+          let new_media_opts = {
             slugFolderName: this.slugFolderName,
             type: 'folders',
             additionalMeta: {
               type: 'marker',
-              color: k.marker_color,
-              collapsed: true
             }
-          });
+          };
+
+          if(k.author_name !== '' && k.author_name !== 'none') {
+            new_media_opts.additionalMeta.authors = [
+              { name: k.author_name }
+            ];
+          }
+
+          this.$root.createMedia(new_media_opts);     
           this.$eventHub.$emit('timeline.scrollToEnd');
         }
       });

@@ -65,6 +65,7 @@
         
     <KeyboardShortcuts
       v-if="showKeyboardShortcutsList === true"
+      :folder="folder"
       @close="showKeyboardShortcutsList = false"
     >
     </KeyboardShortcuts>

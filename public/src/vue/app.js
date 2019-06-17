@@ -353,9 +353,13 @@ let vm = new Vue({
         if (!mdata.hasOwnProperty('additionalMeta')) {
           mdata.additionalMeta = {};
         }
-        mdata.additionalMeta.authors = [
-          { name: this.$root.settings.current_author_name }
-        ];
+        // only set author to current if no author is already set
+        // (for example, with an author shortcut)
+        if (!mdata.additionalMeta.hasOwnProperty('authors')) {
+          mdata.additionalMeta.authors = [
+            { name: this.$root.settings.current_author_name }
+          ];
+        }
       }
 
       this.$nextTick(() => {

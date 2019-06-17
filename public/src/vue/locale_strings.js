@@ -27,6 +27,9 @@ module.exports = (function() {
       login: 'S’identifier',
       options: 'Options',
       creation_of_the_timeline: 'Création du dossier',
+      author_name: 'Nom de l’auteur associé',
+      key: 'Touche du clavier',
+      none: 'Aucun',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -166,6 +169,9 @@ module.exports = (function() {
       login: 'Login',
       options: 'Options',
       creation_of_the_timeline: 'Creation of the timeline',
+      author_name: 'Associated author',
+      key: 'Key',
+      none: 'None',
 
       loading: 'loading',
       open: 'Open',
