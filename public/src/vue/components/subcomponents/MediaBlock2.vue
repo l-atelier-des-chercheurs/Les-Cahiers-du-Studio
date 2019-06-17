@@ -13,7 +13,6 @@
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
     >
-    
       <MediaContent
         v-model="media.content"
         :slugFolderName="slugFolderName"
@@ -356,10 +355,9 @@ export default {
   cursor: -moz-grabbing;
 }
 .packery-item {
-  border: 0.2rem dashed #f4be41;
+  // border: 0.2rem dashed #f4be41;
   box-sizing: border-box;
   transition: all .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
-  // margin: 4px;
 
   &.is-dragging, &.is-positioning-post-drag {
     z-index: 2;

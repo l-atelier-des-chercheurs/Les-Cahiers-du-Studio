@@ -4,7 +4,7 @@
     <div
       class='pinp-container'
       :class="{ 'is--showing_grid' : show_grid }"
-      ref="packery"
+      ref="pinp_container"
     >
       <!-- :style="`padding: ${grid_options.gutter/2}px; --gridstep: ${grid_options.columnWidth + grid_options.gutter}px`" -->
       <!-- <div class="packery-grid-sizer"></div> -->
@@ -28,11 +28,12 @@
       />
 
 
-
-        <!-- <div class="pinp-box" style="width: 100px; height: 100px; background-color: rgb(142,44,163)"></div>
-        <div class="pinp-box" style="width: 200px; height: 200px; background-color: rgb(0,179,149)"></div>
-        <div class="pinp-box" style="width: 50px; height: 50px; background-color: rgb(255,244,155)"></div>
-        <div class="pinp-box" style="width: 200px; height: 200px; background-color: rgb(91,3,41)"></div> -->
+        <!-- <div 
+          class="packery-item" 
+          v-for="media in medias" 
+          :key="media.metaFileName"
+          style="width: 200px; height: 200px; background-color: rgb(0,179,149)"        
+        /> -->
 
     </div>
     
@@ -70,13 +71,13 @@ export default {
 
       pinp_grid: undefined,
       pinp_options: {
-        container: '.pinp-container', // can be HTMLElement or string selector
+        container: undefined,
         debug: false,
         grid: [40, 40],
         maxSolverIterations: 999, 
         noOOB: true,
         pushBehavior: 'both', // 'horizontal', 'vertical' or 'both'
-        updateContainerHeight: false,
+        updateContainerHeight: true,
         updateContainerWidth: true,
       
         willUpdate: function () {}, 
@@ -88,7 +89,8 @@ export default {
   created() {
   },
   mounted() {
-    this.pinp_grid = pinp(this.pinp_options);
+    this.pinp_options.container = this.$refs.pinp_container;
+    this.pinp_grid = new pinp(this.pinp_options);
     this.triggerPackeryLayout();
   },
   beforeDestroy() {
@@ -111,12 +113,11 @@ export default {
     triggerPackeryLayout() {      
       if(this.pinp_grid) {
         this.$nextTick(() => {
-          var boxes = document.querySelectorAll('.packery-item');
+          var boxes = this.$refs.pinp_container.querySelectorAll('.packery-item');
+          this.pinp_grid.update();    
           for (var index = 0; index < boxes.length; index++) {
             this.pinp_grid.add(boxes[index])
           }
-
-          debugger;
           this.pinp_grid.update();    
         });
       }
