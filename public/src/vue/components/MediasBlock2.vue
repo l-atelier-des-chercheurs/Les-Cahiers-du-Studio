@@ -113,6 +113,11 @@ export default {
     'medias': function() {
       this.triggerPinpUpdate();
     },
+    'adjusted_timeline_height': function() {
+      this.$nextTick(() => {
+        this.triggerPinpUpdate();
+      });
+    }
   },
   computed: {
     base_edge() {
@@ -121,17 +126,22 @@ export default {
       }
       return 3;
     },
+    grid_cell_edge_length() {
+      return Math.floor((this.timeline_height - 20) / this.number_of_rows);
+    },
+
     grid_cell_width() {
-      return Math.floor((this.timeline_height - 25) / this.number_of_rows);
+      return this.grid_cell_edge_length;
     }, 
     grid_cell_height() {
-      return this.grid_cell_width;
+      return this.grid_cell_edge_length;
     },
     adjusted_timeline_height() {
-      return this.grid_cell_height * this.number_of_rows;
+      return this.grid_cell_edge_length * this.number_of_rows;
     },
     timeline_margin_top() {
-      return (this.timeline_height - this.adjusted_timeline_height)/2;
+      return 0;
+      // return (this.timeline_height - this.adjusted_timeline_height)/2;
     }
   },
   methods: {

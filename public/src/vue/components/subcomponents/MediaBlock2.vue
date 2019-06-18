@@ -161,9 +161,6 @@ export default {
 
     this.$emit('triggerPinpUpdate');
 
-    // this.$el.draggie = new Draggabilly(this.$el, {
-    //   handle: '[data-draggabilly_handle]'
-    // });
     this.$el.draggie.on('dragStart', () => {
       this.$emit('dragStarted');      
     });
@@ -214,6 +211,8 @@ export default {
         if(this.is_mounted) {
           this.$el.pinp.width = this.mediaWidth;
           this.$el.pinp.height = this.mediaHeight;
+          this.$el.pinp.x = this.mediaLeft;
+          this.$el.pinp.y = this.mediaTop;
           this.$emit('triggerPinpUpdate');
         }
         // this.checkTextOverflow();
