@@ -180,7 +180,7 @@ export default {
   background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color-vertical) var(--gridstep_before),var(--grid-color-vertical) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color-horizontal) var(--gridstep_before),var(--grid-color-horizontal) var(--gridstep));
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  // background-position: top left;
+  background-position: top left;
 
   &:not(.is--showing_grid) {
     // background-image: none;

@@ -183,6 +183,7 @@ export default {
 
   },
   beforeDestroy() {
+    this.$el.pinp.destroy();
     // this.$el.draggie.destroy();
     // this.$el.draggie = null;
   },
@@ -236,6 +237,8 @@ export default {
         '--author-color': this.mediaColorFromFirstAuthor ? this.mediaColorFromFirstAuthor : '#fff',
         width: this.mediaWidth - this.gutter + 'px',
         height: this.mediaHeight - this.gutter + 'px',
+        top: this.gutter/2 + 'px',
+        left: this.gutter/2 + 'px',
       }
     },
     mediaColorFromFirstAuthor() {
@@ -396,7 +399,6 @@ export default {
   background-color: var(--author-color);
 
   border-radius: 4px;
-  margin: 4px;
   // border: 4px solid transparent;
 
   transition: all .8s cubic-bezier(.25,.8,.25,1);  
@@ -589,6 +591,7 @@ export default {
 
   border-style: inherit;
   border-width: 0px;
+  pointer-events: none;
   
   --handle-width: 15px;
   --handle-height: 5px;
@@ -597,8 +600,14 @@ export default {
   justify-content: center;
   align-items: center;
 
+
   html.touchevents & {
     display: none;
+  }
+
+  > * {
+    pointer-events: auto;
+
   }
 
   &.handle_resizeMedia_bottom {
