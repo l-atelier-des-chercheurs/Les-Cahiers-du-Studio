@@ -29,6 +29,7 @@ module.exports = (function() {
       options: 'Options',
       creation_of_the_timeline: 'Création du dossier',
       untitled_document: 'Document sans-titre',
+      back_to_list: 'Retour à la liste',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -174,6 +175,7 @@ module.exports = (function() {
       options: 'Options',
       creation_of_the_timeline: 'Creation of the timeline',
       untitled_document: 'Untitled document',
+      back_to_list: 'Back to list',
 
       loading: 'loading',
       open: 'Open',

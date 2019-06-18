@@ -13,15 +13,17 @@
             <input type="text" ref="nameInput" class="input-xs" v-model="new_name">
             <button 
               type="button" 
-              class="button input-addon-xs" 
-              @click="renameWriteup"
+              class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent" 
+              @click="renameWriteup()"
             >
-              {{ $('save') }}
+              {{ $t('save') }}
             </button>
           </div>
         </span>
       </template>
-      <span class="m_writeupeditor--topbar--buttons">
+      <span class="m_writeupeditor--topbar--buttons"
+        v-if="!show_rename_field"
+      >
         <button type="button" class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
           @click="show_rename_field = !show_rename_field"
         >
@@ -117,7 +119,16 @@ export default {
       });
     },
     renameWriteup() {
+      this.$root.editMedia({ 
+        type: 'folders',
+        slugFolderName: this.slugFolderName, 
+        slugMediaName: this.media.metaFileName,
+        data: {
+          name: this.new_name
+        }
+      });
 
+      this.show_rename_field = false;
     }
   }
 }
