@@ -13,7 +13,6 @@
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
     >
-    
       <MediaContent
         v-model="media.content"
         :slugFolderName="slugFolderName"
@@ -87,12 +86,13 @@
 <script>
 import MediaContent from './MediaContent.vue';
 import { setTimeout } from 'timers';
-import Draggabilly from 'draggabilly';
-import {packeryEvents} from 'vue-packery-plugin';
+// import Draggabilly from 'draggabilly';
+// import {packeryEvents} from 'vue-packery-plugin';
 
 export default {
   props: {
     media: Object,
+    pinp_grid: Object,
     folder: Object,
     slugFolderName: String,
     base_edge: Number,
@@ -110,7 +110,9 @@ export default {
         width: undefined,
         height: undefined,
         pwidth: 0,
-        pheight: 0
+        pheight: 0,
+        top: 0,
+        left: 0
       },
 
       is_resized: false,
@@ -127,6 +129,8 @@ export default {
   },
   
   created() {
+    console.log(`MOUNTED • MediaBlock2: created`);
+
     if(this.media.type === 'text') {
       this.mediaSize.width = 1 + this.base_edge;
       this.mediaSize.height = 1 + this.base_edge;
@@ -144,26 +148,52 @@ export default {
 
     // override with actual media w and h if it exists
     this.setMediaSizeFromMeta();
+    this.setMediaPositionFromMeta();
 
   },
 
   mounted() {
-    this.$el.draggie = new Draggabilly(this.$el, {
+    console.log(`MOUNTED • MediaBlock2: mounted`);
+    this.$el.pinp = this.pinp_grid.add(this.$el, {
       handle: '[data-draggabilly_handle]'
     });
-    packeryEvents.$emit('draggie', {
-      draggie: this.$el.draggie,
-      node: this.$el.parentNode
-    });
+    this.$el.draggie = this.$el.pinp.dragInstance;
+
+    this.$emit('triggerPinpUpdate');
+
     this.$el.draggie.on('dragStart', () => {
       this.$emit('dragStarted');      
     });
     this.$el.draggie.on('dragEnd', () => {
+
+      const x = this.$el.pinp.x;
+      const y = this.$el.pinp.y;
+
+      const x_in_units = Math.round(x / this.columnWidth);
+      const y_in_units = Math.round(y / this.rowHeight);
+
+      this.$root.editMedia({ 
+        type: 'folders',
+        slugFolderName: this.slugFolderName, 
+        slugMediaName: this.media.slugMediaName,
+        data: {
+          t: y_in_units,
+          l: x_in_units
+        }
+      });
+
+
       this.$emit('dragEnded');      
     });
     this.$el.draggie.on('staticClick', () => {
       this.openMedia();
     });
+
+    // packeryEvents.$emit('draggie', {
+    //   draggie: this.$el.draggie,
+    //   node: this.$el.parentNode
+    // });
+
 
     this.$nextTick(() => {
       this.is_mounted = true;
@@ -171,41 +201,60 @@ export default {
 
   },
   beforeDestroy() {
-    this.$el.draggie.destroy();
-    this.$el.draggie = null;
+    this.pinp_grid.remove(this.$el.pinp);
+    // this.$el.draggie.destroy();
+    // this.$el.draggie = null;
   },
   watch: {
     'mediaSize': { 
       handler: function() {
         if(this.is_mounted) {
-          this.$emit('triggerPackeryLayout');
+          this.$el.pinp.width = this.mediaWidth;
+          this.$el.pinp.height = this.mediaHeight;
+          this.$el.pinp.x = this.mediaLeft;
+          this.$el.pinp.y = this.mediaTop;
+          this.$emit('triggerPinpUpdate');
         }
-        this.checkTextOverflow();
+        // this.checkTextOverflow();
       },
       deep: true
     },
     'media.content': function() {
-      this.checkTextOverflow();
+      // this.checkTextOverflow();
     },
     'media.w': function() {
       this.setMediaSizeFromMeta();
     },
     'media.h': function() {
       this.setMediaSizeFromMeta();
-    }
+    },
+    'media.t': function() {
+      this.setMediaPositionFromMeta();
+    },
+    'media.l': function() {
+      this.setMediaPositionFromMeta();
+    },
   },
   computed: {
     itemSize() {
       return {
         width: this.mediaWidth + 'px',
-        height: this.mediaHeight + 'px'
+        height: this.mediaHeight + 'px',
+        top: this.mediaTop + 'px',
+        left: this.mediaLeft + 'px'
       }
     },
     mediaWidth() {
-      return this.mediaSize.width * this.columnWidth + (this.mediaSize.width-1) * this.gutter;
+      return this.mediaSize.width * this.columnWidth;
     },
     mediaHeight() {
-      return  this.mediaSize.height * this.rowHeight + (this.mediaSize.height-1) * this.gutter;
+      return  this.mediaSize.height * this.rowHeight;
+    },
+    mediaLeft() {
+      return this.mediaSize.left * this.columnWidth;
+    },
+    mediaTop() {
+      return this.mediaSize.top * this.rowHeight;
     },
     widthForSizes() {
       // TODO
@@ -218,9 +267,13 @@ export default {
       }
     },
     itemStylesWithSize() {
-      return Object.assign({
-        '--author-color': this.mediaColorFromFirstAuthor ? this.mediaColorFromFirstAuthor : '#fff'
-      }, this.itemSize)
+      return {
+        '--author-color': this.mediaColorFromFirstAuthor ? this.mediaColorFromFirstAuthor : '#fff',
+        width: this.mediaWidth - this.gutter + 'px',
+        height: this.mediaHeight - this.gutter + 'px',
+        top: this.gutter/2 + 'px',
+        left: this.gutter/2 + 'px',
+      }
     },
     mediaColorFromFirstAuthor() {
       return this.$root.mediaColorFromFirstAuthor(this.media, this.folder);
@@ -242,6 +295,14 @@ export default {
       }
       if(this.media.hasOwnProperty('h') && typeof this.media.h === 'number') {
         this.mediaSize.height = this.media.h;
+      }
+    },
+    setMediaPositionFromMeta() {
+      if(this.media.hasOwnProperty('t') && typeof this.media.t === 'number') {
+        this.mediaSize.top = this.media.t;
+      }
+      if(this.media.hasOwnProperty('l') && typeof this.media.l === 'number') {
+        this.mediaSize.left = this.media.l;
       }
     },
     changeItemWidth(increment) {
@@ -353,19 +414,22 @@ export default {
   cursor: -moz-grabbing;
 }
 .packery-item {
-  /* padding: 1rem; */
-  /* border: 0.2rem dashed #f4be41; */
-  box-sizing: border-box;
-  // padding: 5px;
+  // border: 0.2rem dashed #f4be41;
+  // box-sizing: content-box;
+  transition: all .15s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
 
   &.is-dragging, &.is-positioning-post-drag {
     z-index: 2;
 
     .packery-item-content {
-      box-shadow: none !important;
+      // box-shadow: none !important;
       // transform: translateY(0px);
-      transition: none;  
+      // transition: none;  
+      box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
     }
+  }
+  &:not(.is-dragging).last-dragged {
+    transition: none;
   }
 }
 
@@ -377,14 +441,14 @@ export default {
   background-color: var(--author-color);
 
   border-radius: 4px;
-  border: 0px solid black;
+  // border: 4px solid transparent;
 
   transition: all .8s cubic-bezier(.25,.8,.25,1);  
 
   &.is--hovered {
     // background-color: white;
     z-index: 1;
-    transform: translateY(-8px);
+    // transform: translateY(0px);
     box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
   }
 
@@ -546,6 +610,19 @@ export default {
   align-items: center;
 }
 
+.draggabilly_handle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;left: 0;
+  // z-index: 1;
+  // background-color: yellow;
+
+  html.touchevents & {
+    display: none;
+  }
+}
+
 .handle {
   position: absolute;
   z-index: 1;
@@ -553,10 +630,10 @@ export default {
   height: 20px;
   top:0;
   left:0;
-  pointer-events: none;
 
   border-style: inherit;
   border-width: 0px;
+  pointer-events: none;
   
   --handle-width: 15px;
   --handle-height: 5px;
@@ -565,8 +642,13 @@ export default {
   justify-content: center;
   align-items: center;
 
+
   html.touchevents & {
     display: none;
+  }
+
+  > * {
+    pointer-events: auto;
   }
 
   &.handle_resizeMedia_bottom {

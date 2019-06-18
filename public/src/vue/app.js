@@ -22,8 +22,8 @@ Vue.prototype.$auth = auth;
 import slug from 'slugg';
 Vue.prototype.$slug = slug;
 
-import VuePackeryPlugin from 'vue-packery-plugin';
-Vue.use(VuePackeryPlugin);
+// import VuePackeryPlugin from 'vue-packery-plugin';
+// Vue.use(VuePackeryPlugin);
 
 import VuePlyr from 'vue-plyr';
 Vue.use(VuePlyr);

@@ -143,7 +143,7 @@
                     </div>
                   </div>
 
-                  <MediasBlock 
+                  <MediasBlock2
                     v-if="segment.medias.length > 0"
                     :medias="segment.medias"
                     :folder="folder"
@@ -208,7 +208,7 @@
   </div>
 </template>
 <script>
-import MediasBlock from './components/MediasBlock.vue';
+import MediasBlock2 from './components/MediasBlock2.vue';
 import Sidebar from './components/Sidebar.vue';
 import EditFolder from './components/modals/EditFolder.vue';
 import AddMedias from './components/AddMedias.vue';
@@ -226,8 +226,8 @@ export default {
     read_only: Boolean
   },
   components: {
-    MediasBlock,
     WriteUp,
+    MediasBlock2,
     AddMedias,
     EditMedia,
     Sidebar,
@@ -245,7 +245,7 @@ export default {
       current_scroll_event: undefined,
 
       is_realtime: false,
-      timeline_height: 0,
+      timeline_height: window.innerHeight,
       collapse_foldername: false,
 
       show_media_modal_for: false,
@@ -1325,13 +1325,14 @@ export default {
   }
 
   @media screen and (max-width: 50rem) {
-    bottom: 0;
+    top: auto !important;
+    bottom: 20px;
     font-size:.7em;
   }
 
   > * {
     margin: 0 auto;
-    width: 250px;
+    max-width: 250px;
     height: 40px;
     background-color: var(--color-noir);
     color: white;
@@ -1345,6 +1346,7 @@ export default {
 
     @media screen and (max-width: 50rem) {
       width: 100%;
+      max-width: none;
       border-radius: 0;
       height: 20px;
     }
