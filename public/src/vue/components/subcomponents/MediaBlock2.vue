@@ -156,7 +156,7 @@ export default {
     });
     this.$el.draggie = this.$el.pinp.dragInstance;
 
-    this.$emit('triggerPackeryLayout');
+    this.$emit('triggerPinpUpdate');
 
     // this.$el.draggie = new Draggabilly(this.$el, {
     //   handle: '[data-draggabilly_handle]'
@@ -190,7 +190,9 @@ export default {
     'mediaSize': { 
       handler: function() {
         if(this.is_mounted) {
-          // this.$emit('triggerPackeryLayout');
+          this.$el.pinp.width = this.mediaWidth;
+          this.$el.pinp.height = this.mediaHeight;
+          this.$emit('triggerPinpUpdate');
         }
         // this.checkTextOverflow();
       },
@@ -214,10 +216,10 @@ export default {
       }
     },
     mediaWidth() {
-      return this.mediaSize.width * this.columnWidth + (this.mediaSize.width-1) * this.gutter;
+      return this.mediaSize.width * this.columnWidth;
     },
     mediaHeight() {
-      return  this.mediaSize.height * this.rowHeight + (this.mediaSize.height-1) * this.gutter;
+      return  this.mediaSize.height * this.rowHeight;
     },
     widthForSizes() {
       // TODO

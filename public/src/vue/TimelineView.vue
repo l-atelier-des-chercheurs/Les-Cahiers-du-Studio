@@ -228,7 +228,7 @@ export default {
       current_scroll_event: undefined,
 
       is_realtime: false,
-      timeline_height: 0,
+      timeline_height: window.innerHeight,
       collapse_foldername: false,
 
       show_media_modal_for: false,

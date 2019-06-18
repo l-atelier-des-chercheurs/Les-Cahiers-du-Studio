@@ -1,16 +1,18 @@
 <template>
   <div>
-
+    
     <div
       class='pinp-container'
-      :class="{ 'is--showing_grid' : show_grid }"
+      :class="{ 'is--showing_grid' : true }"
+      :style="`
+        padding: ${gutter/2}px; 
+        --gridstep: ${grid_cell_height + gutter}px;
+        height: ${adjusted_timeline_height}px;  
+      `"
       ref="pinp_container"
     >
-      <!-- :style="`padding: ${grid_options.gutter/2}px; --gridstep: ${grid_options.columnWidth + grid_options.gutter}px`" -->
-      <!-- <div class="packery-grid-sizer"></div> -->
 
-      <!-- <div class="stamp stamp1"></div> -->
-      <!-- <div class="stamp stamp2"></div> -->
+      <!-- <div class="packery-grid-sizer"></div> -->
 
       <MediaBlock2
         v-if="pinp_grid"
@@ -19,15 +21,15 @@
         :media="media"
         :folder="folder"
         :slugFolderName="slugFolderName"
-        :columnWidth="grid_options.columnWidth"
-        :rowHeight="grid_options.rowHeight"
+        :columnWidth="grid_cell_width"
+        :rowHeight="grid_cell_height"
         :base_edge="base_edge"
-        :gutter="grid_options.gutter"
+        :gutter="gutter"
         @dragStarted="showGrid"
         @dragEnded="hideGrid"
         @resizeStarted="showGrid"
         @resizeEnded="hideGrid"
-        @triggerPackeryLayout="triggerPackeryLayout"
+        @triggerPinpUpdate="triggerPinpUpdate"
       />
 
         <!-- <div 
@@ -50,7 +52,8 @@ export default {
   props: {
     medias: Array,
     folder: Object,
-    slugFolderName: String
+    slugFolderName: String,
+    timeline_height: Number
   },
   components: {
     MediaBlock2
@@ -58,33 +61,23 @@ export default {
   data() {
     return {
       show_grid: false,
-      grid_options: {
-        itemSelector: ".packery-item", 
-        percentPosition: true,
-        gutter: 4,
-        columnWidth: 40,
-        rowHeight: 40,
-        horizontal: true,
-        stamp: '.stamp',
-        transitionDuration: '0.4s',
-        // originTop: false
-        // stagger: 30
-      },
+      // grid_options: {
+      //   itemSelector: ".packery-item", 
+      //   percentPosition: true,
+      //   gutter: 4,
+      //   columnWidth: 40,
+      //   rowHeight: 40,
+      //   horizontal: true,
+      //   stamp: '.stamp',
+      //   transitionDuration: '0.4s',
+      //   // originTop: false
+      //   // stagger: 30
+      // },
 
       pinp_grid: undefined,
-      pinp_options: {
-        container: undefined,
-        debug: false,
-        grid: [40, 40],
-        maxSolverIterations: 999, 
-        noOOB: true,
-        pushBehavior: 'horizontal', // 'horizontal', 'vertical' or 'both'
-        updateContainerHeight: false,
-        updateContainerWidth: true,
-      
-        willUpdate: function () {}, 
-        didUpdate: function () {}        
-      }
+      pinp_update_on_next_tick: false,
+      gutter: 0
+
     }
   },
   
@@ -94,17 +87,32 @@ export default {
   mounted() {
     console.log(`MOUNTED • MediasBlock2: mounted`);
 
-    this.pinp_options.container = this.$refs.pinp_container;
-    this.pinp_grid = new pinp(this.pinp_options);
-    this.triggerPackeryLayout();
+    this.pinp_grid = new pinp({
+        container: this.$refs.pinp_container,
+        debug: false,
+        grid: [
+          this.grid_cell_width,
+          this.grid_cell_height
+        ],
+        gutter: 0,
+        maxSolverIterations: 999, 
+        noOOB: true,
+        pushBehavior: 'horizontal', // 'horizontal', 'vertical' or 'both'
+        updateContainerHeight: false,
+        updateContainerWidth: true,
+      
+        willUpdate: function () {}, 
+        didUpdate: function () {}        
+      });
+    this.triggerPinpUpdate();
   },
   beforeDestroy() {
   },
 
   watch: {
     'medias': function() {
-      this.triggerPackeryLayout();
-    }
+      this.triggerPinpUpdate();
+    },
   },
   computed: {
     base_edge() {
@@ -112,12 +120,29 @@ export default {
         return 2;
       }
       return 3;
+    },
+    grid_cell_width() {
+      return Math.floor((this.timeline_height - 25)/18);
+    }, 
+    grid_cell_height() {
+      return this.grid_cell_width;
+    },
+    adjusted_timeline_height() {
+      return Math.floor((this.timeline_height - 25)/18) * 18;
+    },
+    timeline_margin_top() {
+      return (this.timeline_height - this.adjusted_timeline_height)/2;
     }
   },
   methods: {
-    triggerPackeryLayout() {      
-      if(this.pinp_grid) {
-        this.pinp_grid.update();    
+    triggerPinpUpdate() {  
+      if(this.pinp_grid && !this.pinp_update_on_next_tick) {
+        this.pinp_update_on_next_tick = true;
+        this.$nextTick(() => {
+          console.log(`MOUNTED • MediasBlock2: triggerPinpUpdate`);
+          this.pinp_grid.update();    
+          this.pinp_update_on_next_tick = false;
+        });
       }
       
       // this.$forceUpdate();
@@ -134,11 +159,11 @@ export default {
 </script>
 <style lang="scss">
 .pinp-container {
-  height: 100% !important;  
-  min-width: 44px;
+  // height: 100% !important;  
+  // min-width: 44px;
 
-  box-sizing: content-box !important;
-  padding-right: 50px;  
+  // box-sizing: content-box !important;
+  // padding-right: 100px !important;  
   // transition: all .1s cubic-bezier(0.19, 1, 0.22, 1);
 
   // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
@@ -157,7 +182,7 @@ export default {
   background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color-vertical) var(--gridstep_before),var(--grid-color-vertical) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color-horizontal) var(--gridstep_before),var(--grid-color-horizontal) var(--gridstep));
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  background-position: top left;
+  // background-position: top left;
 
   &:not(.is--showing_grid) {
     // background-image: none;
