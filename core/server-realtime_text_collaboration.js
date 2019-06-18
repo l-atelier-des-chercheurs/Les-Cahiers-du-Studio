@@ -1,5 +1,5 @@
 // var share = require('./sharedb-server');
-// var ShareDB_logger = require('sharedb-logger');
+var ShareDB_logger = require('sharedb-logger');
 var ShareDB = require('sharedb');
 ShareDB.types.register(require('rich-text').type);
 
@@ -29,107 +29,42 @@ module.exports = function(server) {
   //   dev.logverbose(`-> snapshot = ${JSON.stringify(snapshot_as_delta)}`);
   // });
 
-  const sharewss = new WebSocket.Server({ noServer: true });
+  const wss = new WebSocket.Server({ noServer: true });
 
-  sharewss.on('connection', client => {
+  wss.on('connection', client => {
     dev.logfunction(
-      `server-realtime_text_collaboration • sharewss new client connection`
+      `server-realtime_text_collaboration • wss new client connection`
     );
 
     client.id = uuid();
     client.isAlive = true;
 
     dev.logverbose(
-      `server-realtime_text_collaboration • sharewss: a new client ${
+      `server-realtime_text_collaboration • wss: a new client ${
         client.id
       } connected.`
     );
-
-    // "?type=projects&slugFolderName=publi&metaFileName=text-20181228_122605-shl.md.txt"
-    // const requested_querystring = req.url.substring(1);
-    // const requested_textmedia_infos = new URLSearchParams(
-    //   requested_querystring
-    // );
-    // const textmedia_infos = {
-    //   type: requested_textmedia_infos.get('type'),
-    //   slugFolderName: requested_textmedia_infos.get('slugFolderName'),
-    //   metaFileName: requested_textmedia_infos.get('metaFileName')
-    // };
-
-    // dev.logverbose(
-    //   `—> requested textMedias ${JSON.stringify(textmedia_infos, null, 4)}`
-    // );
-
-    // if (sharedoc.data == null) {
-    //   // parse requested_resource from search params
-    //   file
-    //     .readMediaList({
-    //       type: textmedia_infos.type,
-    //       medias_list: [
-    //         {
-    //           slugFolderName: textmedia_infos.slugFolderName,
-    //           metaFileName: textmedia_infos.metaFileName
-    //         }
-    //       ]
-    //     })
-    //     .then(mediaData => {
-    //       dev.logverbose(
-    //         `server-realtime_text_collaboration • sharewss: got base text media`
-    //       );
-
-    //       const text_content = Object.values(
-    //         Object.values(mediaData)[0].medias
-    //       )[0].content;
-    //       let rendered_text = quillRender([{ insert: text_content }]);
-
-    //       dev.logverbose(
-    //         `server-realtime_text_collaboration • sharewss: now inserting = ${rendered_text}`
-    //       );
-
-    //       // and add this parsed content to that doc
-    //       sharedoc.create(rendered_text, 'rich-text', function(err) {
-    //         if (err) return dev.error(err);
-
-    //         dev.logverbose(
-    //           `server-realtime_text_collaboration • sharewss: doc created`
-    //         );
-
-    //         var stream = new WebSocketJSONStream(ws);
-    //         share.listen(stream);
-
-    //         sharedoc.on('op', ops => {
-    //           dev.logverbose(
-    //             `server-realtime_text_collaboration • sharewss: new op for requested_querystring = ${requested_querystring}`
-    //           );
-    //         });
-    //       });
-    //     });
-    // }
 
     share.listen(new WebSocketJSONStream(client));
 
     client.on('message', function(data, flags) {
       dev.logverbose(
-        `server-realtime_text_collaboration • sharewss: message for ${
-          client.id
-        }`
+        `server-realtime_text_collaboration • wss: message for ${client.id}`
       );
     });
 
     client.on('pong', function(data, flags) {
-      dev.logverbose(
-        `server-realtime_text_collaboration • sharewss: pong received for ${
-          client.id
-        }`
-      );
+      // dev.logverbose(
+      //   `server-realtime_text_collaboration • wss: pong received for ${
+      //     client.id
+      //   }`
+      // );
       client.isAlive = true;
     });
 
-    client.on('message', function() {});
-
     client.on('error', function(error) {
       dev.error(
-        `server-realtime_text_collaboration • sharewss: client connection errored for ${
+        `server-realtime_text_collaboration • wss: client connection errored for ${
           client.id
         } with error = ${error}`
       );
@@ -140,27 +75,91 @@ module.exports = function(server) {
     const pathname = url.parse(request.url).pathname;
 
     if (pathname === '/sharedb') {
-      sharewss.handleUpgrade(request, socket, head, function done(ws) {
-        sharewss.emit('connection', ws, request);
+      wss.handleUpgrade(request, socket, head, function done(ws) {
+        wss.emit('connection', ws, request);
       });
     }
   });
 
   setInterval(function() {
-    sharewss.clients.forEach(function(client) {
+    wss.clients.forEach(function(client) {
       if (client.isAlive === false) return client.terminate();
 
       client.isAlive = false;
       client.ping();
-      dev.logverbose(
-        `server-realtime_text_collaboration • sharewss: ping sent for ${
-          client.id
-        }`
-      );
+      // dev.logverbose(
+      //   `server-realtime_text_collaboration • wss: ping sent for ${
+      //     client.id
+      //   }`
+      // );
     });
   }, 5000);
 
-  // app.use((res, req, next) => {
+  // share.use('readSnapshots', (ctx, cb) => {
+  //   // ('?type=projects&slugFolderName=publi&metaFileName=text-20181228_122605-shl.md.txt');
+
+  //   const requested_querystring = req.url.substring(1);
+  //   const requested_textmedia_infos = new URLSearchParams(
+  //     requested_querystring
+  //   );
+  //   const textmedia_infos = {
+  //     type: requested_textmedia_infos.get('type'),
+  //     slugFolderName: requested_textmedia_infos.get('slugFolderName'),
+  //     metaFileName: requested_textmedia_infos.get('metaFileName')
+  //   };
+
+  //   dev.logverbose(
+  //     `—> requested textMedias ${JSON.stringify(textmedia_infos, null, 4)}`
+  //   );
+
+  // if (sharedoc.data == null) {
+  //   // parse requested_resource from search params
+  //   file
+  //     .readMediaList({
+  //       type: textmedia_infos.type,
+  //       medias_list: [
+  //         {
+  //           slugFolderName: textmedia_infos.slugFolderName,
+  //           metaFileName: textmedia_infos.metaFileName
+  //         }
+  //       ]
+  //     })
+  //     .then(mediaData => {
+  //       dev.logverbose(
+  //         `server-realtime_text_collaboration • wss: got base text media`
+  //       );
+
+  //       const text_content = Object.values(
+  //         Object.values(mediaData)[0].medias
+  //       )[0].content;
+  //       let rendered_text = quillRender([{ insert: text_content }]);
+
+  //       dev.logverbose(
+  //         `server-realtime_text_collaboration • wss: now inserting = ${rendered_text}`
+  //       );
+
+  //       // and add this parsed content to that doc
+  //       sharedoc.create(rendered_text, 'rich-text', function(err) {
+  //         if (err) return dev.error(err);
+
+  //         dev.logverbose(
+  //           `server-realtime_text_collaboration • wss: doc created`
+  //         );
+
+  //         var stream = new WebSocketJSONStream(ws);
+  //         share.listen(stream);
+
+  //         sharedoc.on('op', ops => {
+  //           dev.logverbose(
+  //             `server-realtime_text_collaboration • wss: new op for requested_querystring = ${requested_querystring}`
+  //           );
+  //         });
+  //       });
+  //     });
+  // }
+  // });
+
+  // app.use('connect', (res, req, next) => {
   //   dev.log(`server-realtime_text_collaboration • loaded document`);
 
   //   // Create the document if it hasn't been already
@@ -171,6 +170,4 @@ module.exports = function(server) {
 
   //   next();
   // });
-
-  // // Sockets Ping, Keep Alive
 };

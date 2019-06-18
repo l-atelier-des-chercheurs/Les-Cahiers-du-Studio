@@ -32,6 +32,31 @@
       </div>
     </SidebarSection>
 
+
+    <SidebarSection>
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t('writeup') }}
+          <button
+            type="button"
+            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="showWriteupModal = true"
+          >
+            {{ $t('open') }}
+          </button>
+        </h3>
+      </div>
+      <div slot="body">
+      </div>
+    </SidebarSection>
+
+    <WriteUp
+      v-if="showWriteupModal === true"
+      @close="showWriteupModal = false"
+      :slugFolderName="slugFolderName"
+      :medias="medias"
+    />
+
     <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
@@ -148,7 +173,7 @@
           <button
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="openListMediasModal()"
+            @click="this.showMediasListModal = true"
           >
             {{ $t('fullscreen') }}
           </button>
@@ -157,7 +182,7 @@
 
       <div slot="body" class="margin-sides-negative-medium">
         <Tableau
-          v-if="showMediasList === false"
+          v-if="showMediasListModal === false"
           :display="'table'"
           :filter="filter"
           :sort="sort"
@@ -171,7 +196,7 @@
     </SidebarSection>
 
     <MediasList
-      v-if="showMediasList === true"
+      v-if="showMediasListModal === true"
       :filter="filter"
       :sort="sort"
       :sortedMedias="sortedMedias"
@@ -196,6 +221,7 @@ import Calendrier from './sidebar/Calendrier.vue';
 import Tableau from './sidebar/Tableau.vue';
 import SidebarSection from './sidebar/SidebarSection.vue';
 import MediasList from './modals/MediasList.vue';
+import WriteUp from './modals/WriteUp.vue';
 import KeyboardShortcuts from './modals/KeyboardShortcuts.vue';
 import ExportTimeline from './modals/ExportTimeline.vue';
 import qrcode from '@xkeshi/vue-qrcode';
@@ -206,6 +232,7 @@ import CreateQRCode from './qr/CreateQRCode.vue';
 export default {
   components: {
     SidebarSection,
+    WriteUp,
     Tableau,
     MediasList,
     KeyboardShortcuts,
@@ -235,11 +262,11 @@ export default {
   },
   data() {
     return {
-      showMediasList: false,
+      showMediasListModal: false,
       showKeyboardShortcutsList: false,
+      showWriteupModal: false,
       showExportTimelineModal: false,
-      currentLang: this.$root.lang.current,
-
+      currentLang: this.$root.lang.current
     };
   },
   mounted() {
@@ -289,7 +316,7 @@ export default {
       }, {});
 
       return dayGroupedByMonth;
-    }
+    },
   },
 
   watch: {

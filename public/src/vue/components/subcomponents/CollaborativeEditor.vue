@@ -5,7 +5,9 @@
     :autocorrect="spellcheckIsEnabled"
     :spellcheck="spellcheckIsEnabled"
   >
-    <!-- connection_state : {{ connection_state }}<br> -->
+    <!-- <template v-if="enable_collaboration">
+      connection_state : {{ connection_state }}<br>
+    </template> -->
     <div ref="editor" />
   </div>
 </template>
@@ -22,8 +24,12 @@ export default {
       type: String,
       default: '…'
     },
-    media: Object,
-    slugFolderName: String
+    media_metaFileName: String,
+    slugFolderName: String,
+    enable_collaboration: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
   },
@@ -42,13 +48,15 @@ export default {
 
       socket: null,
       connection_state: undefined,
-      requested_resource_url: undefined
+      requested_resource_url: undefined,
     }
   },
   
   created() {
   },
   mounted() {
+    console.log(`MOUNTED • CollaborativeEditor`);
+    
     this.editor = new Quill(this.$refs.editor, {
       modules: {
         toolbar: this.custom_toolbar
@@ -56,17 +64,20 @@ export default {
       theme: 'snow',
       formats: ['bold', 'underline', 'header', 'italic']
     });
+
     this.editor.root.innerHTML = this.value;
 
     this.$nextTick(() => {
-      // this.initWebsocketMode();
+      if(this.enable_collaboration) {
+        // set connection to sharedb / wss
+        // so sharedb will send last version of that medias’ content
+        this.initWebsocketMode();
+      }
 
       this.editor.on('text-change', (delta, oldDelta, source) => {
         this.$emit('input', this.editor.getText() ? this.editor.root.innerHTML : '');
       });
-
     });
-
   },
   beforeDestroy() {
     if(!!this.socket) {
@@ -85,7 +96,7 @@ export default {
       const params = new URLSearchParams({
         'type': 'folders',
         'slugFolderName': this.slugFolderName,
-        'metaFileName': this.media.metaFileName
+        'metaFileName': this.media_metaFileName
       });
 
       const requested_querystring = '?' + params.toString();
@@ -97,17 +108,18 @@ export default {
         + requested_querystring
       ;
 
-      console.log(`MOUNTED • CollaborativeEditor: will connect to ws server with ${this.requested_resource_url}`);
+      console.log(`METHODS • CollaborativeEditor: initWebsocketMode for ${this.requested_resource_url}`);
 
       this.socket = new ReconnectingWebSocket(this.requested_resource_url);
       const connection = new ShareDB.Connection(this.socket);
       connection.on('state', this.wsState);
 
-      const doc = connection.get('textMedias', requested_querystring);
+      const doc = connection.get('writeup', requested_querystring);
 
       doc.subscribe((err) => {
         if (err) {
           console.error(`ON • CollaborativeEditor: err ${err}`);
+          return;
         }
         console.log(`ON • CollaborativeEditor: subscribe`);
 
@@ -139,6 +151,13 @@ export default {
     wsState(state, reason) {
       console.log(`METHODS • CollaborativeEditor: wsState with state = ${state} and reason = ${reason}`);
       this.connection_state = state.toString();
+      this.$emit('connectionStateChanged', this.connection_state);
+
+      if(this.connection_state === 'connected') {
+        this.editor.enable(true);   // Disables user input
+      } else {
+        this.editor.enable(false);   // Disables user input
+      } 
       // 'connecting' 'connected' 'disconnected' 'closed' 'stopped'
     }
   }

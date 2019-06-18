@@ -19,6 +19,7 @@ module.exports = (function() {
       download: 'Télécharger',
       caption: 'Légende',
       date: 'Date',
+      action: 'Action',
       'active_filter:': 'Filtre actif&nbsp;:',
       'medias_shown:': 'Médias affichés&nbsp;:',
       'file:': 'Fichier&nbsp;:',
@@ -30,6 +31,8 @@ module.exports = (function() {
       author_name: 'Nom de l’auteur associé',
       key: 'Touche du clavier',
       none: 'Aucun',
+      untitled_document: 'Document sans-titre',
+      back_to_list: 'Retour à la liste',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -39,6 +42,7 @@ module.exports = (function() {
       print: 'Imprimer',
       create: 'Créer',
       remove: 'Suppr.',
+      rename: 'Renommer',
       password: 'Mot de passe',
       protected_by_pass: 'protégé par mot de passe',
       password_instructions:
@@ -48,6 +52,7 @@ module.exports = (function() {
       in_the_order: 'Dans l’ordre',
       public: 'Public',
       content: 'Contenu',
+      writeup: 'Compte-rendu',
       add_author: 'Ajouter un auteur',
       not_connected: 'Non connecté(s)',
       author_connected: 'Auteurs connectés',
@@ -118,6 +123,7 @@ module.exports = (function() {
       'with_all_medias:': 'Avec tous les médias',
 
       last_modified: 'Dernière modification',
+      save_changes: 'Enregistrer',
 
       notifications: {
         file_was_sent: 'Le fichier a été envoyé.',
@@ -132,8 +138,9 @@ module.exports = (function() {
           'Le password n’est pas le bon pour le dossier&nbsp;:',
         'created_edited_media:':
           'Création ou édition d’un média pour le dossier&nbsp;:',
-        author_name_exists:
-          'Ce nom d’auteur existe déjà, utilisez-en un autre.',
+        author_name_exists: 'Ce nom d’auteur existe déjà.',
+        document_name_exists:
+          'Ce nom de document existe déjà, utilisez-en un autre.',
         folder_name_exists:
           'Ce nom de dossier existe déjà, utilisez-en un autre.',
         folder_name_needs_alphanumeric_characters:
@@ -161,6 +168,7 @@ module.exports = (function() {
       download: 'Download',
       caption: 'Caption',
       date: 'Date',
+      action: 'Action',
       'active_filter:': 'Active filter:',
       'medias_shown:': 'Medias shown:',
       'file:': 'File:',
@@ -172,6 +180,8 @@ module.exports = (function() {
       author_name: 'Associated author',
       key: 'Key',
       none: 'None',
+      untitled_document: 'Untitled document',
+      back_to_list: 'Back to list',
 
       loading: 'loading',
       open: 'Open',
@@ -181,6 +191,7 @@ module.exports = (function() {
       print: 'Print',
       create: 'Create',
       remove: 'Remove',
+      rename: 'Rename',
       password: 'Mot de passe',
       protected_by_pass: 'protected by password',
       password_instructions:
@@ -190,6 +201,7 @@ module.exports = (function() {
       in_the_order: 'In the order',
       public: 'Public',
       content: 'Content',
+      writeup: 'Write-up',
       add_author: 'Add author',
       not_connected: 'Not connected',
       author_connected: 'Connected author',
@@ -259,6 +271,7 @@ module.exports = (function() {
       select_files_to_import: 'Select files to import',
 
       last_modified: 'Last modified',
+      save_changes: 'Save changes',
 
       notifications: {
         file_was_sent: 'The file was sent.',
@@ -271,8 +284,9 @@ module.exports = (function() {
         'wrong_password_for_folder:': 'Wrong password or folder missing for:',
         'created_edited_media:':
           'A media has been created or edited in folder:',
-        author_name_exists:
-          'Ce nom d’auteur existe déjà, utilisez-en un autre.',
+        author_name_exists: 'This name is already created.',
+        document_name_exists:
+          'This document name already exists, please use another one.',
         folder_name_exists: 'Folder name already exists. Please use another.',
         folder_name_needs_alphanumeric_characters:
           'Folder names need to contain at least one alphanumeric character.',

@@ -46,7 +46,7 @@
       <CollaborativeEditor 
         v-else
         v-model="htmlForEditor"
-        :media="media"
+        :media_metaFileName="media.metaFileName"
         :slugFolderName="slugFolderName"
         ref="textField"
       />
