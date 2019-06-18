@@ -232,9 +232,11 @@ export default {
       }
     },
     itemStylesWithSize() {
-      return Object.assign({
-        '--author-color': this.mediaColorFromFirstAuthor ? this.mediaColorFromFirstAuthor : '#fff'
-      }, this.itemSize)
+      return {
+        '--author-color': this.mediaColorFromFirstAuthor ? this.mediaColorFromFirstAuthor : '#fff',
+        width: this.mediaWidth - this.gutter + 'px',
+        height: this.mediaHeight - this.gutter + 'px',
+      }
     },
     mediaColorFromFirstAuthor() {
       return this.$root.mediaColorFromFirstAuthor(this.media, this.folder);
@@ -368,16 +370,17 @@ export default {
 }
 .packery-item {
   // border: 0.2rem dashed #f4be41;
-  box-sizing: border-box;
-  transition: all .35s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
+  // box-sizing: content-box;
+  transition: all .15s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
 
   &.is-dragging, &.is-positioning-post-drag {
     z-index: 2;
 
     .packery-item-content {
-      box-shadow: none !important;
+      // box-shadow: none !important;
       // transform: translateY(0px);
-      transition: none;  
+      // transition: none;  
+      box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
     }
   }
   &:not(.is-dragging).last-dragged {
@@ -393,14 +396,15 @@ export default {
   background-color: var(--author-color);
 
   border-radius: 4px;
-  border: 0px solid black;
+  margin: 4px;
+  // border: 4px solid transparent;
 
   transition: all .8s cubic-bezier(.25,.8,.25,1);  
 
   &.is--hovered {
     // background-color: white;
     z-index: 1;
-    transform: translateY(-8px);
+    // transform: translateY(0px);
     box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
   }
 

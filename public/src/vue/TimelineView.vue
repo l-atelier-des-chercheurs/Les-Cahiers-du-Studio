@@ -192,7 +192,6 @@
   </div>
 </template>
 <script>
-import MediasBlock from './components/MediasBlock.vue';
 import MediasBlock2 from './components/MediasBlock2.vue';
 import Sidebar from './components/Sidebar.vue';
 import EditFolder from './components/modals/EditFolder.vue';

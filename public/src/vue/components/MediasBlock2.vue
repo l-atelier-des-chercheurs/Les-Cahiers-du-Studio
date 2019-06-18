@@ -3,10 +3,10 @@
     
     <div
       class='pinp-container'
-      :class="{ 'is--showing_grid' : true }"
+      :class="{ 'is--showing_grid' : show_grid }"
       :style="`
-        padding: ${gutter/2}px; 
-        --gridstep: ${grid_cell_height + gutter}px;
+        padding: ${0}px; 
+        --gridstep: ${grid_cell_height + 0}px;
         height: ${adjusted_timeline_height}px;  
       `"
       ref="pinp_container"
@@ -76,8 +76,7 @@ export default {
 
       pinp_grid: undefined,
       pinp_update_on_next_tick: false,
-      gutter: 0
-
+      gutter: 8
     }
   },
   
@@ -94,7 +93,6 @@ export default {
           this.grid_cell_width,
           this.grid_cell_height
         ],
-        gutter: 0,
         maxSolverIterations: 999, 
         noOOB: true,
         pushBehavior: 'horizontal', // 'horizontal', 'vertical' or 'both'
