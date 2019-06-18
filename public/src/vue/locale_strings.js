@@ -33,6 +33,7 @@ module.exports = (function() {
       none: 'Aucun',
       untitled_document: 'Document sans-titre',
       back_to_list: 'Retour à la liste',
+      journal: 'Journal',
 
       loading: 'chargement',
       open: 'Ouvrir',
@@ -182,6 +183,7 @@ module.exports = (function() {
       none: 'None',
       untitled_document: 'Untitled document',
       back_to_list: 'Back to list',
+      journal: 'Journal',
 
       loading: 'loading',
       open: 'Open',

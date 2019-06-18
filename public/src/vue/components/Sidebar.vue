@@ -19,8 +19,7 @@
       <div slot="body">
         <CreateQRCode
           :slugFolderName="slugFolderName"
-        >
-        </CreateQRCode>
+        />
         <p class="font-small" v-if="$root.state.is_electron">
           {{ $t('contents_are_stored') }}
           <template>
@@ -33,7 +32,7 @@
     </SidebarSection>
 
 
-    <SidebarSection>
+    <!-- <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('writeup') }}
@@ -55,7 +54,7 @@
       @close="showWriteupModal = false"
       :slugFolderName="slugFolderName"
       :medias="medias"
-    />
+    /> -->
 
     <SidebarSection>
       <div slot="header">
