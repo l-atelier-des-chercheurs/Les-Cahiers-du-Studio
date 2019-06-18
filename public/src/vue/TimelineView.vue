@@ -1294,13 +1294,14 @@ export default {
   }
 
   @media screen and (max-width: 50rem) {
-    bottom: 0;
+    top: auto !important;
+    bottom: 20px;
     font-size:.7em;
   }
 
   > * {
     margin: 0 auto;
-    width: 250px;
+    max-width: 250px;
     height: 40px;
     background-color: var(--color-noir);
     color: white;
@@ -1314,6 +1315,7 @@ export default {
 
     @media screen and (max-width: 50rem) {
       width: 100%;
+      max-width: none;
       border-radius: 0;
       height: 20px;
     }

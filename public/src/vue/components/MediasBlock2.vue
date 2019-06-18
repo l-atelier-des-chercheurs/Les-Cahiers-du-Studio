@@ -74,6 +74,8 @@ export default {
       //   // stagger: 30
       // },
 
+      number_of_rows: 18,
+
       pinp_grid: undefined,
       pinp_update_on_next_tick: false,
       gutter: 8
@@ -120,13 +122,13 @@ export default {
       return 3;
     },
     grid_cell_width() {
-      return Math.floor((this.timeline_height - 25)/18);
+      return Math.floor((this.timeline_height - 25) / this.number_of_rows);
     }, 
     grid_cell_height() {
       return this.grid_cell_width;
     },
     adjusted_timeline_height() {
-      return Math.floor((this.timeline_height - 25)/18) * 18;
+      return Math.floor((this.timeline_height - 25) / this.number_of_rows) * this.number_of_rows;
     },
     timeline_margin_top() {
       return (this.timeline_height - this.adjusted_timeline_height)/2;

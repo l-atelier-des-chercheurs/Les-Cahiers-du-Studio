@@ -149,6 +149,20 @@
               "max": 12
             }
           },
+          "t": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 17
+            }
+          },
+          "l": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 12000
+            }
+          },
           "caption": {
             "type": "string"
           }

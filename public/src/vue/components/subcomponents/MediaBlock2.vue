@@ -183,7 +183,8 @@ export default {
 
   },
   beforeDestroy() {
-    this.$el.pinp.destroy();
+    this.pinp_grid.remove(this.$el.pinp);
+    debugger;
     // this.$el.draggie.destroy();
     // this.$el.draggie = null;
   },
@@ -607,7 +608,6 @@ export default {
 
   > * {
     pointer-events: auto;
-
   }
 
   &.handle_resizeMedia_bottom {
