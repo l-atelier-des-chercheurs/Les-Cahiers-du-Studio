@@ -128,7 +128,7 @@ export default {
       return this.grid_cell_width;
     },
     adjusted_timeline_height() {
-      return Math.floor((this.timeline_height - 25) / this.number_of_rows) * this.number_of_rows;
+      return this.grid_cell_height * this.number_of_rows;
     },
     timeline_margin_top() {
       return (this.timeline_height - this.adjusted_timeline_height)/2;

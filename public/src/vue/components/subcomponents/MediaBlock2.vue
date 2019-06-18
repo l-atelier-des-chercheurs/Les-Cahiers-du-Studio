@@ -110,7 +110,9 @@ export default {
         width: undefined,
         height: undefined,
         pwidth: 0,
-        pheight: 0
+        pheight: 0,
+        top: 0,
+        left: 0
       },
 
       is_resized: false,
@@ -146,6 +148,7 @@ export default {
 
     // override with actual media w and h if it exists
     this.setMediaSizeFromMeta();
+    this.setMediaPositionFromMeta();
 
   },
 
@@ -165,6 +168,24 @@ export default {
       this.$emit('dragStarted');      
     });
     this.$el.draggie.on('dragEnd', () => {
+
+      const x = this.$el.pinp.x;
+      const y = this.$el.pinp.y;
+
+      const x_in_units = Math.round(x / this.columnWidth);
+      const y_in_units = Math.round(y / this.rowHeight);
+
+      this.$root.editMedia({ 
+        type: 'folders',
+        slugFolderName: this.slugFolderName, 
+        slugMediaName: this.media.slugMediaName,
+        data: {
+          t: y_in_units,
+          l: x_in_units
+        }
+      });
+
+
       this.$emit('dragEnded');      
     });
     this.$el.draggie.on('staticClick', () => {
@@ -184,7 +205,6 @@ export default {
   },
   beforeDestroy() {
     this.pinp_grid.remove(this.$el.pinp);
-    debugger;
     // this.$el.draggie.destroy();
     // this.$el.draggie = null;
   },
@@ -208,13 +228,21 @@ export default {
     },
     'media.h': function() {
       this.setMediaSizeFromMeta();
-    }
+    },
+    'media.t': function() {
+      this.setMediaPositionFromMeta();
+    },
+    'media.l': function() {
+      this.setMediaPositionFromMeta();
+    },
   },
   computed: {
     itemSize() {
       return {
         width: this.mediaWidth + 'px',
-        height: this.mediaHeight + 'px'
+        height: this.mediaHeight + 'px',
+        top: this.mediaTop + 'px',
+        left: this.mediaLeft + 'px'
       }
     },
     mediaWidth() {
@@ -222,6 +250,12 @@ export default {
     },
     mediaHeight() {
       return  this.mediaSize.height * this.rowHeight;
+    },
+    mediaLeft() {
+      return this.mediaSize.left * this.columnWidth;
+    },
+    mediaTop() {
+      return this.mediaSize.top * this.rowHeight;
     },
     widthForSizes() {
       // TODO
@@ -262,6 +296,14 @@ export default {
       }
       if(this.media.hasOwnProperty('h') && typeof this.media.h === 'number') {
         this.mediaSize.height = this.media.h;
+      }
+    },
+    setMediaPositionFromMeta() {
+      if(this.media.hasOwnProperty('t') && typeof this.media.t === 'number') {
+        this.mediaSize.top = this.media.t;
+      }
+      if(this.media.hasOwnProperty('l') && typeof this.media.l === 'number') {
+        this.mediaSize.left = this.media.l;
       }
     },
     changeItemWidth(increment) {
