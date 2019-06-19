@@ -74,6 +74,14 @@
                 <!-- <template v-else>→</template> -->
               </button>
 
+              <button type="button" class="m_verticalButtons--slider"
+                v-if="$root.settings.has_sidebar_opened"
+                @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
+                @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"   
+              >
+                ▼▲
+              </button>
+
               <button type="button"
                 @click.stop.prevent="toggleSidebar('journal')"
               >
@@ -84,14 +92,6 @@
               </button>
 
             </div>
-
-            <button type="button" class="m_verticalButtons--slider"
-              @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
-              @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"   
-            >
-              ◄
-              ►
-            </button>
 
           </div>
 
