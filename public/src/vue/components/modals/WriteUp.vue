@@ -68,7 +68,6 @@
         </table>
         <div v-else-if="mode === 'single_writeup'">
           {{ $t('back_to_list') }}
-          retour à la liste
         </div>
       </div>
 

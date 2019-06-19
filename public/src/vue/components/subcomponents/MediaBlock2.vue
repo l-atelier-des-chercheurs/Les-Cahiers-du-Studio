@@ -92,6 +92,7 @@ import { setTimeout } from 'timers';
 export default {
   props: {
     media: Object,
+    index: Number,
     pinp_grid: Object,
     folder: Object,
     slugFolderName: String,
@@ -146,9 +147,14 @@ export default {
       }
     }
 
+    this.mediaSize.top = Math.round(Math.random() * 2) + 4; 
+    this.mediaSize.left = Math.round(this.pinp_grid.width / this.columnWidth);         
+
     // override with actual media w and h if it exists
     this.setMediaSizeFromMeta();
     this.setMediaPositionFromMeta();
+
+    
 
   },
 
@@ -172,16 +178,10 @@ export default {
       const x_in_units = Math.round(x / this.columnWidth);
       const y_in_units = Math.round(y / this.rowHeight);
 
-      this.$root.editMedia({ 
-        type: 'folders',
-        slugFolderName: this.slugFolderName, 
-        slugMediaName: this.media.slugMediaName,
-        data: {
-          t: y_in_units,
-          l: x_in_units
-        }
+      this.sendMediaPosition({
+        t: y_in_units,
+        l: x_in_units
       });
-
 
       this.$emit('dragEnded');      
     });
@@ -301,6 +301,7 @@ export default {
       if(this.media.hasOwnProperty('t') && typeof this.media.t === 'number') {
         this.mediaSize.top = this.media.t;
       }
+
       if(this.media.hasOwnProperty('l') && typeof this.media.l === 'number') {
         this.mediaSize.left = this.media.l;
       }
@@ -318,6 +319,17 @@ export default {
     },
     limitMediaHeight(h) {
       return Math.max(1, Math.min(12, h));
+    },
+    sendMediaPosition({ t, l }){
+      this.$root.editMedia({ 
+        type: 'folders',
+        slugFolderName: this.slugFolderName, 
+        slugMediaName: this.media.slugMediaName,
+        data: {
+          t,
+          l
+        }
+      });
     },
     openMedia() {
       if (this.$root.state.dev_mode === 'debug') {

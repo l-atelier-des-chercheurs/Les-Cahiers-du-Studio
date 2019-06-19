@@ -16,7 +16,8 @@
 
       <MediaBlock2
         v-if="pinp_grid"
-        v-for="media in medias" :key="media.metaFileName"
+        v-for="(media, index) in medias" :key="media.metaFileName"
+        :index="index"
         :pinp_grid="pinp_grid"
         :media="media"
         :folder="folder"

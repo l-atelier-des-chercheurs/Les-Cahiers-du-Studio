@@ -71,6 +71,7 @@
           <button 
             type="button" 
             class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
+            @click="closeWriteupMedia"
           >
             {{ $t('back_to_list') }}
           </button>
@@ -174,6 +175,13 @@ export default {
         this.current_writeup_media_metaFileName = metaFileName;
       });
     },
+    closeWriteupMedia() {
+      if (window.state.dev_mode === 'debug') {
+        console.log(`METHODS • WriteUp: openWriteupMedia / ${metaFileName}`);
+      }
+
+      this.current_writeup_media_metaFileName = false;
+    }
   }
 }
 </script>
