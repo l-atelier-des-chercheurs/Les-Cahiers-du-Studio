@@ -293,7 +293,8 @@ module.exports = (function() {
         folder_name_needs_alphanumeric_characters:
           'Folder names need to contain at least one alphanumeric character.',
         'failed_to_get_folder:': 'Failed to get the requested folder:',
-        folder_export_started: 'Export requested…'
+        folder_export_started: 'Export requested…',
+        connected_to_lescahiers: 'Connection active'
       }
     }
   };
