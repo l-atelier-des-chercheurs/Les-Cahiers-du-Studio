@@ -114,7 +114,7 @@
           </span>
         </button>
 
-        <div v-if="showInputPasswordField" class="margin-bottom-small">
+        <div v-if="showInputPasswordField && !can_admin_folder" class="margin-bottom-small">
           <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus placeholder="…">
           <button type="button" class="border-circled button-thin padding-verysmall" @click="submitPassword">Envoyer</button>
         </div>
@@ -195,7 +195,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t('notifications.wrong_password_for') + this.folder.name);
+            .error(this.$t('notifications.wrong_password_for_folder:') + this.folder.name);
           this.$refs.passwordField.value = '';
         }
       });

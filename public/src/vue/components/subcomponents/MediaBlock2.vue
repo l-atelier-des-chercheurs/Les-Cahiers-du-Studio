@@ -13,6 +13,11 @@
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
     >
+
+    <!-- t: {{ media.t }}
+    l: {{ media.l }} -->
+    <!-- mediaSize: {{ mediaSize }} -->
+
       <MediaContent
         v-model="media.content"
         :slugFolderName="slugFolderName"
@@ -110,10 +115,10 @@ export default {
       mediaSize: {
         width: undefined,
         height: undefined,
-        pwidth: 0,
-        pheight: 0,
-        top: 0,
-        left: 0
+        pwidth: undefined,
+        pheight: undefined,
+        top: undefined,
+        left: undefined
       },
 
       is_resized: false,
@@ -132,37 +137,43 @@ export default {
   created() {
     console.log(`MOUNTED • MediaBlock2: created`);
 
-    if(this.media.type === 'text') {
-      this.mediaSize.width = 1 + this.base_edge;
-      this.mediaSize.height = 1 + this.base_edge;
-    } else if(this.media.type === 'marker') {
-      this.mediaSize.width = 1 + this.base_edge;
-      this.mediaSize.height = 1;
-    } else {
-      this.mediaSize.width = Math.round(Math.random() * 2 + this.base_edge);
-      if(this.media.hasOwnProperty('ratio') && typeof this.media.ratio === 'number') {
-        this.mediaSize.height = Math.round(this.mediaSize.width * this.media.ratio);
-      } else {
-        this.mediaSize.height = Math.round(Math.random() * 2 + this.base_edge);
-      }
-    }
-
-    this.mediaSize.top = Math.round(Math.random() * 2) + 4; 
-    this.mediaSize.left = Math.round(this.pinp_grid.width / this.columnWidth);         
-
-    // override with actual media w and h if it exists
     this.setMediaSizeFromMeta();
     this.setMediaPositionFromMeta();
 
-    
+    if(this.mediaSize.width === undefined || this.mediaSize.height === undefined) {
+      if(this.media.type === 'text') {
+        this.mediaSize.width = 1 + this.base_edge;
+        this.mediaSize.height = 1 + this.base_edge;
+      } else if(this.media.type === 'marker') {
+        this.mediaSize.width = 1 + this.base_edge;
+        this.mediaSize.height = 1;
+      } else {
+        this.mediaSize.width = Math.round(Math.random() * 2 + this.base_edge);
+        if(this.media.hasOwnProperty('ratio') && typeof this.media.ratio === 'number') {
+          this.mediaSize.height = Math.round(this.mediaSize.width * this.media.ratio);
+        } else {
+          this.mediaSize.height = Math.round(Math.random() * 2 + this.base_edge);
+        }
+      }
+    }
 
+    if(this.mediaSize.top === undefined) {
+      this.mediaSize.top = Math.round(Math.random() * 2) + 4; 
+    }
+
+    if(this.mediaSize.left === undefined) {
+      this.mediaSize.left = Math.round(this.pinp_grid.width / this.columnWidth);         
+    }
+    
   },
 
   mounted() {
     console.log(`MOUNTED • MediaBlock2: mounted`);
+
     this.$el.pinp = this.pinp_grid.add(this.$el, {
       handle: '[data-draggabilly_handle]'
     });
+
     this.$el.draggie = this.$el.pinp.dragInstance;
 
     this.$emit('triggerPinpUpdate');
@@ -171,23 +182,16 @@ export default {
       this.$emit('dragStarted');      
     });
     this.$el.draggie.on('dragEnd', () => {
-
-      const x = this.$el.pinp.x;
-      const y = this.$el.pinp.y;
-
-      const x_in_units = Math.round(x / this.columnWidth);
-      const y_in_units = Math.round(y / this.rowHeight);
-
-      this.sendMediaPosition({
-        t: y_in_units,
-        l: x_in_units
-      });
-
+      this.sendMediaPosition();
       this.$emit('dragEnded');      
     });
     this.$el.draggie.on('staticClick', () => {
       this.openMedia();
     });
+
+
+
+
 
     // packeryEvents.$emit('draggie', {
     //   draggie: this.$el.draggie,
@@ -208,6 +212,7 @@ export default {
   watch: {
     'mediaSize': { 
       handler: function() {
+
         if(this.is_mounted) {
           this.$el.pinp.width = this.mediaWidth;
           this.$el.pinp.height = this.mediaHeight;
@@ -215,7 +220,17 @@ export default {
           this.$el.pinp.y = this.mediaTop;
           this.$emit('triggerPinpUpdate');
         }
-        // this.checkTextOverflow();
+
+        if(!this.media.hasOwnProperty('t') 
+        || this.mediaSize.top !== this.media.t
+        || !this.media.hasOwnProperty('l') 
+        || this.mediaSize.left !== this.media.l
+        ) {                    
+          this.$nextTick(() => {
+            debugger;
+            this.sendMediaPosition();      
+          });
+        }
       },
       deep: true
     },
@@ -224,15 +239,19 @@ export default {
     },
     'media.w': function() {
       this.setMediaSizeFromMeta();
+      this.$emit('triggerPinpUpdate');
     },
     'media.h': function() {
       this.setMediaSizeFromMeta();
+      this.$emit('triggerPinpUpdate');
     },
     'media.t': function() {
       this.setMediaPositionFromMeta();
+      this.$emit('triggerPinpUpdate');
     },
     'media.l': function() {
       this.setMediaPositionFromMeta();
+      this.$emit('triggerPinpUpdate');
     },
   },
   computed: {
@@ -289,6 +308,22 @@ export default {
         this.text_is_overflowing = this.mediaHeight < this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
       }
     },
+    updateMediaSizeFromPinp() {
+      const x = this.$el.pinp.x;
+      const y = this.$el.pinp.y;
+
+      const l = Math.round(x / this.columnWidth);
+      const t = Math.round(y / this.rowHeight);
+
+      this.mediaSize.left = l;
+      this.mediaSize.top = t;
+    },
+    updatePinpPositions() {
+      this.$el.pinp.width = this.mediaWidth;
+      this.$el.pinp.height = this.mediaHeight;
+      this.$el.pinp.x = this.mediaLeft;
+      this.$el.pinp.y = this.mediaTop;
+    },
     setMediaSizeFromMeta() {
       if(this.media.hasOwnProperty('w') && typeof this.media.w === 'number') {
         this.mediaSize.width = this.media.w;
@@ -297,7 +332,7 @@ export default {
         this.mediaSize.height = this.media.h;
       }
     },
-    setMediaPositionFromMeta() {
+    setMediaPositionFromMeta() {      
       if(this.media.hasOwnProperty('t') && typeof this.media.t === 'number') {
         this.mediaSize.top = this.media.t;
       }
@@ -320,7 +355,17 @@ export default {
     limitMediaHeight(h) {
       return Math.max(1, Math.min(12, h));
     },
-    sendMediaPosition({ t, l }){
+    sendMediaPosition(){
+      if(!this.$el.pinp.x || !this.$el.pinp.y) {
+        return;
+      }
+
+      const x = this.$el.pinp.x;
+      const y = this.$el.pinp.y;
+
+      const l = Math.round(x / this.columnWidth);
+      const t = Math.round(y / this.rowHeight);
+
       this.$root.editMedia({ 
         type: 'folders',
         slugFolderName: this.slugFolderName, 

@@ -279,7 +279,9 @@ export default {
         slugFolderName: this.slugFolderName,
         type: 'folders',
         additionalMeta: {
-          type: 'text'
+          type: 'text',
+          w: 5,
+          h: 5
         }
       });
       this.$eventHub.$emit('timeline.scrollToEnd');

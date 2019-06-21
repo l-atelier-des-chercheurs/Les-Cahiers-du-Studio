@@ -14,7 +14,9 @@ module.exports = function({ router }) {
   const is_electron = process.versions.hasOwnProperty('electron');
 
   console.log(`App is electron : ${is_electron}`);
-  console.log(`Starting app ${global.appInfos.name}`);
+  console.log(
+    `Starting app ${global.appInfos.name} version ${global.appInfos.version}`
+  );
   console.log(process.versions);
 
   const debug =
@@ -69,8 +71,6 @@ module.exports = function({ router }) {
       ) {
         cache.enable();
       }
-
-      dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
 
       cleanCacheFolder().then(
         () => {

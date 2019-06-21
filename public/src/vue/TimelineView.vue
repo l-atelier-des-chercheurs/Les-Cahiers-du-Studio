@@ -15,14 +15,23 @@
 
     <!-- <pre>{{ sortedMedias }}</pre> -->
 
-    <button type="button" class="folder_backbutton" @click="$root.closeFolder()"
-      @mouseover="collapse_foldername = false"
-      @mouseleave="collapse_foldername = true"
-      :class="{ 'is--collapsed' : collapse_foldername, 'is--moved_to_right' : $root.settings.has_sidebar_opened }"
-    >
-      <span class="icon">←</span>
-      <span class="project_name">{{ folder.name }}</span>
-    </button>
+    <template v-if="$root.state.mode !== 'export_web'">
+      <button 
+        type="button" class="folder_backbutton" @click="$root.closeFolder()"
+        @mouseover="collapse_foldername = false"
+        @mouseleave="collapse_foldername = true"
+        :class="{ 'is--collapsed' : collapse_foldername }"
+      >
+        <span class="icon">←</span>
+        <span class="project_name">{{ folder.name }}</span>
+      </button>
+    </template>
+    <template v-else>
+      <div class="folder_backbutton"
+      >
+        <span class="margin-sides-small padding-verysmall text-centered">{{ folder.name }}</span>
+      </div>
+    </template>
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
 
@@ -175,6 +184,7 @@
 
                       <MediasBlock2
                         v-if="segment.medias.length > 0"
+                        :key="segment.timestamp + timeline_height"
                         :medias="segment.medias"
                         :folder="folder"
                         :slugFolderName="slugFolderName"
@@ -420,7 +430,13 @@ export default {
       })
     },
     folder_is_archived() {
-      return this.folder.hasOwnProperty('archived') && this.folder.archived ? true : false;
+      if(this.folder.hasOwnProperty('archived') && this.folder.archived) {
+        return true;
+      }
+      if(this.$root.state.mode === 'export_web') {
+        return true;
+      }
+      return false;
     },  
     folder_authors() {
       return this.folder.hasOwnProperty('authors') && this.folder.authors !== '' ? this.folder.authors : [];
@@ -1295,7 +1311,7 @@ export default {
   .m_timeline--container--dates--day--mediasblock {
     position: relative;
     height: 100%;
-    min-width: 88px;
+    min-width: 176px;
     display: flex;
   }
 

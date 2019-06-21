@@ -125,7 +125,9 @@ export default {
 
         let meta = {
           fileCreationDate: modified,
-          authors: this.$root.settings.current_author_name ? [{ name: this.$root.settings.current_author_name }] : '' 
+          authors: this.$root.settings.current_author_name ? [{ name: this.$root.settings.current_author_name }] : '',
+          w: 5,
+          h: 4
         }
 
         const parser = new UAparser();

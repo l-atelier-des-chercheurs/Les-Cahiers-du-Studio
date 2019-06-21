@@ -13,10 +13,11 @@
     >
 
       <!-- <div class="packery-grid-sizer"></div> -->
-
+      
       <MediaBlock2
         v-if="pinp_grid"
         v-for="(media, index) in medias" :key="media.metaFileName"
+        ref="mediaBlock"
         :index="index"
         :pinp_grid="pinp_grid"
         :media="media"
@@ -26,10 +27,10 @@
         :rowHeight="grid_cell_height"
         :base_edge="base_edge"
         :gutter="gutter"
-        @dragStarted="showGrid"
-        @dragEnded="hideGrid"
-        @resizeStarted="showGrid"
-        @resizeEnded="hideGrid"
+        @dragStarted="mediaMovementStarted"
+        @dragEnded="mediaMovementEnded"
+        @resizeStarted="mediaMovementStarted"
+        @resizeEnded="mediaMovementEnded"
         @triggerPinpUpdate="triggerPinpUpdate"
       />
 
@@ -48,6 +49,7 @@
 import MediaBlock2 from './subcomponents/MediaBlock2.vue';
 // import {packeryEvents} from 'vue-packery-plugin';
 import pinp from 'pinp';
+import debounce from 'debounce';
 
 export default {
   props: {
@@ -76,6 +78,7 @@ export default {
       // },
 
       number_of_rows: 18,
+      debounced_timeline_height: 0,
 
       pinp_grid: undefined,
       pinp_update_on_next_tick: false,
@@ -89,21 +92,26 @@ export default {
   mounted() {
     console.log(`MOUNTED • MediasBlock2: mounted`);
 
-    this.pinp_grid = new pinp({
-        container: this.$refs.pinp_container,
+    this.debounced_timeline_height = this.timeline_height;
+    this.updateTimelineHeight = debounce(this.updateTimelineHeight, 500);
+
+    this.pinp_grid = new pinp(this.$refs.pinp_container, {
         debug: false,
         grid: [
           this.grid_cell_width,
           this.grid_cell_height
         ],
         maxSolverIterations: 999, 
-        noOOB: true,
-        pushBehavior: 'horizontal', // 'horizontal', 'vertical' or 'both'
-        updateContainerHeight: false,
-        updateContainerWidth: true,
+        boundaries: {
+          top: 'hard',
+          left: 'none',
+          right: 'soft',
+          bottom: 'hard'
+        },        
+        pushDirection: 'horizontal', // 'horizontal', 'vertical' or 'both'
       
-        willUpdate: function () {}, 
-        didUpdate: function () {}        
+        willUpdate: () => {}, 
+        didUpdate: () => {}        
       });
     this.triggerPinpUpdate();
   },
@@ -114,10 +122,8 @@ export default {
     'medias': function() {
       this.triggerPinpUpdate();
     },
-    'adjusted_timeline_height': function() {
-      this.$nextTick(() => {
-        this.triggerPinpUpdate();
-      });
+    'timeline_height': function() {
+      this.updateTimelineHeight();
     }
   },
   computed: {
@@ -128,7 +134,7 @@ export default {
       return 3;
     },
     grid_cell_edge_length() {
-      return Math.floor((this.timeline_height - 20) / this.number_of_rows);
+      return Math.floor((this.debounced_timeline_height - 20) / this.number_of_rows);
     },
 
     grid_cell_width() {
@@ -142,7 +148,6 @@ export default {
     },
     timeline_margin_top() {
       return 0;
-      // return (this.timeline_height - this.adjusted_timeline_height)/2;
     }
   },
   methods: {
@@ -150,7 +155,7 @@ export default {
       if(this.pinp_grid && !this.pinp_update_on_next_tick) {
         this.pinp_update_on_next_tick = true;
         this.$nextTick(() => {
-          console.log(`MOUNTED • MediasBlock2: triggerPinpUpdate`);
+          console.log(`METHODS • MediasBlock2: triggerPinpUpdate`);
           this.pinp_grid.update();    
           this.pinp_update_on_next_tick = false;
         });
@@ -159,12 +164,27 @@ export default {
       // this.$forceUpdate();
       // packeryEvents.$emit('layout', this.$refs.packery);
     },
+    mediaMovementStarted() {
+      this.showGrid();
+    },
+    mediaMovementEnded() {
+      this.hideGrid();
+      this.$refs.mediaBlock.map(m => m.updateMediaSizeFromPinp());
+      this.$nextTick(() => {
+      });
+    },
     showGrid() {
       this.show_grid = true;
     },
     hideGrid() {
       this.show_grid = false;
+    },
+    updateTimelineHeight() {
+      this.debounced_timeline_height = this.timeline_height;
+      this.$refs.mediaBlock.map(m => m.updatePinpPositions());
+      this.triggerPinpUpdate();      
     }
+
   }
 }
 </script>
