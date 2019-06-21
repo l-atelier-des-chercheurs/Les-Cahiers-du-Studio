@@ -9,6 +9,10 @@
     align-self: flex-start;
     white-space: pre-wrap;
     .padding-small;
+
+    &[data-context="preview"] > * > * > *:first-child{
+      margin-top: 0;
+    }
   }
   &.type-other {
     padding:10px;

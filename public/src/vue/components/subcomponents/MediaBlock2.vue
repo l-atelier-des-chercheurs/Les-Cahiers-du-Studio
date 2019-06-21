@@ -7,15 +7,16 @@
     <div class="packery-item-content"
       :class="{ 
         'is--hovered' : is_hovered && !is_resized,
-        'is--text_overflowing' : text_is_overflowing
+        'is--text_overflowing' : isTextOverflowing
       }"
+      :data-col_height="mediaSize.height"
       :style="itemStylesWithSize"
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
     >
 
-    <!-- t: {{ media.t }}
-    l: {{ media.l }} -->
+    t: {{ media.t }}
+    l: {{ media.l }}
     <!-- mediaSize: {{ mediaSize }} -->
 
       <MediaContent
@@ -246,9 +247,6 @@ export default {
       },
       deep: true
     },
-    'media.content': function() {
-      // this.checkTextOverflow();
-    },
     'media.w': function() {
       this.setMediaSizeFromMeta();
       this.$emit('triggerPinpUpdate');
@@ -274,6 +272,12 @@ export default {
         top: this.mediaTop + 'px',
         left: this.mediaLeft + 'px'
       }
+    },
+    isTextOverflowing() {
+      if(['text', 'marker'].includes(this.media.type) && this.$refs.hasOwnProperty('MediaContent')) {        
+        return this.mediaHeight < this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
+      }
+      return false;
     },
     mediaWidth() {
       return this.mediaSize.width * this.columnWidth;
@@ -311,15 +315,6 @@ export default {
     }
   },
   methods: {
-    checkTextOverflow() {
-      if(['text', 'marker'].includes(this.media.type)) {        
-        if(this.mediaSize.height === 1) {
-          return this.text_is_overflowing = false;
-        }
-
-        this.text_is_overflowing = this.mediaHeight < this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
-      }
-    },
     updateMediaSizeFromPinp() {
       const x = this.$el.pinp.x;
       const y = this.$el.pinp.y;
@@ -368,8 +363,9 @@ export default {
       return Math.max(1, Math.min(12, h));
     },
     sendMediaPosition(){
+      console.log(`METHODS • MediaBlock2: sendMediaPosition`);
 
-      if(!this.$el.pinp.x || !this.$el.pinp.y) {
+      if(!this.$el.pinp) {
         return;
       }
 
@@ -379,7 +375,7 @@ export default {
       const l = Math.round(x / this.columnWidth);
       const t = Math.round(y / this.rowHeight);
 
-      if(!!l && !!t) {
+      if(l >= 0 && t >= 0) {
         this.$root.editMedia({ 
           type: 'folders',
           slugFolderName: this.slugFolderName, 
@@ -525,14 +521,21 @@ export default {
   }
 
   &.is--text_overflowing {
-
     &::after {
-      content: '';
+      content: '↓';
       display: block;
+      position: absolute;
+      bottom: 0;
+      left: auto;
+      right: 0;
+    }
+    &:not([data-col_height="1"])::after {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
+      text-align: center;
+      line-height: 2;
       // background-color: var(--author-color);
       background-image: linear-gradient(transparent 0%, var(--author-color) 40%);
       height: 2em;
@@ -601,7 +604,11 @@ export default {
         }
       }
     }
-      
+    &.type-text {
+      > * {
+        // padding-top: .6em; 
+      }
+    }
 
     img, video {
       width: 100%;
