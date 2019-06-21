@@ -8,7 +8,8 @@
     <!-- <template v-if="enable_collaboration">
       connection_state : {{ connection_state }}<br>
     </template> -->
-    <div ref="editor" />
+    <div ref="editor" 
+    />
   </div>
 </template>
 <script>
@@ -29,7 +30,11 @@ export default {
     enable_collaboration: {
       type: Boolean,
       default: false
-    }
+    },
+    read_only: {
+      type: Boolean,
+      default: true
+    }    
   },
   components: {
   },
@@ -62,7 +67,7 @@ export default {
         toolbar: this.custom_toolbar
       },
       theme: 'snow',
-      formats: ['bold', 'underline', 'header', 'italic']
+      formats: ['bold', 'underline', 'header', 'italic', 'link']
     });
 
     this.editor.root.innerHTML = this.value;
@@ -85,6 +90,13 @@ export default {
     }
   },
   watch: {
+    'read_only': function() {
+      if(this.read_only) {
+        this.editor.enable();
+      } else {
+        this.editor.disable();
+      }
+    }
   },
   computed: {
     spellcheckIsEnabled() {

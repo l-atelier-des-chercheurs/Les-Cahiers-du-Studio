@@ -83,6 +83,7 @@
         class="bg-blanc c-noir"
         :slugFolderName="slugFolderName"
         :media="current_writeup_media"
+        :readonly="read_only"
       />
     </section>
 

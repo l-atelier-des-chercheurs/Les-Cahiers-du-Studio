@@ -49,6 +49,7 @@
         :media_metaFileName="media.metaFileName"
         :slugFolderName="slugFolderName"
         ref="textField"
+        :readonly="read_only"
       />
       <!-- <textarea
         placeholder="…"

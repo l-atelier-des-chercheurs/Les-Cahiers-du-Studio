@@ -56,7 +56,7 @@ export default {
     medias: Array,
     folder: Object,
     slugFolderName: String,
-    timeline_height: Number
+    timeline_height: Number,
   },
   components: {
     MediaBlock2
@@ -155,9 +155,11 @@ export default {
       if(this.pinp_grid && !this.pinp_update_on_next_tick) {
         this.pinp_update_on_next_tick = true;
         this.$nextTick(() => {
-          console.log(`METHODS • MediasBlock2: triggerPinpUpdate`);
-          this.pinp_grid.update();    
-          this.pinp_update_on_next_tick = false;
+          this.$nextTick(() => {
+            console.log(`METHODS • MediasBlock2: triggerPinpUpdate`);
+            this.pinp_grid.update();    
+            this.pinp_update_on_next_tick = false;
+          });
         });
       }
       

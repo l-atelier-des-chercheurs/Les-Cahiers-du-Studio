@@ -67,6 +67,7 @@
               v-else-if="$root.settings.has_sidebar_opened && $root.settings.sidebar_type === 'journal'"
               :slugFolderName="slugFolderName"
               :medias="medias"
+              :read_only="read_only"
             />
           <!-- </transition> -->
 
@@ -231,6 +232,7 @@
       :is_realtime="is_realtime"
       :current_author="current_author"
       :read_only="!$root.state.connected"
+      :rightmostMedia="rightmostMedia"
     />
 
     <EditMedia

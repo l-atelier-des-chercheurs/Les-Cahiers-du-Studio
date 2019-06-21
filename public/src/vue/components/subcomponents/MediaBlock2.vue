@@ -157,12 +157,25 @@ export default {
       }
     }
 
-    if(this.mediaSize.top === undefined) {
-      this.mediaSize.top = Math.round(Math.random() * 2) + 4; 
-    }
+    if(!this.mediaSize.top || !this.mediaSize.left) {
+      if(!this.mediaSize.top) {
+        this.mediaSize.top = Math.round(Math.random() * 2) + 4; 
+      }
+      if(!this.mediaSize.left) {
+        this.mediaSize.left = Math.round(this.pinp_grid.width / this.columnWidth);         
+      }
 
-    if(this.mediaSize.left === undefined) {
-      this.mediaSize.left = Math.round(this.pinp_grid.width / this.columnWidth);         
+      if(this.mediaSize.top !== null && this.mediaSize.left !== null) {
+        // this.$root.editMedia({ 
+        //   type: 'folders',
+        //   slugFolderName: this.slugFolderName, 
+        //   slugMediaName: this.media.slugMediaName,
+        //   data: {
+        //     t: this.mediaSize.top,
+        //     l: this.mediaSize.left
+        //   }
+        // });
+      }
     }
     
   },
@@ -227,7 +240,6 @@ export default {
         || this.mediaSize.left !== this.media.l
         ) {                    
           this.$nextTick(() => {
-            debugger;
             this.sendMediaPosition();      
           });
         }
@@ -356,6 +368,7 @@ export default {
       return Math.max(1, Math.min(12, h));
     },
     sendMediaPosition(){
+
       if(!this.$el.pinp.x || !this.$el.pinp.y) {
         return;
       }
@@ -366,15 +379,17 @@ export default {
       const l = Math.round(x / this.columnWidth);
       const t = Math.round(y / this.rowHeight);
 
-      this.$root.editMedia({ 
-        type: 'folders',
-        slugFolderName: this.slugFolderName, 
-        slugMediaName: this.media.slugMediaName,
-        data: {
-          t,
-          l
-        }
-      });
+      if(!!l && !!t) {
+        this.$root.editMedia({ 
+          type: 'folders',
+          slugFolderName: this.slugFolderName, 
+          slugMediaName: this.media.slugMediaName,
+          data: {
+            t,
+            l
+          }
+        });
+      }
     },
     openMedia() {
       if (this.$root.state.dev_mode === 'debug') {

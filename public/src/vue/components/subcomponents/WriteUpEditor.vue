@@ -42,6 +42,7 @@
       :enable_collaboration="true"
       @connectionStateChanged="_connection_state => connection_state = _connection_state"
       ref="textField"
+      :read_only="read_only"
     />
 
     connection_state : {{ connection_state }}
@@ -65,7 +66,11 @@ import CollaborativeEditor from './CollaborativeEditor.vue'
 export default {
   props: {
     slugFolderName: String,
-    media: Object
+    media: Object,
+    read_only: {
+      type: Boolean,
+      default: true
+    }
   },
   components: {
     CollaborativeEditor
