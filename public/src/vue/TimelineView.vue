@@ -15,14 +15,23 @@
 
     <!-- <pre>{{ sortedMedias }}</pre> -->
 
-    <button type="button" class="folder_backbutton" @click="$root.closeFolder()"
-      @mouseover="collapse_foldername = false"
-      @mouseleave="collapse_foldername = true"
-      :class="{ 'is--collapsed' : collapse_foldername }"
-    >
-      <span class="icon">←</span>
-      <span class="project_name">{{ folder.name }}</span>
-    </button>
+    <template v-if="$root.state.mode === 'export_web'">
+      <button 
+        type="button" class="folder_backbutton" @click="$root.closeFolder()"
+        @mouseover="collapse_foldername = false"
+        @mouseleave="collapse_foldername = true"
+        :class="{ 'is--collapsed' : collapse_foldername }"
+      >
+        <span class="icon">←</span>
+        <span class="project_name">{{ folder.name }}</span>
+      </button>
+    </template>
+    <template v-else>
+      <div class="folder_backbutton"
+      >
+        <span class="margin-sides-small padding-verysmall text-centered">{{ folder.name }}</span>
+      </div>
+    </template>
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
 
@@ -355,7 +364,13 @@ export default {
       })
     },
     folder_is_archived() {
-      return this.folder.hasOwnProperty('archived') && this.folder.archived ? true : false;
+      if(this.folder.hasOwnProperty('archived') && this.folder.archived) {
+        return true;
+      }
+      if(this.$root.state.mode === 'export_web') {
+        return true;
+      }
+      return false;
     },  
     folder_authors() {
       return this.folder.hasOwnProperty('authors') && this.folder.authors !== '' ? this.folder.authors : [];
