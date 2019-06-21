@@ -22,7 +22,7 @@
   }
 </script>
 
-<style scoped>
+<style>
 
 /* .splitter-pane-resizer.horizontal {
   height: 11px;

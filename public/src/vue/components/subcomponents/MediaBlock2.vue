@@ -15,8 +15,8 @@
       @mouseleave="is_hovered = false"
     >
 
-    t: {{ media.t }}
-    l: {{ media.l }}
+    <!-- t: {{ media.t }}
+    l: {{ media.l }} -->
     <!-- mediaSize: {{ mediaSize }} -->
 
       <MediaContent
@@ -528,6 +528,7 @@ export default {
       bottom: 0;
       left: auto;
       right: 0;
+      line-height: 1.5;
     }
     &:not([data-col_height="1"])::after {
       position: absolute;
