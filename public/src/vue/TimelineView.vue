@@ -15,7 +15,7 @@
 
     <!-- <pre>{{ sortedMedias }}</pre> -->
 
-    <template v-if="$root.state.mode === 'export_web'">
+    <template v-if="$root.state.mode !== 'export_web'">
       <button 
         type="button" class="folder_backbutton" @click="$root.closeFolder()"
         @mouseover="collapse_foldername = false"
