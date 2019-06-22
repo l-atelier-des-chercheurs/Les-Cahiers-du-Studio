@@ -46,10 +46,16 @@ module.exports = function(app, io, m) {
       let tasks = [];
 
       let getPresentation = new Promise((resolve, reject) => {
-        file.getPresentation().then(presentationMD => {
-          pageData.presentationMD = presentationMD;
-          resolve();
-        });
+        file
+          .getPresentation()
+          .then(presentationMD => {
+            pageData.presentationMD = presentationMD;
+            resolve();
+          })
+          .catch(() => {
+            pageData.presentationMD = false;
+            resolve();
+          });
       });
       tasks.push(getPresentation);
 

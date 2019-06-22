@@ -21,12 +21,14 @@ module.exports = (function() {
     getPresentation() {
       return new Promise(function(resolve, reject) {
         let presentationMd = path.join(api.getFolderPath(), 'presentation.md');
+
         fs.access(presentationMd, fs.F_OK, function(err) {
           if (err) {
-            resolve(validator.unescape(global.appInfos.presentationMd));
+            reject();
           } else {
-            let presentationContent = validator.unescape(
-              fs.readFileSync(presentationMd, global.settings.textEncoding)
+            let presentationContent = fs.readFileSync(
+              presentationMd,
+              global.settings.textEncoding
             );
             presentationContent = api.parseData(presentationContent);
             resolve(presentationContent);
