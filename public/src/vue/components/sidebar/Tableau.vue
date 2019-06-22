@@ -5,7 +5,6 @@
     <table class="margin-none border-none"
       :class="{ 'table-hoverable' : display === 'table' }"
       >
-
       <thead>
         <tr>
           <th class="font-small padding-medium">
@@ -34,7 +33,6 @@
       </thead>
       <tbody>
         <tr
-          v-if="media.hasOwnProperty(sort.current.field) && media[sort.current.field] !== ''"
           v-for="media in sortedMedias"
           :key="media.slugMediaName"
           @mouseover="highlightMedia(media.slugMediaName)"
@@ -50,6 +48,7 @@
               <MediaContent
                 v-model="media.content"
                 :context="'preview'"
+                :thumbSize="50"
                 :slugFolderName="slugFolderName"
                 :slugMediaName="media.slugMediaName"
                 :media="media"
@@ -57,7 +56,9 @@
                 >
               </MediaContent>                
             </td>
-            <td class="font-small padding-small">{{ media[sort.current.field] }}</td>
+            <td class="font-small padding-small">
+              {{ media[sort.current.field] }}
+            </td>
             <td class="font-small padding-small">
               <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
                 @click.stop="openMediaModal(media.slugMediaName)"
@@ -100,7 +101,8 @@ export default {
     sort: Object,
     slugFolderName: String,
     sortedMedias: Array,
-    timelineInfos: Object
+    timeline_start: Number,
+    timeline_end: Number
   },
   data() {
     return {
@@ -110,7 +112,6 @@ export default {
     };
   },
   mounted: function() {},
-
   computed: {},
   watch: {
     currentSort: function() {
@@ -118,6 +119,12 @@ export default {
     },
     currentFilter: function() {
       this.$eventHub.$emit('setFilter', this.currentFilter);
+    },
+    'sort.current': function() {
+      this.currentSort = this.sort.current;
+    },
+    'filter': function() {
+      this.currentFilter = this.filter;
     }
   },
   methods: {
@@ -138,8 +145,8 @@ export default {
     },
     mediaIsOutOfScope(media) {
       if (
-        this.$moment(media.date_timeline).isBefore(this.timelineInfos.start) ||
-        this.$moment(media.date_timeline).isAfter(this.timelineInfos.end)
+        this.$moment(media.date_timeline).isBefore(this.timeline_start) ||
+        this.$moment(media.date_timeline).isAfter(this.timeline_end)
       ) {
         return true;
       }
@@ -154,7 +161,7 @@ export default {
         return '';
       }
 
-      pathToSmallestThumb = this.$root.state.mode === 'export' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`
+      pathToSmallestThumb = this.$root.state.mode === 'export_web' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`
       return pathToSmallestThumb;
     }
   }

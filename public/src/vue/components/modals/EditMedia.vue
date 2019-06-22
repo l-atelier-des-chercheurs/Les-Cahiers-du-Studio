@@ -1,21 +1,27 @@
 <template>
   <Modal
-    :backgroundColor="mediadata.color"
+    :backgroundColor="color"
     @close="$emit('close')"
     @submit="editThisMedia"
+    @arrow_left="$eventHub.$emit('editmediamodal.previousmedia')"
+    @arrow_right="$eventHub.$emit('editmediamodal.nextmedia')"
     :read_only="read_only"
-    :typeOfModal="'EditMedia'"
-    >
+    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'"
+    :askBeforeClosingModal="askBeforeClosingModal"
+    :show_sidebar="$root.media_modal.show_sidebar"
+    :is_minimized="$root.media_modal.minimized"
+    :can_minimize="false"
+    :arrow_navigation="true"
+  >
     <template slot="header">
-      <span class="text-cap"> {{ $t('edit_the_media') }}</span> <i>{{ slugMediaName }}</i>
+      <span class="text-cap"> {{ $t('edit_the_media') }}</span><br><i>{{ media.media_filename }}</i>
     </template>
 
     <template slot="sidebar">
-
 <!-- Caption -->
       <div 
-      v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
-      class="margin-bottom-small" 
+        v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
+        class="margin-bottom-small" 
       >
         <label>{{ $t('caption') }}</label><br>
         <textarea v-model="mediadata.caption" :readonly="read_only">
@@ -60,9 +66,9 @@
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                @click="setMediaDateTimeline(currentTime)"
+                @click="setMediaDateTimeline($root.currentTime)"
                 >
-                {{ currentTime_human }}
+                {{ $root.currentTime_human }}
               </button>
             </small>
           </div>
@@ -72,7 +78,7 @@
 
 <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
 <!-- Disabled for now: if an image or video is tagged as "text" or marked, a folder becomes unreadable -->
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('type') }}</label>
         <select v-if="!read_only" ref="type" v-model="mediadata.type">
           <option v-for="mediaType in $root.state.structure.media.type.options" :key="mediaType">
@@ -80,18 +86,18 @@
           </option>
         </select>
         <input type="text" v-else :value="mediadata.type" readonly>
-      </div>
+      </div> -->
 
 <!-- Color -->
-      <div v-if="!read_only" class="margin-bottom-small">
+      <!-- <div v-if="!read_only" class="margin-bottom-small">
         <label>{{ $t('color') }}</label>
         <select v-if="!read_only" ref="type" v-model="mediadata.color">
-          <option v-for="mediaColor in $root.state.structure.media.color.options" :key="mediaColor">
+          <option v-for="mediaColor in $root.state.structure['folders'].medias.fields.color.options" :key="mediaColor">
             {{ mediaColor }}
           </option>
         </select>
         <input type="text" v-else :value="mediadata.color" readonly>
-      </div>
+      </div> -->
 
 <!-- Keywords -->
       <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
@@ -103,8 +109,12 @@
 <!-- Author(s) -->
       <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
         <label>{{ $t('author') }}</label>
-        <textarea v-model="mediadata.authors" :readonly="read_only">
-        </textarea>
+        <AuthorsInput
+          :currentAuthors="mediadata.authors"
+          :allAuthors="allAuthors"
+          :read_only="read_only"
+          @authorsChanged="newAuthors => mediadata.authors = newAuthors"
+        />
       </div>
 
 <!-- Public or private -->
@@ -115,12 +125,13 @@
         </span>
       </div>
 
-      <div v-if="!read_only" class="m_modal--buttonrow flex-wrap flex-vertically-start flex-space-between flex-same-basis">
+      <div class="m_modal--buttonrow flex-wrap flex-vertically-start flex-space-between flex-same-basis">
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click="removeMedia()"
           :disabled="read_only"
-          >
+          v-if="!read_only"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
@@ -150,7 +161,8 @@
         <button type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click.prevent="printMedia()"
-          >
+          v-if="!read_only"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
@@ -178,14 +190,40 @@
           </span>
         </button>
 
-        <a :href="mediaURL" :title="slugMediaName" target="_blank"
+        <template v-if="showQRModal">
+          <hr>
+          <CreateQRCode
+            :slugFolderName="slugFolderName"
+            :media_filename="media.media_filename"
+          />
+        </template>
+
+        <button type="button" 
+          class="bg-transparent button-round margin-verysmall padding-verysmall"
+          @click="showQRModal = !showQRModal"
+        >
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="49px"
+            height="49px" viewBox="0 0 49 49" style="enable-background:new 0 0 49 49;" xml:space="preserve">
+            <g>
+              <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d"/>
+              <circle cx="24.5" cy="24.5" r="24" style="fill: none;stroke: #fff;stroke-miterlimit: 10"/>
+            </g>
+            <path style="fill: none;stroke: #fff;stroke-miterlimit: 10" d="M25.7,14v9.2H35V14H25.7z M16.7,32.3h3.9v-3.9h-3.9V32.3z M14,35h9.2v-9.2H14V35z M14,23.3h9.2V14H14V23.3z
+              M29,25.7h-3.3v2.9H29V25.7z M30.4,27.1h1.8v1.5h-1.8v2.6h-1.8v-1.8h-2v1.8h1.1v2h-2V35h4.6v-1.8h2.9v-2h-1.1v-1.8H35v-3.7h-4.6
+              V27.1z M35,35v-1.8h-1.8V35H35z M16.7,20.6h3.9v-3.9h-3.9V20.6z M32.3,16.7h-3.9v3.9h3.9V16.7z"/>
+          </svg>
+          <span class="text-cap font-verysmall">
+            Partage
+          </span>
+        </button>
+
+        <!-- <a :href="mediaURL" :title="media.media_filename" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
-          v-if="mediadata.type === 'image'"
-          :disabled="read_only"
-          >
+          v-if="mediadata.type === 'image' && !read_only"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
-              <g id="Editeur_txt" data-name="Editeur txt">
+              <g id="Editeur_txt" data-name="Zoom">
                 <g>
                   <g>
                     <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d"/>
@@ -203,12 +241,12 @@
           <span class="text-cap font-verysmall">
             {{ $t('zoom') }}
           </span>
-        </a>
+        </a> -->
 
-        <a :download="slugMediaName" :href="mediaURL" :title="slugMediaName" target="_blank"
+        <a :download="media.media_filename" :href="mediaURL" :title="media.media_filename" target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
-          :disabled="read_only"
-          >
+          v-if="$root.state.mode !== 'export_web' || ($root.state.hasOwnProperty('export_options') && $root.state.export_options.allow_download !== 'false')"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
@@ -235,7 +273,12 @@
     </template>
 
     <template slot="submit_button">
-      {{ $t('save') }}
+      <template v-if="!alt_key_is_pressed">
+        {{ $t('save_and_close') }}
+      </template>
+      <template v-else>
+        {{ $t('save') }}
+      </template>
     </template>
 
     <template slot="preview">
@@ -258,14 +301,17 @@ import Modal from './BaseModal.vue';
 import alertify from 'alertify.js';
 import MediaContent from '../subcomponents/MediaContent.vue';
 import DateTime from '../subcomponents/DateTime.vue';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
+import CreateQRCode from './../qr/CreateQRCode.vue';
 
 export default {
   props: {
     slugFolderName: String,
     slugMediaName: String,
     media: Object,
+    folder: Object,
     isRealtime: Boolean,
-    currentTime: Object,
+    allAuthors: Array,
     read_only: {
       type: Boolean,
       default: true
@@ -274,22 +320,41 @@ export default {
   components: {
     Modal,
     DateTime,
-    MediaContent
+    MediaContent,
+    AuthorsInput,
+    CreateQRCode
   },
   data() {
     return {
       mediadata: {
         date_timeline: this.media.date_timeline,
         type: this.media.type,
-        color: this.media.color,
+        // color: this.media.color,
         authors: this.media.authors,
         caption: this.media.caption,
         keywords: this.media.keywords,
-        public: this.media.public == 'true',
+        public: this.media.public,
         content: this.media.content
       },
-      mediaURL: `/${this.slugFolderName}/${this.slugMediaName}`
+      mediaURL: this.$root.state.mode === 'export_web' ? `./${this.slugFolderName}/${this.media.media_filename}` : `/${this.slugFolderName}/${this.media.media_filename}`,
+      alt_key_is_pressed: false,
+      askBeforeClosingModal: false,
+      showQRModal: false
     };
+  },
+  watch: {
+    'mediadata': {
+      handler() {
+        this.askBeforeClosingModal = true;
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    // document.addEventListener('keyup', this.keyPressed);
+  },
+  beforeDestroy: function() {
+    // document.removeEventListener('keyup', this.keyPressed);
   },
   computed: {
     date_created_human() {
@@ -298,40 +363,90 @@ export default {
     date_uploaded_human() {
       return this.$moment(this.media.date_upload).format('l LTS');
     },
-    currentTime_human() {
-      return this.$moment(this.currentTime).format('l LTS');
-    }
+    color() {
+      const media_authors = this.mediadata.authors;
+      if(typeof media_authors !== 'object' 
+      || media_authors.length == 0
+      || typeof this.folder.authors !== 'object'
+      || this.folder.authors.length == 0
+      ) {
+        return '';
+      }
+      const full_authors_info = this.folder.authors.filter(a => a.name === media_authors[0].name);
+      if(full_authors_info.length == 0) {
+        return '';
+      }
+      return full_authors_info[0].color;
+    },
   },
   methods: {
+    keyPressed: function(event) {
+      // if (window.state.dev_mode === 'debug') {
+      //   console.log('METHODS • EditMedia: keyPressed');
+      // }
+
+
+      // if (event.target.tagName.toLowerCase() === 'input' 
+      //   || event.target.tagName.toLowerCase() === 'textarea'
+      //   || event.target.className.includes('ql-editor')
+      // ) {
+      //   return;
+      // }      
+
+      // if(event.key === 'Alt') {
+      //   this.alt_key_is_pressed = !this.alt_key_is_pressed;
+      //   return;
+      // }
+
+      // if(event.key === 'p' || event.key === 'P') {
+      //   this.mediadata.public = !this.mediadata.public;
+      // }
+
+      // if(event.key === 'Enter') {
+      //   this.editThisMedia(); 
+      // }
+    },
     printMedia: function() {
       window.print();
     },
     openMediaNewWindow: function() {},
     removeMedia: function() {
       if (window.confirm(this.$t('sureToRemoveMedia'))) {
-        this.$root.removeMedia(this.slugFolderName, this.slugMediaName);
-        // then close that popover
+
+        this.$root.removeMedia({ 
+          type: 'folders',
+          slugFolderName: this.slugFolderName, 
+          slugMediaName: this.slugMediaName,
+          data: this.mediadata
+        });
         this.$emit('close', '');
+
+        // if(!this.alt_key_is_pressed) {
+        //   this.$emit('close', '');
+        // } else {
+        //   this.$eventHub.$emit('editmediamodal.nextmedia');
+        // }
       }
     },
     setMediaDateTimeline: function(newDate) {
       this.mediadata.date_timeline = newDate;
     },
-    editThisMedia: function(event) {
+    editThisMedia: function() {
       console.log('editThisMedia');
 
-      // copy all values
-      let values = this.mediadata;
-      values.slugFolderName = this.slugFolderName;
-      values.slugMediaName = this.slugMediaName;
-
-      this.$root.editMedia(values);
+      this.$root.editMedia({ 
+        type: 'folders',
+        slugFolderName: this.slugFolderName, 
+        slugMediaName: this.slugMediaName,
+        data: this.mediadata
+      });
 
       // then close that popover
-      this.$emit('close', '');
+      if(!this.alt_key_is_pressed) {
+        this.$emit('close', '');
+      }
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 <style>

@@ -5,7 +5,8 @@
     @submit="editThisFolder"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
-    >
+    :askBeforeClosingModal="askBeforeClosingModal"
+  >
     <template slot="header">
       <span class="text-cap"> {{ $t('edit_folder') }}</span> <i>{{ folder.name }}</i>
     </template>
@@ -15,22 +16,49 @@
 <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t('name') }}</label>
-        <input type="text" v-model="folderdata.name" required :readonly="read_only">
+        <input type="text" v-model="folderdata.name" required :readonly="folderdata.archived">
       </div>
 
 <!-- Start date -->
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('capture_start') }}</label>
-        <DateTime v-model="folderdata.start" :read_only="read_only">
+        <DateTime v-model="folderdata.start" :twowaybinding=true :read_only="read_only">
         </DateTime>
-      </div>
+        <div class="margin-bottom-small">
+          <small>
+            {{ $t('currently') }}
+            <button
+              type="button"
+              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+              @click="folderdata.start = $root.currentTime"
+            >
+              {{ $root.currentTime_human }}
+            </button>
+          </small>
+        </div>
+      </div> -->
 
 <!-- End date -->
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <label>{{ $t('capture_end') }}</label>
-        <DateTime v-model="folderdata.end" :read_only="read_only">
-        </DateTime>
-      </div>
+        <DateTime 
+          v-model="folderdata.end" 
+          :twowaybinding=true 
+          :read_only="read_only"
+        />
+        <div class="margin-bottom-small">
+          <small>
+            {{ $t('currently') }}
+            <button
+              type="button"
+              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+              @click="folderdata.end = $root.currentTime"
+            >
+              {{ $root.currentTime_human }}
+            </button>
+          </small>
+        </div>
+      </div> -->
 
 <!-- Password -->
 <!--
@@ -41,12 +69,28 @@
       </div>
  -->
 
-<!-- Author(s) -->
+<!-- Archive switch -->
       <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label><br>
-        <textarea v-model="folderdata.authors" :readonly="read_only">
-        </textarea>
+        <span class="switch">
+          <input type="checkbox" class="switch" id="archivedswitch" v-model="folderdata.archived" :readonly="read_only">
+          <label for="archivedswitch">{{ $t('archive_this_folder') }}</label>
+        </span>
+        <div class="margin-bottom-small">
+          <small>
+            {{ $t('archive_instructions') }}
+          </small>
+        </div>
       </div>
+
+<!-- Author(s) -->
+      <!-- <div v-if="!read_only && !!folderdata.authors" class="margin-bottom-small">
+        <label>{{ $t('author') }}</label>
+        <AuthorsInput
+          :currentAuthors="folderdata.authors"
+          :allAuthors="allAuthors"
+          @authorsChanged="newAuthors => folderdata.authors = newAuthors"
+        />
+      </div> -->
 
     </template>
 
@@ -60,29 +104,41 @@
 import Modal from './BaseModal.vue';
 import DateTime from '../subcomponents/DateTime.vue';
 import alertify from 'alertify.js';
-import slug from 'slugg';
+import AuthorsInput from '../subcomponents/AuthorsInput.vue';
 
 export default {
   props: {
     slugFolderName: String,
     folder: Object,
-    read_only: Boolean
+    read_only: Boolean,
+    allAuthors: Array,
   },
   components: {
     Modal,
-    DateTime
+    DateTime,
+    AuthorsInput
   },
   data() {
     return {
+      askBeforeClosingModal: false,
       folderdata: {
         name: this.folder.name,
         start: this.$moment(this.folder.start).isValid()
           ? this.folder.start
           : '',
         end: this.$moment(this.folder.end).isValid() ? this.folder.end : '',
-        authors: this.folder.authors
+        authors: this.folder.authors,
+        archived: this.folder.hasOwnProperty('archived') ?  this.folder.archived : false
       }
     };
+  },
+  watch: {
+    'folderdata': {
+      handler() {
+        this.askBeforeClosingModal = true;
+      },
+      deep: true
+    }
   },
   computed: {},
   methods: {
@@ -111,7 +167,7 @@ export default {
           return false;
         }
 
-        if (slug(this.folderdata.name).length === 0) {
+        if (this.$slug(this.folderdata.name).length === 0) {
           alertify
             .closeLogOnClick(true)
             .delay(4000)
@@ -121,14 +177,12 @@ export default {
         }
       }
 
-      // copy all values
-      let values = this.folderdata;
+      this.$root.editFolder({
+        type: 'folders',
+        slugFolderName: this.slugFolderName, 
+        data: this.folderdata 
+      });
 
-      values.slugFolderName = this.slugFolderName;
-
-      this.$root.editFolder(values);
-
-      // then close that popover
       this.$emit('close', '');
     }
   },

@@ -1,0 +1,802 @@
+<template>
+    <!-- v-if="media.type === 'marker'" -->
+  <div 
+    class="packery-item"
+    :style="itemSize"
+  >
+    <div class="packery-item-content"
+      :class="{ 
+        'is--hovered' : is_hovered && !is_resized,
+        'is--text_overflowing' : isTextOverflowing
+      }"
+      :data-col_height="mediaSize.height"
+      :style="itemStylesWithSize"
+      @mouseenter="is_hovered = true"
+      @mouseleave="is_hovered = false"
+    >
+
+    <!-- t: {{ media.t }}
+    l: {{ media.l }} -->
+    <!-- mediaSize: {{ mediaSize }} -->
+
+      <MediaContent
+        v-model="media.content"
+        :slugFolderName="slugFolderName"
+        :data-slugmedianame="media.slugMediaName"
+        :media="media"
+        :context="'preview'"
+        :element_width_for_sizes="widthForSizes"
+        ref="MediaContent"
+      />
+
+      <div class="author_indicator"
+        v-if="mediaColorFromFirstAuthor"
+      />
+
+      <div class="draggabilly_handle" data-draggabilly_handle
+      />
+
+      <!-- <template v-if="is_hovered">
+        <div class="buttons_right">
+          <button type="button" @click="changeItemWidth(1)">
+            +
+          </button>
+          <button type="button" @click="changeItemWidth(-1)">
+            -
+          </button>
+        </div>
+        <div class="buttons_bottom">
+          <button type="button" @click="changeItemHeight(1)">
+            +
+          </button>
+          <button type="button" @click="changeItemHeight(-1)">
+            -
+          </button>
+        </div>
+      </template> -->
+
+      <template v-if="is_hovered && !is_resized">
+        <div class="handle handle_resizeMedia handle_resizeMedia_bottomright">
+          <div
+            @mousedown.stop.prevent="resizeMedia('mouse', 'horizontal_vertical')"
+            @touchstart.stop.prevent="resizeMedia('touch', 'horizontal_vertical')"
+          >
+            <span></span>
+          </div>
+        </div>
+
+        <template v-if="mediaSize.width >= 2 && mediaSize.height >= 2">
+          <div class="handle handle_resizeMedia handle_resizeMedia_bottom">
+            <div
+              @mousedown.stop.prevent="resizeMedia('mouse', 'bottom_vertical')"
+              @touchstart.stop.prevent="resizeMedia('touch', 'bottom_vertical')"
+            >
+              <span></span>
+            </div>
+          </div>
+
+          <div class="handle handle_resizeMedia handle_resizeMedia_right">
+            <div
+              @mousedown.stop.prevent="resizeMedia('mouse', 'right_horizontal')"
+              @touchstart.stop.prevent="resizeMedia('touch', 'right_horizontal')"
+            >
+              <span></span>
+            </div>
+          </div>
+        </template>
+      </template>
+
+    </div>
+  </div>
+</template>
+<script>
+import MediaContent from './MediaContent.vue';
+import { setTimeout } from 'timers';
+// import Draggabilly from 'draggabilly';
+// import {packeryEvents} from 'vue-packery-plugin';
+
+export default {
+  props: {
+    media: Object,
+    index: Number,
+    pinp_grid: Object,
+    folder: Object,
+    slugFolderName: String,
+    base_edge: Number,
+    columnWidth: Number,
+    rowHeight: Number,
+    gutter: Number
+  },
+  components: {
+    MediaContent
+  },
+  data() {
+    return {
+      is_hovered: false,
+      mediaSize: {
+        width: undefined,
+        height: undefined,
+        pwidth: undefined,
+        pheight: undefined,
+        top: undefined,
+        left: undefined
+      },
+
+      is_resized: false,
+
+      resizeType: undefined,
+      resizeOffset: {
+        x: 0,
+        y: 0
+      },
+
+      is_mounted: false,
+      text_is_overflowing: false
+    }
+  },
+  
+  created() {
+    console.log(`MOUNTED • MediaBlock2: created`);
+
+    this.setMediaSizeFromMeta();
+    this.setMediaPositionFromMeta();
+
+    if(this.mediaSize.width === undefined || this.mediaSize.height === undefined) {
+      if(this.media.type === 'text') {
+        this.mediaSize.width = 1 + this.base_edge;
+        this.mediaSize.height = 1 + this.base_edge;
+      } else if(this.media.type === 'marker') {
+        this.mediaSize.width = 1 + this.base_edge;
+        this.mediaSize.height = 1;
+      } else {
+        this.mediaSize.width = Math.round(Math.random() * 2 + this.base_edge);
+        if(this.media.hasOwnProperty('ratio') && typeof this.media.ratio === 'number') {
+          this.mediaSize.height = Math.round(this.mediaSize.width * this.media.ratio);
+        } else {
+          this.mediaSize.height = Math.round(Math.random() * 2 + this.base_edge);
+        }
+      }
+    }
+
+    if(!this.mediaSize.top || !this.mediaSize.left) {
+      if(!this.mediaSize.top) {
+        this.mediaSize.top = Math.round(Math.random() * 2) + 4; 
+      }
+      if(!this.mediaSize.left) {
+        this.mediaSize.left = Math.round(this.pinp_grid.width / this.columnWidth);         
+      }
+
+      if(this.mediaSize.top !== null && this.mediaSize.left !== null) {
+        // this.$root.editMedia({ 
+        //   type: 'folders',
+        //   slugFolderName: this.slugFolderName, 
+        //   slugMediaName: this.media.slugMediaName,
+        //   data: {
+        //     t: this.mediaSize.top,
+        //     l: this.mediaSize.left
+        //   }
+        // });
+      }
+    }
+    
+  },
+
+  mounted() {
+    console.log(`MOUNTED • MediaBlock2: mounted`);
+
+    this.$el.pinp = this.pinp_grid.add(this.$el, {
+      handle: '[data-draggabilly_handle]'
+    });
+
+    this.$el.draggie = this.$el.pinp.dragInstance;
+
+    this.$emit('triggerPinpUpdate');
+
+    this.$el.draggie.on('dragStart', () => {
+      this.$emit('dragStarted');      
+    });
+    this.$el.draggie.on('dragEnd', () => {
+      this.sendMediaPosition();
+      this.$emit('dragEnded');      
+    });
+    this.$el.draggie.on('staticClick', () => {
+      this.openMedia();
+    });
+
+
+
+
+
+    // packeryEvents.$emit('draggie', {
+    //   draggie: this.$el.draggie,
+    //   node: this.$el.parentNode
+    // });
+
+
+    this.$nextTick(() => {
+      this.is_mounted = true;
+    });
+
+  },
+  beforeDestroy() {
+    this.pinp_grid.remove(this.$el.pinp);
+    // this.$el.draggie.destroy();
+    // this.$el.draggie = null;
+  },
+  watch: {
+    'mediaSize': { 
+      handler: function() {
+
+        if(this.is_mounted) {
+          this.$el.pinp.width = this.mediaWidth;
+          this.$el.pinp.height = this.mediaHeight;
+          this.$el.pinp.x = this.mediaLeft;
+          this.$el.pinp.y = this.mediaTop;
+          this.$emit('triggerPinpUpdate');
+        }
+
+        if(!this.media.hasOwnProperty('t') 
+        || this.mediaSize.top !== this.media.t
+        || !this.media.hasOwnProperty('l') 
+        || this.mediaSize.left !== this.media.l
+        ) {                    
+          this.$nextTick(() => {
+            this.sendMediaPosition();      
+          });
+        }
+      },
+      deep: true
+    },
+    'media.w': function() {
+      this.setMediaSizeFromMeta();
+      this.$emit('triggerPinpUpdate');
+    },
+    'media.h': function() {
+      this.setMediaSizeFromMeta();
+      this.$emit('triggerPinpUpdate');
+    },
+    'media.t': function() {
+      this.setMediaPositionFromMeta();
+      this.$emit('triggerPinpUpdate');
+    },
+    'media.l': function() {
+      this.setMediaPositionFromMeta();
+      this.$emit('triggerPinpUpdate');
+    },
+  },
+  computed: {
+    itemSize() {
+      return {
+        width: this.mediaWidth + 'px',
+        height: this.mediaHeight + 'px',
+        top: this.mediaTop + 'px',
+        left: this.mediaLeft + 'px'
+      }
+    },
+    isTextOverflowing() {
+      if(['text', 'marker'].includes(this.media.type) && this.$refs.hasOwnProperty('MediaContent')) {        
+        return this.mediaHeight < this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
+      }
+      return false;
+    },
+    mediaWidth() {
+      return this.mediaSize.width * this.columnWidth;
+    },
+    mediaHeight() {
+      return  this.mediaSize.height * this.rowHeight;
+    },
+    mediaLeft() {
+      return this.mediaSize.left * this.columnWidth;
+    },
+    mediaTop() {
+      return this.mediaSize.top * this.rowHeight;
+    },
+    widthForSizes() {
+      // TODO
+      // should check the actual width the image will be displayed at, 
+      // considering that the image is in an object-fit: cover configuration
+      if(this.mediaWidth > this.mediaHeight) {
+        return this.mediaWidth;
+      } else {
+        return this.mediaHeight;
+      }
+    },
+    itemStylesWithSize() {
+      return {
+        '--author-color': this.mediaColorFromFirstAuthor ? this.mediaColorFromFirstAuthor : '#fff',
+        width: this.mediaWidth - this.gutter + 'px',
+        height: this.mediaHeight - this.gutter + 'px',
+        top: this.gutter/2 + 'px',
+        left: this.gutter/2 + 'px',
+      }
+    },
+    mediaColorFromFirstAuthor() {
+      return this.$root.mediaColorFromFirstAuthor(this.media, this.folder);
+    }
+  },
+  methods: {
+    updateMediaSizeFromPinp() {
+      const x = this.$el.pinp.x;
+      const y = this.$el.pinp.y;
+
+      const l = Math.round(x / this.columnWidth);
+      const t = Math.round(y / this.rowHeight);
+
+      this.mediaSize.left = l;
+      this.mediaSize.top = t;
+    },
+    updatePinpPositions() {
+      this.$el.pinp.width = this.mediaWidth;
+      this.$el.pinp.height = this.mediaHeight;
+      this.$el.pinp.x = this.mediaLeft;
+      this.$el.pinp.y = this.mediaTop;
+    },
+    setMediaSizeFromMeta() {
+      if(this.media.hasOwnProperty('w') && typeof this.media.w === 'number') {
+        this.mediaSize.width = this.media.w;
+      }
+      if(this.media.hasOwnProperty('h') && typeof this.media.h === 'number') {
+        this.mediaSize.height = this.media.h;
+      }
+    },
+    setMediaPositionFromMeta() {      
+      if(this.media.hasOwnProperty('t') && typeof this.media.t === 'number') {
+        this.mediaSize.top = this.media.t;
+      }
+
+      if(this.media.hasOwnProperty('l') && typeof this.media.l === 'number') {
+        this.mediaSize.left = this.media.l;
+      }
+    },
+    changeItemWidth(increment) {
+      console.log('MediaBlock changeItemWidth');
+      this.mediaSize.width += increment;
+    },
+    changeItemHeight(increment) {
+      console.log('MediaBlock changeItemHeight');
+      this.mediaSize.height += increment;
+    },
+    limitMediaWidth(w) {
+      return Math.max(1, Math.min(12, w));
+    },
+    limitMediaHeight(h) {
+      return Math.max(1, Math.min(12, h));
+    },
+    sendMediaPosition(){
+      console.log(`METHODS • MediaBlock2: sendMediaPosition`);
+
+      if(!this.$el.pinp) {
+        return;
+      }
+
+      const x = this.$el.pinp.x;
+      const y = this.$el.pinp.y;
+
+      const l = Math.round(x / this.columnWidth);
+      const t = Math.round(y / this.rowHeight);
+
+      if(l >= 0 && t >= 0) {
+        this.$root.editMedia({ 
+          type: 'folders',
+          slugFolderName: this.slugFolderName, 
+          slugMediaName: this.media.slugMediaName,
+          data: {
+            t,
+            l
+          }
+        });
+      }
+    },
+    openMedia() {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log('METHODS • MediaBlock: openMedia');
+      }
+      this.$eventHub.$emit('timeline.openMediaModal', this.media.slugMediaName);
+    },
+    resizeMedia(type, origin) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaBlock: resizeMedia with is_resized = ${this.is_resized}`);
+      }
+      if (!this.read_only) {
+        this.resizeOrigin = origin;
+        this.$emit('resizeStarted');      
+        if(type === 'mouse') {
+          window.addEventListener('mousemove', this.resizeMove);
+          window.addEventListener('mouseup', this.resizeUp);
+        } else if(type === 'touch') {
+          window.addEventListener('touchmove', this.resizeMove);
+          window.addEventListener('touchend', this.resizeUp);
+        }
+      }
+    },
+    resizeMove(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaBlock: resizeMove with is_resized = ${this.is_resized}`);
+      }
+
+      const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
+      const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
+
+      if (!this.is_resized) {
+        this.is_resized = true;
+        this.is_selected = true;
+        this.resizeOffset.x = pageX;
+        this.resizeOffset.y = pageY;
+        this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
+        this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
+      } else {
+        const deltaX = Math.round((pageX - this.resizeOffset.x) / this.columnWidth);
+        let newWidth = this.mediaSize.pwidth + deltaX;
+        
+        if(this.resizeOrigin.includes('horizontal')) {
+          this.mediaSize.width = this.limitMediaWidth(newWidth);
+        }
+
+        const deltaY = Math.round((pageY - this.resizeOffset.y) / this.rowHeight);
+        let newHeight = this.mediaSize.pheight + deltaY;
+
+        if(this.resizeOrigin.includes('vertical')) {
+          this.mediaSize.height = this.limitMediaHeight(newHeight);
+        }
+      }
+    },
+    resizeUp(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • MediaBlock: resizeUp with is_resized = ${this.is_resized}`);
+      }
+      if (this.is_resized) {
+        console.log(`METHODS • MediaBlock: this.mediaSize.width = ${this.mediaSize.width} and this.mediaSize.height = ${this.mediaSize.height}`);
+
+        // this.mediaSize.width = this.mediaSize.width;
+        // this.mediaSize.height = this.mediaSize.height;
+
+        this.$root.editMedia({ 
+          type: 'folders',
+          slugFolderName: this.slugFolderName, 
+          slugMediaName: this.media.slugMediaName,
+          data: {
+            w: this.mediaSize.width,
+            h: this.mediaSize.height
+          }
+        });
+
+        this.is_resized = false;
+        this.$emit('resizeEnded');      
+      }
+
+      event.stopPropagation();
+      window.removeEventListener('mousemove', this.resizeMove);
+      window.removeEventListener('mouseup', this.resizeUp);
+      window.removeEventListener('touchmove', this.resizeMove);
+      window.removeEventListener('touchend', this.resizeUp);
+
+      return false;
+    },
+
+  }
+}
+</script>
+<style lang="scss">
+.packery-item, .packery-item-content {
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+}
+.packery-item {
+  // border: 0.2rem dashed #f4be41;
+  // box-sizing: content-box;
+  transition: all .15s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
+
+  &.is-dragging, &.is-positioning-post-drag {
+    z-index: 2;
+
+    .packery-item-content {
+      // box-shadow: none !important;
+      // transform: translateY(0px);
+      // transition: none;  
+      box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
+    }
+  }
+  &:not(.is-dragging).last-dragged {
+    transition: none;
+  }
+}
+
+.packery-item-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  background-color: var(--author-color);
+
+  border-radius: 4px;
+  // border: 4px solid transparent;
+
+  transition: all .8s cubic-bezier(.25,.8,.25,1);  
+
+  &.is--hovered {
+    // background-color: white;
+    z-index: 1;
+    // transform: translateY(0px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
+  }
+
+  &.is--text_overflowing {
+    &::after {
+      content: '↓';
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: auto;
+      right: 0;
+      line-height: 1.5;
+    }
+    &:not([data-col_height="1"])::after {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      line-height: 2;
+      // background-color: var(--author-color);
+      background-image: linear-gradient(transparent 0%, var(--author-color) 40%);
+      height: 2em;
+      // padding-top:.5em;
+      // border-top: 1px solid black;
+      margin: 0 10px;
+    }
+  }
+
+  .author_indicator {
+    $t-button_size: 5px;
+    
+    position: absolute;
+    top: 5px;left: 5px;
+    width: $t-button_size;
+    height: $t-button_size;
+    background-color: var(--author-color);
+    border-radius: $t-button_size;
+    z-index: 1;
+    // height: 100%;
+    
+    // border-top: 10px solid var(--author-color);
+    // border-right: 10px solid transparent;
+    // border-left: none;
+    // transform: rotate(-45deg);
+    // border-radius: 2px 0 0 0;
+    // border-top-left-radius: 2px;
+  }
+
+  .mediaContainer {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border-radius: 4px;
+    overflow: hidden;
+
+    &.type-audio, &.type-video {
+      > * {
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+  
+        .plyr {
+          width: 100%;
+          height: 100%;
+          min-width: 0;
+  
+          .plyr__controls {
+            position: absolute;
+            background: transparent;
+          }
+  
+          .plyr__control {
+            pointer-events: auto;
+          }
+  
+          .plyr__video-wrapper {
+            width: 100%;
+            height: 100%;
+          }
+          .plyr__poster {
+            background-size: cover;
+          }
+        }
+      }
+    }
+    &.type-text {
+      > * {
+        // padding-top: .6em; 
+      }
+    }
+
+    img, video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.draggabilly_handle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;left: 0;
+  // z-index: 1;
+
+  html.touchevents & {
+    display: none;
+  }
+}
+
+.packery-drop-placeholder {
+  background-color: rgba(0,0,0,.10);
+  filter: blur(10px);
+  -webkit-transition: -webkit-transform 0.2s;
+          transition: transform 0.2s;
+  z-index: 0;
+}
+
+
+.buttons_right, .buttons_bottom {
+  position: absolute;
+  color: white;
+  font-size: .8em;
+  line-height: 1;
+  font-weight: bold;
+
+  button {
+    background-color: #333;
+    display: block;
+    border: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    margin: 4px;
+    min-height: 0;
+  }
+}
+
+.buttons_right {
+  // left: 100%;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 15px;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+}
+.buttons_bottom {
+  // top: 100%;
+  bottom: 0;
+  width: 100%;
+  height: 15px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.draggabilly_handle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;left: 0;
+  // z-index: 1;
+  // background-color: yellow;
+
+  html.touchevents & {
+    display: none;
+  }
+}
+
+.handle {
+  position: absolute;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  top:0;
+  left:0;
+
+  border-style: inherit;
+  border-width: 0px;
+  pointer-events: none;
+  
+  --handle-width: 15px;
+  --handle-height: 5px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+
+  html.touchevents & {
+    display: none;
+  }
+
+  > * {
+    pointer-events: auto;
+  }
+
+  &.handle_resizeMedia_bottom {
+    width: 100%;
+    top: auto;
+    bottom: 0;
+    cursor: col-resize;
+
+    div {
+      cursor: row-resize;
+    
+      > span {
+        height: var(--handle-height);
+        width: var(--handle-width);
+      }
+    }
+  }
+  &.handle_resizeMedia_bottomright {
+    right: 0;
+    top: auto;
+    left: auto;
+    bottom: 0;
+
+    div {
+      cursor: nwse-resize;
+
+      span {
+        height: var(--handle-height);
+        width: var(--handle-height);
+      }
+    }
+  }
+  &.handle_resizeMedia_right {
+    height: 100%;
+    right: 0;
+    left: auto;
+
+    div {
+      cursor: col-resize;
+    
+      > span {
+        height: var(--handle-width);
+        width: var(--handle-height);
+      }
+    }
+  }
+
+  > div {
+    position: relative;
+    pointer-events: auto;
+    padding: 1em;
+    border-radius: 50%;
+    // background-color: red;
+
+    &:hover > span {
+      background-color: #aaa;
+    }
+
+    > span {
+      display: block;
+      width: var(--handle-height);
+      height: var(--handle-height);
+      background-color:#fff;
+      box-shadow: 0 0px 4px rgba(0,0,0,.43);
+      // mix-blend-mode: multiply;
+      border-radius: var(--handle-height);
+    }
+  }
+}
+
+</style>

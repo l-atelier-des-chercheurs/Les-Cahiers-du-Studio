@@ -3,22 +3,24 @@ const path = require('path'),
   formidable = require('formidable'),
   archiver = require('archiver');
 
-const settings = require('./settings.json'),
+const settings = global.settings,
   sockets = require('./core/sockets'),
   dev = require('./core/dev-log'),
   cache = require('./core/cache'),
   api = require('./core/api'),
   file = require('./core/file'),
-  exporter = require('./core/exporter');
+  exporter = require('./core/exporter'),
+  importer = require('./core/importer');
 
 module.exports = function(app, io, m) {
   /**
    * routing event
    */
   app.get('/', showIndex);
-  app.get('/:folder', loadFolder);
-  app.get('/:folder/export', exportFolder);
-  app.post('/:folder/file-upload', postFile2);
+  app.get('/:slugFolderName', loadFolderOrMedia);
+  app.get('/:slugFolderName/media/:metaFileName', loadFolderOrMedia);
+  app.get('/export/:type/:slugFolderName', exportFolderWithMedias);
+  app.post('/file-upload/:type/:slugFolderName', postFile2);
 
   /**
    * routing functions
@@ -37,7 +39,6 @@ module.exports = function(app, io, m) {
       pageData.url = req.path;
       pageData.protocol = req.protocol;
       pageData.structure = settings.structure;
-      pageData.logToFile = global.nodeStorage.getItem('logToFile');
       pageData.isDebug = dev.isDebug();
 
       pageData.mode = 'live';
@@ -52,24 +53,6 @@ module.exports = function(app, io, m) {
       });
       tasks.push(getPresentation);
 
-      let getLocalIP = new Promise((resolve, reject) => {
-        api.getLocalIP().then(
-          localNetworkInfos => {
-            pageData.localNetworkInfos = {
-              ip: [],
-              port: global.appInfos.port
-            };
-            pageData.localNetworkInfos.ip = Object.values(localNetworkInfos);
-            resolve();
-          },
-          function(err, p) {
-            dev.error(`Err while getting local IP: ${err}`);
-            reject(err);
-          }
-        );
-      });
-      tasks.push(getLocalIP);
-
       Promise.all(tasks).then(() => {
         resolve(pageData);
       });
@@ -80,10 +63,7 @@ module.exports = function(app, io, m) {
   function showIndex(req, res) {
     generatePageData(req).then(
       pageData => {
-        dev.logpackets(
-          `Rendering index with data `,
-          JSON.stringify(pageData, null, 4)
-        );
+        dev.logpackets(`Rendering index with data `, JSON.stringify(pageData));
         res.render('index', pageData);
       },
       err => {
@@ -92,22 +72,33 @@ module.exports = function(app, io, m) {
     );
   }
 
-  function loadFolder(req, res) {
-    let slugFolderName = req.param('folder');
+  function loadFolderOrMedia(req, res) {
+    let slugFolderName = req.param('slugFolderName');
+    let metaFileName = req.param('metaFileName');
+
     generatePageData(req).then(
       pageData => {
-        pageData.slugFolderName = slugFolderName;
         // let’s make sure that folder exists first and return some meta
-        file.getFolder(slugFolderName).then(
-          foldersData => {
-            res.render('index', pageData);
-          },
-          (err, p) => {
-            dev.error(`Failed to get folder: ${err}`);
-            pageData.noticeOfError = 'failed_to_find_folder';
-            res.render('index', pageData);
-          }
-        );
+        file
+          .getFolder({ type: 'folders', slugFolderName })
+          .then(
+            foldersData => {
+              pageData.slugFolderName = slugFolderName;
+              pageData.folderAndMediaData = foldersData;
+              if (metaFileName) {
+                pageData.metaFileName = metaFileName;
+              }
+              res.render('index', pageData);
+            },
+            (err, p) => {
+              dev.error(`Failed to get folder: ${err}`);
+              pageData.noticeOfError = 'failed_to_find_folder';
+              res.render('index', pageData);
+            }
+          )
+          .catch(err => {
+            dev.error('No folder found');
+          });
       },
       err => {
         dev.error(`Err while getting index data: ${err}`);
@@ -115,168 +106,190 @@ module.exports = function(app, io, m) {
     );
   }
 
-  function exportFolder(req, res) {
-    let slugFolderName = req.param('folder');
+  function exportFolderWithMedias(req, res) {
+    let slugFolderName = req.param('slugFolderName');
+    let type = req.param('type');
     generatePageData(req).then(pageData => {
       // get medias for a folder
-      file.getFolder(slugFolderName).then(
-        foldersData => {
-          file.gatherAllMedias(slugFolderName).then(
-            mediasData => {
-              // recreate full object
-              foldersData[slugFolderName].medias = mediasData;
-              pageData.folderAndMediaData = foldersData;
-              pageData.mode = 'export';
 
-              res.render('index', pageData, (err, html) => {
-                exporter.copyWebsiteContent({ html, slugFolderName }).then(
-                  cachePath => {
-                    var archive = archiver('zip');
+      file.getFolder({ type, slugFolderName }).then(foldersData => {
+        if (foldersData === undefined) return;
 
-                    archive.on('error', function(err) {
-                      res.status(500).send({ error: err.message });
-                    });
+        file
+          .getMediaMetaNames({
+            type,
+            slugFolderName
+          })
+          .then(list_metaFileName => {
+            let medias_list = list_metaFileName.map(_metaFileName => {
+              return {
+                slugFolderName,
+                metaFileName: _metaFileName
+              };
+            });
+            file
+              .readMediaList({ type, medias_list })
+              .then(folders_and_medias => {
+                let mediasData = folders_and_medias[slugFolderName].medias;
+                if (
+                  typeof req.query === 'object' &&
+                  Object.keys(req.query).length > 0
+                ) {
+                  Object.keys(mediasData).forEach(slugMediaName => {
+                    const media = mediasData[slugMediaName];
 
-                    //on stream closed we can end the request
-                    archive.on('end', function() {
-                      console.log('Archive wrote %d bytes', archive.pointer());
-                    });
+                    if (
+                      req.query.hasOwnProperty('only_public') &&
+                      req.query['only_public'] === 'true'
+                    ) {
+                      if (
+                        !media.hasOwnProperty('public') ||
+                        media['public'] === false
+                      ) {
+                        delete mediasData[slugMediaName];
+                      }
+                    }
+                  });
+                }
 
-                    //set the archive name
-                    res.attachment(slugFolderName + '.zip');
+                // recreate full object
+                foldersData[slugFolderName].medias = mediasData;
+                pageData.folderAndMediaData = foldersData;
+                pageData.export_options = req.query;
+                pageData.mode = 'export_web';
 
-                    //this is the streaming magic
-                    archive.pipe(res);
+                let socketid;
+                if (
+                  Object.keys(req.query).length > 0 &&
+                  req.query.hasOwnProperty('socketid')
+                ) {
+                  socketid = req.query.socketid;
+                }
 
-                    archive.directory(cachePath, false);
+                // sockets.notify({
+                //   socketid,
+                //   msg: `Creating a copy of this folder.`
+                // });
 
-                    archive.finalize();
-                  },
-                  (err, p) => {
-                    dev.error('Failed while preparing/making a web export');
-                  }
-                );
+                res.render('index', pageData, (err, html) => {
+                  exporter
+                    .copyFolderContent({
+                      html,
+                      folders_and_medias,
+                      slugFolderName,
+                      type: 'folders'
+                    })
+                    .then(
+                      cachePath => {
+                        var archive = archiver('zip', {
+                          zlib: { level: 0 } //
+                        });
+
+                        archive.on('error', function(err) {
+                          res.status(500).send({ error: err.message });
+                          sockets.notify({
+                            socketid,
+                            msg: `Failed to create zip: ${err.message}`
+                          });
+                        });
+
+                        function formatBytes(a, b) {
+                          if (0 == a) return '0 Bytes';
+                          var c = 1024,
+                            d = b || 2,
+                            e = [
+                              'Bytes',
+                              'KB',
+                              'MB',
+                              'GB',
+                              'TB',
+                              'PB',
+                              'EB',
+                              'ZB',
+                              'YB'
+                            ],
+                            f = Math.floor(Math.log(a) / Math.log(c));
+                          return (
+                            parseFloat((a / Math.pow(c, f)).toFixed(d)) +
+                            ' ' +
+                            e[f]
+                          );
+                        }
+
+                        let is_finished = false;
+                        let pbytes = 0;
+                        let tbytes = false;
+
+                        function informUserOfProgress() {
+                          if (is_finished) return;
+                          if (tbytes) {
+                            sockets.notify({
+                              socketid,
+                              msg: `${formatBytes(pbytes)}/${formatBytes(
+                                tbytes
+                              )}`
+                            });
+                          }
+                          setTimeout(informUserOfProgress, 1000);
+                        }
+
+                        archive.on('progress', function(msg) {
+                          pbytes = msg.fs.processedBytes;
+                          tbytes = msg.fs.totalBytes;
+                        });
+
+                        //on stream closed we can end the request
+                        archive.on('end', function() {
+                          is_finished = true;
+                          console.log(
+                            'Archive wrote %d bytes',
+                            archive.pointer()
+                          );
+                          sockets.notify({
+                            socketid,
+                            msg: `Archive finished, ${formatBytes(
+                              archive.pointer()
+                            )}`
+                          });
+                        });
+
+                        //set the archive name
+                        res.attachment(slugFolderName + '.zip');
+
+                        //this is the streaming magic
+                        archive.pipe(res);
+                        informUserOfProgress();
+
+                        archive.directory(cachePath, false);
+
+                        archive.finalize();
+                      },
+                      (err, p) => {
+                        dev.error(
+                          `Failed while preparing/making a web export: ${err}`
+                        );
+                      }
+                    );
+                });
+              })
+              .catch((err, p) => {
+                dev.error(`Failed to gather medias: ${err}`);
+                pageData.noticeOfError = 'failed_to_find_folder';
+                res.render('index', pageData);
               });
-            },
-            (err, p) => {
-              dev.error(`Failed to gather medias: ${err}`);
-              pageData.noticeOfError = 'failed_to_find_folder';
-              res.render('index', pageData);
-            }
-          );
-        },
-        (err, p) => {
-          dev.error(`Failed to get folder: ${err}`);
-          pageData.noticeOfError = 'failed_to_find_folder';
-          res.render('index', pageData);
-        }
-      );
+          })
+          .catch((err, p) => {
+            dev.error(`Failed to get folder: ${err}`);
+            pageData.noticeOfError = 'failed_to_find_folder';
+            res.render('index', pageData);
+          });
+      });
     });
   }
 
   function postFile2(req, res) {
-    let slugFolderName = req.param('folder');
-    dev.logverbose(`Will add new media for folder ${slugFolderName}`);
-
-    // create an incoming form object
-    var form = new formidable.IncomingForm();
-
-    // specify that we want to allow the user to upload multiple files in a single request
-    form.multiples = false;
-
-    // store all uploads in the folder directory
-    form.uploadDir = api.getFolderPath(slugFolderName);
-
-    let allFilesMeta = [];
-
-    let fieldValues = {};
-    form.on('field', function(name, value) {
-      console.log(`Got field with name = ${name} and value = ${value}.`);
-      try {
-        fieldValues[name] = JSON.parse(value);
-      } catch (e) {
-        // didn’t get an object as additional meta
-      }
-    });
-
-    // every time a file has been uploaded successfully,
-    form.on('file', function(field, file) {
-      dev.logverbose(
-        `File uploaded:\nfield: ${field}\nfile: ${JSON.stringify(
-          file,
-          null,
-          4
-        )}.`
-      );
-      // add addiontal meta from 'field' to the array
-      let newFile = file;
-      for (let fileName in fieldValues) {
-        if (fileName === file.name) {
-          newFile = Object.assign({}, file, {
-            additionalMeta: fieldValues[fileName]
-          });
-        }
-      }
-      //       dev.logverbose(`Found matching filenames, new meta file is: ${JSON.stringify(newFile,null,4)}`);
-      allFilesMeta.push(newFile);
-    });
-
-    // log any errors that occur
-    form.on('error', function(err) {
-      console.log(`An error has happened: ${err}`);
-    });
-
-    // once all the files have been uploaded
-    form.on('end', function() {
-      if (allFilesMeta.length > 0) {
-        var m = [];
-        for (var i in allFilesMeta) {
-          m.push(
-            renameMediaAndCreateMeta(
-              form.uploadDir,
-              slugFolderName,
-              allFilesMeta[i]
-            )
-          );
-        }
-        Promise.all(m).then(() => {
-          let msg = {};
-          msg.msg = 'success';
-          //           msg.medias = JSON.stringify(allFilesMeta);
-          res.end(JSON.stringify(msg));
-        });
-      }
-    });
-
-    // parse the incoming request containing the form data
-    form.parse(req);
-  }
-
-  function renameMediaAndCreateMeta(uploadDir, slugFolderName, fileMeta) {
-    return new Promise(function(resolve, reject) {
-      api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
-        function(newFileName) {
-          dev.logverbose(`Following filename is available: ${newFileName}`);
-          dev.logverbose(
-            `Has additional meta: ${JSON.stringify(
-              fileMeta.additionalMeta,
-              null,
-              4
-            )}`
-          );
-          let newPathToNewFileName = path.join(uploadDir, newFileName);
-          fs.renameSync(fileMeta.path, newPathToNewFileName);
-          sockets.createMediaMeta(
-            slugFolderName,
-            newFileName,
-            fileMeta.additionalMeta
-          );
-          resolve();
-        },
-        function(err) {
-          reject(err);
-        }
-      );
-    });
+    let type = req.param('type');
+    let slugFolderName = req.param('slugFolderName');
+    importer.handleForm({ req, res, type, slugFolderName });
   }
 };

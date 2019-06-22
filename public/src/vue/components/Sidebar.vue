@@ -1,15 +1,14 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-
-    <SidebarSection v-if="$root.state.mode !== 'export'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('folder_information') }}
           <button
-            v-if="folder.authorized"
+            v-if="can_admin_folder"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="openEditFolderModal()"
+            @click="$emit('modal_edit_folder')"
             :disabled="read_only"
           >
             {{ $t('edit') }}
@@ -18,23 +17,9 @@
       </div>
 
       <div slot="body">
-        <p class="font-small">
-          <span v-html="$t('toconnectwithanotherdevicetothisfolder')"></span>
-
-          <a v-for="(ip, index) in $root.state.localNetworkInfos.ip"
-            :href="getURLToApp(ip, $root.state.localNetworkInfos.port)"
-            class="js--openInBrowser qrSnippet button button-circled margin-vert-medium border-circled button-inline padding-small"
-            target="_blank"
-            :key="index"
-            >
-            <div class="qrSnippet--text">
-              {{ getURLToApp(ip, $root.state.localNetworkInfos.port) }}
-            </div>
-            <div class="qrSnippet--motif">
-              <qrcode :value="getURLToApp(ip, $root.state.localNetworkInfos.port)" :options="{ size: 100 }"></qrcode>
-            </div>
-          </a>
-        </p>
+        <CreateQRCode
+          :slugFolderName="slugFolderName"
+        />
         <p class="font-small" v-if="$root.state.is_electron">
           {{ $t('contents_are_stored') }}
           <template>
@@ -45,6 +30,31 @@
         </p>
       </div>
     </SidebarSection>
+
+
+    <!-- <SidebarSection>
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t('writeup') }}
+          <button
+            type="button"
+            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="showWriteupModal = true"
+          >
+            {{ $t('open') }}
+          </button>
+        </h3>
+      </div>
+      <div slot="body">
+      </div>
+    </SidebarSection>
+
+    <WriteUp
+      v-if="showWriteupModal === true"
+      @close="showWriteupModal = false"
+      :slugFolderName="slugFolderName"
+      :medias="medias"
+    /> -->
 
     <SidebarSection>
       <div slot="header">
@@ -61,29 +71,58 @@
       </div>
     </SidebarSection>
     
-    <SidebarSection v-if="$root.state.mode !== 'export'">
-      <div slot="header" class="flex-vertically-centered">
+    <SidebarSection v-if="$root.state.mode !== 'export_web'">
+      <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
-          {{ $t('export_folder') }}
+          {{ $t('keyboard_shortcuts') }}
           <button
-            v-if="folder.authorized"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="downloadExport()"
-            :disabled="read_only"
+            @click="showKeyboardShortcutsList = true"
+            :disabled="read_only"            
           >
-            {{ $t('export') }}
+            {{ $t('open') }}
           </button>
         </h3>
       </div>
     </SidebarSection>
+        
+    <KeyboardShortcuts
+      v-if="showKeyboardShortcutsList === true"
+      :folder="folder"
+      @close="showKeyboardShortcutsList = false"
+    >
+    </KeyboardShortcuts>
+
+    <SidebarSection v-if="$root.state.mode !== 'export_web'">
+      <div slot="header" class="flex-vertically-centered">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t('export_folder') }}
+          <button
+            type="button"
+            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="showExportTimelineModal = true"
+            :disabled="read_only"            
+          >
+            {{ $t('open') }}
+          </button>
+        </h3>
+      </div>
+    </SidebarSection>
+
+    <ExportTimeline
+      v-if="showExportTimelineModal === true"
+      :slugFolderName="slugFolderName"
+      @close="showExportTimelineModal = false"
+    >
+    </ExportTimeline>
 
     <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t('calendar') }}
           <button
-            v-if="isRealtime"
+            v-if="is_realtime"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
@@ -95,7 +134,7 @@
 
       <div slot="body" class="m_calendar">
         <div
-        v-for="(days, month) in folderDays()"
+        v-for="(days, month) in calendar"
         class="m_calendar--month"
         :key="month"
         >
@@ -107,9 +146,9 @@
             v-for="(daymeta, index) in days"
             class="m_calendar--days--day padding-sides-verysmall padding-bottom-small"
             :class="{
-              'is--visibleDay' : daymeta.isVisibleDay,
               'has--noMedia' : !daymeta.numberOfMedias,
-              'is--today': daymeta.isToday
+              'is--visibleDay' : isVisibleDay(daymeta.timestamp),
+              'is--today' : isDayToday(daymeta.timestamp),
             }"
             @click="scrollToDate(daymeta.timestamp)"
             :key="index"
@@ -133,8 +172,8 @@
           <button
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="openListMediasModal()"
-            >
+            @click="this.showMediasListModal = true"
+          >
             {{ $t('fullscreen') }}
           </button>
         </h3>
@@ -142,25 +181,27 @@
 
       <div slot="body" class="margin-sides-negative-medium">
         <Tableau
-          v-if="showMediasList === false"
+          v-if="showMediasListModal === false"
           :display="'table'"
           :filter="filter"
           :sort="sort"
           :sortedMedias="sortedMedias"
           :slugFolderName="slugFolderName"
-          :timelineInfos="timelineInfos"
+          :timeline_start="timeline_start"
+          :timeline_end="timeline_end"
           >
         </Tableau>
       </div>
     </SidebarSection>
 
     <MediasList
-      v-if="showMediasList === true"
+      v-if="showMediasListModal === true"
       :filter="filter"
       :sort="sort"
       :sortedMedias="sortedMedias"
       :slugFolderName="slugFolderName"
-      :timelineInfos="timelineInfos"
+      :timeline_start="timeline_start"
+      :timeline_end="timeline_end"
       @close="closeListMediasModal()"
     >
     </MediasList>
@@ -179,22 +220,36 @@ import Calendrier from './sidebar/Calendrier.vue';
 import Tableau from './sidebar/Tableau.vue';
 import SidebarSection from './sidebar/SidebarSection.vue';
 import MediasList from './modals/MediasList.vue';
+import WriteUp from './modals/WriteUp.vue';
+import KeyboardShortcuts from './modals/KeyboardShortcuts.vue';
+import ExportTimeline from './modals/ExportTimeline.vue';
 import qrcode from '@xkeshi/vue-qrcode';
+import alertify from 'alertify.js';
+import CreateQRCode from './qr/CreateQRCode.vue';
+
 
 export default {
   components: {
     SidebarSection,
+    WriteUp,
     Tableau,
     MediasList,
-    qrcode
+    KeyboardShortcuts,
+    ExportTimeline,
+    CreateQRCode
   },
   props: {
     slugFolderName: String,
     folder: Object,
     medias: Object,
-    timelineInfos: Object,
-    visibleDay: Number,
-    isRealtime: {
+    sortedMedias: Array,
+    timeline_start: Number,
+    timeline_end: Number,
+    visible_day: Number,
+    sort: Object,
+    filter: String,
+    can_admin_folder: Boolean,
+    is_realtime: {
       type: Boolean,
       default: false
     },
@@ -206,151 +261,61 @@ export default {
   },
   data() {
     return {
-      showMediasList: false,
-      filter: '',
-      currentLang: this.$root.lang.current,
-
-      sort: {
-        current: {
-          field: 'date_timeline',
-          name: this.$t('date'),
-          type: 'date',
-          order: 'ascending'
-        },
-
-        available: [
-          {
-            field: 'date_timeline',
-            name: this.$t('date'),
-            type: 'date',
-            order: 'ascending'
-          },
-          {
-            field: 'date_modified',
-            name: this.$t('last_modified'),
-            type: 'date',
-            order: 'descending'
-          },
-          {
-            field: 'caption',
-            name: this.$t('caption'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'type',
-            name: this.$t('type'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'color',
-            name: this.$t('color'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'keywords',
-            name: this.$t('keywords'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'authors',
-            name: this.$t('author'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'public',
-            name: this.$t('public'),
-            type: 'alph',
-            order: 'descending'
-          },
-          {
-            field: 'content',
-            name: this.$t('content'),
-            type: 'alph',
-            order: 'ascending'
-          }
-        ]
-      }
+      showMediasListModal: false,
+      showKeyboardShortcutsList: false,
+      showWriteupModal: false,
+      showExportTimelineModal: false,
+      currentLang: this.$root.lang.current
     };
   },
   mounted() {
-    this.$eventHub.$on('setSort', this.setSort);
-    this.$eventHub.$on('setFilter', this.setFilter);
   },
   beforeDestroy() {
-    this.$eventHub.$off('setSort');
-    this.$eventHub.$off('setFilter');
   },
   computed: {
-    sortedMedias() {
-      var sortable = [];
-      for (let slugMediaName in this.medias) {
-        let mediaDataToOrderBy;
-
-        if (this.sort.current.type === 'date') {
-          mediaDataToOrderBy = +this.$moment(
-            this.medias[slugMediaName][this.sort.current.field],
-            'YYYY-MM-DD HH:mm:ss'
-          );
-        } else if (this.sort.current.type === 'alph') {
-          mediaDataToOrderBy = this.medias[slugMediaName][
-            this.sort.current.field
-          ];
-        }
-
-        sortable.push({
-          slugMediaName: slugMediaName,
-          mediaDataToOrderBy: mediaDataToOrderBy
-        });
+    all_days() {
+      const all_days = this.enumerateDaysBetweenDates(
+        this.timeline_start,
+        this.timeline_end
+      );
+      if (all_days.length === 0) {
+        return [];
       }
-      let sortedSortable = sortable.sort(function(a, b) {
-        let valA = a.mediaDataToOrderBy;
-        let valB = b.mediaDataToOrderBy;
-        if (
-          typeof a.mediaDataToOrderBy === 'string' &&
-          typeof b.mediaDataToOrderBy === 'string'
-        ) {
-          valA = valA.toLowerCase();
-          valB = valB.toLowerCase();
-        }
-        if (valA < valB) {
-          return -1;
-        }
-        if (valA > valB) {
-          return 1;
-        }
-        return 0;
-      });
+      return all_days;
+    },
+    calendar() {
+      console.log('COMPUTED • Sidebar: calendar');
 
-      if (this.sort.current.order === 'descending') {
-        sortedSortable.reverse();
-      }
-
-      // array order is garanteed while objects properties aren’t,
-      // that’s why we use an array here
-      let sortedMedias = sortedSortable.reduce((result, d) => {
-        let sortedMediaObj = this.medias[d.slugMediaName];
-        sortedMediaObj.slugMediaName = d.slugMediaName;
-
-        if (this.filter.length > 0) {
-          // if there is a filter set, let’s only return medias whose mediaDataToOrderBy contain that string
-          let originalContentFromMedia =
-            sortedMediaObj[this.sort.current.field] + '';
-          if (originalContentFromMedia.indexOf(this.filter) !== -1) {
-            result.push(sortedMediaObj);
-          }
-        } else {
-          result.push(sortedMediaObj);
+      /*
+      {
+        "septembre": {
+          21: {
+            medias: 12
+          },
+          22: {
+          },
         }
+      */
 
-        return result;
-      }, []);
-      return sortedMedias;
-    }
+      var dayGroupedByMonth = this.all_days.reduce((acc, cur, i) => {
+        let monthName = this.$moment(cur).format('MMMM');
+        let day = this.$moment(cur).date();
+
+        let dayData = {
+          dayNumber: day,
+          numberOfMedias: this.getNumberOfMediasCreatedOnThisDate(cur),
+          timestamp: this.$moment(cur)
+        };
+
+        if (typeof acc[monthName] === 'undefined') {
+          acc[monthName] = [];
+        }
+        acc[monthName].push(dayData);
+        return acc;
+      }, {});
+
+      return dayGroupedByMonth;
+    },
   },
 
   watch: {
@@ -378,6 +343,20 @@ export default {
       return dates;
     },
 
+    isDayToday(timestamp) {
+      if (this.$moment(this.$root.currentTime_day).isSame(timestamp, 'day')) {
+        return true;
+      }
+      return false;
+    },
+    
+    isVisibleDay(timestamp) {
+      if (this.$moment(this.visible_day).isSame(timestamp, 'day')) {
+        return true;
+      }
+      return false;
+    },
+
     getURLToApp(ip, port) {
       return `${this.$root.state.protocol}://${ip}:${port}/${
         this.slugFolderName
@@ -388,9 +367,6 @@ export default {
       event.preventDefault();
       shell.showItemInFolder(thisPath);
     },
-    getVisibleDay() {
-      return this.$moment(this.visibleDay).format('DD/MM/YYYY');
-    },
     scrollToDate(timestamp) {
       this.$eventHub.$emit('scrollToDate', timestamp);
     },
@@ -400,59 +376,6 @@ export default {
     closeListMediasModal() {
       this.showMediasList = false;
     },
-    folderDays() {
-      console.log('METHODS • sidebar: getting folderDays');
-      const allDays = this.enumerateDaysBetweenDates(
-        this.timelineInfos.start,
-        this.timelineInfos.end
-      );
-      if (allDays.length === 0) {
-        return;
-      }
-
-      /*
-      {
-        "septembre": {
-          21: {
-            medias: 12
-          },
-          22: {
-          },
-        }
-      */
-
-      var dayGroupedByMonth = allDays.reduce((acc, cur, i) => {
-        let monthName = this.$moment(cur).format('MMMM');
-        let day = this.$moment(cur).date();
-
-        let fullDate = this.$moment(cur).format('DD/MM/YYYY');
-        let isVisibleDay = false;
-        if (fullDate === this.getVisibleDay()) {
-          isVisibleDay = true;
-        }
-        let isToday = false;
-        let todaysDate = this.$moment().format('DD/MM/YYYY');
-        if (todaysDate === fullDate) {
-          isToday = true;
-        }
-
-        let dayData = {
-          dayNumber: day,
-          numberOfMedias: this.getNumberOfMediasCreatedOnThisDate(cur),
-          timestamp: this.$moment(cur),
-          isVisibleDay,
-          isToday
-        };
-
-        if (typeof acc[monthName] === 'undefined') {
-          acc[monthName] = [];
-        }
-        acc[monthName].push(dayData);
-        return acc;
-      }, {});
-
-      return dayGroupedByMonth;
-    },
 
     getNumberOfMediasCreatedOnThisDate(date) {
       if (Object.keys(this.medias).length === 0) {
@@ -461,7 +384,15 @@ export default {
 
       const total = Object.entries(this.medias).reduce((acc, pair) => {
         const [key, value] = pair;
-        let created_day = this.$moment(value.date_timeline);
+
+        let date_to_reference_to = 0;
+        if(value.hasOwnProperty('date_timeline')) {
+          date_to_reference_to = value.date_timeline
+        } else if(value.hasOwnProperty('date_created')) {
+          date_to_reference_to = value.date_created
+        }
+
+        let created_day = this.$moment(date_to_reference_to);
         if (created_day.isSame(date, 'day')) {
           acc++;
         }
@@ -471,24 +402,9 @@ export default {
       return total;
     },
 
-    openEditFolderModal() {
-      this.$eventHub.$emit('showEditFolderModal');
-    },
-
     scrollToToday() {
       this.$eventHub.$emit('timeline.scrollToToday');
-    },
-
-    setSort(newSort) {
-      this.sort.current = newSort;
-    },
-    setFilter(newFilter) {
-      this.filter = newFilter;
-    },
-
-    downloadExport() {
-      window.location.replace(window.location.href + '/export');
-    }
+    }    
   }
 };
 </script>

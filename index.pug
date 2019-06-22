@@ -3,25 +3,27 @@ html
   head
     meta(charset='utf-8')
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    meta(name="robots" content="noindex")
 
     title #{pageTitle}
-    - if(mode === 'export')
+    
+    - if(mode === 'export_web')
       style.
         @font-face {
           font-family: 'STVitry';
           font-style: normal;
           font-weight: 400;
           src: local('•'), local('•'),
-              url('./fonts/STVitry-20170707/STVitry-Regular-web.woff2') format('woff2'),
-              url('./fonts/STVitry-20170707/STVitry-Regular-web.woff') format('woff');
+              url('./_fonts/STVitry-20170707/STVitry-Regular-web.woff2') format('woff2'),
+              url('./_fonts/STVitry-20170707/STVitry-Regular-web.woff') format('woff');
         }
         @font-face {
           font-family: 'STVitry';
           font-style: italic;
           font-weight: 400;
           src: local('•'), local('•'),
-              url('./fonts/STVitry-20170707/STVitry-Italic-web.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-              url('./fonts/STVitry-20170707/STVitry-Italic-web.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+              url('./_fonts/STVitry-20170707/STVitry-Italic-web.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+              url('./_fonts/STVitry-20170707/STVitry-Italic-web.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
         }
     - else
       style.
@@ -55,8 +57,11 @@ html
     script.
       /* store contains content data */
       window.store = {
+        request: {
+          slugFolderName: "!{slugFolderName}",
+          metaFileName: "!{metaFileName}"
+        },
         presentationMD: !{JSON.stringify(presentationMD)},
-        slugFolderName: "!{slugFolderName}",
         folders: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" }
       };
 
@@ -65,20 +70,25 @@ html
         appVersion: "!{global.appInfos.version}",
         protocol: "!{protocol}",
         connected: false,
+        authentificated: false,
         structure: !{JSON.stringify(structure, null, 4)},
-        localNetworkInfos: !{JSON.stringify(localNetworkInfos, null, 4)},
+        localNetworkInfos: {},
+
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",
         noticeOfError: "!{noticeOfError}",
+        export_options: !{ !!export_options ? JSON.stringify(export_options) : "{}" },
         is_electron: !!(window && window.process && window.process.type) && !{ mode === "export" ? false : true },
-        is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true }
+        is_darwin: !!(window && window.process && window.process.platform === 'darwin') && !{ mode === "export" ? false : true },
+        clients: [],
+        list_authorized_folders: []
       };
 
 
   body  
     #app
 
-    - if(mode === 'export')
-      script(src='./dist/build.js')
+    - if(mode === 'export_web')
+      script(src='./_dist/build.js')
     - else
       script(src='/dist/build.js')
