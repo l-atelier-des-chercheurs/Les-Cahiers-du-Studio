@@ -140,6 +140,8 @@ let vm = new Vue({
       has_modal_opened: false,
       current_slugFolderName: '',
       has_sidebar_opened: false,
+      sidebar_type: '',
+
       highlightMedia: '',
       is_loading_medias_for_folder: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,

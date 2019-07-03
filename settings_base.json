@@ -67,6 +67,9 @@
           "resolutions": [50, 180, 360, 720, 1080, 1600]
         },
         "fields": {
+          "name": {
+            "type": "string"
+          },
           "created": {
             "type": "date",
             "read_only": true,
@@ -105,7 +108,7 @@
           },
           "type": {
             "type": "string",
-            "options": ["image", "video", "audio", "text", "marker", "document", "other"],
+            "options": ["image", "video", "audio", "text", "marker", "document", "writeup", "other"],
             "default": "other"
           },
           "collapsed": {
@@ -147,6 +150,20 @@
             "clip": {
               "min": 1,
               "max": 12
+            }
+          },
+          "t": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 17
+            }
+          },
+          "l": {
+            "type": "number",
+            "clip": {
+              "min": 0,
+              "max": 12000
             }
           },
           "caption": {

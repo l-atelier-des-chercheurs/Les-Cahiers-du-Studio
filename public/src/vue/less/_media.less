@@ -9,6 +9,10 @@
     align-self: flex-start;
     white-space: pre-wrap;
     .padding-small;
+
+    &[data-context="preview"] > * > * > *:first-child{
+      margin-top: 0;
+    }
   }
   &.type-other {
     padding:10px;
@@ -262,6 +266,11 @@
   .ql-container.ql-snow {
     border: none;
   }
+  .ql-container.ql-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;    
+  }
+
   .ql-toolbar button {
     min-height: 0;
   }
@@ -276,6 +285,10 @@
 
   .ql-snow .ql-picker:not(.ql-color-picker):not(.ql-icon-picker) svg {
     min-width: 0;;
+  }
+
+  .ql-snow a {
+    color: inherit;
   }
 
   > * {

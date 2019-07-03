@@ -35,141 +35,191 @@
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
 
-      <transition name="sidebar-animation" :duration="350">
-        <Sidebar
-          v-if="$root.settings.has_sidebar_opened"
-          :folder="folder"
-          :slugFolderName="slugFolderName"
-          :timeline_start="timeline_start"
-          :timeline_end="timeline_end"
-          :visible_day="visible_day"
-          :medias="medias"
-          :sortedMedias="sortedMedias"
-          :sort="sort"
-          :filter="filter"
-          :is_realtime="is_realtime"
-          :read_only="read_only"
-          :can_admin_folder="can_admin_folder"
-          @modal_edit_folder="can_admin_folder ? show_edit_folder_modal = true : ''"
+      <div 
+        :style="{ cursor, userSelect}" 
+        class="vue-splitter-container clearfix" 
+      >
+
+        <Pane 
+          class="splitter-pane splitter-paneL" 
+          :class="{ 'is--dragged' : is_dragged }"
+          :split="split" :style="{ [type]: percent+'%'}"
         >
-        </Sidebar>
-      </transition>
 
-      <EditFolder
-        v-if="show_edit_folder_modal"
-        :folder="folder"
-        :slugFolderName="slugFolderName"
-        @close="show_edit_folder_modal = false"
-        :folder_is_archived="folder_is_archived"
-        :allAuthors="folder.authors"
-      />
+          <!-- <transition name="sidebar-animation" :duration="350" mode="out-in"> -->
+            <Sidebar
+              v-if="$root.settings.has_sidebar_opened && $root.settings.sidebar_type === 'options'"
+              :folder="folder"
+              :slugFolderName="slugFolderName"
+              :timeline_start="timeline_start"
+              :timeline_end="timeline_end"
+              :visible_day="visible_day"
+              :medias="medias"
+              :sortedMedias="sortedMedias"
+              :sort="sort"
+              :filter="filter"
+              :is_realtime="is_realtime"
+              :read_only="read_only"
+              :can_admin_folder="can_admin_folder"
+              @modal_edit_folder="can_admin_folder ? show_edit_folder_modal = true : ''"
+            />
+            <WriteUp
+              v-else-if="$root.settings.has_sidebar_opened && $root.settings.sidebar_type === 'journal'"
+              :slugFolderName="slugFolderName"
+              :medias="medias"
+              :read_only="read_only"
+            />
+          <!-- </transition> -->
 
-      <div class="m_sidebarToggleButton"
-        :class="{ 'is--sidebarOpened' : $root.settings.has_sidebar_opened }"
-      >
-        <button type="button"
-          @click.prevent="toggleSidebar()"
+          <div class="m_verticalButtons"
+            :class="{ 'is--sidebarOpened' : $root.settings.has_sidebar_opened }"
+          >
+            <div class="m_verticalButtons--container">
+              <button type="button"
+                @click.stop.prevent="toggleSidebar('options')"
+              >
+                <span>
+                  {{ $t('options') }}<template v-if="$root.settings.sidebar_type === 'options'">&nbsp;×</template>
+                </span>
+                <!-- <template v-else>→</template> -->
+              </button>
+
+              <button type="button" class="m_verticalButtons--slider"
+                v-if="$root.settings.has_sidebar_opened"
+                @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
+                @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"   
+              >
+                ▼▲
+              </button>
+
+              <button type="button"
+                @click.stop.prevent="toggleSidebar('journal')"
+              >
+                <span>
+                  {{ $t('journal') }}<template v-if="$root.settings.sidebar_type === 'journal'">&nbsp;×</template>
+                </span>
+                <!-- <template v-else>→</template> -->
+              </button>
+
+            </div>
+
+          </div>
+
+
+
+        </Pane>
+
+        <Resizer 
+          :class="{ 'is--dragged' : is_dragged }"
+          :className="className" 
+          :style="{ [resizeType]: percent+'%'}" 
+          :split="split" 
+          @mousedown.native="onMouseDown" 
+          @click.native="onClick"
+        />
+
+        <Pane 
+          class="splitter-pane splitter-paneR" 
+          :class="{ 'is--dragged' : is_dragged }"
+          :split="split" 
+          :style="{ [type]: 100-percent+'%'}"
         >
-          <span>
-            {{ $t('options') }}<template v-if="$root.settings.has_sidebar_opened">&nbsp;×</template>
-          </span>
-          <!-- <template v-else>→</template> -->
-        </button>
-      </div>
 
-      <div class="m_floater"
-        @wheel="onMousewheel"
-      >
-        <div>
-          {{ visible_day_human }}
-        </div>
-      </div>
-
-      <div class="m_timeline"
-        ref="timeline"
-        @wheel="onMousewheel"
-        @mouseup.self="onMouseUp"
-        @scroll="onTimelineScroll"
-      >
-        <!-- v-dragscroll -->
-        <div class="m_timeline--container">
-
-          <div class="m_timeline--container--dates" ref="timeline_dates">
-            <div 
-              v-for="day in date_interval" 
-              :key="day.label"
-              :data-timestamp="day.timestamp"
-              class="m_timeline--container--dates--day"
-              :class="{ 'is--empty' : day.is_empty }"
-            >
-              <template v-if="!day.is_empty">
-                <div class="m_timeline--container--dates--day--daylabel"
-                >
-                  <div class="m_timeline--container--dates--day--daylabel--container">
-                    <span>
-                      {{ day.label }}
-                      <span v-if="day.number_of_medias > 0">{{ day.number_of_medias }}</span>
-                      <span v-else></span>
-                    </span>
-                  </div>
-                </div>
-
-                <div v-for="segment in day.segments"
-                  :key="segment.timestamp"
-                  class="m_timeline--container--dates--day--mediasblock"
-                  v-if="(!segment.hasOwnProperty('hidelabel') || !segment.hidelabel) || (segment.medias.length > 0)"
-                >
-                  <div class="m_timeline--container--dates--day--mediasblock--label"
-                    v-if="!segment.hasOwnProperty('hidelabel') || !segment.hidelabel"
-                  >
-                    <div>
-                      <button type="button" 
-                        @click="openMediaModal(segment.marker_meta_slugMediaName)"
-                        :style="`
-                          --color-author: ${segment.color};
-                          --label-color: ${segment.color === 'var(--color-noir)' ? 'var(--color-blanc)' : 'var(--color-noir)' };
-                          `"
-                        :data-has_author="!!segment.marker_author"
-                      >
-                        <span v-html="segment.label" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <MediasBlock 
-                    v-if="segment.medias.length > 0"
-                    :medias="segment.medias"
-                    :folder="folder"
-                    :slugFolderName="slugFolderName"
-                    :timeline_height="timeline_height"
-                  />
-                </div>
-              </template>
+          <div class="m_floater"
+            @wheel="onMousewheel"
+          >
+            <div>
+              {{ visible_day_human }}
             </div>
           </div>
-        </div>
 
-        <div v-if="sort.current.field !== 'date_timeline'"
-          class="m_filterIndicator">
-          <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
-            <button type="button" 
-              class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
-              v-html="'x'" 
-              @click="setSort(sort.available[0]); setFilter('');"
-            />
-            <small>
-              <div class="">
-                <span v-html="$t('active_filter:')" />
-                {{ ' ' }}
-                <span v-html="sort.current.name" />
+          <div class="m_timeline"
+            ref="timeline"
+            @wheel="onMousewheel"
+            @mouseup.self="onMouseUp"
+            @scroll="onTimelineScroll"
+          >
+            <!-- v-dragscroll -->
+            <div class="m_timeline--container">
+              <div class="m_timeline--container--dates" ref="timeline_dates">
+                <div 
+                  v-for="day in date_interval" 
+                  :key="day.label"
+                  :data-timestamp="day.timestamp"
+                  class="m_timeline--container--dates--day"
+                  :class="{ 'is--empty' : day.is_empty }"
+                >
+                  <template v-if="!day.is_empty">
+                    <div class="m_timeline--container--dates--day--daylabel"
+                    >
+                      <div class="m_timeline--container--dates--day--daylabel--container">
+                        <span>
+                          {{ day.label }}
+                          <span v-if="day.number_of_medias > 0">{{ day.number_of_medias }}</span>
+                          <span v-else></span>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div v-for="segment in day.segments"
+                      :key="segment.timestamp"
+                      class="m_timeline--container--dates--day--mediasblock"
+                      v-if="(!segment.hasOwnProperty('hidelabel') || !segment.hidelabel) || (segment.medias.length > 0)"
+                    >
+                      <div class="m_timeline--container--dates--day--mediasblock--label"
+                        v-if="!segment.hasOwnProperty('hidelabel') || !segment.hidelabel"
+                      >
+                        <div>
+                          <button type="button" 
+                            @click="openMediaModal(segment.marker_meta_slugMediaName)"
+                            :style="`
+                              --color-author: ${segment.color};
+                              --label-color: ${segment.color === 'var(--color-noir)' ? 'var(--color-blanc)' : 'var(--color-noir)' };
+                              `"
+                            :data-has_author="!!segment.marker_author"
+                          >
+                            <span v-html="segment.label" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <MediasBlock
+                        v-if="segment.medias.length > 0"
+                        :key="segment.timestamp + timeline_height"
+                        :medias="segment.medias"
+                        :folder="folder"
+                        :slugFolderName="slugFolderName"
+                        :timeline_height="timeline_height"
+                      />
+                    </div>
+                  </template>
+                </div>
               </div>
-              <div class="">
-                <span v-html="$t('medias_shown:')" />
-                <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
+            </div>
+
+            <div v-if="sort.current.field !== 'date_timeline'"
+              class="m_filterIndicator">
+              <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
+                <button type="button" 
+                  class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
+                  v-html="'x'" 
+                  @click="setSort(sort.available[0]); setFilter('');"
+                />
+                <small>
+                  <div class="">
+                    <span v-html="$t('active_filter:')" />
+                    {{ ' ' }}
+                    <span v-html="sort.current.name" />
+                  </div>
+                  <div class="">
+                    <span v-html="$t('medias_shown:')" />
+                    <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
+                  </div>
+                </small>
               </div>
-            </small>
+            </div>
           </div>
-        </div>
+        </pane>
       </div>
     </div>
 
@@ -182,6 +232,7 @@
       :is_realtime="is_realtime"
       :current_author="current_author"
       :read_only="!$root.state.connected"
+      :rightmostMedia="rightmostMedia"
     />
 
     <EditMedia
@@ -207,6 +258,9 @@ import EditFolder from './components/modals/EditFolder.vue';
 import AddMedias from './components/AddMedias.vue';
 import { setTimeout } from 'timers';
 import EditMedia from './components/modals/EditMedia.vue';
+import WriteUp from './components/WriteUp.vue';
+import Resizer from './components/splitpane/Resizer.vue'
+import Pane from './components/splitpane/Pane.vue'
 
 import debounce from 'debounce';
 
@@ -218,11 +272,14 @@ export default {
     read_only: Boolean
   },
   components: {
+    WriteUp,
     MediasBlock,
     AddMedias,
     EditMedia,
     Sidebar,
     EditFolder,
+    Resizer,
+    Pane
   },
   data() {
     return {
@@ -236,11 +293,22 @@ export default {
       current_scroll_event: undefined,
 
       is_realtime: false,
-      timeline_height: 0,
+      timeline_height: window.innerHeight,
       collapse_foldername: false,
 
       show_media_modal_for: false,
       show_edit_folder_modal: false,   
+
+
+      minPercent: 0,
+      split: 'vertical',
+      is_dragged: false,
+      drag_offset: 0,
+      hasMoved: false,
+      height: null,
+      percent: 0,
+      type: 'width',
+      resizeType: 'left',
 
       make_mediasblock_with: 'markers',
       
@@ -390,6 +458,9 @@ export default {
         let mediaDataToOrderBy;
         const media = this.medias[slugMediaName];
 
+        if(media.hasOwnProperty('type') && media.type === 'writeup') {
+          continue;
+        }
 
         // legacy to account for medias without date_timeline but with date_created or created
         if(!media.hasOwnProperty(current_sort.field)) {
@@ -881,9 +952,17 @@ export default {
       }
     },
 
-    toggleSidebar() {
-      console.log('METHODS • TimeLineView: toggleSidebar');
-      this.$root.settings.has_sidebar_opened = !this.$root.settings.has_sidebar_opened;
+    toggleSidebar(type) {
+      console.log(`METHODS • TimeLineView: toggleSidebar / ${type}`);
+      if(this.$root.settings.sidebar_type === type) {
+        this.$root.settings.has_sidebar_opened = false;
+        this.percent = 0;
+        this.$root.settings.sidebar_type = '';
+      } else {
+        this.$root.settings.has_sidebar_opened = true;
+        this.percent = 30;
+        this.$root.settings.sidebar_type = type;
+      }
     },
     scrollToDate(timestamp) {
       console.log(
@@ -953,6 +1032,80 @@ export default {
       this.filter = newFilter;
     },
 
+    dragPubliPanel(event, type) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`);
+      }
+      
+      this.drag_offset = - event.target.offsetWidth + event.offsetX;
+      if(!this.drag_offset) {
+        this.drag_offset = 0;
+      }
+
+      if(type === 'mouse') {
+        window.addEventListener('mousemove', this.dragMove);
+        window.addEventListener('mouseup', this.dragUp);
+      } else if(type === 'touch') {
+        window.addEventListener('touchmove', this.dragMove);
+        window.addEventListener('touchend', this.dragUp);
+      }
+    },
+    dragMove(event) {
+      console.log('METHODS • App: dragMove');
+
+      if (!this.is_dragged) {
+        this.is_dragged = true;
+      } else {
+
+        let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
+        pageX = pageX - this.drag_offset;
+
+        const percent = Math.floor((pageX / this.$root.settings.windowWidth) * 10000) / 100
+
+        if (percent > this.minPercent && percent < 100 - this.minPercent) {
+          this.percent = percent
+        }
+
+        this.$emit('resize')
+        this.hasMoved = true
+      }
+    },
+    dragUp(event) {
+      if (this.$root.state.dev_mode === 'debug') {
+        console.log(`METHODS • App: dragUp with is_dragged = ${this.is_dragged}`);
+      }
+      window.removeEventListener('mousemove', this.dragMove);
+      window.removeEventListener('mouseup', this.dragUp);
+      window.removeEventListener('touchmove', this.dragMove);
+      window.removeEventListener('touchend', this.dragUp);
+
+      if (this.is_dragged) {
+        this.is_dragged = false;
+
+        if(this.percent >= 90) {
+          this.percent = 90;
+          // this.$root.closePubliPanel();
+          // return;
+        } 
+        
+        // if(this.$root.settings.show_publi_panel === false) {
+        //   this.$root.openPubliPanel();
+        // }      
+        if(this.percent <= 10) {
+          this.percent = 0;
+        }
+      } else {
+        // if(!this.$root.settings.show_publi_panel) {
+        //   this.percent = 50;
+        //   this.$root.openPubliPanel();
+        // } else {
+        //   this.percent = 100;
+        //   this.$root.closePubliPanel();
+        // }
+      }
+
+      return false;
+    }
   }
 }
 </script>
@@ -1003,10 +1156,10 @@ export default {
   display: flex;
   height: 100%;
   position: relative;
-  min-width: 100vw;
+  // min-width: 100vw;
 
   margin: 0px 0px;
-  padding: 16px 20vw;
+  padding: 16px 10vw;
   // border-right: 1px solid #000;
 }
 
@@ -1015,7 +1168,7 @@ export default {
   height: 100%;
   // min-width: 250px;
   display: flex;
-  align-items: center;
+  // align-items: center;
   margin: 0 20px;
   // background-color: var(--color-author);
 
@@ -1040,7 +1193,7 @@ export default {
 
   > .m_timeline--container--dates--day--daylabel {
     position: relative;
-    height: 100%;
+    // height: 100%;
     width: 50px;
     margin-right: 30px;
     // margin: 0 30px;
@@ -1160,7 +1313,7 @@ export default {
   .m_timeline--container--dates--day--mediasblock {
     position: relative;
     height: 100%;
-    min-width: 88px;
+    min-width: 176px;
     display: flex;
   }
 
@@ -1294,10 +1447,14 @@ export default {
       max-width: 0px;
     }
   }
+
+  &.is--moved_to_right {
+    left: 340px;
+  }
 }
 
 .m_floater {
-  position: fixed;
+  position: absolute;
   top: 20px;
   // bottom: 0px;
   width: 100%;
@@ -1309,13 +1466,14 @@ export default {
   }
 
   @media screen and (max-width: 50rem) {
-    bottom: 0;
+    top: auto !important;
+    bottom: 20px;
     font-size:.7em;
   }
 
   > * {
     margin: 0 auto;
-    width: 250px;
+    max-width: 250px;
     height: 40px;
     background-color: var(--color-noir);
     color: white;
@@ -1329,6 +1487,7 @@ export default {
 
     @media screen and (max-width: 50rem) {
       width: 100%;
+      max-width: none;
       border-radius: 0;
       height: 20px;
     }

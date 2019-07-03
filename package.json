@@ -1,7 +1,7 @@
 {
   "name": "les-cahiers-du-studio",
   "productName": "Les Cahiers du Studio",
-  "version": "2.1.1-dev",
+  "version": "2.2.2",
   "description": "A time-based documentation tool to collaboratively keep notes and capture media from live experiences.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio",
@@ -63,7 +63,8 @@
     "portscanner": "^2.2.0",
     "pug": "^2.0.3",
     "rich-text": "^4.0.0",
-    "sharedb": "^1.0.0-beta.21",
+    "sharedb": "^1.0.0-beta.23",
+    "sharedb-logger": "^0.1.4",
     "sharp": "^0.22.1",
     "slugg": "^1.2.1",
     "socket.io": "^2.2.0",

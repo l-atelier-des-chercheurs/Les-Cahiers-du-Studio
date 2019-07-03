@@ -114,7 +114,7 @@
           </span>
         </button>
 
-        <div v-if="showInputPasswordField" class="margin-bottom-small">
+        <div v-if="showInputPasswordField && !can_admin_folder" class="margin-bottom-small">
           <input type="password" ref="passwordField" @keyup.enter="submitPassword" autofocus placeholder="…">
           <button type="button" class="border-circled button-thin padding-verysmall" @click="submitPassword">Envoyer</button>
         </div>
@@ -183,19 +183,19 @@ export default {
 
       this.$auth.updateFoldersPasswords({
         "folders": {
-          [this.slugProjectName]: this.$refs.passwordField.value
+          [this.slugFolderName]: this.$refs.passwordField.value
         }
       });
       this.$socketio.sendAuth();
 
       // check if password matches or not
       this.$eventHub.$once('socketio.authentificated', () => {
-        const has_passworded_folder = window.state.list_authorized_folders.filter(f => f.type === 'folders' && f.allowed_slugFolderNames.includes(this.slugProjectName));
+        const has_passworded_folder = window.state.list_authorized_folders.filter(f => f.type === 'folders' && f.allowed_slugFolderNames.includes(this.slugFolderName));
         if(has_passworded_folder.length === 0) {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t('notifications.wrong_password_for') + this.project.name);
+            .error(this.$t('notifications.wrong_password_for_folder:') + this.folder.name);
           this.$refs.passwordField.value = '';
         }
       });

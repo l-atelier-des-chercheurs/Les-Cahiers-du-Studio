@@ -53,7 +53,7 @@
           @click="setAuthor(author.name)"
           :style="`background-color: ${author.color}`"
         >
-          {{author.name }}
+          {{ author.name }}
         </button>
 
         <label 
@@ -84,14 +84,16 @@
       </template>
       <template v-else>
         <div class="input-group">
-          <span class="input-addon input-addon-xs">Nom</span>
+          <span class="input-addon input-addon-xs">
+            {{ $t('name') }}
+          </span>
           <input type="text" ref="nameInput" class="input-xs">
           <button 
             type="button" 
             class="button input-addon-xs" 
             @click="createAuthor"
           >
-            Valider
+            {{ $t('add') }}
           </button>
         </div>
       </template>

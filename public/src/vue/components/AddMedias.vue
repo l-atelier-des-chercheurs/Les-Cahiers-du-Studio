@@ -273,12 +273,15 @@ export default {
       if (window.state.dev_mode === 'debug') {
         console.log('METHODS • AddMediaButton: createTextMedia');
       }
+
       this.$eventHub.$on('socketio.media_created_or_updated', this.newTextMediaCreated);
       this.$root.createMedia({
         slugFolderName: this.slugFolderName,
         type: 'folders',
         additionalMeta: {
-          type: 'text'
+          type: 'text',
+          w: 5,
+          h: 5
         }
       });
       this.$eventHub.$emit('timeline.scrollToEnd');
