@@ -129,7 +129,7 @@
             @wheel="onMousewheel"
           >
             <div>
-              {{ visible_day_human }}
+              <!-- {{ visible_day_human }} -->
             </div>
           </div>
 
@@ -802,8 +802,8 @@ export default {
       console.log('COMPUTED • TimeLineView: visible_day');
       
       // IMPORTANT : to make sure visible_day is called when this.translation changes
-      this.debounce_translation;
-      return this.findDayAtPosX(this.debounce_translation);
+      // this.translation;
+      // return this.findDayAtPosX(this.translation);
     },
     visible_day_human() {
       if(this.$root.lang.current === 'fr') {
