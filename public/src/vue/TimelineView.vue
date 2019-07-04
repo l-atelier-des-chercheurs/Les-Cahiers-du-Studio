@@ -125,13 +125,13 @@
           :style="{ [type]: 100-percent+'%'}"
         >
 
-          <div class="m_floater"
+          <!-- <div class="m_floater"
             @wheel="onMousewheel"
           >
             <div>
-              <!-- {{ visible_day_human }} -->
+              {{ visible_day_human }}
             </div>
-          </div>
+          </div> -->
 
           <div class="m_timeline"
             ref="timeline"
