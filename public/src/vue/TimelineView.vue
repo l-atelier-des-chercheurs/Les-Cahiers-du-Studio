@@ -849,8 +849,8 @@ export default {
       console.log("COMPUTED • TimeLineView: visible_day");
 
       // IMPORTANT : to make sure visible_day is called when this.translation changes
-      // this.translation;
-      // return this.findDayAtPosX(this.translation);
+      this.debounce_translation;
+      return this.findDayAtPosX(this.debounce_translation);
     },
     visible_day_human() {
       if (this.$root.lang.current === "fr") {
