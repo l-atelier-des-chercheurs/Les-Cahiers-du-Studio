@@ -244,7 +244,7 @@
       :isRealtime="is_realtime"
       @close="show_media_modal_for = false"
       :read_only="!$root.state.connected || folder_is_archived"
-      :allAuthors="folder.authors"
+      :allAuthors="Array.isArray(folder.authors) ? folder.authors : []"
     />
 
     <!-- Ici la minimap -->
@@ -381,6 +381,8 @@ export default {
     this.sort.current = this.sort.available[0];
   },
   mounted() {
+    console.log('MOUNTED • TimeLineView');
+
     this.$eventHub.$on('scrollToMedia', this.scrollToMedia);
     this.$eventHub.$on('scrollToDate', this.scrollToDate);
     this.$eventHub.$on('timeline.openMediaModal', this.openMediaModal);
@@ -399,6 +401,8 @@ export default {
     setTimeout(() => { this.collapse_foldername = true }, 2000);
   },
   beforeDestroy() {
+    console.log('BEFOREDESTROY • TimeLineView');
+
     this.$eventHub.$off('scrollToMedia', this.scrollToMedia);
     this.$eventHub.$off('scrollToDate', this.scrollToDate);
     this.$eventHub.$off('timeline.openMediaModal', this.openMediaModal);

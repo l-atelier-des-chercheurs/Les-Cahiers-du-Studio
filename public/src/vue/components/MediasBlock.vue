@@ -62,11 +62,9 @@ export default {
       }
     };
   },
-
   created() {},
   mounted() {},
   beforeDestroy() {},
-
   watch: {
     medias: function() {
       this.triggerPackeryLayout();
