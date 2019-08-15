@@ -71,7 +71,9 @@
               <button type="button" @click.stop.prevent="toggleSidebar('options')">
                 <span>
                   {{ $t('options') }}
-                  <template v-if="$root.settings.sidebar_type === 'options'">&nbsp;×</template>
+                  <template
+                    v-if="$root.settings.sidebar_type === 'options'"
+                  >&nbsp;×</template>
                 </span>
                 <!-- <template v-else>→</template> -->
               </button>
@@ -82,12 +84,14 @@
                 v-if="$root.settings.has_sidebar_opened"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
-              >▼▲</button>
+              >|||</button>
 
               <button type="button" @click.stop.prevent="toggleSidebar('journal')">
                 <span>
                   {{ $t('journal') }}
-                  <template v-if="$root.settings.sidebar_type === 'journal'">&nbsp;×</template>
+                  <template
+                    v-if="$root.settings.sidebar_type === 'journal'"
+                  >&nbsp;×</template>
                 </span>
                 <!-- <template v-else>→</template> -->
               </button>
@@ -110,13 +114,9 @@
           :split="split"
           :style="{ [type]: 100-percent+'%'}"
         >
-          <!-- <div class="m_floater"
-            @wheel="onMousewheel"
-          >
-            <div>
-              {{ visible_day_human }}
-            </div>
-          </div>-->
+          <div class="m_floater" @wheel="onMousewheel">
+            <div>{{ visible_day_human }}</div>
+          </div>
 
           <div
             class="m_timeline"
@@ -175,7 +175,7 @@
 
                       <MediasBlock
                         v-if="segment.medias.length > 0"
-                        :key="segment.timestamp + timeline_height"
+                        :key="segment.timestamp"
                         :medias="segment.medias"
                         :folder="folder"
                         :slugFolderName="slugFolderName"
@@ -907,7 +907,9 @@ export default {
     },
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
-      this.timeline_height = window.innerHeight;
+      if (this.timeline_height !== window.innerHeight) {
+        this.timeline_height = window.innerHeight;
+      }
     },
     scrollToToday() {
       this.scrollToDate(+this.$root.currentTime_day);

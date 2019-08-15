@@ -63,7 +63,9 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    console.log("MOUNTED • MediasBlock");
+  },
   beforeDestroy() {},
   watch: {
     medias: function() {
