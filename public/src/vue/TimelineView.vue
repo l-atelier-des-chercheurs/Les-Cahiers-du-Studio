@@ -1064,7 +1064,7 @@ export default {
         media_in_timeline.parentElement.parentElement.parentElement
           .parentElement.parentElement.offsetLeft +
         media_in_timeline.parentElement.parentElement.offsetLeft;
-      this.scrollTimelineToXPos(x - 50);
+      this.scrollTimelineToXPos(x);
     },
     scrollTimelineToXPos(xPos_new) {
       console.log(
@@ -1075,6 +1075,8 @@ export default {
         this.current_scroll_event();
         return;
       }
+
+      xPos_new -= 50;
 
       this.current_scroll_event = this.$scrollTo(".m_timeline", 500, {
         container: this.$refs.timeline,
