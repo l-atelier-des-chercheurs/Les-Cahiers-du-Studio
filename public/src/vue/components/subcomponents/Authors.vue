@@ -1,76 +1,59 @@
 <template>
-  <div  class="m_authors">
-
-    <div class="m_authors--currentAuthor"
-      v-if="current_author"
-    >
-      <button type="button"
+  <div class="m_authors">
+    <div class="m_authors--currentAuthor" v-if="current_author">
+      <button
+        type="button"
         :style="`background-color: ${current_author.color}`"
         v-html="current_author.name"
-      >
-      </button>
+      ></button>
 
-      <br>
+      <br />
 
-      <button type="button" class="m_authors--currentAuthor--changeColor"
+      <button
+        type="button"
+        class="m_authors--currentAuthor--changeColor"
         @click="change_color_menu = !change_color_menu"
-      >
-        {{ $t('change_color') }}
-      </button>
+      >{{ $t('change_color') }}</button>
 
-      <button type="button" class="m_authors--currentAuthor--changeColor"
+      <button
+        type="button"
+        class="m_authors--currentAuthor--changeColor"
         @click="unsetAuthor"
-      >
-        {{ $t('disconnect') }}
-      </button>
-
+      >{{ $t('disconnect') }}</button>
     </div>
 
-    <transition-group class="m_authors--authorList"
-      name="list-complete"        
-    >
-
+    <transition-group class="m_authors--authorList" name="list-complete">
       <template v-if="change_color_menu">
-        <div
-          v-for="color in sortedRandomColorArray"
-          :key="color"  
-          @click="changeColor(color)"
-        >
+        <div v-for="color in sortedRandomColorArray" :key="color" @click="changeColor(color)">
           <div class="color_item" :style="`background-color: ${color}`" />
         </div>
       </template>
       <template v-else>
-        <label 
+        <label
           :key="'connected_auth_label'"
           v-if="connected_authors.length > 0"
-        >
-          {{ $t('author_connected') }}
-        </label>
+        >{{ $t('author_connected') }}</label>
 
-        <button type="button"
+        <button
+          type="button"
           v-for="author in connected_authors"
           :key="author.name"
           @click="setAuthor(author.name)"
           :style="`background-color: ${author.color}`"
-        >
-          {{ author.name }}
-        </button>
+        >{{ author.name }}</button>
 
-        <label 
+        <label
           :key="'not_connected_auth_label'"
           v-if="not_connected_authors.length > 0"
-        >
-          {{ $t('not_connected') }}
-        </label>
+        >{{ $t('not_connected') }}</label>
 
-        <button type="button"
+        <button
+          type="button"
           v-for="author in not_connected_authors"
           :key="author.name"
           @click="setAuthor(author.name)"
         >
-          <span 
-            :style="`color: ${author.color}`"
-          >•</span>
+          <span :style="`color: ${author.color}`">•</span>
           {{author.name }}
         </button>
       </template>
@@ -78,23 +61,13 @@
 
     <div class="m_authors--createButton">
       <template v-if="!add_author">
-        <button type="button" @click="add_author = true">
-          {{ $t('add_author') }}
-        </button>
+        <button type="button" @click="add_author = true">{{ $t('add_author') }}</button>
       </template>
       <template v-else>
         <div class="input-group">
-          <span class="input-addon input-addon-xs">
-            {{ $t('name') }}
-          </span>
-          <input type="text" ref="nameInput" class="input-xs">
-          <button 
-            type="button" 
-            class="button input-addon-xs" 
-            @click="createAuthor"
-          >
-            {{ $t('add') }}
-          </button>
+          <span class="input-addon input-addon-xs">{{ $t('name') }}</span>
+          <input type="text" ref="nameInput" class="input-xs" />
+          <button type="button" class="button input-addon-xs" @click="createAuthor">{{ $t('add') }}</button>
         </div>
       </template>
     </div>
@@ -113,20 +86,19 @@
         />
         <span v-else v-html="'anonyme'" />
       </div>
-    </template> -->
+    </template>-->
 
     <!-- <div class="input-group">
       <span class="input-addon input-addon-xs">Nom</span>
       <input type="text" ref="nameInput" class="input-xs">
       <button type="button" class="button input-addon-xs" @click="updateName">Envoyer</button>
     </div>
--->
-
+    -->
   </div>
 </template>
 <script>
-import randomcolor from 'randomcolor';
-import hexsorter from 'hexsorter';
+import randomcolor from "randomcolor";
+import hexsorter from "hexsorter";
 
 export default {
   props: {
@@ -138,30 +110,27 @@ export default {
       type: String
     }
   },
-  components: {
-  },
+  components: {},
   data() {
     return {
       add_author: false,
       change_color_menu: false
-    }
-  },
-  
-  created() {
-  },
-  mounted() {
-  },
-  beforeDestroy() {
+    };
   },
 
-  watch: {
-  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+
+  watch: {},
   computed: {
     clients() {
       return this.$root.state.clients;
     },
     authors_except_current() {
-      return this.authors.filter(c => c.name !== this.$root.settings.current_author_name);
+      return this.authors.filter(
+        c => c.name !== this.$root.settings.current_author_name
+      );
     },
     connected_authors() {
       return this.authors_except_current.filter(a => {
@@ -176,11 +145,13 @@ export default {
       });
     },
     current_author() {
-      return this.authors.filter(c => c.name === this.$root.settings.current_author_name)[0];
+      return this.authors.filter(
+        c => c.name === this.$root.settings.current_author_name
+      )[0];
     },
     randomColorArray() {
       let random_color = randomcolor({
-        luminosity: 'light',
+        luminosity: "light",
         count: 25
       });
       return random_color;
@@ -194,32 +165,32 @@ export default {
         sorted_color_array.push(color);
       }
       return sorted_color_array;
-    },
+    }
   },
   methods: {
     createAuthor() {
       const name = this.$refs.nameInput.value;
 
       let _authors = [];
-      if(!!this.authors) {
+      if (!!this.authors) {
         // check for existing name, refuse if already there
-        if(this.authors.filter(a => a.name === name).length > 0) {
+        if (this.authors.filter(a => a.name === name).length > 0) {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t('notifications.author_name_exists'));  
-          return false;        
+            .error(this.$t("notifications.author_name_exists"));
+          return false;
         }
         _authors = this.authors.slice(0);
       }
       _authors.push({
         name,
-        color: randomcolor({luminosity: 'light'})
+        color: randomcolor({ luminosity: "light" })
       });
-      
+
       this.$root.editFolder({
-        type: 'folders',
-        slugFolderName: this.slugFolderName, 
+        type: "folders",
+        slugFolderName: this.slugFolderName,
         data: {
           authors: _authors
         }
@@ -230,28 +201,32 @@ export default {
     unsetAuthor() {
       this.$root.settings.current_author_name = false;
       this.change_color_menu = false;
-      this.$socketio.socket.emit('updateClientInfo', { 
+      this.$socketio.socket.emit("updateClientInfo", {
         author_name: false
       });
     },
     setAuthor(name) {
       this.$root.settings.current_author_name = name;
-      this.$socketio.socket.emit('updateClientInfo', { 
+      this.$socketio.socket.emit("updateClientInfo", {
         author_name: name
       });
     },
     author_is_connected(name) {
-      return this.clients.filter(c => {
-        return c.data.hasOwnProperty('author_name') && c.data.author_name === name;
-      }).length > 0;
+      return (
+        this.clients.filter(c => {
+          return (
+            c.data.hasOwnProperty("author_name") && c.data.author_name === name
+          );
+        }).length > 0
+      );
     },
 
     changeColor(color) {
       this.current_author.color = color;
 
       this.$root.editFolder({
-        type: 'folders',
-        slugFolderName: this.slugFolderName, 
+        type: "folders",
+        slugFolderName: this.slugFolderName,
         data: {
           authors: this.authors
         }
@@ -260,11 +235,11 @@ export default {
       this.change_color_menu = false;
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 .color_item {
-  width:  35px;
+  width: 35px;
   height: 35px;
   margin: 5px;
 }
@@ -272,8 +247,8 @@ export default {
   flex-flow: column nowrap;
   max-width: 300px;
   max-height: 250px;
-  box-shadow: 2px 4px 13px #bbb; 
-  margin-bottom: 15px;  
+  box-shadow: 2px 4px 13px #bbb;
+  margin-bottom: 15px;
   background-color: #fff;
   pointer-events: auto;
 }
@@ -283,8 +258,5 @@ export default {
   flex: 1 1 auto;
   justify-content: flex-start;
   align-content: flex-start;
-  
 }
-
-
 </style>

@@ -1,10 +1,8 @@
 <template>
-    <!-- v-if="media.type === 'marker'" -->
-  <div 
-    class="packery-item"
-    :style="itemSize"
-  >
-    <div class="packery-item-content"
+  <!-- v-if="media.type === 'marker'" -->
+  <div class="packery-item" :style="itemSize">
+    <div
+      class="packery-item-content"
       :class="{ 
         'is--hovered' : is_hovered && !is_resized,
         'is--text_overflowing' : text_is_overflowing
@@ -13,7 +11,6 @@
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
     >
-    
       <MediaContent
         v-model="media.content"
         :slugFolderName="slugFolderName"
@@ -24,12 +21,9 @@
         ref="MediaContent"
       />
 
-      <div class="author_indicator"
-        v-if="mediaColorFromFirstAuthor"
-      />
+      <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
 
-      <div class="draggabilly_handle" data-draggabilly_handle
-      />
+      <div class="draggabilly_handle" data-draggabilly_handle />
 
       <!-- <template v-if="is_hovered">
         <div class="buttons_right">
@@ -48,7 +42,7 @@
             -
           </button>
         </div>
-      </template> -->
+      </template>-->
 
       <template v-if="is_hovered && !is_resized">
         <div class="handle handle_resizeMedia handle_resizeMedia_bottomright">
@@ -80,15 +74,14 @@
           </div>
         </template>
       </template>
-
     </div>
   </div>
 </template>
 <script>
-import MediaContent from './MediaContent.vue';
-import { setTimeout } from 'timers';
-import Draggabilly from 'draggabilly';
-import {packeryEvents} from 'vue-packery-plugin';
+import MediaContent from "./MediaContent.vue";
+import { setTimeout } from "timers";
+import Draggabilly from "draggabilly";
+import { packeryEvents } from "vue-packery-plugin";
 
 export default {
   props: {
@@ -123,20 +116,25 @@ export default {
 
       is_mounted: false,
       text_is_overflowing: false
-    }
+    };
   },
-  
+
   created() {
-    if(this.media.type === 'text') {
+    if (this.media.type === "text") {
       this.mediaSize.width = 1 + this.base_edge;
       this.mediaSize.height = 1 + this.base_edge;
-    } else if(this.media.type === 'marker') {
+    } else if (this.media.type === "marker") {
       this.mediaSize.width = 1 + this.base_edge;
       this.mediaSize.height = 1;
     } else {
       this.mediaSize.width = Math.round(Math.random() * 2 + this.base_edge);
-      if(this.media.hasOwnProperty('ratio') && typeof this.media.ratio === 'number') {
-        this.mediaSize.height = Math.round(this.mediaSize.width * this.media.ratio);
+      if (
+        this.media.hasOwnProperty("ratio") &&
+        typeof this.media.ratio === "number"
+      ) {
+        this.mediaSize.height = Math.round(
+          this.mediaSize.width * this.media.ratio
+        );
       } else {
         this.mediaSize.height = Math.round(Math.random() * 2 + this.base_edge);
       }
@@ -144,83 +142,92 @@ export default {
 
     // override with actual media w and h if it exists
     this.setMediaSizeFromMeta();
-
   },
 
   mounted() {
     this.$el.draggie = new Draggabilly(this.$el, {
-      handle: '[data-draggabilly_handle]'
+      handle: "[data-draggabilly_handle]"
     });
-    packeryEvents.$emit('draggie', {
+    packeryEvents.$emit("draggie", {
       draggie: this.$el.draggie,
       node: this.$el.parentNode
     });
-    this.$el.draggie.on('dragStart', () => {
-      this.$emit('dragStarted');      
+    this.$el.draggie.on("dragStart", () => {
+      this.$emit("dragStarted");
     });
-    this.$el.draggie.on('dragEnd', () => {
-      this.$emit('dragEnded');      
+    this.$el.draggie.on("dragEnd", () => {
+      this.$emit("dragEnded");
     });
-    this.$el.draggie.on('staticClick', () => {
+    this.$el.draggie.on("staticClick", () => {
       this.openMedia();
     });
 
     this.$nextTick(() => {
       this.is_mounted = true;
     });
-
   },
   beforeDestroy() {
     this.$el.draggie.destroy();
     this.$el.draggie = null;
   },
   watch: {
-    'mediaSize': { 
+    mediaSize: {
       handler: function() {
-        if(this.is_mounted) {
-          this.$emit('triggerPackeryLayout');
+        if (this.is_mounted) {
+          this.$emit("triggerPackeryLayout");
         }
         this.checkTextOverflow();
       },
       deep: true
     },
-    'media.content': function() {
+    "media.content": function() {
       this.checkTextOverflow();
     },
-    'media.w': function() {
+    "media.w": function() {
       this.setMediaSizeFromMeta();
     },
-    'media.h': function() {
+    "media.h": function() {
       this.setMediaSizeFromMeta();
     }
   },
   computed: {
     itemSize() {
       return {
-        width: this.mediaWidth + 'px',
-        height: this.mediaHeight + 'px'
-      }
+        width: this.mediaWidth + "px",
+        height: this.mediaHeight + "px"
+      };
     },
     mediaWidth() {
-      return this.mediaSize.width * this.columnWidth + (this.mediaSize.width-1) * this.gutter;
+      return (
+        this.mediaSize.width * this.columnWidth +
+        (this.mediaSize.width - 1) * this.gutter
+      );
     },
     mediaHeight() {
-      return  this.mediaSize.height * this.rowHeight + (this.mediaSize.height-1) * this.gutter;
+      return (
+        this.mediaSize.height * this.rowHeight +
+        (this.mediaSize.height - 1) * this.gutter
+      );
     },
     widthForSizes() {
       // TODO
-      // should check the actual width the image will be displayed at, 
+      // should check the actual width the image will be displayed at,
       // considering that the image is in an object-fit: cover configuration
-      if(this.mediaWidth > this.mediaHeight) {
+      if (this.mediaWidth > this.mediaHeight) {
         return this.mediaWidth;
       } else {
         return this.mediaHeight;
       }
     },
     itemStylesWithSize() {
-      return Object.assign({
-        '--author-color': this.mediaColorFromFirstAuthor ? this.mediaColorFromFirstAuthor : '#fff'
-      }, this.itemSize)
+      return Object.assign(
+        {
+          "--author-color": this.mediaColorFromFirstAuthor
+            ? this.mediaColorFromFirstAuthor
+            : "#fff"
+        },
+        this.itemSize
+      );
     },
     mediaColorFromFirstAuthor() {
       return this.$root.mediaColorFromFirstAuthor(this.media, this.folder);
@@ -228,28 +235,30 @@ export default {
   },
   methods: {
     checkTextOverflow() {
-      if(['text', 'marker'].includes(this.media.type)) {        
-        if(this.mediaSize.height === 1) {
-          return this.text_is_overflowing = false;
+      if (["text", "marker"].includes(this.media.type)) {
+        if (this.mediaSize.height === 1) {
+          return (this.text_is_overflowing = false);
         }
 
-        this.text_is_overflowing = this.mediaHeight < this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
+        this.text_is_overflowing =
+          this.mediaHeight <
+          this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
       }
     },
     setMediaSizeFromMeta() {
-      if(this.media.hasOwnProperty('w') && typeof this.media.w === 'number') {
+      if (this.media.hasOwnProperty("w") && typeof this.media.w === "number") {
         this.mediaSize.width = this.media.w;
       }
-      if(this.media.hasOwnProperty('h') && typeof this.media.h === 'number') {
+      if (this.media.hasOwnProperty("h") && typeof this.media.h === "number") {
         this.mediaSize.height = this.media.h;
       }
     },
     changeItemWidth(increment) {
-      console.log('MediaBlock changeItemWidth');
+      console.log("MediaBlock changeItemWidth");
       this.mediaSize.width += increment;
     },
     changeItemHeight(increment) {
-      console.log('MediaBlock changeItemHeight');
+      console.log("MediaBlock changeItemHeight");
       this.mediaSize.height += increment;
     },
     limitMediaWidth(w) {
@@ -259,30 +268,34 @@ export default {
       return Math.max(1, Math.min(12, h));
     },
     openMedia() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • MediaBlock: openMedia');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • MediaBlock: openMedia");
       }
-      this.$eventHub.$emit('timeline.openMediaModal', this.media.slugMediaName);
+      this.$eventHub.$emit("timeline.openMediaModal", this.media.slugMediaName);
     },
     resizeMedia(type, origin) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaBlock: resizeMedia with is_resized = ${this.is_resized}`);
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(
+          `METHODS • MediaBlock: resizeMedia with is_resized = ${this.is_resized}`
+        );
       }
       if (!this.read_only) {
         this.resizeOrigin = origin;
-        this.$emit('resizeStarted');      
-        if(type === 'mouse') {
-          window.addEventListener('mousemove', this.resizeMove);
-          window.addEventListener('mouseup', this.resizeUp);
-        } else if(type === 'touch') {
-          window.addEventListener('touchmove', this.resizeMove);
-          window.addEventListener('touchend', this.resizeUp);
+        this.$emit("resizeStarted");
+        if (type === "mouse") {
+          window.addEventListener("mousemove", this.resizeMove);
+          window.addEventListener("mouseup", this.resizeUp);
+        } else if (type === "touch") {
+          window.addEventListener("touchmove", this.resizeMove);
+          window.addEventListener("touchend", this.resizeUp);
         }
       }
     },
     resizeMove(event) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaBlock: resizeMove with is_resized = ${this.is_resized}`);
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(
+          `METHODS • MediaBlock: resizeMove with is_resized = ${this.is_resized}`
+        );
       }
 
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
@@ -296,34 +309,42 @@ export default {
         this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
         this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
       } else {
-        const deltaX = Math.round((pageX - this.resizeOffset.x) / this.columnWidth);
+        const deltaX = Math.round(
+          (pageX - this.resizeOffset.x) / this.columnWidth
+        );
         let newWidth = this.mediaSize.pwidth + deltaX;
-        
-        if(this.resizeOrigin.includes('horizontal')) {
+
+        if (this.resizeOrigin.includes("horizontal")) {
           this.mediaSize.width = this.limitMediaWidth(newWidth);
         }
 
-        const deltaY = Math.round((pageY - this.resizeOffset.y) / this.rowHeight);
+        const deltaY = Math.round(
+          (pageY - this.resizeOffset.y) / this.rowHeight
+        );
         let newHeight = this.mediaSize.pheight + deltaY;
 
-        if(this.resizeOrigin.includes('vertical')) {
+        if (this.resizeOrigin.includes("vertical")) {
           this.mediaSize.height = this.limitMediaHeight(newHeight);
         }
       }
     },
     resizeUp(event) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaBlock: resizeUp with is_resized = ${this.is_resized}`);
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(
+          `METHODS • MediaBlock: resizeUp with is_resized = ${this.is_resized}`
+        );
       }
       if (this.is_resized) {
-        console.log(`METHODS • MediaBlock: this.mediaSize.width = ${this.mediaSize.width} and this.mediaSize.height = ${this.mediaSize.height}`);
+        console.log(
+          `METHODS • MediaBlock: this.mediaSize.width = ${this.mediaSize.width} and this.mediaSize.height = ${this.mediaSize.height}`
+        );
 
         // this.mediaSize.width = this.mediaSize.width;
         // this.mediaSize.height = this.mediaSize.height;
 
-        this.$root.editMedia({ 
-          type: 'folders',
-          slugFolderName: this.slugFolderName, 
+        this.$root.editMedia({
+          type: "folders",
+          slugFolderName: this.slugFolderName,
           slugMediaName: this.media.slugMediaName,
           data: {
             w: this.mediaSize.width,
@@ -332,23 +353,23 @@ export default {
         });
 
         this.is_resized = false;
-        this.$emit('resizeEnded');      
+        this.$emit("resizeEnded");
       }
 
       event.stopPropagation();
-      window.removeEventListener('mousemove', this.resizeMove);
-      window.removeEventListener('mouseup', this.resizeUp);
-      window.removeEventListener('touchmove', this.resizeMove);
-      window.removeEventListener('touchend', this.resizeUp);
+      window.removeEventListener("mousemove", this.resizeMove);
+      window.removeEventListener("mouseup", this.resizeUp);
+      window.removeEventListener("touchmove", this.resizeMove);
+      window.removeEventListener("touchend", this.resizeUp);
 
       return false;
-    },
-
+    }
   }
-}
+};
 </script>
 <style lang="scss">
-.packery-item, .packery-item-content {
+.packery-item,
+.packery-item-content {
   cursor: -webkit-grabbing;
   cursor: -moz-grabbing;
 }
@@ -358,13 +379,14 @@ export default {
   box-sizing: border-box;
   // padding: 5px;
 
-  &.is-dragging, &.is-positioning-post-drag {
+  &.is-dragging,
+  &.is-positioning-post-drag {
     z-index: 2;
 
     .packery-item-content {
       box-shadow: none !important;
       // transform: translateY(0px);
-      transition: none;  
+      transition: none;
     }
   }
 }
@@ -379,26 +401,28 @@ export default {
   border-radius: 4px;
   border: 0px solid black;
 
-  transition: all .8s cubic-bezier(.25,.8,.25,1);  
+  transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
 
   &.is--hovered {
     // background-color: white;
     z-index: 1;
     transform: translateY(-8px);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.19), 0 6px 26px rgba(0, 0, 0, 0.03);
   }
 
   &.is--text_overflowing {
-
     &::after {
-      content: '';
+      content: "";
       display: block;
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
       // background-color: var(--author-color);
-      background-image: linear-gradient(transparent 0%, var(--author-color) 40%);
+      background-image: linear-gradient(
+        transparent 0%,
+        var(--author-color) 40%
+      );
       height: 2em;
       // padding-top:.5em;
       // border-top: 1px solid black;
@@ -408,16 +432,17 @@ export default {
 
   .author_indicator {
     $t-button_size: 5px;
-    
+
     position: absolute;
-    top: 5px;left: 5px;
+    top: 5px;
+    left: 5px;
     width: $t-button_size;
     height: $t-button_size;
     background-color: var(--author-color);
     border-radius: $t-button_size;
     z-index: 1;
     // height: 100%;
-    
+
     // border-top: 10px solid var(--author-color);
     // border-right: 10px solid transparent;
     // border-left: none;
@@ -433,28 +458,29 @@ export default {
     border-radius: 4px;
     overflow: hidden;
 
-    &.type-audio, &.type-video {
+    &.type-audio,
+    &.type-video {
       > * {
         position: absolute;
         z-index: 1;
         width: 100%;
         height: 100%;
         pointer-events: none;
-  
+
         .plyr {
           width: 100%;
           height: 100%;
           min-width: 0;
-  
+
           .plyr__controls {
             position: absolute;
             background: transparent;
           }
-  
+
           .plyr__control {
             pointer-events: auto;
           }
-  
+
           .plyr__video-wrapper {
             width: 100%;
             height: 100%;
@@ -465,9 +491,9 @@ export default {
         }
       }
     }
-      
 
-    img, video {
+    img,
+    video {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -487,7 +513,8 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 0;left: 0;
+  top: 0;
+  left: 0;
   // z-index: 1;
 
   html.touchevents & {
@@ -496,18 +523,18 @@ export default {
 }
 
 .packery-drop-placeholder {
-  background-color: rgba(0,0,0,.10);
+  background-color: rgba(0, 0, 0, 0.1);
   filter: blur(10px);
   -webkit-transition: -webkit-transform 0.2s;
-          transition: transform 0.2s;
+  transition: transform 0.2s;
   z-index: 0;
 }
 
-
-.buttons_right, .buttons_bottom {
+.buttons_right,
+.buttons_bottom {
   position: absolute;
   color: white;
-  font-size: .8em;
+  font-size: 0.8em;
   line-height: 1;
   font-weight: bold;
 
@@ -551,13 +578,13 @@ export default {
   z-index: 1;
   width: 20px;
   height: 20px;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   pointer-events: none;
 
   border-style: inherit;
   border-width: 0px;
-  
+
   --handle-width: 15px;
   --handle-height: 5px;
 
@@ -577,7 +604,7 @@ export default {
 
     div {
       cursor: row-resize;
-    
+
       > span {
         height: var(--handle-height);
         width: var(--handle-width);
@@ -606,7 +633,7 @@ export default {
 
     div {
       cursor: col-resize;
-    
+
       > span {
         height: var(--handle-width);
         width: var(--handle-height);
@@ -629,12 +656,11 @@ export default {
       display: block;
       width: var(--handle-height);
       height: var(--handle-height);
-      background-color:#fff;
-      box-shadow: 0 0px 4px rgba(0,0,0,.43);
+      background-color: #fff;
+      box-shadow: 0 0px 4px rgba(0, 0, 0, 0.43);
       // mix-blend-mode: multiply;
       border-radius: var(--handle-height);
     }
   }
 }
-
 </style>

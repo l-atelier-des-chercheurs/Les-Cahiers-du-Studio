@@ -1,8 +1,8 @@
 <template>
   <div>
-
-    <div v-packery="grid_options" 
-      class='packery-container'
+    <div
+      v-packery="grid_options"
+      class="packery-container"
       :class="{ 'is--showing_grid' : show_grid }"
       ref="packery"
       :style="`padding: ${grid_options.gutter/2}px; --gridstep: ${grid_options.columnWidth + grid_options.gutter}px`"
@@ -13,7 +13,9 @@
       <!-- <div class="stamp stamp2"></div> -->
 
       <MediaBlock
-        v-for="media in medias" :key="media.metaFileName" v-packery-item 
+        v-for="media in medias"
+        :key="media.metaFileName"
+        v-packery-item
         :media="media"
         :folder="folder"
         :slugFolderName="slugFolderName"
@@ -27,14 +29,12 @@
         @resizeStarted="showGrid"
         @resizeEnded="hideGrid"
       />
-
     </div>
-    
   </div>
 </template>
 <script>
-import MediaBlock from './subcomponents/MediaBlock.vue';
-import {packeryEvents} from 'vue-packery-plugin';
+import MediaBlock from "./subcomponents/MediaBlock.vue";
+import { packeryEvents } from "vue-packery-plugin";
 
 export default {
   props: {
@@ -49,35 +49,32 @@ export default {
     return {
       show_grid: false,
       grid_options: {
-        itemSelector: ".packery-item", 
+        itemSelector: ".packery-item",
         percentPosition: true,
         gutter: 4,
         columnWidth: 40,
         rowHeight: 40,
         horizontal: true,
-        stamp: '.stamp',
-        transitionDuration: '0.4s',
+        stamp: ".stamp",
+        transitionDuration: "0.4s"
         // originTop: false
         // stagger: 30
-      },
-    }
-  },
-  
-  created() {
-  },
-  mounted() {
-  },
-  beforeDestroy() {
+      }
+    };
   },
 
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+
   watch: {
-    'medias': function() {
+    medias: function() {
       this.triggerPackeryLayout();
     }
   },
   computed: {
     base_edge() {
-      if(this.medias.length > 5) {
+      if (this.medias.length > 5) {
         return 2;
       }
       return 3;
@@ -85,7 +82,7 @@ export default {
   },
   methods: {
     triggerPackeryLayout() {
-      console.log('Triggered packery layout');
+      console.log("Triggered packery layout");
       this.$forceUpdate();
       // packeryEvents.$emit('layout', this.$refs.packery);
     },
@@ -96,11 +93,11 @@ export default {
       this.show_grid = false;
     }
   }
-}
+};
 </script>
 <style lang="scss">
 .packery-container {
-  height: 100%;  
+  height: 100%;
 
   // transition: all .1s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -121,13 +118,26 @@ export default {
   --grid-color-vertical: transparent;
 
   // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
-  background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color-vertical) var(--gridstep_before),var(--grid-color-vertical) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color-horizontal) var(--gridstep_before),var(--grid-color-horizontal) var(--gridstep));
+  background-image: repeating-linear-gradient(
+      -90deg,
+      transparent,
+      transparent var(--gridstep_before),
+      var(--grid-color-vertical) var(--gridstep_before),
+      var(--grid-color-vertical) var(--gridstep)
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent var(--gridstep_before),
+      var(--grid-color-horizontal) var(--gridstep_before),
+      var(--grid-color-horizontal) var(--gridstep)
+    );
   background-repeat: no-repeat;
   background-size: 100% 100%;
 
   &:not(.is--showing_grid) {
     // background-image: none;
-  }    
+  }
 
   &.is--showing_grid {
     --grid-color-vertical: var(--grid-color);
@@ -155,5 +165,4 @@ export default {
 //   width: 70%;
 //   height: 30px;
 // }
-
 </style>
