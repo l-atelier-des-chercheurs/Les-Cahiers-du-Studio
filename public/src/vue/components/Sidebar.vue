@@ -150,14 +150,13 @@
           <button
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="this.showMediasListModal = true"
+            @click="showMediasListModal = true"
           >{{ $t('fullscreen') }}</button>
         </h3>
       </div>
 
       <div slot="body" class="margin-sides-negative-medium">
         <Tableau
-          v-if="showMediasListModal === false"
           :display="'table'"
           :filter="filter"
           :sort="sort"
@@ -170,14 +169,14 @@
     </SidebarSection>
 
     <MediasList
-      v-if="showMediasListModal === true"
+      v-if="showMediasListModal"
       :filter="filter"
       :sort="sort"
       :sortedMedias="sortedMedias"
       :slugFolderName="slugFolderName"
       :timeline_start="timeline_start"
       :timeline_end="timeline_end"
-      @close="closeListMediasModal()"
+      @close="showMediasListModal = false"
     ></MediasList>
 
     <div class="c-gris font-small margin-medium">
@@ -339,12 +338,6 @@ export default {
     },
     scrollToDate(timestamp) {
       this.$eventHub.$emit("scrollToDate", timestamp);
-    },
-    openListMediasModal() {
-      this.showMediasList = true;
-    },
-    closeListMediasModal() {
-      this.showMediasList = false;
     },
 
     getNumberOfMediasCreatedOnThisDate(date) {

@@ -63,6 +63,7 @@
                 class="margin-medium"
                 :context="'MediasList'"
                 :slugFolderName="slugFolderName"
+                :element_width_for_sizes="800"
                 :slugMediaName="media.slugMediaName"
                 :media="media"
               ></MediaContent>
