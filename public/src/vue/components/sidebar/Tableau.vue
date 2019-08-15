@@ -1,34 +1,26 @@
 <template>
-  <div class="m_sidebarList"
-    :class="`m_sidebarList_${display}`"
-    >
-    <table class="margin-none border-none"
-      :class="{ 'table-hoverable' : display === 'table' }"
-      >
+  <div class="m_sidebarList" :class="`m_sidebarList_${display}`">
+    <table class="margin-none border-none" :class="{ 'table-hoverable' : display === 'table' }">
       <thead>
         <tr>
-          <th class="font-small padding-medium">
-            {{ $t('preview') }}
-          </th>
+          <th class="font-small padding-medium">{{ $t('preview') }}</th>
           <th>
             <select v-model="currentSort">
-              <option v-for="option in sort.available" :value="option" :key="option.name">
-                {{ option.name }}
-              </option>
+              <option
+                v-for="option in sort.available"
+                :value="option"
+                :key="option.name"
+              >{{ option.name }}</option>
             </select>
           </th>
-          <th v-if="display === 'table'">
-          </th>
+          <th v-if="display === 'table'"></th>
         </tr>
         <tr>
-          <th class="font-small padding-medium">
-            {{ $t('filter') }}
-          </th>
+          <th class="font-small padding-medium">{{ $t('filter') }}</th>
           <th>
-            <input type="text" v-model="currentFilter">
+            <input type="text" v-model="currentFilter" />
           </th>
-          <th v-if="display === 'table'">
-          </th>
+          <th v-if="display === 'table'"></th>
         </tr>
       </thead>
       <tbody>
@@ -41,33 +33,28 @@
           class="m_sidebarList--media"
           :class="[{ 'is--outOfScope' : mediaIsOutOfScope(media) }, 'color-' + media.color ]"
           :title="media.slugMediaName"
-          >
-
+        >
           <template v-if="display === 'table'">
             <td class="padding-small">
               <MediaContent
                 v-model="media.content"
                 :context="'preview'"
-                :thumbSize="50"
+                :preview_size="50"
                 :slugFolderName="slugFolderName"
                 :slugMediaName="media.slugMediaName"
                 :media="media"
                 :read_only="read_only"
-                >
-              </MediaContent>                
+              />
             </td>
+            <td class="font-small padding-small">{{ media[sort.current.field] }}</td>
             <td class="font-small padding-small">
-              {{ media[sort.current.field] }}
-            </td>
-            <td class="font-small padding-small">
-              <button type="button" class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
+              <button
+                type="button"
+                class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
                 @click.stop="openMediaModal(media.slugMediaName)"
-                >
-                {{ $t('open') }}
-              </button>
+              >{{ $t('open') }}</button>
             </td>
           </template>
-
 
           <template v-else-if="display === 'mediasList'">
             <td class="bg-transparent" colspan="2">
@@ -88,8 +75,8 @@
 </template>
 
 <script>
-import MediaContent from '../subcomponents/MediaContent.vue';
-import _ from 'underscore';
+import MediaContent from "../subcomponents/MediaContent.vue";
+import _ from "underscore";
 
 export default {
   components: {
@@ -107,41 +94,40 @@ export default {
   data() {
     return {
       currentSort: this.sort.current,
-      currentFilter: this.filter,
-      thumbSize: 50
+      currentFilter: this.filter
     };
   },
   mounted: function() {},
   computed: {},
   watch: {
     currentSort: function() {
-      this.$eventHub.$emit('setSort', this.currentSort);
+      this.$eventHub.$emit("setSort", this.currentSort);
     },
     currentFilter: function() {
-      this.$eventHub.$emit('setFilter', this.currentFilter);
+      this.$eventHub.$emit("setFilter", this.currentFilter);
     },
-    'sort.current': function() {
+    "sort.current": function() {
       this.currentSort = this.sort.current;
     },
-    'filter': function() {
+    filter: function() {
       this.currentFilter = this.filter;
     }
   },
   methods: {
     highlightMedia(slugMediaName) {
-      if (this.display !== 'table') return false;
-      this.$eventHub.$emit('highlightMedia', slugMediaName);
+      if (this.display !== "table") return false;
+      this.$eventHub.$emit("highlightMedia", slugMediaName);
     },
     unHighlightMedia(slugMediaName) {
-      if (this.display !== 'table') return false;
-      this.$eventHub.$emit('highlightMedia', '');
+      if (this.display !== "table") return false;
+      this.$eventHub.$emit("highlightMedia", "");
     },
     scrollToMedia(slugMediaName) {
-      if (this.display !== 'table') return false;
-      this.$eventHub.$emit('scrollToMedia', slugMediaName);
+      if (this.display !== "table") return false;
+      this.$eventHub.$emit("scrollToMedia", slugMediaName);
     },
     openMediaModal(slugMediaName) {
-      this.$eventHub.$emit('timeline.openMediaModal', slugMediaName);
+      this.$eventHub.$emit("timeline.openMediaModal", slugMediaName);
     },
     mediaIsOutOfScope(media) {
       if (
@@ -151,18 +137,6 @@ export default {
         return true;
       }
       return false;
-    },
-    linkToThumb(media) {
-      let pathToSmallestThumb = _.findWhere(media.thumbs, {
-        size: this.thumbSize
-      }).path;
-
-      if(pathToSmallestThumb === undefined) {
-        return '';
-      }
-
-      pathToSmallestThumb = this.$root.state.mode === 'export_web' ? `./${pathToSmallestThumb}` : `/${pathToSmallestThumb}`
-      return pathToSmallestThumb;
     }
   }
 };

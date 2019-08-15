@@ -1064,7 +1064,7 @@ export default {
         media_in_timeline.parentElement.parentElement.parentElement
           .parentElement.parentElement.offsetLeft +
         media_in_timeline.parentElement.parentElement.offsetLeft;
-      this.scrollTimelineToXPos(x);
+      this.scrollTimelineToXPos(x - 50);
     },
     scrollTimelineToXPos(xPos_new) {
       console.log(
@@ -1532,8 +1532,8 @@ export default {
 
 .m_floater {
   position: absolute;
-  top: 20px;
-  // bottom: 0px;
+  top: auto;
+  bottom: 30px;
   width: 100%;
   z-index: 150;
   pointer-events: none;
