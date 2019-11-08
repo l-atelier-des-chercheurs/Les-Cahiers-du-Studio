@@ -28,30 +28,6 @@
       </div>
     </SidebarSection>
 
-    <!-- <SidebarSection>
-      <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">
-          {{ $t('writeup') }}
-          <button
-            type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="showWriteupModal = true"
-          >
-            {{ $t('open') }}
-          </button>
-        </h3>
-      </div>
-      <div slot="body">
-      </div>
-    </SidebarSection>
-
-    <WriteUp
-      v-if="showWriteupModal === true"
-      @close="showWriteupModal = false"
-      :slugFolderName="slugFolderName"
-      :medias="medias"
-    />-->
-
     <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">{{ $t('lang') }}</h3>
