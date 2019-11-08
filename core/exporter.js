@@ -16,10 +16,88 @@ const dev = require('./dev-log'),
 ffmpeg.setFfmpegPath(ffmpegstatic.path);
 ffmpeg.setFfprobePath(ffprobestatic.path);
 
+const renice = 0;
+
 module.exports = (function() {
   return {
-    loadPublication: (slugPubliName, pageData) =>
-      loadPublication(slugPubliName, pageData),
+    loadFolder: ({ type = 'publications', slugFolderName, pageData }) => {
+      return new Promise((resolve, reject) => {
+        dev.logfunction(
+          `EXPORTER — loadFolder with slugFolderName = ${slugFolderName}`
+        );
+
+        let publi_and_medias = {};
+
+        // get publication
+        file
+          .getFolder({
+            type,
+            slugFolderName
+          })
+          .then(publiData => {
+            publi_and_medias = publiData;
+            pageData.pageTitle = publi_and_medias[slugFolderName].name;
+            file
+              .getMediaMetaNames({
+                type,
+                slugFolderName
+              })
+              .then(list_metaFileName => {
+                let medias_list = list_metaFileName.map(metaFileName => {
+                  return {
+                    slugFolderName,
+                    metaFileName
+                  };
+                });
+                if (medias_list.length === 0) {
+                  pageData.store[type] = publi_and_medias;
+                  return resolve(pageData);
+                }
+                file
+                  .readMediaList({
+                    type,
+                    medias_list
+                  })
+                  .then(publi_medias => {
+                    publi_and_medias[slugFolderName].medias =
+                      publi_medias[slugFolderName].medias;
+                    pageData.store[type] = publi_and_medias;
+
+                    // we need to get the list of original medias in the publi
+                    var list_of_linked_medias = [];
+
+                    Object.entries(publi_medias[slugFolderName].medias).forEach(
+                      ([key, value]) => {
+                        if (
+                          value.hasOwnProperty('slugProjectName') &&
+                          value.hasOwnProperty('slugMediaName')
+                        ) {
+                          list_of_linked_medias.push({
+                            slugFolderName: value.slugProjectName,
+                            metaFileName: value.slugMediaName
+                          });
+                        }
+                      }
+                    );
+
+                    if (list_of_linked_medias.length > 0) {
+                      file
+                        .readMediaList({
+                          type: 'projects',
+                          medias_list: list_of_linked_medias
+                        })
+                        .then(folders_and_medias => {
+                          pageData.folderAndMediaData = folders_and_medias;
+                          return resolve(pageData);
+                        });
+                    } else {
+                      return resolve(pageData);
+                    }
+                  });
+              });
+          });
+      });
+    },
 
     copyFolderContent: ({ html, folders_and_medias, slugFolderName }) => {
       return new Promise(function(resolve, reject) {
@@ -117,10 +195,6 @@ module.exports = (function() {
                       typeof mediaMeta.thumbs !== 'undefined'
                     ) {
                       mediaMeta.thumbs.map(t => {
-                        if (!t) {
-                          return;
-                        }
-
                         if (t.hasOwnProperty('path')) {
                           tasks.push(
                             new Promise((resolve, reject) => {
@@ -210,36 +284,44 @@ module.exports = (function() {
         );
       });
     },
-    makePDFForPubli: ({ slugPubliName }) => {
+    makePDFForPubli: ({ type = 'publications', slugFolderName }) => {
       return new Promise(function(resolve, reject) {
-        const urlToPubli = `${
-          global.appInfos.homeURL
-        }/publication/${slugPubliName}`;
+        dev.logfunction(
+          `EXPORTER — makePDFForPubli with slugFolderName = ${slugFolderName}`
+        );
+
+        const urlToPubli = `${global.appInfos.homeURL}/${type}/${slugFolderName}`;
 
         const pdfName =
-          slugPubliName +
+          slugFolderName +
           '-' +
           api.getCurrentDate() +
           '-' +
           (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2) +
           '.pdf';
 
+        const baseFolderPath = global.settings.structure[type].path;
+
         const cachePath = path.join(
           global.tempStorage,
           global.settings.cacheDirname,
-          '_publications'
+          baseFolderPath
         );
 
         const pdfPath = path.join(cachePath, pdfName);
 
         file
           .getFolder({
-            type: 'publications',
-            slugFolderName: slugPubliName
+            type,
+            slugFolderName
           })
           .then(publiData => {
             publiData = Object.values(publiData)[0];
             fs.mkdirp(cachePath, () => {
+              dev.logverbose(
+                `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
+              );
+
               const { BrowserWindow } = require('electron');
               let win = new BrowserWindow({
                 width: 800,
@@ -248,6 +330,11 @@ module.exports = (function() {
               });
               win.loadURL(urlToPubli);
 
+              const page_settings = {
+                width: publiData.width ? publiData.width : 297,
+                height: publiData.width ? publiData.width : 210
+              };
+
               win.webContents.on('did-finish-load', () => {
                 // Use default printing options
                 setTimeout(() => {
@@ -255,8 +342,9 @@ module.exports = (function() {
                     {
                       marginsType: 1,
                       pageSize: {
-                        width: publiData.width * 1000,
-                        height: publiData.height * 1000
+                        // * 1000 = millimeters to microns
+                        width: page_settings.width * 1000,
+                        height: page_settings.height * 1000
                       }
                     },
                     (error, data) => {
@@ -265,6 +353,7 @@ module.exports = (function() {
                         if (error) throw error;
                         console.log('Write PDF successful');
                         resolve({
+                          pdfPath,
                           pdfName
                         });
                       });
@@ -294,7 +383,7 @@ module.exports = (function() {
 
         let type_of_publication = '';
 
-        loadPublication(slugPubliName, {})
+        loadFolder({ slugPubliName })
           .then(pageData => {
             type_of_publication =
               pageData.publiAndMediaData[slugPubliName].template;
@@ -397,7 +486,7 @@ module.exports = (function() {
           fs.mkdirp(
             imagesCachePath,
             function() {
-              loadPublication(slugPubliName, {})
+              loadFolder({ slugPubliName })
                 .then(pageData => {
                   let ratio = _getMediaRatioFromFirstFilename(
                     slugPubliName,
@@ -410,6 +499,12 @@ module.exports = (function() {
 
                   const new_width = 2 * Math.round(video_height / ratio / 2);
                   resolution.width = new_width;
+
+                  // set resolution to fixed size : 1280 / 720
+                  // resolution = {
+                  //   width: 1280,
+                  //   height: 720
+                  // };
 
                   return _loadMediaFilenameFromPublicationSlugs(
                     slugPubliName,
@@ -435,6 +530,7 @@ module.exports = (function() {
                     `duration : ${numberOfImagesToProcess / framerate}`
                   );
                   const ffmpeg_cmd = new ffmpeg()
+                    .renice(renice)
                     .input(path.join(imagesCachePath, 'img-%04d.jpeg'))
                     .inputFPS(framerate)
                     .withVideoCodec('libx264')
@@ -482,70 +578,6 @@ module.exports = (function() {
       });
     }
   };
-
-  function loadPublication(slugPubliName, pageData) {
-    return new Promise((resolve, reject) => {
-      let slugFolderName = slugPubliName;
-      let type = 'publications';
-
-      let publi_and_medias = {};
-
-      // get publication
-      file
-        .getFolder({
-          type,
-          slugFolderName
-        })
-        .then(publiData => {
-          publi_and_medias = publiData;
-          file
-            .getMediaMetaNames({
-              type,
-              slugFolderName
-            })
-            .then(list_metaFileName => {
-              let medias_list = list_metaFileName.map(metaFileName => {
-                return {
-                  slugFolderName,
-                  metaFileName
-                };
-              });
-              file
-                .readMediaList({
-                  type,
-                  medias_list
-                })
-                .then(publi_medias => {
-                  publi_and_medias[slugFolderName].medias =
-                    publi_medias[slugFolderName].medias;
-                  pageData.publiAndMediaData = publi_and_medias;
-
-                  // we need to get the list of original medias in the publi
-                  var list_of_linked_medias = [];
-
-                  Object.entries(publi_medias[slugFolderName].medias).forEach(
-                    ([key, value]) => {
-                      list_of_linked_medias.push({
-                        slugFolderName: value.slugProjectName,
-                        metaFileName: value.slugMediaName
-                      });
-                    }
-                  );
-
-                  file
-                    .readMediaList({
-                      type: 'projects',
-                      medias_list: list_of_linked_medias
-                    })
-                    .then(folders_and_medias => {
-                      pageData.folderAndMediaData = folders_and_medias;
-                      resolve(pageData);
-                    });
-                });
-            });
-        });
-    });
-  }
 
   function _loadMediaFilenameFromPublicationSlugs(slugPubliName, pageData) {
     return new Promise((resolve, reject) => {
@@ -643,7 +675,13 @@ module.exports = (function() {
     resolution
   }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction('EXPORTER — _prepareImagesForStopmotion');
+      dev.logfunction(
+        `EXPORTER — _prepareImagesForStopmotion ${JSON.stringify(
+          resolution,
+          null,
+          4
+        )}`
+      );
       // let slugStopmotionPath = getFolderPath(
       //   path.join(
       //     global.settings.structure['stopmotions'].path,
@@ -667,37 +705,37 @@ module.exports = (function() {
               'i'
             ).exec(media.full_path)[0];
 
-            if (
-              media_file_ext.toLowerCase() === '.jpeg' ||
-              media_file_ext.toLowerCase() === '.jpg'
-            ) {
-              fs.copy(media.full_path, cache_image_path)
-                .then(() => {
-                  resolve();
-                })
-                .catch(err => {
-                  dev.error(`Failed to copy image to cache with seq name.`);
-                  reject(err);
-                });
-            } else {
-              sharp(media.full_path)
-                .rotate()
-                .resize(resolution.width, resolution.height, {
-                  fit: 'inside',
-                  withoutEnlargement: true,
-                  background: 'white'
-                })
-                .flatten()
-                .withMetadata()
-                .toFile(cache_image_path)
-                .then(() => resolve())
-                .catch(err => {
-                  dev.error(
-                    `Failed to sharp create image to cache with seq name.`
-                  );
-                  reject(err);
-                });
-            }
+            // if (
+            //   media_file_ext.toLowerCase() === '.jpeg' ||
+            //   media_file_ext.toLowerCase() === '.jpg'
+            // ) {
+            //   fs.copy(media.full_path, cache_image_path)
+            //     .then(() => {
+            //       resolve();
+            //     })
+            //     .catch(err => {
+            //       dev.error(`Failed to copy image to cache with seq name.`);
+            //       reject(err);
+            //     });
+            // } else {
+            sharp(media.full_path)
+              .rotate()
+              .resize(resolution.width, resolution.height, {
+                fit: 'contain',
+                withoutEnlargement: false,
+                background: 'black'
+              })
+              .flatten()
+              .withMetadata()
+              .toFile(cache_image_path)
+              .then(() => resolve())
+              .catch(err => {
+                dev.error(
+                  `Failed to sharp create image to cache with seq name.`
+                );
+                reject(err);
+              });
+            // }
           })
         );
       });
@@ -718,10 +756,11 @@ module.exports = (function() {
 
       const videoPath = path.join(cachePath, videoName);
 
-      let video_files = medias_with_original_filepath.filter(
-        m => m.type === 'video'
+      let media_files_to_process = medias_with_original_filepath.filter(m =>
+        ['video', 'image'].includes(m.type)
       );
-      if (video_files.length === 0) return reject(`No video files`);
+      if (media_files_to_process.length === 0)
+        return reject(`No files to process`);
 
       let tasks = [];
       const resolution = {
@@ -739,42 +778,71 @@ module.exports = (function() {
       let temp_videos_array = [];
       let index = 0;
 
-      const executeSequentially = video_files => {
-        return _prepareVideosForMontageAndWeb({
-          vm: video_files.shift(),
-          cachePath,
-          resolution,
-          socket
-        })
-          .then(temp_video_path => {
-            require('./sockets').notify({
-              socket,
-              localized_string: `preparing_video_from_montage`,
-              not_localized_string: `
-            ${index + 1}/${index + video_files.length + 1}
-            `
-            });
-
-            index++;
-            temp_videos_array.push({ full_path: temp_video_path });
-
-            return video_files.length == 0
-              ? ''
-              : executeSequentially(video_files);
+      const executeSequentially = media_files_to_process => {
+        const vm = media_files_to_process.shift();
+        if (vm.type === 'video') {
+          return _prepareVideoForMontageAndWeb({
+            vm,
+            cachePath,
+            resolution,
+            socket
           })
-          .catch(err => {
-            return err;
-          });
+            .then(temp_video_path => {
+              require('./sockets').notify({
+                socket,
+                localized_string: `preparing_video_from_montage`,
+                not_localized_string: `
+              ${index + 1}/${index + media_files_to_process.length + 1}
+              `
+              });
+
+              index++;
+              temp_videos_array.push({ full_path: temp_video_path });
+
+              return media_files_to_process.length == 0
+                ? ''
+                : executeSequentially(media_files_to_process);
+            })
+            .catch(err => {
+              return err;
+            });
+        } else if (vm.type === 'image') {
+          return _prepareImageForMontageAndWeb({
+            vm,
+            cachePath,
+            resolution,
+            socket
+          })
+            .then(temp_video_path => {
+              require('./sockets').notify({
+                socket,
+                localized_string: `preparing_video_from_montage`,
+                not_localized_string: `
+              ${index + 1}/${index + media_files_to_process.length + 1}
+              `
+              });
+
+              index++;
+              temp_videos_array.push({ full_path: temp_video_path });
+
+              return media_files_to_process.length == 0
+                ? ''
+                : executeSequentially(media_files_to_process);
+            })
+            .catch(err => {
+              return err;
+            });
+        }
       };
 
-      executeSequentially(video_files).then(err => {
+      executeSequentially(media_files_to_process).then(err => {
         if (err) return reject(err);
 
         dev.logverbose(
           `EXPORTER — _makeVideoAssemblage : finished preparing videos`
         );
 
-        const ffmpeg_cmd = new ffmpeg();
+        const ffmpeg_cmd = new ffmpeg().renice(renice);
 
         temp_videos_array.map(v => ffmpeg_cmd.addInput(v.full_path));
 
@@ -881,7 +949,7 @@ module.exports = (function() {
       dev.logfunction('EXPORTER — _mixAudioAndVideo');
 
       const videoPath = path.join(cachePath, videoName);
-      let ffmpeg_cmd = new ffmpeg();
+      let ffmpeg_cmd = new ffmpeg().renice(renice);
 
       let video_files = medias_with_original_filepath.filter(
         m => m.type === 'video'
@@ -961,7 +1029,7 @@ module.exports = (function() {
       dev.logfunction('EXPORTER — _mixAudioAndImage');
 
       const videoPath = path.join(cachePath, videoName);
-      const ffmpeg_cmd = new ffmpeg();
+      const ffmpeg_cmd = new ffmpeg().renice(renice);
 
       let image_files = medias_with_original_filepath.filter(
         m => m.type === 'image'
@@ -996,9 +1064,7 @@ module.exports = (function() {
         .withAudioCodec('aac')
         .withAudioBitrate('128k')
         .videoFilters(
-          `scale=w=${resolution.width}:h=${
-            resolution.height
-          }:force_original_aspect_ratio=increase`
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=increase`
         )
         .outputFPS(30)
         .size(`${resolution.width}x${resolution.height}`)
@@ -1024,27 +1090,50 @@ module.exports = (function() {
     });
   }
 
-  function _prepareVideosForMontageAndWeb({
+  function _prepareVideoForMontageAndWeb({
     vm,
     cachePath,
     resolution,
     socket
   }) {
     return new Promise(function(resolve, reject) {
-      // if (index === 1) {
-      //   throw Error('fake fail');
-      // }
-      dev.logfunction('EXPORTER — _prepareVideosForMontageAndWeb');
+      // used to process videos / images before merging them
 
-      const temp_video_name = vm.media_filename + '.ts';
+      dev.logfunction('EXPORTER — _prepareVideoForMontageAndWeb');
+
+      let temp_video_name = vm.media_filename + '.ts';
+      let temp_video_duration;
+      let temp_video_volume;
+
+      if (vm.type === 'image') {
+        // insert duration in filename to make sure the cache uses the right version
+        if (vm.publi_meta.hasOwnProperty('duration')) {
+          temp_video_duration = vm.publi_meta.duration;
+        } else {
+          temp_video_duration = 1;
+        }
+        temp_video_name =
+          vm.media_filename + '_duration=' + temp_video_duration + '.ts';
+      }
+
+      if (vm.type === 'video' && vm.publi_meta.hasOwnProperty('volume')) {
+        temp_video_volume = vm.publi_meta.volume / 100;
+        temp_video_name =
+          vm.media_filename + '_volume=' + temp_video_volume + '.ts';
+      }
+
       const temp_video_path = path.join(cachePath, temp_video_name);
 
       fs.access(temp_video_path, fs.F_OK, function(err) {
         if (err) {
           ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
-            const ffmpeg_cmd = new ffmpeg();
+            const ffmpeg_cmd = new ffmpeg().renice(renice);
 
-            if (vm.duration) {
+            ffmpeg_cmd.input(vm.full_path);
+
+            if (vm.type === 'image' && temp_video_duration) {
+              ffmpeg_cmd.duration(temp_video_duration).loop();
+            } else if (vm.duration) {
               dev.logverbose('Setting output to duration: ' + vm.duration);
               ffmpeg_cmd.duration(vm.duration);
             }
@@ -1059,11 +1148,17 @@ module.exports = (function() {
               ffmpeg_cmd.input('anullsrc').inputFormat('lavfi');
             }
 
+            if (temp_video_volume) {
+              ffmpeg_cmd.addOptions([
+                '-af volume=' + temp_video_volume + ',apad'
+              ]);
+            } else {
+              ffmpeg_cmd.addOptions(['-af apad']);
+            }
+
             ffmpeg_cmd
-              .input(vm.full_path)
               .native()
-              .fps(30)
-              .addOptions(['-af apad'])
+              .outputFPS(30)
               .withVideoCodec('libx264')
               .withVideoBitrate('6000k')
               .withAudioCodec('aac')
@@ -1099,6 +1194,108 @@ module.exports = (function() {
     });
   }
 
+  function _prepareImageForMontageAndWeb({
+    vm,
+    cachePath,
+    resolution,
+    socket
+  }) {
+    return new Promise(function(resolve, reject) {
+      // used to process videos / images before merging them
+
+      dev.logfunction('EXPORTER — _prepareImageForMontageAndWeb');
+
+      let temp_image_name = vm.media_filename + '.jpeg';
+      let temp_video_name = vm.media_filename + '.ts';
+      let temp_video_duration;
+      let temp_video_volume;
+
+      // insert duration in filename to make sure the cache uses the right version
+      if (vm.publi_meta.hasOwnProperty('duration')) {
+        temp_video_duration = vm.publi_meta.duration;
+      } else {
+        temp_video_duration = 1;
+      }
+      temp_video_name =
+        vm.media_filename + '_duration=' + temp_video_duration + '.ts';
+
+      const temp_video_path = path.join(cachePath, temp_video_name);
+      const temp_image_path = path.join(cachePath, temp_image_name);
+
+      dev.logverbose(
+        `EXPORTER — _prepareImageForMontageAndWeb: will store temp image in ${temp_image_path}`
+      );
+      dev.logverbose(
+        `EXPORTER — _prepareImageForMontageAndWeb: will store temp video in ${temp_video_path}`
+      );
+
+      fs.access(temp_video_path, fs.F_OK, function(err) {
+        if (err) {
+          sharp(vm.full_path)
+            .rotate()
+            .resize(resolution.width, resolution.height, {
+              fit: 'contain',
+              withoutEnlargement: false,
+              background: 'black'
+            })
+            .flatten()
+            .withMetadata()
+            .toFile(temp_image_path)
+            .then(() => {
+              dev.logverbose(
+                `EXPORTER — _prepareImageForMontageAndWeb: created temp image`
+              );
+              const ffmpeg_cmd = new ffmpeg().renice(renice);
+
+              ffmpeg_cmd.input(temp_image_path);
+
+              ffmpeg_cmd.duration(temp_video_duration).loop();
+
+              ffmpeg_cmd
+                .input('anullsrc')
+                .inputFormat('lavfi')
+                .native()
+                .outputFPS(30)
+                .withVideoCodec('libx264')
+                .withVideoBitrate('6000k')
+                .withAudioCodec('aac')
+                .withAudioBitrate('128k')
+                .addOptions(['-af apad'])
+                .size(`${resolution.width}x${resolution.height}`)
+                .autopad()
+                .videoFilter(['setsar=1'])
+                .addOptions(['-shortest', '-bsf:v h264_mp4toannexb'])
+                .toFormat('mpegts')
+                .output(temp_video_path)
+                .on('start', function(commandLine) {
+                  dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+                })
+                .on('progress', progress => {
+                  _notifyFfmpegProgress({ socket, progress });
+                })
+                .on('end', () => {
+                  return resolve(temp_video_path);
+                })
+                .on('error', function(err, stdout, stderr) {
+                  dev.error('An error happened: ' + err.message);
+                  dev.error('ffmpeg standard output:\n' + stdout);
+                  dev.error('ffmpeg standard error:\n' + stderr);
+                  throw err;
+                })
+                .run();
+              global.ffmpeg_processes.push(ffmpeg_cmd);
+            })
+            .catch(err => {
+              dev.error(`Failed to sharp create image for montage.`);
+              reject(err);
+            });
+        } else {
+          return resolve(temp_video_path);
+        }
+      });
+    });
+  }
+
   function _calculateResolutionAccordingToRatio(ratio) {
     let default_video_height = 720;
     let resolution = {
@@ -1117,18 +1314,19 @@ module.exports = (function() {
   }
 
   function _notifyFfmpegProgress({ socket, progress }) {
+    let not_localized_string;
     if (progress.hasOwnProperty('percent') && !Number.isNaN(progress.percent)) {
-      require('./sockets').notify({
-        socket,
-        localized_string: `creating_video`,
-        not_localized_string:
-          Number.parseFloat(progress.percent).toFixed(1) + '%'
-      });
+      not_localized_string =
+        Number.parseFloat(progress.percent).toFixed(1) + '%';
     } else if (progress.hasOwnProperty('timemark')) {
+      not_localized_string = progress.timemark;
+    }
+
+    if (not_localized_string) {
       require('./sockets').notify({
         socket,
         localized_string: `creating_video`,
-        not_localized_string: progress.timemark
+        not_localized_string
       });
     } else {
       require('./sockets').notify({
@@ -1136,5 +1334,7 @@ module.exports = (function() {
         localized_string: `creating_video`
       });
     }
+
+    console.log(`FFMPEG PROCESS • exporter: ${not_localized_string}`);
   }
 })();

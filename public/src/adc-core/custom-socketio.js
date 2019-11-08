@@ -99,7 +99,7 @@ module.exports = (function() {
 
           _onSocketError(reason) {
             console.log(`Unable to connect to server: ${reason}`);
-            window.state.authentificated = false;
+            // window.state.authentificated = false;
             this.$eventHub.$emit('socketio.socketerror', reason);
           },
 
@@ -182,7 +182,7 @@ module.exports = (function() {
               }
             }
 
-            this.$eventHub.$emit(`socketio.${type}.listMedia`);
+            this.$eventHub.$emit(`socketio.${type}.listMedia`, data);
           },
 
           _onListMedias(data) {
@@ -235,6 +235,23 @@ module.exports = (function() {
           _onPubliVideoGenerated(data) {
             console.log('Received _onPubliVideoGenerated packet.');
             this.$eventHub.$emit('socketio.publication.videoIsGenerated', data);
+          },
+          _onPubliVideoFailed() {
+            console.log('Received _onPubliVideoFailed packet.');
+            this.$eventHub.$emit('socketio.publication.videoFailedToGenerate');
+          },
+
+          _onPubliStopmotionGenerated(data) {
+            console.log('Received _onPubliStopmotionGenerated packet.');
+            this.$eventHub.$emit(
+              'socketio.publication.publiStopmotionIsGenerated',
+              data
+            );
+          },
+
+          _onPubliStopmotionFailed() {
+            console.log('Received _onPubliStopmotionFailed packet.');
+            this.$eventHub.$emit('socketio.publication.publiStopmotionFailed');
           },
 
           _listClients(data) {
@@ -300,19 +317,37 @@ module.exports = (function() {
             console.log('Received _onNewNetworkInfos packet.');
             window.state.localNetworkInfos = data;
           },
-          _onNotify({ localized_string, not_localized_string }) {
+          _onNotify({ localized_string, not_localized_string, type = 'log' }) {
             console.log('Received _onNotify packet.');
-            if (not_localized_string) {
-              alertify
-                .closeLogOnClick(true)
-                .delay(4000)
-                .log(not_localized_string);
+            let msg = '';
+            if (localized_string && not_localized_string) {
+              msg +=
+                this.$t(`notifications['${localized_string}']`) +
+                '<br>' +
+                '<i>' +
+                not_localized_string +
+                '</i>';
+            } else if (not_localized_string) {
+              msg += '<i>' + not_localized_string + '</i>';
+            } else if (localized_string) {
+              msg += this.$t(`notifications['${localized_string}']`);
             }
-            if (localized_string) {
+
+            if (type === 'success') {
               alertify
                 .closeLogOnClick(true)
                 .delay(4000)
-                .log(this.$t(`notifications['${localized_string}']`));
+                .success(msg);
+            } else if (type === 'error') {
+              alertify
+                .closeLogOnClick(true)
+                .delay(10000)
+                .error(msg);
+            } else {
+              alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .log(msg);
             }
           },
           listFolders(fdata) {
@@ -351,6 +386,12 @@ module.exports = (function() {
           },
           downloadVideoPubli(pdata) {
             this.socket.emit('downloadVideoPubli', pdata);
+          },
+          downloadStopmotionPubli(pdata) {
+            this.socket.emit('downloadStopmotionPubli', pdata);
+          },
+          addTempMediaToFolder(pdata) {
+            this.socket.emit('addTempMediaToFolder', pdata);
           },
           updateNetworkInfos() {
             this.socket.emit('updateNetworkInfos');

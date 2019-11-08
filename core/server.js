@@ -87,9 +87,7 @@ module.exports = function(router) {
   server.listen(app.get('port'), () => {
     dev.log(
       `Server up and running. ` +
-        `Go to ${global.settings.protocol}://${global.settings.host}:${
-          global.appInfos.port
-        }`
+        `Go to ${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`
     );
     dev.log(` `);
   });

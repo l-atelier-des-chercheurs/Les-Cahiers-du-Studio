@@ -627,9 +627,7 @@ module.exports = (function() {
           let randomString = (
             Math.random().toString(36) + '00000000000000000'
           ).slice(2, 3 + 2);
-          metaFileName = `${timeCreated}-${randomString}${
-            global.settings.metaFileext
-          }`;
+          metaFileName = `${timeCreated}-${randomString}${global.settings.metaFileext}`;
         }
 
         let slugFolderPath = api.getFolderPath(
@@ -1085,7 +1083,9 @@ module.exports = (function() {
               if (
                 (meta.type === 'text' ||
                   meta.type === 'marker' ||
-                  meta.type === 'writeup') &&
+                  meta.type === 'writeup' ||
+                  meta.type === 'planning' ||
+                  meta.type === 'composition') &&
                 data.hasOwnProperty('content')
               ) {
                 dev.logverbose(`Is text and need to update content.`);
@@ -1345,7 +1345,9 @@ module.exports = (function() {
         } else if (
           additionalMeta.type === 'text' ||
           additionalMeta.type === 'marker' ||
-          additionalMeta.type === 'writeup'
+          additionalMeta.type === 'writeup' ||
+          additionalMeta.type === 'planning' ||
+          additionalMeta.type === 'composition'
         ) {
           tasks.push(
             new Promise((resolve, reject) => {
@@ -1407,7 +1409,7 @@ module.exports = (function() {
           });
       });
     },
-    addTempMediaToFolder: ({ from, to }) => {
+    addTempMediaToFolder: ({ from, to, additionalMeta }) => {
       return new Promise(function(resolve, reject) {
         const path_to_original_file = path.join(
           global.tempStorage,
@@ -1434,9 +1436,9 @@ module.exports = (function() {
               require('./sockets').createMediaMeta({
                 type: to.type,
                 slugFolderName: to.slugFolderName,
-                additionalMeta: {
+                additionalMeta: Object.assign(additionalMeta, {
                   media_filename: newFileName
-                }
+                })
               });
               return resolve();
             });
@@ -1486,7 +1488,9 @@ module.exports = (function() {
             if (
               (mediaData.type === 'text' ||
                 mediaData.type === 'marker' ||
-                mediaData.type === 'writeup') &&
+                mediaData.type === 'writeup' ||
+                mediaData.type === 'planning' ||
+                mediaData.type === 'composition') &&
               mediaData.hasOwnProperty('media_filename')
             ) {
               // get text content
@@ -1607,9 +1611,7 @@ module.exports = (function() {
         });
 
         dev.logverbose(
-          `Number of folders that match in ${mainFolderPath} = ${
-            folders.length
-          }. Folder(s) is(are) ${folders}`
+          `Number of folders that match in ${mainFolderPath} = ${folders.length}. Folder(s) is(are) ${folders}`
         );
         return resolve(folders);
       });
@@ -1775,7 +1777,12 @@ module.exports = (function() {
               output_obj[key] = val.default;
             }
           } else {
-            output_obj[key] = validator.escape(existing[key] + '');
+            // by defaults, strings are escaped when stored
+            if (val.hasOwnProperty('escape') && val.escape === false) {
+              output_obj[key] = existing[key] + '';
+            } else {
+              output_obj[key] = validator.escape(existing[key] + '');
+            }
           }
         } else if (val.hasOwnProperty('default')) {
           output_obj[key] = val.default;
