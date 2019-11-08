@@ -668,7 +668,6 @@ export default {
     timeline_start() {
       if (this.sortedMedias.length > 0) {
         let index = 0;
-        let ref_date = "";
         while (
           !this.$moment(
             this.sortedMedias[index].date_timeline,
@@ -680,9 +679,12 @@ export default {
             break;
           }
         }
-        return +this.$moment(
-          this.sortedMedias[index].date_timeline,
-          "YYYY-MM-DD HH:mm:ss"
+        return Math.max(
+          0,
+          +this.$moment(
+            this.sortedMedias[index].date_timeline,
+            "YYYY-MM-DD HH:mm:ss"
+          )
         );
       }
       return +this.$moment();
@@ -690,7 +692,6 @@ export default {
     timeline_end() {
       if (this.sortedMedias.length > 0) {
         let index = 1;
-        let ref_date = "";
         while (
           !this.$moment(
             this.sortedMedias[this.sortedMedias.length - index].date_timeline,
@@ -702,9 +703,12 @@ export default {
             break;
           }
         }
-        return +this.$moment(
-          this.sortedMedias[this.sortedMedias.length - index].date_timeline,
-          "YYYY-MM-DD HH:mm:ss"
+        return Math.min(
+          this.timeline_start, 
+          +this.$moment(
+            this.sortedMedias[this.sortedMedias.length - index].date_timeline,
+            "YYYY-MM-DD HH:mm:ss"
+          )
         );
       }
       return +this.$moment();
