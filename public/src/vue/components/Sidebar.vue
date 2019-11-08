@@ -170,7 +170,6 @@ import Calendrier from "./sidebar/Calendrier.vue";
 import Tableau from "./sidebar/Tableau.vue";
 import SidebarSection from "./sidebar/SidebarSection.vue";
 import MediasList from "./modals/MediasList.vue";
-import WriteUp from "./modals/WriteUp.vue";
 import KeyboardShortcuts from "./modals/KeyboardShortcuts.vue";
 import ExportTimeline from "./modals/ExportTimeline.vue";
 import qrcode from "@xkeshi/vue-qrcode";
@@ -180,7 +179,6 @@ import CreateQRCode from "./qr/CreateQRCode.vue";
 export default {
   components: {
     SidebarSection,
-    WriteUp,
     Tableau,
     MediasList,
     KeyboardShortcuts,

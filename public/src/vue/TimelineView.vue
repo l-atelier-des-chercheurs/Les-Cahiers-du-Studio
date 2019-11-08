@@ -703,8 +703,8 @@ export default {
             break;
           }
         }
-        return Math.min(
-          this.timeline_start, 
+        return Math.max(
+          this.timeline_start,
           +this.$moment(
             this.sortedMedias[this.sortedMedias.length - index].date_timeline,
             "YYYY-MM-DD HH:mm:ss"
