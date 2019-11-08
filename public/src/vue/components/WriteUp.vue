@@ -166,7 +166,7 @@ export default {
     },
     closeWriteupMedia() {
       if (window.state.dev_mode === "debug") {
-        console.log(`METHODS • WriteUp: openWriteupMedia / ${metaFileName}`);
+        console.log(`METHODS • WriteUp: openWriteupMedia`);
       }
 
       this.current_writeup_media_metaFileName = false;

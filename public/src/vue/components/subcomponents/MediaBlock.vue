@@ -1,6 +1,6 @@
 <template>
   <!-- v-if="media.type === 'marker'" -->
-  <div class="packery-item" :style="itemSize" draggable="false">
+  <div class="packery-item" :style="itemSize">
     <div
       class="packery-item-content"
       :class="{ 
@@ -11,6 +11,9 @@
       @click="openMedia"
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
+      :draggable="$root.settings.has_writeup_opended"
+      @dragstart="startMediaDrag(media, $event)"
+      @dragend="endMediaDrag()"
     >
       <MediaContent
         v-model="media.content"
@@ -364,6 +367,23 @@ export default {
       window.removeEventListener("touchend", this.resizeUp);
 
       return false;
+    },
+    startMediaDrag(media, $event) {
+      console.log(`METHODS • MediaLibrary / startMediaDrag`);
+
+      $event.dataTransfer.setData("text/plain", JSON.stringify(media));
+      $event.dataTransfer.effectAllowed = "move";
+
+      // this.media_focus_is_dragged = true;
+
+      this.$root.settings.media_being_dragged = media.metaFileName;
+    },
+    endMediaDrag() {
+      console.log(`METHODS • MediaLibrary / endMediaDrag`);
+      setTimeout(() => {
+        // this.media_focus_is_dragged = false;
+        this.$root.settings.media_being_dragged = false;
+      }, 500);
     }
   }
 };
@@ -407,7 +427,7 @@ export default {
   &.is--hovered {
     // background-color: white;
     z-index: 1;
-    transform: translateY(-8px);
+    // transform: translateY(-8px);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.19), 0 6px 26px rgba(0, 0, 0, 0.03);
   }
 

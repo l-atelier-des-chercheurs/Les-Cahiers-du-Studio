@@ -138,6 +138,7 @@ let vm = new Vue({
 
     settings: {
       has_modal_opened: false,
+      has_writeup_opended: false,
       current_slugFolderName: '',
       has_sidebar_opened: false,
       sidebar_type: '',
@@ -270,9 +271,7 @@ let vm = new Vue({
 
     window.onpopstate = event => {
       console.log(
-        `ROOT EVENT: popstate with event.state.slugFolderName = ${
-          event.state.slugFolderName
-        }`
+        `ROOT EVENT: popstate with event.state.slugFolderName = ${event.state.slugFolderName}`
       );
       this.settings.current_slugFolderName = event.state.slugFolderName;
     };
@@ -585,9 +584,7 @@ let vm = new Vue({
     'settings.has_modal_opened': function() {
       if (window.state.dev_mode === 'debug') {
         console.log(
-          `ROOT EVENT: var has changed: has_modal_opened: ${
-            this.settings.has_modal_opened
-          }`
+          `ROOT EVENT: var has changed: has_modal_opened: ${this.settings.has_modal_opened}`
         );
       }
       if (this.has_modal_opened) {

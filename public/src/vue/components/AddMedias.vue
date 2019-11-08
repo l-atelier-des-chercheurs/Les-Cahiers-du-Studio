@@ -312,8 +312,8 @@ export default {
         type: "folders",
         additionalMeta: {
           type: "text",
-          w: 5,
-          h: 5
+          w: 4,
+          h: 4
         }
       });
       this.$eventHub.$emit("timeline.scrollToEnd");
@@ -352,6 +352,9 @@ export default {
 
       // if there is a modal opened, let’s not do something
       if (this.$root.settings.has_modal_opened === true) {
+        return;
+      }
+      if (this.$root.settings.has_writeup_opended) {
         return;
       }
 
