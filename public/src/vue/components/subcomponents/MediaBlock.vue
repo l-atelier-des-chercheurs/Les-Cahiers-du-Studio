@@ -1,6 +1,6 @@
 <template>
   <!-- v-if="media.type === 'marker'" -->
-  <div class="packery-item" :style="itemSize">
+  <div class="packery-item" :style="itemSize" draggable="false">
     <div
       class="packery-item-content"
       :class="{ 
@@ -23,7 +23,7 @@
 
       <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
 
-      <div class="draggabilly_handle" data-draggabilly_handle />
+      <!-- <div class="draggabilly_handle" data-draggabilly_handle /> -->
 
       <!-- <template v-if="is_hovered">
         <div class="buttons_right">
@@ -370,8 +370,8 @@ export default {
 <style lang="scss">
 .packery-item,
 .packery-item-content {
-  cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
+  // cursor: -webkit-grabbing;
+  // cursor: -moz-grabbing;
 }
 .packery-item {
   /* padding: 1rem; */
