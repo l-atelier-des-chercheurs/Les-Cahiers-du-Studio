@@ -8,6 +8,7 @@
         'is--text_overflowing' : text_is_overflowing
       }"
       :style="itemStylesWithSize"
+      @click="openMedia"
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
     >
