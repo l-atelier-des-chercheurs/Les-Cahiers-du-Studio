@@ -53,7 +53,6 @@
             :is_realtime="is_realtime"
             :read_only="read_only"
             :can_admin_folder="can_admin_folder"
-            @modal_edit_folder="can_admin_folder ? show_edit_folder_modal = true : ''"
           />
           <WriteUp
             v-else-if="$root.settings.has_sidebar_opened && $root.settings.sidebar_type === 'journal'"
@@ -238,6 +237,14 @@
       :read_only="!$root.state.connected || folder_is_archived"
       :allAuthors="Array.isArray(folder.authors) ? folder.authors : []"
     />
+    <EditFolder
+      v-if="show_edit_folder_modal"
+      :folder="folder"
+      :slugFolderName="slugFolderName"
+      @close="show_edit_folder_modal = false"
+      :read_only="read_only"
+      :allAuthors="folder.authors"
+    />
 
     <!-- Ici la minimap -->
   </div>
@@ -378,6 +385,7 @@ export default {
     this.$eventHub.$on("setFilter", this.setFilter);
     this.$eventHub.$on("timeline.scrollToToday", this.scrollToToday);
     this.$eventHub.$on("timeline.scrollToEnd", this.scrollToEnd);
+    this.$eventHub.$on("showEditFolderModal", this.startEditModal);
     this.$eventHub.$on("editmediamodal.nextmedia", this.editModalNextMedia);
     this.$eventHub.$on(
       "editmediamodal.previousmedia",
@@ -403,6 +411,7 @@ export default {
     this.$eventHub.$off("setFilter");
     this.$eventHub.$off("timeline.scrollToToday", this.scrollToToday);
     this.$eventHub.$off("timeline.scrollToEnd", this.scrollToEnd);
+    this.$eventHub.$off("showEditFolderModal", this.startEditModal);
     this.$eventHub.$off("editmediamodal.nextmedia", this.editModalNextMedia);
     this.$eventHub.$off(
       "editmediamodal.previousmedia",
@@ -940,6 +949,12 @@ export default {
         return +this.$moment(Number(first_day.dataset.timestamp));
       }
       return this.timeline_start;
+    },
+    startEditModal() {
+      debugger;
+      if (this.can_admin_folder) {
+        this.show_edit_folder_modal = true;
+      }
     },
     findPosXForDate(day) {
       if (

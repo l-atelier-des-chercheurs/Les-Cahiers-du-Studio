@@ -8,7 +8,7 @@
             v-if="can_admin_folder"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="$emit('modal_edit_folder')"
+            @click="editFolder"
             :disabled="read_only"
           >{{ $t('edit') }}</button>
         </h3>
@@ -200,10 +200,6 @@ export default {
       type: Boolean,
       default: false
     },
-    showEditFolderModal: {
-      type: Boolean,
-      default: false
-    },
     read_only: Boolean
   },
   data() {
@@ -270,6 +266,9 @@ export default {
   },
 
   methods: {
+    editFolder() {
+      this.$eventHub.$emit("showEditFolderModal");
+    },
     // from https://stackoverflow.com/questions/23795522/how-to-enumerate-dates-between-two-dates-in-moment
     enumerateDaysBetweenDates(startDate, endDate) {
       var dates = [];
