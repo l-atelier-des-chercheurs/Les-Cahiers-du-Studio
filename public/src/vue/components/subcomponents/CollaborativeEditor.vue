@@ -343,9 +343,8 @@ export default {
 
       custom_toolbar: {
         container: [
-          // [{ header: [false, 1, 2, 3] }],
-          [{ header: 1 }, { header: 2 }],
-          ["bold", "italic", "link", "blockquote"],
+          [{ header: [false, 1, 2] }],
+          ["italic", "underline", "link", "blockquote"],
           [{ list: "ordered" }, { list: "bullet" }],
           ["clean"]
         ]
@@ -385,17 +384,7 @@ export default {
       bounds: this.$refs.editor,
 
       theme: "snow",
-      formats: [
-        "bold",
-        "italic",
-        "underline",
-        "link",
-        "header",
-        "blockquote",
-        "indent",
-        "list",
-        "media"
-      ],
+      formats: ["italic", "underline", "link", "header", "list", "media"],
       placeholder: "…"
     });
 
@@ -1273,19 +1262,19 @@ html[lang="fr"] .ql-tooltip::before {
     ol li:before {
       content: counter(list-0, decimal) ". ";
       font-size: 75%;
-      font-weight: 600;
+      // font-weight: 600;
     }
 
     strong,
     b {
-      font-weight: 600;
+      // font-weight: 600;
     }
 
     p > a {
       text-decoration: underline;
       text-decoration-style: solid;
       color: var(--active-color);
-      font-weight: 600;
+      // font-weight: 600;
     }
 
     h1,
@@ -1296,18 +1285,18 @@ html[lang="fr"] .ql-tooltip::before {
 
       strong,
       b {
-        font-weight: 800;
+        // font-weight: 800;
       }
     }
 
     h1 {
-      font-weight: 600;
+      // font-weight: 600;
     }
 
     h2,
     h3,
     h4 {
-      font-weight: 600;
+      // font-weight: 600;
     }
 
     blockquote {
@@ -1506,7 +1495,7 @@ html[lang="fr"] .ql-tooltip::before {
         margin-right: 0;
 
         font-size: 0.6rem;
-        font-weight: 600;
+        // font-weight: 600;
         text-align: center;
         text-overflow: ellipsis;
         white-space: nowrap;

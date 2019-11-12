@@ -45,8 +45,7 @@ export default {
       ),
 
       custom_toolbar: [
-        [{ header: [false, 1, 2, 3, 4] }],
-        // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
+        [{ header: [false, 1, 2] }],
         ["italic", "underline", "link", "blockquote"],
         [{ list: "ordered" }, { list: "bullet" }],
         ["clean"]
@@ -67,7 +66,7 @@ export default {
         toolbar: this.custom_toolbar
       },
       theme: "snow",
-      formats: ["bold", "underline", "header", "italic", "link"]
+      formats: ["italic", "underline", "link", "header", "list"]
     });
 
     this.editor.root.innerHTML = this.value;
