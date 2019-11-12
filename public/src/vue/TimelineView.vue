@@ -864,7 +864,7 @@ export default {
           nextDay: "[demain]",
           lastWeek: "dddd [dernier]",
           nextWeek: "dddd [prochain]",
-          sameElse: "dddd D MMMM"
+          sameElse: "dddd D MMMM Y"
         });
       } else if (this.$root.lang.current === "en") {
         return this.$moment(this.visible_day).calendar(null, {
@@ -873,7 +873,7 @@ export default {
           nextDay: "[tomorrow]",
           lastWeek: "[last] dddd",
           nextWeek: "[next] dddd",
-          sameElse: "dddd, MMMM D"
+          sameElse: "dddd, MMMM D Y"
         });
       }
     }
@@ -939,7 +939,7 @@ export default {
       if (!!first_day && first_day.dataset.hasOwnProperty("timestamp")) {
         return +this.$moment(Number(first_day.dataset.timestamp));
       }
-      return +this.$moment();
+      return this.timeline_start;
     },
     findPosXForDate(day) {
       if (
@@ -1545,7 +1545,7 @@ export default {
   pointer-events: none;
 
   body.has_systembar & {
-    top: 35px;
+    // top: 35px;
   }
 
   @media screen and (max-width: 50rem) {
