@@ -794,8 +794,8 @@ export default {
           index === 0
             ? "LLLL"
             : this.$root.lang.current === "fr"
-            ? "dddd D MMMM"
-            : "dddd, MMMM D";
+            ? "dddd D MMMM Y"
+            : "dddd, MMMM D Y";
 
         const label = this_date.format(format);
 
