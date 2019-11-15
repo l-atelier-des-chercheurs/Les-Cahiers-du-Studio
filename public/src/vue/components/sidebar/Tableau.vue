@@ -46,7 +46,7 @@
                 :read_only="read_only"
               />
             </td>
-            <td class="font-small padding-small">{{ media[sort.current.field] }}</td>
+            <td class="font-small padding-small">{{ media_data_to_show(media) }}</td>
             <td class="font-small padding-small">
               <button
                 type="button"
@@ -115,6 +115,16 @@ export default {
     }
   },
   methods: {
+    media_data_to_show(media) {
+      if (this.sort.current.type === "array") {
+        const array_items = media[this.sort.current.field].map(
+          a => a[this.sort.current.field_name]
+        );
+        return array_items.join(", ");
+      }
+      return media[this.sort.current.field];
+    },
+
     highlightMedia(slugMediaName) {
       if (this.display !== "table") return false;
       this.$eventHub.$emit("highlightMedia", slugMediaName);

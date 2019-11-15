@@ -43,8 +43,8 @@
             v-if="$root.settings.has_sidebar_opened && $root.settings.sidebar_type === 'options'"
             :folder="folder"
             :slugFolderName="slugFolderName"
-            :timeline_start="timeline_start"
-            :timeline_end="timeline_end"
+            :timeline_start="timeline_interval.start"
+            :timeline_end="timeline_interval.end"
             :visible_day="visible_day"
             :medias="medias"
             :sortedMedias="sortedMedias"
@@ -337,22 +337,24 @@ export default {
             type: "alph",
             order: "ascending"
           },
-          {
-            field: "color",
-            name: this.$t("color"),
-            type: "alph",
-            order: "ascending"
-          },
+          // {
+          //   field: "color",
+          //   name: this.$t("color"),
+          //   type: "alph",
+          //   order: "ascending"
+          // },
           {
             field: "keywords",
             name: this.$t("keywords"),
-            type: "alph",
+            type: "array",
+            field_name: "title",
             order: "ascending"
           },
           {
             field: "authors",
             name: this.$t("author"),
-            type: "alph",
+            type: "array",
+            field_name: "name",
             order: "ascending"
           },
           {
@@ -476,8 +478,9 @@ export default {
           continue;
         }
 
-        // legacy to account for medias without date_timeline but with date_created or created
+        // if media is missing the
         if (!media.hasOwnProperty(current_sort.field)) {
+          // legacy to account for medias without date_timeline but with date_created or created
           if (current_sort.field === "date_timeline") {
             if (media.hasOwnProperty("date_created")) {
               this.medias[slugMediaName].date_timeline = media.date_created;
@@ -501,8 +504,10 @@ export default {
           }
         } else if (current_sort.type === "alph") {
           mediaDataToOrderBy = media[current_sort.field].toLowerCase();
-        } else if (current_sort.type === "alph") {
-          mediaDataToOrderBy = media[current_sort.field];
+        } else if (current_sort.type === "array") {
+          mediaDataToOrderBy = media[current_sort.field].map(
+            a => a[current_sort.field_name]
+          );
         }
 
         sortable.push({
@@ -533,10 +538,23 @@ export default {
 
         if (this.filter.length > 0) {
           // if there is a filter set, let’s only return medias whose mediaDataToOrderBy contain that string
-          let originalContentFromMedia =
-            sortedMediaObj[current_sort.field] + "";
-          if (originalContentFromMedia.indexOf(this.filter) !== -1) {
-            result.push(sortedMediaObj);
+          if (current_sort.type === "array") {
+            let originalContentFromMedia = sortedMediaObj[
+              current_sort.field
+            ].map(a => a[current_sort.field_name]);
+
+            // search even for part of the word — problem: looking for Marie and not Marie-Claire wouldn’t be possible
+            // myArr.findIndex(v ==> v.contains("oran"));
+
+            if (originalContentFromMedia.includes(this.filter)) {
+              result.push(sortedMediaObj);
+            }
+          } else {
+            let originalContentFromMedia =
+              sortedMediaObj[current_sort.field] + "";
+            if (originalContentFromMedia.indexOf(this.filter) !== -1) {
+              result.push(sortedMediaObj);
+            }
           }
         } else {
           result.push(sortedMediaObj);
@@ -544,7 +562,6 @@ export default {
 
         return result;
       }, []);
-
       return sortedMedias;
     },
     groupedMedias() {
@@ -674,53 +691,29 @@ export default {
 
       return mediaGroup;
     },
-    timeline_start() {
-      if (this.sortedMedias.length > 0) {
-        let index = 0;
-        while (
-          !this.$moment(
-            this.sortedMedias[index].date_timeline,
+    timeline_interval() {
+      let temp_start = +this.$moment();
+      let temp_end = +this.$moment();
+
+      this.sortedMedias.map(m => {
+        if (this.$moment(m.date_timeline, "YYYY-MM-DD HH:mm:ss").isValid()) {
+          const media_date = +this.$moment(
+            m.date_timeline,
             "YYYY-MM-DD HH:mm:ss"
-          ).isValid()
-        ) {
-          index++;
-          if (index == this.sortedMedias.length) {
-            break;
+          );
+          if (media_date < temp_start) {
+            temp_start = media_date;
+          }
+          if (media_date > temp_end) {
+            temp_end = media_date;
           }
         }
-        return Math.max(
-          0,
-          +this.$moment(
-            this.sortedMedias[index].date_timeline,
-            "YYYY-MM-DD HH:mm:ss"
-          )
-        );
-      }
-      return +this.$moment();
-    },
-    timeline_end() {
-      if (this.sortedMedias.length > 0) {
-        let index = 1;
-        while (
-          !this.$moment(
-            this.sortedMedias[this.sortedMedias.length - index].date_timeline,
-            "YYYY-MM-DD HH:mm:ss"
-          ).isValid()
-        ) {
-          index++;
-          if (index >= this.sortedMedias.length) {
-            break;
-          }
-        }
-        return Math.max(
-          this.timeline_start,
-          +this.$moment(
-            this.sortedMedias[this.sortedMedias.length - index].date_timeline,
-            "YYYY-MM-DD HH:mm:ss"
-          )
-        );
-      }
-      return +this.$moment();
+      });
+
+      return {
+        start: temp_start,
+        end: temp_end
+      };
 
       // const ts = this.folder.end;
       // const get_new_timeline_end = (ts) => {
@@ -756,8 +749,11 @@ export default {
       // entre timeline_start et timeline_end
       let date_interval = [];
 
-      let startDate = this.$moment(this.timeline_start).add(-1, "days");
-      const lastDate = this.$moment(this.timeline_end);
+      let startDate = this.$moment(this.timeline_interval.start).add(
+        -1,
+        "days"
+      );
+      const lastDate = this.$moment(this.timeline_interval.end);
 
       let index = 0;
 
@@ -938,7 +934,7 @@ export default {
         !this.$refs.hasOwnProperty("timeline_dates") ||
         this.$refs.timeline_dates.children.length === 0
       ) {
-        return this.timeline_start;
+        return this.timeline_interval.start;
       }
       const first_day = Array.from(this.$refs.timeline_dates.children).find(
         d =>
@@ -948,7 +944,7 @@ export default {
       if (!!first_day && first_day.dataset.hasOwnProperty("timestamp")) {
         return +this.$moment(Number(first_day.dataset.timestamp));
       }
-      return this.timeline_start;
+      return this.timeline_interval.start;
     },
     startEditModal() {
       debugger;
