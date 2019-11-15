@@ -93,7 +93,8 @@
       </div>
 
       <div slot="body" class="m_calendar">
-        <div v-for="(days, month) in calendar" class="m_calendar--month" :key="month">
+        <div v-if="!calendar">{{ $t('no_medias_sent_yet') }}</div>
+        <div v-else v-for="(days, month) in calendar" class="m_calendar--month" :key="month">
           <h3 class="margin-bottom-small text-ital font-small">{{ month }}</h3>
           <div class="m_calendar--days">
             <div
@@ -153,7 +154,7 @@
       :timeline_start="timeline_start"
       :timeline_end="timeline_end"
       @close="showMediasListModal = false"
-    ></MediasList>
+    />
 
     <div class="c-gris font-small margin-medium">
       <p>
@@ -190,6 +191,7 @@ export default {
     folder: Object,
     medias: Object,
     sortedMedias: Array,
+    date_interval: Array,
     timeline_start: Number,
     timeline_end: Number,
     visible_day: Number,
@@ -214,50 +216,50 @@ export default {
   mounted() {},
   beforeDestroy() {},
   computed: {
-    all_days() {
-      const all_days = this.enumerateDaysBetweenDates(
-        this.timeline_start,
-        this.timeline_end
-      );
-      if (all_days.length === 0) {
-        return [];
-      }
-      return all_days;
-    },
+    // all_days() {
+    //   const t0 = performance.now();
+
+    //   const all_days = this.enumerateDaysBetweenDates(
+    //     this.timeline_start,
+    //     this.timeline_end
+    //   );
+    //   if (all_days.length === 0) {
+    //     return [];
+    //   }
+
+    //   const t1 = performance.now();
+    //   console.log(
+    //     "COMPUTED • Sidebar: all_days took " + (t1 - t0) + " milliseconds."
+    //   );
+
+    //   return all_days;
+    // },
     calendar() {
       console.log("COMPUTED • Sidebar: calendar");
 
-      /*
-      {
-        "septembre": {
-          21: {
-            medias: 12
-          },
-          22: {
-          },
-        }
-      */
+      const dates_with_medias = this.date_interval.filter(
+        d => d.number_of_medias
+      );
 
-      var dayGroupedByMonth = this.all_days.reduce((acc, cur, i) => {
-        let monthYearName = this.$moment(cur).format("MMMM Y");
-        let day = this.$moment(cur).date();
+      return dates_with_medias.reduce((acc, date) => {
+        const monthYearName = this.$moment(date.timestamp).format("MMMM Y");
+
+        if (!acc.hasOwnProperty(monthYearName)) {
+          acc[monthYearName] = [];
+        }
+        let day = this.$moment(date.timestamp).date();
 
         let dayData = {
           dayNumber: day,
-          numberOfMedias: this.getNumberOfMediasCreatedOnThisDate(cur),
-          timestamp: this.$moment(cur)
+          numberOfMedias: date.number_of_medias,
+          timestamp: date.timestamp
         };
 
-        if (dayData.numberOfMedias) {
-          if (!acc.hasOwnProperty(monthYearName)) {
-            acc[monthYearName] = [];
-          }
-          acc[monthYearName].push(dayData);
-        }
+        acc[monthYearName].push(dayData);
         return acc;
-      }, {});
 
-      return dayGroupedByMonth;
+        // let monthYearName = this.$moment(cur).format("MMMM Y");
+      }, {});
     }
   },
 

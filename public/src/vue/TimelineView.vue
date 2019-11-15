@@ -51,6 +51,7 @@
             :visible_day="visible_day"
             :medias="medias"
             :sortedMedias="sortedMedias"
+            :date_interval="date_interval"
             :sort="sort"
             :filter="filter"
             :is_realtime="is_realtime"
@@ -752,9 +753,7 @@ export default {
     full_date_interval() {
       // console.log('COMPUTED • TimeLineView: full_date_interval');
       // itérer dans toutes les dates,
-      // et construire un array de date qui ressemble à ça :
-
-      // entre timeline_start et timeline_end
+      // et construire un array de date
       let date_interval = [];
 
       let startDate = this.$moment(this.timeline_interval.start).add(

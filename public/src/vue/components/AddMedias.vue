@@ -330,6 +330,8 @@ export default {
           h: 4
         }
       });
+
+      this.show_addmedia_options = false;
       this.$eventHub.$emit("timeline.scrollToEnd");
     },
     newTextMediaCreated(mdata) {
@@ -353,10 +355,10 @@ export default {
         type: "folders",
         additionalMeta: {
           type: "marker",
-          color: "red",
           collapsed: true
         }
       });
+      this.show_addmedia_options = false;
       this.$eventHub.$emit("timeline.scrollToEnd");
     },
     boitierPressed(event) {
