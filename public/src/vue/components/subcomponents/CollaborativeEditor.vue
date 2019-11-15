@@ -466,7 +466,6 @@ export default {
       if (this.editor_not_enabled) {
         this.editor.disable();
       } else {
-        debugger;
         this.editor.enable();
       }
     }

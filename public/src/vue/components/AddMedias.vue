@@ -275,6 +275,13 @@ export default {
       } else {
         this.$eventHub.$emit("hidingAddmediaOptions");
       }
+    },
+    show_authors_options() {
+      if (this.show_authors_options) {
+        this.$eventHub.$emit("showingAddmediaOptions");
+      } else {
+        this.$eventHub.$emit("hidingAddmediaOptions");
+      }
     }
   },
   computed: {
@@ -538,7 +545,7 @@ button,
 
     .menu_encart--options {
       flex: 1 1 auto;
-      min-width: 100px;
+      min-width: 70px;
       padding: var(--spacing-medium) var(--spacing-small) 0;
 
       display: flex;
@@ -642,7 +649,7 @@ button,
     transition: all cubic-bezier(0.19, 1, 0.22, 1) 0.8s;
     display: block;
     margin-left: auto;
-    margin-right: 0;
+    margin-right: 20px;
     margin-bottom: 22px;
     text-transform: initial;
     pointer-events: auto;

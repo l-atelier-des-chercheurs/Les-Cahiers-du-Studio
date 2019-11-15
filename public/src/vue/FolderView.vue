@@ -453,8 +453,6 @@ export default {
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);
 
-    debugger;
-
     this.$eventHub.$on("scrollToMedia", this.scrollToMedia);
     this.$eventHub.$on("scrollToDate", this.scrollToDate);
     this.$eventHub.$on("highlightMedia", this.highlightMedia);
@@ -1292,7 +1290,7 @@ export default {
         width: `${this.zoomZone.width}px`,
         transform: `translate(${this.zoomZone.xPos}px, 0px)`
       };
-    },
+    }
   }
 };
 </script>
