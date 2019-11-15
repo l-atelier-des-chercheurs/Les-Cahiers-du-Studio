@@ -26,7 +26,7 @@
 
       <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
 
-      <div class="draggabilly_handle" data-draggabilly_handle @click="openMedia" />
+      <div class="draggabilly_handle" @click="openMedia" />
 
       <!-- <template v-if="is_hovered">
         <div class="buttons_right">
