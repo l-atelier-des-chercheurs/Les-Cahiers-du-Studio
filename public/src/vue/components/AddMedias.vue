@@ -268,7 +268,14 @@ export default {
     document.removeEventListener("dragover", this.ondragover);
   },
   watch: {
-    file: function() {}
+    file: function() {},
+    show_addmedia_options() {
+      if (this.show_addmedia_options) {
+        this.$eventHub.$emit("showingAddmediaOptions");
+      } else {
+        this.$eventHub.$emit("hidingAddmediaOptions");
+      }
+    }
   },
   computed: {
     is_touch() {

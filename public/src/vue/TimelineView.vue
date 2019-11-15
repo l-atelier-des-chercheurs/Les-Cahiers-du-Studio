@@ -30,7 +30,10 @@
       </div>
     </template>
 
-    <div class="m_navtimeline_wrapper--timeline_wrapper">
+    <div
+      class="m_navtimeline_wrapper--timeline_wrapper"
+      :class="{ 'is--showingAddmediaOptions' : is_showing_addmedia_options }"
+    >
       <div :style="{ cursor, userSelect}" class="vue-splitter-container clearfix">
         <Pane
           class="splitter-pane splitter-paneL"
@@ -295,6 +298,7 @@ export default {
 
       show_media_modal_for: false,
       show_edit_folder_modal: false,
+      is_showing_addmedia_options: false,
 
       minPercent: 0,
       split: "vertical",
@@ -393,6 +397,8 @@ export default {
       "editmediamodal.previousmedia",
       this.editModalPreviousMedia
     );
+    this.$eventHub.$on("showingAddmediaOptions", this.showingAddmediaOptions);
+    this.$eventHub.$on("hidingAddmediaOptions", this.hidingAddmediaOptions);
 
     this.setTimelineHeight();
 
@@ -419,6 +425,8 @@ export default {
       "editmediamodal.previousmedia",
       this.editModalPreviousMedia
     );
+    this.$eventHub.$off("showingAddmediaOptions", this.showingAddmediaOptions);
+    this.$eventHub.$off("hidingAddmdiaOptions", this.hidingAddmediaOptions);
 
     window.removeEventListener("resize", this.onResize);
   },
@@ -928,6 +936,12 @@ export default {
         this.$refs.timeline.children[0].offsetWidth -
         this.$refs.timeline.offsetWidth;
       this.scrollTimelineToXPos(x);
+    },
+    showingAddmediaOptions() {
+      this.is_showing_addmedia_options = true;
+    },
+    hidingAddmediaOptions() {
+      this.is_showing_addmedia_options = false;
     },
     findDayAtPosX(posX) {
       if (
