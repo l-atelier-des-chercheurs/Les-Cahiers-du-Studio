@@ -197,8 +197,10 @@ export default {
         : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
     },
     thumbRes: function() {
-      return this.context === "preview"
-        ? this.preview_size
+      return this.context === "preview" && this.element_width_for_sizes
+        ? [50, 180, 360, 720, 1080, 1600].find(
+            r => r / 2 >= this.element_width_for_sizes
+          )
         : this.available_resolutions.default;
     },
     thumbResHovered: function() {
@@ -233,7 +235,7 @@ export default {
     },
     imageSrcSetAttr: function() {
       if (
-        this.element_width_for_sizes === 0 ||
+        this.element_width_for_sizes ||
         this.mediaURL.toLowerCase().endsWith(".gif")
       ) {
         return;
@@ -250,7 +252,7 @@ export default {
       return img_srcset.join(", ");
     },
     videostillSrcSetAttr: function() {
-      if (this.element_width_for_sizes === 0) {
+      if (this.element_width_for_sizes) {
         return;
       }
 
@@ -274,7 +276,7 @@ export default {
       return img_srcset.join(", ");
     },
     imageSizesAttr: function() {
-      if (this.element_width_for_sizes === 0) {
+      if (!this.element_width_for_sizes) {
         return;
       }
       return this.element_width_for_sizes + "px";
@@ -308,15 +310,8 @@ export default {
         return this.mediaURL;
       }
 
-      let thumbRes = this.thumbRes;
-      if (this.element_width_for_sizes !== 0) {
-        thumbRes = [180, 360, 720, 1080, 1600].find(
-          r => r / 2 >= this.element_width_for_sizes
-        );
-      }
-
       let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(
-        m => m.size === thumbRes
+        m => m.size === this.thumbRes
       )[0].path;
 
       let url =

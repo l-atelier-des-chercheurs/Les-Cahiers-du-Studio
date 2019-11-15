@@ -216,11 +216,9 @@ export default {
       // TODO
       // should check the actual width the image will be displayed at,
       // considering that the image is in an object-fit: cover configuration
-      if (this.mediaWidth > this.mediaHeight) {
-        return this.mediaWidth;
-      } else {
-        return this.mediaHeight;
-      }
+      return this.mediaWidth > this.mediaHeight
+        ? this.mediaWidth
+        : this.mediaHeight;
     },
     itemStylesWithSize() {
       return Object.assign(
