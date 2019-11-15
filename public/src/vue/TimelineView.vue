@@ -1278,6 +1278,7 @@ export default {
 
   &.is--empty {
     margin-right: -1px;
+    z-index: -1;
   }
   &.is--empty + &.is--empty {
     // margin-left: 30px;
