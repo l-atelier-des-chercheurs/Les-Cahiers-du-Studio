@@ -26,6 +26,7 @@
         <button
           type="button"
           class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
+          @click="removeWriteupMedia"
         >{{ $t('remove') }}</button>
       </span>
     </div>
@@ -120,6 +121,22 @@ export default {
       });
 
       this.show_rename_field = false;
+    },
+    removeWriteupMedia() {
+      if (window.state.dev_mode === "debug") {
+        console.log(
+          `METHODS • WriteUp: removeWriteupMedia / ${this.media.metaFileName}`
+        );
+      }
+
+      if (window.confirm(this.$t("sureToRemoveWriteup"))) {
+        this.$emit("close");
+        this.$root.removeMedia({
+          type: "folders",
+          slugFolderName: this.slugFolderName,
+          slugMediaName: this.media.metaFileName
+        });
+      }
     }
   }
 };

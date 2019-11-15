@@ -70,6 +70,7 @@
         :slugFolderName="slugFolderName"
         :media="current_writeup_media"
         :readonly="read_only"
+        @close="closeWriteupMedia"
       />
     </section>
   </div>
