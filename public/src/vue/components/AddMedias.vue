@@ -532,6 +532,7 @@ button,
     .menu_encart--options {
       flex: 1 1 auto;
       min-width: 100px;
+      padding: var(--spacing-medium) var(--spacing-small) 0;
 
       display: flex;
       flex-flow: column wrap;
