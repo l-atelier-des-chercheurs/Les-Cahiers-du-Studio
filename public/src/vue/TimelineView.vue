@@ -961,7 +961,6 @@ export default {
       return this.timeline_interval.start;
     },
     startEditModal() {
-      debugger;
       if (this.can_admin_folder) {
         this.show_edit_folder_modal = true;
       }
@@ -1588,9 +1587,12 @@ export default {
 .m_floater {
   position: absolute;
   top: auto;
-  bottom: 30px;
+  bottom: 40px;
   width: 100%;
   z-index: 150;
+  font-size: 0.85em;
+  line-height: 1.25;
+
   pointer-events: none;
 
   body.has_systembar & {
