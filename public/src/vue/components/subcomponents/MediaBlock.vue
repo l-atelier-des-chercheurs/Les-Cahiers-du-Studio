@@ -8,7 +8,6 @@
         'is--text_overflowing' : text_is_overflowing
       }"
       :style="itemStylesWithSize"
-      @click="openMedia"
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
       :draggable="$root.settings.has_writeup_opended"
@@ -27,7 +26,7 @@
 
       <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
 
-      <!-- <div class="draggabilly_handle" data-draggabilly_handle /> -->
+      <div class="draggabilly_handle" data-draggabilly_handle @click="openMedia" />
 
       <!-- <template v-if="is_hovered">
         <div class="buttons_right">
@@ -418,6 +417,7 @@ export default {
   height: 100%;
   background-color: white;
   background-color: var(--author-color);
+  cursor: pointer;
 
   border-radius: 4px;
   border: 0px solid black;
