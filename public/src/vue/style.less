@@ -344,9 +344,9 @@ video {
 
 .m_authors {
   width: 100%;
-  background-color: @c-gris;
-  background-color: #e0e0e0;
-  background-color: #fff;
+  background-color: @c-noir;
+  // background-color: #e0e0e0;
+  // background-color: #fff;
   min-height: 40px;
 
   // .font-small;
@@ -358,15 +358,20 @@ video {
 
   button {
     .margin-verysmall;
-    background-color: #e5e5e5;
+    // background-color: #e5e5e5;
+    background-color: #000;
     text-transform: initial;
   }
 
   .m_authors--currentAuthor {
     position: relative;
     flex: 0 0 auto;
-    background-color: @c-gris_tresclair;
+    background-color: @c-noir;
     .padding-verysmall;
+
+    > button:first-child {
+      color: black;
+    }
 
     button {
       background-color: @c-bleu;
@@ -404,7 +409,7 @@ video {
     }
 
     button {
-      background-color: @c-gris_tresclair;
+      // background-color: @c-gris_tresclair;
       .margin-verysmall;
     }
 
@@ -416,7 +421,7 @@ video {
   .m_authors--createButton {
     flex: 0 0 auto;
     .padding-verysmall;
-    background-color: @c-gris_tresclair;
+    // background-color: @c-gris_tresclair;
 
     .input-group {
       margin-bottom: 0;

@@ -190,7 +190,7 @@ export default {
 
       selected_files: [],
       show_addmedia_options: false,
-      show_authors_options: false,
+      show_authors_options: true,
 
       show_drop_container: false,
 

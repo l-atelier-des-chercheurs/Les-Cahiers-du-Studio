@@ -169,7 +169,7 @@ export default {
   },
   methods: {
     createAuthor() {
-      const name = this.$refs.nameInput.value;
+      const name = this.$refs.nameInput.value.trim();
 
       let _authors = [];
       if (!!this.authors) {
@@ -244,12 +244,14 @@ export default {
   margin: 5px;
 }
 .m_authors {
+  position: relative;
+  right: -15px;
   flex-flow: column nowrap;
   max-width: 300px;
   max-height: 250px;
-  box-shadow: 2px 4px 13px #bbb;
-  margin-bottom: 15px;
-  background-color: #fff;
+  box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.35);
+  margin: 15px;
+  color: white;
   pointer-events: auto;
 }
 
