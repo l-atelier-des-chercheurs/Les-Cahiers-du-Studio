@@ -239,7 +239,7 @@ export default {
       */
 
       var dayGroupedByMonth = this.all_days.reduce((acc, cur, i) => {
-        let monthName = this.$moment(cur).format("MMMM");
+        let monthYearName = this.$moment(cur).format("MMMM Y");
         let day = this.$moment(cur).date();
 
         let dayData = {
@@ -248,10 +248,12 @@ export default {
           timestamp: this.$moment(cur)
         };
 
-        if (typeof acc[monthName] === "undefined") {
-          acc[monthName] = [];
+        if (dayData.numberOfMedias) {
+          if (!acc.hasOwnProperty(monthYearName)) {
+            acc[monthYearName] = [];
+          }
+          acc[monthYearName].push(dayData);
         }
-        acc[monthName].push(dayData);
         return acc;
       }, {});
 
