@@ -1270,21 +1270,22 @@ export default {
   // min-width: 250px;
   display: flex;
   // align-items: center;
-  margin: 0 20px;
+  margin: 0;
   // background-color: var(--color-author);
 
   // border: 2px solid white;
 
-  &:not(.is-empty) {
+  &:not(.is--empty) {
     margin-left: 10px;
+    margin-right: 20px;
   }
 
   &.is--empty {
-    margin-right: 0;
+    margin-right: -1px;
   }
   &.is--empty + &.is--empty {
     // margin-left: 30px;
-    margin: 0;
+    // margin: 0;
   }
 
   &:not(.is--empty) + &.is--empty {
@@ -1372,9 +1373,8 @@ export default {
     //          rgba(0,0,0,0) ~"calc(50% + @{t-bandwidth})",
     //          rgba(0,0,0,0) 100%);
 
-    &::before,
-    &::after {
-      // content: '';
+    &::before {
+      content: "";
       display: block;
       border: 1px solid transparent;
 
@@ -1389,25 +1389,48 @@ export default {
 
       transform-origin: center center;
     }
-    &::before {
-      transform: rotate(225deg);
-    }
-    &::after {
-      transform: rotate(45deg);
-      // margin-left: -1px;
-    }
 
     &:nth-of-type(2n + 0) {
       &::before {
-        content: "";
+        transform: rotate(45deg);
       }
     }
     &:nth-of-type(2n + 1) {
-      &::after {
-        content: "";
-        // border-color: blue !important;
+      &::before {
+        transform: rotate(225deg);
       }
     }
+
+    & + &.is--empty + &.is--empty + &.is--empty + &.is--empty {
+      &::before {
+        width: 14px;
+        height: 14px;
+      }
+      + .is--empty + .is--empty + .is--empty + .is--empty {
+        &::before {
+          width: 10px;
+          height: 10px;
+        }
+        + .is--empty + .is--empty + .is--empty + .is--empty {
+          &::before {
+            width: 6px;
+            height: 6px;
+          }
+          + .is--empty + .is--empty + .is--empty + .is--empty {
+            &::before {
+              width: 3px;
+              height: 3px;
+            }
+          }
+        }
+      }
+    }
+    // &:nth-last-of-type(2) {
+    //   &::before {
+    //     width: 15px;
+    //     height: 15px;
+    //   }
+    // }
   }
   .m_timeline--container--dates--day--mediasblock {
     position: relative;
