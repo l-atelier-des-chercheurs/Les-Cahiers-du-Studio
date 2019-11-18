@@ -1347,6 +1347,8 @@ export default {
           // line-height: 2;
           font-weight: bold;
 
+          transform: rotate(90deg);
+
           &:empty {
             display: none;
             width: 0.5em;
