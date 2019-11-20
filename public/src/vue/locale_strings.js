@@ -102,6 +102,10 @@ module.exports = (function() {
         half_day: "½j",
         day: "j"
       },
+      one_week_later: "1 semaine plus tard…",
+      weeks_later: "&nbsp;semaines plus tard…",
+      one_day_later: "1 semaine plus tard…",
+      weeks_later: "&nbsp;semaines plus tard…",
       contents_are_stored: "Les contenus de ce dossier sont enregistrés dans ",
       folder_information: "Informations du dossier",
       calendar: "Calendrier",
@@ -254,6 +258,8 @@ module.exports = (function() {
         half_day: "½d",
         day: "d"
       },
+      one_week_later: "1 week later…",
+      weeks_later: "&nbsp;weeks later…",
       contents_are_stored: "Contents for this folder are stored in ",
       folder_information: "Folder information",
       calendar: "Calendar",

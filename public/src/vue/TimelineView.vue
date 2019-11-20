@@ -138,7 +138,14 @@
                   class="m_timeline--container--dates--day"
                   :class="{ 'is--empty' : day.is_empty }"
                 >
-                  <template v-if="!day.is_empty">
+                  <template v-if="day.hasOwnProperty('is_indication_of_emptiness')">
+                    <div
+                      class="m_timeline--container--dates--day--emptinessPeriodLabel"
+                      v-html="day.is_indication_of_emptiness"
+                    />
+                  </template>
+                  <template v-else-if="day.hasOwnProperty('is_empty')"></template>
+                  <template v-else>
                     <div class="m_timeline--container--dates--day--daylabel">
                       <div class="m_timeline--container--dates--day--daylabel--container">
                         <span>
@@ -300,6 +307,8 @@ export default {
       show_media_modal_for: false,
       show_edit_folder_modal: false,
       is_showing_addmedia_options: false,
+
+      convert_empty_days_to_periods: true,
 
       minPercent: 0,
       split: "vertical",
@@ -837,13 +846,43 @@ export default {
         } else {
           // if last added day has 0
           // acc.push(day);
-          const last_item = acc[acc.length - 1];
           if (day.number_of_medias === 0) {
-            // check if last item is already a period
-            // if(!last_item.hasOwnProperty('period') || !last_item.period) {
+            // check if last X items are already empty
             day.is_empty = true;
-            acc.push(day);
-            // }
+
+            if (!this.convert_empty_days_to_periods) {
+              acc.push(day);
+              acc.splice(-x);
+            } else {
+              const x = 8;
+
+              // if has more than X days since beginning, and if the last X days are empty
+              if (acc.length > x && !acc.slice(-x).some(d => !d.is_empty)) {
+                const last_item = acc[acc.length - 1];
+
+                if (!last_item.hasOwnProperty("is_indication_of_emptiness")) {
+                  day.is_indication_of_emptiness = this.$t("one_week_later");
+                  acc.push(day);
+                } else {
+                  const weeks_later = this.$moment
+                    .duration(
+                      day.timestamp - last_item.timestamp + 86400000 * x
+                    )
+                    .weeks();
+
+                  if (weeks_later === 1) {
+                    last_item.is_indication_of_emptiness = this.$t(
+                      "one_week_later"
+                    );
+                  } else {
+                    last_item.is_indication_of_emptiness =
+                      `${weeks_later}` + this.$t("weeks_later");
+                  }
+                }
+              } else {
+                acc.push(day);
+              }
+            }
           } else {
             acc.push(day);
           }
@@ -1302,6 +1341,12 @@ export default {
     padding-left: 10px;
   }
 
+  > .m_timeline--container--dates--day--emptinessPeriodLabel {
+    font-size: 80%;
+    color: #999;
+    padding: var(--spacing-medium) var(--spacing-small);
+  }
+
   > .m_timeline--container--dates--day--daylabel {
     position: relative;
     // height: 100%;
@@ -1412,30 +1457,30 @@ export default {
       }
     }
 
-    & + &.is--empty + &.is--empty + &.is--empty + &.is--empty {
-      &::before {
-        width: 14px;
-        height: 14px;
-      }
-      + .is--empty + .is--empty + .is--empty + .is--empty {
-        &::before {
-          width: 10px;
-          height: 10px;
-        }
-        + .is--empty + .is--empty + .is--empty + .is--empty {
-          &::before {
-            width: 6px;
-            height: 6px;
-          }
-          + .is--empty + .is--empty + .is--empty + .is--empty {
-            &::before {
-              width: 3px;
-              height: 3px;
-            }
-          }
-        }
-      }
-    }
+    // & + &.is--empty + &.is--empty + &.is--empty + &.is--empty {
+    //   &::before {
+    //     width: 14px;
+    //     height: 14px;
+    //   }
+    //   + .is--empty + .is--empty + .is--empty + .is--empty {
+    //     &::before {
+    //       width: 10px;
+    //       height: 10px;
+    //     }
+    //     + .is--empty + .is--empty + .is--empty + .is--empty {
+    //       &::before {
+    //         width: 6px;
+    //         height: 6px;
+    //       }
+    //       + .is--empty + .is--empty + .is--empty + .is--empty {
+    //         &::before {
+    //           width: 3px;
+    //           height: 3px;
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
     // &:nth-last-of-type(2) {
     //   &::before {
     //     width: 15px;
