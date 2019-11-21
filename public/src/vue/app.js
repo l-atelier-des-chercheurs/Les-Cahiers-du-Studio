@@ -5,39 +5,39 @@
 // The following line loads the standalone build of Vue instead of the runtime-only build,
 // so you don't have to do: import Vue from 'vue/dist/vue'
 // This is done with the browser options. For the config, see package.json
-import Vue from 'vue';
+import Vue from "vue";
 
-import localstore from 'store';
-import VueScrollTo from 'vue-scrollto';
-import PortalVue from 'portal-vue';
-import VueI18n from 'vue-i18n';
+import localstore from "store";
+import VueScrollTo from "vue-scrollto";
+import PortalVue from "portal-vue";
+import VueI18n from "vue-i18n";
 
-import alertify from 'alertify.js';
+import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
 
-import auth from '../adc-core/auth-client.js';
+import auth from "../adc-core/auth-client.js";
 auth.init();
 Vue.prototype.$auth = auth;
 
-import slug from 'slugg';
+import slug from "slugg";
 Vue.prototype.$slug = slug;
 
-import VuePackeryPlugin from 'vue-packery-plugin';
+import VuePackeryPlugin from "vue-packery-plugin";
 Vue.use(VuePackeryPlugin);
 
-import VuePlyr from 'vue-plyr';
+import VuePlyr from "vue-plyr";
 Vue.use(VuePlyr);
 
-import VueDragscroll from 'vue-dragscroll';
+import VueDragscroll from "vue-dragscroll";
 Vue.use(VueDragscroll);
 
 // import VueDraggabillyPlugin from './vue-packery-draggabilly-plugin';
 // Vue.use(VueDraggabillyPlugin);
 
-import _ from 'lodash';
+import _ from "lodash";
 Vue.prototype.$_ = _;
 
-import locale_strings from './locale_strings.js';
+import locale_strings from "./locale_strings.js";
 
 Vue.config.silent = false;
 Vue.config.devtools = true;
@@ -50,13 +50,13 @@ Vue.use(VueI18n);
 
 let lang_settings = {
   available: {
-    fr: 'Français',
-    en: 'English'
+    fr: "Français",
+    en: "English"
   },
-  default: 'en',
-  current: '',
+  default: "en",
+  current: "",
   init: function() {
-    let localstore_lang = localstore.get('language');
+    let localstore_lang = localstore.get("language");
 
     // has lang set
     if (localstore_lang !== undefined) {
@@ -66,7 +66,7 @@ let lang_settings = {
       }
     }
 
-    if (this.current === '') {
+    if (this.current === "") {
       // set current lang from
       let browserLangIsAvailable = Object.keys(this.available).filter(x => {
         return window.navigator.language.includes(x);
@@ -76,22 +76,22 @@ let lang_settings = {
       }
     }
 
-    if (this.current === '') {
-      this.current = 'en';
+    if (this.current === "") {
+      this.current = "en";
     }
   }
 };
 lang_settings.init();
 
-import moment from 'moment';
-import 'moment/locale/fr';
-import 'moment/locale/en-gb';
+import moment from "moment";
+import "moment/locale/fr";
+import "moment/locale/en-gb";
 
 moment.locale(lang_settings.current);
 Vue.prototype.$moment = moment;
 
 const html = document.documentElement; // returns the html tag
-html.setAttribute('lang', lang_settings.current);
+html.setAttribute("lang", lang_settings.current);
 
 // Create VueI18n instance with options
 let i18n = new VueI18n({
@@ -102,15 +102,15 @@ let i18n = new VueI18n({
 /** *********
   SOCKETIO
 ***********/
-import custom_socketio from '../adc-core/custom-socketio.js';
+import custom_socketio from "../adc-core/custom-socketio.js";
 Vue.prototype.$socketio = custom_socketio.init(i18n, auth, alertify);
 
-import App from './App.vue';
+import App from "./App.vue";
 
 let vm = new Vue({
   // eslint-disable-line no-new
   i18n,
-  el: '#app',
+  el: "#app",
   components: { App },
   template: `
     <App
@@ -124,7 +124,7 @@ let vm = new Vue({
 
     access: false,
 
-    currentTime: '',
+    currentTime: "",
 
     justCreatedMediaID: false,
     justCreatedFolderID: false,
@@ -139,23 +139,24 @@ let vm = new Vue({
     settings: {
       has_modal_opened: false,
       has_writeup_opended: false,
-      current_slugFolderName: '',
+      current_slugFolderName: "",
       has_sidebar_opened: false,
-      sidebar_type: '',
+      sidebar_type: "",
 
-      highlightMedia: '',
+      highlightMedia: "",
       is_loading_medias_for_folder: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
-      perf_mode: 'low',
+      perf_mode: "low",
 
       keyboard_shortcuts: [],
 
       current_author_name: false,
+      setDateTimelineToDateCreated: false,
 
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
 
-      folder_view_mode: 'timeline'
+      folder_view_mode: "timeline"
     },
 
     lang: {
@@ -164,46 +165,46 @@ let vm = new Vue({
     }
   },
   created() {
-    if (window.state.dev_mode === 'debug') {
-      console.log('ROOT EVENT: created');
+    if (window.state.dev_mode === "debug") {
+      console.log("ROOT EVENT: created");
     }
     if (this.settings.enable_system_bar) {
-      document.body.classList.add('has_systembar');
+      document.body.classList.add("has_systembar");
     }
 
-    if (window.state.dev_mode === 'debug') {
-      console.log('ROOT EVENT: created / checking for errors');
+    if (window.state.dev_mode === "debug") {
+      console.log("ROOT EVENT: created / checking for errors");
     }
 
     this.settings.keyboard_shortcuts = this.getKeyboardShortcuts();
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       this.settings.windowWidth = window.innerWidth;
       this.settings.windowHeight = window.innerHeight;
     });
 
     if (
-      window.state.hasOwnProperty('export_options') &&
+      window.state.hasOwnProperty("export_options") &&
       !!window.state.export_options.password_protect
     ) {
       let hashCode = function(s) {
-        return s.split('').reduce(function(a, b) {
+        return s.split("").reduce(function(a, b) {
           a = (a << 5) - a + b.charCodeAt(0);
           return a & a;
         }, 0);
       };
 
-      let mdp = prompt('Password for application :');
+      let mdp = prompt("Password for application :");
 
-      if ('' + hashCode(mdp) !== window.state.export_options.password_protect) {
-        window.alert('This password is not valid.');
+      if ("" + hashCode(mdp) !== window.state.export_options.password_protect) {
+        window.alert("This password is not valid.");
         return;
       }
     }
 
     this.access = true;
 
-    if (this.state.mode === 'export_web') {
+    if (this.state.mode === "export_web") {
       // this.settings.has_sidebar_opened = true;
       if (Object.keys(this.store.folders).length > 0) {
         this.settings.current_slugFolderName = Object.keys(
@@ -213,20 +214,20 @@ let vm = new Vue({
     }
 
     if (this.store.noticeOfError) {
-      if (this.store.noticeOfError === 'failed_to_find_folder') {
+      if (this.store.noticeOfError === "failed_to_find_folder") {
         alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error(
             this.$t('notifications["failed_to_get_folder:"]') +
-              ' ' +
+              " " +
               this.store.request.slugFolderName
           );
       }
     } else {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(
-          'ROOT EVENT: created / no errors, checking for content to load'
+          "ROOT EVENT: created / no errors, checking for content to load"
         );
       }
 
@@ -239,16 +240,16 @@ let vm = new Vue({
       if (this.store.request.slugFolderName) {
         this.settings.current_slugFolderName = this.store.request.slugFolderName;
         this.settings.is_loading_medias_for_folder = this.store.request.slugFolderName;
-        this.$eventHub.$once('socketio.folders.folders_listed', () => {
+        this.$eventHub.$once("socketio.folders.folders_listed", () => {
           this.openFolder(this.store.request.slugFolderName);
         });
         // requesting edit of a media
         if (this.store.request.metaFileName) {
-          this.$eventHub.$once('socketio.folders.listMedias', () => {
+          this.$eventHub.$once("socketio.folders.listMedias", () => {
             this.$nextTick(() => {
               this.$eventHub.$emit(
-                'timeline.openMediaModal',
-                this.store.request.metaFileName + '.txt'
+                "timeline.openMediaModal",
+                this.store.request.metaFileName + ".txt"
               );
             });
           });
@@ -256,14 +257,14 @@ let vm = new Vue({
       }
     }
 
-    this.$eventHub.$on('socketio.reconnect', () => {
+    this.$eventHub.$on("socketio.reconnect", () => {
       if (this.settings.current_slugFolderName) {
         this.$socketio.listFolder({
-          type: 'folders',
+          type: "folders",
           slugFolderName: this.settings.current_slugFolderName
         });
         this.$socketio.listMedias({
-          type: 'folders',
+          type: "folders",
           slugFolderName: this.settings.current_slugFolderName
         });
       }
@@ -276,17 +277,17 @@ let vm = new Vue({
       this.settings.current_slugFolderName = event.state.slugFolderName;
     };
 
-    if (this.state.mode === 'live') {
-      console.log('ROOT EVENT: created / now connecting with socketio');
+    if (this.state.mode === "live") {
+      console.log("ROOT EVENT: created / now connecting with socketio");
 
       if (!this.$root.state.is_electron) {
-        this.$eventHub.$on('socketio.connect', () => {
+        this.$eventHub.$on("socketio.connect", () => {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
             .success(this.$t('notifications["connected_to_lescahiers"]'));
         });
-        this.$eventHub.$on('socketio.reconnect', () => {
+        this.$eventHub.$on("socketio.reconnect", () => {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
@@ -296,20 +297,20 @@ let vm = new Vue({
 
       this.$socketio.connect();
 
-      this.$eventHub.$once('socketio.authentificated', () => {
-        this.$socketio.listFolders({ type: 'folders' });
+      this.$eventHub.$once("socketio.authentificated", () => {
+        this.$socketio.listFolders({ type: "folders" });
       });
     }
   },
   methods: {
     createFolder: function(fdata) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(
           `ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`
         );
       }
 
-      if (fdata.password !== '') {
+      if (fdata.password !== "") {
         this.justCreatedFolderPassword = fdata.password;
       }
 
@@ -324,7 +325,7 @@ let vm = new Vue({
       this.$socketio.createFolder(fdata);
     },
     editFolder: function(fdata) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(
           `ROOT EVENT: editFolder: ${JSON.stringify(fdata, null, 4)}`
         );
@@ -332,14 +333,14 @@ let vm = new Vue({
       this.$socketio.editFolder(fdata);
     },
     removeFolder: function(slugFolderName) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: removeFolder: ${slugFolderName}`);
       }
       this.$socketio.removeFolder(slugFolderName);
     },
 
     createMedia: function(mdata) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: createMedia`);
       }
       this.justCreatedMediaID = mdata.id =
@@ -351,12 +352,12 @@ let vm = new Vue({
           .substring(2, 15);
 
       if (this.settings.current_author_name) {
-        if (!mdata.hasOwnProperty('additionalMeta')) {
+        if (!mdata.hasOwnProperty("additionalMeta")) {
           mdata.additionalMeta = {};
         }
         // only set author to current if no author is already set
         // (for example, with an author shortcut)
-        if (!mdata.additionalMeta.hasOwnProperty('authors')) {
+        if (!mdata.additionalMeta.hasOwnProperty("authors")) {
           mdata.additionalMeta.authors = [
             { name: this.$root.settings.current_author_name }
           ];
@@ -369,7 +370,7 @@ let vm = new Vue({
     },
 
     removeMedia: function(mdata) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(
           `ROOT EVENT: removeMedia: ${JSON.stringify(mdata, null, 4)}`
         );
@@ -377,24 +378,24 @@ let vm = new Vue({
       this.$socketio.removeMedia(mdata);
     },
     editMedia: function(mdata) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`);
       }
       this.$socketio.editMedia(mdata);
     },
     editMedia: function(mdata) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`);
       }
       this.$socketio.editMedia(mdata);
     },
 
     openFolder: function(slugFolderName) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: openFolder: ${slugFolderName}`);
       }
       if (!this.store.folders.hasOwnProperty(slugFolderName)) {
-        console.log('Missing folder key on the page, aborting.');
+        console.log("Missing folder key on the page, aborting.");
         this.closeFolder();
         return false;
       }
@@ -402,11 +403,11 @@ let vm = new Vue({
       // prevent access to folder if user doesn’t have the password
       if (
         !this.canAdminFolder({
-          type: 'folders',
+          type: "folders",
           slugFolderName
         })
       ) {
-        console.log('Can’t access folder, not opening folder.');
+        console.log("Can’t access folder, not opening folder.");
         this.closeFolder();
         return false;
       }
@@ -416,7 +417,7 @@ let vm = new Vue({
 
       this.$nextTick(() => {
         this.$socketio.listMedias({
-          type: 'folders',
+          type: "folders",
           slugFolderName
         });
       });
@@ -424,50 +425,50 @@ let vm = new Vue({
       history.pushState(
         { slugFolderName },
         this.store.folders[slugFolderName].name,
-        '/' + slugFolderName
+        "/" + slugFolderName
       );
 
-      this.$eventHub.$once('socketio.folders.listMedias', () => {
+      this.$eventHub.$once("socketio.folders.listMedias", () => {
         this.settings.is_loading_medias_for_folder = false;
       });
     },
     closeFolder: function() {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: closeFolder');
+      if (window.state.dev_mode === "debug") {
+        console.log("ROOT EVENT: closeFolder");
       }
-      this.settings.current_slugFolderName = '';
-      history.pushState({ slugFolderName: '' }, '', '/');
+      this.settings.current_slugFolderName = "";
+      history.pushState({ slugFolderName: "" }, "", "/");
     },
     updateFolderScale: function(slugFolderName, timelineViewport_scale) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: updateFolderScale');
+      if (window.state.dev_mode === "debug") {
+        console.log("ROOT EVENT: updateFolderScale");
       }
 
-      let viewportScale = localstore.get('viewport_scale') || {};
+      let viewportScale = localstore.get("viewport_scale") || {};
       viewportScale[slugFolderName] = timelineViewport_scale;
 
-      localstore.set('viewport_scale', viewportScale);
+      localstore.set("viewport_scale", viewportScale);
     },
     getFolderScale: function(slugFolderName) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: getFolderScale');
+      if (window.state.dev_mode === "debug") {
+        console.log("ROOT EVENT: getFolderScale");
       }
-      let viewportScale = localstore.get('viewport_scale') || {};
+      let viewportScale = localstore.get("viewport_scale") || {};
       if (
         viewportScale !== undefined &&
         viewportScale[slugFolderName] !== undefined
       ) {
         return viewportScale[slugFolderName];
       }
-      if (this.state.mode === 'export_web') {
+      if (this.state.mode === "export_web") {
         return 50;
       }
       return 20;
     },
 
     updateLocalLang: function(newLangCode) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: updateLocalLang');
+      if (window.state.dev_mode === "debug") {
+        console.log("ROOT EVENT: updateLocalLang");
       }
 
       i18n.locale = newLangCode;
@@ -476,29 +477,29 @@ let vm = new Vue({
       this.lang.current = newLangCode;
 
       const html = document.documentElement; // returns the html tag
-      html.setAttribute('lang', newLangCode);
+      html.setAttribute("lang", newLangCode);
 
-      localstore.set('language', newLangCode);
+      localstore.set("language", newLangCode);
     },
 
     updateFolderScrollLeft: function(
       slugFolderName,
       timelineViewport_scrollLeft
     ) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: updateFolderScrollLeft');
+      if (window.state.dev_mode === "debug") {
+        console.log("ROOT EVENT: updateFolderScrollLeft");
       }
 
-      let viewportScrollLeft = localstore.get('viewport_scrollLeft') || {};
+      let viewportScrollLeft = localstore.get("viewport_scrollLeft") || {};
       viewportScrollLeft[slugFolderName] = timelineViewport_scrollLeft;
 
-      localstore.set('viewport_scrollLeft', viewportScrollLeft);
+      localstore.set("viewport_scrollLeft", viewportScrollLeft);
     },
     getScrollLeft: function(slugFolderName) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: getScrollLeft');
+      if (window.state.dev_mode === "debug") {
+        console.log("ROOT EVENT: getScrollLeft");
       }
-      let viewportScrollLeft = localstore.get('viewport_scrollLeft') || {};
+      let viewportScrollLeft = localstore.get("viewport_scrollLeft") || {};
       if (
         viewportScrollLeft !== undefined &&
         viewportScrollLeft[slugFolderName] !== undefined
@@ -508,17 +509,17 @@ let vm = new Vue({
       return 0;
     },
     updateKeyboardShortcuts: function(keyboard_shortcuts) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: updateKeyboardShortcuts');
+      if (window.state.dev_mode === "debug") {
+        console.log("ROOT EVENT: updateKeyboardShortcuts");
       }
-      localstore.set('keyboard_shortcuts', keyboard_shortcuts);
+      localstore.set("keyboard_shortcuts", keyboard_shortcuts);
       this.settings.keyboard_shortcuts = keyboard_shortcuts;
     },
     getKeyboardShortcuts: function() {
-      if (window.state.dev_mode === 'debug') {
-        console.log('ROOT EVENT: getKeyboardShortcuts');
+      if (window.state.dev_mode === "debug") {
+        console.log("ROOT EVENT: getKeyboardShortcuts");
       }
-      let kbs = localstore.get('keyboard_shortcuts') || [];
+      let kbs = localstore.get("keyboard_shortcuts") || [];
       return kbs;
     },
     mediaColorFromFirstAuthor(media, folder) {
@@ -529,15 +530,15 @@ let vm = new Vue({
       return false;
     },
     mediaFirstAuthor(media, folder) {
-      if (!media.hasOwnProperty('authors')) {
+      if (!media.hasOwnProperty("authors")) {
         return false;
       }
 
       const media_authors = media.authors;
       if (
-        typeof media_authors !== 'object' ||
+        typeof media_authors !== "object" ||
         media_authors.length == 0 ||
-        typeof folder.authors !== 'object' ||
+        typeof folder.authors !== "object" ||
         folder.authors.length == 0
       ) {
         return false;
@@ -556,7 +557,7 @@ let vm = new Vue({
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
       // if folder doesn’t have a password set
-      if (this.store[type][slugFolderName].password !== 'has_pass') {
+      if (this.store[type][slugFolderName].password !== "has_pass") {
         return true;
       }
 
@@ -564,9 +565,9 @@ let vm = new Vue({
         i => {
           if (
             !!i &&
-            i.hasOwnProperty('type') &&
+            i.hasOwnProperty("type") &&
             i.type === type &&
-            i.hasOwnProperty('allowed_slugFolderNames') &&
+            i.hasOwnProperty("allowed_slugFolderNames") &&
             i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
           )
             return true;
@@ -581,23 +582,23 @@ let vm = new Vue({
     }
   },
   watch: {
-    'settings.has_modal_opened': function() {
-      if (window.state.dev_mode === 'debug') {
+    "settings.has_modal_opened": function() {
+      if (window.state.dev_mode === "debug") {
         console.log(
           `ROOT EVENT: var has changed: has_modal_opened: ${this.settings.has_modal_opened}`
         );
       }
       if (this.has_modal_opened) {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = "hidden";
       } else {
-        document.body.style.overflow = '';
+        document.body.style.overflow = "";
       }
     }
   },
   computed: {
     currentFolder: function() {
       if (
-        this.store.hasOwnProperty('folders') &&
+        this.store.hasOwnProperty("folders") &&
         this.store.folders.hasOwnProperty(this.settings.current_slugFolderName)
       ) {
         return this.store.folders[this.settings.current_slugFolderName];
@@ -605,13 +606,13 @@ let vm = new Vue({
       return {};
     },
     currentTime_human() {
-      return this.$moment(this.currentTime).format('l LTS');
+      return this.$moment(this.currentTime).format("l LTS");
     },
     currentTime_minute() {
       return this.$moment(this.currentTime).second(0);
     },
     currentTime_day() {
-      return this.$moment(this.currentTime).startOf('day');
+      return this.$moment(this.currentTime).startOf("day");
     }
   }
 });

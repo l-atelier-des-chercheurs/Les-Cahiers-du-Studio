@@ -5,7 +5,7 @@
         v-if="$root.settings.is_loading_medias_for_folder"
         class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
       >
-        <span class="animated flash">{{ $t('loading') }}</span>
+        <span class="animated flash">{{ $t("loading") }}</span>
       </div>
     </transition>
 
@@ -18,7 +18,10 @@
         @click="$root.closeFolder()"
         @mouseover="collapse_foldername = false"
         @mouseleave="collapse_foldername = true"
-        :class="{ 'is--collapsed' : collapse_foldername }"
+        :class="{
+          'is--collapsed': collapse_foldername,
+          'is--movedToRight': $root.settings.has_sidebar_opened
+        }"
       >
         <span class="icon">←</span>
         <span class="project_name">{{ folder.name }}</span>
@@ -26,24 +29,32 @@
     </template>
     <template v-else>
       <div class="folder_backbutton">
-        <span class="margin-sides-small padding-verysmall text-centered">{{ folder.name }}</span>
+        <span class="margin-sides-small padding-verysmall text-centered">{{
+          folder.name
+        }}</span>
       </div>
     </template>
 
     <div
       class="m_navtimeline_wrapper--timeline_wrapper"
-      :class="{ 'is--showingAddmediaOptions' : is_showing_addmedia_options }"
+      :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
     >
-      <div :style="{ cursor, userSelect}" class="vue-splitter-container clearfix">
+      <div
+        :style="{ cursor, userSelect }"
+        class="vue-splitter-container clearfix"
+      >
         <Pane
           class="splitter-pane splitter-paneL"
-          :class="{ 'is--dragged' : is_dragged }"
+          :class="{ 'is--dragged': is_dragged }"
           :split="split"
-          :style="{ [type]: percent+'%'}"
+          :style="{ [type]: percent + '%' }"
         >
           <!-- <transition name="sidebar-animation" :duration="350" mode="out-in"> -->
           <Sidebar
-            v-if="$root.settings.has_sidebar_opened && $root.settings.sidebar_type === 'options'"
+            v-if="
+              $root.settings.has_sidebar_opened &&
+                $root.settings.sidebar_type === 'options'
+            "
             :folder="folder"
             :slugFolderName="slugFolderName"
             :timeline_start="timeline_interval.start"
@@ -59,7 +70,10 @@
             :can_admin_folder="can_admin_folder"
           />
           <WriteUp
-            v-else-if="$root.settings.has_sidebar_opened && $root.settings.sidebar_type === 'journal'"
+            v-else-if="
+              $root.settings.has_sidebar_opened &&
+                $root.settings.sidebar_type === 'journal'
+            "
             :slugFolderName="slugFolderName"
             :medias="medias"
             :read_only="read_only"
@@ -68,15 +82,18 @@
 
           <div
             class="m_verticalButtons"
-            :class="{ 'is--sidebarOpened' : $root.settings.has_sidebar_opened }"
+            :class="{ 'is--sidebarOpened': $root.settings.has_sidebar_opened }"
           >
             <div class="m_verticalButtons--container">
-              <button type="button" @click.stop.prevent="toggleSidebar('options')">
+              <button
+                type="button"
+                @click.stop.prevent="toggleSidebar('options')"
+              >
                 <span>
-                  {{ $t('options') }}
-                  <template
-                    v-if="$root.settings.sidebar_type === 'options'"
-                  >&nbsp;×</template>
+                  {{ $t("options") }}
+                  <template v-if="$root.settings.sidebar_type === 'options'"
+                    >&nbsp;×</template
+                  >
                 </span>
                 <!-- <template v-else>→</template> -->
               </button>
@@ -87,14 +104,19 @@
                 v-if="$root.settings.has_sidebar_opened"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
-              >|||</button>
+              >
+                |||
+              </button>
 
-              <button type="button" @click.stop.prevent="toggleSidebar('journal')">
+              <button
+                type="button"
+                @click.stop.prevent="toggleSidebar('journal')"
+              >
                 <span>
-                  {{ $t('journal') }}
-                  <template
-                    v-if="$root.settings.sidebar_type === 'journal'"
-                  >&nbsp;×</template>
+                  {{ $t("journal") }}
+                  <template v-if="$root.settings.sidebar_type === 'journal'"
+                    >&nbsp;×</template
+                  >
                 </span>
                 <!-- <template v-else>→</template> -->
               </button>
@@ -103,9 +125,9 @@
         </Pane>
 
         <Resizer
-          :class="{ 'is--dragged' : is_dragged }"
+          :class="{ 'is--dragged': is_dragged }"
           :className="className"
-          :style="{ [resizeType]: percent+'%'}"
+          :style="{ [resizeType]: percent + '%' }"
           :split="split"
           @mousedown.native="onMouseDown"
           @click.native="onClick"
@@ -113,9 +135,9 @@
 
         <Pane
           class="splitter-pane splitter-paneR"
-          :class="{ 'is--dragged' : is_dragged }"
+          :class="{ 'is--dragged': is_dragged }"
           :split="split"
-          :style="{ [type]: 100-percent+'%'}"
+          :style="{ [type]: 100 - percent + '%' }"
         >
           <div class="m_floater" @wheel="onMousewheel">
             <div>{{ visible_day_human }}</div>
@@ -136,23 +158,29 @@
                   :key="day.label"
                   :data-timestamp="day.timestamp"
                   class="m_timeline--container--dates--day"
-                  :class="{ 'is--empty' : day.is_empty }"
+                  :class="{ 'is--empty': day.is_empty }"
                 >
-                  <template v-if="day.hasOwnProperty('is_indication_of_emptiness')">
+                  <template
+                    v-if="day.hasOwnProperty('is_indication_of_emptiness')"
+                  >
                     <div
                       class="m_timeline--container--dates--day--emptinessPeriodLabel"
                       v-html="day.is_indication_of_emptiness"
                     />
                   </template>
-                  <template v-else-if="day.hasOwnProperty('is_empty')"></template>
+                  <template
+                    v-else-if="day.hasOwnProperty('is_empty')"
+                  ></template>
                   <template v-else>
                     <div class="m_timeline--container--dates--day--daylabel">
-                      <div class="m_timeline--container--dates--day--daylabel--container">
+                      <div
+                        class="m_timeline--container--dates--day--daylabel--container"
+                      >
                         <span>
                           {{ day.label }}
-                          <span
-                            v-if="day.number_of_medias > 0"
-                          >{{ day.number_of_medias }}</span>
+                          <span v-if="day.number_of_medias > 0">{{
+                            day.number_of_medias
+                          }}</span>
                           <span v-else></span>
                         </span>
                       </div>
@@ -162,20 +190,35 @@
                       v-for="segment in day.segments"
                       :key="segment.timestamp"
                       class="m_timeline--container--dates--day--mediasblock"
-                      v-if="(!segment.hasOwnProperty('hidelabel') || !segment.hidelabel) || (segment.medias.length > 0)"
+                      v-if="
+                        !segment.hasOwnProperty('hidelabel') ||
+                          !segment.hidelabel ||
+                          segment.medias.length > 0
+                      "
                     >
                       <div
                         class="m_timeline--container--dates--day--mediasblock--label"
-                        v-if="!segment.hasOwnProperty('hidelabel') || !segment.hidelabel"
+                        v-if="
+                          !segment.hasOwnProperty('hidelabel') ||
+                            !segment.hidelabel
+                        "
                       >
                         <div>
                           <button
                             type="button"
-                            @click="openMediaModal(segment.marker_meta_slugMediaName)"
-                            :style="`
+                            @click="
+                              openMediaModal(segment.marker_meta_slugMediaName)
+                            "
+                            :style="
+                              `
                               --color-author: ${segment.color};
-                              --label-color: ${segment.color === 'var(--color-noir)' ? 'var(--color-blanc)' : 'var(--color-noir)' };
-                              `"
+                              --label-color: ${
+                                segment.color === 'var(--color-noir)'
+                                  ? 'var(--color-blanc)'
+                                  : 'var(--color-noir)'
+                              };
+                              `
+                            "
                             :data-has_author="!!segment.marker_author"
                           >
                             <span v-html="segment.label" />
@@ -197,24 +240,36 @@
               </div>
             </div>
 
-            <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
-              <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
+            <div
+              v-if="sort.current.field !== 'date_timeline'"
+              class="m_filterIndicator"
+            >
+              <div
+                class="flex-wrap flex-vertically-centered flex-horizontally-start"
+              >
                 <button
                   type="button"
                   class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
                   v-html="'x'"
-                  @click="setSort(sort.available[0]); setFilter('');"
+                  @click="
+                    setSort(sort.available[0]);
+                    setFilter('');
+                  "
                 />
                 <small>
                   <div class>
                     <span v-html="$t('active_filter:')" />
-                    {{ ' ' }}
+                    {{ " " }}
                     <span v-html="sort.current.name" />
                   </div>
                   <div class>
                     <span v-html="$t('medias_shown:')" />
                     <span
-                      v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length"
+                      v-html="
+                        this.sortedMedias.length +
+                          '/' +
+                          Object.keys(this.medias).length
+                      "
                     />
                   </div>
                 </small>
@@ -227,7 +282,10 @@
 
     <AddMedias
       v-if="
-        ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && !folder_is_archived"
+        ((folder.password === 'has_pass' && can_admin_folder) ||
+          folder.password !== 'has_pass') &&
+          !folder_is_archived
+      "
       :slugFolderName="slugFolderName"
       :folder="folder"
       :folder_is_archived="folder_is_archived"
@@ -1591,6 +1649,10 @@ export default {
 
   body.has_systembar & {
     top: 35px;
+  }
+
+  &.is--movedToRight {
+    left: var(--sidebar-width);
   }
 
   .icon {

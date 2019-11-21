@@ -30,7 +30,10 @@
               </svg>
             </a>
 
-            <button class="menu_icon padding-right-small" @click.prevent="$root.closeFolder()">
+            <button
+              class="menu_icon padding-right-small"
+              @click.prevent="$root.closeFolder()"
+            >
               <svg
                 class="svg-icon"
                 version="1.1"
@@ -89,7 +92,9 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4"
           <div
             class="breadcrumb--item padding-small"
             v-if="typeof folder !== 'undefined'"
-          >{{ folder.name }}</div>
+          >
+            {{ folder.name }}
+          </div>
         </div>
 
         <button
@@ -119,14 +124,18 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4"
 
         <div
           class="visibleDay padding-none"
-          v-if="typeof visibleDay !== 'undefined' && (!menu_is_enabled || (menu_is_enabled && show_menu))"
+          v-if="
+            typeof visibleDay !== 'undefined' &&
+              (!menu_is_enabled || (menu_is_enabled && show_menu))
+          "
         >
-          <button class="bg-transparent" @click.prevent="goToPrevDay()">‹</button>
+          <button class="bg-transparent" @click.prevent="goToPrevDay()">
+            ‹
+          </button>
           {{ getVisibleDay }}
-          <button
-            class="bg-transparent"
-            @click.prevent="goToNextDay()"
-          >›</button>
+          <button class="bg-transparent" @click.prevent="goToNextDay()">
+            ›
+          </button>
         </div>
 
         <div
@@ -138,12 +147,14 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4"
             <button
               type="button"
               class="bg-noir border-circled button-thin button-wide padding-verysmall margin-verysmall"
-              :class="{ 'is--active' : timelineViewport_scale === btns.scale }"
+              :class="{ 'is--active': timelineViewport_scale === btns.scale }"
               @click="updateScale(Number(btns.scale))"
               @mouseover="showZoomZone(Number(btns.scale))"
               @mouseleave="hideZoomZone()"
               :key="index"
-            >{{ btns.name }}</button>
+            >
+              {{ btns.name }}
+            </button>
           </template>
         </div>
       </div>
@@ -224,5 +235,4 @@ export default {
   }
 };
 </script>
-<style scoped lang="">
-</style>
+<style scoped lang=""></style>

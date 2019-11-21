@@ -3,26 +3,52 @@
     <SidebarSection v-if="$root.state.mode !== 'export_web'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
-          {{ $t('folder_information') }}
+          {{ $t("folder_information") }}
           <button
             v-if="can_admin_folder"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="editFolder"
             :disabled="read_only"
-          >{{ $t('edit') }}</button>
+          >
+            {{ $t("edit") }}
+          </button>
         </h3>
       </div>
 
       <div slot="body">
+        <div class="margin-bottom-small">
+          <span class="switch">
+            <input
+              type="checkbox"
+              class="switch"
+              id="placemediaoncreated"
+              v-model="$root.settings.setDateTimelineToDateCreated"
+            />
+            <label for="placemediaoncreated">{{
+              $t("on_import_place_media_on_the_date_they_were_created")
+            }}</label>
+          </span>
+        </div>
+      </div>
+    </SidebarSection>
+
+    <SidebarSection>
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t("share") }}
+        </h3>
+      </div>
+      <div slot="body">
         <CreateQRCode :slugFolderName="slugFolderName" />
         <p class="font-small" v-if="$root.state.is_electron">
-          {{ $t('contents_are_stored') }}
+          {{ $t("contents_are_stored") }}
           <template>
             <a
               :href="folder.fullFolderPath"
               @click.prevent="openInFinder(folder.fullFolderPath)"
-            >{{ folder.fullFolderPath.replace(/\//g, '\/\u200B') }}</a>
+              >{{ folder.fullFolderPath.replace(/\//g, "\/\u200B") }}</a
+            >
           </template>
         </p>
       </div>
@@ -30,11 +56,18 @@
 
     <SidebarSection>
       <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">{{ $t('lang') }}</h3>
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t("lang") }}
+        </h3>
       </div>
       <div slot="body">
         <select v-model="currentLang">
-          <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">{{ name }}</option>
+          <option
+            v-for="(name, code) in $root.lang.available"
+            :value="code"
+            :key="code"
+            >{{ name }}</option
+          >
         </select>
       </div>
     </SidebarSection>
@@ -42,13 +75,15 @@
     <SidebarSection v-if="$root.state.mode !== 'export_web'">
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
-          {{ $t('keyboard_shortcuts') }}
+          {{ $t("keyboard_shortcuts") }}
           <button
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showKeyboardShortcutsList = true"
             :disabled="read_only"
-          >{{ $t('open') }}</button>
+          >
+            {{ $t("open") }}
+          </button>
         </h3>
       </div>
     </SidebarSection>
@@ -62,13 +97,15 @@
     <SidebarSection v-if="$root.state.mode !== 'export_web'">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
-          {{ $t('export_folder') }}
+          {{ $t("export_folder") }}
           <button
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showExportTimelineModal = true"
             :disabled="read_only"
-          >{{ $t('open') }}</button>
+          >
+            {{ $t("open") }}
+          </button>
         </h3>
       </div>
     </SidebarSection>
@@ -82,37 +119,46 @@
     <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
-          {{ $t('calendar') }}
+          {{ $t("calendar") }}
           <button
             v-if="is_realtime"
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
-          >{{ $t('now') }}</button>
+          >
+            {{ $t("now") }}
+          </button>
         </h3>
       </div>
 
       <div slot="body" class="m_calendar">
-        <div v-if="!calendar">{{ $t('no_medias_sent_yet') }}</div>
-        <div v-else v-for="(days, month) in calendar" class="m_calendar--month" :key="month">
+        <div v-if="!calendar">{{ $t("no_medias_sent_yet") }}</div>
+        <div
+          v-else
+          v-for="(days, month) in calendar"
+          class="m_calendar--month"
+          :key="month"
+        >
           <h3 class="margin-bottom-small text-ital font-small">{{ month }}</h3>
           <div class="m_calendar--days">
             <div
               v-for="(daymeta, index) in days"
               class="m_calendar--days--day padding-sides-verysmall padding-bottom-small"
               :class="{
-              'has--noMedia' : !daymeta.numberOfMedias,
-              'is--visibleDay' : isVisibleDay(daymeta.timestamp),
-              'is--today' : isDayToday(daymeta.timestamp),
-            }"
+                'has--noMedia': !daymeta.numberOfMedias,
+                'is--visibleDay': isVisibleDay(daymeta.timestamp),
+                'is--today': isDayToday(daymeta.timestamp)
+              }"
               @click="scrollToDate(daymeta.timestamp)"
               :key="index"
             >
               <button class="font-verylarge padding-none">
                 {{ daymeta.dayNumber }}
-                <div
-                  class="font-veryverysmall bottomIndicator"
-                >{{ daymeta.numberOfMedias > 0 ? daymeta.numberOfMedias : '.' }}</div>
+                <div class="font-veryverysmall bottomIndicator">
+                  {{
+                    daymeta.numberOfMedias > 0 ? daymeta.numberOfMedias : "."
+                  }}
+                </div>
               </button>
             </div>
           </div>
@@ -123,12 +169,14 @@
     <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
-          {{ $t('list') }}
+          {{ $t("list") }}
           <button
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showMediasListModal = true"
-          >{{ $t('fullscreen') }}</button>
+          >
+            {{ $t("fullscreen") }}
+          </button>
         </h3>
       </div>
 
@@ -349,7 +397,4 @@ export default {
 };
 </script>
 
-<style lang="sass">
-
-
-</style>
+<style lang="sass"></style>

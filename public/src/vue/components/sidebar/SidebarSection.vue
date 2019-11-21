@@ -1,13 +1,13 @@
 <template>
   <section class="border border-bottom-dashed padding-medium">
-    <header class>
+    <header>
       <slot name="header"></slot>
     </header>
 
-    <slot name="body"></slot>
+    <div class="margin-top-small" v-if="!!$slots['body']">
+      <slot name="body"></slot>
+    </div>
   </section>
 </template>
-<script>
-</script>
-<style>
-</style>
+<script></script>
+<style></style>
