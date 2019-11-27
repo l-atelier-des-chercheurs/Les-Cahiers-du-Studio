@@ -29,9 +29,11 @@
     </template>
     <template v-else>
       <div class="folder_backbutton">
-        <span class="margin-sides-small padding-verysmall text-centered">{{
+        <span class="margin-sides-small padding-verysmall text-centered">
+          {{
           folder.name
-        }}</span>
+          }}
+        </span>
       </div>
     </template>
 
@@ -39,10 +41,7 @@
       class="m_navtimeline_wrapper--timeline_wrapper"
       :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
     >
-      <div
-        :style="{ cursor, userSelect }"
-        class="vue-splitter-container clearfix"
-      >
+      <div :style="{ cursor, userSelect }" class="vue-splitter-container clearfix">
         <Pane
           class="splitter-pane splitter-paneL"
           :class="{ 'is--dragged': is_dragged }"
@@ -85,10 +84,7 @@
             :class="{ 'is--sidebarOpened': $root.settings.has_sidebar_opened }"
           >
             <div class="m_verticalButtons--container">
-              <button
-                type="button"
-                @click.stop.prevent="toggleSidebar('options')"
-              >
+              <button type="button" @click.stop.prevent="toggleSidebar('options')">
                 <span
                   v-if="$root.settings.sidebar_type === 'options'"
                   v-html="`&nbsp;×` + $t('options')"
@@ -105,10 +101,7 @@
                 v-html="'|||'"
               />
 
-              <button
-                type="button"
-                @click.stop.prevent="toggleSidebar('journal')"
-              >
+              <button type="button" @click.stop.prevent="toggleSidebar('journal')">
                 <span
                   v-if="$root.settings.sidebar_type === 'journal'"
                   v-html="`&nbsp;×` + $t('journal')"
@@ -131,7 +124,7 @@
         <Pane
           class="splitter-pane splitter-paneR"
           :class="{ 'is--dragged': is_dragged }"
-          :style="{ [type]: `100 - ${percent} %` }"
+          :style="{ [type]: 100 - percent + '%' }"
           :split="split"
         >
           <div class="m_floater" @wheel="onMousewheel">
@@ -155,27 +148,23 @@
                   class="m_timeline--container--dates--day"
                   :class="{ 'is--empty': day.is_empty }"
                 >
-                  <template
-                    v-if="day.hasOwnProperty('is_indication_of_emptiness')"
-                  >
+                  <template v-if="day.hasOwnProperty('is_indication_of_emptiness')">
                     <div
                       class="m_timeline--container--dates--day--emptinessPeriodLabel"
                       v-html="day.is_indication_of_emptiness"
                     />
                   </template>
-                  <template
-                    v-else-if="day.hasOwnProperty('is_empty')"
-                  ></template>
+                  <template v-else-if="day.hasOwnProperty('is_empty')"></template>
                   <template v-else>
                     <div class="m_timeline--container--dates--day--daylabel">
-                      <div
-                        class="m_timeline--container--dates--day--daylabel--container"
-                      >
+                      <div class="m_timeline--container--dates--day--daylabel--container">
                         <span>
                           {{ day.label }}
-                          <span v-if="day.number_of_medias > 0">{{
+                          <span v-if="day.number_of_medias > 0">
+                            {{
                             day.number_of_medias
-                          }}</span>
+                            }}
+                          </span>
                           <span v-else></span>
                         </span>
                       </div>
@@ -235,13 +224,8 @@
               </div>
             </div>
 
-            <div
-              v-if="sort.current.field !== 'date_timeline'"
-              class="m_filterIndicator"
-            >
-              <div
-                class="flex-wrap flex-vertically-centered flex-horizontally-start"
-              >
+            <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
+              <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
                 <button
                   type="button"
                   class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
