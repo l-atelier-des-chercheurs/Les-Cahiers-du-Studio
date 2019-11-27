@@ -1,22 +1,26 @@
 <template>
   <div class="m_sidebarList" :class="`m_sidebarList_${display}`">
-    <table class="margin-none border-none" :class="{ 'table-hoverable' : display === 'table' }">
+    <table
+      class="margin-none border-none"
+      :class="{ 'table-hoverable': display === 'table' }"
+    >
       <thead>
         <tr>
-          <th class="font-small padding-medium">{{ $t('preview') }}</th>
+          <th class="font-small padding-medium">{{ $t("preview") }}</th>
           <th>
             <select v-model="currentSort">
               <option
                 v-for="option in sort.available"
                 :value="option"
                 :key="option.name"
-              >{{ option.name }}</option>
+                >{{ option.name }}</option
+              >
             </select>
           </th>
           <th v-if="display === 'table'"></th>
         </tr>
         <tr>
-          <th class="font-small padding-medium">{{ $t('filter') }}</th>
+          <th class="font-small padding-medium">{{ $t("filter") }}</th>
           <th>
             <input type="text" v-model="currentFilter" />
           </th>
@@ -31,7 +35,10 @@
           @mouseleave="unHighlightMedia(media.slugMediaName)"
           @click.stop="scrollToMedia(media.slugMediaName)"
           class="m_sidebarList--media"
-          :class="[{ 'is--outOfScope' : mediaIsOutOfScope(media) }, 'color-' + media.color ]"
+          :class="[
+            { 'is--outOfScope': mediaIsOutOfScope(media) },
+            'color-' + media.color
+          ]"
           :title="media.slugMediaName"
         >
           <template v-if="display === 'table'">
@@ -46,13 +53,17 @@
                 :read_only="read_only"
               />
             </td>
-            <td class="font-small padding-small">{{ media_data_to_show(media) }}</td>
+            <td class="font-small padding-small">
+              {{ media_data_to_show(media) }}
+            </td>
             <td class="font-small padding-small">
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall flex-wrap flex-vertically-centered c-noir"
                 @click.stop="openMediaModal(media.slugMediaName)"
-              >{{ $t('open') }}</button>
+              >
+                {{ $t("open") }}
+              </button>
             </td>
           </template>
 
@@ -116,8 +127,16 @@ export default {
   },
   methods: {
     media_data_to_show(media) {
-      if (this.sort.current.type === "array") {
-        const array_items = media[this.sort.current.field].map(
+      if (
+        this.sort.current.type === "array" &&
+        media.hasOwnProperty(this.sort.current.field)
+      ) {
+        let media_prop = media[this.sort.current.field];
+        if (typeof media_prop === "string") {
+          media_prop = [{ [this.sort.current.field_name]: media_prop }];
+        }
+
+        const array_items = media_prop.map(
           a => a[this.sort.current.field_name]
         );
         return array_items.join(", ");

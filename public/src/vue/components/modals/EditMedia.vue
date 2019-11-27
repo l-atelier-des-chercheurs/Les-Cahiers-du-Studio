@@ -6,7 +6,9 @@
     @arrow_left="$eventHub.$emit('editmediamodal.previousmedia')"
     @arrow_right="$eventHub.$emit('editmediamodal.nextmedia')"
     :read_only="read_only"
-    :typeOfModal="media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'"
+    :typeOfModal="
+      media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'
+    "
     :askBeforeClosingModal="askBeforeClosingModal"
     :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
@@ -14,7 +16,7 @@
     :arrow_navigation="true"
   >
     <template slot="header">
-      <span class="text-cap">{{ $t('edit_the_media') }}</span>
+      <span class="text-cap">{{ $t("edit_the_media") }}</span>
       <br />
       <i>{{ media.media_filename }}</i>
     </template>
@@ -22,52 +24,74 @@
     <template slot="sidebar">
       <!-- Caption -->
       <div
-        v-if="(!read_only || !!mediadata.caption) && mediadata.type !== 'marker' && mediadata.type !== 'text'"
+        v-if="
+          (!read_only || !!mediadata.caption) &&
+            mediadata.type !== 'marker' &&
+            mediadata.type !== 'text'
+        "
         class="margin-bottom-small"
       >
-        <label>{{ $t('caption') }}</label>
+        <label>{{ $t("caption") }}</label>
         <br />
         <textarea v-model="mediadata.caption" :readonly="read_only"></textarea>
       </div>
 
       <div class="margin-bottom-small">
         <label>
-          {{ $t('date') }}
-          <small v-if="!read_only">{{ $t('for_the_placement_on_timeline') }}</small>
+          {{ $t("date") }}
+          <small v-if="!read_only">{{
+            $t("for_the_placement_on_timeline")
+          }}</small>
         </label>
-        <DateTime v-model="mediadata.date_timeline" :twowaybinding="true" :read_only="read_only"></DateTime>
+        <DateTime
+          v-model="mediadata.date_timeline"
+          :twowaybinding="true"
+          :read_only="read_only"
+        ></DateTime>
 
         <template v-if="!read_only">
-          <div class="margin-bottom-small" v-if="media.date_created !== undefined">
+          <div
+            class="margin-bottom-small"
+            v-if="media.date_created !== undefined"
+          >
             <small>
-              {{ $t('created_date') }}
+              {{ $t("created_date") }}
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline(media.date_created)"
-              >{{ date_created_human }}</button>
+              >
+                {{ date_created_human }}
+              </button>
             </small>
           </div>
 
-          <div class="margin-bottom-small" v-if="media.date_upload !== undefined">
+          <div
+            class="margin-bottom-small"
+            v-if="media.date_upload !== undefined"
+          >
             <small>
-              {{ $t('sent_date') }}
+              {{ $t("sent_date") }}
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline(media.date_upload)"
-              >{{ date_uploaded_human }}</button>
+              >
+                {{ date_uploaded_human }}
+              </button>
             </small>
           </div>
 
           <div class="margin-bottom-small" v-if="isRealtime">
             <small>
-              {{ $t('currently') }}
+              {{ $t("currently") }}
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline($root.currentTime)"
-              >{{ $root.currentTime_human }}</button>
+              >
+                {{ $root.currentTime_human }}
+              </button>
             </small>
           </div>
         </template>
@@ -97,19 +121,25 @@
       </div>-->
 
       <!-- Keywords -->
-      <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
-        <label>{{ $t('keywords') }}</label>
-        <textarea v-model="mediadata.keywords" :readonly="read_only"></textarea>
+      <div
+        v-if="!read_only || !!mediadata.keywords"
+        class="margin-bottom-small"
+      >
+        <label>{{ $t("keywords") }}</label>
+        <TagsInput
+          :keywords="mediadata.keywords"
+          @tagsChanged="newTags => (mediadata.keywords = newTags)"
+        />
       </div>
 
       <!-- Author(s) -->
       <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
-        <label>{{ $t('author') }}</label>
+        <label>{{ $t("author") }}</label>
         <AuthorsInput
           :currentAuthors="mediadata.authors"
           :allAuthors="allAuthors"
           :read_only="read_only"
-          @authorsChanged="newAuthors => mediadata.authors = newAuthors"
+          @authorsChanged="newAuthors => (mediadata.authors = newAuthors)"
         />
       </div>
 
@@ -123,7 +153,7 @@
             v-model="mediadata.public"
             :readonly="read_only"
           />
-          <label for="publicswitch">{{ $t('public') }}</label>
+          <label for="publicswitch">{{ $t("public") }}</label>
         </span>
       </div>
 
@@ -137,7 +167,12 @@
           :disabled="read_only"
           v-if="!read_only"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="49"
+            height="49"
+            viewBox="0 0 49 49"
+          >
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -193,7 +228,7 @@
             </g>
           </svg>
 
-          <span class="text-cap font-verysmall">{{ $t('remove') }}</span>
+          <span class="text-cap font-verysmall">{{ $t("remove") }}</span>
         </button>
 
         <button
@@ -202,7 +237,12 @@
           @click.prevent="printMedia()"
           v-if="!read_only"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="49"
+            height="49"
+            viewBox="0 0 49 49"
+          >
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -271,12 +311,15 @@
               </g>
             </g>
           </svg>
-          <span class="text-cap font-verysmall">{{ $t('print') }}</span>
+          <span class="text-cap font-verysmall">{{ $t("print") }}</span>
         </button>
 
         <template v-if="showQRModal">
           <hr />
-          <CreateQRCode :slugFolderName="slugFolderName" :media_filename="media.media_filename" />
+          <CreateQRCode
+            :slugFolderName="slugFolderName"
+            :media_filename="media.media_filename"
+          />
         </template>
 
         <button
@@ -347,9 +390,18 @@
           :title="media.media_filename"
           target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
-          v-if="$root.state.mode !== 'export_web' || ($root.state.hasOwnProperty('export_options') && $root.state.export_options.allow_download !== 'false')"
+          v-if="
+            $root.state.mode !== 'export_web' ||
+              ($root.state.hasOwnProperty('export_options') &&
+                $root.state.export_options.allow_download !== 'false')
+          "
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="49"
+            height="49"
+            viewBox="0 0 49 49"
+          >
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -386,14 +438,14 @@
               </g>
             </g>
           </svg>
-          <span class="text-cap font-verysmall">{{ $t('download') }}</span>
+          <span class="text-cap font-verysmall">{{ $t("download") }}</span>
         </a>
       </div>
     </template>
 
     <template slot="submit_button">
-      <template v-if="!alt_key_is_pressed">{{ $t('save_and_close') }}</template>
-      <template v-else>{{ $t('save') }}</template>
+      <template v-if="!alt_key_is_pressed">{{ $t("save_and_close") }}</template>
+      <template v-else>{{ $t("save") }}</template>
     </template>
 
     <template slot="preview">
@@ -415,6 +467,7 @@ import alertify from "alertify.js";
 import MediaContent from "../subcomponents/MediaContent.vue";
 import DateTime from "../subcomponents/DateTime.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
+import TagsInput from "../subcomponents/TagsInput.vue";
 import CreateQRCode from "./../qr/CreateQRCode.vue";
 
 export default {
@@ -438,6 +491,7 @@ export default {
     DateTime,
     MediaContent,
     AuthorsInput,
+    TagsInput,
     CreateQRCode
   },
   data() {
@@ -448,7 +502,12 @@ export default {
         // color: this.media.color,
         authors: this.media.authors,
         caption: this.media.caption,
-        keywords: this.media.keywords,
+        keywords:
+          typeof this.media.keywords === "Array"
+            ? this.media.keywords
+            : typeof this.media.keywords === "string"
+            ? [{ title: this.media.keywords }]
+            : [],
         public: this.media.public,
         content: this.media.content
       },
@@ -565,5 +624,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

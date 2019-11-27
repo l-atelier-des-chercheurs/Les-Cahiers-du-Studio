@@ -89,36 +89,31 @@
                 type="button"
                 @click.stop.prevent="toggleSidebar('options')"
               >
-                <span>
-                  {{ $t("options") }}
-                  <template v-if="$root.settings.sidebar_type === 'options'"
-                    >&nbsp;×</template
-                  >
-                </span>
-                <!-- <template v-else>→</template> -->
+                <span
+                  v-if="$root.settings.sidebar_type === 'options'"
+                  v-html="`&nbsp;×` + $t('options')"
+                />
+                <span v-else v-html="$t('options')" />
               </button>
 
               <button
+                v-if="$root.settings.has_sidebar_opened"
                 type="button"
                 class="m_verticalButtons--slider"
-                v-if="$root.settings.has_sidebar_opened"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
-              >
-                |||
-              </button>
+                v-html="'|||'"
+              />
 
               <button
                 type="button"
                 @click.stop.prevent="toggleSidebar('journal')"
               >
-                <span>
-                  {{ $t("journal") }}
-                  <template v-if="$root.settings.sidebar_type === 'journal'"
-                    >&nbsp;×</template
-                  >
-                </span>
-                <!-- <template v-else>→</template> -->
+                <span
+                  v-if="$root.settings.sidebar_type === 'journal'"
+                  v-html="`&nbsp;×` + $t('journal')"
+                />
+                <span v-else v-html="$t('journal')" />
               </button>
             </div>
           </div>
@@ -136,8 +131,8 @@
         <Pane
           class="splitter-pane splitter-paneR"
           :class="{ 'is--dragged': is_dragged }"
+          :style="{ [type]: `100 - ${percent} %` }"
           :split="split"
-          :style="{ [type]: 100 - percent + '%' }"
         >
           <div class="m_floater" @wheel="onMousewheel">
             <div>{{ visible_day_human }}</div>
@@ -581,9 +576,11 @@ export default {
         } else if (current_sort.type === "alph") {
           mediaDataToOrderBy = media[current_sort.field].toLowerCase();
         } else if (current_sort.type === "array") {
-          mediaDataToOrderBy = media[current_sort.field].map(
-            a => a[current_sort.field_name]
-          );
+          let media_prop = media[current_sort.field];
+          if (typeof media_prop === "string") {
+            media_prop = [{ [current_sort.field_name]: media_prop }];
+          }
+          mediaDataToOrderBy = media_prop.map(a => a[current_sort.field_name]);
         }
 
         sortable.push({
@@ -615,9 +612,14 @@ export default {
         if (this.filter.length > 0) {
           // if there is a filter set, let’s only return medias whose mediaDataToOrderBy contain that string
           if (current_sort.type === "array") {
-            let originalContentFromMedia = sortedMediaObj[
-              current_sort.field
-            ].map(a => a[current_sort.field_name]);
+            let media_prop = sortedMediaObj[current_sort.field];
+            if (typeof media_prop === "string") {
+              media_prop = [{ [current_sort.field_name]: media_prop }];
+            }
+
+            let originalContentFromMedia = media_prop.map(
+              a => a[current_sort.field_name]
+            );
 
             // search even for part of the word — problem: looking for Marie and not Marie-Claire wouldn’t be possible
             // myArr.findIndex(v ==> v.contains("oran"));

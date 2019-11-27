@@ -145,7 +145,7 @@
             "type": "array"
           },
           "keywords": {
-            "type": "string"
+            "type": "array"
           },
           "y": {
             "type": "number",
