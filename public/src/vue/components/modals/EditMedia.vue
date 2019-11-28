@@ -39,46 +39,34 @@
       <div class="margin-bottom-small">
         <label>
           {{ $t("date") }}
-          <small v-if="!read_only">{{
+          <small v-if="!read_only">
+            {{
             $t("for_the_placement_on_timeline")
-          }}</small>
+            }}
+          </small>
         </label>
-        <DateTime
-          v-model="mediadata.date_timeline"
-          :twowaybinding="true"
-          :read_only="read_only"
-        ></DateTime>
+        <DateTime v-model="mediadata.date_timeline" :twowaybinding="true" :read_only="read_only"></DateTime>
 
         <template v-if="!read_only">
-          <div
-            class="margin-bottom-small"
-            v-if="media.date_created !== undefined"
-          >
+          <div class="margin-bottom-small" v-if="media.date_created !== undefined">
             <small>
               {{ $t("created_date") }}
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline(media.date_created)"
-              >
-                {{ date_created_human }}
-              </button>
+              >{{ date_created_human }}</button>
             </small>
           </div>
 
-          <div
-            class="margin-bottom-small"
-            v-if="media.date_upload !== undefined"
-          >
+          <div class="margin-bottom-small" v-if="media.date_upload !== undefined">
             <small>
               {{ $t("sent_date") }}
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline(media.date_upload)"
-              >
-                {{ date_uploaded_human }}
-              </button>
+              >{{ date_uploaded_human }}</button>
             </small>
           </div>
 
@@ -89,9 +77,7 @@
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline($root.currentTime)"
-              >
-                {{ $root.currentTime_human }}
-              </button>
+              >{{ $root.currentTime_human }}</button>
             </small>
           </div>
         </template>
@@ -121,10 +107,7 @@
       </div>-->
 
       <!-- Keywords -->
-      <div
-        v-if="!read_only || !!mediadata.keywords"
-        class="margin-bottom-small"
-      >
+      <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
         <label>{{ $t("keywords") }}</label>
         <TagsInput
           :keywords="mediadata.keywords"
@@ -167,12 +150,7 @@
           :disabled="read_only"
           v-if="!read_only"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="49"
-            height="49"
-            viewBox="0 0 49 49"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -237,12 +215,7 @@
           @click.prevent="printMedia()"
           v-if="!read_only"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="49"
-            height="49"
-            viewBox="0 0 49 49"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -316,10 +289,7 @@
 
         <template v-if="showQRModal">
           <hr />
-          <CreateQRCode
-            :slugFolderName="slugFolderName"
-            :media_filename="media.media_filename"
-          />
+          <CreateQRCode :slugFolderName="slugFolderName" :media_filename="media.media_filename" />
         </template>
 
         <button
@@ -396,12 +366,7 @@
                 $root.state.export_options.allow_download !== 'false')
           "
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="49"
-            height="49"
-            viewBox="0 0 49 49"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -503,7 +468,7 @@ export default {
         authors: this.media.authors,
         caption: this.media.caption,
         keywords:
-          typeof this.media.keywords === "Array"
+          typeof this.media.keywords === "object"
             ? this.media.keywords
             : typeof this.media.keywords === "string"
             ? [{ title: this.media.keywords }]

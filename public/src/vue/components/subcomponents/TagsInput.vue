@@ -7,9 +7,7 @@
       @click="removeTag(tag.text)"
       class="can_be_removed"
       :class="['tagcolorid_' + (parseInt(tag.text, 36) % 2)]"
-    >
-      {{ tag.text }}
-    </button>
+    >{{ tag.text }}</button>
 
     <div class="new-tag-input-wrapper" :key="'new-tag-input'">
       <input
@@ -19,29 +17,16 @@
         :placeholder="$t('add_keyword')"
         @keydown.enter.prevent="createTag"
       />
-      <button
-        type="button"
-        @click="createTag"
-        :disabled="disableAddButton"
-        v-if="tag.length > 0"
-      >
-        +
-      </button>
+      <button type="button" @click="createTag" :disabled="disableAddButton" v-if="tag.length > 0">+</button>
     </div>
-    <div
-      v-if="matchingKeywords.length > 0"
-      class="autocomplete"
-      :key="'autocomplete'"
-    >
+    <div v-if="matchingKeywords.length > 0" class="autocomplete" :key="'autocomplete'">
       <button
         type="button"
         v-for="keyword in matchingKeywords"
         :key="keyword.text"
         class="tag"
         @click="createTagFromAutocomplete(keyword.text)"
-      >
-        {{ keyword.text }}
-      </button>
+      >{{ keyword.text }}</button>
     </div>
   </transition-group>
 </template>
@@ -67,7 +52,6 @@ export default {
 
   created() {},
   mounted() {
-    debugger;
     if (this.tags.length > 0) {
       this.updateTags(this.tags);
     }
