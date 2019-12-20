@@ -29,7 +29,9 @@
           </svg>
 
           <div>
-            › <i>Les Cahiers du Studio</i><br />
+            ›
+            <i>Les Cahiers du Studio</i>
+            <br />
             <small>v{{ $root.state.appVersion }}</small>
           </div>
         </div>
@@ -49,9 +51,7 @@
       {{ $t("notifications.contents_wont_be_editable") }}
     </div>
 
-    <section
-      class="flex-wrap flex-vertically-start limited-width padding-vert-medium"
-    >
+    <section class="flex-wrap flex-vertically-start limited-width padding-vert-medium">
       <div
         class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-large"
       >
@@ -61,66 +61,50 @@
 
         <div class="border border-top-dashed">
           <div class="margin-vert-medium">
-            <label class="margin-none text-cap with-bullet">
-              {{ $t("sort_by") }}
-            </label>
+            <label class="margin-none text-cap with-bullet">{{ $t("sort_by") }}</label>
             <div class="margin-sides-negative-small">
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="(sort.type = 'alph'), (sort.field = 'name')"
                 :class="{ 'is--active': sort.field === 'name' }"
-              >
-                {{ $t("name") }}
-              </button>
+              >{{ $t("name") }}</button>
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="(sort.type = 'date'), (sort.field = 'created')"
                 :class="{ 'is--active': sort.field === 'created' }"
-              >
-                {{ $t("created_date") }}
-              </button>
+              >{{ $t("created_date") }}</button>
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="(sort.type = 'date'), (sort.field = 'start')"
                 :class="{ 'is--active': sort.field === 'start' }"
-              >
-                {{ $t("start_date") }}
-              </button>
+              >{{ $t("start_date") }}</button>
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="(sort.type = 'date'), (sort.field = 'end')"
                 :class="{ 'is--active': sort.field === 'end' }"
-              >
-                {{ $t("end_date") }}
-              </button>
+              >{{ $t("end_date") }}</button>
             </div>
           </div>
 
           <div class="margin-vert-small">
-            <label class="margin-none text-cap with-bullet">
-              {{ $t("in_the_order") }}
-            </label>
+            <label class="margin-none text-cap with-bullet">{{ $t("in_the_order") }}</label>
             <div class="margin-sides-negative-small">
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="sort.order = 'ascending'"
                 :class="{ 'is--active': sort.order === 'ascending' }"
-              >
-                {{ $t("ascending") }}
-              </button>
+              >{{ $t("ascending") }}</button>
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="sort.order = 'descending'"
                 :class="{ 'is--active': sort.order === 'descending' }"
-              >
-                {{ $t("descending") }}
-              </button>
+              >{{ $t("descending") }}</button>
             </div>
           </div>
         </div>
@@ -132,9 +116,7 @@
                 v-for="(name, code) in $root.lang.available"
                 :value="code"
                 :key="code"
-              >
-                {{ name }}
-              </option>
+              >{{ name }}</option>
             </select>
           </div>
         </div>
@@ -144,8 +126,7 @@
         v-if="showCreateFolderModal"
         @close="showCreateFolderModal = false"
         :read_only="read_only"
-      >
-      </CreateFolder>
+      ></CreateFolder>
 
       <transition-group
         tag="div"
@@ -158,9 +139,7 @@
           :disabled="read_only"
           :key="'createButton'"
         >
-          <span class="margin-medium">
-            {{ $t("create_a_folder") }}
-          </span>
+          <span class="margin-medium">{{ $t("create_a_folder") }}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="46.99"
@@ -202,8 +181,7 @@
               :folder="folders[sortedFolder.slugFolderName]"
               :read_only="read_only"
               :sort_field="sort.field"
-            >
-            </Folder>
+            ></Folder>
           </div>
         </template>
       </transition-group>
