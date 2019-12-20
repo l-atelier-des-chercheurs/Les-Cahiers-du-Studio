@@ -28,6 +28,17 @@
 
       <div class="draggabilly_handle" @click="openMedia" />
 
+      <div
+        v-if="!!media.caption"
+        class="packery-item-content--caption"
+        :class="{ 'is--expanded' : is_captionHovered }"
+        @mouseenter="is_captionHovered = true"
+        @mouseleave="is_captionHovered = false"
+        @click="openMedia"
+      >
+        <span :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : 3 }`">{{ media.caption }}</span>
+      </div>
+
       <!-- <template v-if="is_hovered">
         <div class="buttons_right">
           <button type="button" @click="changeItemWidth(1)">
@@ -102,6 +113,7 @@ export default {
   data() {
     return {
       is_hovered: false,
+      is_captionHovered: false,
       mediaSize: {
         width: undefined,
         height: undefined,
@@ -446,6 +458,44 @@ export default {
       // padding-top:.5em;
       // border-top: 1px solid black;
       margin: 0 10px;
+    }
+  }
+
+  .packery-item-content--caption {
+    $t-unstick_from_borders: 5px;
+
+    position: absolute;
+    top: $t-unstick_from_borders;
+    left: $t-unstick_from_borders;
+    right: $t-unstick_from_borders;
+    max-height: calc(100% - #{$t-unstick_from_borders} * 2);
+    z-index: 1;
+
+    line-height: 1.2;
+    font-size: 70%;
+    // overflow: hidden;
+
+    span {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.4);
+      background-color: var(--author-color);
+
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+
+      display: -webkit-inline-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+
+      padding: 2px;
+      border-radius: 2px;
+    }
+
+    &.is--expanded {
+      span {
+        -webkit-line-clamp: 10 !important;
+      }
     }
   }
 

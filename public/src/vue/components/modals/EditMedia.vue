@@ -33,7 +33,11 @@
       >
         <label>{{ $t("caption") }}</label>
         <br />
-        <textarea v-model="mediadata.caption" :readonly="read_only"></textarea>
+        <textarea
+          :class="{ 'is--tall' :  !!media.caption }"
+          v-model="mediadata.caption"
+          :readonly="read_only"
+        ></textarea>
       </div>
 
       <div class="margin-bottom-small">
