@@ -470,6 +470,7 @@ export default {
     right: $t-unstick_from_borders;
     max-height: calc(100% - #{$t-unstick_from_borders} * 2);
     z-index: 1;
+    overflow: hidden;
 
     line-height: 1.2;
     font-size: 70%;
@@ -494,7 +495,7 @@ export default {
 
     &.is--expanded {
       span {
-        -webkit-line-clamp: 10 !important;
+        -webkit-line-clamp: 6 !important;
       }
     }
   }
