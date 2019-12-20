@@ -36,7 +36,9 @@
         @mouseleave="is_captionHovered = false"
         @click="openMedia"
       >
-        <span :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : 3 }`">{{ media.caption }}</span>
+        <span
+          :style="` /* -webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : 3 } */`"
+        >{{ media.caption }}</span>
       </div>
 
       <!-- <template v-if="is_hovered">
@@ -470,11 +472,10 @@ export default {
     right: $t-unstick_from_borders;
     max-height: calc(100% - #{$t-unstick_from_borders} * 2);
     z-index: 1;
-    overflow: hidden;
+    overflow: visible;
 
     line-height: 1.2;
     font-size: 70%;
-    // overflow: hidden;
 
     span {
       display: inline-block;
@@ -486,16 +487,20 @@ export default {
 
       display: -webkit-inline-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 1;
       overflow: hidden;
 
       padding: 2px;
       border-radius: 2px;
+
+      box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.35);
+
+      transition: all 0.4s ease;
     }
 
     &.is--expanded {
       span {
-        -webkit-line-clamp: 6 !important;
+        -webkit-line-clamp: 4 !important;
       }
     }
   }
