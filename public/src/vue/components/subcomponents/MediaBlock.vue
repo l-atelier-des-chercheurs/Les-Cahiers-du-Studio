@@ -36,9 +36,7 @@
         @mouseleave="is_captionHovered = false"
         @click="openMedia"
       >
-        <span
-          :style="` /* -webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : 3 } */`"
-        >{{ media.caption }}</span>
+        <span :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : '' }`">{{ media.caption }}</span>
       </div>
 
       <!-- <template v-if="is_hovered">
@@ -277,10 +275,10 @@ export default {
       this.mediaSize.height += increment;
     },
     limitMediaWidth(w) {
-      return Math.max(1, Math.min(12, w));
+      return Math.max(2, Math.min(12, w));
     },
     limitMediaHeight(h) {
-      return Math.max(1, Math.min(12, h));
+      return Math.max(2, Math.min(12, h));
     },
     openMedia() {
       if (this.$root.state.dev_mode === "debug") {
@@ -481,6 +479,7 @@ export default {
       display: inline-block;
       background-color: rgba(255, 255, 255, 0.4);
       background-color: var(--author-color);
+      max-width: 100%;
 
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
@@ -554,6 +553,8 @@ export default {
           .plyr__controls {
             position: absolute;
             background: transparent;
+            bottom: 0;
+            margin: 0;
           }
 
           .plyr__control {
