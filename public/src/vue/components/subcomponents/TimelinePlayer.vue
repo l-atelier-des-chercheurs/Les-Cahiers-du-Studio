@@ -49,7 +49,6 @@ export default {
     },
     playing({ plyr: player, metaFileName, name, thumb }) {
       console.log("METHODS • TimelinePlayer: playing");
-      debugger;
       const existing_player = this.active_players.find(
         p => p.metaFileName === metaFileName
       );

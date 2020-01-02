@@ -335,7 +335,6 @@ export default {
   },
   methods: {
     playing(event) {
-      debugger;
       this.$eventHub.$emit("timelineplayer.playing", {
         plyr: event.detail.plyr,
         metaFileName: this.media.metaFileName,
