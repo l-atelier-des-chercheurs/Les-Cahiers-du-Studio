@@ -482,6 +482,9 @@ export default {
     this.$eventHub.$off("hidingAddmdiaOptions", this.hidingAddmediaOptions);
 
     window.removeEventListener("resize", this.onResize);
+
+    this.$root.settings.has_sidebar_opened = false;
+    this.$root.settings.sidebar_type = "";
   },
   watch: {
     translation: function() {
