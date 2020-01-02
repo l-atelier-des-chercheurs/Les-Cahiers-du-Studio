@@ -114,7 +114,8 @@
       <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
         <label>{{ $t("keywords") }}</label>
         <TagsInput
-          :keywords="mediadata.keywords"
+          :keywords="!!mediadata.keywords ? mediadata.keywords : []"
+          :read_only="read_only"
           @tagsChanged="newTags => (mediadata.keywords = newTags)"
         />
       </div>
@@ -475,7 +476,7 @@ export default {
         keywords:
           typeof this.media.keywords === "object"
             ? this.media.keywords
-            : typeof this.media.keywords === "string"
+            : typeof this.media.keywords === "string" && !!this.media.keywords
             ? [{ title: this.media.keywords }]
             : [],
         public: this.media.public,

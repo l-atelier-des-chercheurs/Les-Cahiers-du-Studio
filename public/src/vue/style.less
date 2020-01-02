@@ -540,7 +540,7 @@ video {
   position: relative;
   .margin-bottom-verysmall;
   margin-bottom: 0;
-  font-size: 60%;
+  .font-small;
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
@@ -1171,6 +1171,7 @@ video {
   flex-flow: row wrap;
   text-transform: initial;
 
+  .font-small;
   font-weight: 200;
 
   > button,
@@ -1353,6 +1354,11 @@ video {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+}
+
+.quillWrapper .ql-container.ql-disabled {
+  opacity: 1;
+  cursor: default;
 }
 
 .vue-splitter-container {

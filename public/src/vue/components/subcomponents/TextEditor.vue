@@ -71,6 +71,10 @@ export default {
 
     this.editor.root.innerHTML = this.value;
 
+    if (this.$root.state.mode === "export_web") {
+      this.editor.disable();
+    }
+
     this.$nextTick(() => {
       if (this.enable_collaboration) {
         // set connection to sharedb / wss
@@ -93,7 +97,7 @@ export default {
   },
   watch: {
     read_only: function() {
-      if (this.read_only) {
+      if (!this.read_only) {
         this.editor.enable();
       } else {
         this.editor.disable();

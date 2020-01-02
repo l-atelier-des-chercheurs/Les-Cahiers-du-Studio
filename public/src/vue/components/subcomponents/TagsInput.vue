@@ -9,7 +9,7 @@
       :class="['tagcolorid_' + (parseInt(tag.text, 36) % 2)]"
     >{{ tag.text }}</button>
 
-    <div class="new-tag-input-wrapper" :key="'new-tag-input'">
+    <div class="new-tag-input-wrapper" v-if="!read_only" :key="'new-tag-input'">
       <input
         type="text"
         class="new-tag-input"
@@ -35,7 +35,8 @@ import { VueTagsInput, createTags } from "@johmun/vue-tags-input";
 
 export default {
   props: {
-    keywords: Array
+    keywords: Array,
+    read_only: Boolean
   },
   components: {
     VueTagsInput
