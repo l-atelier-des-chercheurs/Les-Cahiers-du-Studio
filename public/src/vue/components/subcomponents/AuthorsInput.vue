@@ -33,9 +33,7 @@ export default {
   components: {},
   data() {
     return {
-      authors: Array.isArray(this.currentAuthors)
-        ? this.currentAuthors
-        : [this.currentAuthors]
+      authors: Array.isArray(this.currentAuthors) ? this.currentAuthors : []
     };
   },
 

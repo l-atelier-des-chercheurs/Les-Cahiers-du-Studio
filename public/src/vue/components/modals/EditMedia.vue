@@ -128,6 +128,7 @@
           :read_only="read_only"
           @authorsChanged="newAuthors => (mediadata.authors = newAuthors)"
         />
+        <small v-html="$t(author_instructions)" />
       </div>
 
       <!-- Public or private -->

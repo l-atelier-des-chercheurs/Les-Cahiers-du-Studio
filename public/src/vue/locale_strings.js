@@ -37,6 +37,8 @@ module.exports = (function() {
       journal: "Journal",
       on_import_place_media_on_the_date_they_were_created:
         "À l’importation de médias, le placement se fait selon la date de création du fichier et non la date d’importation",
+      author_instructions:
+        "Pour ajouter des auteurs, fermez cette fenêtre et cliquez sur le bouton <i>s’identifier</i>.",
 
       loading: "chargement",
       open: "Ouvrir",
@@ -195,6 +197,8 @@ module.exports = (function() {
       journal: "Journal",
       on_import_place_media_on_the_date_they_were_created:
         "On media import, place them according to the file creation date and not the importation date",
+      author_instructions:
+        "To create authors, close this window and click on <i>login</i>.",
 
       loading: "loading",
       open: "Open",
