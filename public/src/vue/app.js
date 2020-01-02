@@ -538,8 +538,6 @@ let vm = new Vue({
         a => a.hasOwnProperty("name") && !!a.name
       );
 
-      debugger;
-
       if (
         !first_media_author ||
         !Array.isArray(folder.authors) ||

@@ -128,7 +128,10 @@
           :split="split"
         >
           <div class="m_floater" @wheel="onMousewheel">
-            <div>{{ visible_day_human }}</div>
+            <div>
+              <span>{{ visible_day_human }}</span>
+              <TimelinePlayer />
+            </div>
           </div>
 
           <div
@@ -307,6 +310,7 @@ import EditMedia from "./components/modals/EditMedia.vue";
 import WriteUp from "./components/WriteUp.vue";
 import Resizer from "./components/splitpane/Resizer.vue";
 import Pane from "./components/splitpane/Pane.vue";
+import TimelinePlayer from "./components/subcomponents/TimelinePlayer.vue";
 
 import debounce from "debounce";
 
@@ -325,7 +329,8 @@ export default {
     Sidebar,
     EditFolder,
     Resizer,
-    Pane
+    Pane,
+    TimelinePlayer
   },
   data() {
     return {
@@ -1702,25 +1707,29 @@ export default {
   }
 
   > * {
-    display: inline-flex;
-    margin: 0 auto;
+    display: block;
+    margin: 5px auto;
     // max-width: auto;
-    height: 40px;
-    background-color: var(--color-noir);
-    color: white;
-    pointer-events: auto;
-    border-radius: 20px;
-    padding: 0 20px;
 
-    align-content: center;
-    justify-content: center;
-    align-items: center;
+    > * {
+      display: inline-flex;
+      height: 40px;
+      background-color: var(--color-noir);
+      color: white;
+      pointer-events: auto;
+      border-radius: 20px;
+      padding: 0 20px;
 
-    @media screen and (max-width: 50rem) {
-      width: 100%;
-      max-width: none;
-      border-radius: 0;
-      height: 20px;
+      align-items: center;
+      align-content: center;
+      justify-content: center;
+
+      @media screen and (max-width: 50rem) {
+        width: 100%;
+        max-width: none;
+        border-radius: 0;
+        height: 20px;
+      }
     }
   }
 }

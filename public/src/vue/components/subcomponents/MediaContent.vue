@@ -12,7 +12,13 @@
 
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
-        <vue-plyr :options="plyr_options['preview']">
+        <vue-plyr
+          :options="plyr_options['preview']"
+          :emit="['playing','pause','ended']"
+          @playing="playing"
+          @pause="pause"
+          @ended="ended"
+        >
           <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" />
         </vue-plyr>
       </template>
@@ -25,7 +31,13 @@
 
     <template v-else-if="media.type === 'audio'">
       <template v-if="context === 'preview'">
-        <vue-plyr :options="plyr_options['preview']">
+        <vue-plyr
+          :options="plyr_options['preview']"
+          :emit="['playing','pause','ended']"
+          @playing="playing"
+          @pause="pause"
+          @ended="ended"
+        >
           <audio :src="mediaURL" preload="none" />
         </vue-plyr>
       </template>
@@ -321,6 +333,25 @@ export default {
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     }
   },
-  methods: {}
+  methods: {
+    playing(event) {
+      this.$eventHub.$emit("timelineplayer.playing", {
+        plyr: event.detail.plyr,
+        metaFileName: this.media.metaFileName
+      });
+    },
+    pause(event) {
+      this.$eventHub.$emit("timelineplayer.pause", {
+        plyr: event.detail.plyr,
+        metaFileName: this.media.metaFileName
+      });
+    },
+    ended(event) {
+      this.$eventHub.$emit("timelineplayer.ended", {
+        plyr: event.detail.plyr,
+        metaFileName: this.media.metaFileName
+      });
+    }
+  }
 };
 </script>

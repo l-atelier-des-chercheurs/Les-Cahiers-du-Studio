@@ -63,7 +63,6 @@ export default {
           name: authorName
         });
       }
-      debugger;
       this.$emit("authorsChanged", this.authors);
     }
   }
