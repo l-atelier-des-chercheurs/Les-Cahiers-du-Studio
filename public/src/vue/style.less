@@ -82,11 +82,16 @@ body {
     background: @c-noir;
   }
   .plyr__control--overlaid {
-    background: fade(@c-noir, 80%);
+    background: @c-noir_light;
   }
 
   .plyr__controls {
-    background: linear-gradient(fade(@c-noir, 0%), fade(@c-noir, 70%));
+    // background: linear-gradient(fade(@c-noir, 0%), fade(@c-noir, 50%));
+    background: @c-noir_light;
+    color: #eee;
+    padding: 5px 10px 5px 5px;
+    margin: 10px;
+    border-radius: 5px;
   }
 }
 

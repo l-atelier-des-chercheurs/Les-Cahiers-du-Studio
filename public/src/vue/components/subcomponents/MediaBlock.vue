@@ -505,6 +505,10 @@ export default {
     }
   }
 
+  .plyr__controls {
+    color: var(--color-noir);
+  }
+
   .author_indicator {
     $t-button_size: 5px;
 

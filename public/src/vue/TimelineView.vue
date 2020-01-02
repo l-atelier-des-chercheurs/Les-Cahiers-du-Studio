@@ -1685,8 +1685,9 @@ export default {
   bottom: 40px;
   width: 100%;
   z-index: 150;
-  font-size: 0.85em;
+  // font-size: 0.85em;
   line-height: 1.25;
+  text-align: center;
 
   pointer-events: none;
 
@@ -1701,15 +1702,16 @@ export default {
   }
 
   > * {
+    display: inline-flex;
     margin: 0 auto;
-    max-width: 250px;
+    // max-width: auto;
     height: 40px;
     background-color: var(--color-noir);
     color: white;
     pointer-events: auto;
     border-radius: 20px;
+    padding: 0 20px;
 
-    display: flex;
     align-content: center;
     justify-content: center;
     align-items: center;
