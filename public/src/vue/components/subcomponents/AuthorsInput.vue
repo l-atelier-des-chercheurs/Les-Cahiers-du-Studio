@@ -23,7 +23,7 @@
 <script>
 export default {
   props: {
-    currentAuthors: Array,
+    currentAuthors: [Array, String],
     allAuthors: Array,
     read_only: {
       type: Boolean,
@@ -33,10 +33,9 @@ export default {
   components: {},
   data() {
     return {
-      authors:
-        this.currentAuthors !== undefined && this.currentAuthors !== ""
-          ? this.currentAuthors
-          : []
+      authors: Array.isArray(this.currentAuthors)
+        ? this.currentAuthors
+        : [this.currentAuthors]
     };
   },
 
@@ -49,7 +48,7 @@ export default {
     allAuthorsExceptWhenReadOnly() {
       if (this.read_only) {
         return this.allAuthors.filter(a =>
-          this.currentAuthors.map(a => a.name).includes(a.name)
+          this.authors.map(a => a.name).includes(a.name)
         );
       } else {
         return this.allAuthors;
@@ -66,6 +65,7 @@ export default {
           name: authorName
         });
       }
+      debugger;
       this.$emit("authorsChanged", this.authors);
     }
   }

@@ -530,22 +530,25 @@ let vm = new Vue({
       return false;
     },
     mediaFirstAuthor(media, folder) {
-      if (!media.hasOwnProperty("authors")) {
+      if (!media.hasOwnProperty("authors") || !Array.isArray(media.authors)) {
         return false;
       }
 
-      const media_authors = media.authors;
+      const first_media_author = media.authors.find(
+        a => a.hasOwnProperty("name") && !!a.name
+      );
+
+      debugger;
+
       if (
-        typeof media_authors !== "object" ||
-        media_authors.length == 0 ||
-        typeof folder.authors !== "object" ||
-        folder.authors.length == 0
-      ) {
+        !first_media_author ||
+        !Array.isArray(folder.authors) ||
+        folder.authors.length === 0
+      )
         return false;
-      }
 
       const full_authors_info = folder.authors.filter(
-        a => a.name === media_authors[0].name
+        a => a.name === first_media_author.name
       );
       if (full_authors_info.length == 0) {
         return false;
