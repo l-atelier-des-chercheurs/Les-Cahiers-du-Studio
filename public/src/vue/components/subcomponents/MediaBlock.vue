@@ -487,7 +487,7 @@ export default {
 
       display: -webkit-inline-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 1;
+      -webkit-line-clamp: 2;
       overflow: hidden;
 
       padding: 2px;

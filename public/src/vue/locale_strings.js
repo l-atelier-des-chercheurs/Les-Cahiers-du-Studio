@@ -63,6 +63,8 @@ module.exports = (function() {
       not_connected: "Non connecté(s)",
       author_connected: "Auteurs connectés",
       no_medias_sent_yet: "Aucun média à afficher",
+      show: "Afficher",
+      stop_playback: "arrêter la lecture",
 
       "lang:": "Changer la langue&nbsp;:",
       lang: "Changer la langue",
@@ -223,6 +225,8 @@ module.exports = (function() {
       not_connected: "Not connected",
       author_connected: "Connected author",
       no_medias_sent_yet: "No media to show",
+      show: "Show",
+      stop_playback: "stop playback",
 
       "lang:": "Select lang:",
       lang: "Select lang",

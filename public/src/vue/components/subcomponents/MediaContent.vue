@@ -335,9 +335,12 @@ export default {
   },
   methods: {
     playing(event) {
+      debugger;
       this.$eventHub.$emit("timelineplayer.playing", {
         plyr: event.detail.plyr,
-        metaFileName: this.media.metaFileName
+        metaFileName: this.media.metaFileName,
+        thumb: this.media.type === "video" ? this.linkToVideoThumb : false,
+        name: this.media.media_filename
       });
     },
     pause(event) {

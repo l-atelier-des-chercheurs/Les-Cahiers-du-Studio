@@ -130,8 +130,9 @@
           <div class="m_floater" @wheel="onMousewheel">
             <div>
               <span>{{ visible_day_human }}</span>
-              <TimelinePlayer />
             </div>
+            <TimelinePlayer />
+            <div></div>
           </div>
 
           <div
