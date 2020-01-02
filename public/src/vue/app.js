@@ -616,40 +616,38 @@ let vm = new Vue({
       return this.$moment(this.currentTime).startOf("day");
     },
     allKeywords() {
-      let allKeywords = [];
-      for (let slugFolderName in this.store.folders) {
-        const folder = this.store.folders[slugFolderName];
-        let folderKeywords = folder.keywords;
-        if (!!folderKeywords) {
-          folderKeywords.map(val => {
-            allKeywords.push(val.title);
-          });
-        }
-        if (
-          folder.hasOwnProperty("medias") &&
-          Object.keys(folder.medias).length > 0
-        ) {
-          Object.values(folder.medias).map(m => {
-            if (
-              m.hasOwnProperty("keywords") &&
-              typeof m.keywords === "object" &&
-              m.keywords.length > 0
-            ) {
-              allKeywords = allKeywords.concat(m.keywords.map(k => k.title));
-            }
-          });
-        }
+      if (Object.keys(this.currentFolder).length === 0) {
+        return [];
       }
-      allKeywords = allKeywords.filter(function(item, pos) {
-        return allKeywords.indexOf(item) == pos;
-      });
 
-      return allKeywords.map(kw => {
-        return {
-          text: kw,
-          classes: "tagcolorid_" + (parseInt(kw, 36) % 2)
-        };
-      });
+      let allKeywords = [];
+
+      if (
+        this.currentFolder.hasOwnProperty("medias") &&
+        Object.keys(this.currentFolder.medias).length > 0
+      ) {
+        Object.values(this.currentFolder.medias).map(m => {
+          if (
+            m.hasOwnProperty("keywords") &&
+            typeof m.keywords === "object" &&
+            m.keywords.length > 0
+          ) {
+            allKeywords = allKeywords.concat(m.keywords.map(k => k.title));
+          }
+        });
+
+        allKeywords = allKeywords.filter(function(item, pos) {
+          return allKeywords.indexOf(item) == pos;
+        });
+
+        return allKeywords.map(kw => {
+          return {
+            text: kw,
+            classes: "tagcolorid_" + (parseInt(kw, 36) % 2)
+          };
+        });
+      }
+      return [];
     }
   }
 });

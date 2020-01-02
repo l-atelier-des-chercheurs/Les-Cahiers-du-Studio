@@ -28,6 +28,8 @@ module.exports = (function() {
       disconnect: "Se déconnecter",
       login: "S’identifier",
       options: "Options",
+      show_all_keywords: "Afficher l’ensemble des mots-clés",
+      hide_all_keywords: "Masquer l’ensemble des mots-clés",
       creation_of_the_timeline: "Création du dossier",
       author_name: "Nom de l’auteur associé",
       key: "Touche du clavier",
@@ -54,6 +56,7 @@ module.exports = (function() {
       password_instructions:
         "Seuls les utilisateurs possédant ce mot de passe pourront éditer ce dossier, y ajouter du contenu et consulter les médias non publics.",
 
+      all_tags: "Liste des mots-clés disponibles",
       sort_by: "Organiser par",
       in_the_order: "Dans l’ordre",
       public: "Public",
@@ -190,6 +193,8 @@ module.exports = (function() {
       disconnect: "Disconnect",
       login: "Login",
       options: "Options",
+      show_all_keywords: "Show all keywords",
+      hide_all_keywords: "Hide all keywords",
       creation_of_the_timeline: "Creation of the timeline",
       author_name: "Associated author",
       key: "Key",
@@ -216,6 +221,7 @@ module.exports = (function() {
       password_instructions:
         "If set, only users with the password will be able to edit this folder and access the content that’s not public.",
 
+      all_tags: "List of keywords available",
       sort_by: "Sort by",
       in_the_order: "In the order",
       public: "Public",
