@@ -116,6 +116,7 @@ module.exports = (function() {
       fullscreen: "Plein écran",
       preview: "Aperçu",
       filter: "Filtre",
+      add_keyword: "Ajouter un mot-clé",
 
       export_folder: "Exporter en format WEB",
       export: "Exporter",
@@ -274,6 +275,7 @@ module.exports = (function() {
       fullscreen: "Fullscreen",
       preview: "Preview",
       filter: "Filter",
+      add_keyword: "Add a keyword",
 
       export_folder: "Export timeline as a webpage",
       export: "Export",
