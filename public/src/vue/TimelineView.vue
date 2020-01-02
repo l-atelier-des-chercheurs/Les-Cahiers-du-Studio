@@ -148,10 +148,10 @@
                   class="m_timeline--container--dates--day"
                   :class="{ 'is--empty': day.is_empty }"
                 >
-                  <template v-if="day.hasOwnProperty('is_indication_of_emptiness')">
+                  <template v-if="day.hasOwnProperty('is_empty_period')">
                     <div
                       class="m_timeline--container--dates--day--emptinessPeriodLabel"
-                      v-html="day.is_indication_of_emptiness"
+                      v-html="day.is_empty_period"
                     />
                   </template>
                   <template v-else-if="day.hasOwnProperty('is_empty')"></template>
@@ -891,12 +891,10 @@ export default {
           // if last added day has 0
           // acc.push(day);
           if (day.number_of_medias === 0) {
-            // check if last X items are already empty
             day.is_empty = true;
 
             if (!this.convert_empty_days_to_periods) {
               acc.push(day);
-              acc.splice(-x);
             } else {
               const x = 8;
 
@@ -904,23 +902,26 @@ export default {
               if (acc.length > x && !acc.slice(-x).some(d => !d.is_empty)) {
                 const last_item = acc[acc.length - 1];
 
-                if (!last_item.hasOwnProperty("is_indication_of_emptiness")) {
-                  day.is_indication_of_emptiness = this.$t("one_week_later");
+                if (!last_item.hasOwnProperty("is_empty_period")) {
+                  day.is_empty_period = this.$t("one_week_later");
                   acc.push(day);
                 } else {
-                  const weeks_later = this.$moment
-                    .duration(
-                      day.timestamp - last_item.timestamp + 86400000 * x
-                    )
-                    .weeks();
+                  const duration = this.$moment.duration(
+                    day.timestamp - last_item.timestamp + 86400000 * x
+                  );
 
-                  if (weeks_later === 1) {
-                    last_item.is_indication_of_emptiness = this.$t(
-                      "one_week_later"
-                    );
+                  if (duration.asWeeks() === 1) {
+                    last_item.is_empty_period = this.$t("one_week_later");
                   } else {
-                    last_item.is_indication_of_emptiness =
-                      `${weeks_later}` + this.$t("weeks_later");
+                    if (duration.asWeeks() < 4) {
+                      last_item.is_empty_period =
+                        `${Math.round(duration.asWeeks())}` +
+                        this.$t("weeks_later");
+                    } else {
+                      last_item.is_empty_period =
+                        `${Math.round(duration.asMonths())}` +
+                        this.$t("months_later");
+                    }
                   }
                 }
               } else {
