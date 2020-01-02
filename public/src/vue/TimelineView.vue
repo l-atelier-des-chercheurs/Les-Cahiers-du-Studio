@@ -1193,7 +1193,8 @@ export default {
         return;
       }
 
-      xPos_new -= 50;
+      // xPos_new -= 50;
+      xPos_new -= this.$refs.timeline.offsetWidth / 2;
 
       this.current_scroll_event = this.$scrollTo(".m_timeline", 500, {
         container: this.$refs.timeline,
