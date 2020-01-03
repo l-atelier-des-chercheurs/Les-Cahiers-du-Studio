@@ -11,32 +11,6 @@
 
     <!-- <pre>{{ sortedMedias }}</pre> -->
 
-    <template v-if="$root.state.mode !== 'export_web'">
-      <button
-        type="button"
-        class="folder_backbutton"
-        @click="$root.closeFolder()"
-        @mouseover="collapse_foldername = false"
-        @mouseleave="collapse_foldername = true"
-        :class="{
-          'is--collapsed': collapse_foldername,
-          'is--movedToRight': $root.settings.has_sidebar_opened
-        }"
-      >
-        <span class="icon">←</span>
-        <span class="project_name">{{ folder.name }}</span>
-      </button>
-    </template>
-    <template v-else>
-      <div class="folder_backbutton">
-        <span class="margin-sides-small padding-verysmall text-centered">
-          {{
-          folder.name
-          }}
-        </span>
-      </div>
-    </template>
-
     <div
       class="m_navtimeline_wrapper--timeline_wrapper"
       :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
@@ -78,6 +52,32 @@
             :read_only="read_only"
           />
           <!-- </transition> -->
+
+          <template v-if="$root.state.mode !== 'export_web'">
+            <button
+              type="button"
+              class="folder_backbutton"
+              @click="$root.closeFolder()"
+              @mouseover="collapse_foldername = false"
+              @mouseleave="collapse_foldername = true"
+              :class="{
+          'is--collapsed': collapse_foldername,
+          'is--movedToRight': $root.settings.has_sidebar_opened
+        }"
+            >
+              <span class="icon">←</span>
+              <span class="project_name">{{ folder.name }}</span>
+            </button>
+          </template>
+          <template v-else>
+            <div class="folder_backbutton">
+              <span class="margin-sides-small padding-verysmall text-centered">
+                {{
+                folder.name
+                }}
+              </span>
+            </div>
+          </template>
 
           <div
             class="m_verticalButtons"
@@ -1289,8 +1289,8 @@ export default {
       if (this.is_dragged) {
         this.is_dragged = false;
 
-        if (this.percent >= 90) {
-          this.percent = 90;
+        if (this.percent >= 70) {
+          this.percent = 70;
           // this.$root.closePubliPanel();
           // return;
         }
@@ -1627,9 +1627,9 @@ export default {
 }
 
 .folder_backbutton {
-  position: fixed;
+  position: absolute;
   top: 20px;
-  left: 20px;
+  left: ~"calc(100% + 40px)";
   z-index: 10000;
   border-radius: 22px;
 
@@ -1649,7 +1649,7 @@ export default {
   }
 
   &.is--movedToRight {
-    left: var(--sidebar-width);
+    // left: var(--sidebar-width);
   }
 
   .icon {
@@ -1685,7 +1685,7 @@ export default {
   }
 
   &.is--moved_to_right {
-    left: 340px;
+    // left: 340px;
   }
 }
 

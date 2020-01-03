@@ -564,6 +564,11 @@ export default {
 
           .plyr__control {
             pointer-events: auto;
+            background-color: rgba(255, 255, 255, 0.25);
+
+            &:hover {
+              background: #222;
+            }
           }
 
           .plyr__video-wrapper {

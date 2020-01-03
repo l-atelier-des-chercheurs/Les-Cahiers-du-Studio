@@ -24,240 +24,11 @@ import Quill from "quill";
 import QuillCursors from "quill-cursors";
 import debounce from "debounce";
 
-let Inline = Quill.import("blots/inline");
-let Block = Quill.import("blots/block");
-let BlockEmbed = Quill.import("blots/block/embed");
-const Module = Quill.import("core/module");
+import MediaBlot from "./quill_modules/MediaBlot";
+import CardEditableModule from "./quill_modules/CardEditableModule";
 
-// inspired from https://gist.github.com/tranduongms1/584d43ec7d8ddeab458f087adbeef950
-class MediaBlot extends BlockEmbed {
-  static blotName = "media";
-  static tagName = "figure";
-  static className = "ql-mediacard";
-
-  static create({ type, src, caption, metaFileName }) {
-    let node = super.create();
-    console.log(`CollaborativeEditor • MediaBlot : create for type = ${type}`);
-
-    node.setAttribute("contenteditable", false);
-
-    let bg = window.document.createElement("div");
-    bg.setAttribute("class", "ql-mediacard--background");
-    node.appendChild(bg);
-
-    let tag;
-
-    if (!type || !metaFileName) {
-      alert(
-        `Missing type or metaFileName : type = ${type} and metaFileName = ${metaFileName}`
-      );
-      return;
-    }
-
-    if (type === "image") {
-      tag = window.document.createElement("img");
-    } else if (type === "video") {
-      tag = window.document.createElement("video");
-      tag.setAttribute("controls", true);
-    }
-
-    if (src) {
-      tag.setAttribute("src", src);
-    }
-    tag.setAttribute("draggable", false);
-    node.appendChild(tag);
-    if (caption) {
-      let caption_tag = window.document.createElement("figcaption");
-      caption_tag.innerHTML = caption;
-      node.appendChild(caption_tag);
-    }
-    node.dataset.type = type;
-    node.dataset.metaFileName = metaFileName;
-    node.setAttribute("draggable", false);
-
-    // todo for later: allow drag from cards in quill
-    // to move inside document or to composition
-    node.addEventListener("dragstart", $event => {
-      $event.dataTransfer.setData("text/plain", "media_in_quill");
-      $event.dataTransfer.effectAllowed = "move";
-      // this.is_dragged = true;
-      // this.$root.settings.media_being_dragged = media.metaFileName;
-    });
-
-    node.style.animation = "scale-in 0.5s cubic-bezier(0.19, 1, 0.22, 1)";
-    node.addEventListener("animationend", () => {
-      node.style.animation = "";
-    });
-
-    return node;
-  }
-
-  constructor(node) {
-    super(node);
-
-    let removeButton;
-    let caption;
-    let captionInput;
-
-    node.__onSelect = () => {
-      const quill = Quill.find(node.parentElement.parentElement);
-      const _block = Quill.find(node);
-
-      // quill.setSelection(quill.getIndex(_block), 0, Quill.sources.USER);
-      node.classList.add("is--focused");
-
-      removeButton = window.document.createElement("button");
-      removeButton.innerHTML = "×";
-      removeButton.setAttribute("type", "button");
-      removeButton.classList.add("_button_removeMedia");
-      removeButton.addEventListener("click", () => {
-        node.__onDeselect();
-        quill.enable(true);
-        node.style.animation = "scale-out 0.5s cubic-bezier(0.19, 1, 0.22, 1)";
-        node.addEventListener("animationend", () => {
-          super.remove();
-          // node.remove();
-          // supprimer du bloc proprement
-        });
-      });
-      node.appendChild(removeButton);
-
-      caption = node.querySelector("figcaption");
-      captionInput = window.document.createElement("input");
-      captionInput.setAttribute("type", "text");
-      captionInput.setAttribute("autofocus", true);
-      captionInput.placeholder = "Légende…";
-
-      if (caption) {
-        captionInput.value = caption.innerText;
-        caption.innerHTML = "";
-        caption.appendChild(captionInput);
-      } else {
-        caption = window.document.createElement("figcaption");
-        caption.appendChild(captionInput);
-        node.appendChild(caption);
-      }
-
-      setTimeout(() => {
-        captionInput.focus();
-      }, 50);
-    };
-    node.__onDeselect = () => {
-      let value = captionInput.value;
-      if (!value || value === "") {
-        caption.remove();
-      } else {
-        captionInput.remove();
-        caption.innerText = value;
-      }
-      node.classList.remove("is--focused");
-      removeButton.remove();
-    };
-  }
-
-  // deleteAt() {
-  //   console.log("deleteAt for custom mediablock: prevented");
-
-  //   return false;
-  //   // prevent removing on backspace after block
-  // }
-
-  static value(node) {
-    if (node.dataset.type === "image") {
-      let img = node.querySelector("img");
-      let figcaption = node.querySelector("figcaption");
-      if (!img) return false;
-      return {
-        alt: img.getAttribute("alt"),
-        src: img.getAttribute("src"),
-        metaFileName: node.dataset.metaFileName,
-        type: node.dataset.type,
-        caption: figcaption ? figcaption.innerText : null
-      };
-    } else if (node.dataset.type === "video") {
-      let video = node.querySelector("video");
-      let figcaption = node.querySelector("figcaption");
-      if (!video) return false;
-      return {
-        alt: video.getAttribute("alt"),
-        src: video.getAttribute("src"),
-        metaFileName: node.dataset.metaFileName,
-        type: node.dataset.type,
-        caption: figcaption ? figcaption.innerText : null
-      };
-    }
-  }
-}
-
-class CardEditableModule extends Module {
-  constructor(quill, options) {
-    super(quill, options);
-    let is_selected = false;
-
-    let listener = e => {
-      if (!document.body.contains(quill.root)) {
-        return document.body.removeEventListener("click", listener);
-      }
-      let elm = e.target.closest(".ql-mediacard");
-
-      let deselectCard = () => {
-        console.log("deselectCard");
-        is_selected = false;
-        if (elm.__onDeselect) {
-          elm.__onDeselect(quill);
-        } else {
-          quill.setSelection(
-            quill.getIndex(elm.__blot.blot) + 1,
-            0,
-            Quill.sources.USER
-          );
-        }
-      };
-      if (elm && elm.__blot && elm.__onSelect && !is_selected) {
-        // not ideal yet, can trigger repaint
-        quill.disable();
-        is_selected = true;
-        console.log("selectCard");
-
-        elm.__onSelect(quill);
-
-        let handleKeyPress = e => {
-          if (e.keyCode === 27 || e.keyCode === 13) {
-            window.removeEventListener("keypress", handleKeyPress);
-            quill.enable(true);
-            deselectCard();
-          }
-        };
-        let handleClick = e => {
-          const path = e.path || (e.composedPath && e.composedPath());
-          if (e.which === 1 && !path.includes(elm)) {
-            window.removeEventListener("click", handleClick);
-            quill.enable(true);
-            deselectCard();
-          }
-        };
-        let handleDrag = e => {
-          window.removeEventListener("dragover", handleDrag);
-          quill.enable(true);
-          deselectCard();
-        };
-        window.addEventListener("keypress", handleKeyPress);
-        window.addEventListener("click", handleClick);
-        window.addEventListener("dragover", handleDrag);
-      }
-    };
-    quill.emitter.listenDOM("click", document.body, listener);
-  }
-}
-
-Quill.register(
-  {
-    // Other formats or modules
-    "formats/media": MediaBlot,
-    "modules/cardEditable": CardEditableModule
-  },
-  true
-);
+Quill.register("formats/media", MediaBlot);
+Quill.register("modules/cardEditable", CardEditableModule);
 
 Quill.register("modules/cursors", QuillCursors);
 ShareDB.types.register(require("rich-text").type);
@@ -676,7 +447,7 @@ export default {
           );
           // this.editor.setSelection(index + 1, Quill.sources.SILENT);
         }
-      } else if (media.type === "video") {
+      } else if (media.type === "video" || media.type === "audio") {
         // this.editor.insertText(index, "\n", Quill.sources.USER);
         this.editor.insertEmbed(
           index,
@@ -689,6 +460,17 @@ export default {
           Quill.sources.USER
         );
         // this.editor.setSelection(index + 1, Quill.sources.SILENT);
+      } else if (media.type === "text") {
+        this.editor.insertEmbed(
+          index,
+          "media",
+          {
+            type: media.type,
+            content: media.content,
+            metaFileName: media.metaFileName
+          },
+          Quill.sources.USER
+        );
       } else {
         this.$alertify
           .closeLogOnClick(true)
@@ -1303,6 +1085,10 @@ html[lang="fr"] .ql-tooltip::before {
       margin-bottom: 5px;
       margin-top: 5px;
       padding-left: 16px;
+
+      > *:first-child {
+        margin-top: 0;
+      }
     }
 
     code,
@@ -1546,14 +1332,23 @@ html[lang="fr"] .ql-tooltip::before {
 
   ._button_removeMedia {
     position: absolute;
-    top: var(--spacing);
-    right: 0;
-    background: white;
+    top: calc(var(--spacing) / 2);
+    // top: 0;
+    right: calc(var(--spacing) / -2);
+    background: var(--color-noir);
+    color: white;
     text-decoration: none;
     line-height: 0;
     width: 1.5em;
     height: 1.5em;
-    border-bottom-left-radius: 2px;
+    padding: 0;
+    border-radius: 4px;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0;
+    text-align: center;
+
+    // border-bottom-left-radius: 2px;
   }
 }
 </style>

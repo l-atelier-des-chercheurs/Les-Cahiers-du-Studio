@@ -163,7 +163,9 @@ module.exports = (function() {
           "Les noms de dossier doivent contenir au moins un caractère alphanumérique.",
         "failed_to_get_folder:": "Le dossier suivant n’a pas été trouvé:",
         folder_export_started: "Préparation du fichier à exporter en cours…",
-        connected_to_lescahiers: "Connection aux Cahiers active"
+        connected_to_lescahiers: "Connection aux Cahiers active",
+        media_type_not_handled:
+          "Impossible d’insérer le média dans le journal : ce type n’est pas pris en charge."
       }
     },
     en: {
@@ -324,7 +326,8 @@ module.exports = (function() {
           "Folder names need to contain at least one alphanumeric character.",
         "failed_to_get_folder:": "Failed to get the requested folder:",
         folder_export_started: "Export requested…",
-        connected_to_lescahiers: "Connection active"
+        connected_to_lescahiers: "Connection active",
+        media_type_not_handled: "Media type not handled in the journal."
       }
     }
   };
