@@ -3,9 +3,9 @@
   <div class="packery-item" :style="itemSize">
     <div
       class="packery-item-content"
-      :class="{ 
-        'is--hovered' : is_hovered && !is_resized,
-        'is--text_overflowing' : text_is_overflowing
+      :class="{
+        'is--hovered': is_hovered && !is_resized,
+        'is--text_overflowing': text_is_overflowing
       }"
       :style="itemStylesWithSize"
       @mouseenter="is_hovered = true"
@@ -31,12 +31,15 @@
       <div
         v-if="!!media.caption"
         class="packery-item-content--caption"
-        :class="{ 'is--expanded' : is_captionHovered }"
+        :class="{ 'is--expanded': is_captionHovered }"
         @mouseenter="is_captionHovered = true"
         @mouseleave="is_captionHovered = false"
         @click="openMedia"
       >
-        <span :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : '' }`">{{ media.caption }}</span>
+        <span
+          :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : ''}`"
+          >{{ media.caption }}</span
+        >
       </div>
 
       <!-- <template v-if="is_hovered">
@@ -61,8 +64,12 @@
       <template v-if="is_hovered && !is_resized">
         <div class="handle handle_resizeMedia handle_resizeMedia_bottomright">
           <div
-            @mousedown.stop.prevent="resizeMedia('mouse', 'horizontal_vertical')"
-            @touchstart.stop.prevent="resizeMedia('touch', 'horizontal_vertical')"
+            @mousedown.stop.prevent="
+              resizeMedia('mouse', 'horizontal_vertical')
+            "
+            @touchstart.stop.prevent="
+              resizeMedia('touch', 'horizontal_vertical')
+            "
           >
             <span></span>
           </div>
@@ -81,7 +88,9 @@
           <div class="handle handle_resizeMedia handle_resizeMedia_right">
             <div
               @mousedown.stop.prevent="resizeMedia('mouse', 'right_horizontal')"
-              @touchstart.stop.prevent="resizeMedia('touch', 'right_horizontal')"
+              @touchstart.stop.prevent="
+                resizeMedia('touch', 'right_horizontal')
+              "
             >
               <span></span>
             </div>
@@ -488,10 +497,14 @@ export default {
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
 
-      display: -webkit-inline-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
+      // display: -webkit-inline-box;
+      // -webkit-box-orient: vertical;
+      // -webkit-line-clamp: 2;
+      // line-clamp: 2;
+      // overflow: hidden;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
       overflow: hidden;
 
       padding: 2px;
@@ -504,7 +517,12 @@ export default {
 
     &.is--expanded {
       span {
+        white-space: initial;
+
+        display: -webkit-inline-box;
+        -webkit-box-orient: vertical;
         -webkit-line-clamp: 4 !important;
+        line-clamp: 4;
       }
     }
   }
