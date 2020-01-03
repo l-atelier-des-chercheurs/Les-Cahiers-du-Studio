@@ -45,7 +45,7 @@
         type="button"
         key="show_all_keywords"
         @click="show_all_keywords = !show_all_keywords"
-        class="m_keywordField--show_all_keywords"
+        class="m_keywordField--show_all_keywords button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
       >
         <template v-if="!show_all_keywords">{{ $t("show_all_keywords") }}</template>
         <template v-else>{{ $t("hide_all_keywords") }}</template>

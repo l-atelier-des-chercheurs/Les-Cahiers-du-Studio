@@ -483,7 +483,7 @@ export default {
       background-color: var(--author-color);
       max-width: 100%;
       max-height: 100%;
-    pointer-events: auto;
+      pointer-events: auto;
 
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
@@ -499,7 +499,7 @@ export default {
 
       box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.35);
 
-      transition: all 0.4s ease;
+      // transition: all 0.4s ease;
     }
 
     &.is--expanded {
