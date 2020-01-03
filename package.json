@@ -1,7 +1,7 @@
 {
   "name": "les-cahiers-du-studio",
   "productName": "Les Cahiers du Studio",
-  "version": "2.3.1-dev",
+  "version": "2.3.2-dev",
   "description": "A time-based documentation tool to collaboratively keep notes and capture media from live experiences.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio",
