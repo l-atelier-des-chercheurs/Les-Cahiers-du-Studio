@@ -468,18 +468,22 @@ export default {
     top: $t-unstick_from_borders;
     left: $t-unstick_from_borders;
     right: $t-unstick_from_borders;
+    height: 100%;
     max-height: calc(100% - #{$t-unstick_from_borders} * 2);
     z-index: 1;
     overflow: visible;
 
     line-height: 1.2;
     font-size: 70%;
+    pointer-events: none;
 
     span {
       display: inline-block;
       background-color: rgba(255, 255, 255, 0.4);
       background-color: var(--author-color);
       max-width: 100%;
+      max-height: 100%;
+    pointer-events: auto;
 
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
@@ -487,6 +491,7 @@ export default {
       display: -webkit-inline-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       overflow: hidden;
 
       padding: 2px;
