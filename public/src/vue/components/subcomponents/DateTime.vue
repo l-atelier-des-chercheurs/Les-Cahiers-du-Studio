@@ -1,6 +1,6 @@
 <template>
   <div class="input-group">
-    <input type="date" v-model="date" @input="updateDate()" :readonly="read_only" />
+    <input type="date" v-model="date" min="1970-01-01" @input="updateDate()" :readonly="read_only" />
     <input type="time" v-model="time" @input="updateDate()" step="1" :readonly="read_only" />
     <button
       v-if="has_reset_button && has_valid_date"
