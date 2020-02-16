@@ -137,7 +137,7 @@ export default {
           if (fdata.password === "has_pass") {
             this.$auth.updateFoldersPasswords({
               folders: {
-                [fdata.slugFolderName]: this.projectdata.password
+                [fdata.slugFolderName]: this.folderdata.password
               }
             });
             this.$socketio.sendAuth();
