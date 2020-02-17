@@ -98,7 +98,7 @@
           </span>
         </button>
         -->
-        <button
+        <!-- <button
           v-if="can_admin_folder"
           type="button"
           class="button-round margin-verysmall padding-verysmall"
@@ -135,8 +135,8 @@
             </g>
           </svg>
           <span class="text-cap font-verysmall">{{ $t('edit') }}</span>
-        </button>
-        <button
+        </button>-->
+        <!-- <button
           v-if="can_admin_folder"
           type="button"
           class="button-round margin-verysmall padding-verysmall"
@@ -193,7 +193,7 @@
             </g>
           </svg>
           <span class="text-cap font-verysmall">{{ $t('remove') }}</span>
-        </button>
+        </button>-->
 
         <div v-if="showInputPasswordField && !can_admin_folder" class="margin-bottom-small">
           <input
@@ -294,6 +294,8 @@ export default {
                 this.folder.name
             );
           this.$refs.passwordField.value = "";
+        } else {
+          this.$root.openFolder(this.slugFolderName);
         }
       });
     }
