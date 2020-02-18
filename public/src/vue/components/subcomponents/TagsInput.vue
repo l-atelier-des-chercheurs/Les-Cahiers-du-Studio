@@ -10,7 +10,7 @@
         :class="['tagcolorid_' + (parseInt(tag.text, 36) % 2)]"
       >{{ tag.text }}</button>
 
-      <div class="new-tag-input-wrapper" :key="'new-tag-input'">
+      <div v-if="!read_only" class="new-tag-input-wrapper" :key="'new-tag-input'">
         <input
           type="text"
           class="new-tag-input"
@@ -40,7 +40,7 @@
       </div>
     </transition-group>
 
-    <div class="m_keywordField">
+    <div class="m_keywordField" v-if="!read_only">
       <button
         type="button"
         key="show_all_keywords"

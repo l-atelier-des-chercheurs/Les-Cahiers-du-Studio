@@ -96,7 +96,20 @@ export default {
   },
 
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.$root.state.mode === "export_web") {
+      if (typeof this.medias === "object") {
+        // check how many writeups there are
+        const writeups = Object.values(this.medias).filter(
+          media => media.hasOwnProperty("type") && media.type === "writeup"
+        );
+
+        if (writeups && writeups.length === 1) {
+          this.openWriteupMedia(writeups[0].metaFileName);
+        }
+      }
+    }
+  },
   beforeDestroy() {},
 
   watch: {},

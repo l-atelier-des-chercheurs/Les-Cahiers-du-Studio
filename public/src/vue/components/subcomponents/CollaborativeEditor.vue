@@ -179,7 +179,16 @@ export default {
         this.initWebsocketMode();
         this.editor.focus();
       } else {
-        this.editor.root.innerHTML = this.value;
+        let content = this.value;
+        if (this.$root.state.mode === "export_web") {
+          var el = document.createElement("html");
+          el.innerHTML = content;
+          el.querySelectorAll("[src]").forEach(function(item) {
+            item.setAttribute("src", "./" + item.getAttribute("src"));
+          });
+          content = el.innerHTML;
+        }
+        this.editor.root.innerHTML = content;
       }
 
       this.editor.on("text-change", (delta, oldDelta, source) => {
@@ -649,10 +658,10 @@ html[lang="fr"] .ql-tooltip::before {
         display: block;
       }
 
-      html[lang="en"] &::before {
+      html[lang="en"] body[data-mode="live"] &::before {
         content: "Connection lost, attempting to reconnect…";
       }
-      html[lang="fr"] &::before {
+      html[lang="fr"] body[data-mode="live"] &::before {
         content: "Connexion au serveur perdue, reconnexion en cours…";
       }
       > * {

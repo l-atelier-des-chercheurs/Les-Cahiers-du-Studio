@@ -171,6 +171,7 @@ let vm = new Vue({
     if (this.settings.enable_system_bar) {
       document.body.classList.add("has_systembar");
     }
+    document.body.setAttribute("data-mode", this.state.mode);
 
     if (window.state.dev_mode === "debug") {
       console.log("ROOT EVENT: created / checking for errors");

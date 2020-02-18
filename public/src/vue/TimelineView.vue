@@ -87,7 +87,7 @@
               <button type="button" @click.stop.prevent="toggleSidebar('options')">
                 <span
                   v-if="$root.settings.sidebar_type === 'options'"
-                  v-html="`&nbsp;×` + $t('options')"
+                  v-html="`×&nbsp;` + $t('options')"
                 />
                 <span v-else v-html="$t('options')" />
               </button>
@@ -104,9 +104,10 @@
               <button type="button" @click.stop.prevent="toggleSidebar('journal')">
                 <span
                   v-if="$root.settings.sidebar_type === 'journal'"
-                  v-html="`&nbsp;×` + $t('journal')"
+                  v-html="`×&nbsp;` + $t('journal')"
                 />
                 <span v-else v-html="$t('journal')" />
+                <span v-if="number_of_writeups" class="_writeups_number">{{ number_of_writeups }}</span>
               </button>
             </div>
           </div>
@@ -458,6 +459,12 @@ export default {
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);
 
+    if (this.$root.state.mode === "export_web") {
+      this.percent = 50;
+      this.$root.settings.has_sidebar_opened = true;
+      this.$root.settings.sidebar_type = "journal";
+    }
+
     setTimeout(() => {
       this.collapse_foldername = true;
     }, 2000);
@@ -499,6 +506,13 @@ export default {
     }
   },
   computed: {
+    number_of_writeups() {
+      if (typeof this.medias === "object")
+        return Object.values(this.medias).filter(
+          media => media.hasOwnProperty("type") && media.type === "writeup"
+        ).length;
+      return false;
+    },
     can_admin_folder() {
       return this.$root.canAdminFolder({
         type: "folders",
@@ -1737,5 +1751,16 @@ export default {
       }
     }
   }
+}
+
+._writeups_number {
+  display: inline-block;
+  width: 1.3em;
+  height: 1.3em;
+  // background-color: black;
+  // color: black;
+  border-radius: 50%;
+  border: 1px solid #555;
+  // font-size: 70%;
 }
 </style>
