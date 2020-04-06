@@ -1,5 +1,5 @@
 // var share = require('./sharedb-server');
-var ShareDB_logger = require('sharedb-logger');
+// var ShareDB_logger = require('sharedb-logger');
 var ShareDB = require('sharedb');
 ShareDB.types.register(require('rich-text').type);
 
@@ -59,7 +59,7 @@ module.exports = function(server) {
   const sharewss = new WebSocket.Server({ noServer: true });
   sharewss.on('connection', (client, req) => {
     dev.logfunction(
-      `server-realtime_text_collaboration • wss new client connection`
+      `server-realtime_text_collaboration • sharewss new client connection`
     );
 
     client.id = uuid();
@@ -166,6 +166,8 @@ module.exports = function(server) {
       client.isAlive = true;
     });
 
+    client.on('message', function() {});
+
     client.on('error', function(error) {
       dev.error(
         `server-realtime_text_collaboration • sharewss: client connection errored for ${client.id} with error = ${error}`
@@ -177,14 +179,14 @@ module.exports = function(server) {
     const pathname = url.parse(request.url).pathname;
 
     if (pathname === '/sharedb') {
-      wss.handleUpgrade(request, socket, head, function done(ws) {
-        wss.emit('connection', ws, request);
+      sharewss.handleUpgrade(request, socket, head, function done(ws) {
+        sharewss.emit('connection', ws, request);
       });
     }
   });
 
   setInterval(function() {
-    wss.clients.forEach(function(client) {
+    sharewss.clients.forEach(function(client) {
       if (client.isAlive === false) return client.terminate();
 
       client.isAlive = false;

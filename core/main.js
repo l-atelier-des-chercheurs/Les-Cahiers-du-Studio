@@ -14,9 +14,7 @@ module.exports = function({ router }) {
   const is_electron = process.versions.hasOwnProperty("electron");
 
   console.log(`App is electron : ${is_electron}`);
-  console.log(
-    `Starting app ${global.appInfos.name} version ${global.appInfos.version}`
-  );
+  console.log(`Starting app ${global.appInfos.name}`);
   console.log(process.versions);
 
   const debug =

@@ -23,11 +23,10 @@ module.exports = (function() {
         let presentationMd = path.join(api.getFolderPath(), "presentation.md");
         fs.access(presentationMd, fs.F_OK, function(err) {
           if (err) {
-            reject();
+            resolve(validator.unescape(global.appInfos.presentationMd));
           } else {
-            let presentationContent = fs.readFileSync(
-              presentationMd,
-              global.settings.textEncoding
+            let presentationContent = validator.unescape(
+              fs.readFileSync(presentationMd, global.settings.textEncoding)
             );
             presentationContent = api.parseData(presentationContent);
             resolve(presentationContent);

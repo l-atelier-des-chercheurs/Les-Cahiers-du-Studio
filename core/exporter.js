@@ -195,10 +195,6 @@ module.exports = (function() {
                       typeof mediaMeta.thumbs !== 'undefined'
                     ) {
                       mediaMeta.thumbs.map(t => {
-                        if (!t) {
-                          return;
-                        }
-
                         if (t.hasOwnProperty('path')) {
                           tasks.push(
                             new Promise((resolve, reject) => {
