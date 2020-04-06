@@ -12,7 +12,7 @@ const settings = global.settings,
   exporter = require("./core/exporter"),
   importer = require("./core/importer");
 
-module.exports = function(app, io, m) {
+module.exports = function (app, io, m) {
   /**
    * routing event
    */
@@ -26,7 +26,7 @@ module.exports = function(app, io, m) {
    * routing functions
    */
   function generatePageData(req) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       let fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
       dev.log(`••• the following page has been requested: ${fullUrl} •••`);
 
@@ -46,7 +46,7 @@ module.exports = function(app, io, m) {
       let tasks = [];
 
       let getPresentation = new Promise((resolve, reject) => {
-        file.getPresentation().then(presentationMD => {
+        file.getPresentation().then((presentationMD) => {
           pageData.presentationMD = presentationMD;
           resolve();
         });
@@ -62,11 +62,11 @@ module.exports = function(app, io, m) {
   // GET
   function showIndex(req, res) {
     generatePageData(req).then(
-      pageData => {
+      (pageData) => {
         dev.logpackets(`Rendering index with data `, JSON.stringify(pageData));
         res.render("index", pageData);
       },
-      err => {
+      (err) => {
         dev.error(`Err while getting index data: ${err}`);
       }
     );
@@ -77,13 +77,15 @@ module.exports = function(app, io, m) {
     let metaFileName = req.param("metaFileName");
 
     generatePageData(req).then(
-      pageData => {
+      (pageData) => {
         // let’s make sure that folder exists first and return some meta
         file
           .getFolder({ type: "folders", slugFolderName })
           .then(
-            foldersData => {
+            (foldersData) => {
               pageData.slugFolderName = slugFolderName;
+              foldersData = api.removePasswordFromFoldersMeta(foldersData);
+              pageData.folderAndMediaData = foldersData;
               pageData.folderAndMediaData = foldersData;
               if (metaFileName) {
                 pageData.metaFileName = metaFileName;
@@ -96,11 +98,11 @@ module.exports = function(app, io, m) {
               res.render("index", pageData);
             }
           )
-          .catch(err => {
+          .catch((err) => {
             dev.error("No folder found");
           });
       },
-      err => {
+      (err) => {
         dev.error(`Err while getting index data: ${err}`);
       }
     );
@@ -109,33 +111,33 @@ module.exports = function(app, io, m) {
   function exportFolderWithMedias(req, res) {
     let slugFolderName = req.param("slugFolderName");
     let type = req.param("type");
-    generatePageData(req).then(pageData => {
+    generatePageData(req).then((pageData) => {
       // get medias for a folder
 
-      file.getFolder({ type, slugFolderName }).then(foldersData => {
+      file.getFolder({ type, slugFolderName }).then((foldersData) => {
         if (foldersData === undefined) return;
 
         file
           .getMediaMetaNames({
             type,
-            slugFolderName
+            slugFolderName,
           })
-          .then(list_metaFileName => {
-            let medias_list = list_metaFileName.map(_metaFileName => {
+          .then((list_metaFileName) => {
+            let medias_list = list_metaFileName.map((_metaFileName) => {
               return {
                 slugFolderName,
-                metaFileName: _metaFileName
+                metaFileName: _metaFileName,
               };
             });
             file
               .readMediaList({ type, medias_list })
-              .then(folders_and_medias => {
+              .then((folders_and_medias) => {
                 let mediasData = folders_and_medias[slugFolderName].medias;
                 if (
                   typeof req.query === "object" &&
                   Object.keys(req.query).length > 0
                 ) {
-                  Object.keys(mediasData).forEach(slugMediaName => {
+                  Object.keys(mediasData).forEach((slugMediaName) => {
                     const media = mediasData[slugMediaName];
 
                     if (
@@ -177,19 +179,19 @@ module.exports = function(app, io, m) {
                       html,
                       folders_and_medias,
                       slugFolderName,
-                      type: "folders"
+                      type: "folders",
                     })
                     .then(
-                      cachePath => {
+                      (cachePath) => {
                         var archive = archiver("zip", {
-                          zlib: { level: 0 } //
+                          zlib: { level: 0 }, //
                         });
 
-                        archive.on("error", function(err) {
+                        archive.on("error", function (err) {
                           res.status(500).send({ error: err.message });
                           sockets.notify({
                             socketid,
-                            not_localized_string: `Failed to create zip: ${err.message}`
+                            not_localized_string: `Failed to create zip: ${err.message}`,
                           });
                         });
 
@@ -206,7 +208,7 @@ module.exports = function(app, io, m) {
                               "PB",
                               "EB",
                               "ZB",
-                              "YB"
+                              "YB",
                             ],
                             f = Math.floor(Math.log(a) / Math.log(c));
                           return (
@@ -227,19 +229,19 @@ module.exports = function(app, io, m) {
                               socketid,
                               not_localized_string: `${formatBytes(
                                 pbytes
-                              )}/${formatBytes(tbytes)}`
+                              )}/${formatBytes(tbytes)}`,
                             });
                           }
                           setTimeout(informUserOfProgress, 1000);
                         }
 
-                        archive.on("progress", function(msg) {
+                        archive.on("progress", function (msg) {
                           pbytes = msg.fs.processedBytes;
                           tbytes = msg.fs.totalBytes;
                         });
 
                         //on stream closed we can end the request
-                        archive.on("end", function() {
+                        archive.on("end", function () {
                           is_finished = true;
                           console.log(
                             "Archive wrote %d bytes",
@@ -249,7 +251,7 @@ module.exports = function(app, io, m) {
                             socketid,
                             not_localized_string: `Archive finished, ${formatBytes(
                               archive.pointer()
-                            )}`
+                            )}`,
                           });
                         });
 
