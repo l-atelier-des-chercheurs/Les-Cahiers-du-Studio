@@ -1,11 +1,11 @@
 <template>
   <div
     class="m_collaborativeEditor"
-    :class="{ 
-      'is--focused' : is_focused,
-      'is--receptiveToDrop' : !!$root.settings.media_being_dragged,
-      'is--dragover' : is_being_dragover  ,
-      'is--disabled' : editor_not_enabled
+    :class="{
+      'is--focused': is_focused,
+      'is--receptiveToDrop': !!$root.settings.media_being_dragged,
+      'is--dragover': is_being_dragover,
+      'is--disabled': editor_not_enabled,
     }"
     autofocus="autofocus"
     @dragover="ondragover($event)"
@@ -46,7 +46,7 @@ var quill_kb_bindings = {
   // so this will be added without overwriting anything
   backspace: {
     key: 8,
-    handler: function(range, context) {
+    handler: function (range, context) {
       if (
         range.index &&
         this.quill.getLine(range.index) &&
@@ -55,8 +55,8 @@ var quill_kb_bindings = {
       ) {
       }
       return true;
-    }
-  }
+    },
+  },
 
   // list: {
   //   key: "backspace",
@@ -78,18 +78,18 @@ export default {
   props: {
     value: {
       type: String,
-      default: "…"
+      default: "…",
     },
     enable_collaboration: {
       type: Boolean,
-      default: false
+      default: false,
     },
     media: Object,
     slugFolderName: String,
     spellcheck: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   components: {},
   data() {
@@ -108,7 +108,7 @@ export default {
       debounce_textUpdate: undefined,
       caret_position: {
         top: undefined,
-        left: undefined
+        left: undefined,
       },
       focused_lines: [],
 
@@ -117,13 +117,13 @@ export default {
           [{ header: [false, 1, 2] }],
           ["italic", "underline", "link", "blockquote"],
           [{ list: "ordered" }, { list: "bullet" }],
-          ["clean"]
-        ]
+          ["clean"],
+        ],
       },
 
       socket: null,
       connection_state: !this.enable_collaboration ? "disabled" : "connecting…",
-      requested_resource_url: undefined
+      requested_resource_url: undefined,
     };
   },
 
@@ -146,17 +146,17 @@ export default {
 `,
           hideDelayMs: 5000,
           hideSpeedMs: 0,
-          selectionChangeSource: null
+          selectionChangeSource: null,
         },
         keyboard: {
-          bindings: quill_kb_bindings
-        }
+          bindings: quill_kb_bindings,
+        },
       },
       bounds: this.$refs.editor,
 
       theme: "snow",
       formats: ["italic", "underline", "link", "header", "list", "media"],
-      placeholder: "…"
+      placeholder: "…",
     });
 
     this.$refs.editor.dataset.quill = this.editor;
@@ -183,7 +183,7 @@ export default {
         if (this.$root.state.mode === "export_web") {
           var el = document.createElement("html");
           el.innerHTML = content;
-          el.querySelectorAll("[src]").forEach(function(item) {
+          el.querySelectorAll("[src]").forEach(function (item) {
             item.setAttribute("src", "./" + item.getAttribute("src"));
           });
           content = el.innerHTML;
@@ -229,36 +229,36 @@ export default {
     this.$root.settings.medias_present_in_writeup = [];
   },
   watch: {
-    "$root.preview_mode": function() {
+    "$root.preview_mode": function () {
       // if (this.$root.preview_mode) {
       //   this.editor.disable();
       // } else {
       //   this.editor.enable();
       // }
     },
-    spellcheck: function() {
+    spellcheck: function () {
       this.setSpellCheck();
     },
-    value: function() {
+    value: function () {
       this.broadcastMediasPresentInWriteup();
     },
-    editor_not_enabled: function() {
+    editor_not_enabled: function () {
       if (this.editor_not_enabled) {
         this.editor.disable();
       } else {
         this.editor.enable();
       }
-    }
+    },
   },
   computed: {
     _customCaret_style() {
       return {
-        transform: `translate3d(${this.caret_position.left}px, ${this.caret_position.top}px, 0px)`
+        transform: `translate3d(${this.caret_position.left}px, ${this.caret_position.top}px, 0px)`,
       };
     },
     editor_not_enabled() {
       return this.enable_collaboration && this.connection_state !== "connected";
-    }
+    },
   },
   methods: {
     initWebsocketMode() {
@@ -266,7 +266,7 @@ export default {
       const params = new URLSearchParams({
         type: "folders",
         slugFolderName: this.slugFolderName,
-        metaFileName: this.media.metaFileName
+        metaFileName: this.media.metaFileName,
       });
 
       const requested_querystring = "?" + params.toString();
@@ -286,7 +286,7 @@ export default {
       connection.on("state", this.wsState);
 
       const doc = connection.get("textMedias", requested_querystring);
-      doc.subscribe(err => {
+      doc.subscribe((err) => {
         if (err) {
           console.error(`ON • CollaborativeEditor: err ${err}`);
         }
@@ -336,7 +336,7 @@ export default {
         });
       });
 
-      doc.on("error", err => {
+      doc.on("error", (err) => {
         // soucis : les situations ou le serveur a été fermé et en le rouvrant il ne possède plus d’instance du doc dans sharedb…
 
         this.$forceUpdate();
@@ -390,8 +390,8 @@ export default {
           slugFolderName: this.slugFolderName,
           slugMediaName: this.media.metaFileName,
           data: {
-            content: this.editor.getText() ? this.editor.root.innerHTML : ""
-          }
+            content: this.editor.getText() ? this.editor.root.innerHTML : "",
+          },
         });
       }, 1000);
     },
@@ -441,7 +441,7 @@ export default {
       this.editor.blur();
 
       if (media.type === "image") {
-        const thumb = media.thumbs.find(m => m.size === 1600);
+        const thumb = media.thumbs.find((m) => m.size === 1600);
         if (!!thumb) {
           // this.editor.insertText(index, "\n", Quill.sources.USER);
           this.editor.insertEmbed(
@@ -450,7 +450,7 @@ export default {
             {
               type: media.type,
               src: thumb.path,
-              metaFileName: media.metaFileName
+              metaFileName: media.metaFileName,
             },
             Quill.sources.USER
           );
@@ -464,7 +464,7 @@ export default {
           {
             type: media.type,
             src: mediaURL,
-            metaFileName: media.metaFileName
+            metaFileName: media.metaFileName,
           },
           Quill.sources.USER
         );
@@ -476,7 +476,7 @@ export default {
           {
             type: media.type,
             content: media.content,
-            metaFileName: media.metaFileName
+            metaFileName: media.metaFileName,
           },
           Quill.sources.USER
         );
@@ -568,7 +568,7 @@ export default {
       }
     },
     removeDragoverFromBlots() {
-      this.editor.getLines().map(b => {
+      this.editor.getLines().map((b) => {
         while (b.parent !== b.scroll) {
           b = b.parent;
           if (b === b.scroll) {
@@ -583,7 +583,7 @@ export default {
     removeFocusFromBlots() {
       this.editor
         .getLines()
-        .map(b => b.domNode.classList.remove("is--focused"));
+        .map((b) => b.domNode.classList.remove("is--focused"));
     },
     getBlockFromElement(_target) {
       while (!_target.parentElement.classList.contains("ql-editor")) {
@@ -595,8 +595,8 @@ export default {
         return _blot;
       }
       return false;
-    }
-  }
+    },
+  },
 };
 </script>
 <style src="../../../../node_modules/quill/dist/quill.snow.css"></style>
