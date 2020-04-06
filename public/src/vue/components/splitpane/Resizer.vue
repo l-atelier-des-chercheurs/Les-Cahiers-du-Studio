@@ -9,16 +9,16 @@ export default {
       validator(value) {
         return ["vertical", "horizontal"].indexOf(value) >= 0;
       },
-      required: true,
+      required: true
     },
-    className: String,
+    className: String
   },
   computed: {
     classes() {
       const classes = ["splitter-pane-resizer", this.split, this.className];
       return classes.join(" ");
-    },
-  },
+    }
+  }
 };
 </script>
 

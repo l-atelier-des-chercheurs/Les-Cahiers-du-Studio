@@ -129,8 +129,6 @@ export default {
 
   created() {},
   mounted() {
-    console.log(`MOUNTED • CollaborativeEditor`);
-
     this.editor = new Quill(this.$refs.editor, {
       modules: {
         cardEditable: true,
@@ -291,7 +289,6 @@ export default {
       doc.subscribe((err) => {
         if (err) {
           console.error(`ON • CollaborativeEditor: err ${err}`);
-          return;
         }
         console.log(`ON • CollaborativeEditor: subscribe`);
 
@@ -377,13 +374,6 @@ export default {
         `METHODS • CollaborativeEditor: wsState with state = ${state} and reason = ${reason}`
       );
       this.connection_state = state.toString();
-      this.$emit("connectionStateChanged", this.connection_state);
-
-      if (this.connection_state === "connected") {
-        this.editor.enable(true); // Disables user input
-      } else {
-        this.editor.enable(false); // Disables user input
-      }
       // 'connecting' 'connected' 'disconnected' 'closed' 'stopped'
     },
     updateTextMedia(event) {

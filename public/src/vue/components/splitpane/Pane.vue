@@ -8,16 +8,17 @@
 export default {
   name: "Pane",
   props: {
-    className: String,
+    className: String
   },
   data() {
     const classes = [this.$parent.split, this.className];
     return {
       classes: classes.join(" "),
-      percent: 50,
+      percent: 50
     };
-  },
+  }
 };
 </script>
 
-<style></style>
+<style>
+</style>

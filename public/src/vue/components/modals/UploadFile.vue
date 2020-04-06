@@ -18,11 +18,13 @@
           :key="f.name"
           class="m_uploadFile"
           :class="cssStatus(f)"
-          :style="`--progress-percent: ${
-            files_to_upload_meta.hasOwnProperty(f.name)
-              ? files_to_upload_meta[f.name].upload_percentages / 100
-              : 0
-          }`"
+          :style="
+            `--progress-percent: ${
+              files_to_upload_meta.hasOwnProperty(f.name)
+                ? files_to_upload_meta[f.name].upload_percentages / 100
+                : 0
+            }`
+          "
         >
           <!-- too heavy on memory on mobile devices -->
           <img
@@ -44,8 +46,8 @@
               @click="sendThisFile(f)"
               :disabled="
                 read_only ||
-                (files_to_upload_meta.hasOwnProperty(f.name) &&
-                  files_to_upload_meta[f.name].status === 'success')
+                  (files_to_upload_meta.hasOwnProperty(f.name) &&
+                    files_to_upload_meta[f.name].status === 'success')
               "
             >
               <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">{{
@@ -77,16 +79,16 @@ export default {
     read_only: Boolean,
     slugFolderName: String,
     type: String,
-    selected_files: Array,
+    selected_files: Array
   },
   components: {
-    Modal,
+    Modal
   },
   data() {
     return {
       files_to_upload: this.selected_files,
       files_to_upload_meta: {},
-      upload_percentages: 0,
+      upload_percentages: 0
     };
   },
   watch: {},
@@ -96,9 +98,9 @@ export default {
   },
   beforeDestroy() {},
   computed: {
-    uriToUploadMedia: function () {
+    uriToUploadMedia: function() {
       return `file-upload/${this.type}/${this.slugFolderName}`;
-    },
+    }
   },
   methods: {
     sendThisFile(f) {
@@ -112,7 +114,7 @@ export default {
 
         this.$set(this.files_to_upload_meta, filename, {
           upload_percentages: 0,
-          status: "sending",
+          status: "sending"
         });
 
         let formData = new FormData();
@@ -126,7 +128,7 @@ export default {
             ? [{ name: this.$root.settings.current_author_name }]
             : "",
           w: 4,
-          h: 3,
+          h: 3
         };
 
         const parser = new UAparser();
@@ -156,14 +158,14 @@ export default {
         axios
           .post(this.uriToUploadMedia, formData, {
             headers: { "Content-Type": "multipart/form-data" },
-            onUploadProgress: function (progressEvent) {
+            onUploadProgress: function(progressEvent) {
               this.files_to_upload_meta[filename].upload_percentages = parseInt(
                 Math.round((progressEvent.loaded * 100) / progressEvent.total)
               );
-            }.bind(this),
+            }.bind(this)
           })
-          .then((x) => x.data)
-          .then((x) => {
+          .then(x => x.data)
+          .then(x => {
             if (this.$root.state.dev_mode === "debug") {
               console.log(
                 `METHODS • sendThisFile: name = ${filename} / success uploading`
@@ -176,7 +178,7 @@ export default {
             resolve();
             // resolve(x.map(img => Object.assign({}, img, { url: `${BASE_URL}/images/${img.id}` })));
           })
-          .catch((err) => {
+          .catch(err => {
             if (this.$root.state.dev_mode === "debug") {
               console.log(
                 `METHODS • sendThisFile: name = ${filename} / failed uploading`
@@ -190,21 +192,21 @@ export default {
       });
     },
     sendAllFiles() {
-      const executeSequentially = (array) => {
-        return this.sendThisFile(
-          this.files_to_upload[array.shift()]
-        ).then((x) => (array.length == 0 ? x : executeSequentially(array)));
+      const executeSequentially = array => {
+        return this.sendThisFile(this.files_to_upload[array.shift()]).then(x =>
+          array.length == 0 ? x : executeSequentially(array)
+        );
       };
 
       executeSequentially(
         Array.from(Array(this.files_to_upload.length).keys())
-      ).then((x) => {
-        Object.keys(this.files_to_upload_meta).map((name) => {
+      ).then(x => {
+        Object.keys(this.files_to_upload_meta).map(name => {
           let index = 1;
           if (this.files_to_upload_meta[name].status === "success") {
             setTimeout(() => {
               this.files_to_upload = this.files_to_upload.filter(
-                (x) => x.name !== name
+                x => x.name !== name
               );
               this.$delete(this.files_to_upload_meta, name);
 
@@ -237,7 +239,7 @@ export default {
         "PB",
         "EB",
         "ZB",
-        "YB",
+        "YB"
       ];
 
       var c = 1024,
@@ -252,8 +254,8 @@ export default {
       if (this.files_to_upload_meta.hasOwnProperty(f.name)) {
         return "is--" + this.files_to_upload_meta[f.name].status;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style></style>

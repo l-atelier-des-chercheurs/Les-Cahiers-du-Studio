@@ -5,9 +5,8 @@
       class="packery-item-content"
       :class="{
         'is--hovered': is_hovered && !is_resized,
-        'is--text_overflowing': text_is_overflowing,
+        'is--text_overflowing': text_is_overflowing
       }"
-      :data-col_height="mediaSize.height"
       :style="itemStylesWithSize"
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
@@ -110,17 +109,15 @@ import { packeryEvents } from "vue-packery-plugin";
 export default {
   props: {
     media: Object,
-    index: Number,
-    pinp_grid: Object,
     folder: Object,
     slugFolderName: String,
     base_edge: Number,
     columnWidth: Number,
     rowHeight: Number,
-    gutter: Number,
+    gutter: Number
   },
   components: {
-    MediaContent,
+    MediaContent
   },
   data() {
     return {
@@ -129,10 +126,8 @@ export default {
       mediaSize: {
         width: undefined,
         height: undefined,
-        pwidth: undefined,
-        pheight: undefined,
-        top: undefined,
-        left: undefined,
+        pwidth: 0,
+        pheight: 0
       },
 
       is_resized: false,
@@ -140,11 +135,11 @@ export default {
       resizeType: undefined,
       resizeOffset: {
         x: 0,
-        y: 0,
+        y: 0
       },
 
       is_mounted: false,
-      text_is_overflowing: false,
+      text_is_overflowing: false
     };
   },
 
@@ -165,19 +160,7 @@ export default {
           this.mediaSize.width * this.media.ratio
         );
       } else {
-        this.mediaSize.width = Math.round(Math.random() * 2 + this.base_edge);
-        if (
-          this.media.hasOwnProperty("ratio") &&
-          typeof this.media.ratio === "number"
-        ) {
-          this.mediaSize.height = Math.round(
-            this.mediaSize.width * this.media.ratio
-          );
-        } else {
-          this.mediaSize.height = Math.round(
-            Math.random() * 2 + this.base_edge
-          );
-        }
+        this.mediaSize.height = Math.round(Math.random() * 2 + this.base_edge);
       }
     }
 
@@ -187,11 +170,11 @@ export default {
 
   mounted() {
     this.$el.draggie = new Draggabilly(this.$el, {
-      handle: "[data-draggabilly_handle]",
+      handle: "[data-draggabilly_handle]"
     });
     packeryEvents.$emit("draggie", {
       draggie: this.$el.draggie,
-      node: this.$el.parentNode,
+      node: this.$el.parentNode
     });
     this.$el.draggie.on("dragStart", () => {
       this.$emit("dragStarted");
@@ -203,54 +186,39 @@ export default {
       this.openMedia();
     });
 
-    // packeryEvents.$emit('draggie', {
-    //   draggie: this.$el.draggie,
-    //   node: this.$el.parentNode
-    // });
-
     this.$nextTick(() => {
       this.is_mounted = true;
     });
   },
   beforeDestroy() {
-    this.pinp_grid.remove(this.$el.pinp);
-    // this.$el.draggie.destroy();
-    // this.$el.draggie = null;
+    this.$el.draggie.destroy();
+    this.$el.draggie = null;
   },
   watch: {
     mediaSize: {
-      handler: function () {
+      handler: function() {
         if (this.is_mounted) {
           this.$emit("triggerPackeryLayout");
         }
+        this.checkTextOverflow();
       },
-      deep: true,
+      deep: true
     },
-    "media.content": function () {
+    "media.content": function() {
       this.checkTextOverflow();
     },
-    "media.w": function () {
+    "media.w": function() {
       this.setMediaSizeFromMeta();
-      this.$emit("triggerPinpUpdate");
     },
-    "media.h": function () {
+    "media.h": function() {
       this.setMediaSizeFromMeta();
-      this.$emit("triggerPinpUpdate");
-    },
-    "media.t": function () {
-      this.setMediaPositionFromMeta();
-      this.$emit("triggerPinpUpdate");
-    },
-    "media.l": function () {
-      this.setMediaPositionFromMeta();
-      this.$emit("triggerPinpUpdate");
-    },
+    }
   },
   computed: {
     itemSize() {
       return {
         width: this.mediaWidth + "px",
-        height: this.mediaHeight + "px",
+        height: this.mediaHeight + "px"
       };
     },
     mediaWidth() {
@@ -278,14 +246,14 @@ export default {
         {
           "--author-color": this.mediaColorFromFirstAuthor
             ? this.mediaColorFromFirstAuthor
-            : "#fff",
+            : "#fff"
         },
         this.itemSize
       );
     },
     mediaColorFromFirstAuthor() {
       return this.$root.mediaColorFromFirstAuthor(this.media, this.folder);
-    },
+    }
   },
   methods: {
     checkTextOverflow() {
@@ -307,15 +275,6 @@ export default {
         this.mediaSize.height = this.media.h;
       }
     },
-    setMediaPositionFromMeta() {
-      if (this.media.hasOwnProperty("t") && typeof this.media.t === "number") {
-        this.mediaSize.top = this.media.t;
-      }
-
-      if (this.media.hasOwnProperty("l") && typeof this.media.l === "number") {
-        this.mediaSize.left = this.media.l;
-      }
-    },
     changeItemWidth(increment) {
       console.log("MediaBlock changeItemWidth");
       this.mediaSize.width += increment;
@@ -329,31 +288,6 @@ export default {
     },
     limitMediaHeight(h) {
       return Math.max(2, Math.min(12, h));
-    },
-    sendMediaPosition() {
-      console.log(`METHODS • MediaBlock2: sendMediaPosition`);
-
-      if (!this.$el.pinp) {
-        return;
-      }
-
-      const x = this.$el.pinp.x;
-      const y = this.$el.pinp.y;
-
-      const l = Math.round(x / this.columnWidth);
-      const t = Math.round(y / this.rowHeight);
-
-      if (l >= 0 && t >= 0) {
-        this.$root.editMedia({
-          type: "folders",
-          slugFolderName: this.slugFolderName,
-          slugMediaName: this.media.slugMediaName,
-          data: {
-            t,
-            l,
-          },
-        });
-      }
     },
     openMedia() {
       if (this.$root.state.dev_mode === "debug") {
@@ -436,8 +370,8 @@ export default {
           slugMediaName: this.media.slugMediaName,
           data: {
             w: this.mediaSize.width,
-            h: this.mediaSize.height,
-          },
+            h: this.mediaSize.height
+          }
         });
 
         this.is_resized = false;
@@ -468,8 +402,8 @@ export default {
         // this.media_focus_is_dragged = false;
         this.$root.settings.media_being_dragged = false;
       }, 500);
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss">
@@ -479,22 +413,20 @@ export default {
   // cursor: -moz-grabbing;
 }
 .packery-item {
-  // border: 0.2rem dashed #f4be41;
-  // box-sizing: content-box;
-  transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.45s;
+  /* padding: 1rem; */
+  /* border: 0.2rem dashed #f4be41; */
+  box-sizing: border-box;
+  // padding: 5px;
 
   &.is-dragging,
   &.is-positioning-post-drag {
     z-index: 2;
 
     .packery-item-content {
-      // box-shadow: none !important;
+      box-shadow: none !important;
       // transform: translateY(0px);
       transition: none;
     }
-  }
-  &:not(.is-dragging).last-dragged {
-    transition: none;
   }
 }
 
@@ -507,7 +439,7 @@ export default {
   cursor: pointer;
 
   border-radius: 4px;
-  // border: 4px solid transparent;
+  border: 0px solid black;
 
   transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
 
@@ -524,17 +456,8 @@ export default {
       display: block;
       position: absolute;
       bottom: 0;
-      left: auto;
-      right: 0;
-      line-height: 1.5;
-    }
-    &:not([data-col_height="1"])::after {
-      position: absolute;
-      bottom: 0;
       left: 0;
       right: 0;
-      text-align: center;
-      line-height: 2;
       // background-color: var(--author-color);
       background-image: linear-gradient(
         transparent 0%,
@@ -758,20 +681,6 @@ export default {
   align-items: center;
 }
 
-.draggabilly_handle {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  // z-index: 1;
-  // background-color: yellow;
-
-  html.touchevents & {
-    display: none;
-  }
-}
-
 .handle {
   position: absolute;
   z-index: 1;
@@ -793,10 +702,6 @@ export default {
 
   html.touchevents & {
     display: none;
-  }
-
-  > * {
-    pointer-events: auto;
   }
 
   &.handle_resizeMedia_bottom {

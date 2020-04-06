@@ -54,30 +54,6 @@
       </div>
     </SidebarSection>
 
-    <!-- <SidebarSection>
-      <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">
-          {{ $t('writeup') }}
-          <button
-            type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="showWriteupModal = true"
-          >
-            {{ $t('open') }}
-          </button>
-        </h3>
-      </div>
-      <div slot="body">
-      </div>
-    </SidebarSection>
-
-    <WriteUp
-      v-if="showWriteupModal === true"
-      @close="showWriteupModal = false"
-      :slugFolderName="slugFolderName"
-      :medias="medias"
-    /> -->
-
     <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
@@ -171,7 +147,7 @@
               :class="{
                 'has--noMedia': !daymeta.numberOfMedias,
                 'is--visibleDay': isVisibleDay(daymeta.timestamp),
-                'is--today': isDayToday(daymeta.timestamp),
+                'is--today': isDayToday(daymeta.timestamp)
               }"
               @click="scrollToDate(daymeta.timestamp)"
               :key="index"
@@ -252,12 +228,11 @@ import CreateQRCode from "./qr/CreateQRCode.vue";
 export default {
   components: {
     SidebarSection,
-    WriteUp,
     Tableau,
     MediasList,
     KeyboardShortcuts,
     ExportTimeline,
-    CreateQRCode,
+    CreateQRCode
   },
   props: {
     slugFolderName: String,
@@ -273,9 +248,9 @@ export default {
     can_admin_folder: Boolean,
     is_realtime: {
       type: Boolean,
-      default: false,
+      default: false
     },
-    read_only: Boolean,
+    read_only: Boolean
   },
   data() {
     return {
@@ -283,7 +258,7 @@ export default {
       showKeyboardShortcutsList: false,
       showWriteupModal: false,
       showExportTimelineModal: false,
-      currentLang: this.$root.lang.current,
+      currentLang: this.$root.lang.current
     };
   },
   mounted() {},
@@ -311,7 +286,7 @@ export default {
       console.log("COMPUTED • Sidebar: calendar");
 
       const dates_with_medias = this.date_interval.filter(
-        (d) => d.number_of_medias
+        d => d.number_of_medias
       );
 
       return dates_with_medias.reduce((acc, date) => {
@@ -325,7 +300,7 @@ export default {
         let dayData = {
           dayNumber: day,
           numberOfMedias: date.number_of_medias,
-          timestamp: date.timestamp,
+          timestamp: date.timestamp
         };
 
         acc[monthYearName].push(dayData);
@@ -333,13 +308,13 @@ export default {
 
         // let monthYearName = this.$moment(cur).format("MMMM Y");
       }, {});
-    },
+    }
   },
 
   watch: {
-    currentLang: function () {
+    currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
-    },
+    }
   },
 
   methods: {
@@ -350,8 +325,12 @@ export default {
     enumerateDaysBetweenDates(startDate, endDate) {
       var dates = [];
 
-      var currDate = this.$moment(startDate).startOf("day").subtract(1, "days");
-      var lastDate = this.$moment(endDate).startOf("day").add(1, "days");
+      var currDate = this.$moment(startDate)
+        .startOf("day")
+        .subtract(1, "days");
+      var lastDate = this.$moment(endDate)
+        .startOf("day")
+        .add(1, "days");
 
       while (currDate.add(1, "days").diff(lastDate) < 0) {
         dates.push(currDate.clone().toDate());
@@ -413,8 +392,8 @@ export default {
 
     scrollToToday() {
       this.$eventHub.$emit("timeline.scrollToToday");
-    },
-  },
+    }
+  }
 };
 </script>
 

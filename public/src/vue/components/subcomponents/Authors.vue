@@ -13,26 +13,18 @@
         type="button"
         class="m_authors--currentAuthor--changeColor"
         @click="change_color_menu = !change_color_menu"
-      >
-        {{ $t("change_color") }}
-      </button>
+      >{{ $t('change_color') }}</button>
 
       <button
         type="button"
         class="m_authors--currentAuthor--changeColor"
         @click="unsetAuthor"
-      >
-        {{ $t("disconnect") }}
-      </button>
+      >{{ $t('disconnect') }}</button>
     </div>
 
     <transition-group class="m_authors--authorList" name="list-complete">
       <template v-if="change_color_menu">
-        <div
-          v-for="color in sortedRandomColorArray"
-          :key="color"
-          @click="changeColor(color)"
-        >
+        <div v-for="color in sortedRandomColorArray" :key="color" @click="changeColor(color)">
           <div class="color_item" :style="`background-color: ${color}`" />
         </div>
       </template>
@@ -40,8 +32,7 @@
         <label
           :key="'connected_auth_label'"
           v-if="connected_authors.length > 0"
-          >{{ $t("author_connected") }}</label
-        >
+        >{{ $t('author_connected') }}</label>
 
         <button
           type="button"
@@ -49,15 +40,12 @@
           :key="author.name"
           @click="setAuthor(author.name)"
           :style="`background-color: ${author.color}`"
-        >
-          {{ author.name }}
-        </button>
+        >{{ author.name }}</button>
 
         <label
           :key="'not_connected_auth_label'"
           v-if="not_connected_authors.length > 0"
-          >{{ $t("not_connected") }}</label
-        >
+        >{{ $t('not_connected') }}</label>
 
         <button
           type="button"
@@ -66,28 +54,20 @@
           @click="setAuthor(author.name)"
         >
           <span :style="`color: ${author.color}`">•</span>
-          {{ author.name }}
+          {{author.name }}
         </button>
       </template>
     </transition-group>
 
     <div class="m_authors--createButton">
       <template v-if="!add_author">
-        <button type="button" @click="add_author = true">
-          {{ $t("add_author") }}
-        </button>
+        <button type="button" @click="add_author = true">{{ $t('add_author') }}</button>
       </template>
       <template v-else>
         <div class="input-group">
-          <span class="input-addon input-addon-xs">{{ $t("name") }}</span>
+          <span class="input-addon input-addon-xs">{{ $t('name') }}</span>
           <input type="text" ref="nameInput" class="input-xs" />
-          <button
-            type="button"
-            class="button input-addon-xs"
-            @click="createAuthor"
-          >
-            {{ $t("add") }}
-          </button>
+          <button type="button" class="button input-addon-xs" @click="createAuthor">{{ $t('add') }}</button>
         </div>
       </template>
     </div>
@@ -124,17 +104,17 @@ export default {
   props: {
     authors: {
       type: Array,
-      default: [],
+      default: []
     },
     slugFolderName: {
-      type: String,
-    },
+      type: String
+    }
   },
   components: {},
   data() {
     return {
       add_author: false,
-      change_color_menu: false,
+      change_color_menu: false
     };
   },
 
@@ -149,30 +129,30 @@ export default {
     },
     authors_except_current() {
       return this.authors.filter(
-        (c) => c.name !== this.$root.settings.current_author_name
+        c => c.name !== this.$root.settings.current_author_name
       );
     },
     connected_authors() {
-      return this.authors_except_current.filter((a) => {
+      return this.authors_except_current.filter(a => {
         const name = a.name;
         return this.author_is_connected(name);
       });
     },
     not_connected_authors() {
-      return this.authors_except_current.filter((a) => {
+      return this.authors_except_current.filter(a => {
         const name = a.name;
         return !this.author_is_connected(name);
       });
     },
     current_author() {
       return this.authors.filter(
-        (c) => c.name === this.$root.settings.current_author_name
+        c => c.name === this.$root.settings.current_author_name
       )[0];
     },
     randomColorArray() {
       let random_color = randomcolor({
         luminosity: "light",
-        count: 25,
+        count: 25
       });
       return random_color;
     },
@@ -185,7 +165,7 @@ export default {
         sorted_color_array.push(color);
       }
       return sorted_color_array;
-    },
+    }
   },
   methods: {
     createAuthor() {
@@ -194,7 +174,7 @@ export default {
       let _authors = [];
       if (!!this.authors) {
         // check for existing name, refuse if already there
-        if (this.authors.filter((a) => a.name === name).length > 0) {
+        if (this.authors.filter(a => a.name === name).length > 0) {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
@@ -205,15 +185,15 @@ export default {
       }
       _authors.push({
         name,
-        color: randomcolor({ luminosity: "light" }),
+        color: randomcolor({ luminosity: "light" })
       });
 
       this.$root.editFolder({
         type: "folders",
         slugFolderName: this.slugFolderName,
         data: {
-          authors: _authors,
-        },
+          authors: _authors
+        }
       });
 
       this.add_author = false;
@@ -222,18 +202,18 @@ export default {
       this.$root.settings.current_author_name = false;
       this.change_color_menu = false;
       this.$socketio.socket.emit("updateClientInfo", {
-        author_name: false,
+        author_name: false
       });
     },
     setAuthor(name) {
       this.$root.settings.current_author_name = name;
       this.$socketio.socket.emit("updateClientInfo", {
-        author_name: name,
+        author_name: name
       });
     },
     author_is_connected(name) {
       return (
-        this.clients.filter((c) => {
+        this.clients.filter(c => {
           return (
             c.data.hasOwnProperty("author_name") && c.data.author_name === name
           );
@@ -248,13 +228,13 @@ export default {
         type: "folders",
         slugFolderName: this.slugFolderName,
         data: {
-          authors: this.authors,
-        },
+          authors: this.authors
+        }
       });
 
       this.change_color_menu = false;
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
