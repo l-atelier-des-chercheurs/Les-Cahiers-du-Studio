@@ -1,23 +1,19 @@
 <template>
   <div class="m_navtimeline_wrapper">
-
     <NavbarTop
       :folder="folder"
       :slugFolderName="slugFolderName"
       :visibleDay="timelineViewport.visibleDay"
       @toggleSidebar="toggleSidebar()"
       :timelineViewport_scale="timelineViewport.scale"
-    >
-    </NavbarTop>
+    ></NavbarTop>
 
     <transition name="fade" :duration="350">
       <div
         v-if="$root.settings.is_loading_medias_for_folder"
         class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
       >
-        <span class="animated flash">
-          {{ $t('loading') }}
-        </span>
+        <span class="animated flash">{{ $t('loading') }}</span>
       </div>
     </transition>
 
@@ -37,8 +33,7 @@
           :style="{ height: `${sidebarHeight}px` }"
           :read_only="read_only"
           :can_admin_folder="can_admin_folder"
-        >
-        </Sidebar>
+        ></Sidebar>
       </transition>
 
       <EditFolder
@@ -51,7 +46,8 @@
       />
 
       <div>
-        <button type="button"
+        <button
+          type="button"
           class="button_sidebarToggle"
           @click.prevent="toggleSidebar()"
           :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
@@ -61,7 +57,8 @@
         </button>
       </div>
 
-      <div class="m_timeline"
+      <div
+        class="m_timeline"
         ref="timeline"
         @scroll="onScroll"
         :class="{
@@ -70,19 +67,18 @@
           'is--realtime': isRealtime
         }"
       >
-        <div class="m_timeline-container"
+        <div
+          class="m_timeline-container"
           :style="{
             width: `${timelineViewport.width}px`,
             height: `${timelineViewport.height}px`
           }"
         >
-          <div class="timeline_track">
-          </div>
+          <div class="timeline_track"></div>
 
           <!-- GRID -->
           <div class="grid_overlay">
             <div class="grid_overlay--wrapper">
-
               <div
                 v-for="item in overallGrid.days"
                 class="gridItem font-small gridItem_isday"
@@ -90,9 +86,7 @@
                 :style="`transform: translate(${item.xPos}px, 0px)`"
                 :key="item.caption"
               >
-                <div v-if="item.caption !== undefined" class="gridItem--caption">
-                  {{ item.caption }}
-                </div>
+                <div v-if="item.caption !== undefined" class="gridItem--caption">{{ item.caption }}</div>
               </div>
 
               <div
@@ -102,9 +96,7 @@
                 :style="`transform: translate(${item.xPos}px, 0px)`"
                 :key="`hrs-${index}-${item.xPos}`"
               >
-                <div v-if="item.caption !== undefined" class="gridItem--caption">
-                  {{ item.caption }}
-                </div>
+                <div v-if="item.caption !== undefined" class="gridItem--caption">{{ item.caption }}</div>
               </div>
 
               <div
@@ -114,9 +106,7 @@
                 :style="`transform: translate(${item.xPos}px, 0px)`"
                 :key="`min-${index}-${item.xPos}`"
               >
-                <div v-if="item.caption !== undefined" class="gridItem--caption">
-                  {{ item.caption }}
-                </div>
+                <div v-if="item.caption !== undefined" class="gridItem--caption">{{ item.caption }}</div>
               </div>
 
               <div
@@ -124,17 +114,15 @@
                 class="gridItem font-small gridItem_isrealtimerule"
                 :style="`transform: translate(${todaysRule.xPos}px, 0px)`"
               >
-                <div class="gridItem--caption">
-                  {{ todaysRule.caption }}
-                </div>
-                <button type="button" class="gridItem_isrealtimerule--autoscroll_checkbox button-small bg-rouge_vif border-circled button-thin button-wide padding-verysmall margin-none" >
+                <div class="gridItem--caption">{{ todaysRule.caption }}</div>
+                <button
+                  type="button"
+                  class="gridItem_isrealtimerule--autoscroll_checkbox button-small bg-rouge_vif border-circled button-thin button-wide padding-verysmall margin-none"
+                >
                   <small>
                     <label for="autoScroll" class="margin-none">
-                      <input
-                        type="checkbox"
-                        v-model="timelineViewport.autoscroll"
-                        id="autoScroll"
-                      ><span v-html="$t('auto_scroll')"></span>
+                      <input type="checkbox" v-model="timelineViewport.autoscroll" id="autoScroll" />
+                      <span v-html="$t('auto_scroll')"></span>
                     </label>
                   </small>
                 </button>
@@ -145,8 +133,7 @@
                   v-if="zoomZone.display"
                   class="gridItem gridItem_zoomZone"
                   :style="zoomZoneStyle()"
-                >
-                </div>
+                ></div>
               </transition>
             </div>
           </div>
@@ -155,7 +142,6 @@
             <TimelineMedia
               v-for="media in sortedMedias"
               :key="media.slugMediaName"
-
               :ref="`media_${media.slugMediaName}`"
               :slugFolderName="slugFolderName"
               :slugMediaName="media.slugMediaName"
@@ -168,38 +154,33 @@
               @open="openMediaModal(media.slugMediaName)"
               :read_only="read_only"
               :color="getMediaColorFromFirstAuthor(media.authors)"
-            >
-            </TimelineMedia>
+            ></TimelineMedia>
           </template>
 
           <template v-else>
             <div class="nomediainfo">
               <code>
-                <template v-if="can_admin_folder">
-                  {{ $t('no_media_in_folder') }}
-                </template>
-                <template v-else>
-                  {{ $t('no_public_media_in_folder') }}
-                </template>
+                <template v-if="can_admin_folder">{{ $t('no_media_in_folder') }}</template>
+                <template v-else>{{ $t('no_public_media_in_folder') }}</template>
               </code>
             </div>
           </template>
         </div>
-        <div v-if="sort.current.field !== 'date_timeline'"
-          class="m_filterIndicator">
+        <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
           <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
-            <button type="button" 
-              class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
-              v-html="'x'" 
+            <button
+              type="button"
+              class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
+              v-html="'x'"
               @click="setSort(sort.available[0]); setFilter('');"
             />
             <small>
-              <div class="">
+              <div class>
                 <span v-html="$t('active_filter:')" />
                 {{ ' ' }}
                 <span v-html="sort.current.name" />
               </div>
-              <div class="">
+              <div class>
                 <span v-html="$t('medias_shown:')" />
                 <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
               </div>
@@ -217,12 +198,8 @@
           :read_only="read_only"
           :allAuthors="folder.authors"
           :color="getMediaColorFromFirstAuthor(medias[showMediaModalFor].authors)"
-        >
-        </EditMedia>
-
+        ></EditMedia>
       </div>
-
-
     </div>
 
     <AddMedias
@@ -230,23 +207,21 @@
         ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected"
       :slugFolderName="slugFolderName"
       :read_only="read_only"
-    >
-    </AddMedias>
-
+    ></AddMedias>
   </div>
 </template>
 <script>
-import NavbarTop from './components/NavbarTop.vue';
-import Sidebar from './components/Sidebar.vue';
-import AddMedias from './components/AddMedias.vue';
-import EditFolder from './components/modals/EditFolder.vue';
+import NavbarTop from "./components/NavbarTop.vue";
+import Sidebar from "./components/Sidebar.vue";
+import AddMedias from "./components/AddMedias.vue";
+import EditFolder from "./components/modals/EditFolder.vue";
 
-import TimelineMedia from './components/TimelineMedia.vue';
-import EditMedia from './components/modals/EditMedia.vue';
-import DateTime from './components/subcomponents/DateTime.vue';
+import TimelineMedia from "./components/TimelineMedia.vue";
+import EditMedia from "./components/modals/EditMedia.vue";
+import DateTime from "./components/subcomponents/DateTime.vue";
 
-import debounce from 'debounce';
-import _ from 'underscore';
+import debounce from "debounce";
+import _ from "underscore";
 
 let allMediasPosition = {};
 let isScrollingTimeout;
@@ -269,33 +244,36 @@ export default {
   },
   data() {
     return {
-      systemBarHeight: document.getElementById('systemBar') !== null ? document.getElementById('systemBar').offsetHeight : 0,
+      systemBarHeight:
+        document.getElementById("systemBar") !== null
+          ? document.getElementById("systemBar").offsetHeight
+          : 0,
       topNavbarHeight: 0,
       timelinetrackHeight: 50,
       timelineHeight: 0,
       bottomScrollBar: 20,
       sidebarWidth: parseFloat(
         window
-          .getComputedStyle(document.querySelector('html'))
-          .getPropertyValue('--sidebar-width')
+          .getComputedStyle(document.querySelector("html"))
+          .getPropertyValue("--sidebar-width")
       ),
-      
+
       showMediaModalFor: false,
-      highlightedMedia: '',
+      highlightedMedia: "",
       showEditFolderModal: false,
 
       isRealtime: false,
       isAnimated: true,
       isAdjustingScale: false,
-      timelineUpdateRoutine: '',
+      timelineUpdateRoutine: "",
       isScrolling: false,
 
       currentScrollEvent: undefined,
 
-      current_mode: 'timeline',
+      current_mode: "timeline",
 
       todaysRule: {
-        caption: '',
+        caption: "",
         xPos: false
       },
       zoomZone: {
@@ -332,64 +310,64 @@ export default {
         viewerWidth: 0
       },
 
-      filter: '',
+      filter: "",
       sort: {
         current: {},
 
         available: [
           {
-            field: 'date_timeline',
-            name: this.$t('date'),
-            type: 'date',
-            order: 'ascending'
+            field: "date_timeline",
+            name: this.$t("date"),
+            type: "date",
+            order: "ascending"
           },
           {
-            field: 'date_modified',
-            name: this.$t('last_modified'),
-            type: 'date',
-            order: 'descending'
+            field: "date_modified",
+            name: this.$t("last_modified"),
+            type: "date",
+            order: "descending"
           },
           {
-            field: 'caption',
-            name: this.$t('caption'),
-            type: 'alph',
-            order: 'ascending'
+            field: "caption",
+            name: this.$t("caption"),
+            type: "alph",
+            order: "ascending"
           },
           {
-            field: 'type',
-            name: this.$t('type'),
-            type: 'alph',
-            order: 'ascending'
+            field: "type",
+            name: this.$t("type"),
+            type: "alph",
+            order: "ascending"
           },
           {
-            field: 'color',
-            name: this.$t('color'),
-            type: 'alph',
-            order: 'ascending'
+            field: "color",
+            name: this.$t("color"),
+            type: "alph",
+            order: "ascending"
           },
           {
-            field: 'keywords',
-            name: this.$t('keywords'),
-            type: 'alph',
-            order: 'ascending'
+            field: "keywords",
+            name: this.$t("keywords"),
+            type: "alph",
+            order: "ascending"
           },
           {
-            field: 'authors',
-            name: this.$t('author'),
-            type: 'alph',
-            order: 'ascending'
+            field: "authors",
+            name: this.$t("author"),
+            type: "alph",
+            order: "ascending"
           },
           {
-            field: 'public',
-            name: this.$t('public'),
-            type: 'bool',
-            order: 'descending'
+            field: "public",
+            name: this.$t("public"),
+            type: "bool",
+            order: "descending"
           },
           {
-            field: 'content',
-            name: this.$t('content'),
-            type: 'alph',
-            order: 'ascending'
+            field: "content",
+            name: this.$t("content"),
+            type: "alph",
+            order: "ascending"
           }
         ]
       }
@@ -397,8 +375,8 @@ export default {
   },
   watch: {
     folder: function() {
-      if (window.state.dev_mode === 'debug') {
-        console.log('WATCH • TimeLineView: folder');
+      if (window.state.dev_mode === "debug") {
+        console.log("WATCH • TimeLineView: folder");
       }
       this.setTimelineBounds();
       this.setViewedTimelineBoundsFromInfos();
@@ -409,8 +387,8 @@ export default {
     medias: function() {
       this.updateMediaData();
     },
-    'timelineViewport.scale': function() {
-      console.log('WATCH • TimeLineView: timelineViewport.scale');
+    "timelineViewport.scale": function() {
+      console.log("WATCH • TimeLineView: timelineViewport.scale");
 
       // disable media animations
       this.isAnimated = false;
@@ -447,20 +425,20 @@ export default {
         this.timelineViewport.scale
       );
     },
-    'timelineViewport.scrollLeft': function() {
-      console.log('WATCH • TimeLineView: timelineViewport.scrollLeft');
+    "timelineViewport.scrollLeft": function() {
+      console.log("WATCH • TimeLineView: timelineViewport.scrollLeft");
       this.$root.updateFolderScrollLeft(
         this.slugFolderName,
         this.timelineViewport.scrollLeft
       );
       this.setVisibleDay();
     },
-    'timelineViewport.visibleDay': function() {
+    "timelineViewport.visibleDay": function() {
       this.updateGridData();
     }
   },
   created() {
-    console.log('CREATED • TimeLineView: folder');
+    console.log("CREATED • TimeLineView: folder");
 
     this.sort.current = this.sort.available[0];
 
@@ -473,33 +451,36 @@ export default {
   },
   mounted() {
     this.onResize = debounce(this.onResize, 300);
-    window.addEventListener('resize', this.onResize);
+    window.addEventListener("resize", this.onResize);
 
-    this.$eventHub.$on('scrollToMedia', this.scrollToMedia);
-    this.$eventHub.$on('scrollToDate', this.scrollToDate);
-    this.$eventHub.$on('highlightMedia', this.highlightMedia);
-    this.$eventHub.$on('updateScale', this.updateTimelineViewportScale);
-    this.$eventHub.$on('goToPrevScreen', this.goToPrevScreen);
-    this.$eventHub.$on('goToNextScreen', this.goToNextScreen);
-    this.$eventHub.$on('goToPrevDay', this.goToPrevDay);
-    this.$eventHub.$on('goToNextDay', this.goToNextDay);
-    this.$eventHub.$on('showEditFolderModal', this.startEditModal);
-    this.$eventHub.$on('timeline.scrollToToday', this.scrollToToday);
-    this.$eventHub.$on('timeline.openMediaModal', this.openMediaModal);
-    this.$eventHub.$on('timeline.showZoomZone', this.showZoomZone);
-    this.$eventHub.$on('timeline.hideZoomZone', this.hideZoomZone);
+    this.$eventHub.$on("scrollToMedia", this.scrollToMedia);
+    this.$eventHub.$on("scrollToDate", this.scrollToDate);
+    this.$eventHub.$on("highlightMedia", this.highlightMedia);
+    this.$eventHub.$on("updateScale", this.updateTimelineViewportScale);
+    this.$eventHub.$on("goToPrevScreen", this.goToPrevScreen);
+    this.$eventHub.$on("goToNextScreen", this.goToNextScreen);
+    this.$eventHub.$on("goToPrevDay", this.goToPrevDay);
+    this.$eventHub.$on("goToNextDay", this.goToNextDay);
+    this.$eventHub.$on("showEditFolderModal", this.startEditModal);
+    this.$eventHub.$on("timeline.scrollToToday", this.scrollToToday);
+    this.$eventHub.$on("timeline.openMediaModal", this.openMediaModal);
+    this.$eventHub.$on("timeline.showZoomZone", this.showZoomZone);
+    this.$eventHub.$on("timeline.hideZoomZone", this.hideZoomZone);
 
-    this.$eventHub.$on('editmediamodal.nextmedia', this.editModalNextMedia);
-    this.$eventHub.$on('editmediamodal.previousmedia', this.editModalPreviousMedia);
+    this.$eventHub.$on("editmediamodal.nextmedia", this.editModalNextMedia);
+    this.$eventHub.$on(
+      "editmediamodal.previousmedia",
+      this.editModalPreviousMedia
+    );
 
-    this.$eventHub.$on('setSort', this.setSort);
-    this.$eventHub.$on('setFilter', this.setFilter);
+    this.$eventHub.$on("setSort", this.setSort);
+    this.$eventHub.$on("setFilter", this.setFilter);
 
     const el = this.$refs.timeline;
     function scrollHorizontally(e) {
       e = window.event || e;
       e.preventDefault();
-      el.scrollLeft -= (e.wheelDelta || -e.detail);
+      el.scrollLeft -= e.wheelDelta || -e.detail;
     }
 
     function init() {
@@ -508,18 +489,17 @@ export default {
       }
 
       if (el.addEventListener) {
-        el.addEventListener('mousewheel', scrollHorizontally, false);
-        el.addEventListener('DOMMouseScroll', scrollHorizontally, false);
+        el.addEventListener("mousewheel", scrollHorizontally, false);
+        el.addEventListener("DOMMouseScroll", scrollHorizontally, false);
       } else {
-        el.attachEvent('onmousewheel', scrollHorizontally);
+        el.attachEvent("onmousewheel", scrollHorizontally);
       }
     }
 
     init();
 
-
     this.timelineViewport.leftPadding = parseInt(
-      $(this.$refs.timeline).css('padding-left'),
+      $(this.$refs.timeline).css("padding-left"),
       10
     );
     this.updateViewerWidth();
@@ -559,69 +539,72 @@ export default {
     }, 1000);
   },
   beforeDestroy() {
-    this.$eventHub.$off('scrollToMedia');
-    this.$eventHub.$off('scrollToDate');
-    this.$eventHub.$off('highlightMedia');
-    this.$eventHub.$off('updateScale');
-    this.$eventHub.$off('goToPrevScreen');
-    this.$eventHub.$off('goToNextScreen');
-    this.$eventHub.$off('goToPrevDay');
-    this.$eventHub.$off('goToNextDay');
-    this.$eventHub.$off('showEditFolderModal');
-    this.$eventHub.$off('timeline.scrollToToday', this.scrollToToday);
-    this.$eventHub.$off('timeline.openMediaModal', this.openMediaModal);
-    this.$eventHub.$off('timeline.showZoomZone', this.showZoomZone);
-    this.$eventHub.$off('timeline.hideZoomZone', this.hideZoomZone);
+    this.$eventHub.$off("scrollToMedia");
+    this.$eventHub.$off("scrollToDate");
+    this.$eventHub.$off("highlightMedia");
+    this.$eventHub.$off("updateScale");
+    this.$eventHub.$off("goToPrevScreen");
+    this.$eventHub.$off("goToNextScreen");
+    this.$eventHub.$off("goToPrevDay");
+    this.$eventHub.$off("goToNextDay");
+    this.$eventHub.$off("showEditFolderModal");
+    this.$eventHub.$off("timeline.scrollToToday", this.scrollToToday);
+    this.$eventHub.$off("timeline.openMediaModal", this.openMediaModal);
+    this.$eventHub.$off("timeline.showZoomZone", this.showZoomZone);
+    this.$eventHub.$off("timeline.hideZoomZone", this.hideZoomZone);
 
-    this.$eventHub.$off('editmediamodal.nextmedia', this.editModalNextMedia);
-    this.$eventHub.$off('editmediamodal.previousmedia', this.editModalPreviousMedia);
+    this.$eventHub.$off("editmediamodal.nextmedia", this.editModalNextMedia);
+    this.$eventHub.$off(
+      "editmediamodal.previousmedia",
+      this.editModalPreviousMedia
+    );
 
-    this.$eventHub.$off('setSort');
-    this.$eventHub.$off('setFilter');
+    this.$eventHub.$off("setSort");
+    this.$eventHub.$off("setFilter");
 
-    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener("resize", this.onResize);
 
     clearInterval(this.timelineUpdateRoutine);
   },
   computed: {
     can_admin_folder() {
       return this.$root.canAdminFolder({
-        type: 'folders', 
+        type: "folders",
         slugFolderName: this.slugFolderName
-      })
+      });
     },
     sortedMedias() {
-      console.log('METHODS • TimeLineView: sortedMedias');
+      console.log("METHODS • TimeLineView: sortedMedias");
       var sortable = [];
-      let current_sort = !!this.sort.current.type ? this.sort.current : this.sort.available[0];
+      let current_sort = !!this.sort.current.type
+        ? this.sort.current
+        : this.sort.available[0];
 
       for (let slugMediaName in this.medias) {
         let mediaDataToOrderBy;
 
-        if(!this.medias[slugMediaName].hasOwnProperty(current_sort.field)) {
+        if (!this.medias[slugMediaName].hasOwnProperty(current_sort.field)) {
           continue;
         }
 
         let _timestamp = +this.$moment(
-          this.medias[slugMediaName]['date_timeline'],
-          'YYYY-MM-DD HH:mm:ss'
+          this.medias[slugMediaName]["date_timeline"],
+          "YYYY-MM-DD HH:mm:ss"
         );
 
-        if (current_sort.type === 'date') {
+        if (current_sort.type === "date") {
           mediaDataToOrderBy = +this.$moment(
             this.medias[slugMediaName][current_sort.field],
-            'YYYY-MM-DD HH:mm:ss'
+            "YYYY-MM-DD HH:mm:ss"
           );
-        } else if (current_sort.type === 'alph') {
+        } else if (current_sort.type === "alph") {
           mediaDataToOrderBy = this.medias[slugMediaName][
             current_sort.field
           ].toLowerCase();
-        } else if (current_sort.type === 'alph') {
-          mediaDataToOrderBy = this.medias[slugMediaName][
-            current_sort.field
-          ];
+        } else if (current_sort.type === "alph") {
+          mediaDataToOrderBy = this.medias[slugMediaName][current_sort.field];
         }
-        
+
         sortable.push({
           slugMediaName,
           mediaDataToOrderBy,
@@ -637,10 +620,10 @@ export default {
           return 1;
         }
         if (a.mediaDataToOrderBy === b.mediaDataToOrderBy) {
-          if(a._timestamp < b._timestamp) {
+          if (a._timestamp < b._timestamp) {
             return -1;
           }
-          if(a._timestamp >= b._timestamp) {
+          if (a._timestamp >= b._timestamp) {
             return 1;
           }
         }
@@ -648,7 +631,7 @@ export default {
         return 0;
       });
 
-      if (current_sort.order === 'descending') {
+      if (current_sort.order === "descending") {
         sortedSortable.reverse();
       }
 
@@ -661,7 +644,7 @@ export default {
         if (this.filter.length > 0) {
           // if there is a filter set, let’s only return medias whose mediaDataToOrderBy contain that string
           let originalContentFromMedia =
-            sortedMediaObj[current_sort.field] + '';
+            sortedMediaObj[current_sort.field] + "";
           if (originalContentFromMedia.indexOf(this.filter) !== -1) {
             result.push(sortedMediaObj);
           }
@@ -672,21 +655,21 @@ export default {
         return result;
       }, []);
       return sortedMedias;
-    }    
+    }
   },
   methods: {
     /******************************************************************
         Updates timelineInfos with folder start and end
     ******************************************************************/
     setTimelineBounds() {
-      console.log('METHODS • TimeLineView: setTimelineBounds');
+      console.log("METHODS • TimeLineView: setTimelineBounds");
       this.timelineInfos.start = this.getTimelineStart(this.folder.start);
       this.timelineInfos.end = this.getTimelineEnd(this.folder.end);
     },
     // retourne une valeure en pixel qui dépend de la hauteur de la timeline
     getTimelineStart(ts) {
-      if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-        return this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+      if (ts && this.$moment(ts, "YYYY-MM-DD HH:mm:ss", true).isValid()) {
+        return this.$moment(ts, "YYYY-MM-DD HH:mm:ss");
       } else {
         console.log(`WARNING: no timeline start. This can’t work.`);
         throw `Missing timeline start`;
@@ -694,17 +677,17 @@ export default {
       return;
     },
     getTimelineEnd(ts) {
-      if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+      if (ts && this.$moment(ts, "YYYY-MM-DD HH:mm:ss", true).isValid()) {
         // if end is in the future
         if (
-          this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isAfter(this.$moment())
+          this.$moment(ts, "YYYY-MM-DD HH:mm:ss", true).isAfter(this.$moment())
         ) {
           this.isRealtime = true;
-          return this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+          return this.$moment(ts, "YYYY-MM-DD HH:mm:ss");
           // if end is is in the present or past
         } else {
           this.isRealtime = false;
-          return this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
+          return this.$moment(ts, "YYYY-MM-DD HH:mm:ss");
         }
       } else {
         // there is no valid end, we set end to current time and set realtime
@@ -713,17 +696,20 @@ export default {
       }
     },
     getMediaColorFromFirstAuthor(media_authors) {
-      if(typeof media_authors !== 'object' 
-      || media_authors.length == 0
-      || typeof this.folder.authors !== 'object'
-      || this.folder.authors.length == 0
+      if (
+        typeof media_authors !== "object" ||
+        media_authors.length == 0 ||
+        typeof this.folder.authors !== "object" ||
+        this.folder.authors.length == 0
       ) {
-        return '';
+        return "";
       }
 
-      const full_authors_info = this.folder.authors.filter(a => a.name === media_authors[0].name);
-      if(full_authors_info.length == 0) {
-        return '';
+      const full_authors_info = this.folder.authors.filter(
+        a => a.name === media_authors[0].name
+      );
+      if (full_authors_info.length == 0) {
+        return "";
       }
 
       return full_authors_info[0].color;
@@ -732,7 +718,7 @@ export default {
         Updates viewed timeline with a start and end
     ******************************************************************/
     setViewedTimelineBoundsFromInfos() {
-      console.log('METHODS • TimeLineView: setViewedTimelineBoundsFromInfos');
+      console.log("METHODS • TimeLineView: setViewedTimelineBoundsFromInfos");
       const newStart = this.getViewedTimelineStart(this.timelineInfos.start);
       if (+newStart !== +this.timelineViewport.start) {
         this.timelineViewport.start = newStart;
@@ -744,7 +730,7 @@ export default {
     },
 
     setViewedTimelineWidthAndHeight() {
-      console.log('METHODS • TimeLineView: setViewedTimelineWidthAndHeight');
+      console.log("METHODS • TimeLineView: setViewedTimelineWidthAndHeight");
 
       // récupérer la longueur de la timeline en TS
       let timeEllapsed =
@@ -785,20 +771,19 @@ export default {
     },
 
     updateMediaData() {
-      console.log('METHODS • TimeLineView: updateMediaData');
+      console.log("METHODS • TimeLineView: updateMediaData");
 
       Object.keys(this.medias).map(slugMediaName => {
         let media = this.medias[slugMediaName];
         let date_timeline = this.$moment.isMoment(media.date_timeline)
           ? media.date_timeline
-          : this.$moment(media.date_timeline, 'YYYY-MM-DD HH:mm:ss');
+          : this.$moment(media.date_timeline, "YYYY-MM-DD HH:mm:ss");
         let posX = this.getXPositionFromDate(+date_timeline, false);
 
         if (media.duration !== undefined) {
-          let startRecordingDate = date_timeline.clone().subtract(
-            parseInt(media.duration),
-            'seconds'
-          );
+          let startRecordingDate = date_timeline
+            .clone()
+            .subtract(parseInt(media.duration), "seconds");
           let start_posX = this.getXPositionFromDate(
             +startRecordingDate,
             false
@@ -831,14 +816,14 @@ export default {
       }
     },
     updateGridData() {
-      console.log('METHODS • TimeLineView: updateGridData');
+      console.log("METHODS • TimeLineView: updateGridData");
 
       let timeEllapsed =
         this.timelineViewport.end - this.timelineViewport.start;
       let overallGrid = { minutes: [], hours: [], days: [] };
 
       /****************************** make DAY ticks ******************************/
-      let createDayTick = (thisDay, f = 'L') => {
+      let createDayTick = (thisDay, f = "L") => {
         let xPos = this.getXPositionFromDate(thisDay);
         if (xPos === false) {
           return;
@@ -847,18 +832,18 @@ export default {
         overallGrid.days.push({ xPos, caption });
       };
 
-      createDayTick(this.timelineViewport.start, 'LLL');
+      createDayTick(this.timelineViewport.start, "LLL");
       let nextDay = this.$moment(
         this.$moment(this.timelineViewport.start)
-          .startOf('day')
-          .add(1, 'day')
+          .startOf("day")
+          .add(1, "day")
       );
 
       // we need to iterate by day (and not every 24 hours, because of possible daylight savings)
       for (
         var d = nextDay;
         d.isSameOrBefore(this.$moment(this.timelineViewport.end));
-        d.add(1, 'days')
+        d.add(1, "days")
       ) {
         createDayTick(d);
       }
@@ -866,8 +851,8 @@ export default {
       // only show HOUR and MINUTES for two screens on the left and right
       // to do that, we create a const for the current timestamp and another for the number of ms we show the grid
       let thisDayStart = this.$moment(this.timelineViewport.visibleDay)
-        .subtract(2, 'days')
-        .startOf('day');
+        .subtract(2, "days")
+        .startOf("day");
       const timeEllapsedDay = 5 * 24 * 60 * 60 * 1000;
 
       /****************************** make HOUR ticks ******************************/
@@ -883,7 +868,7 @@ export default {
 
         let caption;
         if (withCaption || this.timelineViewport.scale < 70) {
-          caption = this.$moment(currentHour).format('LT');
+          caption = this.$moment(currentHour).format("LT");
         }
         overallGrid.hours.push({ xPos, caption });
       };
@@ -914,9 +899,10 @@ export default {
           let caption;
           if (
             currentMinute_minutesOnly % 10 === 0 ||
-            (this.timelineViewport.scale < 5 && currentMinute_minutesOnly % 5 === 0)
+            (this.timelineViewport.scale < 5 &&
+              currentMinute_minutesOnly % 5 === 0)
           ) {
-            caption = this.$moment(currentMinute).format('LT');
+            caption = this.$moment(currentMinute).format("LT");
           }
           overallGrid.minutes.push({ xPos, caption });
         };
@@ -954,22 +940,22 @@ export default {
       return this.$moment(timeSinceStart + this.timelineViewport.start);
     },
     mediaIsClose(index, media) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • TimeLineView: mediaIsClose');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • TimeLineView: mediaIsClose");
       }
 
-      if (typeof this.$refs.timeline === 'undefined') {
+      if (typeof this.$refs.timeline === "undefined") {
         return false;
       }
 
       // check if media has duration
       if (media.duration !== undefined) {
         // calculate proximity for end (created)
-        if (this.elesIsClose(this.getDurationMediaPosX(index, 'created'))) {
+        if (this.elesIsClose(this.getDurationMediaPosX(index, "created"))) {
           return true;
         }
         // otherwise, calculate proximity for started
-        if (this.elesIsClose(this.getDurationMediaPosX(index, 'started'))) {
+        if (this.elesIsClose(this.getDurationMediaPosX(index, "started"))) {
           return true;
         }
         // finally, let’s check whether we are in between those two dates
@@ -977,8 +963,8 @@ export default {
           this.timelineViewport.scrollLeft +
           this.timelineViewport.viewerWidth / 2;
         if (
-          this.getDurationMediaPosX(index, 'started') < centerOfTimeline &&
-          centerOfTimeline < this.getDurationMediaPosX(index, 'created')
+          this.getDurationMediaPosX(index, "started") < centerOfTimeline &&
+          centerOfTimeline < this.getDurationMediaPosX(index, "created")
         ) {
           return true;
         }
@@ -1038,7 +1024,7 @@ export default {
 
       // OR we update progressively, every once in a while when scroll is detected
 
-      if (this.$root.settings.perf_mode === 'low') {
+      if (this.$root.settings.perf_mode === "low") {
         console.log(`METHODS • TimeLineView: onScroll / is happening`);
         clearTimeout(isScrollingTimeout);
 
@@ -1066,14 +1052,14 @@ export default {
       }
     },
     openMediaModal(slugMediaName) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • TimeLineView: openMediaModal');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • TimeLineView: openMediaModal");
       }
 
       if (!this.medias.hasOwnProperty(slugMediaName)) {
-        if (this.$root.state.dev_mode === 'debug') {
+        if (this.$root.state.dev_mode === "debug") {
           console.log(
-            'METHODS • TimeLineView: openMediaModal / missing media in timeline'
+            "METHODS • TimeLineView: openMediaModal / missing media in timeline"
           );
         }
       } else {
@@ -1084,12 +1070,11 @@ export default {
       this.showMediaModalFor = false;
     },
     editModalNextMedia() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • TimeLineView: editModalNextMedia');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • TimeLineView: editModalNextMedia");
       }
-      
-      if(this.showMediaModalFor) {
 
+      if (this.showMediaModalFor) {
         // find in sortedMedias where this.showMediaModalFor and get the next one
         const current_media_index = _.findIndex(this.sortedMedias, {
           slugMediaName: this.showMediaModalFor
@@ -1097,24 +1082,22 @@ export default {
 
         this.closeMediaModal();
 
-        if(current_media_index < this.sortedMedias.length - 1) {
+        if (current_media_index < this.sortedMedias.length - 1) {
           const new_media = this.sortedMedias[current_media_index + 1];
-          if(new_media.hasOwnProperty('slugMediaName')) {
-
+          if (new_media.hasOwnProperty("slugMediaName")) {
             this.$nextTick(() => {
               this.openMediaModal(new_media.slugMediaName);
             });
-          } 
+          }
         }
       }
     },
     editModalPreviousMedia() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • TimeLineView: editModalPreviousMedia');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • TimeLineView: editModalPreviousMedia");
       }
 
-      if(this.showMediaModalFor) {
-
+      if (this.showMediaModalFor) {
         // find in sortedMedias where this.showMediaModalFor and get the next one
         const current_media_index = _.findIndex(this.sortedMedias, {
           slugMediaName: this.showMediaModalFor
@@ -1122,14 +1105,14 @@ export default {
 
         this.closeMediaModal();
 
-        if(current_media_index > 0) {
+        if (current_media_index > 0) {
           const new_media = this.sortedMedias[current_media_index - 1];
-          if(new_media.hasOwnProperty('slugMediaName')) {
+          if (new_media.hasOwnProperty("slugMediaName")) {
             this.$nextTick(() => {
               this.openMediaModal(new_media.slugMediaName);
-            });          
-          } 
-        }      
+            });
+          }
+        }
       }
     },
 
@@ -1145,7 +1128,7 @@ export default {
       }
 
       // console.log('METHODS • TimeLineView: drawRealtimeRule');
-      let caption = this.$root.currentTime.format('HH:mm:ss');
+      let caption = this.$root.currentTime.format("HH:mm:ss");
       this.todaysRule = {
         caption,
         xPos
@@ -1230,7 +1213,7 @@ export default {
         return;
       }
 
-      this.currentScrollEvent = this.$scrollTo('.m_timeline', 500, {
+      this.currentScrollEvent = this.$scrollTo(".m_timeline", 500, {
         container: this.$refs.timeline,
         offset: xPos_new,
         cancelable: true,
@@ -1251,7 +1234,7 @@ export default {
       });
     },
     toggleSidebar() {
-      console.log('METHODS • TimeLineView: toggleSidebar');
+      console.log("METHODS • TimeLineView: toggleSidebar");
       this.$root.settings.has_sidebar_opened = !this.$root.settings
         .has_sidebar_opened;
       this.$nextTick(() => {
@@ -1262,7 +1245,7 @@ export default {
       xPos = this.timelineViewport.scrollLeft +
         this.timelineViewport.viewerWidth / 2
     ) {
-      console.log('METHODS • TimeLineView: setVisibleDay');
+      console.log("METHODS • TimeLineView: setVisibleDay");
       let dateFromPosX = this.getDateFromXPosition(xPos);
       dateFromPosX = Math.min(
         this.timelineViewport.end,
@@ -1273,17 +1256,17 @@ export default {
       }
     },
     setSort(newSort) {
-      console.log('METHODS • TimeLineView: setSort');
+      console.log("METHODS • TimeLineView: setSort");
       this.sort.current = newSort;
     },
     setFilter(newFilter) {
-      console.log('METHODS • TimeLineView: setFilter');
+      console.log("METHODS • TimeLineView: setFilter");
       this.filter = newFilter;
     },
     showZoomZone(val) {
       this.zoomZone.display = true;
       this.zoomZone.width = Math.floor(
-        val / this.timelineViewport.scale * this.timelineViewport.viewerWidth
+        (val / this.timelineViewport.scale) * this.timelineViewport.viewerWidth
       );
       this.zoomZone.width = Math.min(this.zoomZone.width, window.innerWidth);
 
@@ -1307,11 +1290,6 @@ export default {
         width: `${this.zoomZone.width}px`,
         transform: `translate(${this.zoomZone.xPos}px, 0px)`
       };
-    },
-    startEditModal() {
-      if (this.can_admin_folder) {
-        this.showEditFolderModal = true;
-      }
     }
   }
 };

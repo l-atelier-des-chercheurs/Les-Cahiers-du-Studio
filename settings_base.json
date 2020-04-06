@@ -7,31 +7,31 @@
   "userDirname": "les-cahiers",
   "cache_content": true,
 
-  "contentDirname" : "user",
-  "cacheDirname" : "cache",
-  "metaFileext" : ".txt",
-  "thumbExt" : ".jpeg",
+  "contentDirname": "user",
+  "cacheDirname": "les-cahiers_cache",
+  "metaFileext": ".txt",
+  "thumbExt": ".jpeg",
   "thumbFormat": "jpeg",
-  "folderMetaFilename" : "meta",
-  "folderPreviewFilename" : "meta_preview",
+  "folderMetaFilename": "meta",
+  "folderPreviewFilename": "meta_preview",
 
   "privateKeyPath": "",
   "certificatePath": "",
 
-  "metaDateFormat" : "YYYYMMDD_HHmmss",
-  "textEncoding" : "UTF-8",
-  "thumbFolderName" : "_thumbs",
-  "deletedFolderName" : "_bin",
+  "metaDateFormat": "YYYYMMDD_HHmmss",
+  "textEncoding": "UTF-8",
+  "thumbFolderName": "_thumbs",
+  "deletedFolderName": "_bin",
 
-  "mediaThumbQuality" : 70,
-  "maxFileSizeForUpload": 10000, 
+  "mediaThumbQuality": 70,
+  "maxFileSizeForUpload": 10000,
 
-  "_comment" : "// see http://regexr.com/3d4t8",
-  "regexpMatchFolderNames" : "^([^.]+)$",
-  "regexpGetFileExtension" : "\\.[^.]*$",
-  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
+  "_comment": "// see http://regexr.com/3d4t8",
+  "regexpMatchFolderNames": "^([^.]+)$",
+  "regexpGetFileExtension": "\\.[^.]*$",
+  "regexpRemoveFileExtension": "(.+?)(\\.[^.]*$|$)",
 
-  "structure" : {
+  "structure": {
     "folders": {
       "path": "",
       "fields": {
@@ -52,7 +52,7 @@
         },
         "password": {
           "type": "string",
-          "read_only": true        
+          "read_only": true
         },
         "authors": {
           "type": "array"
@@ -89,7 +89,7 @@
             "default": "current",
             "read_only": true
           },
-          "date_modified" : {
+          "date_modified": {
             "type": "date",
             "default": "current",
             "override": true
@@ -103,22 +103,39 @@
           },
           "color": {
             "type": "string",
-            "options": ["white", "red", "blue", "green", "purple", "orange", "yellow"],
+            "options": [
+              "white",
+              "red",
+              "blue",
+              "green",
+              "purple",
+              "orange",
+              "yellow"
+            ],
             "default": "white"
           },
           "type": {
             "type": "string",
-            "options": ["image", "video", "audio", "text", "marker", "document", "writeup", "other"],
+            "options": [
+              "image",
+              "video",
+              "audio",
+              "text",
+              "marker",
+              "document",
+              "writeup",
+              "other"
+            ],
             "default": "other"
           },
           "collapsed": {
             "type": "boolean",
             "default": false
           },
-          "ratio" : {
+          "ratio": {
             "type": "number"
           },
-          "duration" : {
+          "duration": {
             "type": "number"
           },
           "authors": {
@@ -128,7 +145,7 @@
             "type": "array"
           },
           "keywords": {
-            "type": "string"
+            "type": "array"
           },
           "y": {
             "type": "number",

@@ -1,139 +1,143 @@
 <template>
-  <div
-    class="m_navtimeline_wrapper"
-  >
+  <div class="m_navtimeline_wrapper">
     <transition name="fade" :duration="350">
       <div
         v-if="$root.settings.is_loading_medias_for_folder"
         class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
       >
-        <span class="animated flash">
-          {{ $t('loading') }}
-        </span>
+        <span class="animated flash">{{ $t("loading") }}</span>
       </div>
     </transition>
 
     <!-- <pre>{{ sortedMedias }}</pre> -->
 
-    <template v-if="$root.state.mode !== 'export_web'">
-      <button 
-        type="button" class="folder_backbutton" @click="$root.closeFolder()"
-        @mouseover="collapse_foldername = false"
-        @mouseleave="collapse_foldername = true"
-        :class="{ 'is--collapsed' : collapse_foldername }"
-      >
-        <span class="icon">←</span>
-        <span class="project_name">{{ folder.name }}</span>
-      </button>
-    </template>
-    <template v-else>
-      <div class="folder_backbutton"
-      >
-        <span class="margin-sides-small padding-verysmall text-centered">{{ folder.name }}</span>
-      </div>
-    </template>
-
-    <div class="m_navtimeline_wrapper--timeline_wrapper">
-
-      <div 
-        :style="{ cursor, userSelect}" 
-        class="vue-splitter-container clearfix" 
-      >
-
-        <Pane 
-          class="splitter-pane splitter-paneL" 
-          :class="{ 'is--dragged' : is_dragged }"
-          :split="split" :style="{ [type]: percent+'%'}"
+    <div
+      class="m_navtimeline_wrapper--timeline_wrapper"
+      :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
+    >
+      <div :style="{ cursor, userSelect }" class="vue-splitter-container clearfix">
+        <Pane
+          class="splitter-pane splitter-paneL"
+          :class="{ 'is--dragged': is_dragged }"
+          :split="split"
+          :style="{ [type]: percent + '%' }"
         >
-
           <!-- <transition name="sidebar-animation" :duration="350" mode="out-in"> -->
-            <Sidebar
-              v-if="$root.settings.has_sidebar_opened && $root.settings.sidebar_type === 'options'"
-              :folder="folder"
-              :slugFolderName="slugFolderName"
-              :timeline_start="timeline_start"
-              :timeline_end="timeline_end"
-              :visible_day="visible_day"
-              :medias="medias"
-              :sortedMedias="sortedMedias"
-              :sort="sort"
-              :filter="filter"
-              :is_realtime="is_realtime"
-              :read_only="read_only"
-              :can_admin_folder="can_admin_folder"
-              @modal_edit_folder="can_admin_folder ? show_edit_folder_modal = true : ''"
-            />
-            <WriteUp
-              v-else-if="$root.settings.has_sidebar_opened && $root.settings.sidebar_type === 'journal'"
-              :slugFolderName="slugFolderName"
-              :medias="medias"
-              :read_only="read_only"
-            />
+          <Sidebar
+            v-if="
+              $root.settings.has_sidebar_opened &&
+                $root.settings.sidebar_type === 'options'
+            "
+            :folder="folder"
+            :slugFolderName="slugFolderName"
+            :timeline_start="timeline_interval.start"
+            :timeline_end="timeline_interval.end"
+            :visible_day="visible_day"
+            :medias="medias"
+            :sortedMedias="sortedMedias"
+            :date_interval="date_interval"
+            :sort="sort"
+            :filter="filter"
+            :is_realtime="is_realtime"
+            :read_only="read_only"
+            :can_admin_folder="can_admin_folder"
+          />
+          <WriteUp
+            v-else-if="
+              $root.settings.has_sidebar_opened &&
+                $root.settings.sidebar_type === 'journal'
+            "
+            :slugFolderName="slugFolderName"
+            :medias="medias"
+            :read_only="read_only"
+          />
           <!-- </transition> -->
 
-          <div class="m_verticalButtons"
-            :class="{ 'is--sidebarOpened' : $root.settings.has_sidebar_opened }"
+          <template v-if="$root.state.mode !== 'export_web'">
+            <button
+              type="button"
+              class="folder_backbutton"
+              @click="$root.closeFolder()"
+              @mouseover="collapse_foldername = false"
+              @mouseleave="collapse_foldername = true"
+              :class="{
+          'is--collapsed': collapse_foldername,
+          'is--movedToRight': $root.settings.has_sidebar_opened
+        }"
+            >
+              <span class="icon">←</span>
+              <span class="project_name">{{ folder.name }}</span>
+            </button>
+          </template>
+          <template v-else>
+            <div class="folder_backbutton">
+              <span class="margin-sides-small padding-verysmall text-centered">
+                {{
+                folder.name
+                }}
+              </span>
+            </div>
+          </template>
+
+          <div
+            class="m_verticalButtons"
+            :class="{ 'is--sidebarOpened': $root.settings.has_sidebar_opened }"
           >
             <div class="m_verticalButtons--container">
-              <button type="button"
-                @click.stop.prevent="toggleSidebar('options')"
-              >
-                <span>
-                  {{ $t('options') }}<template v-if="$root.settings.sidebar_type === 'options'">&nbsp;×</template>
-                </span>
-                <!-- <template v-else>→</template> -->
+              <button type="button" @click.stop.prevent="toggleSidebar('options')">
+                <span
+                  v-if="$root.settings.sidebar_type === 'options'"
+                  v-html="`×&nbsp;` + $t('options')"
+                />
+                <span v-else v-html="$t('options')" />
               </button>
 
-              <button type="button" class="m_verticalButtons--slider"
+              <button
                 v-if="$root.settings.has_sidebar_opened"
+                type="button"
+                class="m_verticalButtons--slider"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
-                @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"   
-              >
-                ▼▲
-              </button>
+                @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
+                v-html="'|||'"
+              />
 
-              <button type="button"
-                @click.stop.prevent="toggleSidebar('journal')"
-              >
-                <span>
-                  {{ $t('journal') }}<template v-if="$root.settings.sidebar_type === 'journal'">&nbsp;×</template>
-                </span>
-                <!-- <template v-else>→</template> -->
+              <button type="button" @click.stop.prevent="toggleSidebar('journal')">
+                <span
+                  v-if="$root.settings.sidebar_type === 'journal'"
+                  v-html="`×&nbsp;` + $t('journal')"
+                />
+                <span v-else v-html="$t('journal')" />
+                <span v-if="number_of_writeups" class="_writeups_number">{{ number_of_writeups }}</span>
               </button>
-
             </div>
-
           </div>
-
-
-
         </Pane>
 
-        <Resizer 
-          :class="{ 'is--dragged' : is_dragged }"
-          :className="className" 
-          :style="{ [resizeType]: percent+'%'}" 
-          :split="split" 
-          @mousedown.native="onMouseDown" 
+        <Resizer
+          :class="{ 'is--dragged': is_dragged }"
+          :className="className"
+          :style="{ [resizeType]: percent + '%' }"
+          :split="split"
+          @mousedown.native="onMouseDown"
           @click.native="onClick"
         />
 
-        <Pane 
-          class="splitter-pane splitter-paneR" 
-          :class="{ 'is--dragged' : is_dragged }"
-          :split="split" 
-          :style="{ [type]: 100-percent+'%'}"
+        <Pane
+          class="splitter-pane splitter-paneR"
+          :class="{ 'is--dragged': is_dragged }"
+          :style="{ [type]: 100 - percent + '%' }"
+          :split="split"
         >
-
-          <div class="m_floater"
-            @wheel="onMousewheel"
-          >
+          <div class="m_floater" @wheel="onMousewheel">
             <div>
-              {{ visible_day_human }}
+              <span>{{ visible_day_human }}</span>
             </div>
+            <TimelinePlayer />
+            <div></div>
           </div>
 
-          <div class="m_timeline"
+          <div
+            class="m_timeline"
             ref="timeline"
             @wheel="onMousewheel"
             @mouseup.self="onMouseUp"
@@ -142,40 +146,68 @@
             <!-- v-dragscroll -->
             <div class="m_timeline--container">
               <div class="m_timeline--container--dates" ref="timeline_dates">
-                <div 
-                  v-for="day in date_interval" 
+                <div
+                  v-for="day in date_interval"
                   :key="day.label"
                   :data-timestamp="day.timestamp"
                   class="m_timeline--container--dates--day"
-                  :class="{ 'is--empty' : day.is_empty }"
+                  :class="{ 'is--empty': day.is_empty }"
                 >
-                  <template v-if="!day.is_empty">
-                    <div class="m_timeline--container--dates--day--daylabel"
-                    >
+                  <template v-if="day.hasOwnProperty('is_empty_period')">
+                    <div
+                      class="m_timeline--container--dates--day--emptinessPeriodLabel"
+                      v-html="day.is_empty_period"
+                    />
+                  </template>
+                  <template v-else-if="day.hasOwnProperty('is_empty')"></template>
+                  <template v-else>
+                    <div class="m_timeline--container--dates--day--daylabel">
                       <div class="m_timeline--container--dates--day--daylabel--container">
                         <span>
                           {{ day.label }}
-                          <span v-if="day.number_of_medias > 0">{{ day.number_of_medias }}</span>
+                          <span v-if="day.number_of_medias > 0">
+                            {{
+                            day.number_of_medias
+                            }}
+                          </span>
                           <span v-else></span>
                         </span>
                       </div>
                     </div>
 
-                    <div v-for="segment in day.segments"
+                    <div
+                      v-for="segment in day.segments"
                       :key="segment.timestamp"
                       class="m_timeline--container--dates--day--mediasblock"
-                      v-if="(!segment.hasOwnProperty('hidelabel') || !segment.hidelabel) || (segment.medias.length > 0)"
+                      v-if="
+                        !segment.hasOwnProperty('hidelabel') ||
+                          !segment.hidelabel ||
+                          segment.medias.length > 0
+                      "
                     >
-                      <div class="m_timeline--container--dates--day--mediasblock--label"
-                        v-if="!segment.hasOwnProperty('hidelabel') || !segment.hidelabel"
+                      <div
+                        class="m_timeline--container--dates--day--mediasblock--label"
+                        v-if="
+                          !segment.hasOwnProperty('hidelabel') ||
+                            !segment.hidelabel
+                        "
                       >
                         <div>
-                          <button type="button" 
-                            @click="openMediaModal(segment.marker_meta_slugMediaName)"
-                            :style="`
+                          <button
+                            type="button"
+                            @click="
+                              openMediaModal(segment.marker_meta_slugMediaName)
+                            "
+                            :style="
+                              `
                               --color-author: ${segment.color};
-                              --label-color: ${segment.color === 'var(--color-noir)' ? 'var(--color-blanc)' : 'var(--color-noir)' };
-                              `"
+                              --label-color: ${
+                                segment.color === 'var(--color-noir)'
+                                  ? 'var(--color-blanc)'
+                                  : 'var(--color-noir)'
+                              };
+                              `
+                            "
                             :data-has_author="!!segment.marker_author"
                           >
                             <span v-html="segment.label" />
@@ -183,9 +215,9 @@
                         </div>
                       </div>
 
-                      <MediasBlock2
+                      <MediasBlock
                         v-if="segment.medias.length > 0"
-                        :key="segment.timestamp + timeline_height"
+                        :key="segment.timestamp"
                         :medias="segment.medias"
                         :folder="folder"
                         :slugFolderName="slugFolderName"
@@ -197,35 +229,47 @@
               </div>
             </div>
 
-            <div v-if="sort.current.field !== 'date_timeline'"
-              class="m_filterIndicator">
+            <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
               <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
-                <button type="button" 
-                  class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small" 
-                  v-html="'x'" 
-                  @click="setSort(sort.available[0]); setFilter('');"
+                <button
+                  type="button"
+                  class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
+                  v-html="'x'"
+                  @click="
+                    setSort(sort.available[0]);
+                    setFilter('');
+                  "
                 />
                 <small>
-                  <div class="">
+                  <div class>
                     <span v-html="$t('active_filter:')" />
-                    {{ ' ' }}
+                    {{ " " }}
                     <span v-html="sort.current.name" />
                   </div>
-                  <div class="">
+                  <div class>
                     <span v-html="$t('medias_shown:')" />
-                    <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
+                    <span
+                      v-html="
+                        this.sortedMedias.length +
+                          '/' +
+                          Object.keys(this.medias).length
+                      "
+                    />
                   </div>
                 </small>
               </div>
             </div>
           </div>
-        </pane>
+        </Pane>
       </div>
     </div>
 
     <AddMedias
       v-if="
-        ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && !folder_is_archived"
+        ((folder.password === 'has_pass' && can_admin_folder) ||
+          folder.password !== 'has_pass') &&
+          !folder_is_archived
+      "
       :slugFolderName="slugFolderName"
       :folder="folder"
       :folder_is_archived="folder_is_archived"
@@ -244,25 +288,33 @@
       :isRealtime="is_realtime"
       @close="show_media_modal_for = false"
       :read_only="!$root.state.connected || folder_is_archived"
+      :allAuthors="Array.isArray(folder.authors) ? folder.authors : []"
+    />
+    <EditFolder
+      v-if="show_edit_folder_modal"
+      :folder="folder"
+      :slugFolderName="slugFolderName"
+      @close="show_edit_folder_modal = false"
+      :read_only="read_only"
       :allAuthors="folder.authors"
     />
 
     <!-- Ici la minimap -->
-
   </div>
 </template>
 <script>
-import MediasBlock2 from './components/MediasBlock2.vue';
-import Sidebar from './components/Sidebar.vue';
-import EditFolder from './components/modals/EditFolder.vue';
-import AddMedias from './components/AddMedias.vue';
-import { setTimeout } from 'timers';
-import EditMedia from './components/modals/EditMedia.vue';
-import WriteUp from './components/WriteUp.vue';
-import Resizer from './components/splitpane/Resizer.vue'
-import Pane from './components/splitpane/Pane.vue'
+import MediasBlock from "./components/MediasBlock.vue";
+import Sidebar from "./components/Sidebar.vue";
+import EditFolder from "./components/modals/EditFolder.vue";
+import AddMedias from "./components/AddMedias.vue";
+import { setTimeout } from "timers";
+import EditMedia from "./components/modals/EditMedia.vue";
+import WriteUp from "./components/WriteUp.vue";
+import Resizer from "./components/splitpane/Resizer.vue";
+import Pane from "./components/splitpane/Pane.vue";
+import TimelinePlayer from "./components/subcomponents/TimelinePlayer.vue";
 
-import debounce from 'debounce';
+import debounce from "debounce";
 
 export default {
   props: {
@@ -273,17 +325,17 @@ export default {
   },
   components: {
     WriteUp,
-    MediasBlock2,
+    MediasBlock,
     AddMedias,
     EditMedia,
     Sidebar,
     EditFolder,
     Resizer,
-    Pane
+    Pane,
+    TimelinePlayer
   },
   data() {
     return {
-
       translation: 0,
       // translation but refreshed at specific interval
       debounce_translation: 0,
@@ -297,126 +349,155 @@ export default {
       collapse_foldername: false,
 
       show_media_modal_for: false,
-      show_edit_folder_modal: false,   
+      show_edit_folder_modal: false,
+      is_showing_addmedia_options: false,
 
+      convert_empty_days_to_periods: true,
 
       minPercent: 0,
-      split: 'vertical',
+      split: "vertical",
       is_dragged: false,
       drag_offset: 0,
       hasMoved: false,
       height: null,
       percent: 0,
-      type: 'width',
-      resizeType: 'left',
+      type: "width",
+      resizeType: "left",
 
-      make_mediasblock_with: 'markers',
-      
-      filter: '',
+      make_mediasblock_with: "markers",
+
+      filter: "",
       sort: {
         current: {},
 
         available: [
           {
-            field: 'date_timeline',
-            name: this.$t('date'),
-            type: 'date',
-            order: 'ascending'
+            field: "date_timeline",
+            name: this.$t("date"),
+            type: "date",
+            order: "ascending"
           },
           {
-            field: 'date_modified',
-            name: this.$t('last_modified'),
-            type: 'date',
-            order: 'descending'
+            field: "date_modified",
+            name: this.$t("last_modified"),
+            type: "date",
+            order: "descending"
           },
           {
-            field: 'caption',
-            name: this.$t('caption'),
-            type: 'alph',
-            order: 'ascending'
+            field: "caption",
+            name: this.$t("caption"),
+            type: "alph",
+            order: "ascending"
           },
           {
-            field: 'type',
-            name: this.$t('type'),
-            type: 'alph',
-            order: 'ascending'
+            field: "type",
+            name: this.$t("type"),
+            type: "alph",
+            order: "ascending"
+          },
+          // {
+          //   field: "color",
+          //   name: this.$t("color"),
+          //   type: "alph",
+          //   order: "ascending"
+          // },
+          {
+            field: "keywords",
+            name: this.$t("keywords"),
+            type: "array",
+            field_name: "title",
+            order: "ascending"
           },
           {
-            field: 'color',
-            name: this.$t('color'),
-            type: 'alph',
-            order: 'ascending'
+            field: "authors",
+            name: this.$t("author"),
+            type: "array",
+            field_name: "name",
+            order: "ascending"
           },
           {
-            field: 'keywords',
-            name: this.$t('keywords'),
-            type: 'alph',
-            order: 'ascending'
+            field: "public",
+            name: this.$t("public"),
+            type: "bool",
+            order: "descending"
           },
           {
-            field: 'authors',
-            name: this.$t('author'),
-            type: 'alph',
-            order: 'ascending'
-          },
-          {
-            field: 'public',
-            name: this.$t('public'),
-            type: 'bool',
-            order: 'descending'
-          },
-          {
-            field: 'content',
-            name: this.$t('content'),
-            type: 'alph',
-            order: 'ascending'
+            field: "content",
+            name: this.$t("content"),
+            type: "alph",
+            order: "ascending"
           }
         ]
       }
-
-    }
+    };
   },
-  
+
   created() {
     this.sort.current = this.sort.available[0];
   },
   mounted() {
-    this.$eventHub.$on('scrollToMedia', this.scrollToMedia);
-    this.$eventHub.$on('scrollToDate', this.scrollToDate);
-    this.$eventHub.$on('timeline.openMediaModal', this.openMediaModal);
-    this.$eventHub.$on('setSort', this.setSort);
-    this.$eventHub.$on('setFilter', this.setFilter);
-    this.$eventHub.$on('timeline.scrollToToday', this.scrollToToday);
-    this.$eventHub.$on('timeline.scrollToEnd', this.scrollToEnd);
-    this.$eventHub.$on('editmediamodal.nextmedia', this.editModalNextMedia);
-    this.$eventHub.$on('editmediamodal.previousmedia', this.editModalPreviousMedia);
+    console.log("MOUNTED • TimeLineView");
+
+    this.$eventHub.$on("scrollToMedia", this.scrollToMedia);
+    this.$eventHub.$on("scrollToDate", this.scrollToDate);
+    this.$eventHub.$on("timeline.openMediaModal", this.openMediaModal);
+    this.$eventHub.$on("setSort", this.setSort);
+    this.$eventHub.$on("setFilter", this.setFilter);
+    this.$eventHub.$on("timeline.scrollToToday", this.scrollToToday);
+    this.$eventHub.$on("timeline.scrollToEnd", this.scrollToEnd);
+    this.$eventHub.$on("showEditFolderModal", this.startEditModal);
+    this.$eventHub.$on("editmediamodal.nextmedia", this.editModalNextMedia);
+    this.$eventHub.$on(
+      "editmediamodal.previousmedia",
+      this.editModalPreviousMedia
+    );
+    this.$eventHub.$on("showingAddmediaOptions", this.showingAddmediaOptions);
+    this.$eventHub.$on("hidingAddmediaOptions", this.hidingAddmediaOptions);
 
     this.setTimelineHeight();
 
     this.onResize = debounce(this.onResize, 300);
-    window.addEventListener('resize', this.onResize);
+    window.addEventListener("resize", this.onResize);
 
-    setTimeout(() => { this.collapse_foldername = true }, 2000);
+    if (this.$root.state.mode === "export_web") {
+      this.percent = 50;
+      this.$root.settings.has_sidebar_opened = true;
+      this.$root.settings.sidebar_type = "journal";
+    }
+
+    setTimeout(() => {
+      this.collapse_foldername = true;
+    }, 2000);
   },
   beforeDestroy() {
-    this.$eventHub.$off('scrollToMedia', this.scrollToMedia);
-    this.$eventHub.$off('scrollToDate', this.scrollToDate);
-    this.$eventHub.$off('timeline.openMediaModal', this.openMediaModal);
-    this.$eventHub.$off('setSort');
-    this.$eventHub.$off('setFilter');
-    this.$eventHub.$off('timeline.scrollToToday', this.scrollToToday);
-    this.$eventHub.$off('timeline.scrollToEnd', this.scrollToEnd);
-    this.$eventHub.$off('editmediamodal.nextmedia', this.editModalNextMedia);
-    this.$eventHub.$off('editmediamodal.previousmedia', this.editModalPreviousMedia);
+    console.log("BEFOREDESTROY • TimeLineView");
 
-    window.removeEventListener('resize', this.onResize);
+    this.$eventHub.$off("scrollToMedia", this.scrollToMedia);
+    this.$eventHub.$off("scrollToDate", this.scrollToDate);
+    this.$eventHub.$off("timeline.openMediaModal", this.openMediaModal);
+    this.$eventHub.$off("setSort");
+    this.$eventHub.$off("setFilter");
+    this.$eventHub.$off("timeline.scrollToToday", this.scrollToToday);
+    this.$eventHub.$off("timeline.scrollToEnd", this.scrollToEnd);
+    this.$eventHub.$off("showEditFolderModal", this.startEditModal);
+    this.$eventHub.$off("editmediamodal.nextmedia", this.editModalNextMedia);
+    this.$eventHub.$off(
+      "editmediamodal.previousmedia",
+      this.editModalPreviousMedia
+    );
+    this.$eventHub.$off("showingAddmediaOptions", this.showingAddmediaOptions);
+    this.$eventHub.$off("hidingAddmdiaOptions", this.hidingAddmediaOptions);
 
+    window.removeEventListener("resize", this.onResize);
+
+    this.$root.settings.has_sidebar_opened = false;
+    this.$root.settings.sidebar_type = "";
   },
   watch: {
-    'translation': function() {
+    translation: function() {
       this.$refs.timeline.scrollLeft = this.translation;
 
-      if(!this.debounce_translation_fct) {
+      if (!this.debounce_translation_fct) {
         this.debounce_translation_fct = setTimeout(() => {
           this.debounce_translation = this.translation;
           this.debounce_translation_fct = undefined;
@@ -425,49 +506,63 @@ export default {
     }
   },
   computed: {
+    number_of_writeups() {
+      if (typeof this.medias === "object")
+        return Object.values(this.medias).filter(
+          media => media.hasOwnProperty("type") && media.type === "writeup"
+        ).length;
+      return false;
+    },
     can_admin_folder() {
       return this.$root.canAdminFolder({
-        type: 'folders', 
+        type: "folders",
         slugFolderName: this.slugFolderName
-      })
+      });
     },
     folder_is_archived() {
-      if(this.folder.hasOwnProperty('archived') && this.folder.archived) {
+      if (this.folder.hasOwnProperty("archived") && this.folder.archived) {
         return true;
       }
-      if(this.$root.state.mode === 'export_web') {
+      if (this.$root.state.mode === "export_web") {
         return true;
       }
       return false;
-    },  
+    },
     folder_authors() {
-      return this.folder.hasOwnProperty('authors') && this.folder.authors !== '' ? this.folder.authors : [];
+      return this.folder.hasOwnProperty("authors") && this.folder.authors !== ""
+        ? this.folder.authors
+        : [];
     },
     current_author() {
-      if(typeof this.folder_authors !== 'object') {
+      if (typeof this.folder_authors !== "object") {
         return {};
       }
-      return this.folder_authors.filter(c => c.name === this.$root.settings.current_author_name)[0];      
+      return this.folder_authors.filter(
+        c => c.name === this.$root.settings.current_author_name
+      )[0];
     },
     sortedMedias() {
-      console.log('COMPUTED • TimeLineView: sortedMedias');
+      console.log("COMPUTED • TimeLineView: sortedMedias");
       var sortable = [];
-      let current_sort = !!this.sort.current.type ? this.sort.current : this.sort.available[0];
+      let current_sort = !!this.sort.current.type
+        ? this.sort.current
+        : this.sort.available[0];
 
       for (let slugMediaName in this.medias) {
         let mediaDataToOrderBy;
         const media = this.medias[slugMediaName];
 
-        if(media.hasOwnProperty('type') && media.type === 'writeup') {
+        if (media.hasOwnProperty("type") && media.type === "writeup") {
           continue;
         }
 
-        // legacy to account for medias without date_timeline but with date_created or created
-        if(!media.hasOwnProperty(current_sort.field)) {
-          if(current_sort.field === 'date_timeline') {
-            if(media.hasOwnProperty('date_created')){
+        // if media is missing the
+        if (!media.hasOwnProperty(current_sort.field)) {
+          // legacy to account for medias without date_timeline but with date_created or created
+          if (current_sort.field === "date_timeline") {
+            if (media.hasOwnProperty("date_created")) {
               this.medias[slugMediaName].date_timeline = media.date_created;
-            } else if(media.hasOwnProperty('created')) {
+            } else if (media.hasOwnProperty("created")) {
               this.medias[slugMediaName].date_timeline = media.created;
             }
           } else {
@@ -475,31 +570,30 @@ export default {
           }
         }
 
-        if (current_sort.type === 'date') {
+        if (current_sort.type === "date") {
           const _date = this.$moment(
             media[current_sort.field],
-            'YYYY-MM-DD HH:mm:ss'
+            "YYYY-MM-DD HH:mm:ss"
           );
-          if(_date.isValid()) {
+          if (_date.isValid()) {
             mediaDataToOrderBy = +_date;
           } else {
             mediaDataToOrderBy = false;
           }
-        } else if (current_sort.type === 'alph') {
-          mediaDataToOrderBy = media[
-            current_sort.field
-          ].toLowerCase();
-        } else if (current_sort.type === 'alph') {
-          mediaDataToOrderBy = media[
-            current_sort.field
-          ];
+        } else if (current_sort.type === "alph") {
+          mediaDataToOrderBy = media[current_sort.field].toLowerCase();
+        } else if (current_sort.type === "array") {
+          let media_prop = media[current_sort.field];
+          if (typeof media_prop === "string") {
+            media_prop = [{ [current_sort.field_name]: media_prop }];
+          }
+          mediaDataToOrderBy = media_prop.map(a => a[current_sort.field_name]);
         }
 
         sortable.push({
           slugMediaName,
-          mediaDataToOrderBy,
+          mediaDataToOrderBy
         });
-        
       }
       let sortedSortable = sortable.sort((a, b) => {
         if (a.mediaDataToOrderBy < b.mediaDataToOrderBy) {
@@ -512,7 +606,7 @@ export default {
         return 0;
       });
 
-      if (current_sort.order === 'descending') {
+      if (current_sort.order === "descending") {
         sortedSortable.reverse();
       }
 
@@ -524,10 +618,28 @@ export default {
 
         if (this.filter.length > 0) {
           // if there is a filter set, let’s only return medias whose mediaDataToOrderBy contain that string
-          let originalContentFromMedia =
-            sortedMediaObj[current_sort.field] + '';
-          if (originalContentFromMedia.indexOf(this.filter) !== -1) {
-            result.push(sortedMediaObj);
+          if (current_sort.type === "array") {
+            let media_prop = sortedMediaObj[current_sort.field];
+            if (typeof media_prop === "string") {
+              media_prop = [{ [current_sort.field_name]: media_prop }];
+            }
+
+            let originalContentFromMedia = media_prop.map(
+              a => a[current_sort.field_name]
+            );
+
+            // search even for part of the word — problem: looking for Marie and not Marie-Claire wouldn’t be possible
+            // myArr.findIndex(v ==> v.contains("oran"));
+
+            if (originalContentFromMedia.includes(this.filter)) {
+              result.push(sortedMediaObj);
+            }
+          } else {
+            let originalContentFromMedia =
+              sortedMediaObj[current_sort.field] + "";
+            if (originalContentFromMedia.indexOf(this.filter) !== -1) {
+              result.push(sortedMediaObj);
+            }
           }
         } else {
           result.push(sortedMediaObj);
@@ -535,46 +647,45 @@ export default {
 
         return result;
       }, []);
-
       return sortedMedias;
     },
     groupedMedias() {
-      console.log('COMPUTED • TimeLineView: groupedMedias');
+      console.log("COMPUTED • TimeLineView: groupedMedias");
 
-      if(this.sortedMedias.length === 0) {
+      if (this.sortedMedias.length === 0) {
         return [];
       }
 
       // groupby day
-      let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
+      let mediaGroup = this.$_.groupBy(this.sortedMedias, media => {
         let date_to_reference_to = 0;
-        if(media.hasOwnProperty('date_timeline')) {
-          date_to_reference_to = media.date_timeline
-        } else if(media.hasOwnProperty('date_created')) {
-          date_to_reference_to = media.date_created
-        } else if(media.hasOwnProperty('created')) {
-          date_to_reference_to = media.created
+        if (media.hasOwnProperty("date_timeline")) {
+          date_to_reference_to = media.date_timeline;
+        } else if (media.hasOwnProperty("date_created")) {
+          date_to_reference_to = media.date_created;
+        } else if (media.hasOwnProperty("created")) {
+          date_to_reference_to = media.created;
         }
 
         const dateMoment = this.$moment(date_to_reference_to);
-        return dateMoment.format('YYYY-MM-DD');
+        return dateMoment.format("YYYY-MM-DD");
       });
-      mediaGroup = this.$_.toPairs(mediaGroup); 
+      mediaGroup = this.$_.toPairs(mediaGroup);
 
-      if(this.make_mediasblock_with === 'hours') {
+      if (this.make_mediasblock_with === "hours") {
         mediaGroup = mediaGroup.map(([day, medias]) => {
-          let medias_by_hours = this.$_.groupBy(medias, (media) => {
+          let medias_by_hours = this.$_.groupBy(medias, media => {
             let date_to_reference_to = 0;
-            if(media.hasOwnProperty('date_timeline')) {
-              date_to_reference_to = media.date_timeline
-            } else if(media.hasOwnProperty('date_created')) {
-              date_to_reference_to = media.date_created
-            } else if(media.hasOwnProperty('created')) {
-              date_to_reference_to = media.created
+            if (media.hasOwnProperty("date_timeline")) {
+              date_to_reference_to = media.date_timeline;
+            } else if (media.hasOwnProperty("date_created")) {
+              date_to_reference_to = media.date_created;
+            } else if (media.hasOwnProperty("created")) {
+              date_to_reference_to = media.created;
             }
 
             var dateMoment = this.$moment(date_to_reference_to);
-            return dateMoment.format('HH') + ':00';
+            return dateMoment.format("HH") + ":00";
           });
 
           // from
@@ -584,96 +695,110 @@ export default {
           //     {}
           //   ]
           // };
-          // to 
+          // to
           // {
           //   label: "11:00"
           //   medias: [
           //     {},
           //     {}
-          //   ]           
-          // };        
-          medias_by_hours = Object.entries(medias_by_hours).reduce((acc, [hour, medias]) => {
-            acc.push({
-              label: hour,
-              medias
-            });
-            return acc;
-          }, []);
-          // medias_by_hours = this.$_.toPairs(medias_by_hours); 
+          //   ]
+          // };
+          medias_by_hours = Object.entries(medias_by_hours).reduce(
+            (acc, [hour, medias]) => {
+              acc.push({
+                label: hour,
+                medias
+              });
+              return acc;
+            },
+            []
+          );
+          // medias_by_hours = this.$_.toPairs(medias_by_hours);
           // medias_by_hours = this.$_.sortBy(medias_by_hours);
           // medias_by_hours = medias_by_hours.reverse();
 
           return {
-            day, 
+            day,
             segments: medias_by_hours
-          };   
+          };
         });
-      } else if(this.make_mediasblock_with === 'markers') {
+      } else if (this.make_mediasblock_with === "markers") {
         mediaGroup = mediaGroup.map(([day, medias]) => {
-          let medias_by_markers = medias.reduce((acc, media) => {
-            // avancer dans l’array, en ajoutant dans un accumulator 
-            if(media.type === 'marker') {
-              const label = this.$moment(media.date_timeline).format('HH:mm') + '<br>' + (!!media.content ? media.content : ''); 
-              const color = this.$root.mediaColorFromFirstAuthor(media, this.folder) ? this.$root.mediaColorFromFirstAuthor(media, this.folder) : 'var(--color-noir)';
-              const marker_author = this.$root.mediaFirstAuthor(media, this.folder) ? this.$root.mediaFirstAuthor(media, this.folder).name : false;
+          let medias_by_markers = medias.reduce(
+            (acc, media) => {
+              // avancer dans l’array, en ajoutant dans un accumulator
+              if (media.type === "marker") {
+                const label =
+                  this.$moment(media.date_timeline).format("HH:mm") +
+                  "<br>" +
+                  (!!media.content ? media.content : "");
+                const color = this.$root.mediaColorFromFirstAuthor(
+                  media,
+                  this.folder
+                )
+                  ? this.$root.mediaColorFromFirstAuthor(media, this.folder)
+                  : "var(--color-noir)";
+                const marker_author = this.$root.mediaFirstAuthor(
+                  media,
+                  this.folder
+                )
+                  ? this.$root.mediaFirstAuthor(media, this.folder).name
+                  : false;
 
-              acc.push({
-                label,
-                color,
-                timestamp: media.date_timeline,
-                marker_meta_slugMediaName: media.slugMediaName,
-                marker_author,
-                medias: []
-              })
-            } else {
-              acc[acc.length - 1].medias.push(media);
-            }
-            return acc;
-          }, [{ label: '', medias: [], hidelabel: true }]);
+                acc.push({
+                  label,
+                  color,
+                  timestamp: media.date_timeline,
+                  marker_meta_slugMediaName: media.slugMediaName,
+                  marker_author,
+                  medias: []
+                });
+              } else {
+                acc[acc.length - 1].medias.push(media);
+              }
+              return acc;
+            },
+            [{ label: "", medias: [], hidelabel: true }]
+          );
           // {
           //   label: "Début des répétitions"
           //   medias: [
           //     {},
           //     {}
-          //   ]           
-          // };      
+          //   ]
+          // };
           return {
-            day, 
+            day,
             segments: medias_by_markers
-          };             
+          };
         });
       }
 
-      return mediaGroup;  
+      return mediaGroup;
     },
-    timeline_start() {
-      if(this.sortedMedias.length > 0) {
-        let index = 0;
-        let ref_date = '';
-        while(!this.$moment(this.sortedMedias[index].date_timeline, 'YYYY-MM-DD HH:mm:ss').isValid()) {
-          index++;
-          if(index == this.sortedMedias.length) {
-            break;
-          }
-        }
-        return +this.$moment(this.sortedMedias[index].date_timeline, 'YYYY-MM-DD HH:mm:ss');
-      }
-      return +this.$moment();
+    timeline_interval() {
+      let temp_start = +this.$moment();
+      let temp_end = +this.$moment();
 
-    },
-    timeline_end() {
-      if(this.sortedMedias.length > 0) {
-        let index = 1;
-        let ref_date = '';
-        while(!this.$moment(this.sortedMedias[this.sortedMedias.length - index].date_timeline, 'YYYY-MM-DD HH:mm:ss').isValid()) {
-          index++;
-          if(index >= this.sortedMedias.length) {
-            break;
+      this.sortedMedias.map(m => {
+        if (this.$moment(m.date_timeline, "YYYY-MM-DD HH:mm:ss").isValid()) {
+          const media_date = +this.$moment(
+            m.date_timeline,
+            "YYYY-MM-DD HH:mm:ss"
+          );
+          if (media_date < temp_start) {
+            temp_start = media_date;
+          }
+          if (media_date > temp_end) {
+            temp_end = media_date;
           }
         }
-        return +this.$moment(this.sortedMedias[this.sortedMedias.length - index].date_timeline, 'YYYY-MM-DD HH:mm:ss');
-      }
-      return +this.$moment();
+      });
+
+      return {
+        start: temp_start,
+        end: temp_end
+      };
 
       // const ts = this.folder.end;
       // const get_new_timeline_end = (ts) => {
@@ -703,24 +828,27 @@ export default {
     },
     full_date_interval() {
       // console.log('COMPUTED • TimeLineView: full_date_interval');
-      // itérer dans toutes les dates, 
-      // et construire un array de date qui ressemble à ça :
-
-      // entre timeline_start et timeline_end
+      // itérer dans toutes les dates,
+      // et construire un array de date
       let date_interval = [];
 
-      let startDate = this.$moment(this.timeline_start).add(-1, 'days');
-      const lastDate = this.$moment(this.timeline_end);
+      let startDate = this.$moment(this.timeline_interval.start).add(
+        -1,
+        "days"
+      );
+      const lastDate = this.$moment(this.timeline_interval.end);
 
       let index = 0;
 
-      while(startDate.add(1, 'days').diff(lastDate) <= 0) {
+      while (startDate.add(1, "days").diff(lastDate) <= 0) {
         let this_date = startDate.clone();
         let medias_for_date = [];
 
-        const has_media_for_date = this.groupedMedias.filter(i => this.$moment(i.day).isSame(this_date, 'day'));
+        const has_media_for_date = this.groupedMedias.filter(i =>
+          this.$moment(i.day).isSame(this_date, "day")
+        );
 
-        if(has_media_for_date.length > 0) {
+        if (has_media_for_date.length > 0) {
           medias_for_date = has_media_for_date[0].segments;
         }
 
@@ -730,16 +858,20 @@ export default {
         //     if(m.label === this.$moment(this.$root.currentTime_minute).format('HH') + ':00') {
         //       m.is_current_hour = true;
         //     }
-        //   });          
+        //   });
         // }
 
-        const number_of_medias = Object.values(medias_for_date).reduce((acc, element) => acc + element.medias.length, 0);
+        const number_of_medias = Object.values(medias_for_date).reduce(
+          (acc, element) => acc + element.medias.length,
+          0
+        );
 
-        const format = index === 0 ? 
-          'LLLL' : 
-          this.$root.lang.current === 'fr' ? 
-            'dddd D MMMM':
-            'dddd, MMMM D';
+        const format =
+          index === 0
+            ? "LLLL"
+            : this.$root.lang.current === "fr"
+            ? "dddd D MMMM Y"
+            : "dddd, MMMM D Y";
 
         const label = this_date.format(format);
 
@@ -748,12 +880,12 @@ export default {
           timestamp: +this_date,
           number_of_medias,
           segments: medias_for_date
-        }
+        };
 
         date_interval.push(day);
 
-        if(index === 0) {
-          startDate.startOf('day');
+        if (index === 0) {
+          startDate.startOf("day");
         }
 
         index++;
@@ -766,63 +898,101 @@ export default {
       // console.log('COMPUTED • TimeLineView: date_interval');
 
       var t0 = performance.now();
-      
+
       // check if multiple days (3+) in a row are empty
       let date_interval = [];
       // let min_consecutive_empty_days = 3;
 
       date_interval = this.full_date_interval.reduce((acc, day, index) => {
-        if(day.number_of_medias > 0 || acc.length === 0 || index === this.full_date_interval.length - 1) {
+        if (
+          day.number_of_medias > 0 ||
+          acc.length === 0 ||
+          index === this.full_date_interval.length - 1
+        ) {
           acc.push(day);
         } else {
           // if last added day has 0
           // acc.push(day);
-          const last_item = acc[acc.length - 1]; 
-          if(day.number_of_medias === 0) {
-            // check if last item is already a period
-            // if(!last_item.hasOwnProperty('period') || !last_item.period) {
+          if (day.number_of_medias === 0) {
             day.is_empty = true;
-            acc.push(day);
-            // }
+
+            if (!this.convert_empty_days_to_periods) {
+              acc.push(day);
+            } else {
+              const x = 8;
+
+              // if has more than X days since beginning, and if the last X days are empty
+              if (acc.length > x && !acc.slice(-x).some(d => !d.is_empty)) {
+                const last_item = acc[acc.length - 1];
+
+                if (!last_item.hasOwnProperty("is_empty_period")) {
+                  day.is_empty_period = this.$t("one_week_later");
+                  acc.push(day);
+                } else {
+                  const duration = this.$moment.duration(
+                    day.timestamp - last_item.timestamp + 86400000 * x
+                  );
+
+                  if (duration.asWeeks() === 1) {
+                    last_item.is_empty_period = this.$t("one_week_later");
+                  } else {
+                    if (duration.asWeeks() < 4) {
+                      last_item.is_empty_period =
+                        `${Math.round(duration.asWeeks())}` +
+                        this.$t("weeks_later");
+                    } else {
+                      last_item.is_empty_period =
+                        `${Math.round(duration.asMonths())}` +
+                        this.$t("months_later");
+                    }
+                  }
+                }
+              } else {
+                acc.push(day);
+              }
+            }
           } else {
             acc.push(day);
           }
         }
         return acc;
       }, []);
-      
+
       var t1 = performance.now();
-      console.log('COMPUTED • TimeLineView: date_interval took ' + (t1 - t0) + " milliseconds.");
-      
+      console.log(
+        "COMPUTED • TimeLineView: date_interval took " +
+          (t1 - t0) +
+          " milliseconds."
+      );
 
       return date_interval;
       // return this.full_date_interval;
     },
     visible_day() {
-      console.log('COMPUTED • TimeLineView: visible_day');
-      
+      console.log("COMPUTED • TimeLineView: visible_day");
+
       // IMPORTANT : to make sure visible_day is called when this.translation changes
       this.debounce_translation;
       return this.findDayAtPosX(this.debounce_translation);
     },
     visible_day_human() {
-      if(this.$root.lang.current === 'fr') {
-        return this.$moment(this.visible_day).calendar(null,{
-          lastDay : '[hier]',
-          sameDay : '[aujourd’hui]',
-          nextDay : '[demain]',
-          lastWeek : 'dddd [dernier]',
-          nextWeek : 'dddd [prochain]',
-          sameElse : 'dddd D MMMM'
+      if (this.$root.lang.current === "fr") {
+        return this.$moment(this.visible_day).calendar(null, {
+          lastDay: "[hier]",
+          sameDay: "[aujourd’hui]",
+          nextDay: "[demain]",
+          lastWeek: "dddd [dernier]",
+          nextWeek: "dddd [prochain]",
+          sameElse: "dddd D MMMM Y"
         });
-      } else if(this.$root.lang.current === 'en') {
-        return this.$moment(this.visible_day).calendar(null,{
-          lastDay : '[yesterday]',
-          sameDay : '[today]',
-          nextDay : '[tomorrow]',
-          lastWeek : '[last] dddd',
-          nextWeek : '[next] dddd',
-          sameElse : 'dddd, MMMM D'
+      } else if (this.$root.lang.current === "en") {
+        return this.$moment(this.visible_day).calendar(null, {
+          lastDay: "[yesterday]",
+          sameDay: "[today]",
+          nextDay: "[tomorrow]",
+          lastWeek: "[last] dddd",
+          nextWeek: "[next] dddd",
+          sameElse: "dddd, MMMM D Y"
         });
       }
     }
@@ -834,7 +1004,7 @@ export default {
       event.preventDefault();
 
       let new_translation = this.translation;
-      new_translation += event.deltaX; 
+      new_translation += event.deltaX;
       new_translation += event.deltaY;
 
       const el = this.$refs.timeline;
@@ -844,60 +1014,91 @@ export default {
       new_translation = Math.max(new_translation, 0);
       new_translation = Math.min(new_translation, timeline_width);
 
-      if(new_translation !== this.translation) {
+      if (new_translation !== this.translation) {
         this.translation = new_translation;
       }
     },
     onMouseUp(event) {
-      console.log('METHODS • TimeLineView: onMouseUp');
+      console.log("METHODS • TimeLineView: onMouseUp");
 
-      const el = this.$refs.timeline; 
-      setTimeout(() => this.translation = el.scrollLeft, 300);
-    }, 
+      const el = this.$refs.timeline;
+      setTimeout(() => (this.translation = el.scrollLeft), 300);
+    },
     onResize() {
       console.log(`METHODS • TimeLineView: onResize`);
       this.setTimelineHeight();
     },
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
-      this.timeline_height = window.innerHeight;
+      if (this.timeline_height !== window.innerHeight) {
+        this.timeline_height = window.innerHeight;
+      }
     },
     scrollToToday() {
       this.scrollToDate(+this.$root.currentTime_day);
     },
     scrollToEnd() {
-      const x = this.$refs.timeline.children[0].offsetWidth - this.$refs.timeline.offsetWidth;
+      const x =
+        this.$refs.timeline.children[0].offsetWidth -
+        this.$refs.timeline.offsetWidth;
       this.scrollTimelineToXPos(x);
     },
+    showingAddmediaOptions() {
+      this.is_showing_addmedia_options = true;
+    },
+    hidingAddmediaOptions() {
+      this.is_showing_addmedia_options = false;
+    },
     findDayAtPosX(posX) {
-      if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
-        return this.timeline_start;
+      if (
+        !this.$refs.hasOwnProperty("timeline_dates") ||
+        this.$refs.timeline_dates.children.length === 0
+      ) {
+        return this.timeline_interval.start;
       }
-      const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.offsetLeft + d.offsetWidth > posX + this.$refs.timeline.offsetWidth/2 - 25);
-      if(!!first_day && first_day.dataset.hasOwnProperty('timestamp')){
+      const first_day = Array.from(this.$refs.timeline_dates.children).find(
+        d =>
+          d.offsetLeft + d.offsetWidth >
+          posX + this.$refs.timeline.offsetWidth / 2 - 25
+      );
+      if (!!first_day && first_day.dataset.hasOwnProperty("timestamp")) {
         return +this.$moment(Number(first_day.dataset.timestamp));
       }
-      return +this.$moment();
+      return this.timeline_interval.start;
+    },
+    startEditModal() {
+      if (this.can_admin_folder) {
+        this.show_edit_folder_modal = true;
+      }
     },
     findPosXForDate(day) {
-      if(!this.$refs.hasOwnProperty('timeline_dates') || this.$refs.timeline_dates.children.length === 0) {
+      if (
+        !this.$refs.hasOwnProperty("timeline_dates") ||
+        this.$refs.timeline_dates.children.length === 0
+      ) {
         return 0;
       }
-      const first_day = Array.from(this.$refs.timeline_dates.children).find(d => d.dataset.hasOwnProperty('timestamp') && Number(d.dataset.timestamp) >= day);
-      if(!!first_day){
+      const first_day = Array.from(this.$refs.timeline_dates.children).find(
+        d =>
+          d.dataset.hasOwnProperty("timestamp") &&
+          Number(d.dataset.timestamp) >= day
+      );
+      if (!!first_day) {
         return first_day.offsetLeft;
       }
       return 0;
     },
     openMediaModal(slugMediaName) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • TimeLineView: openMediaModal for ' + slugMediaName);
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(
+          "METHODS • TimeLineView: openMediaModal for " + slugMediaName
+        );
       }
 
       if (!this.medias.hasOwnProperty(slugMediaName)) {
-        if (this.$root.state.dev_mode === 'debug') {
+        if (this.$root.state.dev_mode === "debug") {
           console.log(
-            'METHODS • TimeLineView: openMediaModal / missing media in timeline'
+            "METHODS • TimeLineView: openMediaModal / missing media in timeline"
           );
         }
       } else {
@@ -908,56 +1109,58 @@ export default {
       this.show_media_modal_for = false;
     },
     editModalNextMedia() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • TimeLineView: editModalNextMedia');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • TimeLineView: editModalNextMedia");
       }
-      
-      if(this.show_media_modal_for) {
 
+      if (this.show_media_modal_for) {
         // find in sortedMedias where this.show_media_modal_for and get the next one
-        const current_media_index = this.sortedMedias.findIndex(m => m.slugMediaName === this.show_media_modal_for);
+        const current_media_index = this.sortedMedias.findIndex(
+          m => m.slugMediaName === this.show_media_modal_for
+        );
 
         this.closeMediaModal();
 
-        if(current_media_index < this.sortedMedias.length - 1) {
+        if (current_media_index < this.sortedMedias.length - 1) {
           const new_media = this.sortedMedias[current_media_index + 1];
-          if(new_media.hasOwnProperty('slugMediaName')) {
+          if (new_media.hasOwnProperty("slugMediaName")) {
             this.$nextTick(() => {
               this.openMediaModal(new_media.slugMediaName);
             });
-          } 
+          }
         }
       }
     },
     editModalPreviousMedia() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • TimeLineView: editModalPreviousMedia');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • TimeLineView: editModalPreviousMedia");
       }
 
-      if(this.show_media_modal_for) {
-
+      if (this.show_media_modal_for) {
         // find in sortedMedias where this.show_media_modal_for and get the next one
-        const current_media_index = this.sortedMedias.findIndex(m => m.slugMediaName === this.show_media_modal_for);
+        const current_media_index = this.sortedMedias.findIndex(
+          m => m.slugMediaName === this.show_media_modal_for
+        );
 
         this.closeMediaModal();
 
-        if(current_media_index > 0) {
+        if (current_media_index > 0) {
           const new_media = this.sortedMedias[current_media_index - 1];
-          if(new_media.hasOwnProperty('slugMediaName')) {
+          if (new_media.hasOwnProperty("slugMediaName")) {
             this.$nextTick(() => {
               this.openMediaModal(new_media.slugMediaName);
-            });          
-          } 
-        }      
+            });
+          }
+        }
       }
     },
 
     toggleSidebar(type) {
       console.log(`METHODS • TimeLineView: toggleSidebar / ${type}`);
-      if(this.$root.settings.sidebar_type === type) {
+      if (this.$root.settings.sidebar_type === type) {
         this.$root.settings.has_sidebar_opened = false;
         this.percent = 0;
-        this.$root.settings.sidebar_type = '';
+        this.$root.settings.sidebar_type = "";
       } else {
         this.$root.settings.has_sidebar_opened = true;
         this.percent = 30;
@@ -976,14 +1179,25 @@ export default {
         `METHODS • TimeLineView: scrollToMedia / slugMediaName: ${slugMediaName}`
       );
 
-      const $medias = this.$refs.timeline.getElementsByClassName('mediaContainer');
+      const $medias = this.$refs.timeline.getElementsByClassName(
+        "mediaContainer"
+      );
 
-      if($medias.length === 0) {
+      if ($medias.length === 0) {
         return false;
       }
 
-      const media_in_timeline = Array.from($medias).find(m => m.dataset.hasOwnProperty('slugmedianame') && m.dataset.slugmedianame === slugMediaName);
-      const x = media_in_timeline.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.offsetLeft + media_in_timeline.parentElement.parentElement.parentElement.parentElement.parentElement.offsetLeft + media_in_timeline.parentElement.parentElement.offsetLeft;
+      const media_in_timeline = Array.from($medias).find(
+        m =>
+          m.dataset.hasOwnProperty("slugmedianame") &&
+          m.dataset.slugmedianame === slugMediaName
+      );
+      const x =
+        media_in_timeline.parentElement.parentElement.parentElement
+          .parentElement.parentElement.parentElement.offsetLeft +
+        media_in_timeline.parentElement.parentElement.parentElement
+          .parentElement.parentElement.offsetLeft +
+        media_in_timeline.parentElement.parentElement.offsetLeft;
       this.scrollTimelineToXPos(x);
     },
     scrollTimelineToXPos(xPos_new) {
@@ -996,7 +1210,10 @@ export default {
         return;
       }
 
-      this.current_scroll_event = this.$scrollTo('.m_timeline', 500, {
+      // xPos_new -= 50;
+      xPos_new -= this.$refs.timeline.offsetWidth / 2.5;
+
+      this.current_scroll_event = this.$scrollTo(".m_timeline", 500, {
         container: this.$refs.timeline,
         offset: xPos_new,
         cancelable: true,
@@ -1024,74 +1241,78 @@ export default {
     },
     // prev / nav
     setSort(newSort) {
-      console.log('METHODS • TimeLineView: setSort');
+      console.log("METHODS • TimeLineView: setSort");
       this.sort.current = newSort;
     },
     setFilter(newFilter) {
-      console.log('METHODS • TimeLineView: setFilter');
+      console.log("METHODS • TimeLineView: setFilter");
       this.filter = newFilter;
     },
 
     dragPubliPanel(event, type) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`);
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(
+          `METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`
+        );
       }
-      
-      this.drag_offset = - event.target.offsetWidth + event.offsetX;
-      if(!this.drag_offset) {
+
+      this.drag_offset = -event.target.offsetWidth + event.offsetX;
+      if (!this.drag_offset) {
         this.drag_offset = 0;
       }
 
-      if(type === 'mouse') {
-        window.addEventListener('mousemove', this.dragMove);
-        window.addEventListener('mouseup', this.dragUp);
-      } else if(type === 'touch') {
-        window.addEventListener('touchmove', this.dragMove);
-        window.addEventListener('touchend', this.dragUp);
+      if (type === "mouse") {
+        window.addEventListener("mousemove", this.dragMove);
+        window.addEventListener("mouseup", this.dragUp);
+      } else if (type === "touch") {
+        window.addEventListener("touchmove", this.dragMove);
+        window.addEventListener("touchend", this.dragUp);
       }
     },
     dragMove(event) {
-      console.log('METHODS • App: dragMove');
+      console.log("METHODS • App: dragMove");
 
       if (!this.is_dragged) {
         this.is_dragged = true;
       } else {
-
         let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
         pageX = pageX - this.drag_offset;
 
-        const percent = Math.floor((pageX / this.$root.settings.windowWidth) * 10000) / 100
+        const percent =
+          Math.floor((pageX / this.$root.settings.windowWidth) * 10000) / 100;
 
         if (percent > this.minPercent && percent < 100 - this.minPercent) {
-          this.percent = percent
+          this.percent = percent;
         }
 
-        this.$emit('resize')
-        this.hasMoved = true
+        this.$emit("resize");
+        this.hasMoved = true;
       }
     },
     dragUp(event) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • App: dragUp with is_dragged = ${this.is_dragged}`);
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(
+          `METHODS • App: dragUp with is_dragged = ${this.is_dragged}`
+        );
       }
-      window.removeEventListener('mousemove', this.dragMove);
-      window.removeEventListener('mouseup', this.dragUp);
-      window.removeEventListener('touchmove', this.dragMove);
-      window.removeEventListener('touchend', this.dragUp);
+      window.removeEventListener("mousemove", this.dragMove);
+      window.removeEventListener("mouseup", this.dragUp);
+      window.removeEventListener("touchmove", this.dragMove);
+      window.removeEventListener("touchend", this.dragUp);
 
       if (this.is_dragged) {
         this.is_dragged = false;
 
-        if(this.percent >= 90) {
-          this.percent = 90;
+        if (this.percent >= 70) {
+          this.percent = 70;
           // this.$root.closePubliPanel();
           // return;
-        } 
-        
+        }
+
         // if(this.$root.settings.show_publi_panel === false) {
         //   this.$root.openPubliPanel();
-        // }      
-        if(this.percent <= 10) {
+        // }
+        if (this.percent <= 10) {
           this.percent = 0;
         }
       } else {
@@ -1107,22 +1328,20 @@ export default {
       return false;
     }
   }
-}
+};
 </script>
 <style lang="less">
-
 .m_timeline {
-
   padding-left: 0;
 
   --color-author: var(--color-noir);
   --label-color: white;
 
-  --timeline-bg: #F1F2F0;
+  --timeline-bg: #f1f2f0;
   --timeline-bg: #f8f8f8;
-  
+
   // --rule-color: rgb(220,220,220);
-  --rule-color: rgb(210,210,210);
+  --rule-color: rgb(210, 210, 210);
 
   --grid-color: var(--rule-color);
   --grid-opacity: 1;
@@ -1141,12 +1360,10 @@ export default {
   // --timeline-bg: #F1F2F0;
   // --timeline-bg: #222;
   // --rule-color: #fff;
-
-
 }
 
 .m_timeline--container {
-  min-width: max-content;  
+  min-width: max-content;
   height: 100%;
   height: ~"calc(100% - 20px)";
   display: flex;
@@ -1169,26 +1386,34 @@ export default {
   // min-width: 250px;
   display: flex;
   // align-items: center;
-  margin: 0 20px;
+  margin: 0;
   // background-color: var(--color-author);
 
   // border: 2px solid white;
 
-  &:not(.is-empty) {
+  &:not(.is--empty) {
     margin-left: 10px;
+    margin-right: 20px;
   }
 
   &.is--empty {
-    margin-right: 0;
+    margin-right: -1px;
+    z-index: -1;
   }
   &.is--empty + &.is--empty {
     // margin-left: 30px;
-    margin: 0;
+    // margin: 0;
   }
 
   &:not(.is--empty) + &.is--empty {
     // border-left: 1px solid var(--rule-color);
     padding-left: 10px;
+  }
+
+  > .m_timeline--container--dates--day--emptinessPeriodLabel {
+    font-size: 80%;
+    color: #999;
+    padding: var(--spacing-medium) var(--spacing-small);
   }
 
   > .m_timeline--container--dates--day--daylabel {
@@ -1212,10 +1437,10 @@ export default {
       position: relative;
       transform: rotate(-90deg);
       // transform-origin: center center;
-      
+
       > span {
         display: block;
-        // min-width: 320px; 
+        // min-width: 320px;
         background-color: var(--label-background);
         color: var(--label-color);
         padding: 2px 8px;
@@ -1224,11 +1449,11 @@ export default {
         span {
           display: inline-flex;
           align-items: center;
-          justify-content: center;          
+          justify-content: center;
           background-color: var(--color-noir);
           border-radius: 50%;
           color: white;
-          font-size:.7em;
+          font-size: 0.7em;
           width: 2em;
           height: 2em;
           text-align: center;
@@ -1236,19 +1461,19 @@ export default {
           // line-height: 2;
           font-weight: bold;
 
+          transform: rotate(90deg);
+
           &:empty {
             display: none;
-            width: .5em;
-            height: .5em;
+            width: 0.5em;
+            height: 0.5em;
           }
         }
       }
-
     }
 
-
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       bottom: 0;
@@ -1273,14 +1498,14 @@ export default {
     //          rgba(0,0,0,0) ~"calc(50% + @{t-bandwidth})",
     //          rgba(0,0,0,0) 100%);
 
-    &::before, &::after {
-      // content: '';
+    &::before {
+      content: "";
       display: block;
       border: 1px solid transparent;
 
       border-top-color: var(--rule-color);
       border-left-color: var(--rule-color);
-      
+
       border-radius: 50%;
       width: 20px;
       height: 20px;
@@ -1289,26 +1514,48 @@ export default {
 
       transform-origin: center center;
     }
-    &::before {
-      transform: rotate(225deg);
-    }
-    &::after {
-      transform: rotate(45deg);
-      // margin-left: -1px;
-    }
 
     &:nth-of-type(2n + 0) {
       &::before {
-        content: '';
+        transform: rotate(45deg);
       }
     }
     &:nth-of-type(2n + 1) {
-      &::after {
-        content: '';
-        // border-color: blue !important;
+      &::before {
+        transform: rotate(225deg);
       }
     }
-    
+
+    // & + &.is--empty + &.is--empty + &.is--empty + &.is--empty {
+    //   &::before {
+    //     width: 14px;
+    //     height: 14px;
+    //   }
+    //   + .is--empty + .is--empty + .is--empty + .is--empty {
+    //     &::before {
+    //       width: 10px;
+    //       height: 10px;
+    //     }
+    //     + .is--empty + .is--empty + .is--empty + .is--empty {
+    //       &::before {
+    //         width: 6px;
+    //         height: 6px;
+    //       }
+    //       + .is--empty + .is--empty + .is--empty + .is--empty {
+    //         &::before {
+    //           width: 3px;
+    //           height: 3px;
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // &:nth-last-of-type(2) {
+    //   &::before {
+    //     width: 15px;
+    //     height: 15px;
+    //   }
+    // }
   }
   .m_timeline--container--dates--day--mediasblock {
     position: relative;
@@ -1337,7 +1584,7 @@ export default {
       display: block;
       transform: rotate(-15deg) translateX(-20px);
       transform-origin: left center;
-      font-style: italic;    
+      font-style: italic;
 
       button {
         padding: 0;
@@ -1347,7 +1594,7 @@ export default {
         text-transform: initial;
         text-align: left;
 
-        transition: all .8s cubic-bezier(.25,.8,.25,1);  
+        transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
         transform-origin: center bottom;
 
         &:hover {
@@ -1357,25 +1604,24 @@ export default {
 
         span {
           border-radius: 0;
-  
+
           display: inline;
           background-color: var(--color-noir);
           color: white;
           // background-color: var(--color-author);
           // color: var(--label-color);
-          box-shadow: -.1em .2em 1em rgba(0,0,0,.2);
+          box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
           padding: 4px 8px;
-  
+
           -webkit-box-decoration-break: clone;
           -ms-box-decoration-break: clone;
           -o-box-decoration-break: clone;
           box-decoration-break: clone;
 
           pointer-events: auto;
-
         }
         &[data-has_author="true"] span::before {
-          content:'• ';
+          content: "• ";
           color: var(--color-author);
           position: relative;
         }
@@ -1395,9 +1641,9 @@ export default {
 }
 
 .folder_backbutton {
-  position: fixed;
+  position: absolute;
   top: 20px;
-  left: 20px;
+  left: ~"calc(100% + 40px)";
   z-index: 10000;
   border-radius: 22px;
 
@@ -1416,6 +1662,10 @@ export default {
     top: 35px;
   }
 
+  &.is--movedToRight {
+    // left: var(--sidebar-width);
+  }
+
   .icon {
     display: flex;
     align-items: center;
@@ -1423,15 +1673,15 @@ export default {
     height: 40px;
     width: 40px;
     border-radius: 22px;
-    
+
     color: white;
-  // border: 2px solid white;
+    // border: 2px solid white;
     background-color: var(--color-noir);
 
     font-size: 1.5em;
   }
 
-  .project_name{
+  .project_name {
     padding: 4px 16px 4px 4px;
     text-transform: initial;
     max-width: 340px;
@@ -1439,7 +1689,7 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    transition: padding .4s ease-out;
+    transition: padding 0.4s ease-out;
 
     .is--collapsed& {
       padding-left: 0;
@@ -1449,49 +1699,68 @@ export default {
   }
 
   &.is--moved_to_right {
-    left: 340px;
+    // left: 340px;
   }
 }
 
 .m_floater {
   position: absolute;
-  top: 20px;
-  // bottom: 0px;
+  top: auto;
+  bottom: 40px;
   width: 100%;
   z-index: 150;
+  // font-size: 0.85em;
+  line-height: 1.25;
+  text-align: center;
+
   pointer-events: none;
 
   body.has_systembar & {
-    top: 35px;
+    // top: 35px;
   }
 
   @media screen and (max-width: 50rem) {
     top: auto !important;
     bottom: 20px;
-    font-size:.7em;
+    font-size: 0.7em;
   }
 
   > * {
-    margin: 0 auto;
-    max-width: 250px;
-    height: 40px;
-    background-color: var(--color-noir);
-    color: white;
-    pointer-events: auto;
-    border-radius: 20px;
+    display: block;
+    margin: 5px auto;
+    // max-width: auto;
 
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
+    > * {
+      display: inline-flex;
+      height: 40px;
+      background-color: var(--color-noir);
+      color: white;
+      pointer-events: auto;
+      border-radius: 20px;
+      padding: 0 20px;
 
-    @media screen and (max-width: 50rem) {
-      width: 100%;
-      max-width: none;
-      border-radius: 0;
-      height: 20px;
+      align-items: center;
+      align-content: center;
+      justify-content: center;
+
+      @media screen and (max-width: 50rem) {
+        width: 100%;
+        max-width: none;
+        border-radius: 0;
+        height: 20px;
+      }
     }
   }
 }
 
+._writeups_number {
+  display: inline-block;
+  width: 1.3em;
+  height: 1.3em;
+  // background-color: black;
+  // color: black;
+  border-radius: 50%;
+  border: 1px solid #555;
+  // font-size: 70%;
+}
 </style>

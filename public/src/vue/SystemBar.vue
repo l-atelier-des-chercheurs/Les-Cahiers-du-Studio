@@ -14,13 +14,13 @@
           >
           <i>Les Cahiers du Studio</i>
         </div>
-      </transition> -->
+      </transition>-->
     </div>
   </div>
 </template>
 <script>
 export default {
-  props: ['view'],
+  props: ["view"],
   components: {},
   data() {
     return {
@@ -56,5 +56,4 @@ export default {
 };
 </script>
 <style>
-
 </style>

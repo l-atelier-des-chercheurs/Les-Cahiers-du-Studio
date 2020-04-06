@@ -1,5 +1,6 @@
 <template>
-  <div class="mediaPreview font-small"
+  <div
+    class="mediaPreview font-small"
     :style="{
       transform: `translate(${posX}px, ${mediaStyles.y}px`,
       '--media-color': color ? color : '#ffffff'
@@ -9,31 +10,22 @@
       'is--hovered'   : is_hovered,
       'is--dragged'   : is_dragged,
       'is--collapsed' : is_collapsed,
-    }, 'type-' + media.type, class_from_first_author ]" 
+    }, 'type-' + media.type, class_from_first_author ]"
     @mousedown.prevent="mousedown"
     @mouseover="mouseover"
     @mouseleave="mouseleave"
   >
-
     <div class="media">
-
-      <div class="mediaScrubber"
-        :style="getMediaWidthFromDuration()"
-      >
+      <div class="mediaScrubber" :style="getMediaWidthFromDuration()">
         <!-- play media on click -->
-        <template
-          v-if="media.duration !== undefined"
-        >
+        <template v-if="media.duration !== undefined">
           <button class="accroche accroche_gauche"></button>
           <div class="accrocheDurationLine"></div>
         </template>
         <button class="accroche accroche_droite" @mouseup.stop="toggleCollapseMedia"></button>
       </div>
 
-      <div
-        class="timelineMediaContent"
-        :style="getMediaSize()"
-      >
+      <div class="timelineMediaContent" :style="getMediaSize()">
         <MediaContent
           v-if="!is_placeholder"
           v-model="media.content"
@@ -48,30 +40,26 @@
         <!-- <div class="mediaContour" /> -->
 
         <transition
-        name="slide"
-        enter-active-class="slideInUp"
-        leave-active-class="slideOutDown"
-        :duration="350"
+          name="slide"
+          enter-active-class="slideInUp"
+          leave-active-class="slideOutDown"
+          :duration="350"
         >
           <button
-          type="button"
-          class="button_openmedia bg-noir c-blanc"
-          :class="{ 'padding-verysmall button-thin' : this.media.type === 'marker' }"
-          style="animation-duration: 0.3s"
-          v-if="!is_placeholder && is_hovered"
-          @mousedown.stop="openMedia"
-          >
-            {{ $t('open') }}
-          </button>
+            type="button"
+            class="button_openmedia bg-noir c-blanc"
+            :class="{ 'padding-verysmall button-thin' : this.media.type === 'marker' }"
+            style="animation-duration: 0.3s"
+            v-if="!is_placeholder && is_hovered"
+            @mousedown.stop="openMedia"
+          >{{ $t('open') }}</button>
         </transition>
-
       </div>
-
     </div>
   </div>
 </template>
 <script>
-import MediaContent from './subcomponents/MediaContent.vue';
+import MediaContent from "./subcomponents/MediaContent.vue";
 
 export default {
   props: {
@@ -100,12 +88,12 @@ export default {
       is_hovered: false,
       is_collapsed: this.media.collapsed == true,
       dragOffset: {
-        x: '',
-        y: ''
+        x: "",
+        y: ""
       },
       mediaStylesOld: {
-        x: '',
-        y: ''
+        x: "",
+        y: ""
       },
       mediaStyles: {
         ratio: parseFloat(this.media.ratio),
@@ -116,14 +104,13 @@ export default {
       }
     };
   },
-  computed: {
-  },
+  computed: {},
   watch: {
     media: function() {},
-    'media.collapsed': function() {
+    "media.collapsed": function() {
       this.is_collapsed = this.media.collapsed == true;
     },
-    'media.y': function() {
+    "media.y": function() {
       this.mediaStyles.y = this.limitMediaYPos(
         parseFloat(this.media.y) * this.timelineHeight
       );
@@ -143,29 +130,29 @@ export default {
     this.setMediaSize();
   },
   beforeDestroy() {
-    window.removeEventListener('mouseup', this.mouseup);
+    window.removeEventListener("mouseup", this.mouseup);
   },
   methods: {
     limitMediaYPos(yPos) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         // console.log(`METHODS • TimelineMedia: limitMediaYPos`);
       }
-      if (this.media.type === 'marker') {
+      if (this.media.type === "marker") {
         return 50 / 2;
       }
       return Math.max(50, Math.min(this.timelineHeight - 100, yPos));
     },
     setMediaWidthFromDuration() {
-      if (window.state.dev_mode === 'debug') {
-        console.log('METHODS • TimelineMedia: setMediaWidthFromDuration');
+      if (window.state.dev_mode === "debug") {
+        console.log("METHODS • TimelineMedia: setMediaWidthFromDuration");
       }
       this.mediaWidthFromDuration = Math.round(
         this.media.duration / this.timelineScale
       );
     },
     getMediaWidthFromDuration() {
-      if (window.state.dev_mode === 'debug') {
-        console.log('METHODS • TimelineMedia: getMediaWidthFromDuration');
+      if (window.state.dev_mode === "debug") {
+        console.log("METHODS • TimelineMedia: getMediaWidthFromDuration");
       }
       if (this.media.duration !== undefined) {
         return { width: `${this.mediaWidthFromDuration}px` };
@@ -176,8 +163,8 @@ export default {
     // set width and height for a media.
     // this shouldn’t need updating
     setMediaSize() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • TimelineMedia: setMediaSize');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • TimelineMedia: setMediaSize");
       }
 
       // let’s set some ratio
@@ -192,9 +179,9 @@ export default {
 
       // if there’s some duration
       if (this.media.duration > 0) {
-        if (this.media.type === 'audio') {
+        if (this.media.type === "audio") {
           this.mediaStyles.h = 32;
-        }        
+        }
         // if (this.mediaWidthFromDuration > this.mediaStyles.w) {
         //   this.mediaStyles.w = this.mediaWidthFromDuration;
         // }
@@ -212,24 +199,20 @@ export default {
       };
     },
     mousedown(event) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(
-          `METHODS • TimelineMedia: mousedown with is_dragged = ${
-            this.is_dragged
-          }`
+          `METHODS • TimelineMedia: mousedown with is_dragged = ${this.is_dragged}`
         );
       }
-      if (!this.read_only || this.$root.state.mode === 'export_web') {
-        window.addEventListener('mousemove', this.mousemove);
-        window.addEventListener('mouseup', this.mouseup);
+      if (!this.read_only || this.$root.state.mode === "export_web") {
+        window.addEventListener("mousemove", this.mousemove);
+        window.addEventListener("mouseup", this.mouseup);
       }
     },
     mousemove(event) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(
-          `METHODS • TimelineMedia: mousemove with is_dragged = ${
-            this.is_dragged
-          }`
+          `METHODS • TimelineMedia: mousemove with is_dragged = ${this.is_dragged}`
         );
       }
       if (!this.is_dragged) {
@@ -246,13 +229,13 @@ export default {
       if (this.is_dragged) {
         return;
       }
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • TimelineMedia: openMedia');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • TimelineMedia: openMedia");
       }
-      this.$emit('open');
+      this.$emit("open");
     },
     mouseup(event) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(`METHODS • TimelineMedia: mouseup`);
         console.log(`with is_dragged = ${this.is_dragged}`);
       }
@@ -261,10 +244,10 @@ export default {
         this.mediaStyles.y = this.limitMediaYPos(newY);
         let getHeightInPercent = this.mediaStyles.y / this.timelineHeight;
 
-        if(!this.read_only) {
-          this.$root.editMedia({ 
-            type: 'folders',
-            slugFolderName: this.slugFolderName, 
+        if (!this.read_only) {
+          this.$root.editMedia({
+            type: "folders",
+            slugFolderName: this.slugFolderName,
             slugMediaName: this.slugMediaName,
             data: {
               y: getHeightInPercent
@@ -275,28 +258,28 @@ export default {
       }
 
       event.stopPropagation();
-      window.removeEventListener('mousemove', this.mousemove);
-      window.removeEventListener('mouseup', this.mouseup);
+      window.removeEventListener("mousemove", this.mousemove);
+      window.removeEventListener("mouseup", this.mouseup);
 
       return false;
     },
 
     mouseover(event) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('METHODS • TimelineMedia: mouseover');
+      if (window.state.dev_mode === "debug") {
+        console.log("METHODS • TimelineMedia: mouseover");
       }
       this.is_hovered = true;
     },
     mouseleave(event) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('METHODS • TimelineMedia: mouseleave');
+      if (window.state.dev_mode === "debug") {
+        console.log("METHODS • TimelineMedia: mouseleave");
       }
       this.is_hovered = false;
     },
     toggleCollapseMedia(event) {
-      if (window.state.dev_mode === 'debug') {
+      if (window.state.dev_mode === "debug") {
         console.log(
-          'METHODS • TimelineMedia: toggleCollapseMedia with drag = ' +
+          "METHODS • TimelineMedia: toggleCollapseMedia with drag = " +
             this.is_dragged
         );
       }
@@ -313,15 +296,14 @@ export default {
       }
       this.is_collapsed = !this.is_collapsed;
 
-      this.$root.editMedia({ 
-        type: 'folders',
-        slugFolderName: this.slugFolderName, 
+      this.$root.editMedia({
+        type: "folders",
+        slugFolderName: this.slugFolderName,
         slugMediaName: this.slugMediaName,
         data: {
           collapsed: this.is_collapsed
         }
       });
-
 
       event.stopPropagation();
     }

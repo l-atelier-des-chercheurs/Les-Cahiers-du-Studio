@@ -1,24 +1,20 @@
 <template>
-    <!-- v-if="media.type === 'marker'" -->
-  <div 
-    class="packery-item"
-    :style="itemSize"
-  >
-    <div class="packery-item-content"
-      :class="{ 
-        'is--hovered' : is_hovered && !is_resized,
-        'is--text_overflowing' : isTextOverflowing
+  <!-- v-if="media.type === 'marker'" -->
+  <div class="packery-item" :style="itemSize">
+    <div
+      class="packery-item-content"
+      :class="{
+        'is--hovered': is_hovered && !is_resized,
+        'is--text_overflowing': text_is_overflowing,
       }"
       :data-col_height="mediaSize.height"
       :style="itemStylesWithSize"
       @mouseenter="is_hovered = true"
       @mouseleave="is_hovered = false"
+      :draggable="$root.settings.has_writeup_opended"
+      @dragstart="startMediaDrag(media, $event)"
+      @dragend="endMediaDrag()"
     >
-
-    <!-- t: {{ media.t }}
-    l: {{ media.l }} -->
-    <!-- mediaSize: {{ mediaSize }} -->
-
       <MediaContent
         v-model="media.content"
         :slugFolderName="slugFolderName"
@@ -29,12 +25,23 @@
         ref="MediaContent"
       />
 
-      <div class="author_indicator"
-        v-if="mediaColorFromFirstAuthor"
-      />
+      <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
 
-      <div class="draggabilly_handle" data-draggabilly_handle
-      />
+      <div class="draggabilly_handle" @click="openMedia" />
+
+      <div
+        v-if="!!media.caption"
+        class="packery-item-content--caption"
+        :class="{ 'is--expanded': is_captionHovered }"
+        @mouseenter="is_captionHovered = true"
+        @mouseleave="is_captionHovered = false"
+        @click="openMedia"
+      >
+        <span
+          :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : ''}`"
+          >{{ media.caption }}</span
+        >
+      </div>
 
       <!-- <template v-if="is_hovered">
         <div class="buttons_right">
@@ -53,13 +60,17 @@
             -
           </button>
         </div>
-      </template> -->
+      </template>-->
 
       <template v-if="is_hovered && !is_resized">
         <div class="handle handle_resizeMedia handle_resizeMedia_bottomright">
           <div
-            @mousedown.stop.prevent="resizeMedia('mouse', 'horizontal_vertical')"
-            @touchstart.stop.prevent="resizeMedia('touch', 'horizontal_vertical')"
+            @mousedown.stop.prevent="
+              resizeMedia('mouse', 'horizontal_vertical')
+            "
+            @touchstart.stop.prevent="
+              resizeMedia('touch', 'horizontal_vertical')
+            "
           >
             <span></span>
           </div>
@@ -78,22 +89,23 @@
           <div class="handle handle_resizeMedia handle_resizeMedia_right">
             <div
               @mousedown.stop.prevent="resizeMedia('mouse', 'right_horizontal')"
-              @touchstart.stop.prevent="resizeMedia('touch', 'right_horizontal')"
+              @touchstart.stop.prevent="
+                resizeMedia('touch', 'right_horizontal')
+              "
             >
               <span></span>
             </div>
           </div>
         </template>
       </template>
-
     </div>
   </div>
 </template>
 <script>
-import MediaContent from './MediaContent.vue';
-import { setTimeout } from 'timers';
-// import Draggabilly from 'draggabilly';
-// import {packeryEvents} from 'vue-packery-plugin';
+import MediaContent from "./MediaContent.vue";
+import { setTimeout } from "timers";
+import Draggabilly from "draggabilly";
+import { packeryEvents } from "vue-packery-plugin";
 
 export default {
   props: {
@@ -105,21 +117,22 @@ export default {
     base_edge: Number,
     columnWidth: Number,
     rowHeight: Number,
-    gutter: Number
+    gutter: Number,
   },
   components: {
-    MediaContent
+    MediaContent,
   },
   data() {
     return {
       is_hovered: false,
+      is_captionHovered: false,
       mediaSize: {
         width: undefined,
         height: undefined,
         pwidth: undefined,
         pheight: undefined,
         top: undefined,
-        left: undefined
+        left: undefined,
       },
 
       is_resized: false,
@@ -127,96 +140,77 @@ export default {
       resizeType: undefined,
       resizeOffset: {
         x: 0,
-        y: 0
+        y: 0,
       },
 
       is_mounted: false,
-      text_is_overflowing: false
-    }
+      text_is_overflowing: false,
+    };
   },
-  
+
   created() {
-    console.log(`MOUNTED • MediaBlock2: created`);
-
-    this.setMediaSizeFromMeta();
-    this.setMediaPositionFromMeta();
-
-    if(this.mediaSize.width === undefined || this.mediaSize.height === undefined) {
-      if(this.media.type === 'text') {
-        this.mediaSize.width = 1 + this.base_edge;
-        this.mediaSize.height = 1 + this.base_edge;
-      } else if(this.media.type === 'marker') {
-        this.mediaSize.width = 1 + this.base_edge;
-        this.mediaSize.height = 1;
+    if (this.media.type === "text") {
+      this.mediaSize.width = 1 + this.base_edge;
+      this.mediaSize.height = 1 + this.base_edge;
+    } else if (this.media.type === "marker") {
+      this.mediaSize.width = 1 + this.base_edge;
+      this.mediaSize.height = 1;
+    } else {
+      this.mediaSize.width = Math.round(Math.random() * 2 + this.base_edge);
+      if (
+        this.media.hasOwnProperty("ratio") &&
+        typeof this.media.ratio === "number"
+      ) {
+        this.mediaSize.height = Math.round(
+          this.mediaSize.width * this.media.ratio
+        );
       } else {
         this.mediaSize.width = Math.round(Math.random() * 2 + this.base_edge);
-        if(this.media.hasOwnProperty('ratio') && typeof this.media.ratio === 'number') {
-          this.mediaSize.height = Math.round(this.mediaSize.width * this.media.ratio);
+        if (
+          this.media.hasOwnProperty("ratio") &&
+          typeof this.media.ratio === "number"
+        ) {
+          this.mediaSize.height = Math.round(
+            this.mediaSize.width * this.media.ratio
+          );
         } else {
-          this.mediaSize.height = Math.round(Math.random() * 2 + this.base_edge);
+          this.mediaSize.height = Math.round(
+            Math.random() * 2 + this.base_edge
+          );
         }
       }
     }
 
-    if(!this.mediaSize.top || !this.mediaSize.left) {
-      if(!this.mediaSize.top) {
-        this.mediaSize.top = Math.round(Math.random() * 2) + 4; 
-      }
-      if(!this.mediaSize.left) {
-        this.mediaSize.left = Math.round(this.pinp_grid.width / this.columnWidth);         
-      }
-
-      if(this.mediaSize.top !== null && this.mediaSize.left !== null) {
-        // this.$root.editMedia({ 
-        //   type: 'folders',
-        //   slugFolderName: this.slugFolderName, 
-        //   slugMediaName: this.media.slugMediaName,
-        //   data: {
-        //     t: this.mediaSize.top,
-        //     l: this.mediaSize.left
-        //   }
-        // });
-      }
-    }
-    
+    // override with actual media w and h if it exists
+    this.setMediaSizeFromMeta();
   },
 
   mounted() {
-    console.log(`MOUNTED • MediaBlock2: mounted`);
-
-    this.$el.pinp = this.pinp_grid.add(this.$el, {
-      handle: '[data-draggabilly_handle]'
+    this.$el.draggie = new Draggabilly(this.$el, {
+      handle: "[data-draggabilly_handle]",
     });
-
-    this.$el.draggie = this.$el.pinp.dragInstance;
-
-    this.$emit('triggerPinpUpdate');
-
-    this.$el.draggie.on('dragStart', () => {
-      this.$emit('dragStarted');      
+    packeryEvents.$emit("draggie", {
+      draggie: this.$el.draggie,
+      node: this.$el.parentNode,
     });
-    this.$el.draggie.on('dragEnd', () => {
-      this.sendMediaPosition();
-      this.$emit('dragEnded');      
+    this.$el.draggie.on("dragStart", () => {
+      this.$emit("dragStarted");
     });
-    this.$el.draggie.on('staticClick', () => {
+    this.$el.draggie.on("dragEnd", () => {
+      this.$emit("dragEnded");
+    });
+    this.$el.draggie.on("staticClick", () => {
       this.openMedia();
     });
-
-
-
-
 
     // packeryEvents.$emit('draggie', {
     //   draggie: this.$el.draggie,
     //   node: this.$el.parentNode
     // });
 
-
     this.$nextTick(() => {
       this.is_mounted = true;
     });
-
   },
   beforeDestroy() {
     this.pinp_grid.remove(this.$el.pinp);
@@ -224,148 +218,122 @@ export default {
     // this.$el.draggie = null;
   },
   watch: {
-    'mediaSize': { 
-      handler: function() {
-
-        if(this.is_mounted) {
-          this.$el.pinp.width = this.mediaWidth;
-          this.$el.pinp.height = this.mediaHeight;
-          this.$el.pinp.x = this.mediaLeft;
-          this.$el.pinp.y = this.mediaTop;
-          this.$emit('triggerPinpUpdate');
-        }
-
-        if(!this.media.hasOwnProperty('t') 
-        || this.mediaSize.top !== this.media.t
-        || !this.media.hasOwnProperty('l') 
-        || this.mediaSize.left !== this.media.l
-        ) {                    
-          this.$nextTick(() => {
-            this.sendMediaPosition();      
-          });
+    mediaSize: {
+      handler: function () {
+        if (this.is_mounted) {
+          this.$emit("triggerPackeryLayout");
         }
       },
-      deep: true
+      deep: true,
     },
-    'media.w': function() {
+    "media.content": function () {
+      this.checkTextOverflow();
+    },
+    "media.w": function () {
       this.setMediaSizeFromMeta();
-      this.$emit('triggerPinpUpdate');
+      this.$emit("triggerPinpUpdate");
     },
-    'media.h': function() {
+    "media.h": function () {
       this.setMediaSizeFromMeta();
-      this.$emit('triggerPinpUpdate');
+      this.$emit("triggerPinpUpdate");
     },
-    'media.t': function() {
+    "media.t": function () {
       this.setMediaPositionFromMeta();
-      this.$emit('triggerPinpUpdate');
+      this.$emit("triggerPinpUpdate");
     },
-    'media.l': function() {
+    "media.l": function () {
       this.setMediaPositionFromMeta();
-      this.$emit('triggerPinpUpdate');
+      this.$emit("triggerPinpUpdate");
     },
   },
   computed: {
     itemSize() {
       return {
-        width: this.mediaWidth + 'px',
-        height: this.mediaHeight + 'px',
-        top: this.mediaTop + 'px',
-        left: this.mediaLeft + 'px'
-      }
-    },
-    isTextOverflowing() {
-      if(['text', 'marker'].includes(this.media.type) && this.$refs.hasOwnProperty('MediaContent')) {        
-        return this.mediaHeight < this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
-      }
-      return false;
+        width: this.mediaWidth + "px",
+        height: this.mediaHeight + "px",
+      };
     },
     mediaWidth() {
-      return this.mediaSize.width * this.columnWidth;
+      return (
+        this.mediaSize.width * this.columnWidth +
+        (this.mediaSize.width - 1) * this.gutter
+      );
     },
     mediaHeight() {
-      return  this.mediaSize.height * this.rowHeight;
-    },
-    mediaLeft() {
-      return this.mediaSize.left * this.columnWidth;
-    },
-    mediaTop() {
-      return this.mediaSize.top * this.rowHeight;
+      return (
+        this.mediaSize.height * this.rowHeight +
+        (this.mediaSize.height - 1) * this.gutter
+      );
     },
     widthForSizes() {
       // TODO
-      // should check the actual width the image will be displayed at, 
+      // should check the actual width the image will be displayed at,
       // considering that the image is in an object-fit: cover configuration
-      if(this.mediaWidth > this.mediaHeight) {
-        return this.mediaWidth;
-      } else {
-        return this.mediaHeight;
-      }
+      return this.mediaWidth > this.mediaHeight
+        ? this.mediaWidth
+        : this.mediaHeight;
     },
     itemStylesWithSize() {
-      return {
-        '--author-color': this.mediaColorFromFirstAuthor ? this.mediaColorFromFirstAuthor : '#fff',
-        width: this.mediaWidth - this.gutter + 'px',
-        height: this.mediaHeight - this.gutter + 'px',
-        top: this.gutter/2 + 'px',
-        left: this.gutter/2 + 'px',
-      }
+      return Object.assign(
+        {
+          "--author-color": this.mediaColorFromFirstAuthor
+            ? this.mediaColorFromFirstAuthor
+            : "#fff",
+        },
+        this.itemSize
+      );
     },
     mediaColorFromFirstAuthor() {
       return this.$root.mediaColorFromFirstAuthor(this.media, this.folder);
-    }
+    },
   },
   methods: {
-    updateMediaSizeFromPinp() {
-      const x = this.$el.pinp.x;
-      const y = this.$el.pinp.y;
+    checkTextOverflow() {
+      if (["text", "marker"].includes(this.media.type)) {
+        if (this.mediaSize.height === 1) {
+          return (this.text_is_overflowing = false);
+        }
 
-      const l = Math.round(x / this.columnWidth);
-      const t = Math.round(y / this.rowHeight);
-
-      this.mediaSize.left = l;
-      this.mediaSize.top = t;
-    },
-    updatePinpPositions() {
-      this.$el.pinp.width = this.mediaWidth;
-      this.$el.pinp.height = this.mediaHeight;
-      this.$el.pinp.x = this.mediaLeft;
-      this.$el.pinp.y = this.mediaTop;
+        this.text_is_overflowing =
+          this.mediaHeight <
+          this.$refs.MediaContent.$el.children[0].scrollHeight - 10;
+      }
     },
     setMediaSizeFromMeta() {
-      if(this.media.hasOwnProperty('w') && typeof this.media.w === 'number') {
+      if (this.media.hasOwnProperty("w") && typeof this.media.w === "number") {
         this.mediaSize.width = this.media.w;
       }
-      if(this.media.hasOwnProperty('h') && typeof this.media.h === 'number') {
+      if (this.media.hasOwnProperty("h") && typeof this.media.h === "number") {
         this.mediaSize.height = this.media.h;
       }
     },
-    setMediaPositionFromMeta() {      
-      if(this.media.hasOwnProperty('t') && typeof this.media.t === 'number') {
+    setMediaPositionFromMeta() {
+      if (this.media.hasOwnProperty("t") && typeof this.media.t === "number") {
         this.mediaSize.top = this.media.t;
       }
 
-      if(this.media.hasOwnProperty('l') && typeof this.media.l === 'number') {
+      if (this.media.hasOwnProperty("l") && typeof this.media.l === "number") {
         this.mediaSize.left = this.media.l;
       }
     },
     changeItemWidth(increment) {
-      console.log('MediaBlock changeItemWidth');
+      console.log("MediaBlock changeItemWidth");
       this.mediaSize.width += increment;
     },
     changeItemHeight(increment) {
-      console.log('MediaBlock changeItemHeight');
+      console.log("MediaBlock changeItemHeight");
       this.mediaSize.height += increment;
     },
     limitMediaWidth(w) {
-      return Math.max(1, Math.min(12, w));
+      return Math.max(2, Math.min(12, w));
     },
     limitMediaHeight(h) {
-      return Math.max(1, Math.min(12, h));
+      return Math.max(2, Math.min(12, h));
     },
-    sendMediaPosition(){
+    sendMediaPosition() {
       console.log(`METHODS • MediaBlock2: sendMediaPosition`);
 
-      if(!this.$el.pinp) {
+      if (!this.$el.pinp) {
         return;
       }
 
@@ -375,43 +343,47 @@ export default {
       const l = Math.round(x / this.columnWidth);
       const t = Math.round(y / this.rowHeight);
 
-      if(l >= 0 && t >= 0) {
-        this.$root.editMedia({ 
-          type: 'folders',
-          slugFolderName: this.slugFolderName, 
+      if (l >= 0 && t >= 0) {
+        this.$root.editMedia({
+          type: "folders",
+          slugFolderName: this.slugFolderName,
           slugMediaName: this.media.slugMediaName,
           data: {
             t,
-            l
-          }
+            l,
+          },
         });
       }
     },
     openMedia() {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log('METHODS • MediaBlock: openMedia');
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • MediaBlock: openMedia");
       }
-      this.$eventHub.$emit('timeline.openMediaModal', this.media.slugMediaName);
+      this.$eventHub.$emit("timeline.openMediaModal", this.media.slugMediaName);
     },
     resizeMedia(type, origin) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaBlock: resizeMedia with is_resized = ${this.is_resized}`);
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(
+          `METHODS • MediaBlock: resizeMedia with is_resized = ${this.is_resized}`
+        );
       }
       if (!this.read_only) {
         this.resizeOrigin = origin;
-        this.$emit('resizeStarted');      
-        if(type === 'mouse') {
-          window.addEventListener('mousemove', this.resizeMove);
-          window.addEventListener('mouseup', this.resizeUp);
-        } else if(type === 'touch') {
-          window.addEventListener('touchmove', this.resizeMove);
-          window.addEventListener('touchend', this.resizeUp);
+        this.$emit("resizeStarted");
+        if (type === "mouse") {
+          window.addEventListener("mousemove", this.resizeMove);
+          window.addEventListener("mouseup", this.resizeUp);
+        } else if (type === "touch") {
+          window.addEventListener("touchmove", this.resizeMove);
+          window.addEventListener("touchend", this.resizeUp);
         }
       }
     },
     resizeMove(event) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaBlock: resizeMove with is_resized = ${this.is_resized}`);
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(
+          `METHODS • MediaBlock: resizeMove with is_resized = ${this.is_resized}`
+        );
       }
 
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
@@ -425,75 +397,100 @@ export default {
         this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
         this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
       } else {
-        const deltaX = Math.round((pageX - this.resizeOffset.x) / this.columnWidth);
+        const deltaX = Math.round(
+          (pageX - this.resizeOffset.x) / this.columnWidth
+        );
         let newWidth = this.mediaSize.pwidth + deltaX;
-        
-        if(this.resizeOrigin.includes('horizontal')) {
+
+        if (this.resizeOrigin.includes("horizontal")) {
           this.mediaSize.width = this.limitMediaWidth(newWidth);
         }
 
-        const deltaY = Math.round((pageY - this.resizeOffset.y) / this.rowHeight);
+        const deltaY = Math.round(
+          (pageY - this.resizeOffset.y) / this.rowHeight
+        );
         let newHeight = this.mediaSize.pheight + deltaY;
 
-        if(this.resizeOrigin.includes('vertical')) {
+        if (this.resizeOrigin.includes("vertical")) {
           this.mediaSize.height = this.limitMediaHeight(newHeight);
         }
       }
     },
     resizeUp(event) {
-      if (this.$root.state.dev_mode === 'debug') {
-        console.log(`METHODS • MediaBlock: resizeUp with is_resized = ${this.is_resized}`);
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(
+          `METHODS • MediaBlock: resizeUp with is_resized = ${this.is_resized}`
+        );
       }
       if (this.is_resized) {
-        console.log(`METHODS • MediaBlock: this.mediaSize.width = ${this.mediaSize.width} and this.mediaSize.height = ${this.mediaSize.height}`);
+        console.log(
+          `METHODS • MediaBlock: this.mediaSize.width = ${this.mediaSize.width} and this.mediaSize.height = ${this.mediaSize.height}`
+        );
 
         // this.mediaSize.width = this.mediaSize.width;
         // this.mediaSize.height = this.mediaSize.height;
 
-        this.$root.editMedia({ 
-          type: 'folders',
-          slugFolderName: this.slugFolderName, 
+        this.$root.editMedia({
+          type: "folders",
+          slugFolderName: this.slugFolderName,
           slugMediaName: this.media.slugMediaName,
           data: {
             w: this.mediaSize.width,
-            h: this.mediaSize.height
-          }
+            h: this.mediaSize.height,
+          },
         });
 
         this.is_resized = false;
-        this.$emit('resizeEnded');      
+        this.$emit("resizeEnded");
       }
 
       event.stopPropagation();
-      window.removeEventListener('mousemove', this.resizeMove);
-      window.removeEventListener('mouseup', this.resizeUp);
-      window.removeEventListener('touchmove', this.resizeMove);
-      window.removeEventListener('touchend', this.resizeUp);
+      window.removeEventListener("mousemove", this.resizeMove);
+      window.removeEventListener("mouseup", this.resizeUp);
+      window.removeEventListener("touchmove", this.resizeMove);
+      window.removeEventListener("touchend", this.resizeUp);
 
       return false;
     },
+    startMediaDrag(media, $event) {
+      console.log(`METHODS • MediaLibrary / startMediaDrag`);
 
-  }
-}
+      $event.dataTransfer.setData("text/plain", JSON.stringify(media));
+      $event.dataTransfer.effectAllowed = "move";
+
+      // this.media_focus_is_dragged = true;
+
+      this.$root.settings.media_being_dragged = media.metaFileName;
+    },
+    endMediaDrag() {
+      console.log(`METHODS • MediaLibrary / endMediaDrag`);
+      setTimeout(() => {
+        // this.media_focus_is_dragged = false;
+        this.$root.settings.media_being_dragged = false;
+      }, 500);
+    },
+  },
+};
 </script>
 <style lang="scss">
-.packery-item, .packery-item-content {
-  cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
+.packery-item,
+.packery-item-content {
+  // cursor: -webkit-grabbing;
+  // cursor: -moz-grabbing;
 }
 .packery-item {
   // border: 0.2rem dashed #f4be41;
   // box-sizing: content-box;
-  transition: all .15s cubic-bezier(0.19, 1, 0.22, 1), opacity .45s;
+  transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.45s;
 
-  &.is-dragging, &.is-positioning-post-drag {
+  &.is-dragging,
+  &.is-positioning-post-drag {
     z-index: 2;
 
     .packery-item-content {
       // box-shadow: none !important;
       // transform: translateY(0px);
-      // transition: none;  
-      box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
+      transition: none;
     }
   }
   &:not(.is-dragging).last-dragged {
@@ -507,22 +504,23 @@ export default {
   height: 100%;
   background-color: white;
   background-color: var(--author-color);
+  cursor: pointer;
 
   border-radius: 4px;
   // border: 4px solid transparent;
 
-  transition: all .8s cubic-bezier(.25,.8,.25,1);  
+  transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
 
   &.is--hovered {
     // background-color: white;
     z-index: 1;
-    // transform: translateY(0px);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.19), 0 6px 26px rgba(0,0,0,0.03);
+    // transform: translateY(-8px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.19), 0 6px 26px rgba(0, 0, 0, 0.03);
   }
 
   &.is--text_overflowing {
     &::after {
-      content: '↓';
+      content: "";
       display: block;
       position: absolute;
       bottom: 0;
@@ -538,7 +536,10 @@ export default {
       text-align: center;
       line-height: 2;
       // background-color: var(--author-color);
-      background-image: linear-gradient(transparent 0%, var(--author-color) 40%);
+      background-image: linear-gradient(
+        transparent 0%,
+        var(--author-color) 40%
+      );
       height: 2em;
       // padding-top:.5em;
       // border-top: 1px solid black;
@@ -546,18 +547,80 @@ export default {
     }
   }
 
+  .packery-item-content--caption {
+    $t-unstick_from_borders: 5px;
+
+    position: absolute;
+    top: $t-unstick_from_borders;
+    left: $t-unstick_from_borders;
+    right: $t-unstick_from_borders;
+    height: 100%;
+    max-height: calc(100% - #{$t-unstick_from_borders} * 2);
+    z-index: 1;
+    overflow: visible;
+
+    line-height: 1.2;
+    font-size: 70%;
+    pointer-events: none;
+
+    span {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.4);
+      background-color: var(--author-color);
+      max-width: 100%;
+      max-height: 100%;
+      pointer-events: auto;
+
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+
+      // display: -webkit-inline-box;
+      // -webkit-box-orient: vertical;
+      // -webkit-line-clamp: 2;
+      // line-clamp: 2;
+      // overflow: hidden;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+
+      padding: 2px;
+      border-radius: 2px;
+
+      box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.35);
+
+      // transition: all 0.4s ease;
+    }
+
+    &.is--expanded {
+      span {
+        white-space: initial;
+
+        display: -webkit-inline-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4 !important;
+        line-clamp: 4;
+      }
+    }
+  }
+
+  .plyr__controls {
+    color: var(--color-noir);
+  }
+
   .author_indicator {
     $t-button_size: 5px;
-    
+
     position: absolute;
-    top: 5px;left: 5px;
+    top: 5px;
+    left: 5px;
     width: $t-button_size;
     height: $t-button_size;
     background-color: var(--author-color);
     border-radius: $t-button_size;
     z-index: 1;
     // height: 100%;
-    
+
     // border-top: 10px solid var(--author-color);
     // border-right: 10px solid transparent;
     // border-left: none;
@@ -573,28 +636,36 @@ export default {
     border-radius: 4px;
     overflow: hidden;
 
-    &.type-audio, &.type-video {
+    &.type-audio,
+    &.type-video {
       > * {
         position: absolute;
         z-index: 1;
         width: 100%;
         height: 100%;
         pointer-events: none;
-  
+
         .plyr {
           width: 100%;
           height: 100%;
           min-width: 0;
-  
+
           .plyr__controls {
             position: absolute;
             background: transparent;
+            bottom: 0;
+            margin: 0;
           }
-  
+
           .plyr__control {
             pointer-events: auto;
+            background-color: rgba(255, 255, 255, 0.25);
+
+            &:hover {
+              background: #222;
+            }
           }
-  
+
           .plyr__video-wrapper {
             width: 100%;
             height: 100%;
@@ -605,13 +676,9 @@ export default {
         }
       }
     }
-    &.type-text {
-      > * {
-        // padding-top: .6em; 
-      }
-    }
 
-    img, video {
+    img,
+    video {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -631,7 +698,8 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 0;left: 0;
+  top: 0;
+  left: 0;
   // z-index: 1;
 
   html.touchevents & {
@@ -640,18 +708,18 @@ export default {
 }
 
 .packery-drop-placeholder {
-  background-color: rgba(0,0,0,.10);
+  background-color: rgba(0, 0, 0, 0.1);
   filter: blur(10px);
   -webkit-transition: -webkit-transform 0.2s;
-          transition: transform 0.2s;
+  transition: transform 0.2s;
   z-index: 0;
 }
 
-
-.buttons_right, .buttons_bottom {
+.buttons_right,
+.buttons_bottom {
   position: absolute;
   color: white;
-  font-size: .8em;
+  font-size: 0.8em;
   line-height: 1;
   font-weight: bold;
 
@@ -694,7 +762,8 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 0;left: 0;
+  top: 0;
+  left: 0;
   // z-index: 1;
   // background-color: yellow;
 
@@ -708,20 +777,19 @@ export default {
   z-index: 1;
   width: 20px;
   height: 20px;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 
   border-style: inherit;
   border-width: 0px;
-  pointer-events: none;
-  
+
   --handle-width: 15px;
   --handle-height: 5px;
 
   display: flex;
   justify-content: center;
   align-items: center;
-
 
   html.touchevents & {
     display: none;
@@ -739,7 +807,7 @@ export default {
 
     div {
       cursor: row-resize;
-    
+
       > span {
         height: var(--handle-height);
         width: var(--handle-width);
@@ -768,7 +836,7 @@ export default {
 
     div {
       cursor: col-resize;
-    
+
       > span {
         height: var(--handle-width);
         width: var(--handle-height);
@@ -791,12 +859,11 @@ export default {
       display: block;
       width: var(--handle-height);
       height: var(--handle-height);
-      background-color:#fff;
-      box-shadow: 0 0px 4px rgba(0,0,0,.43);
+      background-color: #fff;
+      box-shadow: 0 0px 4px rgba(0, 0, 0, 0.43);
       // mix-blend-mode: multiply;
       border-radius: var(--handle-height);
     }
   }
 }
-
 </style>

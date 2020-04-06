@@ -1,6 +1,6 @@
 <template>
   <div class="m_authorField">
-    <button 
+    <button
       v-for="author in allAuthorsExceptWhenReadOnly"
       type="button"
       :key="author.name"
@@ -8,9 +8,7 @@
       @click="!read_only ? toggleAuthorName(author.name) : ''"
       :disabled="read_only"
     >
-      <span 
-        :style="`color: ${author.color}`"
-      >•</span>
+      <span :style="`color: ${author.color}`">•</span>
       {{ author.name }}
     </button>
     <!-- <VueTagsInput
@@ -19,60 +17,56 @@
       :autocomplete-items="filteredKeyword"
       :tags="tags"
       @tags-changed="newTags => editTags(newTags)"
-    />     -->
+    />-->
   </div>
 </template>
 <script>
 export default {
   props: {
-    currentAuthors: Array,
+    currentAuthors: [Array, String],
     allAuthors: Array,
     read_only: {
       type: Boolean,
       default: false
     }
   },
-  components: {
-  },
+  components: {},
   data() {
     return {
-      authors: this.currentAuthors !== undefined && this.currentAuthors !== '' ? this.currentAuthors : []
-    }
-  },
-  
-  created() {
-  },
-  mounted() {
-  },
-  beforeDestroy() {
+      authors: Array.isArray(this.currentAuthors) ? this.currentAuthors : []
+    };
   },
 
-  watch: {
-  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+
+  watch: {},
   computed: {
     allAuthorsExceptWhenReadOnly() {
-      if(this.read_only) {
-        return this.allAuthors.filter(a => this.currentAuthors.map(a => a.name).includes(a.name));
+      if (this.read_only) {
+        return this.allAuthors.filter(a =>
+          this.authors.map(a => a.name).includes(a.name)
+        );
       } else {
-        return this.allAuthors
+        return this.allAuthors;
       }
     }
   },
   methods: {
     toggleAuthorName: function(authorName) {
       // authorName is already in authors, then remove it
-      if(this.authors.filter(a => a.name === authorName).length > 0) {
+      if (this.authors.filter(a => a.name === authorName).length > 0) {
         this.authors = this.authors.filter(a => a.name !== authorName);
       } else {
         this.authors.push({
           name: authorName
         });
       }
-      this.$emit('authorsChanged', this.authors);
+      this.$emit("authorsChanged", this.authors);
     }
   }
-}
+};
 </script>
 <style>
-
 </style>

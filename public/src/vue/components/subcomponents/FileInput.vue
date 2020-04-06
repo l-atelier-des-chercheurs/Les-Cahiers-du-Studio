@@ -4,7 +4,7 @@
       <span v-if="value">Selected File: {{value.name}}</span>
       <span v-else>Select File</span>
     </div>
-    <input type="file" @change="handleFileChange"/>
+    <input type="file" @change="handleFileChange" />
   </label>
 </template>
 
@@ -16,7 +16,7 @@ export default {
 
   methods: {
     handleFileChange(e) {
-      this.$emit('input', e.target.files[0]);
+      this.$emit("input", e.target.files[0]);
     }
   }
 };
@@ -35,7 +35,7 @@ export default {
   font-weight: bold;
 }
 
-.file-select > input[type='file'] {
+.file-select > input[type="file"] {
   display: none;
 }
 </style>

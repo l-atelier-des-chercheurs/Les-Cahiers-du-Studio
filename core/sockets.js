@@ -24,7 +24,7 @@ module.exports = (function() {
 
     io.use(function(socket, next) {
       if (
-        auth.checkForSessionPassword(
+        auth.isSubmittedSessionPasswordValid(
           socket.handshake.query.hashed_session_password
         )
       ) {
@@ -247,9 +247,7 @@ module.exports = (function() {
     { type, id, slugFolderName, additionalMeta, rawData = '' }
   ) {
     dev.logfunction(
-      `EVENT - onCreateMedia : slugFolderName = ${slugFolderName} and type = ${type} and rawData.length = ${
-        rawData.length
-      }`
+      `EVENT - onCreateMedia : slugFolderName = ${slugFolderName} and type = ${type}`
     );
     file
       .createMedia({
@@ -453,14 +451,14 @@ module.exports = (function() {
       });
   }
 
-  function onAddTempMediaToFolder(socket, { from, to }) {
+  function onAddTempMediaToFolder(socket, { from, to, additionalMeta }) {
     dev.logfunction(
       `EVENT - onAddTempMediaToFolder with 
       from = ${JSON.stringify(from)} and to = ${JSON.stringify(to)}`
     );
 
     file
-      .addTempMediaToFolder({ from, to })
+      .addTempMediaToFolder({ from, to, additionalMeta })
       .then(() => {
         notify({
           socket,
