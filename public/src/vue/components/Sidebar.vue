@@ -10,9 +10,7 @@
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="editFolder"
             :disabled="read_only"
-          >
-            {{ $t("edit") }}
-          </button>
+          >{{ $t("edit") }}</button>
         </h3>
       </div>
 
@@ -25,9 +23,11 @@
               id="placemediaoncreated"
               v-model="$root.settings.setDateTimelineToDateCreated"
             />
-            <label for="placemediaoncreated">{{
+            <label for="placemediaoncreated">
+              {{
               $t("on_import_place_media_on_the_date_they_were_created")
-            }}</label>
+              }}
+            </label>
           </span>
         </div>
       </div>
@@ -35,13 +35,11 @@
 
     <SidebarSection>
       <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">
-          {{ $t("share") }}
-        </h3>
+        <h3 class="margin-none text-cap with-bullet">{{ $t("share") }}</h3>
       </div>
       <div slot="body">
         <CreateQRCode :slugFolderName="slugFolderName" />
-        <p class="font-small" v-if="$root.state.is_electron">
+        <!-- <p class="font-small" v-if="$root.state.is_electron">
           {{ $t("contents_are_stored") }}
           <template>
             <a
@@ -50,24 +48,17 @@
               >{{ folder.fullFolderPath.replace(/\//g, "\/\u200B") }}</a
             >
           </template>
-        </p>
+        </p>-->
       </div>
     </SidebarSection>
 
     <SidebarSection>
       <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">
-          {{ $t("lang") }}
-        </h3>
+        <h3 class="margin-none text-cap with-bullet">{{ $t("lang") }}</h3>
       </div>
       <div slot="body">
         <select v-model="currentLang">
-          <option
-            v-for="(name, code) in $root.lang.available"
-            :value="code"
-            :key="code"
-            >{{ name }}</option
-          >
+          <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">{{ name }}</option>
         </select>
       </div>
     </SidebarSection>
@@ -81,9 +72,7 @@
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showKeyboardShortcutsList = true"
             :disabled="read_only"
-          >
-            {{ $t("open") }}
-          </button>
+          >{{ $t("open") }}</button>
         </h3>
       </div>
     </SidebarSection>
@@ -103,9 +92,7 @@
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showExportTimelineModal = true"
             :disabled="read_only"
-          >
-            {{ $t("open") }}
-          </button>
+          >{{ $t("open") }}</button>
         </h3>
       </div>
     </SidebarSection>
@@ -125,20 +112,13 @@
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
-          >
-            {{ $t("now") }}
-          </button>
+          >{{ $t("now") }}</button>
         </h3>
       </div>
 
       <div slot="body" class="m_calendar">
         <div v-if="!calendar">{{ $t("no_medias_sent_yet") }}</div>
-        <div
-          v-else
-          v-for="(days, month) in calendar"
-          class="m_calendar--month"
-          :key="month"
-        >
+        <div v-else v-for="(days, month) in calendar" class="m_calendar--month" :key="month">
           <h3 class="margin-bottom-small text-ital font-small">{{ month }}</h3>
           <div class="m_calendar--days">
             <div
@@ -156,7 +136,7 @@
                 {{ daymeta.dayNumber }}
                 <div class="font-veryverysmall bottomIndicator">
                   {{
-                    daymeta.numberOfMedias > 0 ? daymeta.numberOfMedias : "."
+                  daymeta.numberOfMedias > 0 ? daymeta.numberOfMedias : "."
                   }}
                 </div>
               </button>
@@ -174,9 +154,7 @@
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showMediasListModal = true"
-          >
-            {{ $t("fullscreen") }}
-          </button>
+          >{{ $t("fullscreen") }}</button>
         </h3>
       </div>
 

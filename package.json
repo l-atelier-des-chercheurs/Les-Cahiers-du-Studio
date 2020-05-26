@@ -42,6 +42,7 @@
   "dependencies": {
     "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git",
     "archiver": "^3.0.0",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "dodoc-parsedown": "git://github.com/louis-ev/dodoc-parsedown.git#master",
@@ -58,6 +59,7 @@
     "memory-cache": "^0.2.0",
     "moment": "^2.24.0",
     "node-localstorage": "^1.3.1",
+    "node-stl-to-thumbnail": "^1.1.0",
     "pad-left": "^2.1.0",
     "platform-folders": "^0.4.0",
     "portscanner": "^2.2.0",

@@ -1,63 +1,37 @@
 // var share = require('./sharedb-server');
 // var ShareDB_logger = require('sharedb-logger');
-var ShareDB = require('sharedb');
-ShareDB.types.register(require('rich-text').type);
+var ShareDB = require("sharedb");
+ShareDB.types.register(require("rich-text").type);
 
-const WebSocket = require('ws');
-const WebSocketJSONStream = require('websocket-json-stream');
-const uuid = require('uuid');
-const url = require('url');
+const WebSocket = require("ws");
+const WebSocketJSONStream = require("websocket-json-stream");
+const http = require("http");
+const uuid = require("uuid");
+const url = require("url");
+const { URLSearchParams } = require("url");
 
-const dev = require('./dev-log'),
-  file = require('./file');
+const dev = require("./dev-log"),
+  file = require("./file");
 
-module.exports = function(server) {
+module.exports = function (server) {
   dev.log(`server-realtime_text_collaboration • init`);
+
   // Share DB
-  const backend = new ShareDB();
-  const connection = backend.connect();
-  // var sharedb_logger = new ShareDB_logger(backend);
-
-  backend.use('connect', (req, next) => {
-    dev.logfunction(`server-realtime_text_collaboration • sharedb: connect`);
-    next();
-  });
-
-  backend.use('op', (req, next) => {
-    dev.logfunction(`server-realtime_text_collaboration • sharedb: op`);
-    next();
-  });
-
-  backend.use('readSnapshots', (req, next) => {
-    dev.logfunction(
-      `server-realtime_text_collaboration • sharedb: readSnapshots`
-    );
-    // Create the document if it hasn't been already
-
-    const collection = req.collection;
-    const query = req.snapshots[0].id || 'default';
-
-    dev.logverbose(
-      `server-realtime_text_collaboration • sharedb: readSnapshots / getting doc for ${collection} and query ${query}`
-    );
-
-    next();
-  });
-
-  backend.use('afterSubmit', (req, next) => {
-    dev.logverbose(`server-realtime_text_collaboration • sharedb: afterSubmit`);
-    // const snapshots = req.backend.db.docs[req.collection][req.id];
-    // connection.fetchSnapshot(req.collection, req.id, (err, snapshot) => {
-    //   const html_render = quillRender(snapshot.data.ops);
-    //   console.log(html_render);
-    // });
-    // dev.logverbose(`-> snapshot = ${JSON.stringify(snapshot_as_delta)}`);
-    next();
-  });
+  const share = new ShareDB();
+  // const shareconn = share.connect();
+  // var sharedb_logger = new ShareDB_logger(share);
 
   dev.log(`server-realtime_text_collaboration • ws init`);
+
+  // share.use('op', (req, cb) => {
+  //   dev.logverbose(`server-realtime_text_collaboration • sharedb: op received`);
+  //   const snapshot_as_delta = share.db.docs[req.collection][req.id];
+  //   dev.logverbose(`-> snapshot = ${JSON.stringify(snapshot_as_delta)}`);
+  // });
+
   const sharewss = new WebSocket.Server({ noServer: true });
-  sharewss.on('connection', (client, req) => {
+
+  sharewss.on("connection", (client) => {
     dev.logfunction(
       `server-realtime_text_collaboration • sharewss new client connection`
     );
@@ -65,41 +39,20 @@ module.exports = function(server) {
     client.id = uuid();
     client.isAlive = true;
 
+    dev.logverbose(
+      `server-realtime_text_collaboration • sharewss: a new client ${client.id} connected.`
+    );
+
     // "?type=projects&slugFolderName=publi&metaFileName=text-20181228_122605-shl.md.txt"
-    // const requested_querystring = req.url.substring(8);
-    // const requested_textmedia_infos = new url.URLSearchParams(
+    // const requested_querystring = req.url.substring(1);
+    // const requested_textmedia_infos = new URLSearchParams(
     //   requested_querystring
     // );
     // const textmedia_infos = {
     //   type: requested_textmedia_infos.get('type'),
     //   slugFolderName: requested_textmedia_infos.get('slugFolderName'),
-    //   metaFileName: requested_textmedia_infos.get('metaFileName'),
-    //   field: requested_textmedia_infos.get('field')
+    //   metaFileName: requested_textmedia_infos.get('metaFileName')
     // };
-
-    // dev.logverbose(
-    //   `server-realtime_text_collaboration • sharewss: a new client ${client.id} connected with querystring ${requested_querystring}`
-    // );
-
-    // if (!!textmedia_infos.metaFileName) {
-    //   // get content
-    //   const sharedoc = connection.get('field', requested_querystring);
-
-    //   if (sharedoc.data == null) {
-    //     dev.logverbose(
-    //       `server-realtime_text_collaboration • sharedb: wss connection / no doc`
-    //     );
-    //     sharedoc.create('<p>Plop</p>', 'rich-text');
-    //   }
-    // } else if (!!textmedia_infos.field) {
-    //   const sharedoc = connection.get('textMedias', requested_querystring);
-    //   if (sharedoc.data == null) {
-    //     dev.logverbose(
-    //       `server-realtime_text_collaboration • sharedb: wss connection / no doc`
-    //     );
-    //     sharedoc.create('<p>Plip</p>', 'rich-text');
-    //   }
-    // }
 
     // dev.logverbose(
     //   `—> requested textMedias ${JSON.stringify(textmedia_infos, null, 4)}`
@@ -151,51 +104,63 @@ module.exports = function(server) {
     //     });
     // }
 
-    backend.listen(new WebSocketJSONStream(client));
+    share.listen(new WebSocketJSONStream(client));
 
-    client.on('message', function(data, flags) {
+    client.on("message", function (data, flags) {
       dev.logverbose(
         `server-realtime_text_collaboration • sharewss: message for ${client.id}`
       );
     });
 
-    client.on('pong', function(data, flags) {
-      // dev.logverbose(
-      //   `server-realtime_text_collaboration • sharewss: pong received for ${client.id}`
-      // );
+    client.on("pong", function (data, flags) {
+      dev.logverbose(
+        `server-realtime_text_collaboration • sharewss: pong received for ${client.id}`
+      );
       client.isAlive = true;
     });
 
-    client.on('message', function() {});
+    client.on("message", function () {});
 
-    client.on('error', function(error) {
+    client.on("error", function (error) {
       dev.error(
         `server-realtime_text_collaboration • sharewss: client connection errored for ${client.id} with error = ${error}`
       );
     });
   });
 
-  server.on('upgrade', function upgrade(request, socket, head) {
+  server.on("upgrade", function upgrade(request, socket, head) {
     const pathname = url.parse(request.url).pathname;
 
-    if (pathname === '/sharedb') {
+    if (pathname === "/sharedb") {
       sharewss.handleUpgrade(request, socket, head, function done(ws) {
-        sharewss.emit('connection', ws, request);
+        sharewss.emit("connection", ws, request);
       });
     }
   });
 
-  setInterval(function() {
-    sharewss.clients.forEach(function(client) {
+  setInterval(function () {
+    sharewss.clients.forEach(function (client) {
       if (client.isAlive === false) return client.terminate();
 
       client.isAlive = false;
       client.ping();
-      // dev.logverbose(
-      //   `server-realtime_text_collaboration • sharewss: ping sent for ${client.id}`
-      // );
+      dev.logverbose(
+        `server-realtime_text_collaboration • sharewss: ping sent for ${client.id}`
+      );
     });
   }, 5000);
+
+  // app.use((res, req, next) => {
+  //   dev.log(`server-realtime_text_collaboration • loaded document`);
+
+  //   // Create the document if it hasn't been already
+  //   const req_doc = res.query.doc || 'default';
+  //   const sharedoc = shareconn.get('docs', req_doc);
+  //   //   const sharedoc = shareconn.get('docs', 'default');
+  //   if (sharedoc.data == null) sharedoc.create(req_doc, 'rich-text');
+
+  //   next();
+  // });
 
   // // Sockets Ping, Keep Alive
 };

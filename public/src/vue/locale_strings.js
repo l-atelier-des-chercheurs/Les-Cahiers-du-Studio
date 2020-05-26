@@ -1,4 +1,4 @@
-module.exports = (function() {
+module.exports = (function () {
   // Ready translated locale messages
   const messages = {
     fr: {
@@ -110,7 +110,7 @@ module.exports = (function() {
         minute: "min",
         hour: "h",
         half_day: "½j",
-        day: "j"
+        day: "j",
       },
       one_week_later: "1 semaine plus tard…",
       weeks_later: "&nbsp;semaines plus tard…",
@@ -165,8 +165,10 @@ module.exports = (function() {
         folder_export_started: "Préparation du fichier à exporter en cours…",
         connected_to_lescahiers: "Connection aux Cahiers active",
         media_type_not_handled:
-          "Impossible d’insérer le média dans le journal : ce type n’est pas pris en charge."
-      }
+          "Impossible d’insérer le média dans le journal : ce type n’est pas pris en charge.",
+        action_not_allowed:
+          "Cette action n’est pas permise. Cette timeline a probablement été archivée…",
+      },
     },
     en: {
       ascending: "Ascending",
@@ -278,7 +280,7 @@ module.exports = (function() {
         minute: "min",
         hour: "h",
         half_day: "½d",
-        day: "d"
+        day: "d",
       },
       one_week_later: "1 week later…",
       weeks_later: "&nbsp;weeks later…",
@@ -327,9 +329,11 @@ module.exports = (function() {
         "failed_to_get_folder:": "Failed to get the requested folder:",
         folder_export_started: "Export requested…",
         connected_to_lescahiers: "Connection active",
-        media_type_not_handled: "Media type not handled in the journal."
-      }
-    }
+        media_type_not_handled: "Media type not handled in the journal.",
+        action_not_allowed:
+          "This action was blocked. This timeline has probably been archived…",
+      },
+    },
   };
 
   return messages;
