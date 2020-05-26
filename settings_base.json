@@ -57,9 +57,15 @@
         "authors": {
           "type": "array"
         },
-        "archived": {
-          "type": "boolean",
-          "default": false
+        "editing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "with_password", "nobody"],
+          "default": "everybody"
+        },
+        "viewing_limited_to": {
+          "type": "string",
+          "options": ["everybody", ""],
+          "default": "everybody"
         }
       },
       "medias": {

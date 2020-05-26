@@ -13,7 +13,7 @@
         v-if="$root.settings.is_loading_medias_for_folder"
         class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
       >
-        <span class="animated flash">{{ $t('loading') }}</span>
+        <span class="animated flash">{{ $t("loading") }}</span>
       </div>
     </transition>
 
@@ -32,7 +32,7 @@
           :isRealtime="isRealtime"
           :style="{ height: `${sidebarHeight}px` }"
           :read_only="read_only"
-          :can_admin_folder="can_admin_folder"
+          :can_edit_folder="can_edit_folder"
         ></Sidebar>
       </transition>
 
@@ -50,7 +50,7 @@
           type="button"
           class="button_sidebarToggle"
           @click.prevent="toggleSidebar()"
-          :class="{ 'is--collapsed' : !$root.settings.has_sidebar_opened }"
+          :class="{ 'is--collapsed': !$root.settings.has_sidebar_opened }"
         >
           <template v-if="$root.settings.has_sidebar_opened">←</template>
           <template v-else>→</template>
@@ -62,16 +62,16 @@
         ref="timeline"
         @scroll="onScroll"
         :class="{
-          'with--sidebar_opened' : $root.settings.has_sidebar_opened,
+          'with--sidebar_opened': $root.settings.has_sidebar_opened,
           'is--animated': isAnimated,
-          'is--realtime': isRealtime
+          'is--realtime': isRealtime,
         }"
       >
         <div
           class="m_timeline-container"
           :style="{
             width: `${timelineViewport.width}px`,
-            height: `${timelineViewport.height}px`
+            height: `${timelineViewport.height}px`,
           }"
         >
           <div class="timeline_track"></div>
@@ -82,31 +82,46 @@
               <div
                 v-for="item in overallGrid.days"
                 class="gridItem font-small gridItem_isday"
-                :class="{ 'has--caption' : (item.caption !== undefined) }"
+                :class="{ 'has--caption': item.caption !== undefined }"
                 :style="`transform: translate(${item.xPos}px, 0px)`"
                 :key="item.caption"
               >
-                <div v-if="item.caption !== undefined" class="gridItem--caption">{{ item.caption }}</div>
+                <div
+                  v-if="item.caption !== undefined"
+                  class="gridItem--caption"
+                >
+                  {{ item.caption }}
+                </div>
               </div>
 
               <div
                 v-for="(item, index) in overallGrid.hours"
                 class="gridItem font-small gridItem_ishour"
-                :class="{ 'has--caption' : (item.caption !== undefined) }"
+                :class="{ 'has--caption': item.caption !== undefined }"
                 :style="`transform: translate(${item.xPos}px, 0px)`"
                 :key="`hrs-${index}-${item.xPos}`"
               >
-                <div v-if="item.caption !== undefined" class="gridItem--caption">{{ item.caption }}</div>
+                <div
+                  v-if="item.caption !== undefined"
+                  class="gridItem--caption"
+                >
+                  {{ item.caption }}
+                </div>
               </div>
 
               <div
                 v-for="(item, index) in overallGrid.minutes"
                 class="gridItem font-small gridItem_isminute"
-                :class="{ 'has--caption' : (item.caption !== undefined) }"
+                :class="{ 'has--caption': item.caption !== undefined }"
                 :style="`transform: translate(${item.xPos}px, 0px)`"
                 :key="`min-${index}-${item.xPos}`"
               >
-                <div v-if="item.caption !== undefined" class="gridItem--caption">{{ item.caption }}</div>
+                <div
+                  v-if="item.caption !== undefined"
+                  class="gridItem--caption"
+                >
+                  {{ item.caption }}
+                </div>
               </div>
 
               <div
@@ -121,7 +136,11 @@
                 >
                   <small>
                     <label for="autoScroll" class="margin-none">
-                      <input type="checkbox" v-model="timelineViewport.autoscroll" id="autoScroll" />
+                      <input
+                        type="checkbox"
+                        v-model="timelineViewport.autoscroll"
+                        id="autoScroll"
+                      />
                       <span v-html="$t('auto_scroll')"></span>
                     </label>
                   </small>
@@ -145,12 +164,14 @@
               :ref="`media_${media.slugMediaName}`"
               :slugFolderName="slugFolderName"
               :slugMediaName="media.slugMediaName"
-              :is_placeholder="!mediaIsClose(media.slugMediaName,media)"
+              :is_placeholder="!mediaIsClose(media.slugMediaName, media)"
               :media="media"
               :timelineScale="timelineViewport.scale"
               :timelineHeight="timelineHeight"
               :posX="getMediaPosX(media.slugMediaName)"
-              :class="{ 'is--highlighted' : highlightedMedia === media.slugMediaName }"
+              :class="{
+                'is--highlighted': highlightedMedia === media.slugMediaName,
+              }"
               @open="openMediaModal(media.slugMediaName)"
               :read_only="read_only"
               :color="getMediaColorFromFirstAuthor(media.authors)"
@@ -160,29 +181,47 @@
           <template v-else>
             <div class="nomediainfo">
               <code>
-                <template v-if="can_admin_folder">{{ $t('no_media_in_folder') }}</template>
-                <template v-else>{{ $t('no_public_media_in_folder') }}</template>
+                <template v-if="can_edit_folder">{{
+                  $t("no_media_in_folder")
+                }}</template>
+                <template v-else>{{
+                  $t("no_public_media_in_folder")
+                }}</template>
               </code>
             </div>
           </template>
         </div>
-        <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
-          <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
+        <div
+          v-if="sort.current.field !== 'date_timeline'"
+          class="m_filterIndicator"
+        >
+          <div
+            class="flex-wrap flex-vertically-centered flex-horizontally-start"
+          >
             <button
               type="button"
               class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
               v-html="'x'"
-              @click="setSort(sort.available[0]); setFilter('');"
+              @click="
+                setSort(sort.available[0]);
+                setFilter('');
+              "
             />
             <small>
               <div class>
                 <span v-html="$t('active_filter:')" />
-                {{ ' ' }}
+                {{ " " }}
                 <span v-html="sort.current.name" />
               </div>
               <div class>
                 <span v-html="$t('medias_shown:')" />
-                <span v-html="this.sortedMedias.length + '/' + Object.keys(this.medias).length" />
+                <span
+                  v-html="
+                    this.sortedMedias.length +
+                    '/' +
+                    Object.keys(this.medias).length
+                  "
+                />
               </div>
             </small>
           </div>
@@ -197,14 +236,15 @@
           @close="showMediaModalFor = false"
           :read_only="read_only"
           :allAuthors="folder.authors"
-          :color="getMediaColorFromFirstAuthor(medias[showMediaModalFor].authors)"
+          :color="
+            getMediaColorFromFirstAuthor(medias[showMediaModalFor].authors)
+          "
         ></EditMedia>
       </div>
     </div>
 
     <AddMedias
-      v-if="
-        ((folder.password === 'has_pass' && can_admin_folder) || folder.password !== 'has_pass') && $root.state.connected"
+      v-if="can_edit_folder && $root.state.connected"
       :slugFolderName="slugFolderName"
       :read_only="read_only"
     ></AddMedias>
@@ -231,7 +271,7 @@ export default {
     slugFolderName: String,
     folder: Object,
     medias: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     TimelineMedia,
@@ -240,7 +280,7 @@ export default {
     NavbarTop,
     Sidebar,
     AddMedias,
-    DateTime
+    DateTime,
   },
   data() {
     return {
@@ -274,25 +314,25 @@ export default {
 
       todaysRule: {
         caption: "",
-        xPos: false
+        xPos: false,
       },
       zoomZone: {
         display: false,
         xPos: 0,
-        width: 50
+        width: 50,
       },
 
       overallGrid: {
         days: [],
         hours: [],
-        minutes: []
+        minutes: [],
       },
 
       // this object contains a start and end for this timeline, ven if it is realtime
       // for example 2017-07-01 13:22 and 2017-07-12 12:24
       timelineInfos: {
         start: 0,
-        end: 0
+        end: 0,
       },
       timelineViewport: {
         // this object contains a start and end for this view,
@@ -307,7 +347,7 @@ export default {
         autoscroll: false,
         longestIntervalTS: 86400000 * 10,
         leftPadding: 0,
-        viewerWidth: 0
+        viewerWidth: 0,
       },
 
       filter: "",
@@ -319,62 +359,62 @@ export default {
             field: "date_timeline",
             name: this.$t("date"),
             type: "date",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "date_modified",
             name: this.$t("last_modified"),
             type: "date",
-            order: "descending"
+            order: "descending",
           },
           {
             field: "caption",
             name: this.$t("caption"),
             type: "alph",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "type",
             name: this.$t("type"),
             type: "alph",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "color",
             name: this.$t("color"),
             type: "alph",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "keywords",
             name: this.$t("keywords"),
             type: "alph",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "authors",
             name: this.$t("author"),
             type: "alph",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "public",
             name: this.$t("public"),
             type: "bool",
-            order: "descending"
+            order: "descending",
           },
           {
             field: "content",
             name: this.$t("content"),
             type: "alph",
-            order: "ascending"
-          }
-        ]
-      }
+            order: "ascending",
+          },
+        ],
+      },
     };
   },
   watch: {
-    folder: function() {
+    folder: function () {
       if (window.state.dev_mode === "debug") {
         console.log("WATCH • TimeLineView: folder");
       }
@@ -384,10 +424,10 @@ export default {
       this.updateMediaData();
       this.updateGridData();
     },
-    medias: function() {
+    medias: function () {
       this.updateMediaData();
     },
-    "timelineViewport.scale": function() {
+    "timelineViewport.scale": function () {
       console.log("WATCH • TimeLineView: timelineViewport.scale");
 
       // disable media animations
@@ -425,7 +465,7 @@ export default {
         this.timelineViewport.scale
       );
     },
-    "timelineViewport.scrollLeft": function() {
+    "timelineViewport.scrollLeft": function () {
       console.log("WATCH • TimeLineView: timelineViewport.scrollLeft");
       this.$root.updateFolderScrollLeft(
         this.slugFolderName,
@@ -433,9 +473,9 @@ export default {
       );
       this.setVisibleDay();
     },
-    "timelineViewport.visibleDay": function() {
+    "timelineViewport.visibleDay": function () {
       this.updateGridData();
-    }
+    },
   },
   created() {
     console.log("CREATED • TimeLineView: folder");
@@ -567,12 +607,6 @@ export default {
     clearInterval(this.timelineUpdateRoutine);
   },
   computed: {
-    can_admin_folder() {
-      return this.$root.canAdminFolder({
-        type: "folders",
-        slugFolderName: this.slugFolderName
-      });
-    },
     sortedMedias() {
       console.log("METHODS • TimeLineView: sortedMedias");
       var sortable = [];
@@ -608,7 +642,7 @@ export default {
         sortable.push({
           slugMediaName,
           mediaDataToOrderBy,
-          _timestamp
+          _timestamp,
         });
       }
 
@@ -655,7 +689,7 @@ export default {
         return result;
       }, []);
       return sortedMedias;
-    }
+    },
   },
   methods: {
     /******************************************************************
@@ -706,7 +740,7 @@ export default {
       }
 
       const full_authors_info = this.folder.authors.filter(
-        a => a.name === media_authors[0].name
+        (a) => a.name === media_authors[0].name
       );
       if (full_authors_info.length == 0) {
         return "";
@@ -773,7 +807,7 @@ export default {
     updateMediaData() {
       console.log("METHODS • TimeLineView: updateMediaData");
 
-      Object.keys(this.medias).map(slugMediaName => {
+      Object.keys(this.medias).map((slugMediaName) => {
         let media = this.medias[slugMediaName];
         let date_timeline = this.$moment.isMoment(media.date_timeline)
           ? media.date_timeline
@@ -790,11 +824,11 @@ export default {
           );
           allMediasPosition[slugMediaName] = {
             started: start_posX,
-            created: posX
+            created: posX,
           };
         } else {
           allMediasPosition[slugMediaName] = {
-            created: posX
+            created: posX,
           };
         }
       });
@@ -802,7 +836,7 @@ export default {
       // check if there is a justCreatedTextmediaID val
       if (this.$root.justCreatedTextmediaID) {
         // if there is, try to match it with mediaID of listed medias
-        let mediaJustCreatedSlug = Object.keys(this.medias).filter(x => {
+        let mediaJustCreatedSlug = Object.keys(this.medias).filter((x) => {
           return this.medias[x].mediaID === this.$root.justCreatedTextmediaID;
         })[0];
 
@@ -834,9 +868,7 @@ export default {
 
       createDayTick(this.timelineViewport.start, "LLL");
       let nextDay = this.$moment(
-        this.$moment(this.timelineViewport.start)
-          .startOf("day")
-          .add(1, "day")
+        this.$moment(this.timelineViewport.start).startOf("day").add(1, "day")
       );
 
       // we need to iterate by day (and not every 24 hours, because of possible daylight savings)
@@ -881,7 +913,7 @@ export default {
 
       if (this.timelineViewport.scale <= 10) {
         /****************************** make MINUTES ticks ******************************/
-        let createMinuteTick = currentMinute => {
+        let createMinuteTick = (currentMinute) => {
           let xPos = this.getXPositionFromDate(currentMinute);
           if (xPos === false) {
             return;
@@ -1077,7 +1109,7 @@ export default {
       if (this.showMediaModalFor) {
         // find in sortedMedias where this.showMediaModalFor and get the next one
         const current_media_index = _.findIndex(this.sortedMedias, {
-          slugMediaName: this.showMediaModalFor
+          slugMediaName: this.showMediaModalFor,
         });
 
         this.closeMediaModal();
@@ -1100,7 +1132,7 @@ export default {
       if (this.showMediaModalFor) {
         // find in sortedMedias where this.showMediaModalFor and get the next one
         const current_media_index = _.findIndex(this.sortedMedias, {
-          slugMediaName: this.showMediaModalFor
+          slugMediaName: this.showMediaModalFor,
         });
 
         this.closeMediaModal();
@@ -1131,7 +1163,7 @@ export default {
       let caption = this.$root.currentTime.format("HH:mm:ss");
       this.todaysRule = {
         caption,
-        xPos
+        xPos,
       };
     },
     scrollToEnd() {
@@ -1230,7 +1262,7 @@ export default {
             `METHODS • TimeLineView: scrollTimelineToXPos / was canceled`
           );
           this.currentScrollEvent = undefined;
-        }
+        },
       });
     },
     toggleSidebar() {
@@ -1288,12 +1320,11 @@ export default {
     zoomZoneStyle() {
       return {
         width: `${this.zoomZone.width}px`,
-        transform: `translate(${this.zoomZone.xPos}px, 0px)`
+        transform: `translate(${this.zoomZone.xPos}px, 0px)`,
       };
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style lang="sass">
-</style>
+<style lang="sass"></style>

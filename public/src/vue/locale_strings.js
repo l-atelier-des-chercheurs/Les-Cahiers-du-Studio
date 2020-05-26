@@ -56,6 +56,8 @@ module.exports = (function () {
       password_instructions:
         "Seuls les utilisateurs possédant ce mot de passe pourront éditer ce dossier, y ajouter du contenu et consulter les médias non publics.",
 
+      edit_timeline: "Contribuer à la timeline",
+
       all_tags: "Liste des mots-clés disponibles",
       sort_by: "Organiser par",
       in_the_order: "Dans l’ordre",
@@ -135,6 +137,17 @@ module.exports = (function () {
         "Sélectionnez ici le type d’export. Il est possible d’exporter tous les médias d’une timeline ou uniquement ceux indiqués comme Public.",
       password_protect: "Protéger l’accès par un mot de passe",
       allow_media_download: "Permettre le téléchargement des médias originaux",
+      password_required_to_open: "Mot de passe requis",
+      password_required_to_edit: "Mot de passe requis pour contribuer",
+      only_password_can_open: "Accès limité par mot de passe",
+      show_password: "Afficher le mot de passe",
+      who_can_edit: "Qui peut contribuer",
+      consultation: "Consultation",
+      visible_to_all: "Visible par tout le monde",
+      only_authors: "Seulement les auteurs",
+      protected_by_authors: "Protégé par les auteurs",
+      with_password: "Avec un mot de passe",
+      everybody: "Tout le monde",
 
       "with_all_medias:": "Avec tous les médias",
 
@@ -167,7 +180,8 @@ module.exports = (function () {
         media_type_not_handled:
           "Impossible d’insérer le média dans le journal : ce type n’est pas pris en charge.",
         action_not_allowed:
-          "Cette action n’est pas permise. Cette timeline a probablement été archivée…",
+          "Cette action n’est pas permise. Cette timeline est peut-être protégée par un mot de passe.",
+        password_is_valid: "Mot de passe accepté",
       },
     },
     en: {
@@ -220,10 +234,18 @@ module.exports = (function () {
       create: "Create",
       remove: "Remove",
       rename: "Rename",
-      password: "Mot de passe",
+      password: "Password",
+
+      only_password_can_open: "Access limited with password",
+      password_required_to_open: "Password required",
+      password_required_to_edit: "Password required to contribute",
+      show_password: "Show password",
+
       protected_by_pass: "protected by password",
       password_instructions:
         "If set, only users with the password will be able to edit this folder and access the content that’s not public.",
+
+      edit_timeline: "Contribute to timeline",
 
       all_tags: "List of keywords available",
       sort_by: "Sort by",
@@ -270,6 +292,14 @@ module.exports = (function () {
 
       more_information:
         'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
+
+      who_can_edit: "Who can contribute",
+      consultation: "Consultation",
+      visible_to_all: "Visible for everyone",
+      only_authors: "Only authors",
+      protected_by_authors: "Protected by authors",
+      with_password: "With a password",
+      everybody: "Everybody",
 
       no_media_in_folder: "No media in this folder.",
       no_public_media_in_folder: "No public media in this folder.",
@@ -331,7 +361,8 @@ module.exports = (function () {
         connected_to_lescahiers: "Connection active",
         media_type_not_handled: "Media type not handled in the journal.",
         action_not_allowed:
-          "This action was blocked. This timeline has probably been archived…",
+          "This action was blocked. You may need the password to do that.",
+        password_is_valid: "Password is valid",
       },
     },
   };
