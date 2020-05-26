@@ -3,32 +3,36 @@
     <h2
       class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large"
       @click="$root.openFolder(slugFolderName)"
-    >{{ folder.name }}</h2>
+    >
+      {{ folder.name }}
+    </h2>
 
     <div class="font-small">
       <div class="margin-sides-medium margin-vert-small">
-        <mark class v-if="folder.password === 'has_pass'">{{ $t('protected_by_pass') }}</mark>
+        <mark class v-if="folder.password === 'has_pass'">{{
+          $t("protected_by_pass")
+        }}</mark>
       </div>
 
       <div class="folder_metapreview margin-medium">
         <template v-if="sort_field === 'created'">
-          <i>{{ $t('created_date') }}</i>
+          <i>{{ $t("created_date") }}</i>
           <br />
           {{ formatDateToHuman(folder.created) }}
         </template>
         <template v-else-if="sort_field === 'name'"></template>
         <template v-else-if="sort_field === 'start'">
-          <i>{{ $t('start_date') }}</i>
+          <i>{{ $t("start_date") }}</i>
           <br />
           {{ formatDateToHuman(folder.start) }}
         </template>
         <template v-else-if="sort_field === 'end'">
-          <i>{{ $t('end_date') }}</i>
+          <i>{{ $t("end_date") }}</i>
           <br />
           {{ formatDateToHuman(folder.end) }}
         </template>
         <template v-else>
-          <i>{{ $t('created_date') }}</i>
+          <i>{{ $t("created_date") }}</i>
           <br />
           {{ formatDateToHuman(folder.created) }}
         </template>
@@ -36,9 +40,11 @@
 
       <hr class="margin-small margin-sides-medium" />
 
-      <div class="margin-small flex-wrap flex-vertically-start flex-horizontally-start">
+      <div
+        class="margin-small flex-wrap flex-vertically-start flex-horizontally-start"
+      >
         <button
-          v-if="can_admin_folder"
+          v-if="can_see_folder"
           type="button"
           :disabled="read_only"
           class="button-round margin-verysmall padding-verysmall"
@@ -53,44 +59,44 @@
             <g id="Calque_2" data-name="Calque 2">
               <g id="Content">
                 <g>
-                  <circle cx="23.5" cy="23.5" r="23" style="fill: #fff" />
+                  <circle cx="23.5" cy="23.5" r="23" style="fill: #fff;" />
                   <circle
                     cx="23.5"
                     cy="23.5"
                     r="23"
-                    style="fill: none;stroke: #4d4d4d;stroke-miterlimit: 10"
+                    style="fill: none; stroke: #4d4d4d; stroke-miterlimit: 10;"
                   />
                 </g>
                 <polyline
                   points="33.33 23.74 33.33 33.96 23.11 33.96 12.88 33.96 12.88 23.74 12.88 13.52 23.11 13.52"
-                  style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                  style="fill: none; stroke: #333; stroke-miterlimit: 10;"
                 />
                 <polyline
                   points="26.73 13.52 33.33 13.52 33.33 20.12"
-                  style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                  style="fill: none; stroke: #333; stroke-miterlimit: 10;"
                 />
                 <line
                   x1="33.05"
                   y1="13.89"
                   x2="22.1"
                   y2="24.83"
-                  style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                  style="fill: none; stroke: #333; stroke-miterlimit: 10;"
                 />
               </g>
             </g>
           </svg>
-          <span class="text-cap font-verysmall">{{ $t('open') }}</span>
+          <span class="text-cap font-verysmall">{{ $t("open") }}</span>
         </button>
 
-        <button
-          v-if="!can_admin_folder"
+        <!-- <button
+          v-if="!can_edit_folder"
           type="button"
           class="button-round margin-verysmall padding-verysmall"
           :readonly="read_only"
           @click="showInputPasswordField = !showInputPasswordField"
         >
-          <span class="text-cap font-verysmall">{{ $t('password') }}</span>
-        </button>
+          <span class="text-cap font-verysmall">{{ $t("password") }}</span>
+        </button> -->
         <!--
         <button v-if="can_admin_folder" type="button" class="button-round margin-verysmall padding-verysmall" @click="debugFolderContent = !debugFolderContent">
           <span class="text-cap font-verysmall">
@@ -195,7 +201,10 @@
           <span class="text-cap font-verysmall">{{ $t('remove') }}</span>
         </button>-->
 
-        <div v-if="showInputPasswordField && !can_admin_folder" class="margin-bottom-small">
+        <!-- <div
+          v-if="showInputPasswordField && !can_admin_folder"
+          class="margin-bottom-small"
+        >
           <input
             type="password"
             ref="passwordField"
@@ -207,9 +216,19 @@
             type="button"
             class="border-circled button-thin padding-verysmall"
             @click="submitPassword"
-          >Envoyer</button>
-        </div>
+          >
+            Envoyer
+          </button>
+        </div> -->
       </div>
+
+      <AccessController
+        :folder="folder"
+        :context="''"
+        :type="'folders'"
+        @openFolder="openFolder"
+        @closeFolder="closeFolder"
+      />
 
       <EditFolder
         v-if="showEditFolderModal"
@@ -224,31 +243,39 @@
 </template>
 <script>
 import EditFolder from "./modals/EditFolder.vue";
+import AccessController from "./subcomponents/AccessController.vue";
 
 export default {
   props: {
     folder: Object,
     slugFolderName: String,
     read_only: Boolean,
-    sort_field: String
+    sort_field: String,
   },
   components: {
-    EditFolder
+    EditFolder,
+    AccessController,
   },
   data() {
     return {
       debugFolderContent: false,
       showEditFolderModal: false,
-      showInputPasswordField: false
+      showInputPasswordField: false,
     };
   },
   computed: {
-    can_admin_folder() {
-      return this.$root.canAdminFolder({
+    can_edit_folder() {
+      return this.$root.canEditFolder({
         type: "folders",
-        slugFolderName: this.slugFolderName
+        slugFolderName: this.slugFolderName,
       });
-    }
+    },
+    can_see_folder() {
+      return this.$root.canSeeFolder({
+        type: "folders",
+        slugFolderName: this.slugFolderName,
+      });
+    },
   },
   methods: {
     formatDateToHuman(date) {
@@ -264,7 +291,7 @@ export default {
       if (window.confirm(this.$t("sureToRemoveFolder"))) {
         this.$root.removeFolder({
           type: "folders",
-          slugFolderName: this.slugFolderName
+          slugFolderName: this.slugFolderName,
         });
       }
     },
@@ -273,15 +300,15 @@ export default {
 
       this.$auth.updateFoldersPasswords({
         folders: {
-          [this.slugFolderName]: this.$refs.passwordField.value
-        }
+          [this.slugFolderName]: this.$refs.passwordField.value,
+        },
       });
       this.$socketio.sendAuth();
 
       // check if password matches or not
       this.$eventHub.$once("socketio.authentificated", () => {
         const has_passworded_folder = window.state.list_authorized_folders.filter(
-          f =>
+          (f) =>
             f.type === "folders" &&
             f.allowed_slugFolderNames.includes(this.slugFolderName)
         );
@@ -298,10 +325,9 @@ export default {
           this.$root.openFolder(this.slugFolderName);
         }
       });
-    }
+    },
   },
-  watch: {}
+  watch: {},
 };
 </script>
-<style scoped>
-</style>
+<style scoped></style>

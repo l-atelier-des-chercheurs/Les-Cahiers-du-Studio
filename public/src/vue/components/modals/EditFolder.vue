@@ -1,5 +1,4 @@
 <template>
-
   <Modal
     @close="$emit('close')"
     @submit="editThisFolder"
@@ -8,18 +7,18 @@
     :askBeforeClosingModal="askBeforeClosingModal"
   >
     <template slot="header">
-      <span class="text-cap"> {{ $t('edit_folder') }}</span> <i>{{ folder.name }}</i>
+      <span class="text-cap"> {{ $t("edit_folder") }}</span>
+      <i>{{ folder.name }}</i>
     </template>
 
     <template slot="sidebar">
-
-<!-- Human name -->
+      <!-- Human name -->
       <div class="margin-bottom-small">
-        <label>{{ $t('name') }}</label>
-        <input type="text" v-model="folderdata.name" required :readonly="folderdata.archived">
+        <label>{{ $t("name") }}</label>
+        <input type="text" v-model="folderdata.name" required />
       </div>
 
-<!-- Start date -->
+      <!-- Start date -->
       <!-- <div class="margin-bottom-small">
         <label>{{ $t('capture_start') }}</label>
         <DateTime v-model="folderdata.start" :twowaybinding=true :read_only="read_only">
@@ -38,7 +37,7 @@
         </div>
       </div> -->
 
-<!-- End date -->
+      <!-- End date -->
       <!-- <div class="margin-bottom-small">
         <label>{{ $t('capture_end') }}</label>
         <DateTime 
@@ -60,8 +59,8 @@
         </div>
       </div> -->
 
-<!-- Password -->
-<!--
+      <!-- Password -->
+      <!--
       <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
         <input type="password" v-model="folderdata.password" :readonly="read_only">
@@ -69,20 +68,23 @@
       </div>
  -->
 
-<!-- Archive switch -->
+      <!-- Access control -->
       <div class="margin-bottom-small">
-        <span class="switch">
-          <input type="checkbox" class="switch" id="archivedswitch" v-model="folderdata.archived" :readonly="read_only">
-          <label for="archivedswitch">{{ $t('archive_this_folder') }}</label>
-        </span>
-        <div class="margin-bottom-small">
-          <small>
-            {{ $t('archive_instructions') }}
-          </small>
+        <label>
+          {{ $t("manage_access") }}
+        </label>
+
+        <div>
+          <EditAccessControl
+            :editing_limited_to.sync="folderdata.editing_limited_to"
+            :viewing_limited_to.sync="folderdata.viewing_limited_to"
+            :password.sync="folderdata.password"
+            :can_have_authors="false"
+          />
         </div>
       </div>
 
-<!-- Author(s) -->
+      <!-- Author(s) -->
       <!-- <div v-if="!read_only && !!folderdata.authors" class="margin-bottom-small">
         <label>{{ $t('author') }}</label>
         <AuthorsInput
@@ -91,20 +93,19 @@
           @authorsChanged="newAuthors => folderdata.authors = newAuthors"
         />
       </div> -->
-
     </template>
 
     <template slot="submit_button">
-      {{ $t('save') }}
+      {{ $t("save") }}
     </template>
-
   </Modal>
 </template>
 <script>
-import Modal from './BaseModal.vue';
-import DateTime from '../subcomponents/DateTime.vue';
-import alertify from 'alertify.js';
-import AuthorsInput from '../subcomponents/AuthorsInput.vue';
+import Modal from "./BaseModal.vue";
+import DateTime from "../subcomponents/DateTime.vue";
+import alertify from "alertify.js";
+import AuthorsInput from "../subcomponents/AuthorsInput.vue";
+import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 
 export default {
   props: {
@@ -116,7 +117,8 @@ export default {
   components: {
     Modal,
     DateTime,
-    AuthorsInput
+    AuthorsInput,
+    EditAccessControl,
   },
   data() {
     return {
@@ -125,25 +127,30 @@ export default {
         name: this.folder.name,
         start: this.$moment(this.folder.start).isValid()
           ? this.folder.start
-          : '',
-        end: this.$moment(this.folder.end).isValid() ? this.folder.end : '',
+          : "",
+        end: this.$moment(this.folder.end).isValid() ? this.folder.end : "",
         authors: this.folder.authors,
-        archived: this.folder.hasOwnProperty('archived') ?  this.folder.archived : false
-      }
+        editing_limited_to: !!this.folder.editing_limited_to
+          ? this.folder.editing_limited_to
+          : this.folder.password
+          ? "with_password"
+          : "everybody",
+        viewing_limited_to: this.folder.viewing_limited_to,
+      },
     };
   },
   watch: {
-    'folderdata': {
+    folderdata: {
       handler() {
         this.askBeforeClosingModal = true;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {},
   methods: {
-    editThisFolder: function(event) {
-      console.log('editThisFolder');
+    editThisFolder: function (event) {
+      console.log("editThisFolder");
 
       // only if user changed the name of this folder
       if (this.folderdata.name !== this.folder.name) {
@@ -163,7 +170,7 @@ export default {
           alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t('notifications.folder_name_exists'));
+            .error(this.$t("notifications.folder_name_exists"));
           return false;
         }
 
@@ -172,23 +179,21 @@ export default {
             .closeLogOnClick(true)
             .delay(4000)
             .error(
-              this.$t('notifications.folder_name_needs_alphanumeric_characters')
+              this.$t("notifications.folder_name_needs_alphanumeric_characters")
             );
         }
       }
 
       this.$root.editFolder({
-        type: 'folders',
-        slugFolderName: this.slugFolderName, 
-        data: this.folderdata 
+        type: "folders",
+        slugFolderName: this.slugFolderName,
+        data: this.folderdata,
       });
 
-      this.$emit('close', '');
-    }
+      this.$emit("close", "");
+    },
   },
-  mounted() {}
+  mounted() {},
 };
 </script>
-<style>
-
-</style>
+<style></style>

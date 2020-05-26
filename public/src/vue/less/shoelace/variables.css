@@ -215,6 +215,7 @@
   --loader-spacing-y: 0;
 
   /* Spacing Utilties */
+  --spacing-verysmall: calc(var(--component-spacing) / 2);
   --spacing-small: var(--component-spacing);
   --spacing-medium: calc(var(--component-spacing) * 2);
   --spacing-big: calc(var(--component-spacing) * 4);

@@ -15,7 +15,10 @@
       class="m_navtimeline_wrapper--timeline_wrapper"
       :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
     >
-      <div :style="{ cursor, userSelect }" class="vue-splitter-container clearfix">
+      <div
+        :style="{ cursor, userSelect }"
+        class="vue-splitter-container clearfix"
+      >
         <Pane
           class="splitter-pane splitter-paneL"
           :class="{ 'is--dragged': is_dragged }"
@@ -26,7 +29,7 @@
           <Sidebar
             v-if="
               $root.settings.has_sidebar_opened &&
-                $root.settings.sidebar_type === 'options'
+              $root.settings.sidebar_type === 'options'
             "
             :folder="folder"
             :slugFolderName="slugFolderName"
@@ -40,12 +43,12 @@
             :filter="filter"
             :is_realtime="is_realtime"
             :read_only="read_only"
-            :can_admin_folder="can_admin_folder"
+            :can_edit_folder="can_edit_folder"
           />
           <WriteUp
             v-else-if="
               $root.settings.has_sidebar_opened &&
-                $root.settings.sidebar_type === 'journal'
+              $root.settings.sidebar_type === 'journal'
             "
             :slugFolderName="slugFolderName"
             :medias="medias"
@@ -61,9 +64,9 @@
               @mouseover="collapse_foldername = false"
               @mouseleave="collapse_foldername = true"
               :class="{
-          'is--collapsed': collapse_foldername,
-          'is--movedToRight': $root.settings.has_sidebar_opened
-        }"
+                'is--collapsed': collapse_foldername,
+                'is--movedToRight': $root.settings.has_sidebar_opened,
+              }"
             >
               <span class="icon">←</span>
               <span class="project_name">{{ folder.name }}</span>
@@ -72,9 +75,7 @@
           <template v-else>
             <div class="folder_backbutton">
               <span class="margin-sides-small padding-verysmall text-centered">
-                {{
-                folder.name
-                }}
+                {{ folder.name }}
               </span>
             </div>
           </template>
@@ -84,7 +85,10 @@
             :class="{ 'is--sidebarOpened': $root.settings.has_sidebar_opened }"
           >
             <div class="m_verticalButtons--container">
-              <button type="button" @click.stop.prevent="toggleSidebar('options')">
+              <button
+                type="button"
+                @click.stop.prevent="toggleSidebar('options')"
+              >
                 <span
                   v-if="$root.settings.sidebar_type === 'options'"
                   v-html="`×&nbsp;` + $t('options')"
@@ -101,13 +105,18 @@
                 v-html="'|||'"
               />
 
-              <button type="button" @click.stop.prevent="toggleSidebar('journal')">
+              <button
+                type="button"
+                @click.stop.prevent="toggleSidebar('journal')"
+              >
                 <span
                   v-if="$root.settings.sidebar_type === 'journal'"
                   v-html="`×&nbsp;` + $t('journal')"
                 />
                 <span v-else v-html="$t('journal')" />
-                <span v-if="number_of_writeups" class="_writeups_number">{{ number_of_writeups }}</span>
+                <span v-if="number_of_writeups" class="_writeups_number">{{
+                  number_of_writeups
+                }}</span>
               </button>
             </div>
           </div>
@@ -133,7 +142,24 @@
               <span>{{ visible_day_human }}</span>
             </div>
             <TimelinePlayer />
-            <div></div>
+
+            <div v-if="!can_edit_folder">
+              <button
+                type="button"
+                @click="show_access_controller = !show_access_controller"
+                :class="{ 'is--active': show_access_controller }"
+              >
+                {{ $t("edit_timeline") }}
+              </button>
+              <div v-if="show_access_controller">
+                <AccessController
+                  :folder="folder"
+                  :context="'full'"
+                  :type="'folders'"
+                  @closeFolder="$root.closeFolder()"
+                />
+              </div>
+            </div>
           </div>
 
           <div
@@ -159,16 +185,18 @@
                       v-html="day.is_empty_period"
                     />
                   </template>
-                  <template v-else-if="day.hasOwnProperty('is_empty')"></template>
+                  <template
+                    v-else-if="day.hasOwnProperty('is_empty')"
+                  ></template>
                   <template v-else>
                     <div class="m_timeline--container--dates--day--daylabel">
-                      <div class="m_timeline--container--dates--day--daylabel--container">
+                      <div
+                        class="m_timeline--container--dates--day--daylabel--container"
+                      >
                         <span>
                           {{ day.label }}
                           <span v-if="day.number_of_medias > 0">
-                            {{
-                            day.number_of_medias
-                            }}
+                            {{ day.number_of_medias }}
                           </span>
                           <span v-else></span>
                         </span>
@@ -181,15 +209,15 @@
                       class="m_timeline--container--dates--day--mediasblock"
                       v-if="
                         !segment.hasOwnProperty('hidelabel') ||
-                          !segment.hidelabel ||
-                          segment.medias.length > 0
+                        !segment.hidelabel ||
+                        segment.medias.length > 0
                       "
                     >
                       <div
                         class="m_timeline--container--dates--day--mediasblock--label"
                         v-if="
                           !segment.hasOwnProperty('hidelabel') ||
-                            !segment.hidelabel
+                          !segment.hidelabel
                         "
                       >
                         <div>
@@ -198,16 +226,14 @@
                             @click="
                               openMediaModal(segment.marker_meta_slugMediaName)
                             "
-                            :style="
-                              `
+                            :style="`
                               --color-author: ${segment.color};
                               --label-color: ${
                                 segment.color === 'var(--color-noir)'
                                   ? 'var(--color-blanc)'
                                   : 'var(--color-noir)'
                               };
-                              `
-                            "
+                              `"
                             :data-has_author="!!segment.marker_author"
                           >
                             <span v-html="segment.label" />
@@ -229,8 +255,13 @@
               </div>
             </div>
 
-            <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
-              <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
+            <div
+              v-if="sort.current.field !== 'date_timeline'"
+              class="m_filterIndicator"
+            >
+              <div
+                class="flex-wrap flex-vertically-centered flex-horizontally-start"
+              >
                 <button
                   type="button"
                   class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
@@ -251,8 +282,8 @@
                     <span
                       v-html="
                         this.sortedMedias.length +
-                          '/' +
-                          Object.keys(this.medias).length
+                        '/' +
+                        Object.keys(this.medias).length
                       "
                     />
                   </div>
@@ -265,14 +296,9 @@
     </div>
 
     <AddMedias
-      v-if="
-        ((folder.password === 'has_pass' && can_admin_folder) ||
-          folder.password !== 'has_pass') &&
-          !folder_is_archived
-      "
+      v-if="can_edit_folder"
       :slugFolderName="slugFolderName"
       :folder="folder"
-      :folder_is_archived="folder_is_archived"
       :is_realtime="is_realtime"
       :current_author="current_author"
       :read_only="!$root.state.connected"
@@ -287,7 +313,7 @@
       :folder="folder"
       :isRealtime="is_realtime"
       @close="show_media_modal_for = false"
-      :read_only="!$root.state.connected || folder_is_archived"
+      :read_only="!$root.state.connected || !can_edit_folder"
       :allAuthors="Array.isArray(folder.authors) ? folder.authors : []"
     />
     <EditFolder
@@ -313,6 +339,7 @@ import WriteUp from "./components/WriteUp.vue";
 import Resizer from "./components/splitpane/Resizer.vue";
 import Pane from "./components/splitpane/Pane.vue";
 import TimelinePlayer from "./components/subcomponents/TimelinePlayer.vue";
+import AccessController from "./components/subcomponents/AccessController.vue";
 
 import debounce from "debounce";
 
@@ -321,7 +348,7 @@ export default {
     slugFolderName: String,
     folder: Object,
     medias: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     WriteUp,
@@ -332,7 +359,8 @@ export default {
     EditFolder,
     Resizer,
     Pane,
-    TimelinePlayer
+    TimelinePlayer,
+    AccessController,
   },
   data() {
     return {
@@ -353,6 +381,7 @@ export default {
       is_showing_addmedia_options: false,
 
       convert_empty_days_to_periods: true,
+      show_access_controller: false,
 
       minPercent: 0,
       split: "vertical",
@@ -375,25 +404,25 @@ export default {
             field: "date_timeline",
             name: this.$t("date"),
             type: "date",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "date_modified",
             name: this.$t("last_modified"),
             type: "date",
-            order: "descending"
+            order: "descending",
           },
           {
             field: "caption",
             name: this.$t("caption"),
             type: "alph",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "type",
             name: this.$t("type"),
             type: "alph",
-            order: "ascending"
+            order: "ascending",
           },
           // {
           //   field: "color",
@@ -406,29 +435,29 @@ export default {
             name: this.$t("keywords"),
             type: "array",
             field_name: "title",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "authors",
             name: this.$t("author"),
             type: "array",
             field_name: "name",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "public",
             name: this.$t("public"),
             type: "bool",
-            order: "descending"
+            order: "descending",
           },
           {
             field: "content",
             name: this.$t("content"),
             type: "alph",
-            order: "ascending"
-          }
-        ]
-      }
+            order: "ascending",
+          },
+        ],
+      },
     };
   },
 
@@ -494,7 +523,7 @@ export default {
     this.$root.settings.sidebar_type = "";
   },
   watch: {
-    translation: function() {
+    translation: function () {
       this.$refs.timeline.scrollLeft = this.translation;
 
       if (!this.debounce_translation_fct) {
@@ -503,30 +532,27 @@ export default {
           this.debounce_translation_fct = undefined;
         }, this.debounce_translation_delay);
       }
-    }
+    },
   },
   computed: {
     number_of_writeups() {
       if (typeof this.medias === "object")
         return Object.values(this.medias).filter(
-          media => media.hasOwnProperty("type") && media.type === "writeup"
+          (media) => media.hasOwnProperty("type") && media.type === "writeup"
         ).length;
       return false;
     },
-    can_admin_folder() {
-      return this.$root.canAdminFolder({
+    can_edit_folder() {
+      return this.$root.canEditFolder({
         type: "folders",
-        slugFolderName: this.slugFolderName
+        slugFolderName: this.slugFolderName,
       });
     },
-    folder_is_archived() {
-      if (this.folder.hasOwnProperty("archived") && this.folder.archived) {
-        return true;
-      }
-      if (this.$root.state.mode === "export_web") {
-        return true;
-      }
-      return false;
+    can_see_folder() {
+      return this.$root.canSeeFolder({
+        type: "folders",
+        slugFolderName: this.slugFolderName,
+      });
     },
     folder_authors() {
       return this.folder.hasOwnProperty("authors") && this.folder.authors !== ""
@@ -538,7 +564,7 @@ export default {
         return {};
       }
       return this.folder_authors.filter(
-        c => c.name === this.$root.settings.current_author_name
+        (c) => c.name === this.$root.settings.current_author_name
       )[0];
     },
     sortedMedias() {
@@ -587,12 +613,14 @@ export default {
           if (typeof media_prop === "string") {
             media_prop = [{ [current_sort.field_name]: media_prop }];
           }
-          mediaDataToOrderBy = media_prop.map(a => a[current_sort.field_name]);
+          mediaDataToOrderBy = media_prop.map(
+            (a) => a[current_sort.field_name]
+          );
         }
 
         sortable.push({
           slugMediaName,
-          mediaDataToOrderBy
+          mediaDataToOrderBy,
         });
       }
       let sortedSortable = sortable.sort((a, b) => {
@@ -625,7 +653,7 @@ export default {
             }
 
             let originalContentFromMedia = media_prop.map(
-              a => a[current_sort.field_name]
+              (a) => a[current_sort.field_name]
             );
 
             // search even for part of the word — problem: looking for Marie and not Marie-Claire wouldn’t be possible
@@ -657,7 +685,7 @@ export default {
       }
 
       // groupby day
-      let mediaGroup = this.$_.groupBy(this.sortedMedias, media => {
+      let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
         let date_to_reference_to = 0;
         if (media.hasOwnProperty("date_timeline")) {
           date_to_reference_to = media.date_timeline;
@@ -674,7 +702,7 @@ export default {
 
       if (this.make_mediasblock_with === "hours") {
         mediaGroup = mediaGroup.map(([day, medias]) => {
-          let medias_by_hours = this.$_.groupBy(medias, media => {
+          let medias_by_hours = this.$_.groupBy(medias, (media) => {
             let date_to_reference_to = 0;
             if (media.hasOwnProperty("date_timeline")) {
               date_to_reference_to = media.date_timeline;
@@ -707,7 +735,7 @@ export default {
             (acc, [hour, medias]) => {
               acc.push({
                 label: hour,
-                medias
+                medias,
               });
               return acc;
             },
@@ -719,7 +747,7 @@ export default {
 
           return {
             day,
-            segments: medias_by_hours
+            segments: medias_by_hours,
           };
         });
       } else if (this.make_mediasblock_with === "markers") {
@@ -751,7 +779,7 @@ export default {
                   timestamp: media.date_timeline,
                   marker_meta_slugMediaName: media.slugMediaName,
                   marker_author,
-                  medias: []
+                  medias: [],
                 });
               } else {
                 acc[acc.length - 1].medias.push(media);
@@ -769,7 +797,7 @@ export default {
           // };
           return {
             day,
-            segments: medias_by_markers
+            segments: medias_by_markers,
           };
         });
       }
@@ -780,7 +808,7 @@ export default {
       let temp_start = +this.$moment();
       let temp_end = +this.$moment();
 
-      this.sortedMedias.map(m => {
+      this.sortedMedias.map((m) => {
         if (this.$moment(m.date_timeline, "YYYY-MM-DD HH:mm:ss").isValid()) {
           const media_date = +this.$moment(
             m.date_timeline,
@@ -797,7 +825,7 @@ export default {
 
       return {
         start: temp_start,
-        end: temp_end
+        end: temp_end,
       };
 
       // const ts = this.folder.end;
@@ -844,7 +872,7 @@ export default {
         let this_date = startDate.clone();
         let medias_for_date = [];
 
-        const has_media_for_date = this.groupedMedias.filter(i =>
+        const has_media_for_date = this.groupedMedias.filter((i) =>
           this.$moment(i.day).isSame(this_date, "day")
         );
 
@@ -879,7 +907,7 @@ export default {
           label,
           timestamp: +this_date,
           number_of_medias,
-          segments: medias_for_date
+          segments: medias_for_date,
         };
 
         date_interval.push(day);
@@ -922,7 +950,7 @@ export default {
               const x = 8;
 
               // if has more than X days since beginning, and if the last X days are empty
-              if (acc.length > x && !acc.slice(-x).some(d => !d.is_empty)) {
+              if (acc.length > x && !acc.slice(-x).some((d) => !d.is_empty)) {
                 const last_item = acc[acc.length - 1];
 
                 if (!last_item.hasOwnProperty("is_empty_period")) {
@@ -983,7 +1011,7 @@ export default {
           nextDay: "[demain]",
           lastWeek: "dddd [dernier]",
           nextWeek: "dddd [prochain]",
-          sameElse: "dddd D MMMM Y"
+          sameElse: "dddd D MMMM Y",
         });
       } else if (this.$root.lang.current === "en") {
         return this.$moment(this.visible_day).calendar(null, {
@@ -992,10 +1020,10 @@ export default {
           nextDay: "[tomorrow]",
           lastWeek: "[last] dddd",
           nextWeek: "[next] dddd",
-          sameElse: "dddd, MMMM D Y"
+          sameElse: "dddd, MMMM D Y",
         });
       }
-    }
+    },
   },
   methods: {
     onMousewheel(event) {
@@ -1057,7 +1085,7 @@ export default {
         return this.timeline_interval.start;
       }
       const first_day = Array.from(this.$refs.timeline_dates.children).find(
-        d =>
+        (d) =>
           d.offsetLeft + d.offsetWidth >
           posX + this.$refs.timeline.offsetWidth / 2 - 25
       );
@@ -1067,7 +1095,7 @@ export default {
       return this.timeline_interval.start;
     },
     startEditModal() {
-      if (this.can_admin_folder) {
+      if (this.can_see_folder) {
         this.show_edit_folder_modal = true;
       }
     },
@@ -1079,7 +1107,7 @@ export default {
         return 0;
       }
       const first_day = Array.from(this.$refs.timeline_dates.children).find(
-        d =>
+        (d) =>
           d.dataset.hasOwnProperty("timestamp") &&
           Number(d.dataset.timestamp) >= day
       );
@@ -1116,7 +1144,7 @@ export default {
       if (this.show_media_modal_for) {
         // find in sortedMedias where this.show_media_modal_for and get the next one
         const current_media_index = this.sortedMedias.findIndex(
-          m => m.slugMediaName === this.show_media_modal_for
+          (m) => m.slugMediaName === this.show_media_modal_for
         );
 
         this.closeMediaModal();
@@ -1139,7 +1167,7 @@ export default {
       if (this.show_media_modal_for) {
         // find in sortedMedias where this.show_media_modal_for and get the next one
         const current_media_index = this.sortedMedias.findIndex(
-          m => m.slugMediaName === this.show_media_modal_for
+          (m) => m.slugMediaName === this.show_media_modal_for
         );
 
         this.closeMediaModal();
@@ -1188,7 +1216,7 @@ export default {
       }
 
       const media_in_timeline = Array.from($medias).find(
-        m =>
+        (m) =>
           m.dataset.hasOwnProperty("slugmedianame") &&
           m.dataset.slugmedianame === slugMediaName
       );
@@ -1230,7 +1258,7 @@ export default {
             `METHODS • TimeLineView: scrollTimelineToXPos / was canceled`
           );
           this.current_scroll_event = undefined;
-        }
+        },
       });
     },
 
@@ -1326,8 +1354,8 @@ export default {
       }
 
       return false;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="less">
@@ -1732,7 +1760,7 @@ export default {
 
     > * {
       display: inline-flex;
-      height: 40px;
+      min-height: 40px;
       background-color: var(--color-noir);
       color: white;
       pointer-events: auto;
@@ -1747,7 +1775,7 @@ export default {
         width: 100%;
         max-width: none;
         border-radius: 0;
-        height: 20px;
+        min-height: 20px;
       }
     }
   }
@@ -1762,5 +1790,10 @@ export default {
   border-radius: 50%;
   border: 1px solid #555;
   // font-size: 70%;
+}
+
+.m_floater .m_accessController {
+  margin-top: var(--spacing-verysmall);
+  margin-bottom: var(--spacing-verysmall);
 }
 </style>
