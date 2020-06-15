@@ -837,17 +837,14 @@ export default {
       // console.log('COMPUTED • TimeLineView: full_date_interval');
       // itérer dans toutes les dates,
       // et construire un array de date
-      let date_interval = [];
+      let full_date_interval = [];
 
-      let startDate = this.$moment(this.timeline_interval.start).add(
-        -1,
-        "days"
-      );
+      let startDate = this.$moment(this.timeline_interval.start);
       const lastDate = this.$moment(this.timeline_interval.end);
 
       let index = 0;
 
-      while (startDate.add(1, "days").diff(lastDate) <= 0) {
+      while (startDate.diff(lastDate) <= 0) {
         let this_date = startDate.clone();
         let medias_for_date = [];
 
@@ -880,26 +877,24 @@ export default {
             ? "dddd D MMMM Y"
             : "dddd, MMMM D Y";
 
-        const label = this_date.format(format);
-
         let day = {
-          label,
+          label: this_date.format(format),
           timestamp: +this_date,
           number_of_medias,
           segments: medias_for_date
         };
 
-        date_interval.push(day);
+        full_date_interval.push(day);
 
-        if (index === 0) {
-          startDate.startOf("day");
-        }
+        if (index === 0) startDate.startOf("day");
+
+        startDate.add(1, "days");
 
         index++;
       }
 
       // days = days.map(d => d.format('L'));
-      return date_interval;
+      return full_date_interval;
     },
     date_interval() {
       // console.log('COMPUTED • TimeLineView: date_interval');
@@ -947,10 +942,14 @@ export default {
                       last_item.is_empty_period =
                         `${Math.round(duration.asWeeks())}` +
                         this.$t("weeks_later");
-                    } else {
+                    } else if (duration.asMonths() < 12) {
                       last_item.is_empty_period =
                         `${Math.round(duration.asMonths())}` +
                         this.$t("months_later");
+                    } else {
+                      last_item.is_empty_period =
+                        `${Math.round(duration.asYears())}` +
+                        this.$t("years_later");
                     }
                   }
                 }
