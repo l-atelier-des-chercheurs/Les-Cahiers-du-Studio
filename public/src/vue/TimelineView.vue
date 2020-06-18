@@ -1,6 +1,5 @@
 <template>
   <div class="m_navtimeline_wrapper">
-    {{ $root.current_time }}
     <transition name="fade" :duration="350">
       <div
         v-if="$root.settings.is_loading_medias_for_folder"
