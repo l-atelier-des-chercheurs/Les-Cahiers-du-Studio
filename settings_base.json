@@ -194,6 +194,105 @@
           }
         }
       }
+    },
+    "chats": {
+      "path": "_chats",
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified": {
+          "type": "date",
+          "default": "current",
+          "override": true
+        },
+        "authors": {
+          "type": "array"
+        },
+        "editing_limited_to": {
+          "type": "string",
+          "options": ["everybody"],
+          "default": "everybody"
+        },
+        "viewing_limited_to": {
+          "type": "string",
+          "options": ["everybody"],
+          "default": "everybody"
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "number_of_medias": {
+          "type": "number",
+          "only_admin_can_edit": true
+        }
+      },
+      "medias": {
+        "fields": {
+          "date_created": {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
+          "text": {
+            "type": "string"
+          },
+          "authors": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    "authors": {
+      "path": "_authors",
+      "preview": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [50, 180, 640]
+        }
+      },
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "transform": "crypt"
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "email": {
+          "type": "string",
+          "show_only_to": ["self", "admin"]
+        },
+        "role": {
+          "type": "string",
+          "options": ["contributor", "participant", "admin"],
+          "default": "contributor",
+          "only_admin_can_edit": true
+        },
+        "description": {
+          "type": "string"
+        },
+        "nfc_tag": {
+          "type": "string"
+        },
+        "last_messages_read_in_channels": {
+          "type": "array"
+        }
+      }
     }
   }
 }
