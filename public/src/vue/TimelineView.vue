@@ -1,5 +1,6 @@
 <template>
   <div class="m_navtimeline_wrapper">
+    {{ $root.current_time }}
     <transition name="fade" :duration="350">
       <div
         v-if="$root.settings.is_loading_medias_for_folder"
@@ -129,9 +130,17 @@
           :style="{ [type]: 100 - percent + '%' }"
           :split="split"
         >
-          <div class="m_floater" @wheel="onMousewheel">
+          <div
+            class="m_floater"
+            @wheel="onMousewheel"
+            :class="{ 'is--current_day' : visible_day_is_today }"
+          >
             <div>
-              <span>{{ visible_day_human }}</span>
+              <span>
+                <transition name="fade" mode="out-in" :duration="150">
+                  <span :key="visible_day_human">{{ visible_day_human }}</span>
+                </transition>
+              </span>
             </div>
             <TimelinePlayer />
 
@@ -167,7 +176,7 @@
                   :key="day.label"
                   :data-timestamp="day.timestamp"
                   class="m_timeline--container--dates--day"
-                  :class="{ 'is--empty': day.is_empty }"
+                  :class="{ 'is--empty': day.is_empty, 'is--current_day' : day.is_current_day }"
                 >
                   <template v-if="day.hasOwnProperty('is_empty_period')">
                     <div
@@ -806,32 +815,6 @@ export default {
         start: temp_start,
         end: temp_end
       };
-
-      // const ts = this.folder.end;
-      // const get_new_timeline_end = (ts) => {
-      //   if (ts && this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
-      //     // if end is in the future
-      //     if (
-      //       this.$moment(ts, 'YYYY-MM-DD HH:mm:ss', true).isAfter(this.$root.currentTime)
-      //     ) {
-      //       this.is_realtime = true;
-      //       // return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
-      //       // if end is is in the present or past
-      //     } else {
-      //       this.is_realtime = false;
-      //       return +this.$moment(ts, 'YYYY-MM-DD HH:mm:ss');
-      //     }
-      //   } else {
-      //     // there is no valid end, we set end to current time and set is_realtime
-      //     this.is_realtime = true;
-      //     return +this.$root.currentTime;
-      //   }
-      // }
-      // const new_timeline_end = get_new_timeline_end(ts);
-      // // if(new_timeline_end !== this.timeline_end) {
-      // //   return new_timeline_end;
-      // // }
-      // return new_timeline_end;
     },
     full_date_interval() {
       // console.log('COMPUTED • TimeLineView: full_date_interval');
@@ -856,14 +839,10 @@ export default {
           medias_for_date = has_media_for_date[0].segments;
         }
 
-        // const is_current_day = this.$moment(this.$root.currentTime_minute).isSame(this_date, 'day');
-        // if(is_current_day) {
-        //   medias_for_date.map(m => {
-        //     if(m.label === this.$moment(this.$root.currentTime_minute).format('HH') + ':00') {
-        //       m.is_current_hour = true;
-        //     }
-        //   });
-        // }
+        const is_current_day = this.$root.current_time.days.isSame(
+          this_date,
+          "day"
+        );
 
         const number_of_medias = Object.values(medias_for_date).reduce(
           (acc, element) => acc + element.medias.length,
@@ -880,6 +859,7 @@ export default {
         let day = {
           label: this_date.format(format),
           timestamp: +this_date,
+          is_current_day,
           number_of_medias,
           segments: medias_for_date
         };
@@ -981,6 +961,16 @@ export default {
       this.debounce_translation;
       return this.findDayAtPosX(this.debounce_translation);
     },
+    visible_day_is_today() {
+      if (
+        this.$moment(this.$root.current_time.days).isSame(
+          this.visible_day,
+          "day"
+        )
+      )
+        return true;
+      return false;
+    },
     visible_day_human() {
       if (this.$root.lang.current === "fr") {
         return this.$moment(this.visible_day).calendar(null, {
@@ -1041,7 +1031,7 @@ export default {
       }
     },
     scrollToToday() {
-      this.scrollToDate(+this.$root.currentTime_day);
+      this.scrollToDate(+this.$root.current_time.days);
     },
     scrollToEnd() {
       const x =
@@ -1416,6 +1406,14 @@ export default {
     padding-left: 10px;
   }
 
+  &.is--current_day {
+    .m_timeline--container--dates--day--daylabel {
+      --label-background: var(--color-rouge_vif);
+      --label-color: white;
+      // --rule-color: var(--color-rouge_vif);
+    }
+  }
+
   > .m_timeline--container--dates--day--emptinessPeriodLabel {
     font-size: 80%;
     color: #999;
@@ -1434,11 +1432,6 @@ export default {
     --label-background: var(--timeline-bg);
     --label-color: black;
 
-    &.is--current_day {
-      span > span {
-      }
-    }
-
     .m_timeline--container--dates--day--daylabel--container {
       position: relative;
       transform: rotate(-90deg);
@@ -1449,7 +1442,8 @@ export default {
         // min-width: 320px;
         background-color: var(--label-background);
         color: var(--label-color);
-        padding: 2px 8px;
+        border-radius: 1.1em;
+        padding: 4px 12px;
         white-space: nowrap;
 
         span {
@@ -1483,7 +1477,7 @@ export default {
       position: absolute;
       top: 0;
       bottom: 0;
-      left: calc(50% - 0px);
+      left: calc(50% - 1px);
       width: 0;
       border-left: 1px solid var(--rule-color);
       z-index: 0;
@@ -1721,8 +1715,14 @@ export default {
 
   pointer-events: none;
 
+  --label-background: var(--color-noir);
+
   body.has_systembar & {
     // top: 35px;
+  }
+
+  &.is--current_day {
+    --label-background: var(--color-rouge_vif);
   }
 
   @media screen and (max-width: 50rem) {
@@ -1739,7 +1739,7 @@ export default {
     > * {
       display: inline-flex;
       min-height: 40px;
-      background-color: var(--color-noir);
+      background-color: var(--label-background);
       color: white;
       pointer-events: auto;
       border-radius: 20px;
@@ -1748,6 +1748,8 @@ export default {
       align-items: center;
       align-content: center;
       justify-content: center;
+
+      transition: background-color 0.4s ease-out;
 
       @media screen and (max-width: 50rem) {
         width: 100%;

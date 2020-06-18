@@ -7,7 +7,7 @@
     :askBeforeClosingModal="askBeforeClosingModal"
   >
     <template slot="header">
-      <span class="text-cap"> {{ $t("edit_folder") }}</span>
+      <span class="text-cap">{{ $t("edit_folder") }}</span>
       <i>{{ folder.name }}</i>
     </template>
 
@@ -18,61 +18,9 @@
         <input type="text" v-model="folderdata.name" required />
       </div>
 
-      <!-- Start date -->
-      <!-- <div class="margin-bottom-small">
-        <label>{{ $t('capture_start') }}</label>
-        <DateTime v-model="folderdata.start" :twowaybinding=true :read_only="read_only">
-        </DateTime>
-        <div class="margin-bottom-small">
-          <small>
-            {{ $t('currently') }}
-            <button
-              type="button"
-              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-              @click="folderdata.start = $root.currentTime"
-            >
-              {{ $root.currentTime_human }}
-            </button>
-          </small>
-        </div>
-      </div> -->
-
-      <!-- End date -->
-      <!-- <div class="margin-bottom-small">
-        <label>{{ $t('capture_end') }}</label>
-        <DateTime 
-          v-model="folderdata.end" 
-          :twowaybinding=true 
-          :read_only="read_only"
-        />
-        <div class="margin-bottom-small">
-          <small>
-            {{ $t('currently') }}
-            <button
-              type="button"
-              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-              @click="folderdata.end = $root.currentTime"
-            >
-              {{ $root.currentTime_human }}
-            </button>
-          </small>
-        </div>
-      </div> -->
-
-      <!-- Password -->
-      <!--
-      <div class="margin-bottom-small">
-        <label>{{ $t('password') }}</label>
-        <input type="password" v-model="folderdata.password" :readonly="read_only">
-        <small>{{ $t('password_instructions') }}</small>
-      </div>
- -->
-
       <!-- Access control -->
       <div class="margin-bottom-small">
-        <label>
-          {{ $t("manage_access") }}
-        </label>
+        <label>{{ $t("manage_access") }}</label>
 
         <div>
           <EditAccessControl
@@ -92,12 +40,10 @@
           :allAuthors="allAuthors"
           @authorsChanged="newAuthors => folderdata.authors = newAuthors"
         />
-      </div> -->
+      </div>-->
     </template>
 
-    <template slot="submit_button">
-      {{ $t("save") }}
-    </template>
+    <template slot="submit_button">{{ $t("save") }}</template>
   </Modal>
 </template>
 <script>
@@ -112,13 +58,13 @@ export default {
     slugFolderName: String,
     folder: Object,
     read_only: Boolean,
-    allAuthors: Array,
+    allAuthors: Array
   },
   components: {
     Modal,
     DateTime,
     AuthorsInput,
-    EditAccessControl,
+    EditAccessControl
   },
   data() {
     return {
@@ -135,8 +81,8 @@ export default {
           : this.folder.password
           ? "with_password"
           : "everybody",
-        viewing_limited_to: this.folder.viewing_limited_to,
-      },
+        viewing_limited_to: this.folder.viewing_limited_to
+      }
     };
   },
   watch: {
@@ -144,12 +90,12 @@ export default {
       handler() {
         this.askBeforeClosingModal = true;
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   computed: {},
   methods: {
-    editThisFolder: function (event) {
+    editThisFolder: function(event) {
       console.log("editThisFolder");
 
       // only if user changed the name of this folder
@@ -187,13 +133,13 @@ export default {
       this.$root.editFolder({
         type: "folders",
         slugFolderName: this.slugFolderName,
-        data: this.folderdata,
+        data: this.folderdata
       });
 
       this.$emit("close", "");
-    },
+    }
   },
-  mounted() {},
+  mounted() {}
 };
 </script>
 <style></style>

@@ -124,7 +124,11 @@ let vm = new Vue({
 
     access: false,
 
-    currentTime: "",
+    current_time: {
+      seconds: "",
+      minutes: "",
+      days: "",
+    },
 
     justCreatedMediaID: false,
     justCreatedFolderID: false,
@@ -232,9 +236,9 @@ let vm = new Vue({
         );
       }
 
-      this.currentTime = this.$moment().millisecond(0);
+      this.current_time.seconds = this.$moment().millisecond(0);
       setInterval(
-        () => (this.currentTime = this.$moment().millisecond(0)),
+        () => (this.current_time.seconds = this.$moment().millisecond(0)),
         1000
       );
 
@@ -648,6 +652,21 @@ let vm = new Vue({
         document.body.style.overflow = "";
       }
     },
+    "current_time.seconds": function () {
+      if (
+        !this.current_time.minutes ||
+        !this.current_time.minutes.isSame(this.current_time.seconds, "minute")
+      ) {
+        this.current_time.minutes = this.current_time.seconds.startOf("minute");
+
+        if (
+          !this.current_time.days ||
+          !this.current_time.days.isSame(this.current_time.seconds, "day")
+        ) {
+          this.current_time.days = this.current_time.seconds.startOf("day");
+        }
+      }
+    },
   },
   computed: {
     currentFolder: function () {
@@ -660,13 +679,7 @@ let vm = new Vue({
       return {};
     },
     currentTime_human() {
-      return this.$moment(this.currentTime).format("l LTS");
-    },
-    currentTime_minute() {
-      return this.$moment(this.currentTime).second(0);
-    },
-    currentTime_day() {
-      return this.$moment(this.currentTime).startOf("day");
+      return this.$moment(this.current_time.seconds).format("l LTS");
     },
     allKeywords() {
       if (Object.keys(this.currentFolder).length === 0) {

@@ -17,37 +17,9 @@
         <input type="text" v-model="folderdata.name" required autofocus />
       </div>
 
-      <!-- Start date -->
-      <!-- <div class="margin-bottom-small">
-        <label>{{ $t('capture_start') }}</label>
-        <DateTime v-model="folderdata.start" :read_only="read_only">
-        </DateTime>
-      </div>-->
-
-      <!-- End date -->
-      <!-- <div class="margin-bottom-small">
-        <label>{{ $t('capture_end') }}</label>
-        <DateTime v-model="folderdata.end" :twowaybinding=true :read_only="read_only">
-        </DateTime>
-        <div class="margin-bottom-small">
-          <small>
-            {{ $t('currently') }}
-            <button
-              type="button"
-              class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-              @click="folderdata.end = $root.currentTime"
-            >
-              {{ $root.currentTime_human }}
-            </button>
-          </small>
-        </div>
-      </div>-->
-
       <!-- Access control -->
       <div class="margin-bottom-small">
-        <label>
-          {{ $t("manage_access") }}
-        </label>
+        <label>{{ $t("manage_access") }}</label>
 
         <div>
           <EditAccessControl
@@ -67,7 +39,7 @@
           <input type="password" v-model="folderdata.password" />
           <small>{{ $t('password_instructions') }}</small>
         </template>
-      </div> -->
+      </div>-->
     </template>
 
     <template slot="submit_button">{{ $t("create") }}</template>
@@ -81,12 +53,12 @@ import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 
 export default {
   props: {
-    read_only: Boolean,
+    read_only: Boolean
   },
   components: {
     Modal,
     DateTime,
-    EditAccessControl,
+    EditAccessControl
   },
   data() {
     return {
@@ -97,8 +69,8 @@ export default {
         password: "",
         authors: "",
         editing_limited_to: "everybody",
-        viewing_limited_to: "everybody",
-      },
+        viewing_limited_to: "everybody"
+      }
     };
   },
   watch: {
@@ -106,12 +78,12 @@ export default {
       handler() {
         this.askBeforeClosingModal = true;
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   computed: {},
   methods: {
-    newFolder: function (event) {
+    newFolder: function(event) {
       console.log("newFolder");
 
       function getAllFolderNames() {
@@ -137,7 +109,7 @@ export default {
 
       this.$root.createFolder({
         type: "folders",
-        data: this.folderdata,
+        data: this.folderdata
       });
 
       this.$eventHub.$on(
@@ -145,7 +117,7 @@ export default {
         this.newFolderCreated
       );
     },
-    newFolderCreated: function (fdata) {
+    newFolderCreated: function(fdata) {
       if (fdata.id === this.$root.justCreatedFolderID) {
         this.$eventHub.$off(
           "socketio.folder_created_or_updated",
@@ -157,8 +129,8 @@ export default {
           if (fdata.password === "has_pass") {
             this.$auth.updateFoldersPasswords({
               folders: {
-                [fdata.slugFolderName]: this.folderdata.password,
-              },
+                [fdata.slugFolderName]: this.folderdata.password
+              }
             });
             this.$socketio.sendAuth();
 
@@ -172,8 +144,8 @@ export default {
                   type: "marker",
                   content: "Création du dossier",
                   color: "red",
-                  collapsed: true,
-                },
+                  collapsed: true
+                }
               });
             });
           } else {
@@ -184,14 +156,14 @@ export default {
               type: "folders",
               additionalMeta: {
                 type: "marker",
-                content: this.$t("creation_of_the_timeline"),
-              },
+                content: this.$t("creation_of_the_timeline")
+              }
             });
           }
         });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style></style>
