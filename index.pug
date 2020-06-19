@@ -62,7 +62,8 @@ html
           metaFileName: "!{metaFileName}"
         },
         presentationMD: !{JSON.stringify(presentationMD)},
-        folders: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" }
+        folders: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
+        chats: {}
       };
 
       /* state contains settings data, time and client specific data */

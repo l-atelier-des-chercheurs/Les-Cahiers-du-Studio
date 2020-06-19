@@ -283,6 +283,11 @@
         </Pane>
       </div>
     </div>
+    <Chats
+      v-if="$root.settings.current_chat_slug"
+      :current_author="current_author"
+      :chats="$root.store.chats"
+    />
 
     <AddMedias
       v-if="can_edit_folder"
@@ -329,6 +334,7 @@ import Resizer from "./components/splitpane/Resizer.vue";
 import Pane from "./components/splitpane/Pane.vue";
 import TimelinePlayer from "./components/subcomponents/TimelinePlayer.vue";
 import AccessController from "./components/subcomponents/AccessController.vue";
+import Chats from "./components/chat/Chats.vue";
 
 import debounce from "debounce";
 
@@ -349,7 +355,8 @@ export default {
     Resizer,
     Pane,
     TimelinePlayer,
-    AccessController
+    AccessController,
+    Chats
   },
   data() {
     return {
@@ -838,10 +845,9 @@ export default {
           medias_for_date = has_media_for_date[0].segments;
         }
 
-        const is_current_day = this.$root.current_time.days.isSame(
-          this_date,
-          "day"
-        );
+        const is_current_day =
+          this.$root.current_time.days &&
+          this.$root.current_time.days.isSame(this_date, "day");
 
         const number_of_medias = Object.values(medias_for_date).reduce(
           (acc, element) => acc + element.medias.length,

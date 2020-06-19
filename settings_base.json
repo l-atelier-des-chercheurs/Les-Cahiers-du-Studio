@@ -233,6 +233,9 @@
         "number_of_medias": {
           "type": "number",
           "only_admin_can_edit": true
+        },
+        "is_linked_to": {
+          "type": "string"
         }
       },
       "medias": {
