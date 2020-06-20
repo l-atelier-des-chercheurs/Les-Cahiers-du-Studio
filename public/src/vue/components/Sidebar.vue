@@ -10,9 +10,7 @@
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="editFolder"
             :disabled="read_only"
-          >
-            {{ $t("edit") }}
-          </button>
+          >{{ $t("edit") }}</button>
         </h3>
       </div>
 
@@ -34,9 +32,9 @@
               id="placemediaoncreated"
               v-model="$root.settings.setDateTimelineToDateCreated"
             />
-            <label for="placemediaoncreated">
-              {{ $t("on_import_place_media_on_the_date_they_were_created") }}
-            </label>
+            <label
+              for="placemediaoncreated"
+            >{{ $t("on_import_place_media_on_the_date_they_were_created") }}</label>
           </span>
         </div>
       </div>
@@ -67,12 +65,7 @@
       </div>
       <div slot="body">
         <select v-model="currentLang">
-          <option
-            v-for="(name, code) in $root.lang.available"
-            :value="code"
-            :key="code"
-            >{{ name }}</option
-          >
+          <option v-for="(name, code) in $root.lang.available" :value="code" :key="code">{{ name }}</option>
         </select>
       </div>
     </SidebarSection>
@@ -86,9 +79,7 @@
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showKeyboardShortcutsList = true"
             :disabled="read_only"
-          >
-            {{ $t("open") }}
-          </button>
+          >{{ $t("open") }}</button>
         </h3>
       </div>
     </SidebarSection>
@@ -108,9 +99,7 @@
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showExportTimelineModal = true"
             :disabled="read_only"
-          >
-            {{ $t("open") }}
-          </button>
+          >{{ $t("open") }}</button>
         </h3>
       </div>
     </SidebarSection>
@@ -130,20 +119,13 @@
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
-          >
-            {{ $t("now") }}
-          </button>
+          >{{ $t("now") }}</button>
         </h3>
       </div>
 
       <div slot="body" class="m_calendar">
         <div v-if="!calendar">{{ $t("no_medias_sent_yet") }}</div>
-        <div
-          v-else
-          v-for="(days, month) in calendar"
-          class="m_calendar--month"
-          :key="month"
-        >
+        <div v-else v-for="(days, month) in calendar" class="m_calendar--month" :key="month">
           <h3 class="margin-bottom-small text-ital font-small">{{ month }}</h3>
           <div class="m_calendar--days">
             <div
@@ -161,7 +143,7 @@
                 {{ daymeta.dayNumber }}
                 <div class="font-veryverysmall bottomIndicator">
                   {{
-                    daymeta.numberOfMedias > 0 ? daymeta.numberOfMedias : "."
+                  daymeta.numberOfMedias > 0 ? daymeta.numberOfMedias : "."
                   }}
                 </div>
               </button>
@@ -179,9 +161,7 @@
             type="button"
             class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showMediasListModal = true"
-          >
-            {{ $t("fullscreen") }}
-          </button>
+          >{{ $t("fullscreen") }}</button>
         </h3>
       </div>
 
@@ -239,7 +219,7 @@ export default {
     KeyboardShortcuts,
     ExportTimeline,
     CreateQRCode,
-    AccessController,
+    AccessController
   },
   props: {
     slugFolderName: String,
@@ -255,9 +235,9 @@ export default {
     can_edit_folder: Boolean,
     is_realtime: {
       type: Boolean,
-      default: false,
+      default: false
     },
-    read_only: Boolean,
+    read_only: Boolean
   },
   data() {
     return {
@@ -265,7 +245,7 @@ export default {
       showKeyboardShortcutsList: false,
       showWriteupModal: false,
       showExportTimelineModal: false,
-      currentLang: this.$root.lang.current,
+      currentLang: this.$root.lang.current
     };
   },
   mounted() {},
@@ -293,7 +273,7 @@ export default {
       console.log("COMPUTED • Sidebar: calendar");
 
       const dates_with_medias = this.date_interval.filter(
-        (d) => d.number_of_medias
+        d => d.number_of_medias
       );
 
       return dates_with_medias.reduce((acc, date) => {
@@ -307,7 +287,7 @@ export default {
         let dayData = {
           dayNumber: day,
           numberOfMedias: date.number_of_medias,
-          timestamp: date.timestamp,
+          timestamp: date.timestamp
         };
 
         acc[monthYearName].push(dayData);
@@ -315,13 +295,13 @@ export default {
 
         // let monthYearName = this.$moment(cur).format("MMMM Y");
       }, {});
-    },
+    }
   },
 
   watch: {
-    currentLang: function () {
+    currentLang: function() {
       this.$root.updateLocalLang(this.currentLang);
-    },
+    }
   },
 
   methods: {
@@ -332,8 +312,12 @@ export default {
     enumerateDaysBetweenDates(startDate, endDate) {
       var dates = [];
 
-      var currDate = this.$moment(startDate).startOf("day").subtract(1, "days");
-      var lastDate = this.$moment(endDate).startOf("day").add(1, "days");
+      var currDate = this.$moment(startDate)
+        .startOf("day")
+        .subtract(1, "days");
+      var lastDate = this.$moment(endDate)
+        .startOf("day")
+        .add(1, "days");
 
       while (currDate.add(1, "days").diff(lastDate) < 0) {
         dates.push(currDate.clone().toDate());
@@ -343,7 +327,7 @@ export default {
     },
 
     isDayToday(timestamp) {
-      if (this.$moment(this.$root.currentTime_day).isSame(timestamp, "day")) {
+      if (this.$moment(this.$root.current_time.days).isSame(timestamp, "day")) {
         return true;
       }
       return false;
@@ -395,8 +379,8 @@ export default {
 
     scrollToToday() {
       this.$eventHub.$emit("timeline.scrollToToday");
-    },
-  },
+    }
+  }
 };
 </script>
 

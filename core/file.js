@@ -148,6 +148,29 @@ module.exports = (function () {
                   })
                 );
               }
+
+              // For each folder, find how many medias they have
+              if (
+                global.settings.structure[type].hasOwnProperty("medias") &&
+                global.settings.structure[type].fields.hasOwnProperty(
+                  "number_of_medias"
+                )
+              ) {
+                allFoldersData.push(
+                  new Promise((resolve, reject) => {
+                    dev.logverbose(`Figuring out how many medias they have`);
+                    API.getMediaMetaNames({ type, slugFolderName }).then(
+                      (list_metaFileName) => {
+                        resolve({
+                          [slugFolderName]: {
+                            number_of_medias: list_metaFileName.length,
+                          },
+                        });
+                      }
+                    );
+                  })
+                );
+              }
             }
           });
           Promise.all(allFoldersData).then((parsedFoldersData) => {
@@ -563,9 +586,7 @@ module.exports = (function () {
       return new Promise(function (resolve, reject) {
         dev.logfunction(
           `COMMON — readMediaList: medias_list = ${JSON.stringify(
-            medias_list,
-            null,
-            4
+            medias_list
           )}}`
         );
 
@@ -1250,6 +1271,8 @@ module.exports = (function () {
                 type: type + "/" + "medias",
                 slugFolderName: slugFolderName + "/" + metaFileName,
               });
+              cache.del({ type, slugFolderName });
+
               return thumbs.removeMediaThumbs(
                 slugFolderName,
                 type,
@@ -1927,8 +1950,7 @@ module.exports = (function () {
                 global.settings.structure[type].preview.width,
                 global.settings.structure[type].preview.height,
                 {
-                  fit: "inside",
-                  withoutEnlargement: true,
+                  fit: "cover",
                 }
               )
               .flatten({ background: "white" })

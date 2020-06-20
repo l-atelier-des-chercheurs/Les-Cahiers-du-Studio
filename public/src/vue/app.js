@@ -31,6 +31,10 @@ Vue.use(VuePlyr);
 import VueDragscroll from "vue-dragscroll";
 Vue.use(VueDragscroll);
 
+import VueTippy, { TippyComponent } from "vue-tippy";
+Vue.use(VueTippy);
+Vue.component("tippy", TippyComponent);
+
 // import VueDraggabillyPlugin from './vue-packery-draggabilly-plugin';
 // Vue.use(VueDraggabillyPlugin);
 
@@ -124,7 +128,11 @@ let vm = new Vue({
 
     access: false,
 
-    currentTime: "",
+    current_time: {
+      seconds: "",
+      minutes: "",
+      days: "",
+    },
 
     justCreatedMediaID: false,
     justCreatedFolderID: false,
@@ -143,6 +151,8 @@ let vm = new Vue({
       has_sidebar_opened: false,
       sidebar_type: "",
 
+      show_chat_panel: false,
+
       highlightMedia: "",
       is_loading_medias_for_folder: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
@@ -152,6 +162,9 @@ let vm = new Vue({
 
       current_author_name: false,
       setDateTimelineToDateCreated: false,
+
+      current_chat_slug: false,
+      current_author_slug: false,
 
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
@@ -232,9 +245,9 @@ let vm = new Vue({
         );
       }
 
-      this.currentTime = this.$moment().millisecond(0);
+      this.current_time.seconds = this.$moment().millisecond(0);
       setInterval(
-        () => (this.currentTime = this.$moment().millisecond(0)),
+        () => (this.current_time.seconds = this.$moment().millisecond(0)),
         1000
       );
 
@@ -259,6 +272,10 @@ let vm = new Vue({
     }
 
     this.$eventHub.$on("socketio.reconnect", () => {
+      this.$socketio.listFolders({ type: "folders" });
+      this.$socketio.listFolders({ type: "authors" });
+      this.$socketio.listFolders({ type: "chats" });
+
       if (this.settings.current_slugFolderName) {
         this.$socketio.listFolder({
           type: "folders",
@@ -300,6 +317,8 @@ let vm = new Vue({
 
       this.$eventHub.$once("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "folders" });
+        this.$socketio.listFolders({ type: "authors" });
+        this.$socketio.listFolders({ type: "chats" });
       });
     }
   },
@@ -335,7 +354,84 @@ let vm = new Vue({
       }
       this.$socketio.removeFolder(slugFolderName);
     },
+    formatDateToCalendar(date) {
+      return this.$moment(date, "YYYY-MM-DD HH:mm:ss").calendar();
+    },
+    getUnreadMessageCount(chat) {
+      if (!this.current_author) return false;
 
+      if (
+        !this.canSeeFolder({
+          type: "chats",
+          slugFolderName: chat.slugFolderName,
+        })
+      )
+        return false;
+
+      const total_number_of_messages_in_chat = chat.number_of_medias;
+
+      // find media with meta
+      const last_messages_read_in_channels = this.current_author
+        .last_messages_read_in_channels;
+
+      if (last_messages_read_in_channels) {
+        const existing_info = last_messages_read_in_channels.find(
+          (c) => c.channel === chat.slugFolderName
+        );
+
+        if (existing_info) {
+          // const last_message_metaFileName = existing_info.metaFileName;
+          // const index_of_past_message_read = Object.values(
+          //   chat.medias
+          // ).findIndex((m) => m.metaFileName === existing_info.msg);
+          // return (
+          //   total_number_of_messages_in_chat - index_of_past_message_read - 1
+          // );
+          // using index for performance reason (no need to list all chats to get a rough unread count)
+          if (existing_info.hasOwnProperty("index")) {
+            return Math.max(
+              0,
+              total_number_of_messages_in_chat - Number(existing_info.index)
+            );
+          }
+        }
+      }
+
+      return Math.max(0, total_number_of_messages_in_chat);
+    },
+    openOrCreateChat(path) {
+      if (window.state.dev_mode === "debug") {
+        console.log(`ROOT EVENT: openChat: ${path}`);
+      }
+
+      if (!this.settings.show_chat_panel) this.settings.show_chat_panel = true;
+
+      if (!path) return;
+
+      if (
+        !Object.values(this.store.chats).some(
+          (c) => c.is_linked_to_media === path
+        )
+      ) {
+        this.$root.createFolder({
+          type: "chats",
+          data: {
+            is_linked_to_media: path,
+          },
+        });
+      }
+      this.settings.current_chat_slug = path;
+    },
+    closeChatPane() {
+      this.settings.show_chat_panel = false;
+      this.closeChat();
+    },
+    closeChat() {
+      if (window.state.dev_mode === "debug") {
+        console.log(`ROOT EVENT: closeChat`);
+      }
+      this.settings.current_chat_slug = false;
+    },
     createMedia: function (mdata) {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: createMedia`);
@@ -648,6 +744,21 @@ let vm = new Vue({
         document.body.style.overflow = "";
       }
     },
+    "current_time.seconds": function () {
+      if (
+        !this.current_time.minutes ||
+        !this.current_time.minutes.isSame(this.current_time.seconds, "minute")
+      ) {
+        this.current_time.minutes = this.current_time.seconds.startOf("minute");
+
+        if (
+          !this.current_time.days ||
+          !this.current_time.days.isSame(this.current_time.seconds, "day")
+        ) {
+          this.current_time.days = this.current_time.seconds.startOf("day");
+        }
+      }
+    },
   },
   computed: {
     currentFolder: function () {
@@ -660,13 +771,20 @@ let vm = new Vue({
       return {};
     },
     currentTime_human() {
-      return this.$moment(this.currentTime).format("l LTS");
+      return this.$moment(this.current_time.seconds).format("l LTS");
     },
-    currentTime_minute() {
-      return this.$moment(this.currentTime).second(0);
+    current_chat() {
+      if (!this.settings.current_chat_slug) return false;
+
+      return Object.values(this.store.chats).find(
+        (c) => c.is_linked_to_media === this.settings.current_chat_slug
+      );
     },
-    currentTime_day() {
-      return this.$moment(this.currentTime).startOf("day");
+    current_author() {
+      if (!this.settings.current_author_slug) return false;
+      if (!this.store.authors.hasOwnProperty(this.settings.current_author_slug))
+        return false;
+      return this.store.authors[this.settings.current_author_slug];
     },
     allKeywords() {
       if (Object.keys(this.currentFolder).length === 0) {

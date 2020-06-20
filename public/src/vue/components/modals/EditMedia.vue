@@ -80,7 +80,7 @@
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                @click="setMediaDateTimeline($root.currentTime)"
+                @click="setMediaDateTimeline($root.current_time.seconds)"
               >{{ $root.currentTime_human }}</button>
             </small>
           </div>
