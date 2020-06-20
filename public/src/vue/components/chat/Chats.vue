@@ -1,5 +1,20 @@
 <template>
   <div class="m_chatsview">
+    <button
+      class="button-round _closeChatButton padding-verysmall"
+      @click="$root.closeChatPane()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="48"
+        height="48"
+        viewBox="0 0 48 48"
+      >
+        <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" />
+        <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" />
+      </svg>
+    </button>
+
     <div class="m_actionbar">
       <div class="m_actionbar--buttonBar"></div>
       <div class="m_actionbar--text">{{ $t("channels_instructions") }}</div>
@@ -29,7 +44,9 @@
                 type="button"
                 class="button-thin bg-bleumarine margin-left-none"
                 @click="$root.showAuthorsListModal = true"
-              >{{ $t("login_to_create_channel") }}</button>
+              >
+                {{ $t("login_to_create_channel") }}
+              </button>
             </div>
           </template>
         </div>
@@ -55,17 +72,17 @@ export default {
   props: {
     read_only: Boolean,
     chats: Object,
-    current_author: String
+    current_author: String,
   },
   components: {
     CreateChat,
     ChatRow,
-    Chat
+    Chat,
   },
   data() {
     return {
       show_create_channel_modal: false,
-      new_channel_name: ""
+      new_channel_name: "",
     };
   },
   created() {},
@@ -75,30 +92,32 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {}
+  methods: {},
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .m_chatsview {
-  position: absolute;
+  position: relative;
   z-index: 100000;
   top: 0;
   right: 0;
   max-width: 400px;
-  height: calc(100% - 4em);
+  height: 100%;
   background-color: var(--color-noir);
   color: white;
   box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
 
   // background-color: white;
   border: 4px solid var(--color-noir);
-  margin: 2em;
+  // margin: 2em;
   padding: 1em;
-  border-radius: 8px;
+
+  flex: 0 0 320px;
+  // border-radius: 8px;
 
   button,
   label {
-    color: var(--color-noir) !important;
+    color: var(--color-noir);
   }
 }
 </style>

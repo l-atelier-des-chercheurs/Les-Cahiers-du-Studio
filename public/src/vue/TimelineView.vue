@@ -16,7 +16,10 @@
       class="m_navtimeline_wrapper--timeline_wrapper"
       :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
     >
-      <div :style="{ cursor, userSelect }" class="vue-splitter-container clearfix">
+      <div
+        :style="{ cursor, userSelect }"
+        class="vue-splitter-container clearfix"
+      >
         <Pane
           class="splitter-pane splitter-paneL"
           :class="{ 'is--dragged': is_dragged }"
@@ -72,7 +75,10 @@
           </template>
           <template v-else>
             <div class="folder_backbutton">
-              <span class="margin-sides-small padding-verysmall text-centered">{{ folder.name }}</span>
+              <span
+                class="margin-sides-small padding-verysmall text-centered"
+                >{{ folder.name }}</span
+              >
             </div>
           </template>
 
@@ -81,7 +87,10 @@
             :class="{ 'is--sidebarOpened': $root.settings.has_sidebar_opened }"
           >
             <div class="m_verticalButtons--container">
-              <button type="button" @click.stop.prevent="toggleSidebar('options')">
+              <button
+                type="button"
+                @click.stop.prevent="toggleSidebar('options')"
+              >
                 <span
                   v-if="$root.settings.sidebar_type === 'options'"
                   v-html="`×&nbsp;` + $t('options')"
@@ -98,16 +107,17 @@
                 v-html="'|||'"
               />
 
-              <button type="button" @click.stop.prevent="toggleSidebar('journal')">
+              <button
+                type="button"
+                @click.stop.prevent="toggleSidebar('journal')"
+              >
                 <span
                   v-if="$root.settings.sidebar_type === 'journal'"
                   v-html="`×&nbsp;` + $t('journal')"
                 />
                 <span v-else v-html="$t('journal')" />
                 <span v-if="number_of_writeups" class="_writeups_number">
-                  {{
-                  number_of_writeups
-                  }}
+                  {{ number_of_writeups }}
                 </span>
               </button>
             </div>
@@ -132,7 +142,7 @@
           <div
             class="m_floater"
             @wheel="onMousewheel"
-            :class="{ 'is--current_day' : visible_day_is_today }"
+            :class="{ 'is--current_day': visible_day_is_today }"
           >
             <div>
               <span>
@@ -148,7 +158,9 @@
                 type="button"
                 @click="show_access_controller = !show_access_controller"
                 :class="{ 'is--active': show_access_controller }"
-              >{{ $t("edit_timeline") }}</button>
+              >
+                {{ $t("edit_timeline") }}
+              </button>
               <div v-if="show_access_controller">
                 <AccessController
                   :folder="folder"
@@ -175,7 +187,10 @@
                   :key="day.label"
                   :data-timestamp="day.timestamp"
                   class="m_timeline--container--dates--day"
-                  :class="{ 'is--empty': day.is_empty, 'is--current_day' : day.is_current_day }"
+                  :class="{
+                    'is--empty': day.is_empty,
+                    'is--current_day': day.is_current_day,
+                  }"
                 >
                   <template v-if="day.hasOwnProperty('is_empty_period')">
                     <div
@@ -183,15 +198,19 @@
                       v-html="day.is_empty_period"
                     />
                   </template>
-                  <template v-else-if="day.hasOwnProperty('is_empty')"></template>
+                  <template
+                    v-else-if="day.hasOwnProperty('is_empty')"
+                  ></template>
                   <template v-else>
                     <div class="m_timeline--container--dates--day--daylabel">
-                      <div class="m_timeline--container--dates--day--daylabel--container">
+                      <div
+                        class="m_timeline--container--dates--day--daylabel--container"
+                      >
                         <span>
                           {{ day.label }}
-                          <span
-                            v-if="day.number_of_medias > 0"
-                          >{{ day.number_of_medias }}</span>
+                          <span v-if="day.number_of_medias > 0">{{
+                            day.number_of_medias
+                          }}</span>
                           <span v-else></span>
                         </span>
                       </div>
@@ -249,8 +268,13 @@
               </div>
             </div>
 
-            <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
-              <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
+            <div
+              v-if="sort.current.field !== 'date_timeline'"
+              class="m_filterIndicator"
+            >
+              <div
+                class="flex-wrap flex-vertically-centered flex-horizontally-start"
+              >
                 <button
                   type="button"
                   class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
@@ -283,8 +307,66 @@
         </Pane>
       </div>
     </div>
+
+    <button
+      type="button"
+      class="_openChatButton"
+      @click="$root.openOrCreateChat()"
+    >
+      <svg
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        x="0px"
+        y="0px"
+        width="168px"
+        height="168px"
+        viewBox="0 0 168 168"
+        style="enable-background: new 0 0 168 168;"
+        xml:space="preserve"
+      >
+        <path
+          class="st0"
+          style="fill: var(--color-background);"
+          d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84S0,37.6,0,84C0,130.4,37.6,168,84,168z"
+        />
+        <path
+          class="st0"
+          style="fill: var(--color-shapes);"
+          d="M70.5,104.6C57.1,91,51.9,69.6,60.7,52c8.2-16.4,25.2-27.6,43.9-26.4c19.4,1.3,37.3,14.7,42,34
+			c4.8,19.8-3,39.3-19.9,50.7c-2,1.4-2.5,3.6-1.5,5.8c1.3,2.6,2.6,5.3,3.9,7.9c0.8,1.7,1.6,3.3,2.4,5c0.4,0.8,1.1,1.3,0.1,1
+			c-5-1.7-10-3.5-15.1-5.2C101.4,119.4,82.6,115.5,70.5,104.6z"
+        />
+        <path
+          class="st1"
+          style="fill: var(--color-background);"
+          d="M66.7,109.3c14.6,13.3,37.8,17.9,56.2,24.3c5.4,1.9,15.2,6.2,17.3-2.3c1.2-5-3.3-12.3-6.3-17.7
+			c16.7-13,25.7-34.7,19.6-55.7c-6.1-20.8-24.3-37-46.3-38.5c-21.7-1.4-44.1,10.7-52.3,31.5C46.8,71.4,51.1,93.6,66.7,109.3z
+			 M72.3,103.4c-13-13.1-18-33.7-9.4-50.7c7.9-15.8,24.3-26.6,42.3-25.4c18.7,1.2,35.9,14.2,40.5,32.7c4.7,19.1-2.9,37.9-19.1,48.8
+			c-2,1.3-2.4,3.5-1.4,5.6c1.2,2.6,2.5,5.1,3.7,7.7c0.8,1.6,1.6,3.2,2.3,4.8c0.4,0.8,1.1,1.3,0.1,1c-4.8-1.7-9.7-3.4-14.5-5.1
+			C102.1,117.7,84,114,72.3,103.4z"
+        />
+        <path
+          class="st0"
+          style="fill: var(--color-shapes);"
+          d="M60.4,137.4c-4.8,2.4-9.6,4.9-14.4,7.3c-0.9,0.5-0.3-0.1,0-1c0.6-1.8,1.2-3.6,1.8-5.4
+			c0.9-2.8,1.9-5.7,2.8-8.5c0.8-2.3,0-4.5-2.3-5.6c-18.5-9.1-29-27.7-26.8-48.2C23.5,56,39.7,40.1,59,36.2
+			c18.7-3.8,37.2,5.2,47.7,20.5c11.3,16.5,9,38.7-2.7,54.2C93.4,123.5,75,130,60.4,137.4z"
+        />
+        <path
+          class="st1"
+          style="fill: var(--color-background);"
+          d="M112.2,55.4c-10.9-19.5-34.7-28.5-56-24.2c-21.7,4.4-37.5,22.9-40.8,44.4c-3.3,21.6,8.6,42,26.9,52.6
+			c-2.3,5.7-5.8,13.5-3.9,18.3c3.2,8.2,12.3,2.6,17.4,0c17.4-8.8,39.8-16.5,52.5-31.6C121.6,97.3,122.9,74.7,112.2,55.4z
+			 M60.4,135.1c-4.6,2.3-9.1,4.6-13.7,7c-0.9,0.5-0.3-0.1,0-1c0.6-1.7,1.1-3.4,1.7-5.1c0.9-2.7,1.8-5.4,2.7-8.1
+			c0.7-2.2,0-4.3-2.1-5.3c-17.6-8.7-27.6-26.3-25.5-45.8c2-19,17.4-34.1,35.7-37.9c17.7-3.6,35.3,4.9,45.3,19.5
+			c10.7,15.7,8.6,36.8-2.6,51.5C91.8,121.9,74.3,128,60.4,135.1z"
+        />
+      </svg>
+    </button>
+
     <Chats
-      v-if="$root.settings.current_chat_slug"
+      v-if="$root.settings.show_chat_panel"
       :current_author="current_author"
       :chats="$root.store.chats"
     />
@@ -343,7 +425,7 @@ export default {
     slugFolderName: String,
     folder: Object,
     medias: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     WriteUp,
@@ -356,7 +438,7 @@ export default {
     Pane,
     TimelinePlayer,
     AccessController,
-    Chats
+    Chats,
   },
   data() {
     return {
@@ -400,25 +482,25 @@ export default {
             field: "date_timeline",
             name: this.$t("date"),
             type: "date",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "date_modified",
             name: this.$t("last_modified"),
             type: "date",
-            order: "descending"
+            order: "descending",
           },
           {
             field: "caption",
             name: this.$t("caption"),
             type: "alph",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "type",
             name: this.$t("type"),
             type: "alph",
-            order: "ascending"
+            order: "ascending",
           },
           // {
           //   field: "color",
@@ -431,29 +513,29 @@ export default {
             name: this.$t("keywords"),
             type: "array",
             field_name: "title",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "authors",
             name: this.$t("author"),
             type: "array",
             field_name: "name",
-            order: "ascending"
+            order: "ascending",
           },
           {
             field: "public",
             name: this.$t("public"),
             type: "bool",
-            order: "descending"
+            order: "descending",
           },
           {
             field: "content",
             name: this.$t("content"),
             type: "alph",
-            order: "ascending"
-          }
-        ]
-      }
+            order: "ascending",
+          },
+        ],
+      },
     };
   },
 
@@ -519,7 +601,7 @@ export default {
     this.$root.settings.sidebar_type = "";
   },
   watch: {
-    translation: function() {
+    translation: function () {
       this.$refs.timeline.scrollLeft = this.translation;
 
       if (!this.debounce_translation_fct) {
@@ -528,26 +610,26 @@ export default {
           this.debounce_translation_fct = undefined;
         }, this.debounce_translation_delay);
       }
-    }
+    },
   },
   computed: {
     number_of_writeups() {
       if (typeof this.medias === "object")
         return Object.values(this.medias).filter(
-          media => media.hasOwnProperty("type") && media.type === "writeup"
+          (media) => media.hasOwnProperty("type") && media.type === "writeup"
         ).length;
       return false;
     },
     can_edit_folder() {
       return this.$root.canEditFolder({
         type: "folders",
-        slugFolderName: this.slugFolderName
+        slugFolderName: this.slugFolderName,
       });
     },
     can_see_folder() {
       return this.$root.canSeeFolder({
         type: "folders",
-        slugFolderName: this.slugFolderName
+        slugFolderName: this.slugFolderName,
       });
     },
     folder_authors() {
@@ -560,7 +642,7 @@ export default {
         return {};
       }
       return this.folder_authors.filter(
-        c => c.name === this.$root.settings.current_author_name
+        (c) => c.name === this.$root.settings.current_author_name
       )[0];
     },
     sortedMedias() {
@@ -609,12 +691,14 @@ export default {
           if (typeof media_prop === "string") {
             media_prop = [{ [current_sort.field_name]: media_prop }];
           }
-          mediaDataToOrderBy = media_prop.map(a => a[current_sort.field_name]);
+          mediaDataToOrderBy = media_prop.map(
+            (a) => a[current_sort.field_name]
+          );
         }
 
         sortable.push({
           slugMediaName,
-          mediaDataToOrderBy
+          mediaDataToOrderBy,
         });
       }
       let sortedSortable = sortable.sort((a, b) => {
@@ -647,7 +731,7 @@ export default {
             }
 
             let originalContentFromMedia = media_prop.map(
-              a => a[current_sort.field_name]
+              (a) => a[current_sort.field_name]
             );
 
             // search even for part of the word — problem: looking for Marie and not Marie-Claire wouldn’t be possible
@@ -679,7 +763,7 @@ export default {
       }
 
       // groupby day
-      let mediaGroup = this.$_.groupBy(this.sortedMedias, media => {
+      let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
         let date_to_reference_to = 0;
         if (media.hasOwnProperty("date_timeline")) {
           date_to_reference_to = media.date_timeline;
@@ -696,7 +780,7 @@ export default {
 
       if (this.make_mediasblock_with === "hours") {
         mediaGroup = mediaGroup.map(([day, medias]) => {
-          let medias_by_hours = this.$_.groupBy(medias, media => {
+          let medias_by_hours = this.$_.groupBy(medias, (media) => {
             let date_to_reference_to = 0;
             if (media.hasOwnProperty("date_timeline")) {
               date_to_reference_to = media.date_timeline;
@@ -729,7 +813,7 @@ export default {
             (acc, [hour, medias]) => {
               acc.push({
                 label: hour,
-                medias
+                medias,
               });
               return acc;
             },
@@ -741,7 +825,7 @@ export default {
 
           return {
             day,
-            segments: medias_by_hours
+            segments: medias_by_hours,
           };
         });
       } else if (this.make_mediasblock_with === "markers") {
@@ -773,7 +857,7 @@ export default {
                   timestamp: media.date_timeline,
                   marker_meta_slugMediaName: media.slugMediaName,
                   marker_author,
-                  medias: []
+                  medias: [],
                 });
               } else {
                 acc[acc.length - 1].medias.push(media);
@@ -791,7 +875,7 @@ export default {
           // };
           return {
             day,
-            segments: medias_by_markers
+            segments: medias_by_markers,
           };
         });
       }
@@ -802,7 +886,7 @@ export default {
       let temp_start = +this.$moment();
       let temp_end = +this.$moment();
 
-      this.sortedMedias.map(m => {
+      this.sortedMedias.map((m) => {
         if (this.$moment(m.date_timeline, "YYYY-MM-DD HH:mm:ss").isValid()) {
           const media_date = +this.$moment(
             m.date_timeline,
@@ -819,7 +903,7 @@ export default {
 
       return {
         start: temp_start,
-        end: temp_end
+        end: temp_end,
       };
     },
     full_date_interval() {
@@ -837,7 +921,7 @@ export default {
         let this_date = startDate.clone();
         let medias_for_date = [];
 
-        const has_media_for_date = this.groupedMedias.filter(i =>
+        const has_media_for_date = this.groupedMedias.filter((i) =>
           this.$moment(i.day).isSame(this_date, "day")
         );
 
@@ -866,7 +950,7 @@ export default {
           timestamp: +this_date,
           is_current_day,
           number_of_medias,
-          segments: medias_for_date
+          segments: medias_for_date,
         };
 
         full_date_interval.push(day);
@@ -909,7 +993,7 @@ export default {
               const x = 8;
 
               // if has more than X days since beginning, and if the last X days are empty
-              if (acc.length > x && !acc.slice(-x).some(d => !d.is_empty)) {
+              if (acc.length > x && !acc.slice(-x).some((d) => !d.is_empty)) {
                 const last_item = acc[acc.length - 1];
 
                 if (!last_item.hasOwnProperty("is_empty_period")) {
@@ -984,7 +1068,7 @@ export default {
           nextDay: "[demain]",
           lastWeek: "dddd [dernier]",
           nextWeek: "dddd [prochain]",
-          sameElse: "dddd D MMMM Y"
+          sameElse: "dddd D MMMM Y",
         });
       } else if (this.$root.lang.current === "en") {
         return this.$moment(this.visible_day).calendar(null, {
@@ -993,10 +1077,10 @@ export default {
           nextDay: "[tomorrow]",
           lastWeek: "[last] dddd",
           nextWeek: "[next] dddd",
-          sameElse: "dddd, MMMM D Y"
+          sameElse: "dddd, MMMM D Y",
         });
       }
-    }
+    },
   },
   methods: {
     onMousewheel(event) {
@@ -1058,7 +1142,7 @@ export default {
         return this.timeline_interval.start;
       }
       const first_day = Array.from(this.$refs.timeline_dates.children).find(
-        d =>
+        (d) =>
           d.offsetLeft + d.offsetWidth >
           posX + this.$refs.timeline.offsetWidth / 2 - 25
       );
@@ -1080,7 +1164,7 @@ export default {
         return 0;
       }
       const first_day = Array.from(this.$refs.timeline_dates.children).find(
-        d =>
+        (d) =>
           d.dataset.hasOwnProperty("timestamp") &&
           Number(d.dataset.timestamp) >= day
       );
@@ -1117,7 +1201,7 @@ export default {
       if (this.show_media_modal_for) {
         // find in sortedMedias where this.show_media_modal_for and get the next one
         const current_media_index = this.sortedMedias.findIndex(
-          m => m.slugMediaName === this.show_media_modal_for
+          (m) => m.slugMediaName === this.show_media_modal_for
         );
 
         this.closeMediaModal();
@@ -1140,7 +1224,7 @@ export default {
       if (this.show_media_modal_for) {
         // find in sortedMedias where this.show_media_modal_for and get the next one
         const current_media_index = this.sortedMedias.findIndex(
-          m => m.slugMediaName === this.show_media_modal_for
+          (m) => m.slugMediaName === this.show_media_modal_for
         );
 
         this.closeMediaModal();
@@ -1189,7 +1273,7 @@ export default {
       }
 
       const media_in_timeline = Array.from($medias).find(
-        m =>
+        (m) =>
           m.dataset.hasOwnProperty("slugmedianame") &&
           m.dataset.slugmedianame === slugMediaName
       );
@@ -1231,7 +1315,7 @@ export default {
             `METHODS • TimeLineView: scrollTimelineToXPos / was canceled`
           );
           this.current_scroll_event = undefined;
-        }
+        },
       });
     },
 
@@ -1327,8 +1411,8 @@ export default {
       }
 
       return false;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="less">

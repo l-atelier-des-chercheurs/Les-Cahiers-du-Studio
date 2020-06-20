@@ -234,7 +234,7 @@
           "type": "number",
           "only_admin_can_edit": true
         },
-        "is_linked_to": {
+        "is_linked_to_media": {
           "type": "string"
         }
       },

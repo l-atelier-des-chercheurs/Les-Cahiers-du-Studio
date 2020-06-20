@@ -5,7 +5,7 @@
       class="packery-item-content"
       :class="{
         'is--hovered': is_hovered && !is_resized,
-        'is--text_overflowing': text_is_overflowing
+        'is--text_overflowing': text_is_overflowing,
       }"
       :style="itemStylesWithSize"
       @mouseenter="is_hovered = true"
@@ -37,24 +37,24 @@
           width="168px"
           height="168px"
           viewBox="0 0 168 168"
-          style="enable-background:new 0 0 168 168;"
+          style="enable-background: new 0 0 168 168;"
           xml:space="preserve"
         >
-          <!-- <path
-            class="st0"
-            style="fill: #fff;"
-            d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84S0,37.6,0,84C0,130.4,37.6,168,84,168z"
-          />-->
           <path
             class="st0"
-            style="fill: #fff;"
+            style="fill: var(--color-background);"
+            d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84S0,37.6,0,84C0,130.4,37.6,168,84,168z"
+          />
+          <path
+            class="st0"
+            style="fill: var(--color-shapes);"
             d="M70.5,104.6C57.1,91,51.9,69.6,60.7,52c8.2-16.4,25.2-27.6,43.9-26.4c19.4,1.3,37.3,14.7,42,34
 			c4.8,19.8-3,39.3-19.9,50.7c-2,1.4-2.5,3.6-1.5,5.8c1.3,2.6,2.6,5.3,3.9,7.9c0.8,1.7,1.6,3.3,2.4,5c0.4,0.8,1.1,1.3,0.1,1
 			c-5-1.7-10-3.5-15.1-5.2C101.4,119.4,82.6,115.5,70.5,104.6z"
           />
           <path
             class="st1"
-            style="fill: #222;"
+            style="fill: var(--color-background);"
             d="M66.7,109.3c14.6,13.3,37.8,17.9,56.2,24.3c5.4,1.9,15.2,6.2,17.3-2.3c1.2-5-3.3-12.3-6.3-17.7
 			c16.7-13,25.7-34.7,19.6-55.7c-6.1-20.8-24.3-37-46.3-38.5c-21.7-1.4-44.1,10.7-52.3,31.5C46.8,71.4,51.1,93.6,66.7,109.3z
 			 M72.3,103.4c-13-13.1-18-33.7-9.4-50.7c7.9-15.8,24.3-26.6,42.3-25.4c18.7,1.2,35.9,14.2,40.5,32.7c4.7,19.1-2.9,37.9-19.1,48.8
@@ -63,14 +63,14 @@
           />
           <path
             class="st0"
-            style="fill: #fff;"
+            style="fill: var(--color-shapes);"
             d="M60.4,137.4c-4.8,2.4-9.6,4.9-14.4,7.3c-0.9,0.5-0.3-0.1,0-1c0.6-1.8,1.2-3.6,1.8-5.4
 			c0.9-2.8,1.9-5.7,2.8-8.5c0.8-2.3,0-4.5-2.3-5.6c-18.5-9.1-29-27.7-26.8-48.2C23.5,56,39.7,40.1,59,36.2
 			c18.7-3.8,37.2,5.2,47.7,20.5c11.3,16.5,9,38.7-2.7,54.2C93.4,123.5,75,130,60.4,137.4z"
           />
           <path
             class="st1"
-            style="fill: #222;"
+            style="fill: var(--color-background);"
             d="M112.2,55.4c-10.9-19.5-34.7-28.5-56-24.2c-21.7,4.4-37.5,22.9-40.8,44.4c-3.3,21.6,8.6,42,26.9,52.6
 			c-2.3,5.7-5.8,13.5-3.9,18.3c3.2,8.2,12.3,2.6,17.4,0c17.4-8.8,39.8-16.5,52.5-31.6C121.6,97.3,122.9,74.7,112.2,55.4z
 			 M60.4,135.1c-4.6,2.3-9.1,4.6-13.7,7c-0.9,0.5-0.3-0.1,0-1c0.6-1.7,1.1-3.4,1.7-5.1c0.9-2.7,1.8-5.4,2.7-8.1
@@ -88,7 +88,10 @@
         @mouseleave="is_captionHovered = false"
         @click="openMedia"
       >
-        <span :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : ''}`">{{ media.caption }}</span>
+        <span
+          :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : ''}`"
+          >{{ media.caption }}</span
+        >
       </div>
 
       <!-- <template v-if="is_hovered">
@@ -163,10 +166,10 @@ export default {
     base_edge: Number,
     columnWidth: Number,
     rowHeight: Number,
-    gutter: Number
+    gutter: Number,
   },
   components: {
-    MediaContent
+    MediaContent,
   },
   data() {
     return {
@@ -176,7 +179,7 @@ export default {
         width: undefined,
         height: undefined,
         pwidth: 0,
-        pheight: 0
+        pheight: 0,
       },
 
       is_resized: false,
@@ -184,11 +187,11 @@ export default {
       resizeType: undefined,
       resizeOffset: {
         x: 0,
-        y: 0
+        y: 0,
       },
 
       is_mounted: false,
-      text_is_overflowing: false
+      text_is_overflowing: false,
     };
   },
 
@@ -219,11 +222,11 @@ export default {
 
   mounted() {
     this.$el.draggie = new Draggabilly(this.$el, {
-      handle: "[data-draggabilly_handle]"
+      handle: "[data-draggabilly_handle]",
     });
     packeryEvents.$emit("draggie", {
       draggie: this.$el.draggie,
-      node: this.$el.parentNode
+      node: this.$el.parentNode,
     });
     this.$el.draggie.on("dragStart", () => {
       this.$emit("dragStarted");
@@ -245,29 +248,29 @@ export default {
   },
   watch: {
     mediaSize: {
-      handler: function() {
+      handler: function () {
         if (this.is_mounted) {
           this.$emit("triggerPackeryLayout");
         }
         this.checkTextOverflow();
       },
-      deep: true
+      deep: true,
     },
-    "media.content": function() {
+    "media.content": function () {
       this.checkTextOverflow();
     },
-    "media.w": function() {
+    "media.w": function () {
       this.setMediaSizeFromMeta();
     },
-    "media.h": function() {
+    "media.h": function () {
       this.setMediaSizeFromMeta();
-    }
+    },
   },
   computed: {
     itemSize() {
       return {
         width: this.mediaWidth + "px",
-        height: this.mediaHeight + "px"
+        height: this.mediaHeight + "px",
       };
     },
     mediaWidth() {
@@ -295,14 +298,14 @@ export default {
         {
           "--author-color": this.mediaColorFromFirstAuthor
             ? this.mediaColorFromFirstAuthor
-            : "#fff"
+            : "#fff",
         },
         this.itemSize
       );
     },
     mediaColorFromFirstAuthor() {
       return this.$root.mediaColorFromFirstAuthor(this.media, this.folder);
-    }
+    },
   },
   methods: {
     checkTextOverflow() {
@@ -317,7 +320,8 @@ export default {
       }
     },
     openChat() {
-      this.$root.openChat("plop");
+      const path = this.slugFolderName + "/" + this.media.slugMediaName;
+      this.$root.openOrCreateChat(path);
     },
     setMediaSizeFromMeta() {
       if (this.media.hasOwnProperty("w") && typeof this.media.w === "number") {
@@ -422,8 +426,8 @@ export default {
           slugMediaName: this.media.slugMediaName,
           data: {
             w: this.mediaSize.width,
-            h: this.mediaSize.height
-          }
+            h: this.mediaSize.height,
+          },
         });
 
         this.is_resized = false;
@@ -454,8 +458,8 @@ export default {
         // this.media_focus_is_dragged = false;
         this.$root.settings.media_being_dragged = false;
       }, 500);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss">

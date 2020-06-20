@@ -18,7 +18,8 @@
             placement: 'bottom',
             delay: [600, 0],
           }"
-        >{{ $root.getUnreadMessageCount(chat) }}</span>
+          >{{ $root.getUnreadMessageCount(chat) }}</span
+        >
         <span class="m_chatRow--name">
           {{ chat.name }}
           <ProtectedLock
@@ -38,7 +39,9 @@
         class="buttonLink bg-rouge"
         @click="openChat()"
         :class="{ 'is--disabled': !can_see_chat }"
-      >{{ $t("open") }}</button>
+      >
+        {{ $t("open") }}
+      </button>
 
       <!-- <ClientsCheckingOut :type="'chats'" :slugFolderName="chat.slugFolderName" /> -->
     </div>
@@ -47,10 +50,12 @@
       <label class="m_chatRow--secondLine--toggleAccessControl">
         <button
           type="button"
-          class="button-nostyle text-uc button-triangle c-blanc"
+          class="button-nostyle text-uc button-triangle"
           :class="{ 'is--active': show_access_control }"
           @click="show_access_control = !show_access_control"
-        >{{ $t("manage_access") }}</button>
+        >
+          {{ $t("manage_access") }}
+        </button>
       </label>
 
       <div v-if="show_access_control">
@@ -68,9 +73,9 @@
                   $root.current_author.slugFolderName === author.slugFolderName,
               }"
             >
-              <template
-                v-if="$root.getAuthor(author.slugFolderName)"
-              >{{ $root.getAuthor(author.slugFolderName).name }}</template>
+              <template v-if="$root.getAuthor(author.slugFolderName)">{{
+                $root.getAuthor(author.slugFolderName).name
+              }}</template>
               <template v-else>{{ author.slugFolderName }}</template>
             </span>
           </div>
@@ -94,16 +99,16 @@ import ProtectedLock from "../subcomponents/ProtectedLock.vue";
 
 export default {
   props: {
-    chat: Object
+    chat: Object,
   },
   components: {
     AccessController,
-    ProtectedLock
+    ProtectedLock,
     // ClientsCheckingOut
   },
   data() {
     return {
-      show_access_control: false
+      show_access_control: false,
     };
   },
   created() {},
@@ -114,9 +119,9 @@ export default {
     can_see_chat() {
       return this.$root.canSeeFolder({
         type: "chats",
-        slugFolderName: this.chat.slugFolderName
+        slugFolderName: this.chat.slugFolderName,
       });
-    }
+    },
   },
   methods: {
     openChat() {
@@ -133,8 +138,8 @@ export default {
     },
     closeChat() {
       this.$root.closeChat();
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

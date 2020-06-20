@@ -31,6 +31,10 @@ Vue.use(VuePlyr);
 import VueDragscroll from "vue-dragscroll";
 Vue.use(VueDragscroll);
 
+import VueTippy, { TippyComponent } from "vue-tippy";
+Vue.use(VueTippy);
+Vue.component("tippy", TippyComponent);
+
 // import VueDraggabillyPlugin from './vue-packery-draggabilly-plugin';
 // Vue.use(VueDraggabillyPlugin);
 
@@ -146,6 +150,8 @@ let vm = new Vue({
       current_slugFolderName: "",
       has_sidebar_opened: false,
       sidebar_type: "",
+
+      show_chat_panel: false,
 
       highlightMedia: "",
       is_loading_medias_for_folder: false,
@@ -392,24 +398,32 @@ let vm = new Vue({
 
       return Math.max(0, total_number_of_messages_in_chat);
     },
-    openChat(slugFolderName) {
+    openOrCreateChat(path) {
       if (window.state.dev_mode === "debug") {
-        console.log(`ROOT EVENT: openChat: ${slugFolderName}`);
+        console.log(`ROOT EVENT: openChat: ${path}`);
       }
+
+      if (!this.settings.show_chat_panel) this.settings.show_chat_panel = true;
+
+      if (!path) return;
 
       if (
         !Object.values(this.store.chats).some(
-          (c) => c.slugFolderName === slugFolderName
+          (c) => c.is_linked_to_media === path
         )
       ) {
         this.$root.createFolder({
           type: "chats",
           data: {
-            is_linked_to: slugFolderName,
+            is_linked_to_media: path,
           },
         });
       }
-      this.settings.current_chat_slug = slugFolderName;
+      this.settings.current_chat_slug = path;
+    },
+    closeChatPane() {
+      this.settings.show_chat_panel = false;
+      this.closeChat();
     },
     closeChat() {
       if (window.state.dev_mode === "debug") {
@@ -762,7 +776,7 @@ let vm = new Vue({
       if (!this.settings.current_chat_slug) return false;
 
       return Object.values(this.store.chats).find(
-        (c) => c.slugFolderName === this.settings.current_chat_slug
+        (c) => c.is_linked_to_media === this.settings.current_chat_slug
       );
     },
     allKeywords() {
