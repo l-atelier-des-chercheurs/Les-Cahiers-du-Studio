@@ -144,6 +144,8 @@ let vm = new Vue({
       show_sidebar: true,
     },
 
+    showAuthorsListModal: false,
+
     settings: {
       has_modal_opened: false,
       has_writeup_opended: false,
@@ -160,7 +162,6 @@ let vm = new Vue({
 
       keyboard_shortcuts: [],
 
-      current_author_name: false,
       setDateTimelineToDateCreated: false,
 
       current_chat_slug: false,
@@ -319,6 +320,40 @@ let vm = new Vue({
         this.$socketio.listFolders({ type: "folders" });
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "chats" });
+
+        if (this.current_project) {
+          this.$socketio.listMedias({
+            type: "folders",
+            slugFolderName: this.settings.current_slugFolderName,
+          });
+        }
+
+        const authorized_authors = this.state.list_authorized_folders.find(
+          (f) => f.type === "authors" && f.allowed_slugFolderNames.length > 0
+        );
+
+        if (authorized_authors) {
+          this.$eventHub.$once("socketio.authors.folders_listed", () => {
+            if (Object.values(this.store.authors).length === 0) return;
+
+            const first_author_slug =
+              authorized_authors.allowed_slugFolderNames[0];
+            const author = Object.values(this.store.authors).find(
+              (a) => a.slugFolderName === first_author_slug
+            );
+
+            if (author) {
+              this.setAuthor(first_author_slug);
+              this.$alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .success(
+                  this.$t("notifications.connecting_using_saved_account") +
+                    author.name
+                );
+            }
+          });
+        }
       });
     }
   },
@@ -432,6 +467,48 @@ let vm = new Vue({
       }
       this.settings.current_chat_slug = false;
     },
+    setAuthor: function (author_slug) {
+      if (this.settings.current_author_slug === author_slug) return;
+
+      if (this.state.dev_mode === "debug") console.log(`ROOT EVENT: setAuthor`);
+
+      const author = Object.values(this.store.authors).find(
+        (a) => a.slugFolderName === author_slug
+      );
+
+      if (!author) return;
+
+      this.settings.current_author_slug = author_slug;
+
+      this.$socketio.socket.emit("updateClientInfo", {
+        author: { slugFolderName: author.slugFolderName },
+      });
+      this.$socketio.listFolders({ type: "authors" });
+      this.$eventHub.$emit("authors.newAuthorSet");
+    },
+    unsetAuthor: function () {
+      if (!this.settings.current_author_slug) return;
+
+      if (this.state.dev_mode === "debug")
+        console.log(`ROOT EVENT: unsetAuthor`);
+
+      this.$auth.removeAllFoldersPassword({
+        type: "authors",
+      });
+      this.$socketio.sendAuth();
+
+      this.settings.current_author_slug = false;
+      this.$socketio.socket.emit("updateClientInfo", { author: {} });
+    },
+    updateClientInfo(val) {
+      if (this.$socketio.socket) {
+        if (window.state.dev_mode === "debug")
+          console.log(`ROOT EVENT: updateClientInfo`);
+
+        this.$socketio.socket.emit("updateClientInfo", val);
+      }
+    },
+
     createMedia: function (mdata) {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: createMedia`);
@@ -440,7 +517,7 @@ let vm = new Vue({
         Math.random().toString(36).substring(2, 15) +
         Math.random().toString(36).substring(2, 15);
 
-      if (this.settings.current_author_name) {
+      if (this.current_author) {
         if (!mdata.hasOwnProperty("additionalMeta")) {
           mdata.additionalMeta = {};
         }
@@ -448,7 +525,7 @@ let vm = new Vue({
         // (for example, with an author shortcut)
         if (!mdata.additionalMeta.hasOwnProperty("authors")) {
           mdata.additionalMeta.authors = [
-            { name: this.$root.settings.current_author_name },
+            { slugFolderName: this.$root.current_author.slugFolderName },
           ];
         }
       }
@@ -773,6 +850,9 @@ let vm = new Vue({
     currentTime_human() {
       return this.$moment(this.current_time.seconds).format("l LTS");
     },
+    all_authors() {
+      return Object.values(this.store.authors);
+    },
     current_chat() {
       if (!this.settings.current_chat_slug) return false;
 
@@ -781,8 +861,10 @@ let vm = new Vue({
       );
     },
     current_author() {
-      if (!this.settings.current_author_slug) return false;
-      if (!this.store.authors.hasOwnProperty(this.settings.current_author_slug))
+      if (
+        !this.settings.current_author_slug ||
+        !this.store.authors.hasOwnProperty(this.settings.current_author_slug)
+      )
         return false;
       return this.store.authors[this.settings.current_author_slug];
     },

@@ -51,8 +51,7 @@
           "type": "date"
         },
         "password": {
-          "type": "string",
-          "read_only": true
+          "type": "string"
         },
         "authors": {
           "type": "array"
@@ -282,7 +281,7 @@
         },
         "role": {
           "type": "string",
-          "options": ["contributor", "participant", "admin"],
+          "options": ["contributor", "admin"],
           "default": "contributor",
           "only_admin_can_edit": true
         },

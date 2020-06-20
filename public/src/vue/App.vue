@@ -11,6 +11,49 @@
       {{ $t("notifications.contents_wont_be_editable") }}
     </div>
 
+    <div class="_openAuthorModal">
+      <button
+        type="button"
+        @click="$root.showAuthorsListModal = true"
+        :content="$t('login')"
+        v-tippy="{
+          placement: 'bottom',
+          delay: [600, 0],
+        }"
+      >
+        <template v-if="$root.current_author">
+          <div
+            class=""
+            v-if="
+              $root.current_author.hasOwnProperty('preview') &&
+              $root.current_author.preview.length !== ''
+            "
+          >
+            <img
+              :src="urlToPortrait($root.current_author.preview)"
+              width="100"
+              height="100"
+              draggable="false"
+            />
+          </div>
+          <div class="m_topbar--center--authors--name">
+            {{ $root.current_author.name }}
+          </div>
+        </template>
+        <template v-else>
+          <div class="font-medium">({{ $t("authors") }})</div>
+        </template>
+      </button>
+      <AuthorsList
+        v-if="$root.showAuthorsListModal"
+        :authors="$root.store.authors"
+        :prevent_close="
+          $root.state.local_options.force_login && !$root.current_author
+        "
+        @close="$root.showAuthorsListModal = false"
+      />
+    </div>
+
     <template v-if="view === 'ListView'">
       <ListView
         v-if="view === 'ListView'"
@@ -52,6 +95,7 @@ import ListView from "./ListView.vue";
 // import FolderView from "./FolderView.vue";
 import TimelineView from "./TimelineView.vue";
 import BottomFooter from "./components/BottomFooter.vue";
+import AuthorsList from "./components/modals/AuthorsList.vue";
 
 export default {
   name: "app",
@@ -61,6 +105,7 @@ export default {
     // FolderView,
     TimelineView,
     BottomFooter,
+    AuthorsList,
   },
   props: ["current_slugFolderName", "currentFolder"],
   data() {

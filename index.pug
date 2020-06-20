@@ -76,6 +76,13 @@ html
         structure: !{JSON.stringify(structure, null, 4)},
         localNetworkInfos: {},
 
+        local_options: {
+          force_login: !{global.force_login},
+          simple_login: !{global.simple_login},
+          require_email: !{global.require_email},
+          force_author_password: !{global.force_author_password},
+        },
+
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",
         noticeOfError: "!{noticeOfError}",

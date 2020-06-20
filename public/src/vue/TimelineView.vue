@@ -367,7 +367,7 @@
 
     <Chats
       v-if="$root.settings.show_chat_panel"
-      :current_author="current_author"
+      :current_author="$root.current_author"
       :chats="$root.store.chats"
     />
 
@@ -376,7 +376,7 @@
       :slugFolderName="slugFolderName"
       :folder="folder"
       :is_realtime="is_realtime"
-      :current_author="current_author"
+      :current_author="$root.current_author"
       :read_only="!$root.state.connected"
       :rightmostMedia="rightmostMedia"
     />
@@ -636,14 +636,6 @@ export default {
       return this.folder.hasOwnProperty("authors") && this.folder.authors !== ""
         ? this.folder.authors
         : [];
-    },
-    current_author() {
-      if (typeof this.folder_authors !== "object") {
-        return {};
-      }
-      return this.folder_authors.filter(
-        (c) => c.name === this.$root.settings.current_author_name
-      )[0];
     },
     sortedMedias() {
       console.log("COMPUTED • TimeLineView: sortedMedias");
