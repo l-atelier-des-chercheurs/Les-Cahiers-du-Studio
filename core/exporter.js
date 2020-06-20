@@ -8,6 +8,8 @@ const path = require("path"),
 const sharp = require("sharp");
 sharp.cache(false);
 
+const puppeteer = require("puppeteer");
+
 const dev = require("./dev-log"),
   api = require("./api"),
   file = require("./file"),
@@ -244,100 +246,106 @@ module.exports = (function () {
                 `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
               );
 
-              const { BrowserWindow } = require("electron");
+              let browser;
 
-              const browser_window = {
-                width: Math.floor(default_page_size.width * 3.78),
-                height: Math.floor(default_page_size.height * 3.78) + 25, // totally arbitrary value… will have to find better
-              };
+              puppeteer
+                .launch({
+                  headless: true,
+                  ignoreHTTPSErrors: true,
+                  args: ["--no-sandbox", "--font-render-hinting=none"],
+                })
+                .then((_browser) => {
+                  browser = _browser;
+                  return browser.newPage();
+                })
+                .then((page) => {
+                  page.setViewport({
+                    width: Math.floor(default_page_size.width * 3.7795),
+                    height: Math.floor(default_page_size.height * 3.7795), // totally arbitrary value… will have to find better
+                    deviceScaleFactor: 2,
+                  });
+                  page
+                    .goto(urlToPubli, {
+                      waitUntil: "networkidle2",
+                    })
+                    .then(() => {
+                      if (
+                        !options ||
+                        !options.hasOwnProperty("type") ||
+                        options.type.toLowerCase() === "pdf"
+                      ) {
+                        const pdfName =
+                          slugPubliName +
+                          "-" +
+                          api.getCurrentDate() +
+                          "-" +
+                          (
+                            Math.random().toString(36) + "00000000000000000"
+                          ).slice(2, 3 + 2) +
+                          ".pdf";
+                        const docPath = path.join(cachePath, pdfName);
 
-              let win = new BrowserWindow({
-                // width: 800,
-                // height: 600,
-                width: browser_window.width,
-                height: browser_window.height,
-                show: false,
-              });
-              win.loadURL(urlToPubli);
+                        page.emulateMedia("print");
+                        page
+                          .pdf({
+                            path: docPath,
+                            printBackground: true,
+                            width: `${default_page_size.width}mm`,
+                            height: `${default_page_size.height}mm`,
+                          })
+                          .then(() => {
+                            dev.logverbose(
+                              `EXPORTER — makePDFForPubli : created PDF at ${docPath}`
+                            );
 
-              win.webContents.on("did-finish-load", () => {
-                // Use default printing options
-                setTimeout(() => {
-                  if (
-                    !options ||
-                    !options.hasOwnProperty("type") ||
-                    options.type.toLowerCase() === "pdf"
-                  ) {
-                    const pdfName =
-                      slugPubliName +
-                      "-" +
-                      api.getCurrentDate() +
-                      "-" +
-                      (Math.random().toString(36) + "00000000000000000").slice(
-                        2,
-                        3 + 2
-                      ) +
-                      ".pdf";
-                    const docPath = path.join(cachePath, pdfName);
+                            browser.close();
 
-                    win.webContents.printToPDF(
-                      {
-                        marginsType: 1,
-                        pageSize: {
-                          width: default_page_size.width * 1000,
-                          height: default_page_size.height * 1000,
-                        },
-                        dpi: 300,
-                        printBackground: true,
-                        printSelectionOnly: false,
-                      },
-                      (error, data) => {
-                        if (error) throw error;
-                        fs.writeFile(docPath, data, (error) => {
-                          if (error) throw error;
-
-                          dev.logverbose(
-                            `EXPORTER — makePDFForPubli : created PDF at ${docPath}`
-                          );
-
-                          resolve({
-                            pdfName,
-                            docPath,
+                            resolve({
+                              pdfName,
+                              docPath,
+                            });
                           });
-                        });
+                      } else if (options.type.toLowerCase() === "png") {
+                        const imageName =
+                          slugPubliName +
+                          "-" +
+                          api.getCurrentDate() +
+                          "-" +
+                          (
+                            Math.random().toString(36) + "00000000000000000"
+                          ).slice(2, 3 + 2) +
+                          ".png";
+                        const docPath = path.join(cachePath, imageName);
+
+                        page
+                          .screenshot({
+                            clip: {
+                              x: 0,
+                              y: 0,
+                              width: Math.floor(
+                                default_page_size.width * 3.7795
+                              ),
+                              height: Math.floor(
+                                default_page_size.height * 3.7795
+                              ), // totally arbitrary value… will have to find better
+                            },
+                            path: docPath,
+                          })
+                          .then(() => {
+                            dev.logverbose(
+                              `EXPORTER — makePDFForPubli : created image at ${docPath}`
+                            );
+
+                            browser.close();
+
+                            resolve({
+                              docPath,
+                              imageName,
+                            });
+                          });
                       }
-                    );
-                  } else if (options.type.toLowerCase() === "png") {
-                    const imageName =
-                      slugPubliName +
-                      "-" +
-                      api.getCurrentDate() +
-                      "-" +
-                      (Math.random().toString(36) + "00000000000000000").slice(
-                        2,
-                        3 + 2
-                      ) +
-                      ".png";
-                    const docPath = path.join(cachePath, imageName);
-
-                    win.capturePage((image) => {
-                      var conv = image.toPNG(1.0); // to PNG
-
-                      fs.writeFile(docPath, conv, (error) => {
-                        if (error) throw error;
-                        dev.logverbose(
-                          `EXPORTER — makePDFForPubli : created image at ${docPath}`
-                        );
-
-                        resolve({
-                          docPath,
-                          imageName,
-                        });
-                      });
                     });
-                  }
-                }, 1000);
-              });
+                });
             });
           });
       });
