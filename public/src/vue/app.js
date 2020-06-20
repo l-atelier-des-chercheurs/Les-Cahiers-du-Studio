@@ -164,6 +164,7 @@ let vm = new Vue({
       setDateTimelineToDateCreated: false,
 
       current_chat_slug: false,
+      current_author_slug: false,
 
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
@@ -778,6 +779,12 @@ let vm = new Vue({
       return Object.values(this.store.chats).find(
         (c) => c.is_linked_to_media === this.settings.current_chat_slug
       );
+    },
+    current_author() {
+      if (!this.settings.current_author_slug) return false;
+      if (!this.store.authors.hasOwnProperty(this.settings.current_author_slug))
+        return false;
+      return this.store.authors[this.settings.current_author_slug];
     },
     allKeywords() {
       if (Object.keys(this.currentFolder).length === 0) {

@@ -24,7 +24,7 @@
       <div class="m_channels--content">
         <h3 class="font-folder_title">{{ $t("channels_list") }}</h3>
         <div class="margin-vert-small">
-          <template v-if="current_author">
+          <template v-if="$root.current_author">
             <button
               type="button"
               class="barButton barButton_createChannel"
@@ -72,7 +72,6 @@ export default {
   props: {
     read_only: Boolean,
     chats: Object,
-    current_author: String,
   },
   components: {
     CreateChat,
