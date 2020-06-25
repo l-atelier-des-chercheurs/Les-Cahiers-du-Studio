@@ -127,6 +127,7 @@ export default {
           : [],
         editing_limited_to: "everybody",
         viewing_limited_to: "everybody",
+        attached_to_folder: this.$root.current_folder.slugFolderName,
       },
       askBeforeClosingModal: false,
     };

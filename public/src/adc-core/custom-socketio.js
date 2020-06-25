@@ -58,6 +58,7 @@ module.exports = (function () {
             this.socket.on("pong", this._onPong);
 
             this.socket.on("listClients", this._listClients);
+            this.socket.on("loadJournal", this._onLoadJournal);
           },
           _onSocketConnect() {
             let sessionId = this.socket.io.engine.id;
@@ -121,7 +122,7 @@ module.exports = (function () {
 
             /* 
             {
-              folders: {
+              projects: {
                 bonjour: mon-mot-de-passe
                 hello: mdp2
               },
@@ -155,10 +156,12 @@ module.exports = (function () {
           },
 
           _onListMedia(data) {
+            console.log("Received _onListMedia packet.");
+
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
 
-            console.log(`Received _onListMedia packet for type ${type}`);
+            console.log(`Type is ${type}`);
 
             for (let slugFolderName in content) {
               console.log(`Media data is for ${slugFolderName}.`);
@@ -171,7 +174,7 @@ module.exports = (function () {
 
                 // check if mdata has a mediaID (which means a user just created it)
                 const mdata = Object.values(content[slugFolderName].medias)[0];
-                if (mdata.hasOwnProperty("id")) {
+                if (mdata && mdata.hasOwnProperty("id")) {
                   this.$eventHub.$emit(
                     "socketio.media_created_or_updated",
                     mdata
@@ -180,14 +183,16 @@ module.exports = (function () {
               }
             }
 
-            this.$eventHub.$emit(`socketio.${type}.listMedia`, data);
+            this.$eventHub.$emit(`socketio.${type}.media_listed`, data);
           },
 
           _onListMedias(data) {
+            console.log("Received _onListMedias packet.");
+
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
 
-            console.log(`Received _onListMedias packet for type ${type}`);
+            console.log(`Type is ${type}`);
 
             for (let slugFolderName in content) {
               console.log(`Media data is for ${slugFolderName}.`);
@@ -196,16 +201,16 @@ module.exports = (function () {
                   content[slugFolderName].medias;
               }
             }
-            this.$eventHub.$emit(`socketio.${type}.listMedias`);
+            this.$eventHub.$emit(`socketio.${type}.medias_listed`);
           },
 
           _onListSpecificMedias(data) {
+            console.log("Received _onListSpecificMedias packet.");
+
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
 
-            console.log(
-              `Received _onListSpecificMedias packet for type ${type}`
-            );
+            console.log(`Type is ${type}`);
 
             for (let slugFolderName in content) {
               console.log(`Media data is for ${slugFolderName}.`);
@@ -255,36 +260,76 @@ module.exports = (function () {
             window.state.clients = data;
           },
 
+          _onLoadJournal(data) {
+            console.log("Received _onLoadJournal packet.");
+            window.state.journal = data;
+          },
+
           // for projects, authors and publications
           _onListFolder(data) {
-            let type = Object.keys(data)[0];
-            let content = Object.values(data)[0];
+            console.log("Received _onListFolder packet.");
+            const type = Object.keys(data)[0];
+            const content = Object.values(data)[0];
+            const slugFolderName = Object.keys(content)[0];
 
-            console.log(`Received _onListFolder packet for type ${type}`);
+            // supprimer chaque key du folder
+            // Object.keys(window.store[type][slugFolderName]).map((k) =>
+            //   k !== "medias" ? delete window.store[type][slugFolderName][k] : ""
+            // );
 
-            // to prevent override of fully formed medias in folders, we copy back the ones we have already
-            for (let slugFolderName in content) {
-              if (
-                window.store[type].hasOwnProperty(slugFolderName) &&
-                window.store[type][slugFolderName].hasOwnProperty("medias")
-              ) {
+            const is_new_folder = !window.store[type].hasOwnProperty(
+              slugFolderName
+            );
+
+            if (is_new_folder) {
+              window.store[type] = Object.assign(
+                {},
+                window.store[type],
+                content
+              );
+            } else {
+              // check if any new props in content
+
+              const folder_has_new_keys = Object.keys(
+                content[slugFolderName]
+              ).some(
+                (k) =>
+                  !Object.keys(window.store[type][slugFolderName]).includes(k)
+              );
+
+              if (folder_has_new_keys) {
+                // keep medias
                 content[slugFolderName].medias =
                   window.store[type][slugFolderName].medias;
-              }
-              if (content[slugFolderName].hasOwnProperty("id")) {
-                this.$eventHub.$emit(
-                  "socketio.folder_created_or_updated",
-                  content[slugFolderName]
+
+                window.store[type] = Object.assign(
+                  {},
+                  window.store[type],
+                  content
                 );
+              } else {
+                Object.keys(content[slugFolderName]).map((k) => {
+                  if (k !== "medias")
+                    window.store[type][slugFolderName][k] =
+                      content[slugFolderName][k];
+                });
               }
             }
 
-            window.store[type] = Object.assign({}, window.store[type], content);
+            if (content[slugFolderName].hasOwnProperty("id")) {
+              this.$eventHub.$emit(
+                "socketio.folder_created_or_updated",
+                content[slugFolderName]
+              );
+            }
+
             this.$eventHub.$emit(`socketio.${type}.folder_listed`);
           },
 
           // for projects, authors and publications
           _onListFolders(data) {
+            console.log("Received _onListFolders packet.");
+
             if (typeof data !== "object") {
               return;
             }
@@ -292,7 +337,7 @@ module.exports = (function () {
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
 
-            console.log(`Received _onListFolders packet for type ${type}`);
+            console.log(`Type is ${type}`);
 
             // to prevent override of fully formed medias in folders, we copy back the ones we have already
             for (let slugFolderName in content) {
@@ -361,6 +406,9 @@ module.exports = (function () {
           editMedia(mdata) {
             this.socket.emit("editMedia", mdata);
           },
+          copyMediaToFolder(mdata) {
+            this.socket.emit("copyMediaToFolder", mdata);
+          },
           removeMedia(mdata) {
             this.socket.emit("removeMedia", mdata);
           },
@@ -379,8 +427,14 @@ module.exports = (function () {
           addTempMediaToFolder(pdata) {
             this.socket.emit("addTempMediaToFolder", pdata);
           },
+          copyFolder(pdata) {
+            this.socket.emit("copyFolder", pdata);
+          },
           updateNetworkInfos() {
             this.socket.emit("updateNetworkInfos");
+          },
+          loadJournal() {
+            this.socket.emit("loadJournal");
           },
         },
       });

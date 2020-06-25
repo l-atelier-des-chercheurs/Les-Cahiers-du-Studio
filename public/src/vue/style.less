@@ -1536,6 +1536,7 @@ video {
 .m_chatsview {
   .m_channels {
     overflow-y: auto;
+    .padding-sides-small;
     .custom_scrollbar(8px, 5px, 6px, transparent, #fff);
   }
 }
@@ -1687,7 +1688,7 @@ video {
 
     button,
     label {
-      .c-blanc;
+      // .c-blanc;
     }
   }
 
@@ -1859,9 +1860,9 @@ video {
 
 .m_sinceLastVisit {
   position: relative;
-  margin: 0 var(--spacing);
+  margin: 0 0;
   .margin-vert-verysmall;
-  width: ~"calc(100% - var(--spacing) * 2)";
+  width: ~"calc(100% - var(--spacing) * 0)";
   .font-verysmall;
   display: flex;
   justify-content: center;
@@ -1873,13 +1874,15 @@ video {
     content: "";
     display: block;
     width: 100%;
-    height: 1px;
-    border-top: 1px solid currentColor;
+    height: 0px;
+    margin-top: 0px;
+    border-top: 2px solid @c-noir;
     position: absolute;
   }
   span {
     position: relative;
-    background-color: @c-rouge;
+    background-color: @c-noir;
+    border-radius: 4px;
     padding: 0 ~"calc( var(--spacing) / 4)";
   }
 }

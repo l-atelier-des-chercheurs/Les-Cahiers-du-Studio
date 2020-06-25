@@ -44,6 +44,8 @@ module.exports = (function () {
         "Pour ajouter des auteurs, fermez cette fenêtre et cliquez sur le bouton <i>s’identifier</i>.",
 
       loading: "chargement",
+      advanced_options: "Options avancées",
+      close: "Fermer",
       open: "Ouvrir",
       save: "Enregistrer",
       save_and_close: "Enregistrer + fermer",
@@ -57,6 +59,7 @@ module.exports = (function () {
       password_instructions:
         "Seuls les utilisateurs possédant ce mot de passe pourront éditer ce dossier, y ajouter du contenu et consulter les médias non publics.",
 
+      last_read_message: "Dernier message lu",
       post_a_message: "Envoyer un message",
       edit_timeline: "Contribuer à la timeline",
 
@@ -164,6 +167,7 @@ module.exports = (function () {
       last_message: "Dernier message",
       pinned: "Discussions épinglés",
       channels_list: "Liste des discussions",
+      sure_to_remove_message: "Êtes-vous sûr de vouloir supprimer ce message ?",
 
       notifications: {
         file_was_sent: "Le fichier a été envoyé.",

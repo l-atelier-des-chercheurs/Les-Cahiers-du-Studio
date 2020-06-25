@@ -1,13 +1,11 @@
 <template>
   <div class="m_chatsview">
-    {{ current_chat }}
     <div class="m_chatsview--topbar">
       <div class="m_actionbar">
         <div class="m_actionbar--buttonBar"></div>
         <div class="m_actionbar--text">{{ $t("channels_instructions") }}</div>
       </div>
 
-      {{ $root.current_chat }}
       <button
         class="button-round _closeChatButton padding-verysmall"
         @click="$root.closeChatPane()"
@@ -119,8 +117,9 @@ export default {
   z-index: 100000;
   top: 0;
   right: 0;
-  max-width: 440px;
-  flex: 0 1 320px;
+  // max-width: 440px;
+  flex: 0 0 420px;
+
   height: 100%;
   background-color: var(--color-noir);
   color: white;
@@ -133,7 +132,6 @@ export default {
   padding-top: calc(var(--spacing) / 2);
   padding-bottom: calc(var(--spacing) / 2);
 
-  flex: 0 0 320px;
   // border-radius: 8px;
 
   display: flex;

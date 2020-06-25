@@ -267,7 +267,7 @@ let vm = new Vue({
         });
         // requesting edit of a media
         if (this.store.request.metaFileName) {
-          this.$eventHub.$once("socketio.folders.listMedias", () => {
+          this.$eventHub.$once("socketio.folders.medias_listed", () => {
             this.$nextTick(() => {
               this.$eventHub.$emit(
                 "timeline.openMediaModal",
@@ -535,6 +535,7 @@ let vm = new Vue({
             data: {
               attached_to_folder: this.current_folder.slugFolderName,
               is_linked_to_media: media_meta_linked,
+              name: media_meta_linked,
             },
           })
           .then((cdata) => {
@@ -695,7 +696,7 @@ let vm = new Vue({
         "/" + slugFolderName
       );
 
-      this.$eventHub.$once("socketio.folders.listMedias", () => {
+      this.$eventHub.$once("socketio.folders.medias_listed", () => {
         this.settings.is_loading_medias_for_folder = false;
       });
     },
