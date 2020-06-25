@@ -321,7 +321,7 @@
     <button
       type="button"
       class="_openChatButton"
-      @click="$root.openOrCreateChat()"
+      @click="$root.settings.show_chat_panel = true"
     >
       <svg
         version="1.1"
@@ -375,11 +375,7 @@
       </svg>
     </button>
 
-    <Chats
-      v-if="$root.settings.show_chat_panel"
-      :current_author="$root.current_author"
-      :chats="$root.store.chats"
-    />
+    <Chats v-if="$root.settings.show_chat_panel" />
 
     <EditMedia
       v-if="show_media_modal_for"

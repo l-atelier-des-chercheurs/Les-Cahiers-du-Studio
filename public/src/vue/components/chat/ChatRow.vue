@@ -4,7 +4,7 @@
     :class="{
       'is--open':
         $root.current_chat &&
-        $root.current_chat.slugFolderName === chat.slugFolderName,
+        $root.settings.current_chat_slug === chat.slugFolderName,
       'is--pinned': chat.pinned,
     }"
   >
@@ -134,7 +134,7 @@ export default {
         return;
       }
 
-      this.$root.openOrCreateChat(this.chat.slugFolderName);
+      this.$root.openChat(this.chat.slugFolderName);
     },
     closeChat() {
       this.$root.closeChat();

@@ -178,10 +178,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    current_author: {
-      type: Object,
-      default: () => {},
-    },
     read_only: {
       type: Boolean,
       default: true,
@@ -303,8 +299,11 @@ export default {
     },
     addMediaStyles() {
       let props = {};
-      if (this.current_author && this.current_author.hasOwnProperty("color")) {
-        props["--color-author"] = this.current_author.color;
+      if (
+        this.$root.current_author &&
+        this.$root.current_author.hasOwnProperty("color")
+      ) {
+        props["--color-author"] = this.$root.current_author.color;
         props["--color-text_on_author_color"] = "var(--color-noir)";
       } else {
         props["--color-text_on_author_color"] = "#fff";

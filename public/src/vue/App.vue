@@ -62,25 +62,11 @@
         :folders="$root.store.folders"
       />
     </template>
-    <!-- <template
-      v-else-if="view === 'FolderView' && currentFolder.hasOwnProperty('name')"
-    >
-      <FolderView
-        :slugFolderName="current_slugFolderName"
-        :folder="currentFolder"
-        :medias="currentFolder.medias"
-        :read_only="!$root.state.connected"
-      />
-    </template>-->
-    <template
-      v-else-if="
-        view === 'TimelineView' && currentFolder.hasOwnProperty('name')
-      "
-    >
+    <template v-else-if="view === 'TimelineView' && $root.current_folder">
       <TimelineView
-        :slugFolderName="current_slugFolderName"
-        :folder="currentFolder"
-        :medias="currentFolder.medias"
+        :slugFolderName="$root.current_folder.slugFolderName"
+        :folder="$root.current_folder"
+        :medias="$root.current_folder.medias"
         :read_only="!$root.state.connected"
       />
     </template>
@@ -107,13 +93,12 @@ export default {
     BottomFooter,
     AuthorsList,
   },
-  props: ["current_slugFolderName", "currentFolder"],
   data() {
     return {};
   },
   computed: {
     view: function () {
-      if (this.current_slugFolderName !== "") {
+      if (this.$root.settings.current_slugFolderName !== "") {
         return "TimelineView";
       }
       return "ListView";

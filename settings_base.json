@@ -233,6 +233,9 @@
           "type": "number",
           "only_admin_can_edit": true
         },
+        "attached_to_folder": {
+          "type": "string"
+        },
         "is_linked_to_media": {
           "type": "string"
         }
@@ -293,6 +296,9 @@
         },
         "last_messages_read_in_channels": {
           "type": "array"
+        },
+        "color": {
+          "type": "string"
         }
       }
     }

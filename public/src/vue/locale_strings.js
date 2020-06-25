@@ -57,6 +57,7 @@ module.exports = (function () {
       password_instructions:
         "Seuls les utilisateurs possédant ce mot de passe pourront éditer ce dossier, y ajouter du contenu et consulter les médias non publics.",
 
+      post_a_message: "Envoyer un message",
       edit_timeline: "Contribuer à la timeline",
 
       all_tags: "Liste des mots-clés disponibles",
@@ -150,11 +151,19 @@ module.exports = (function () {
       protected_by_authors: "Protégé par les auteurs",
       with_password: "Avec un mot de passe",
       everybody: "Tout le monde",
+      nobody: "Personne",
 
       "with_all_medias:": "Avec tous les médias",
 
       last_modified: "Dernière modification",
       save_changes: "Enregistrer",
+
+      channels_instructions:
+        "Espaces de discussion : échangez avec les autres utilisateurs en créant un sujet !",
+      manage_access: "Gérer l’accès au contenu",
+      last_message: "Dernier message",
+      pinned: "Discussions épinglés",
+      channels_list: "Liste des discussions",
 
       notifications: {
         file_was_sent: "Le fichier a été envoyé.",
@@ -184,6 +193,8 @@ module.exports = (function () {
         action_not_allowed:
           "Cette action n’est pas permise. Cette timeline est peut-être protégée par un mot de passe.",
         password_is_valid: "Mot de passe accepté",
+        connecting_using_saved_account:
+          "Identification automatique en tant que ",
       },
     },
     en: {
@@ -248,6 +259,8 @@ module.exports = (function () {
       password_instructions:
         "If set, only users with the password will be able to edit this folder and access the content that’s not public.",
 
+      post_a_message: "Post a message",
+
       edit_timeline: "Contribute to timeline",
 
       all_tags: "List of keywords available",
@@ -303,6 +316,7 @@ module.exports = (function () {
       protected_by_authors: "Protected by authors",
       with_password: "With a password",
       everybody: "Everybody",
+      nobody: "Nobody",
 
       no_media_in_folder: "No media in this folder.",
       no_public_media_in_folder: "No public media in this folder.",
@@ -368,6 +382,7 @@ module.exports = (function () {
         action_not_allowed:
           "This action was blocked. You may need the password to do that.",
         password_is_valid: "Password is valid",
+        connecting_using_saved_account: "Automatic login as ",
       },
     },
   };

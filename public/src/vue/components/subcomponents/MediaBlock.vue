@@ -320,8 +320,7 @@ export default {
       }
     },
     openChat() {
-      const path = this.slugFolderName + "/" + this.media.slugMediaName;
-      this.$root.openOrCreateChat(path);
+      this.$root.openOrCreateChatFromMedia(this.media.slugMediaName);
     },
     setMediaSizeFromMeta() {
       if (this.media.hasOwnProperty("w") && typeof this.media.w === "number") {

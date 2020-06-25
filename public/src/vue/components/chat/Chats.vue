@@ -1,23 +1,27 @@
 <template>
   <div class="m_chatsview">
-    <button
-      class="button-round _closeChatButton padding-verysmall"
-      @click="$root.closeChatPane()"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="48"
-        height="48"
-        viewBox="0 0 48 48"
-      >
-        <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" />
-        <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" />
-      </svg>
-    </button>
+    {{ current_chat }}
+    <div class="m_chatsview--topbar">
+      <div class="m_actionbar">
+        <div class="m_actionbar--buttonBar"></div>
+        <div class="m_actionbar--text">{{ $t("channels_instructions") }}</div>
+      </div>
 
-    <div class="m_actionbar">
-      <div class="m_actionbar--buttonBar"></div>
-      <div class="m_actionbar--text">{{ $t("channels_instructions") }}</div>
+      {{ $root.current_chat }}
+      <button
+        class="button-round _closeChatButton padding-verysmall"
+        @click="$root.closeChatPane()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="48"
+          height="48"
+          viewBox="0 0 48 48"
+        >
+          <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" />
+          <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" />
+        </svg>
+      </button>
     </div>
 
     <div class="m_channels">
@@ -53,13 +57,17 @@
 
         <label>{{ $t("pinned") }}</label>
         <div class="m_chats--list">
-          <ChatRow v-for="(chat, index) in chats" :key="index" :chat="chat" />
+          <ChatRow
+            v-for="(chat, index) in filtered_chats"
+            :key="index"
+            :chat="chat"
+          />
         </div>
       </div>
     </div>
 
-    <transition name="slideright" :duration="500">
-      <Chat :chat="$root.current_chat" v-if="$root.current_chat" />
+    <transition name="chatopen">
+      <Chat v-if="$root.current_chat" :chat="$root.current_chat" />
     </transition>
   </div>
 </template>
@@ -71,7 +79,6 @@ import Chat from "./Chat.vue";
 export default {
   props: {
     read_only: Boolean,
-    chats: Object,
   },
   components: {
     CreateChat,
@@ -90,17 +97,30 @@ export default {
   },
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    filtered_chats() {
+      debugger;
+      return Object.values(this.$root.store.chats).filter(
+        (c) => c.attached_to_folder === this.$root.current_folder.slugFolderName
+      );
+    },
+  },
   methods: {},
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .m_chatsview {
   position: relative;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  width: 100%;
+  height: 100%;
+
   z-index: 100000;
   top: 0;
   right: 0;
-  max-width: 400px;
+  max-width: 440px;
+  flex: 0 1 320px;
   height: 100%;
   background-color: var(--color-noir);
   color: white;
@@ -109,14 +129,44 @@ export default {
   // background-color: white;
   border: 4px solid var(--color-noir);
   // margin: 2em;
-  padding: 1em;
+  // padding: 1em;
+  padding-top: calc(var(--spacing) / 2);
+  padding-bottom: calc(var(--spacing) / 2);
 
   flex: 0 0 320px;
   // border-radius: 8px;
+
+  display: flex;
+  flex-flow: column nowrap;
 
   button,
   label {
     color: var(--color-noir);
   }
+}
+
+._closeChatButton {
+  flex: 0 0 auto;
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 0;
+  width: 33px;
+  height: 33px;
+
+  svg {
+    display: block;
+    width: 33px;
+    height: 33px;
+    stroke: currentColor;
+  }
+}
+
+.m_chatsview--topbar {
+  padding-left: calc(var(--spacing) / 4);
+  padding-right: calc(var(--spacing) / 4);
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
 }
 </style>
