@@ -3,15 +3,15 @@
     <h2
       class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large"
       @click="$root.openFolder(slugFolderName)"
-    >
-      {{ folder.name }}
-    </h2>
+    >{{ folder.name }}</h2>
 
     <div class="font-small">
       <div class="margin-sides-medium margin-vert-small">
-        <mark class v-if="folder.password === 'has_pass'">{{
+        <mark class v-if="folder.password === 'has_pass'">
+          {{
           $t("protected_by_pass")
-        }}</mark>
+          }}
+        </mark>
       </div>
 
       <div class="folder_metapreview margin-medium">
@@ -40,9 +40,7 @@
 
       <hr class="margin-small margin-sides-medium" />
 
-      <div
-        class="margin-small flex-wrap flex-vertically-start flex-horizontally-start"
-      >
+      <div class="margin-small flex-wrap flex-vertically-start flex-horizontally-start">
         <button
           v-if="can_see_folder"
           type="button"
@@ -96,7 +94,7 @@
           @click="showInputPasswordField = !showInputPasswordField"
         >
           <span class="text-cap font-verysmall">{{ $t("password") }}</span>
-        </button> -->
+        </button>-->
         <!--
         <button v-if="can_admin_folder" type="button" class="button-round margin-verysmall padding-verysmall" @click="debugFolderContent = !debugFolderContent">
           <span class="text-cap font-verysmall">
@@ -219,10 +217,11 @@
           >
             Envoyer
           </button>
-        </div> -->
+        </div>-->
       </div>
 
       <AccessController
+        v-if="!can_see_folder"
         :folder="folder"
         :context="''"
         :type="'folders'"
@@ -250,32 +249,32 @@ export default {
     folder: Object,
     slugFolderName: String,
     read_only: Boolean,
-    sort_field: String,
+    sort_field: String
   },
   components: {
     EditFolder,
-    AccessController,
+    AccessController
   },
   data() {
     return {
       debugFolderContent: false,
       showEditFolderModal: false,
-      showInputPasswordField: false,
+      showInputPasswordField: false
     };
   },
   computed: {
     can_edit_folder() {
       return this.$root.canEditFolder({
         type: "folders",
-        slugFolderName: this.slugFolderName,
+        slugFolderName: this.slugFolderName
       });
     },
     can_see_folder() {
       return this.$root.canSeeFolder({
         type: "folders",
-        slugFolderName: this.slugFolderName,
+        slugFolderName: this.slugFolderName
       });
-    },
+    }
   },
   methods: {
     formatDateToHuman(date) {
@@ -291,7 +290,7 @@ export default {
       if (window.confirm(this.$t("sureToRemoveFolder"))) {
         this.$root.removeFolder({
           type: "folders",
-          slugFolderName: this.slugFolderName,
+          slugFolderName: this.slugFolderName
         });
       }
     },
@@ -300,15 +299,15 @@ export default {
 
       this.$auth.updateFoldersPasswords({
         folders: {
-          [this.slugFolderName]: this.$refs.passwordField.value,
-        },
+          [this.slugFolderName]: this.$refs.passwordField.value
+        }
       });
       this.$socketio.sendAuth();
 
       // check if password matches or not
       this.$eventHub.$once("socketio.authentificated", () => {
         const has_passworded_folder = window.state.list_authorized_folders.filter(
-          (f) =>
+          f =>
             f.type === "folders" &&
             f.allowed_slugFolderNames.includes(this.slugFolderName)
         );
@@ -325,9 +324,9 @@ export default {
           this.$root.openFolder(this.slugFolderName);
         }
       });
-    },
+    }
   },
-  watch: {},
+  watch: {}
 };
 </script>
 <style scoped></style>

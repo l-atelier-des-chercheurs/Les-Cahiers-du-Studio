@@ -1,11 +1,7 @@
 <template>
   <div>
     <div v-if="edit_author_mode" class="m_authorsList--editAuthor">
-      <EditAuthor
-        :author="author"
-        @close="edit_author_mode = false"
-        :read_only="read_only"
-      />
+      <EditAuthor :author="author" @close="edit_author_mode = false" :read_only="read_only" />
     </div>
 
     <div
@@ -94,15 +90,13 @@
           "
         />
         <div class="m_author--name">{{ author.name }}</div>
-        <div class="m_author--email" v-if="author.email">
-          {{ author.email }}
-        </div>
+        <div class="m_author--email" v-if="author.email">{{ author.email }}</div>
         <div class="m_author--role" v-if="author.role">
           <label>{{ $t(author.role) }}</label>
         </div>
 
         <div class="m_author--connected" v-if="author_is_connected" @click.stop>
-          <label class="">
+          <label class>
             <button
               type="button"
               class="button-nostyle padding-none text-uc button-triangle"
@@ -110,9 +104,7 @@
               @click.stop="
                 show_connection_information = !show_connection_information
               "
-            >
-              {{ $t("currently_connected") }}
-            </button>
+            >{{ $t("currently_connected") }}</button>
           </label>
           <div v-if="show_connection_information && author_looking_at">
             <div
@@ -144,13 +136,12 @@
                   style="text-transform: initial;"
                 >
                   {{
-                    $root.getFolder({
-                      type: "projects",
-                      slugFolderName:
-                        author_looking_at.looking_at_project.slugFolderName,
-                    }).name
+                  $root.getFolder({
+                  type: "projects",
+                  slugFolderName:
+                  author_looking_at.looking_at_project.slugFolderName,
+                  }).name
                   }}
-
                   ↑
                 </button>
               </div>
@@ -188,14 +179,13 @@
                   style="text-transform: initial;"
                 >
                   {{
-                    $root.getFolder({
-                      type: "projects",
-                      slugFolderName:
-                        author_looking_at.looking_at_project.slugFolderName,
-                    }).name
+                  $root.getFolder({
+                  type: "projects",
+                  slugFolderName:
+                  author_looking_at.looking_at_project.slugFolderName,
+                  }).name
                   }}
                   / {{ author_looking_at.editing_media.metaFileName }}
-
                   ↑
                 </button>
               </div>
@@ -229,13 +219,12 @@
                   style="text-transform: initial;"
                 >
                   {{
-                    $root.getFolder({
-                      type: "publications",
-                      slugFolderName:
-                        author_looking_at.looking_at_publi.slugFolderName,
-                    }).name
+                  $root.getFolder({
+                  type: "publications",
+                  slugFolderName:
+                  author_looking_at.looking_at_publi.slugFolderName,
+                  }).name
                   }}
-
                   ↑
                 </button>
               </div>
@@ -269,11 +258,11 @@
                   style="text-transform: initial;"
                 >
                   {{
-                    $root.getFolder({
-                      type: "chats",
-                      slugFolderName:
-                        author_looking_at.looking_at_chat.slugFolderName,
-                    }).name
+                  $root.getFolder({
+                  type: "chats",
+                  slugFolderName:
+                  author_looking_at.looking_at_chat.slugFolderName,
+                  }).name
                   }}
                   ↑
                 </button>
@@ -300,9 +289,7 @@
           style
           :readonly="read_only"
           @click.stop="show_input_password_field = !show_input_password_field"
-        >
-          {{ $t("password_required_to_open") }}
-        </button>
+        >{{ $t("password_required_to_open") }}</button>
 
         <div
           class="padding-verysmall _pwd_input"
@@ -320,13 +307,7 @@
             />
           </div>
 
-          <button
-            type="button"
-            class="button-greenthin"
-            @click="submitPassword"
-          >
-            {{ $t("send") }}
-          </button>
+          <button type="button" class="button-greenthin" @click="submitPassword">{{ $t("send") }}</button>
         </div>
 
         <button
@@ -337,17 +318,13 @@
           "
           class="button-thin bg-bleumarine"
           @click.stop="setAuthorWithoutPassword()"
-        >
-          {{ $t("login") }}
-        </button>
+        >{{ $t("login") }}</button>
         <button
           type="button"
           v-if="author.slugFolderName === $root.current_author.slugFolderName"
           class="button-redthin"
           @click.stop="$root.unsetAuthor()"
-        >
-          {{ $t("logout") }}
-        </button>
+        >{{ $t("logout") }}</button>
       </div>
     </div>
   </div>
@@ -357,16 +334,16 @@ import EditAuthor from "./../subcomponents/EditAuthor.vue";
 
 export default {
   props: {
-    author: Object,
+    author: Object
   },
   components: {
-    EditAuthor,
+    EditAuthor
   },
   data() {
     return {
       edit_author_mode: false,
       show_input_password_field: false,
-      show_connection_information: false,
+      show_connection_information: false
     };
   },
   created() {},
@@ -377,13 +354,13 @@ export default {
     this.$eventHub.$off("authors.submitPassword", this.submitPassword);
   },
   watch: {
-    show_input_password_field: function () {
+    show_input_password_field: function() {
       if (this.show_input_password_field) {
         this.$nextTick(() => {
           this.$refs.passwordField.focus();
         });
       }
-    },
+    }
   },
   computed: {
     can_login_as_author() {
@@ -391,7 +368,7 @@ export default {
       // an author — this will delog him/her
       return this.canEditFolder({
         type: "authors",
-        slugFolderName: this.author.slugFolderName,
+        slugFolderName: this.author.slugFolderName
       });
     },
     is_logged_in_as_author() {
@@ -401,7 +378,7 @@ export default {
     },
     author_is_connected() {
       if (!this.$root.unique_clients) return false;
-      return this.$root.unique_clients.find((client) => {
+      return this.$root.unique_clients.find(client => {
         return (
           client.data &&
           client.data.author &&
@@ -413,26 +390,26 @@ export default {
       if (!this.author_is_connected || !this.author_is_connected.data)
         return false;
       return this.author_is_connected.data;
-    },
+    }
   },
   methods: {
     setAuthorWithoutPassword() {
       this.$auth.removeAllFoldersPassword({
-        type: "authors",
+        type: "authors"
       });
 
       this.$auth.updateFoldersPasswords({
         authors: {
-          [this.author.slugFolderName]: "",
-        },
+          [this.author.slugFolderName]: ""
+        }
       });
       this.$socketio.sendAuth();
 
       this.checkResultsFromLogin({
-        slugFolderName: this.author.slugFolderName,
+        slugFolderName: this.author.slugFolderName
       });
     },
-    canEditFolder: function ({ type, slugFolderName }) {
+    canEditFolder: function({ type, slugFolderName }) {
       if (!this.$root.store[type].hasOwnProperty(slugFolderName)) return false;
 
       const folder = this.$root.store[type][slugFolderName];
@@ -442,7 +419,7 @@ export default {
 
       // if password is set
       if (folder.password === "has_pass") {
-        return this.$root.state.list_authorized_folders.some((i) => {
+        return this.$root.state.list_authorized_folders.some(i => {
           return (
             !!i &&
             i.hasOwnProperty("type") &&
@@ -458,7 +435,7 @@ export default {
 
     submitPassword({
       slugFolderName,
-      password = this.$auth.hashCode(this.$refs.passwordField.value),
+      password = this.$auth.hashCode(this.$refs.passwordField.value)
     }) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`Author • METHODS / submitPassword`);
@@ -467,25 +444,25 @@ export default {
         return;
 
       this.$auth.removeAllFoldersPassword({
-        type: "authors",
+        type: "authors"
       });
       this.$auth.updateFoldersPasswords({
         authors: {
-          [this.author.slugFolderName]: password,
-        },
+          [this.author.slugFolderName]: password
+        }
       });
       this.$socketio.sendAuth();
 
       // check if password matches or not
       this.checkResultsFromLogin({
-        slugFolderName: this.author.slugFolderName,
+        slugFolderName: this.author.slugFolderName
       });
     },
     checkResultsFromLogin({ slugFolderName }) {
       this.$eventHub.$once("socketio.authentificated", () => {
         if (
           this.$root.state.list_authorized_folders.some(
-            (f) =>
+            f =>
               f.type === "authors" &&
               f.allowed_slugFolderNames.includes(slugFolderName)
           )
@@ -526,7 +503,7 @@ export default {
         this.$eventHub.$emit("resizePanels", [
           { size: 40 },
           { size: 60 },
-          { size: 0 },
+          { size: 0 }
         ]);
       }
       this.$nextTick(() => {
@@ -540,7 +517,7 @@ export default {
         this.$eventHub.$emit("resizePanels", [
           { size: 40 },
           { size: 0 },
-          { size: 60 },
+          { size: 60 }
         ]);
       }
       this.$nextTick(() => {
@@ -559,7 +536,7 @@ export default {
           () => {
             this.$root.removeFolder({
               type: "authors",
-              slugFolderName: this.author.slugFolderName,
+              slugFolderName: this.author.slugFolderName
             });
           },
           () => {}
@@ -567,14 +544,14 @@ export default {
     },
     urlToPortrait(preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
+      let pathToSmallestThumb = preview.find(m => m.size === 180).path;
       let url =
         this.$root.state.mode === "export_publication"
           ? `./${pathToSmallestThumb}`
           : `/${pathToSmallestThumb}`;
       return url;
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -582,5 +559,116 @@ export default {
 ._open_pwd_input {
   position: relative;
   z-index: 1;
+}
+
+.m_author {
+  position: relative;
+
+  padding: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2);
+
+  min-height: 200px;
+  line-height: 1.3;
+
+  background-color: white;
+  border-radius: var(--size-buttonradius);
+
+  text-align: center;
+  text-transform: initial;
+
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+
+  input {
+    background-color: white;
+  }
+
+  .m_author--card {
+    // text-transform: initial;
+    // font-weight: normal;
+    // background-color: transparent;
+    padding-left: calc(var(--spacing) / 2);
+    padding-right: calc(var(--spacing) / 2);
+
+    > * {
+      margin-right: calc(var(--spacing) / 2);
+    }
+  }
+
+  &.is--selected {
+    color: var(--color-bleu_vif) _fonce;
+    background-color: var(--color-bleu_vif) _clair;
+
+    hr {
+      border-color: currentColor;
+    }
+    .buttonLink {
+      color: currentColor;
+    }
+  }
+
+  .m_author--name {
+    font-size: var(--font-size-large);
+    font-weight: 200;
+    max-width: 15ch;
+    letter-spacing: -0.01em;
+  }
+
+  .m_author--email {
+    font-size: var(--font-size-verysmall);
+  }
+
+  .m_author--removeButton {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .m_author--editButton {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .m_author--connected {
+    background-color: var(--color-bleu);
+    border-radius: 4px;
+    padding: calc(var(--spacing) / 4);
+
+    > label {
+      margin-bottom: 0;
+      display: block;
+    }
+
+    .m_metaField:last-child {
+      margin-bottom: 0;
+    }
+    .m_metaField {
+      button {
+        padding: 2px 4px;
+      }
+    }
+  }
+
+  img {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+
+    margin-top: calc(var(--spacing) / 4);
+    margin-bottom: calc(var(--spacing) / 4);
+  }
+
+  hr {
+    margin: 0;
+    border-color: var(--color-bleu_vif);
+  }
+
+  button {
+    margin: 0;
+  }
 }
 </style>

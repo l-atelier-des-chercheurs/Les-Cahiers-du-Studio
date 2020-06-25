@@ -357,8 +357,8 @@ export default {
   // border: 1px solid var(--color-noir);
   background-color: var(--color-noir);
   color: white;
-  padding: calc(var(--spacing) / 3);
   border-radius: 4px;
+  padding: calc(var(--spacing) / 3);
 }
 
 button {
