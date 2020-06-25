@@ -97,7 +97,6 @@ export default {
   watch: {},
   computed: {
     filtered_chats() {
-      debugger;
       return Object.values(this.$root.store.chats).filter(
         (c) => c.attached_to_folder === this.$root.current_folder.slugFolderName
       );

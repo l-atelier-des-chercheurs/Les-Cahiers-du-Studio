@@ -26,7 +26,7 @@
 
       <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
 
-      <!-- <div class="draggabilly_handle" @click="openMedia" /> -->
+      <div class="draggabilly_handle" @click="openMedia" />
       <div class="open_chat" @click="openChat">
         <svg
           version="1.1"
