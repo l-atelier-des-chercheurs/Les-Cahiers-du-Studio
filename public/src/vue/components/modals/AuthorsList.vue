@@ -128,7 +128,7 @@ export default {
     margin: calc(var(--spacing) / 2);
 
     position: relative;
-    border: 4px dashed var(--color-bleu_vif) _clair;
+    border: 4px dashed var(--color-bleu_vif);
     background-color: #fff;
     // border: 4px solid @c-gris_clair;
     border-radius: var(--size-buttonradius);

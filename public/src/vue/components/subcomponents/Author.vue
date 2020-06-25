@@ -598,10 +598,8 @@ export default {
   }
 
   &.is--selected {
-    color: var(--color-bleu_vif) _fonce;
-    background-color: var(--color-bleu_vif) _clair;
-
-    hr {
+    color: var(--color-bleu_vif);
+    background-color: white hr {
       border-color: currentColor;
     }
     .buttonLink {

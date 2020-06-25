@@ -861,10 +861,8 @@ let vm = new Vue({
       );
     },
     current_author() {
-      if (
-        !this.settings.current_author_slug ||
-        !this.store.authors.hasOwnProperty(this.settings.current_author_slug)
-      )
+      if (!this.settings.current_author_slug) return false;
+      if (!this.store.authors.hasOwnProperty(this.settings.current_author_slug))
         return false;
       return this.store.authors[this.settings.current_author_slug];
     },

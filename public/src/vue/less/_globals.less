@@ -724,3 +724,25 @@ th {
     flex-basis: auto;
   }
 }
+
+svg.inline-svg {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+
+  &.inline-svg-larger {
+    width: 1.4em;
+    height: 1.4em;
+  }
+
+  > * {
+    fill: currentColor;
+  }
+
+  &_larger {
+    width: 1.5em;
+    height: 1.5em;
+    margin-top: -0.25em;
+    margin-bottom: -0.25em;
+  }
+}

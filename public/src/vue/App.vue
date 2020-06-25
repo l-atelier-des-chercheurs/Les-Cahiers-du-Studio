@@ -1,7 +1,6 @@
 <template>
   <div id="app" v-if="$root.access">
-    <SystemBar v-if="$root.settings.enable_system_bar" :view="view">
-    </SystemBar>
+    <SystemBar v-if="$root.settings.enable_system_bar" :view="view"></SystemBar>
 
     <div
       class="m_connectionStatus"
@@ -11,9 +10,10 @@
       {{ $t("notifications.contents_wont_be_editable") }}
     </div>
 
-    <div class="_openAuthorModal">
+    <div class="_openAuthorModal" v-if="view === 'ListView'">
       <button
         type="button"
+        class="m_topbar--center--authors--currentAuthor"
         @click="$root.showAuthorsListModal = true"
         :content="$t('login')"
         v-tippy="{
@@ -23,7 +23,7 @@
       >
         <template v-if="$root.current_author">
           <div
-            class=""
+            class="m_topbar--center--authors--portrait"
             v-if="
               $root.current_author.hasOwnProperty('preview') &&
               $root.current_author.preview.length !== ''
@@ -44,15 +44,15 @@
           <div class="font-medium">({{ $t("authors") }})</div>
         </template>
       </button>
-      <AuthorsList
-        v-if="$root.showAuthorsListModal"
-        :authors="$root.store.authors"
-        :prevent_close="
-          $root.state.local_options.force_login && !$root.current_author
-        "
-        @close="$root.showAuthorsListModal = false"
-      />
     </div>
+    <AuthorsList
+      v-if="$root.showAuthorsListModal"
+      :authors="$root.store.authors"
+      :prevent_close="
+        $root.state.local_options.force_login && !$root.current_author
+      "
+      @close="$root.showAuthorsListModal = false"
+    />
 
     <template v-if="view === 'ListView'">
       <ListView
@@ -71,7 +71,7 @@
         :medias="currentFolder.medias"
         :read_only="!$root.state.connected"
       />
-    </template> -->
+    </template>-->
     <template
       v-else-if="
         view === 'TimelineView' && currentFolder.hasOwnProperty('name')
