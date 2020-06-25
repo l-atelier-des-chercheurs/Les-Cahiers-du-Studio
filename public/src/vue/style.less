@@ -1304,6 +1304,19 @@ video {
   }
 }
 
+.chatopen-enter-active,
+.chatopen-leave-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.2s ease-out;
+}
+.chatopen-enter,
+.chatopen-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.2s ease-out;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   opacity: 1;
@@ -1521,28 +1534,21 @@ video {
 }
 
 .m_chatsview {
-  background-color: var(--color-rouge_fonce);
-  color: white;
-  overflow-x: hidden;
-
-  ._closeChatButton {
-    position: absolute;
-    right: 90%;
+  .m_channels {
+    overflow-y: auto;
+    .padding-sides-small;
+    .custom_scrollbar(8px, 5px, 6px, transparent, #fff);
   }
 }
 
-.m_chats--list {
-  overflow-y: auto;
-  .custom_scrollbar(8px, 5px, 6px, transparent, var(--color-noir));
-}
 .m_chatRow {
   // .bg-rouge_fonce
   border-radius: 4px;
   .margin-vert-small;
-  border: 2px solid var(--color-rouge_fonce);
+  border: 2px solid @c-noir_light;
 
   &.is--open {
-    background-color: var(--color-rouge_fonce);
+    background-color: @c-noir_light;
     // .padding-left-small;
     // border-color: var(--color-noir);
   }
@@ -1566,7 +1572,7 @@ video {
 
   .m_chatRow--secondLine {
     // border-top: 2px solid var(--color-rouge_fonce);
-    background-color: var(--color-rouge_fonce);
+    background-color: @c-noir_light;
 
     .padding-verysmall;
 
@@ -1614,17 +1620,14 @@ video {
   top: 0;
   left: 0;
   // padding-top: var(--spacing);
-  padding-left: 20%;
   width: 100%;
   height: 100%;
   color: var(--color-noir);
   z-index: 100;
-
-  background: linear-gradient(to right, transparent 0%, var(--color-noir) 90%);
 }
 
 .m_chat--content {
-  background-color: @c-rouge;
+  background-color: #fff;
   box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
   width: 100%;
   height: 100%;
@@ -1639,8 +1642,6 @@ video {
 
   .m_chat--content--topbar {
     position: relative;
-    background-color: @c-rouge;
-    color: white;
     z-index: 1;
     .padding-sides-small;
 
@@ -1656,8 +1657,6 @@ video {
     }
 
     .m_chat--content--topbar--backbutton {
-      .bg-noir;
-      .c-blanc;
       min-height: 0;
       min-width: 0;
       width: 2em;
@@ -1676,7 +1675,7 @@ video {
       flex: 1 1 auto;
     }
     button {
-      color: white;
+      color: currentColor;
     }
   }
 
@@ -1689,7 +1688,7 @@ video {
 
     button,
     label {
-      .c-blanc;
+      // .c-blanc;
     }
   }
 
@@ -1699,6 +1698,8 @@ video {
     // .bg-gris_clair;
     overflow-y: auto;
 
+    background-color: @c-gris_tresclair;
+
     .custom_scrollbar(8px, 5px, 6px, transparent, var(--color-noir));
     .padding-sides-verysmall;
 
@@ -1706,7 +1707,6 @@ video {
       width: 100%;
       height: 100%;
       display: block;
-      color: white;
       .padding-medium;
       display: flex;
       align-items: center;
@@ -1725,10 +1725,12 @@ video {
       right: 0;
       .margin-medium;
       .bg-blanc;
-      border: 4px solid @c-rouge;
+      border: 3px solid @c-noir;
       pointer-events: auto;
       border-radius: 50%;
       transform: rotate(90deg);
+
+      font-family: "Fira Code";
 
       width: 48px;
       height: 48px;
@@ -1752,7 +1754,7 @@ video {
   .m_chat--content--post {
     position: relative;
     z-index: 1;
-    background-color: #fff;
+    background-color: @c-gris_clair;
     // border-top: 2px solid var(--color-rouge_fonce);
 
     .padding-verysmall;
@@ -1858,9 +1860,9 @@ video {
 
 .m_sinceLastVisit {
   position: relative;
-  margin: 0 var(--spacing);
+  margin: 0 0;
   .margin-vert-verysmall;
-  width: ~"calc(100% - var(--spacing) * 2)";
+  width: ~"calc(100% - var(--spacing) * 0)";
   .font-verysmall;
   display: flex;
   justify-content: center;
@@ -1872,13 +1874,15 @@ video {
     content: "";
     display: block;
     width: 100%;
-    height: 1px;
-    border-top: 1px solid currentColor;
+    height: 0px;
+    margin-top: 0px;
+    border-top: 2px solid @c-noir;
     position: absolute;
   }
   span {
     position: relative;
-    background-color: @c-rouge;
+    background-color: @c-noir;
+    border-radius: 4px;
     padding: 0 ~"calc( var(--spacing) / 4)";
   }
 }
@@ -1898,4 +1902,30 @@ video {
     // position: relative;
     // padding: 0 ~"calc( var(--spacing) / 4)";
   }
+}
+
+._openAuthorModal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 1em;
+  pointer-events: none;
+  > button {
+    pointer-events: auto;
+  }
+}
+._loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  background-color: fade(@c-blanc, 65%);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

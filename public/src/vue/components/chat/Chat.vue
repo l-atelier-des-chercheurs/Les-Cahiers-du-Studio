@@ -225,18 +225,18 @@
           </template>
         </div>
 
-        <transition name="fade_fast" :duration="400">
+        <transition name="fade" :duration="400">
           <Loader v-if="is_loading" />
         </transition>
       </div>
 
-      <transition name="fade_fast" :duration="400">
+      <transition name="fade" :duration="400">
         <div
           class="m_chat--content--scrollToBottom"
           v-if="!is_scrolled_to_bottom"
         >
           <button type="button" @click="scrollToBottom()">
-            <img src="/images/i_arrow_right.svg" draggable="false" />
+            →
           </button>
         </div>
       </transition>
@@ -252,8 +252,8 @@
             <button
               type="submit"
               :disabled="!new_message"
-              v-html="$t('send')"
-              class="bg-rouge"
+              v-html="'✓'"
+              class="bg-vert_vif button button-round"
             />
           </form>
         </template>
@@ -420,7 +420,7 @@ export default {
         var dateMoment = this.$moment(_date);
         return dateMoment.format("YYYY-MM-DD");
       });
-      message_group = this.$_.pairs(message_group);
+      message_group = this.$_.toPairs(message_group);
       message_group = this.$_.sortBy(message_group);
       // message_group = message_group.reverse();
       return message_group;

@@ -26,7 +26,7 @@
 
       <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
 
-      <!-- <div class="draggabilly_handle" @click="openMedia" /> -->
+      <div class="draggabilly_handle" @click="openMedia" />
       <div class="open_chat" @click="openChat">
         <svg
           version="1.1"
@@ -40,11 +40,11 @@
           style="enable-background: new 0 0 168 168;"
           xml:space="preserve"
         >
-          <path
+          <!-- <path
             class="st0"
             style="fill: var(--color-background);"
             d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84S0,37.6,0,84C0,130.4,37.6,168,84,168z"
-          />
+          /> -->
           <path
             class="st0"
             style="fill: var(--color-shapes);"
@@ -320,8 +320,7 @@ export default {
       }
     },
     openChat() {
-      const path = this.slugFolderName + "/" + this.media.slugMediaName;
-      this.$root.openOrCreateChat(path);
+      this.$root.openOrCreateChatFromMedia(this.media.slugMediaName);
     },
     setMediaSizeFromMeta() {
       if (this.media.hasOwnProperty("w") && typeof this.media.w === "number") {
@@ -741,6 +740,8 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
+  z-index: 1;
+  margin: calc(var(--spacing) / 4);
 
   svg {
     width: 2em;

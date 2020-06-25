@@ -37,7 +37,7 @@
           class="m_sidebarList--media"
           :class="[
             { 'is--outOfScope': mediaIsOutOfScope(media) },
-            'color-' + media.color
+            'color-' + media.color,
           ]"
           :title="media.slugMediaName"
         >
@@ -88,11 +88,10 @@
 
 <script>
 import MediaContent from "../subcomponents/MediaContent.vue";
-import _ from "underscore";
 
 export default {
   components: {
-    MediaContent
+    MediaContent,
   },
   props: {
     display: String,
@@ -101,29 +100,29 @@ export default {
     slugFolderName: String,
     sortedMedias: Array,
     timeline_start: Number,
-    timeline_end: Number
+    timeline_end: Number,
   },
   data() {
     return {
       currentSort: this.sort.current,
-      currentFilter: this.filter
+      currentFilter: this.filter,
     };
   },
-  mounted: function() {},
+  mounted: function () {},
   computed: {},
   watch: {
-    currentSort: function() {
+    currentSort: function () {
       this.$eventHub.$emit("setSort", this.currentSort);
     },
-    currentFilter: function() {
+    currentFilter: function () {
       this.$eventHub.$emit("setFilter", this.currentFilter);
     },
-    "sort.current": function() {
+    "sort.current": function () {
       this.currentSort = this.sort.current;
     },
-    filter: function() {
+    filter: function () {
       this.currentFilter = this.filter;
-    }
+    },
   },
   methods: {
     media_data_to_show(media) {
@@ -137,7 +136,7 @@ export default {
         }
 
         const array_items = media_prop.map(
-          a => a[this.sort.current.field_name]
+          (a) => a[this.sort.current.field_name]
         );
         return array_items.join(", ");
       }
@@ -167,7 +166,7 @@ export default {
         return true;
       }
       return false;
-    }
-  }
+    },
+  },
 };
 </script>

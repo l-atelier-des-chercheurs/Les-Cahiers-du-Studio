@@ -1,7 +1,6 @@
 <template>
   <div id="app" v-if="$root.access">
-    <SystemBar v-if="$root.settings.enable_system_bar" :view="view">
-    </SystemBar>
+    <SystemBar v-if="$root.settings.enable_system_bar" :view="view"></SystemBar>
 
     <div
       class="m_connectionStatus"
@@ -11,6 +10,50 @@
       {{ $t("notifications.contents_wont_be_editable") }}
     </div>
 
+    <div class="_openAuthorModal" v-if="view === 'ListView'">
+      <button
+        type="button"
+        class="m_topbar--center--authors--currentAuthor"
+        @click="$root.showAuthorsListModal = true"
+        :content="$t('login')"
+        v-tippy="{
+          placement: 'bottom',
+          delay: [600, 0],
+        }"
+      >
+        <template v-if="$root.current_author">
+          <div
+            class="m_topbar--center--authors--portrait"
+            v-if="
+              $root.current_author.hasOwnProperty('preview') &&
+              $root.current_author.preview.length !== ''
+            "
+          >
+            <img
+              :src="urlToPortrait($root.current_author.preview)"
+              width="100"
+              height="100"
+              draggable="false"
+            />
+          </div>
+          <div class="m_topbar--center--authors--name">
+            {{ $root.current_author.name }}
+          </div>
+        </template>
+        <template v-else>
+          <div class="font-medium">({{ $t("authors") }})</div>
+        </template>
+      </button>
+    </div>
+    <AuthorsList
+      v-if="$root.showAuthorsListModal"
+      :authors="$root.store.authors"
+      :prevent_close="
+        $root.state.local_options.force_login && !$root.current_author
+      "
+      @close="$root.showAuthorsListModal = false"
+    />
+
     <template v-if="view === 'ListView'">
       <ListView
         v-if="view === 'ListView'"
@@ -19,25 +62,11 @@
         :folders="$root.store.folders"
       />
     </template>
-    <!-- <template
-      v-else-if="view === 'FolderView' && currentFolder.hasOwnProperty('name')"
-    >
-      <FolderView
-        :slugFolderName="current_slugFolderName"
-        :folder="currentFolder"
-        :medias="currentFolder.medias"
-        :read_only="!$root.state.connected"
-      />
-    </template> -->
-    <template
-      v-else-if="
-        view === 'TimelineView' && currentFolder.hasOwnProperty('name')
-      "
-    >
+    <template v-else-if="view === 'TimelineView' && $root.current_folder">
       <TimelineView
-        :slugFolderName="current_slugFolderName"
-        :folder="currentFolder"
-        :medias="currentFolder.medias"
+        :slugFolderName="$root.current_folder.slugFolderName"
+        :folder="$root.current_folder"
+        :medias="$root.current_folder.medias"
         :read_only="!$root.state.connected"
       />
     </template>
@@ -52,6 +81,7 @@ import ListView from "./ListView.vue";
 // import FolderView from "./FolderView.vue";
 import TimelineView from "./TimelineView.vue";
 import BottomFooter from "./components/BottomFooter.vue";
+import AuthorsList from "./components/modals/AuthorsList.vue";
 
 export default {
   name: "app",
@@ -61,14 +91,14 @@ export default {
     // FolderView,
     TimelineView,
     BottomFooter,
+    AuthorsList,
   },
-  props: ["current_slugFolderName", "currentFolder"],
   data() {
     return {};
   },
   computed: {
     view: function () {
-      if (this.current_slugFolderName !== "") {
+      if (this.$root.settings.current_slugFolderName !== "") {
         return "TimelineView";
       }
       return "ListView";

@@ -14,10 +14,16 @@
 
     <div class="m_metaField" v-if="!!_viewing_limited_to && context === 'full'">
       <div>{{ $t("consultation") }}</div>
-      <div>{{ $t("visible_to_all") }}</div>
+      <div>
+        <template v-if="_viewing_limited_to === 'everybody'">{{ $t("visible_to_all") }}</template>
+        <template v-else-if="_viewing_limited_to === 'only_authors'">{{ $t("only_authors") }}</template>
+      </div>
     </div>
 
-    <small v-if="_editing_limited_to === 'nobody'" v-html="$t('archived_explanation')" />
+    <small
+      v-if="_editing_limited_to === 'nobody' && context !== 'full'"
+      v-html="$t('archived_explanation')"
+    />
     <!-- 
           <div
             class="m_metaField"
@@ -53,7 +59,13 @@
       <div>{{ $t("only_password_can_open") }}</div>
     </div>
 
-    <template v-if="!can_edit_folder && editing_limited_to === 'only_authors'">
+    <template
+      v-if="
+        !can_edit_folder &&
+        (editing_limited_to === 'only_authors' ||
+          viewing_limited_to === 'only_authors')
+      "
+    >
       <div
         class="text-centered"
         v-if="
@@ -80,7 +92,7 @@
         >{{ $t("login_to_access_project") }}</button>
 
         <button
-          v-else
+          v-else-if="!can_see_folder"
           type="button"
           class="buttonLink"
           style
@@ -93,7 +105,8 @@
       v-if="
         !can_see_folder &&
         password === 'has_pass' &&
-        editing_limited_to !== 'only_authors'
+        editing_limited_to !== 'only_authors' &&
+        editing_limited_to !== 'nobody'
       "
       type="button"
       class="buttonLink _open_pwd_input"
@@ -107,6 +120,7 @@
         !can_edit_folder &&
         password === 'has_pass' &&
         editing_limited_to !== 'only_authors' &&
+        editing_limited_to !== 'nobody' &&
         context === 'full'
       "
       type="button"
@@ -343,8 +357,8 @@ export default {
   // border: 1px solid var(--color-noir);
   background-color: var(--color-noir);
   color: white;
-  padding: calc(var(--spacing) / 3);
   border-radius: 4px;
+  padding: calc(var(--spacing) / 3);
 }
 
 button {

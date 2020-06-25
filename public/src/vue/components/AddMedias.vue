@@ -13,20 +13,22 @@
       <button
         type="button"
         class="m_authorMenu--button"
-        @click="show_authors_options = !show_authors_options"
+        @click="$root.showAuthorsListModal = true"
         :style="addMediaStyles"
         :disabled="read_only"
       >
         <!-- @mouseenter="!is_touch && show_drop_container === false ? show_authors_options = true : ''" -->
-        <template v-if="current_author_name">{{ current_author_name }}</template>
-        <template v-else>{{ $t('login').toLowerCase() }}</template>
+        <template v-if="$root.current_author">
+          {{ $root.current_author.name }}
+        </template>
+        <template v-else>{{ $t("login").toLowerCase() }}</template>
       </button>
     </div>
 
     <div
       class="menu_encart"
       @mouseleave="show_addmedia_options = false"
-      :class="{ 'is--showing_options' : show_addmedia_options }"
+      :class="{ 'is--showing_options': show_addmedia_options }"
       :style="addMediaStyles"
     >
       <!-- @mouseenter="!is_touch && show_drop_container === false ? show_addmedia_options = true : ''" -->
@@ -41,34 +43,37 @@
           <span class="text_label show_on_hover">Texte</span>
 
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-            <path d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z" style="fill: currentColor" />
+            <path
+              d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z"
+              style="fill: currentColor;"
+            />
             <line
               x1="15.21"
               y1="14.41"
               x2="24.71"
               y2="14.41"
-              style="fill: none;stroke: currentColor;stroke-miterlimit: 10"
+              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
             />
             <line
               x1="15.21"
               y1="17.88"
               x2="24.71"
               y2="17.88"
-              style="fill: none;stroke: currentColor;stroke-miterlimit: 10"
+              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
             />
             <line
               x1="15.21"
               y1="21.26"
               x2="24.71"
               y2="21.26"
-              style="fill: none;stroke: currentColor;stroke-miterlimit: 10"
+              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
             />
             <line
               x1="15.21"
               y1="24.62"
               x2="22.88"
               y2="24.62"
-              style="fill: none;stroke: currentColor;stroke-miterlimit: 10"
+              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
             />
           </svg>
         </button>
@@ -85,9 +90,9 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
             <path
               d="M20,11.59A8.41,8.41,0,1,1,11.59,20,8.42,8.42,0,0,1,20,11.59m0-1A9.41,9.41,0,1,0,29.41,20,9.41,9.41,0,0,0,20,10.59Z"
-              style="fill: currentColor"
+              style="fill: currentColor;"
             />
-            <circle cx="20" cy="20" r="4.74" style="fill: currentColor" />
+            <circle cx="20" cy="20" r="4.74" style="fill: currentColor;" />
           </svg>
         </button>
 
@@ -119,15 +124,17 @@
       <button
         type="button"
         class="menu_encart--button button button-round margin-bottom-small padding-none bg-noir c-blanc button_addMedia m_addMedias--buttons--openHideButton"
-        :class="{ 
-          'is--shown' : show_addmedia_options, 
-          'is--dragover' : show_drop_container,
+        :class="{
+          'is--shown': show_addmedia_options,
+          'is--dragover': show_drop_container,
         }"
         :style="addMediaStyles"
         @click="show_addmedia_options = !show_addmedia_options"
         @drop="dropHandler($event)"
       >
-        <span class="text_label always_show" v-if="show_drop_container">Déposez vos fichiers ici</span>
+        <span class="text_label always_show" v-if="show_drop_container"
+          >Déposez vos fichiers ici</span
+        >
         <!-- TODO scroll to now au click -->
         <svg
           version="1.1"
@@ -138,7 +145,7 @@
           width="24px"
           height="24px"
           viewBox="0 0 24 24"
-          style="enable-background:new 0 0 24 24;"
+          style="enable-background: new 0 0 24 24;"
           xml:space="preserve"
         >
           <path
@@ -169,20 +176,16 @@ export default {
     folder: Object,
     is_realtime: {
       type: Boolean,
-      default: false
-    },
-    current_author: {
-      type: Object,
-      default: () => {}
+      default: false,
     },
     read_only: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   components: {
     UploadFile,
-    Authors
+    Authors,
   },
   data() {
     return {
@@ -215,7 +218,7 @@ export default {
             <line x1="31.59" y1="23.73" x2="31.59" y2="16.27" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
             <line x1="34.17" y1="21.43" x2="34.17" y2="18.57" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
             </svg>
-          `
+          `,
         },
         {
           key: "file",
@@ -227,7 +230,7 @@ export default {
               <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: currentColor"/>
               <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
             </svg>
-          `
+          `,
         },
         {
           key: "video",
@@ -240,7 +243,7 @@ export default {
               <rect style="fill:none;stroke:currentColor" x="12.3" y="11" transform="matrix(-1.836970e-16 1 -1 -1.836970e-16 40 3.552714e-15)" style="fill:none;stroke:currentColor" width="15.3" height="18"/>
               <polygon  style="fill:none;stroke:currentColor" style="fill:none;stroke:currentColor" points="23.8,20 17.4,23.6 17.4,16.4 "/>
             </svg>
-          `
+          `,
         },
         {
           key: "image",
@@ -253,22 +256,22 @@ export default {
               <line x1="13.85" y1="14.99" x2="26.48" y2="25.12" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
               <line x1="13.85" y1="25.12" x2="26.48" y2="14.99" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
             </svg>
-          `
-        }
-      ]
+          `,
+        },
+      ],
     };
   },
-  mounted: function() {
+  mounted: function () {
     document.addEventListener("keyup", this.boitierPressed);
     document.addEventListener("dragover", this.ondragover);
     this.cancelDragOver = debounce(this.cancelDragOver, 300);
   },
-  destroyed: function() {
+  destroyed: function () {
     document.removeEventListener("keyup", this.boitierPressed);
     document.removeEventListener("dragover", this.ondragover);
   },
   watch: {
-    file: function() {},
+    file: function () {},
     show_addmedia_options() {
       if (this.show_addmedia_options) {
         this.$eventHub.$emit("showingAddmediaOptions");
@@ -282,7 +285,7 @@ export default {
       } else {
         this.$eventHub.$emit("hidingAddmediaOptions");
       }
-    }
+    },
   },
   computed: {
     is_touch() {
@@ -296,20 +299,17 @@ export default {
     },
     addMediaStyles() {
       let props = {};
-      if (this.current_author && this.current_author.hasOwnProperty("color")) {
-        props["--color-author"] = this.current_author.color;
+      if (
+        this.$root.current_author &&
+        this.$root.current_author.hasOwnProperty("color")
+      ) {
+        props["--color-author"] = this.$root.current_author.color;
         props["--color-text_on_author_color"] = "var(--color-noir)";
       } else {
         props["--color-text_on_author_color"] = "#fff";
       }
       return props;
     },
-    current_author_name() {
-      if (!this.current_author || !this.current_author.hasOwnProperty("name")) {
-        return false;
-      }
-      return this.current_author.name;
-    }
   },
   methods: {
     createTextMedia() {
@@ -327,8 +327,8 @@ export default {
         additionalMeta: {
           type: "text",
           w: 4,
-          h: 4
-        }
+          h: 4,
+        },
       });
 
       this.show_addmedia_options = false;
@@ -355,8 +355,8 @@ export default {
         type: "folders",
         additionalMeta: {
           type: "marker",
-          collapsed: true
-        }
+          collapsed: true,
+        },
       });
       this.show_addmedia_options = false;
       this.$eventHub.$emit("timeline.scrollToEnd");
@@ -384,14 +384,14 @@ export default {
 
       var key = event.key;
 
-      this.$root.settings.keyboard_shortcuts.forEach(k => {
+      this.$root.settings.keyboard_shortcuts.forEach((k) => {
         if (k.key === key) {
           let new_media_opts = {
             slugFolderName: this.slugFolderName,
             type: "folders",
             additionalMeta: {
-              type: "marker"
-            }
+              type: "marker",
+            },
           };
 
           if (k.author_name !== "" && k.author_name !== "none") {
@@ -454,8 +454,8 @@ export default {
           this.selected_files = Array.from($event.dataTransfer.files);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="less" scoped>
@@ -519,7 +519,7 @@ button,
 }
 
 .m_addMedias {
-  position: fixed;
+  position: absolute;
   bottom: 8vh;
   right: 4vw;
   z-index: 15000;

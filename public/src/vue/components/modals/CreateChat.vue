@@ -18,7 +18,7 @@
         <input type="text" v-model.trim="chatdata.name" required autofocus />
       </div>
 
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <span class="switch switch-xs">
           <input
             type="checkbox"
@@ -50,7 +50,7 @@
             </svg>
           </label>
         </span>
-      </div>
+      </div> -->
 
       <!-- Author(s) -->
       <div class="margin-bottom-small">
@@ -60,11 +60,13 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_authors }"
             @click="show_authors = !show_authors"
-          >{{ $t("participants") }}</button>
+          >
+            {{ $t("participants") }}
+          </button>
         </label>
         <div v-if="show_authors">
           <AuthorsInput :currentAuthors.sync="chatdata.authors" />
-          <small>{{ $t("author_instructions") }}</small>
+          <small v-html="$t('author_instructions')" />
         </div>
       </div>
 
@@ -76,7 +78,9 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_access_control }"
             @click="show_access_control = !show_access_control"
-          >{{ $t("manage_access") }}</button>
+          >
+            {{ $t("manage_access") }}
+          </button>
         </label>
 
         <div v-if="show_access_control">
@@ -101,12 +105,12 @@ import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 
 export default {
   props: {
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     Modal,
     AuthorsInput,
-    EditAccessControl
+    EditAccessControl,
   },
   data() {
     return {
@@ -122,30 +126,31 @@ export default {
           ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
           : [],
         editing_limited_to: "everybody",
-        viewing_limited_to: "everybody"
+        viewing_limited_to: "everybody",
+        attached_to_folder: this.$root.current_folder.slugFolderName,
       },
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
     };
   },
   watch: {
-    "chatdata.name": function() {
+    "chatdata.name": function () {
       if (this.chatdata.name.length > 0) {
         this.askBeforeClosingModal = true;
       } else {
         this.askBeforeClosingModal = false;
       }
     },
-    preview: function() {
+    preview: function () {
       if (!!this.preview) {
         this.askBeforeClosingModal = true;
       } else {
         this.askBeforeClosingModal = false;
       }
-    }
+    },
   },
   computed: {},
   methods: {
-    newChat: function(event) {
+    newChat: function (event) {
       console.log("newChat");
 
       if (
@@ -165,12 +170,12 @@ export default {
 
       this.$root
         .createFolder({ type: "chats", data: this.chatdata })
-        .then(cdata => {
+        .then((cdata) => {
           this.$emit("close");
           this.$root.openChat(cdata.slugFolderName);
         });
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

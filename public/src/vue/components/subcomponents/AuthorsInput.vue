@@ -4,7 +4,9 @@
       v-for="author in allAuthorsExceptWhenReadOnly"
       type="button"
       :key="author.name"
-      :class="{ 'is--active': authors.filter(a => a.name === author.name).length > 0 }"
+      :class="{
+        'is--active': authors.filter((a) => a.name === author.name).length > 0,
+      }"
       @click="!read_only ? toggleAuthorName(author.name) : ''"
       :disabled="read_only"
     >
@@ -27,13 +29,13 @@ export default {
     allAuthors: Array,
     read_only: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   components: {},
   data() {
     return {
-      authors: Array.isArray(this.currentAuthors) ? this.currentAuthors : []
+      authors: Array.isArray(this.currentAuthors) ? this.currentAuthors : [],
     };
   },
 
@@ -45,28 +47,27 @@ export default {
   computed: {
     allAuthorsExceptWhenReadOnly() {
       if (this.read_only) {
-        return this.allAuthors.filter(a =>
-          this.authors.map(a => a.name).includes(a.name)
+        return this.allAuthors.filter((a) =>
+          this.authors.map((a) => a.name).includes(a.name)
         );
       } else {
         return this.allAuthors;
       }
-    }
+    },
   },
   methods: {
-    toggleAuthorName: function(authorName) {
+    toggleAuthorName: function (authorName) {
       // authorName is already in authors, then remove it
-      if (this.authors.filter(a => a.name === authorName).length > 0) {
-        this.authors = this.authors.filter(a => a.name !== authorName);
+      if (this.authors.filter((a) => a.name === authorName).length > 0) {
+        this.authors = this.authors.filter((a) => a.name !== authorName);
       } else {
         this.authors.push({
-          name: authorName
+          name: authorName,
         });
       }
       this.$emit("authorsChanged", this.authors);
-    }
-  }
+    },
+  },
 };
 </script>
-<style>
-</style>
+<style></style>

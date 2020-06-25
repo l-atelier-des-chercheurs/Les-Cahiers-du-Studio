@@ -56,6 +56,55 @@ button,
   }
 }
 
+.buttonLink {
+  position: relative;
+  display: inline-block;
+
+  background-color: inherit;
+
+  text-decoration: none;
+  .font-small;
+  .padding-verysmall;
+  .margin-verysmall;
+
+  text-transform: uppercase;
+  font-weight: 400;
+  min-height: 0;
+
+  transition: background 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &::after {
+    content: "";
+    position: absolute;
+    display: block;
+    left: @t-skipline / 4;
+    right: @t-skipline / 4;
+    border-bottom: 1px solid currentColor;
+  }
+
+  &.is--active {
+    color: @c-blanc !important;
+  }
+
+  &._no_underline {
+    &::after {
+      display: none;
+    }
+  }
+
+  &:hover {
+    background-color: @c-gris_tresclair;
+    &::after {
+      // border-bottom-width: 2px;
+    }
+  }
+
+  &[disabled],
+  &.is--disabled {
+    background-color: @c-gris;
+  }
+}
+
 .text-ellipsis {
   overflow: hidden;
   white-space: nowrap;
@@ -673,5 +722,27 @@ th {
 @media screen and (max-width: 50rem) {
   .flex-collapse-on-mobile {
     flex-basis: auto;
+  }
+}
+
+svg.inline-svg {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+
+  &.inline-svg-larger {
+    width: 1.4em;
+    height: 1.4em;
+  }
+
+  > * {
+    fill: currentColor;
+  }
+
+  &_larger {
+    width: 1.5em;
+    height: 1.5em;
+    margin-top: -0.25em;
+    margin-bottom: -0.25em;
   }
 }

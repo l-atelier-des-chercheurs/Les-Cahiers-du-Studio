@@ -11,3 +11,4 @@ npm-debug.log
 *.ntvs*
 *.njsproj
 *.sln
+changelog.csv
