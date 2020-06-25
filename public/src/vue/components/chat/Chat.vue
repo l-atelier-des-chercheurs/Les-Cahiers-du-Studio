@@ -420,7 +420,7 @@ export default {
         var dateMoment = this.$moment(_date);
         return dateMoment.format("YYYY-MM-DD");
       });
-      message_group = this.$_.pairs(message_group);
+      message_group = this.$_.toPairs(message_group);
       message_group = this.$_.sortBy(message_group);
       // message_group = message_group.reverse();
       return message_group;

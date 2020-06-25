@@ -139,6 +139,16 @@
           :style="{ [type]: 100 - percent + '%' }"
           :split="split"
         >
+          <AddMedias
+            v-if="can_edit_folder"
+            :slugFolderName="slugFolderName"
+            :folder="folder"
+            :is_realtime="is_realtime"
+            :current_author="$root.current_author"
+            :read_only="!$root.state.connected"
+            :rightmostMedia="rightmostMedia"
+          />
+
           <div
             class="m_floater"
             @wheel="onMousewheel"
@@ -369,16 +379,6 @@
       v-if="$root.settings.show_chat_panel"
       :current_author="$root.current_author"
       :chats="$root.store.chats"
-    />
-
-    <AddMedias
-      v-if="can_edit_folder"
-      :slugFolderName="slugFolderName"
-      :folder="folder"
-      :is_realtime="is_realtime"
-      :current_author="$root.current_author"
-      :read_only="!$root.state.connected"
-      :rightmostMedia="rightmostMedia"
     />
 
     <EditMedia
