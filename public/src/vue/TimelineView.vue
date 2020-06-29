@@ -1265,6 +1265,14 @@ export default {
           m.dataset.hasOwnProperty("slugmedianame") &&
           m.dataset.slugmedianame === slugMediaName
       );
+
+      if (!media_in_timeline) {
+        console.log(
+          `METHODS • TimeLineView: scrollToMedia / media_in_timeline wasn’t found`
+        );
+        return false;
+      }
+
       const x =
         media_in_timeline.parentElement.parentElement.parentElement
           .parentElement.parentElement.parentElement.offsetLeft +

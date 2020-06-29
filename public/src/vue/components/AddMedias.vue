@@ -155,18 +155,21 @@
         </svg>
       </button>
 
-      <UploadFile
+      <UploadFileModal
         v-if="selected_files.length > 0"
         @close="selected_files = []"
         :slugFolderName="slugFolderName"
         :type="'folders'"
         :selected_files="selected_files"
+        @insertMedias="
+          (metaFileNames) => insertImportedMedias({ metaFileNames })
+        "
       />
     </div>
   </div>
 </template>
 <script>
-import UploadFile from "./modals/UploadFile.vue";
+import UploadFileModal from "./modals/UploadFileModal.vue";
 import debounce from "debounce";
 import Authors from "./subcomponents/Authors.vue";
 
@@ -184,7 +187,7 @@ export default {
     },
   },
   components: {
-    UploadFile,
+    UploadFileModal,
     Authors,
   },
   data() {
@@ -400,6 +403,24 @@ export default {
       this.selected_files = Array.from($event.target.files);
       $event.target.value = "";
     },
+
+    insertImportedMedias({ metaFileNames }) {
+      this.selected_files = [];
+      this.show_addmedia_options = false;
+      // get last media
+
+      try {
+        const last_media_meta = metaFileNames[metaFileNames.length - 1];
+        this.$nextTick(() => {
+          this.$nextTick(() => {
+            this.$eventHub.$emit("scrollToMedia", last_media_meta);
+          });
+        });
+      } catch (e) {
+        console.log("");
+      }
+    },
+
     ondragover(e) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • AddMedia / ondragover`);
