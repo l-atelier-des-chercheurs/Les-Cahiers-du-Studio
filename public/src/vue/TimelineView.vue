@@ -1286,25 +1286,31 @@ export default {
       // xPos_new -= 50;
       xPos_new -= this.$refs.timeline.offsetWidth / 2.5;
 
-      this.current_scroll_event = this.$scrollTo(".m_timeline", 500, {
-        container: this.$refs.timeline,
-        offset: xPos_new,
-        cancelable: true,
-        easing: [0.45, 0.8, 0.58, 1.0],
-        x: true,
-        y: false,
-        onDone: () => {
-          console.log(`METHODS • TimeLineView: scrollTimelineToXPos / is done`);
-          this.current_scroll_event = undefined;
-          // onScroll will update view
-        },
-        onCancel: () => {
-          console.log(
-            `METHODS • TimeLineView: scrollTimelineToXPos / was canceled`
-          );
-          this.current_scroll_event = undefined;
-        },
-      });
+      this.current_scroll_event = this.$scrollTo(
+        ".m_timeline--container",
+        500,
+        {
+          container: this.$refs.timeline,
+          offset: xPos_new,
+          cancelable: true,
+          easing: [0.45, 0.8, 0.58, 1.0],
+          x: true,
+          y: false,
+          onDone: () => {
+            console.log(
+              `METHODS • TimeLineView: scrollTimelineToXPos / is done`
+            );
+            this.current_scroll_event = undefined;
+            // onScroll will update view
+          },
+          onCancel: () => {
+            console.log(
+              `METHODS • TimeLineView: scrollTimelineToXPos / was canceled`
+            );
+            this.current_scroll_event = undefined;
+          },
+        }
+      );
     },
 
     onTimelineScroll() {

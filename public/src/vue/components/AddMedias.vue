@@ -312,55 +312,41 @@ export default {
     },
   },
   methods: {
+    createMedia({ additionalMeta }) {
+      this.$root
+        .createMedia({
+          slugFolderName: this.slugFolderName,
+          type: "folders",
+          additionalMeta,
+        })
+        .then((mdata) => {
+          debugger;
+          this.show_addmedia_options = false;
+          this.$eventHub.$emit("scrollToMedia", mdata.metaFileName);
+        });
+    },
     createTextMedia() {
       if (window.state.dev_mode === "debug") {
         console.log("METHODS • AddMediaButton: createTextMedia");
       }
+      const additionalMeta = {
+        type: "text",
+        w: 4,
+        h: 4,
+      };
 
-      this.$eventHub.$on(
-        "socketio.media_created_or_updated",
-        this.newTextMediaCreated
-      );
-      this.$root.createMedia({
-        slugFolderName: this.slugFolderName,
-        type: "folders",
-        additionalMeta: {
-          type: "text",
-          w: 4,
-          h: 4,
-        },
-      });
-
-      this.show_addmedia_options = false;
-      this.$eventHub.$emit("timeline.scrollToEnd");
-    },
-    newTextMediaCreated(mdata) {
-      if (this.$root.justCreatedMediaID === mdata.id) {
-        this.$eventHub.$off(
-          "socketio.media_created_or_updated",
-          this.newTextMediaCreated
-        );
-        this.$root.justCreatedMediaID = false;
-        this.$nextTick(() => {
-          this.$eventHub.$emit("timeline.openMediaModal", mdata.metaFileName);
-        });
-      }
+      this.createMedia({ additionalMeta });
     },
     createMarkerMedia() {
       if (window.state.dev_mode === "debug") {
         console.log("METHODS • AddMediaButton: createMarkerMedia");
       }
-      this.$root.createMedia({
-        slugFolderName: this.slugFolderName,
-        type: "folders",
-        additionalMeta: {
-          type: "marker",
-          collapsed: true,
-        },
-      });
-      this.show_addmedia_options = false;
-      this.$eventHub.$emit("timeline.scrollToEnd");
+      const additionalMeta = {
+        type: "marker",
+      };
+      this.createMedia({ additionalMeta });
     },
+
     boitierPressed(event) {
       if (window.state.dev_mode === "debug") {
         console.log("METHODS • AddMediaButton: boitierPressed");
@@ -386,20 +372,15 @@ export default {
 
       this.$root.settings.keyboard_shortcuts.forEach((k) => {
         if (k.key === key) {
-          let new_media_opts = {
-            slugFolderName: this.slugFolderName,
-            type: "folders",
-            additionalMeta: {
-              type: "marker",
-            },
+          let additionalMeta = {
+            type: "marker",
           };
 
           if (k.author_name !== "" && k.author_name !== "none") {
-            new_media_opts.additionalMeta.authors = [{ name: k.author_name }];
+            additionalMeta.authors = [{ slugFolderName: k.slugFolderName }];
           }
 
-          this.$root.createMedia(new_media_opts);
-          this.$eventHub.$emit("timeline.scrollToEnd");
+          this.$root.createMedia({ additionalMeta });
         }
       });
     },
