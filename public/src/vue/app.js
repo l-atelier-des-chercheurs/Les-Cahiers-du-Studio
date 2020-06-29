@@ -445,11 +445,13 @@ let vm = new Vue({
         );
       });
     },
-    removeFolder: function (slugFolderName) {
+    removeFolder: function ({ type, slugFolderName }) {
       if (window.state.dev_mode === "debug") {
-        console.log(`ROOT EVENT: removeFolder: ${slugFolderName}`);
+        console.log(
+          `ROOT EVENT: removeFolder: slugFolderName = ${slugFolderName} of type = ${type}`
+        );
       }
-      this.$socketio.removeFolder(slugFolderName);
+      this.$socketio.removeFolder({ type, slugFolderName });
     },
 
     formatDateToHuman(date) {
