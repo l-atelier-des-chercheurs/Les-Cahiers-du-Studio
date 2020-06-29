@@ -313,6 +313,8 @@ export default {
   },
   methods: {
     createMedia({ additionalMeta }) {
+      this.show_addmedia_options = false;
+
       this.$root
         .createMedia({
           slugFolderName: this.slugFolderName,
@@ -320,9 +322,16 @@ export default {
           additionalMeta,
         })
         .then((mdata) => {
-          debugger;
-          this.show_addmedia_options = false;
           this.$eventHub.$emit("scrollToMedia", mdata.metaFileName);
+
+          if (mdata.type === "text") {
+            setTimeout(() => {
+              this.$eventHub.$emit(
+                "timeline.openMediaModal",
+                mdata.metaFileName
+              );
+            }, 500);
+          }
         });
     },
     createTextMedia() {
