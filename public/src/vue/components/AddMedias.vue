@@ -1,6 +1,10 @@
 <template>
   <div class="m_addMedias">
-    <div class="m_addMedias--overlay" v-if="show_addmedia_options" />
+    <div
+      class="m_addMedias--overlay"
+      v-if="show_addmedia_options"
+      @click="show_addmedia_options = false"
+    />
 
     <div class="m_authorMenu" @mouseleave="/* show_authors_options = false */">
       <transition name="slideupfrombottomright">
@@ -318,6 +322,7 @@ export default {
   },
   methods: {
     createMedia({ additionalMeta }) {
+      this.selected_files = [];
       this.show_addmedia_options = false;
 
       this.$root
@@ -416,7 +421,6 @@ export default {
       this.$eventHub.$once(`socketio.folders.media_listed`, () => {
         this.selected_files = [];
         this.show_addmedia_options = false;
-        debugger;
         setTimeout(() => {
           this.$eventHub.$emit("scrollToMedia", last_media_meta);
         }, 500);
@@ -562,6 +566,7 @@ button,
     top: 0;
     bottom: 0;
     background-color: rgba(255, 255, 255, 0.8);
+    pointer-events: auto;
     // background-color: red;
   }
 
