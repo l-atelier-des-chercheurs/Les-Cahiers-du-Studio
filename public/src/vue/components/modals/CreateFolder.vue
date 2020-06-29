@@ -46,19 +46,17 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import DateTime from "../subcomponents/DateTime.vue";
 import alertify from "alertify.js";
 import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 
 export default {
   props: {
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
-    Modal,
     DateTime,
-    EditAccessControl
+    EditAccessControl,
   },
   data() {
     return {
@@ -69,8 +67,8 @@ export default {
         password: "",
         authors: "",
         editing_limited_to: "everybody",
-        viewing_limited_to: "everybody"
-      }
+        viewing_limited_to: "everybody",
+      },
     };
   },
   watch: {
@@ -78,12 +76,12 @@ export default {
       handler() {
         this.askBeforeClosingModal = true;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {},
   methods: {
-    newFolder: function(event) {
+    newFolder: function (event) {
       console.log("newFolder");
 
       function getAllFolderNames() {
@@ -109,7 +107,7 @@ export default {
 
       this.$root.createFolder({
         type: "folders",
-        data: this.folderdata
+        data: this.folderdata,
       });
 
       this.$eventHub.$on(
@@ -117,7 +115,7 @@ export default {
         this.newFolderCreated
       );
     },
-    newFolderCreated: function(fdata) {
+    newFolderCreated: function (fdata) {
       if (fdata.id === this.$root.justCreatedFolderID) {
         this.$eventHub.$off(
           "socketio.folder_created_or_updated",
@@ -129,8 +127,8 @@ export default {
           if (fdata.password === "has_pass") {
             this.$auth.updateFoldersPasswords({
               folders: {
-                [fdata.slugFolderName]: this.folderdata.password
-              }
+                [fdata.slugFolderName]: this.folderdata.password,
+              },
             });
             this.$socketio.sendAuth();
 
@@ -144,8 +142,8 @@ export default {
                   type: "marker",
                   content: "Création du dossier",
                   color: "red",
-                  collapsed: true
-                }
+                  collapsed: true,
+                },
               });
             });
           } else {
@@ -156,14 +154,14 @@ export default {
               type: "folders",
               additionalMeta: {
                 type: "marker",
-                content: this.$t("creation_of_the_timeline")
-              }
+                content: this.$t("creation_of_the_timeline"),
+              },
             });
           }
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

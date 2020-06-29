@@ -1,8 +1,5 @@
 <template>
-  <Modal
-    @close="$emit('close')"
-    :typeOfModal="'LargeAndScroll'"
-    >
+  <Modal @close="$emit('close')" :typeOfModal="'LargeAndScroll'">
     <template slot="header">
       <span class="text-cap"> Flux</span>
     </template>
@@ -18,14 +15,13 @@
         :slugFolderName="slugFolderName"
         @setSort="$emit('setSort')"
         @setFilter="$emit('setFilter')"
-        >
+      >
       </Tableau>
     </template>
   </Modal>
 </template>
 <script>
-import Modal from './BaseModal.vue';
-import Tableau from '../sidebar/Tableau.vue';
+import Tableau from "../sidebar/Tableau.vue";
 
 export default {
   props: {
@@ -34,11 +30,10 @@ export default {
     sortedMedias: Array,
     timeline_start: Number,
     timeline_end: Number,
-    slugFolderName: String
+    slugFolderName: String,
   },
   components: {
-    Modal,
-    Tableau
-  }
+    Tableau,
+  },
 };
 </script>

@@ -26,7 +26,10 @@
             id="pinnedswitch_editmedia"
             v-model="chatdata.pinned"
           />
-          <label for="pinnedswitch_editmedia" :class="{ 'c-rouge': chatdata.pinned }">
+          <label
+            for="pinnedswitch_editmedia"
+            :class="{ 'c-rouge': chatdata.pinned }"
+          >
             {{ $t("pinned_to_the_top_of_the_list") }}
             <svg
               version="1.1"
@@ -60,7 +63,9 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_authors }"
             @click="show_authors = !show_authors"
-          >{{ $t("participants") }}</button>
+          >
+            {{ $t("participants") }}
+          </button>
         </label>
         <div v-if="show_authors">
           <AuthorsInput :currentAuthors.sync="chatdata.authors" />
@@ -76,7 +81,9 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_access_control }"
             @click="show_access_control = !show_access_control"
-          >{{ $t("manage_access") }}</button>
+          >
+            {{ $t("manage_access") }}
+          </button>
         </label>
 
         <div v-if="show_access_control">
@@ -95,19 +102,17 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 
 export default {
   props: {
     chat: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
-    Modal,
     AuthorsInput,
-    EditAccessControl
+    EditAccessControl,
   },
   data() {
     return {
@@ -125,30 +130,30 @@ export default {
           : this.chat.password
           ? "with_password"
           : "everybody",
-        viewing_limited_to: this.chat.viewing_limited_to
+        viewing_limited_to: this.chat.viewing_limited_to,
       },
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
     };
   },
   watch: {
-    "chatdata.name": function() {
+    "chatdata.name": function () {
       if (this.chatdata.name.length > 0) {
         this.askBeforeClosingModal = true;
       } else {
         this.askBeforeClosingModal = false;
       }
     },
-    preview: function() {
+    preview: function () {
       if (!!this.preview) {
         this.askBeforeClosingModal = true;
       } else {
         this.askBeforeClosingModal = false;
       }
-    }
+    },
   },
   computed: {},
   methods: {
-    editThisChat: function(event) {
+    editThisChat: function (event) {
       console.log("editThisChat");
 
       if (
@@ -171,14 +176,14 @@ export default {
         .editFolder({
           type: "chats",
           slugFolderName: this.chat.slugFolderName,
-          data: this.chatdata
+          data: this.chatdata,
         })
-        .then(cdata => {
+        .then((cdata) => {
           // this.is_sending_content_to_server = false;
           this.$emit("close");
         });
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

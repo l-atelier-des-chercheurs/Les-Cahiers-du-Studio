@@ -99,7 +99,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 
@@ -108,7 +107,6 @@ export default {
     read_only: Boolean,
   },
   components: {
-    Modal,
     AuthorsInput,
     EditAccessControl,
   },

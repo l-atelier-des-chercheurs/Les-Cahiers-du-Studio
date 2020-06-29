@@ -31,6 +31,9 @@ Vue.use(VuePlyr);
 import VueDragscroll from "vue-dragscroll";
 Vue.use(VueDragscroll);
 
+import Modal from "./components/modals/BaseModal.vue";
+Vue.component("Modal", Modal);
+
 Vue.component("Loader", {
   name: "Loader",
   template: `

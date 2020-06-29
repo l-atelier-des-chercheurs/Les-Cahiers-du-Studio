@@ -21,15 +21,21 @@
             <strong>{{ $t("login_to_access") }}</strong>
           </div>
 
-          <small>{{ $t("when_logged_as_author_content_will_be_tagged") }}</small>
+          <small>{{
+            $t("when_logged_as_author_content_will_be_tagged")
+          }}</small>
           <button
             v-if="!show_detail"
             type="button"
             class="buttonLink margin-left-none padding-left-none"
             @click="show_detail = !show_detail"
-          >+ {{ $t("more_informations") }}</button>
+          >
+            + {{ $t("more_informations") }}
+          </button>
           <div>
-            <small v-if="show_detail">{{ $t("more_informations_on_authors") }}</small>
+            <small v-if="show_detail">{{
+              $t("more_informations_on_authors")
+            }}</small>
           </div>
         </div>
         <transition-group tag="div" class="m_authorsList" name="list-complete">
@@ -40,14 +46,24 @@
                 @click="openCreateAuthorPanel = true"
                 v-if="openCreateAuthorPanel == false"
                 class="m_authorsList--createAuthor--createButton bg-bleumarine"
-              >{{ $t("create_an_author") }}</button>
-              <CreateAuthor v-else @close="openCreateAuthorPanel = false" :read_only="read_only" />
+              >
+                {{ $t("create_an_author") }}
+              </button>
+              <CreateAuthor
+                v-else
+                @close="openCreateAuthorPanel = false"
+                :read_only="read_only"
+              />
             </div>
           </div>
 
           <template v-if="Object.keys(sortedAuthors).length > 0">
             <template v-for="author in sortedAuthors">
-              <Author :author="author" :key="author.slugFolderName" @close="$emit('close')" />
+              <Author
+                :author="author"
+                :key="author.slugFolderName"
+                @close="$emit('close')"
+              />
             </template>
           </template>
         </transition-group>
@@ -57,31 +73,29 @@
 </template>
 <script>
 import Author from "./../subcomponents/Author.vue";
-import Modal from "./BaseModal.vue";
 import CreateAuthor from "./../subcomponents/CreateAuthor.vue";
 
 export default {
   props: {
     authors: {
       type: Object,
-      default: {}
+      default: {},
     },
     prevent_close: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   components: {
     Author,
-    Modal,
-    CreateAuthor
+    CreateAuthor,
   },
   data() {
     return {
       openCreateAuthorPanel: false,
       editAuthorSlug: false,
       show_detail: false,
-      is_loading: false
+      is_loading: false,
     };
   },
 
@@ -97,13 +111,13 @@ export default {
 
   watch: {},
   computed: {
-    sortedAuthors: function() {
+    sortedAuthors: function () {
       return Object.values(this.authors).sort((a, b) =>
         a.name.localeCompare(b.name)
       );
-    }
+    },
   },
-  methods: {}
+  methods: {},
 };
 </script>
 <style lang="scss">
