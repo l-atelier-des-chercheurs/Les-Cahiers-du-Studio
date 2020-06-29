@@ -559,6 +559,8 @@ export default {
 
     this.setTimelineHeight();
 
+    this.$eventHub.$emit("scrollToDate", +new Date());
+
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);
 
