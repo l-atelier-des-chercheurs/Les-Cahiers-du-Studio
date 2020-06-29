@@ -5,6 +5,7 @@
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
     :askBeforeClosingModal="askBeforeClosingModal"
+    :is_loading="is_sending_content_to_server"
   >
     <template slot="header">
       <span class="text-cap">{{ $t("create_a_folder") }}</span>
@@ -62,6 +63,7 @@ export default {
     return {
       askBeforeClosingModal: false,
       show_password_field: false,
+      is_sending_content_to_server: false,
       folderdata: {
         name: "",
         password: "",
@@ -105,61 +107,26 @@ export default {
         return false;
       }
 
-      this.$root.createFolder({
-        type: "folders",
-        data: this.folderdata,
-      });
+      this.is_sending_content_to_server = true;
 
-      this.$eventHub.$on(
-        "socketio.folder_created_or_updated",
-        this.newFolderCreated
-      );
-    },
-    newFolderCreated: function (fdata) {
-      if (fdata.id === this.$root.justCreatedFolderID) {
-        this.$eventHub.$off(
-          "socketio.folder_created_or_updated",
-          this.newFolderCreated
-        );
-        this.$root.justCreatedFolderID = false;
-
-        this.$nextTick(() => {
-          if (fdata.password === "has_pass") {
-            this.$auth.updateFoldersPasswords({
-              folders: {
-                [fdata.slugFolderName]: this.folderdata.password,
-              },
-            });
-            this.$socketio.sendAuth();
-
-            this.$eventHub.$once("socketio.authentificated", () => {
-              this.$emit("close", "");
-              this.$root.openFolder(fdata.slugFolderName);
-              this.$root.createMedia({
-                slugFolderName: fdata.slugFolderName,
-                type: "folders",
-                additionalMeta: {
-                  type: "marker",
-                  content: "Création du dossier",
-                  color: "red",
-                  collapsed: true,
-                },
-              });
-            });
-          } else {
-            this.$emit("close", "");
-            this.$root.openFolder(fdata.slugFolderName);
-            this.$root.createMedia({
-              slugFolderName: fdata.slugFolderName,
-              type: "folders",
-              additionalMeta: {
-                type: "marker",
-                content: this.$t("creation_of_the_timeline"),
-              },
-            });
-          }
+      this.$root
+        .createFolder({
+          type: "folders",
+          data: this.folderdata,
+        })
+        .then((fdata) => {
+          this.$emit("close", "");
+          this.$root.openFolder(fdata.slugFolderName);
+          this.$root.createMedia({
+            slugFolderName: fdata.slugFolderName,
+            type: "folders",
+            additionalMeta: {
+              type: "marker",
+              color: "red",
+              content: this.$t("creation_of_the_timeline"),
+            },
+          });
         });
-      }
     },
   },
 };

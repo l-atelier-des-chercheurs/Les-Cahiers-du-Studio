@@ -28,6 +28,15 @@ Vue.use(VuePackeryPlugin);
 import VuePlyr from "vue-plyr";
 Vue.use(VuePlyr);
 
+Vue.component("Loader", {
+  name: "Loader",
+  template: `
+    <div class="_loader">
+      <span class="loader" />
+    </div>
+  `,
+});
+
 import VueDragscroll from "vue-dragscroll";
 Vue.use(VueDragscroll);
 

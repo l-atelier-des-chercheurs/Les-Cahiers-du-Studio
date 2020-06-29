@@ -7,7 +7,7 @@
         { is_invisible: !showModal },
         { is_minimized: is_minimized },
       ]"
-      @mousedown.self="closeModal"
+      @click.self="closeModal"
       :style="`height: ${$root.settings.windowHeight}px`"
     >
       <div
@@ -74,8 +74,8 @@
               >
                 <button
                   type="submit"
-                  :disabled="read_only"
                   class="button m_modal--buttons--save button-bg_rounded bg-bleuvert"
+                  :disabled="read_only || is_loading"
                 >
                   <span class="text-cap font-verysmall">
                     <slot name="submit_button">
@@ -117,6 +117,7 @@
               </span>
             </button>
           </form>
+          <Loader v-if="is_loading" />
         </div>
       </div>
 
