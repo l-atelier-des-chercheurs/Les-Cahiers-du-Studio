@@ -1,6 +1,8 @@
 <template>
   <div class="m_addMedias">
-    <div class="m_authorMenu" @mouseleave="show_authors_options = false">
+    <div class="m_addMedias--overlay" v-if="show_addmedia_options" />
+
+    <div class="m_authorMenu" @mouseleave="/* show_authors_options = false */">
       <transition name="slideupfrombottomright">
         <Authors
           v-if="show_authors_options"
@@ -27,7 +29,7 @@
 
     <div
       class="menu_encart"
-      @mouseleave="show_addmedia_options = false"
+      @mouseleave="/* show_addmedia_options = false */"
       :class="{ 'is--showing_options': show_addmedia_options }"
       :style="addMediaStyles"
     >
@@ -531,14 +533,16 @@ button,
 
 .m_addMedias {
   position: absolute;
+
   bottom: 8vh;
   right: 4vw;
-  z-index: 15000;
+
+  z-index: 55000;
+  min-height: 100px;
+  max-height: 80vh;
 
   // width: 100px;
   height: auto;
-  min-height: 100px;
-  max-height: 80vh;
 
   // color: var(--color-blanc);
 
@@ -550,6 +554,16 @@ button,
   justify-content: center;
 
   pointer-events: none;
+
+  .m_addMedias--overlay {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    // background-color: red;
+  }
 
   .menu_encart {
     pointer-events: none;
