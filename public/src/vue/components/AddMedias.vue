@@ -405,20 +405,20 @@ export default {
     },
 
     insertImportedMedias({ metaFileNames }) {
-      this.selected_files = [];
-      this.show_addmedia_options = false;
       // get last media
 
-      try {
-        const last_media_meta = metaFileNames[metaFileNames.length - 1];
-        this.$nextTick(() => {
-          this.$nextTick(() => {
-            this.$eventHub.$emit("scrollToMedia", last_media_meta);
-          });
-        });
-      } catch (e) {
-        console.log("");
-      }
+      if (metaFileNames.length === 0) return false;
+
+      const last_media_meta = metaFileNames[metaFileNames.length - 1];
+
+      this.$eventHub.$once(`socketio.folders.media_listed`, () => {
+        this.selected_files = [];
+        this.show_addmedia_options = false;
+        debugger;
+        setTimeout(() => {
+          this.$eventHub.$emit("scrollToMedia", last_media_meta);
+        }, 500);
+      });
     },
 
     ondragover(e) {

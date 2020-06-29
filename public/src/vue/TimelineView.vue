@@ -1256,9 +1256,7 @@ export default {
         "mediaContainer"
       );
 
-      if ($medias.length === 0) {
-        return false;
-      }
+      if ($medias.length === 0) return false;
 
       const media_in_timeline = Array.from($medias).find(
         (m) =>
@@ -1279,6 +1277,9 @@ export default {
         media_in_timeline.parentElement.parentElement.parentElement
           .parentElement.parentElement.offsetLeft +
         media_in_timeline.parentElement.parentElement.offsetLeft;
+
+      // const x = media_in_timeline.getBoundingClientRect().x;
+
       this.scrollTimelineToXPos(x);
     },
     scrollTimelineToXPos(xPos_new) {
