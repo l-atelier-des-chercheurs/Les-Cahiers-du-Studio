@@ -10,7 +10,8 @@ const settings = global.settings,
   api = require("./core/api"),
   file = require("./core/file"),
   exporter = require("./core/exporter"),
-  importer = require("./core/importer");
+  importer = require("./core/importer"),
+  auth = require("./core/auth");
 
 module.exports = function (app, io, m) {
   /**
@@ -20,7 +21,7 @@ module.exports = function (app, io, m) {
   app.get("/:slugFolderName", loadFolderOrMedia);
   app.get("/:slugFolderName/media/:metaFileName", loadFolderOrMedia);
   app.get("/export/:type/:slugFolderName", exportFolderWithMedias);
-  app.post("/file-upload/:type/:slugFolderName", postFile2);
+  app.post("/_file-upload/:type/:slugFolderName", postFile);
 
   /**
    * routing functions
@@ -289,9 +290,66 @@ module.exports = function (app, io, m) {
     });
   }
 
-  function postFile2(req, res) {
-    let type = req.param("type");
-    let slugFolderName = req.param("slugFolderName");
-    importer.handleForm({ req, res, type, slugFolderName });
+  async function postFile(req, res) {
+    let type = req.params.type;
+    let slugFolderName = req.params.slugFolderName;
+
+    const isSocketAllowed = await isSocketIDAuthorized({
+      socketid: req.query.socketid,
+      type,
+      slugFolderName,
+    }).catch((err) => {
+      sockets.notify({
+        socketid: req.query.socketid,
+        localized_string: `action_not_allowed`,
+        not_localized_string: err.message,
+        type: "error",
+      });
+    });
+    if (!isSocketAllowed) return false;
+
+    importer
+      .handleForm({ req, type, slugFolderName })
+      .then(({ msg }) => {
+        sockets.notify({
+          socketid: req.query.socketid,
+          localized_string: `imported_files_successfully`,
+          type: "success",
+        });
+        res.end(JSON.stringify(msg));
+      })
+      .catch(({ err }) => {
+        sockets.notify({
+          socketid: req.query.socketid,
+          localized_string: `action_not_allowed`,
+          not_localized_string: err.message,
+          type: "error",
+        });
+        res.end();
+      });
+  }
+
+  async function isSocketIDAuthorized({ socketid, type, slugFolderName }) {
+    let socket;
+
+    if (!socketid) throw "Missing socketid in URL";
+
+    try {
+      socket = sockets.io().sockets.connected[socketid];
+    } catch (error) {
+      throw "Missing sockets server-side.";
+    }
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (
+      !(await auth
+        .canEditFolder(socket, foldersData[slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+        }))
+    )
+      throw "User can’t edit folder";
+
+    return true;
   }
 };

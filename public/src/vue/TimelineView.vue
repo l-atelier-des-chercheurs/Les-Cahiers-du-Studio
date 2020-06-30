@@ -27,8 +27,16 @@
           :style="{ [type]: percent + '%' }"
         >
           <!-- <transition name="sidebar-animation" :duration="350" mode="out-in"> -->
-          <Sidebar
+
+          <Informations
             v-if="
+              $root.settings.has_sidebar_opened &&
+              $root.settings.sidebar_type === 'informations'
+            "
+          />
+
+          <Sidebar
+            v-else-if="
               $root.settings.has_sidebar_opened &&
               $root.settings.sidebar_type === 'options'
             "
@@ -55,6 +63,14 @@
             :medias="medias"
             :read_only="read_only"
           />
+
+          <Chats
+            v-else-if="
+              $root.settings.has_sidebar_opened &&
+              $root.settings.sidebar_type === 'chats'
+            "
+          />
+
           <!-- </transition> -->
 
           <template v-if="$root.state.mode !== 'export_web'">
@@ -89,6 +105,13 @@
             <div class="m_verticalButtons--container">
               <button
                 type="button"
+                @click.stop.prevent="toggleSidebar('informations')"
+              >
+                <span v-html="$t('informations')" />
+              </button>
+
+              <button
+                type="button"
                 @click.stop.prevent="toggleSidebar('options')"
               >
                 <span
@@ -99,13 +122,24 @@
               </button>
 
               <button
+                type="button"
+                @click.stop.prevent="toggleSidebar('chats')"
+              >
+                <span
+                  v-if="$root.settings.sidebar_type === 'chats'"
+                  v-html="`×&nbsp;` + $t('chats')"
+                />
+                <span v-else v-html="$t('chats')" />
+              </button>
+
+              <!-- <button
                 v-if="$root.settings.has_sidebar_opened"
                 type="button"
                 class="m_verticalButtons--slider"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
                 v-html="'|||'"
-              />
+              /> -->
 
               <button
                 type="button"
@@ -375,8 +409,6 @@
       </svg>
     </button>
 
-    <Chats v-if="$root.settings.show_chat_panel" />
-
     <EditMedia
       v-if="show_media_modal_for"
       :slugFolderName="slugFolderName"
@@ -403,6 +435,7 @@
 <script>
 import MediasBlock from "./components/MediasBlock.vue";
 import Sidebar from "./components/Sidebar.vue";
+import Informations from "./components/Informations.vue";
 import EditFolder from "./components/modals/EditFolder.vue";
 import AddMedias from "./components/AddMedias.vue";
 import { setTimeout } from "timers";
@@ -429,6 +462,7 @@ export default {
     AddMedias,
     EditMedia,
     Sidebar,
+    Informations,
     EditFolder,
     Resizer,
     Pane,
@@ -559,6 +593,8 @@ export default {
 
     this.setTimelineHeight();
 
+    this.$eventHub.$emit("scrollToDate", +new Date());
+
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);
 
@@ -606,6 +642,10 @@ export default {
           this.debounce_translation_fct = undefined;
         }, this.debounce_translation_delay);
       }
+    },
+    "$root.settings.sidebar_type": function () {
+      if (this.$root.settings.sidebar_type === "") this.percent = 0;
+      else this.percent = 30;
     },
   },
   computed: {
@@ -1232,11 +1272,9 @@ export default {
       console.log(`METHODS • TimeLineView: toggleSidebar / ${type}`);
       if (this.$root.settings.sidebar_type === type) {
         this.$root.settings.has_sidebar_opened = false;
-        this.percent = 0;
         this.$root.settings.sidebar_type = "";
       } else {
         this.$root.settings.has_sidebar_opened = true;
-        this.percent = 30;
         this.$root.settings.sidebar_type = type;
       }
     },
@@ -1256,21 +1294,30 @@ export default {
         "mediaContainer"
       );
 
-      if ($medias.length === 0) {
-        return false;
-      }
+      if ($medias.length === 0) return false;
 
       const media_in_timeline = Array.from($medias).find(
         (m) =>
           m.dataset.hasOwnProperty("slugmedianame") &&
           m.dataset.slugmedianame === slugMediaName
       );
+
+      if (!media_in_timeline) {
+        console.log(
+          `METHODS • TimeLineView: scrollToMedia / media_in_timeline wasn’t found`
+        );
+        return false;
+      }
+
       const x =
         media_in_timeline.parentElement.parentElement.parentElement
           .parentElement.parentElement.parentElement.offsetLeft +
         media_in_timeline.parentElement.parentElement.parentElement
           .parentElement.parentElement.offsetLeft +
         media_in_timeline.parentElement.parentElement.offsetLeft;
+
+      // const x = media_in_timeline.getBoundingClientRect().x;
+
       this.scrollTimelineToXPos(x);
     },
     scrollTimelineToXPos(xPos_new) {
@@ -1286,25 +1333,31 @@ export default {
       // xPos_new -= 50;
       xPos_new -= this.$refs.timeline.offsetWidth / 2.5;
 
-      this.current_scroll_event = this.$scrollTo(".m_timeline", 500, {
-        container: this.$refs.timeline,
-        offset: xPos_new,
-        cancelable: true,
-        easing: [0.45, 0.8, 0.58, 1.0],
-        x: true,
-        y: false,
-        onDone: () => {
-          console.log(`METHODS • TimeLineView: scrollTimelineToXPos / is done`);
-          this.current_scroll_event = undefined;
-          // onScroll will update view
-        },
-        onCancel: () => {
-          console.log(
-            `METHODS • TimeLineView: scrollTimelineToXPos / was canceled`
-          );
-          this.current_scroll_event = undefined;
-        },
-      });
+      this.current_scroll_event = this.$scrollTo(
+        ".m_timeline--container",
+        500,
+        {
+          container: this.$refs.timeline,
+          offset: xPos_new,
+          cancelable: true,
+          easing: [0.45, 0.8, 0.58, 1.0],
+          x: true,
+          y: false,
+          onDone: () => {
+            console.log(
+              `METHODS • TimeLineView: scrollTimelineToXPos / is done`
+            );
+            this.current_scroll_event = undefined;
+            // onScroll will update view
+          },
+          onCancel: () => {
+            console.log(
+              `METHODS • TimeLineView: scrollTimelineToXPos / was canceled`
+            );
+            this.current_scroll_event = undefined;
+          },
+        }
+      );
     },
 
     onTimelineScroll() {

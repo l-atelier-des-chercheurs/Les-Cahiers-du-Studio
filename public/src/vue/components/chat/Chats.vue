@@ -110,14 +110,14 @@ export default {
   position: relative;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  width: 100%;
-  height: 100%;
+  // width: 100%;
+  // height: 100%;
 
-  z-index: 100000;
-  top: 0;
-  right: 0;
+  // z-index: 100000;
+  // top: 0;
+  // right: 0;
   // max-width: 440px;
-  flex: 0 0 420px;
+  // flex: 0 0 420px;
 
   height: 100%;
   background-color: var(--color-noir);

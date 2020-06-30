@@ -47,7 +47,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import DateTime from "../subcomponents/DateTime.vue";
 import alertify from "alertify.js";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
@@ -58,13 +57,12 @@ export default {
     slugFolderName: String,
     folder: Object,
     read_only: Boolean,
-    allAuthors: Array
+    allAuthors: Array,
   },
   components: {
-    Modal,
     DateTime,
     AuthorsInput,
-    EditAccessControl
+    EditAccessControl,
   },
   data() {
     return {
@@ -81,8 +79,8 @@ export default {
           : this.folder.password
           ? "with_password"
           : "everybody",
-        viewing_limited_to: this.folder.viewing_limited_to
-      }
+        viewing_limited_to: this.folder.viewing_limited_to,
+      },
     };
   },
   watch: {
@@ -90,12 +88,12 @@ export default {
       handler() {
         this.askBeforeClosingModal = true;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {},
   methods: {
-    editThisFolder: function(event) {
+    editThisFolder: function (event) {
       console.log("editThisFolder");
 
       // only if user changed the name of this folder
@@ -133,13 +131,13 @@ export default {
       this.$root.editFolder({
         type: "folders",
         slugFolderName: this.slugFolderName,
-        data: this.folderdata
+        data: this.folderdata,
       });
 
       this.$emit("close", "");
-    }
+    },
   },
-  mounted() {}
+  mounted() {},
 };
 </script>
 <style></style>

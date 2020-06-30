@@ -38,6 +38,8 @@ module.exports = (function () {
       untitled_document: "Document sans-titre",
       back_to_list: "Retour à la liste",
       journal: "Journal",
+      chats: "Discussions",
+      informations: "Informations",
       on_import_place_media_on_the_date_they_were_created:
         "À l’importation de médias, le placement se fait selon la date de création du fichier et non la date d’importation",
       author_instructions:

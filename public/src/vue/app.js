@@ -28,8 +28,20 @@ Vue.use(VuePackeryPlugin);
 import VuePlyr from "vue-plyr";
 Vue.use(VuePlyr);
 
+Vue.component("Loader", {
+  name: "Loader",
+  template: `
+    <div class="_loader">
+      <span class="loader" />
+    </div>
+  `,
+});
+
 import VueDragscroll from "vue-dragscroll";
 Vue.use(VueDragscroll);
+
+import Modal from "./components/modals/BaseModal.vue";
+Vue.component("Modal", Modal);
 
 Vue.component("Loader", {
   name: "Loader",
@@ -442,11 +454,13 @@ let vm = new Vue({
         );
       });
     },
-    removeFolder: function (slugFolderName) {
+    removeFolder: function ({ type, slugFolderName }) {
       if (window.state.dev_mode === "debug") {
-        console.log(`ROOT EVENT: removeFolder: ${slugFolderName}`);
+        console.log(
+          `ROOT EVENT: removeFolder: slugFolderName = ${slugFolderName} of type = ${type}`
+        );
       }
-      this.$socketio.removeFolder(slugFolderName);
+      this.$socketio.removeFolder({ type, slugFolderName });
     },
 
     formatDateToHuman(date) {
@@ -511,6 +525,21 @@ let vm = new Vue({
         console.log(`ROOT EVENT: closeChat`);
       }
       this.settings.current_chat_slug = false;
+    },
+
+    getNumberOfCommentsForChat(media_meta_linked) {
+      if (window.state.dev_mode === "debug")
+        console.log(
+          `ROOT EVENT: getNumberOfCommentsForChat: ${media_meta_linked}`
+        );
+
+      const linked_channel = Object.values(this.store.chats).find(
+        (c) => c.is_linked_to_media === media_meta_linked
+      );
+
+      if (!linked_channel) return false;
+
+      return linked_channel.number_of_medias;
     },
 
     openOrCreateChatFromMedia(media_meta_linked) {

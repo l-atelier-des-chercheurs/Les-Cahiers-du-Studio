@@ -237,12 +237,15 @@ module.exports = (function () {
     const password_field_options =
       global.settings.structure[type].fields.password;
 
+    const socket_is_admin = await auth.isSocketSessionAdmin(socket);
+
     if (
       password_field_options &&
       password_field_options.hasOwnProperty("transform") &&
       password_field_options.transform === "crypt" &&
       Object.values(foldersData)[0].password &&
-      data.hasOwnProperty("password")
+      data.hasOwnProperty("password") &&
+      !socket_is_admin
     ) {
       // if attempting to set new password
       // only allow if old_password match
@@ -324,7 +327,7 @@ module.exports = (function () {
 
     const foldersData = await file.getFolder({ type, slugFolderName });
 
-    await updateFolderEdited({
+    await file.updateFolderEdited({
       type,
       slugFolderName,
       foldersData: Object.values(foldersData)[0],
@@ -723,7 +726,7 @@ module.exports = (function () {
     )
       return;
 
-    const { pdfName, imageName, docPath } = exporter.makePDFForPubli({
+    const { pdfName, imageName, docPath } = await exporter.makePDFForPubli({
       slugPubliName,
       options,
     });
@@ -776,7 +779,7 @@ module.exports = (function () {
     )
       return;
 
-    const videoName = exporter
+    const videoName = await exporter
       .makeVideoForPubli({ slugPubliName, socket, options })
       .catch((error_msg) => {
         notify({
@@ -831,7 +834,7 @@ module.exports = (function () {
     )
       return;
 
-    const videoName = exporter
+    const videoName = await exporter
       .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
       .catch((error) => {
         notify({

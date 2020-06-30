@@ -199,10 +199,6 @@ video {
   width: 100%;
 
   transition: opacity 0.08s ease-in;
-
-  &.is--showingAddmediaOptions {
-    opacity: 0.15;
-  }
 }
 
 @t-systemBarHeight: 18px;
@@ -516,7 +512,7 @@ video {
     transform: rotate(-90deg);
 
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row-reverse nowrap;
 
     > * {
       .margin-sides-small;

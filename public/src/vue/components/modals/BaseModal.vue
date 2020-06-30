@@ -1,35 +1,31 @@
 <template>
   <portal to="modal_container">
-    <div 
+    <div
       class="m_modal--mask"
-      :class="[ 
-        'typeOfModal-' + typeOfModal, 
-        { 'is_invisible' : !showModal },
-        { 'is_minimized' : is_minimized }
+      :class="[
+        'typeOfModal-' + typeOfModal,
+        { is_invisible: !showModal },
+        { is_minimized: is_minimized },
       ]"
-      @mousedown.self="closeModal"
+      @click.self="closeModal"
       :style="`height: ${$root.settings.windowHeight}px`"
     >
-      <div class="m_modal--container"
-        :class="[
-          { 'is_invisible' : !showModal },
-          { 'is_minimized' : is_minimized }
-        ]"
-        :style="!!backgroundColor ? `--background-color: ${backgroundColor}` : ''"
+      <div
+        class="m_modal--container"
+        :class="[{ is_invisible: !showModal }, { is_minimized: is_minimized }]"
+        :style="
+          !!backgroundColor ? `--background-color: ${backgroundColor}` : ''
+        "
         @keyup.ctrl.enter="$emit('submit')"
       >
-        <div
-          class="m_modal--container--content"
-          ref="modalContent"
-        >
+        <div class="m_modal--container--content" ref="modalContent">
           <div v-if="!!this.$slots['preview']" class="m_modal--preview">
             <!-- if there is no sidebar, output header here -->
             <template v-if="!this.$slots['sidebar']">
               <div class="m_modal--header">
                 <h3 class="margin-none">
-                  
                   <slot name="header">
-                      default header
+                    default header
                   </slot>
                 </h3>
               </div>
@@ -39,26 +35,29 @@
               default preview
             </slot>
           </div>
-          
+
           <form
             class="m_modal--sidebar"
-            :class="{ 'is_collapsed' : !show_sidebar }"
+            :class="{ is_collapsed: !show_sidebar }"
             v-on:submit.prevent="$emit('submit')"
             v-if="!!this.$slots['sidebar'] && !is_minimized"
             ref="form"
           >
-            <button type="button" 
+            <button
+              type="button"
               class="m_modal--sidebar--toggle"
               @click="toggleSidebar"
-            > 
+            >
               &#x2630;
             </button>
 
-            <template v-if="!!this.$slots['sidebar'] && show_sidebar && !is_minimized">
+            <template
+              v-if="!!this.$slots['sidebar'] && show_sidebar && !is_minimized"
+            >
               <div class="m_modal--header">
                 <h3 class="margin-none">
                   <slot name="header">
-                      default header
+                    default header
                   </slot>
                 </h3>
               </div>
@@ -69,18 +68,18 @@
                 </slot>
               </div>
 
-              <div 
+              <div
                 v-if="!!this.$slots['submit_button']"
                 class="m_modal--buttons"
               >
                 <button
                   type="submit"
-                  :disabled="read_only"
                   class="button m_modal--buttons--save button-bg_rounded bg-bleuvert"
+                  :disabled="read_only || is_loading"
                 >
                   <span class="text-cap font-verysmall">
                     <slot name="submit_button">
-                      {{ $t('save') }}
+                      {{ $t("save") }}
                     </slot>
                   </span>
                 </button>
@@ -88,13 +87,12 @@
             </template>
           </form>
 
-          <form 
-            v-if="!!this.$slots['buttons']" 
+          <form
+            v-if="!!this.$slots['buttons']"
             class="m_modal--buttons"
             v-on:submit.prevent="$emit('submit')"
             ref="form"
           >
-
             <button
               type="button"
               @click="closeModal"
@@ -102,7 +100,7 @@
             >
               <span class="text-cap font-verysmall">
                 <slot name="cancel_button">
-                  {{ $t('cancel') }}
+                  {{ $t("cancel") }}
                 </slot>
               </span>
             </button>
@@ -114,214 +112,224 @@
             >
               <span class="text-cap font-verysmall">
                 <slot name="submit_button">
-                  {{ $t('save') }}
+                  {{ $t("save") }}
                 </slot>
               </span>
             </button>
-
-
           </form>
-
+          <Loader v-if="is_loading" />
         </div>
-
       </div>
 
-      <transition name="fade" :duration="600">
-        <button
-          class="button-round m_modal--close_button padding-verysmall"
-          @click="closeModal"
-          v-if="showModal && !is_minimized"
+      <!-- <transition name="fade" :duration="600"> -->
+      <button
+        class="button-round m_modal--close_button padding-verysmall"
+        @click="closeModal"
+        v-if="showModal && !is_minimized"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="48"
+          height="48"
+          viewBox="0 0 48 48"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-            <line x1="13.33" y1="13.33" x2="34.67" y2="34.67"/>
-            <line x1="13.33" y1="34.67" x2="34.67" y2="13.33"/>
-          </svg>
-        </button>
-      </transition>
+          <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" />
+          <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" />
+        </svg>
+      </button>
+      <!-- </transition> -->
 
-      <transition name="fade" :duration="600">
-        <button
-          class="button-round bg-blanc m_modal--minimize padding-verysmall"
-          @click="toggleMinimize"
-          v-if="showModal && can_minimize"
-          :class="{ 'is_minimized' : is_minimized }"
-        >
-          <!-- <img src="/images/i_minimize.svg"> -->
-        </button>
-      </transition>
+      <!-- <transition name="fade" :duration="600"> -->
+      <button
+        class="button-round bg-blanc m_modal--minimize padding-verysmall"
+        @click="toggleMinimize"
+        v-if="showModal && can_minimize"
+        :class="{ is_minimized: is_minimized }"
+      >
+        <!-- <img src="/images/i_minimize.svg"> -->
+      </button>
+      <!-- </transition> -->
 
-      <transition name="fade" :duration="600">
-        <button
-          class="button-round bg-blanc m_modal--nav m_modal--nav_left padding-verysmall"
-          @click="arrowLeft()"
-          v-if="showModal && arrow_navigation && !is_minimized"
-        >
-          ←
-        </button>
-      </transition>
+      <!-- <transition name="fade" :duration="600"> -->
+      <button
+        class="button-round bg-blanc m_modal--nav m_modal--nav_left padding-verysmall"
+        @click="arrowLeft()"
+        v-if="showModal && arrow_navigation && !is_minimized"
+      >
+        ←
+      </button>
+      <!-- </transition> -->
 
-      <transition name="fade" :duration="600">
-        <button
-          class="button-round bg-blanc m_modal--nav m_modal--nav_right padding-verysmall"
-          @click="arrowRight()"
-          v-if="showModal && arrow_navigation && !is_minimized"
-        >
-          →
-        </button>
-      </transition>
-
+      <!-- <transition name="fade" :duration="600"> -->
+      <button
+        class="button-round bg-blanc m_modal--nav m_modal--nav_right padding-verysmall"
+        @click="arrowRight()"
+        v-if="showModal && arrow_navigation && !is_minimized"
+      >
+        →
+      </button>
+      <!-- </transition> -->
     </div>
   </portal>
 </template>
 
 <script>
 export default {
-  name: 'BaseModal',
+  name: "BaseModal",
   props: {
     backgroundColor: {
       type: String,
-      default: 'white'
+      default: "white",
     },
     read_only: {
       type: Boolean,
-      default: true
+      default: true,
     },
     typeOfModal: {
       type: String,
-      default: 'EditMeta'
+      default: "EditMeta",
     },
     askBeforeClosingModal: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isFile: {
       type: Boolean,
-      default: false
+      default: false,
     },
     show_sidebar: {
       type: Boolean,
-      default: true
+      default: true,
     },
     can_minimize: {
       type: Boolean,
-      default: false
+      default: false,
     },
     arrow_navigation: {
       type: Boolean,
-      default: false
+      default: false,
     },
     is_minimized: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       showModal: false,
-      windowHeight: window.innerHeight
+      windowHeight: window.innerHeight,
     };
   },
-  mounted: function() {
-    console.log(`MOUNTED • BaseModal`)
+  mounted: function () {
+    console.log(`MOUNTED • BaseModal`);
 
     setTimeout(() => {
       this.showModal = true;
 
       if (Modernizr !== undefined && !Modernizr.touchevents) {
-        if(this.$refs.modalContent && this.$refs.modalContent.querySelector('[autofocus]')) {
-          const el = this.$refs.modalContent.querySelector('[autofocus]');
-          if(el.classList.contains('quillWrapper')) {
-            el.querySelector('.ql-editor').focus();
-          }  else {
+        if (
+          this.$refs.modalContent &&
+          this.$refs.modalContent.querySelector("[autofocus]")
+        ) {
+          const el = this.$refs.modalContent.querySelector("[autofocus]");
+          if (el.classList.contains("quillWrapper")) {
+            el.querySelector(".ql-editor").focus();
+          } else {
             el.focus();
           }
         }
 
-        if (this.isFile && this.$refs.form){
-          this.$refs.form.setAttribute('enctype', 'multipart/form-data');
+        if (this.isFile && this.$refs.form) {
+          this.$refs.form.setAttribute("enctype", "multipart/form-data");
         }
-
       }
-    },100);
+    }, 100);
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-    modalKeyListener: function(event) {
-      if (window.state.dev_mode === 'debug') {
-        console.log('METHODS • BaseModal: modalKeyListener');
-      }
-      
-      if (event.key === 'Escape') {
-        this.closeModal();
-        return
+    modalKeyListener: function (event) {
+      if (window.state.dev_mode === "debug") {
+        console.log("METHODS • BaseModal: modalKeyListener");
       }
 
-      if (event.target.tagName.toLowerCase() === 'input' 
-        || event.target.tagName.toLowerCase() === 'textarea'
-        || event.target.className.includes('ql-editor')
+      if (event.key === "Escape") {
+        this.closeModal();
+        return;
+      }
+
+      if (
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor")
       ) {
         return;
-      }  
-      
-      if (event.key === 'ArrowRight') {
+      }
+
+      if (event.key === "ArrowRight") {
         this.arrowRight();
         return;
       }
-      if (event.key === 'ArrowLeft') {
+      if (event.key === "ArrowLeft") {
         this.arrowLeft();
         return;
       }
     },
-    closeModal: function() {
-      console.log(`METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
-      if(this.askBeforeClosingModal) {
-        if (!window.confirm(this.$t('sureToCloseModal'))) {
-          console.log(`METHODS • BaseModal: closeModal refused`)
+    closeModal: function () {
+      console.log(
+        `METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`
+      );
+      if (this.askBeforeClosingModal) {
+        if (!window.confirm(this.$t("sureToCloseModal"))) {
+          console.log(`METHODS • BaseModal: closeModal refused`);
           return;
         }
       }
       this.showModal = false;
       setTimeout(() => {
-        this.$emit('close');
+        this.$emit("close");
       }, 400);
     },
-    arrowLeft: function() {
-      console.log(`METHODS • BaseModal: arrowLeft with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
-      if(this.askBeforeClosingModal) {
-        if (!window.confirm(this.$t('sureToCloseModal'))) {
+    arrowLeft: function () {
+      console.log(
+        `METHODS • BaseModal: arrowLeft with askBeforeClosingModal = ${this.askBeforeClosingModal}`
+      );
+      if (this.askBeforeClosingModal) {
+        if (!window.confirm(this.$t("sureToCloseModal"))) {
           return;
         }
       }
-      this.$emit('arrow_left');
+      this.$emit("arrow_left");
     },
-    arrowRight: function() {
-      console.log(`METHODS • BaseModal: arrowRight with askBeforeClosingModal = ${this.askBeforeClosingModal}`)
-      if(this.askBeforeClosingModal) {
-        if (!window.confirm(this.$t('sureToCloseModal'))) {
+    arrowRight: function () {
+      console.log(
+        `METHODS • BaseModal: arrowRight with askBeforeClosingModal = ${this.askBeforeClosingModal}`
+      );
+      if (this.askBeforeClosingModal) {
+        if (!window.confirm(this.$t("sureToCloseModal"))) {
           return;
         }
       }
-      this.$emit('arrow_right');
+      this.$emit("arrow_right");
     },
-    toggleMinimize: function() {
+    toggleMinimize: function () {
       console.log(`METHODS • BaseModal: toggleMinimize`);
       this.$root.media_modal.minimized = !this.$root.media_modal.minimized;
     },
-    toggleSidebar: function() {
+    toggleSidebar: function () {
       console.log(`METHODS • BaseModal: toggleSidebar`);
-      this.$root.media_modal.show_sidebar = !this.$root.media_modal.show_sidebar;
-    }
+      this.$root.media_modal.show_sidebar = !this.$root.media_modal
+        .show_sidebar;
+    },
   },
-  created: function() {
-    document.addEventListener('keyup', this.modalKeyListener);
-    document.body.classList.add('has_modal_opened');
+  created: function () {
+    document.addEventListener("keyup", this.modalKeyListener);
+    document.body.classList.add("has_modal_opened");
     this.$root.settings.has_modal_opened = true;
   },
-  destroyed: function() {
-    document.removeEventListener('keyup', this.modalKeyListener);
-    document.body.classList.remove('has_modal_opened');
+  destroyed: function () {
+    document.removeEventListener("keyup", this.modalKeyListener);
+    document.body.classList.remove("has_modal_opened");
     this.$root.settings.has_modal_opened = false;
-  }
+  },
 };
 </script>

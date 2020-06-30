@@ -1,6 +1,12 @@
 <template>
   <div class="m_addMedias">
-    <div class="m_authorMenu" @mouseleave="show_authors_options = false">
+    <div
+      class="m_addMedias--overlay"
+      v-if="show_addmedia_options"
+      @click="show_addmedia_options = false"
+    />
+
+    <div class="m_authorMenu" @mouseleave="/* show_authors_options = false */">
       <transition name="slideupfrombottomright">
         <Authors
           v-if="show_authors_options"
@@ -27,7 +33,7 @@
 
     <div
       class="menu_encart"
-      @mouseleave="show_addmedia_options = false"
+      @mouseleave="/* show_addmedia_options = false */"
       :class="{ 'is--showing_options': show_addmedia_options }"
       :style="addMediaStyles"
     >
@@ -155,18 +161,21 @@
         </svg>
       </button>
 
-      <UploadFile
+      <UploadFileModal
         v-if="selected_files.length > 0"
         @close="selected_files = []"
         :slugFolderName="slugFolderName"
         :type="'folders'"
         :selected_files="selected_files"
+        @insertMedias="
+          (metaFileNames) => insertImportedMedias({ metaFileNames })
+        "
       />
     </div>
   </div>
 </template>
 <script>
-import UploadFile from "./modals/UploadFile.vue";
+import UploadFileModal from "./modals/UploadFileModal.vue";
 import debounce from "debounce";
 import Authors from "./subcomponents/Authors.vue";
 
@@ -184,7 +193,7 @@ export default {
     },
   },
   components: {
-    UploadFile,
+    UploadFileModal,
     Authors,
   },
   data() {
@@ -312,55 +321,51 @@ export default {
     },
   },
   methods: {
+    createMedia({ additionalMeta }) {
+      this.selected_files = [];
+      this.show_addmedia_options = false;
+
+      this.$root
+        .createMedia({
+          slugFolderName: this.slugFolderName,
+          type: "folders",
+          additionalMeta,
+        })
+        .then((mdata) => {
+          this.$eventHub.$emit("scrollToMedia", mdata.metaFileName);
+
+          if (mdata.type === "text") {
+            setTimeout(() => {
+              this.$eventHub.$emit(
+                "timeline.openMediaModal",
+                mdata.metaFileName
+              );
+            }, 500);
+          }
+        });
+    },
     createTextMedia() {
       if (window.state.dev_mode === "debug") {
         console.log("METHODS • AddMediaButton: createTextMedia");
       }
+      const additionalMeta = {
+        type: "text",
+        w: 4,
+        h: 4,
+      };
 
-      this.$eventHub.$on(
-        "socketio.media_created_or_updated",
-        this.newTextMediaCreated
-      );
-      this.$root.createMedia({
-        slugFolderName: this.slugFolderName,
-        type: "folders",
-        additionalMeta: {
-          type: "text",
-          w: 4,
-          h: 4,
-        },
-      });
-
-      this.show_addmedia_options = false;
-      this.$eventHub.$emit("timeline.scrollToEnd");
-    },
-    newTextMediaCreated(mdata) {
-      if (this.$root.justCreatedMediaID === mdata.id) {
-        this.$eventHub.$off(
-          "socketio.media_created_or_updated",
-          this.newTextMediaCreated
-        );
-        this.$root.justCreatedMediaID = false;
-        this.$nextTick(() => {
-          this.$eventHub.$emit("timeline.openMediaModal", mdata.metaFileName);
-        });
-      }
+      this.createMedia({ additionalMeta });
     },
     createMarkerMedia() {
       if (window.state.dev_mode === "debug") {
         console.log("METHODS • AddMediaButton: createMarkerMedia");
       }
-      this.$root.createMedia({
-        slugFolderName: this.slugFolderName,
-        type: "folders",
-        additionalMeta: {
-          type: "marker",
-          collapsed: true,
-        },
-      });
-      this.show_addmedia_options = false;
-      this.$eventHub.$emit("timeline.scrollToEnd");
+      const additionalMeta = {
+        type: "marker",
+      };
+      this.createMedia({ additionalMeta });
     },
+
     boitierPressed(event) {
       if (window.state.dev_mode === "debug") {
         console.log("METHODS • AddMediaButton: boitierPressed");
@@ -386,20 +391,15 @@ export default {
 
       this.$root.settings.keyboard_shortcuts.forEach((k) => {
         if (k.key === key) {
-          let new_media_opts = {
-            slugFolderName: this.slugFolderName,
-            type: "folders",
-            additionalMeta: {
-              type: "marker",
-            },
+          let additionalMeta = {
+            type: "marker",
           };
 
           if (k.author_name !== "" && k.author_name !== "none") {
-            new_media_opts.additionalMeta.authors = [{ name: k.author_name }];
+            additionalMeta.authors = [{ slugFolderName: k.slugFolderName }];
           }
 
-          this.$root.createMedia(new_media_opts);
-          this.$eventHub.$emit("timeline.scrollToEnd");
+          this.$root.createMedia({ additionalMeta });
         }
       });
     },
@@ -410,6 +410,23 @@ export default {
       this.selected_files = Array.from($event.target.files);
       $event.target.value = "";
     },
+
+    insertImportedMedias({ metaFileNames }) {
+      // get last media
+
+      if (metaFileNames.length === 0) return false;
+
+      const last_media_meta = metaFileNames[metaFileNames.length - 1];
+
+      this.$eventHub.$once(`socketio.folders.media_listed`, () => {
+        this.selected_files = [];
+        this.show_addmedia_options = false;
+        setTimeout(() => {
+          this.$eventHub.$emit("scrollToMedia", last_media_meta);
+        }, 500);
+      });
+    },
+
     ondragover(e) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • AddMedia / ondragover`);
@@ -520,14 +537,16 @@ button,
 
 .m_addMedias {
   position: absolute;
+
   bottom: 8vh;
   right: 4vw;
-  z-index: 15000;
+
+  z-index: 55000;
+  min-height: 100px;
+  max-height: 80vh;
 
   // width: 100px;
   height: auto;
-  min-height: 100px;
-  max-height: 80vh;
 
   // color: var(--color-blanc);
 
@@ -539,6 +558,17 @@ button,
   justify-content: center;
 
   pointer-events: none;
+
+  .m_addMedias--overlay {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    pointer-events: auto;
+    // background-color: red;
+  }
 
   .menu_encart {
     pointer-events: none;

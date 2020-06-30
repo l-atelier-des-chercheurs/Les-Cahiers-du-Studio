@@ -5,6 +5,7 @@
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
     :askBeforeClosingModal="askBeforeClosingModal"
+    :is_loading="is_sending_content_to_server"
   >
     <template slot="header">
       <span class="text-cap">{{ $t("create_a_folder") }}</span>
@@ -46,31 +47,30 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import DateTime from "../subcomponents/DateTime.vue";
 import alertify from "alertify.js";
 import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 
 export default {
   props: {
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
-    Modal,
     DateTime,
-    EditAccessControl
+    EditAccessControl,
   },
   data() {
     return {
       askBeforeClosingModal: false,
       show_password_field: false,
+      is_sending_content_to_server: false,
       folderdata: {
         name: "",
         password: "",
         authors: "",
         editing_limited_to: "everybody",
-        viewing_limited_to: "everybody"
-      }
+        viewing_limited_to: "everybody",
+      },
     };
   },
   watch: {
@@ -78,12 +78,12 @@ export default {
       handler() {
         this.askBeforeClosingModal = true;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {},
   methods: {
-    newFolder: function(event) {
+    newFolder: function (event) {
       console.log("newFolder");
 
       function getAllFolderNames() {
@@ -107,63 +107,28 @@ export default {
         return false;
       }
 
-      this.$root.createFolder({
-        type: "folders",
-        data: this.folderdata
-      });
+      this.is_sending_content_to_server = true;
 
-      this.$eventHub.$on(
-        "socketio.folder_created_or_updated",
-        this.newFolderCreated
-      );
-    },
-    newFolderCreated: function(fdata) {
-      if (fdata.id === this.$root.justCreatedFolderID) {
-        this.$eventHub.$off(
-          "socketio.folder_created_or_updated",
-          this.newFolderCreated
-        );
-        this.$root.justCreatedFolderID = false;
-
-        this.$nextTick(() => {
-          if (fdata.password === "has_pass") {
-            this.$auth.updateFoldersPasswords({
-              folders: {
-                [fdata.slugFolderName]: this.folderdata.password
-              }
-            });
-            this.$socketio.sendAuth();
-
-            this.$eventHub.$once("socketio.authentificated", () => {
-              this.$emit("close", "");
-              this.$root.openFolder(fdata.slugFolderName);
-              this.$root.createMedia({
-                slugFolderName: fdata.slugFolderName,
-                type: "folders",
-                additionalMeta: {
-                  type: "marker",
-                  content: "Création du dossier",
-                  color: "red",
-                  collapsed: true
-                }
-              });
-            });
-          } else {
-            this.$emit("close", "");
-            this.$root.openFolder(fdata.slugFolderName);
-            this.$root.createMedia({
-              slugFolderName: fdata.slugFolderName,
-              type: "folders",
-              additionalMeta: {
-                type: "marker",
-                content: this.$t("creation_of_the_timeline")
-              }
-            });
-          }
+      this.$root
+        .createFolder({
+          type: "folders",
+          data: this.folderdata,
+        })
+        .then((fdata) => {
+          this.$emit("close", "");
+          this.$root.openFolder(fdata.slugFolderName);
+          this.$root.createMedia({
+            slugFolderName: fdata.slugFolderName,
+            type: "folders",
+            additionalMeta: {
+              type: "marker",
+              color: "red",
+              content: this.$t("creation_of_the_timeline"),
+            },
+          });
         });
-      }
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>
