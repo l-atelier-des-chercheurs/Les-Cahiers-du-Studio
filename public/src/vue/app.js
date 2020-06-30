@@ -527,6 +527,21 @@ let vm = new Vue({
       this.settings.current_chat_slug = false;
     },
 
+    getNumberOfCommentsForChat(media_meta_linked) {
+      if (window.state.dev_mode === "debug")
+        console.log(
+          `ROOT EVENT: getNumberOfCommentsForChat: ${media_meta_linked}`
+        );
+
+      const linked_channel = Object.values(this.store.chats).find(
+        (c) => c.is_linked_to_media === media_meta_linked
+      );
+
+      if (!linked_channel) return false;
+
+      return linked_channel.number_of_medias;
+    },
+
     openOrCreateChatFromMedia(media_meta_linked) {
       if (window.state.dev_mode === "debug") {
         console.log(

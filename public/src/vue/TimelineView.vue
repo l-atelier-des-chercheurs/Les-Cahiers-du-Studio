@@ -27,8 +27,16 @@
           :style="{ [type]: percent + '%' }"
         >
           <!-- <transition name="sidebar-animation" :duration="350" mode="out-in"> -->
-          <Sidebar
+
+          <Informations
             v-if="
+              $root.settings.has_sidebar_opened &&
+              $root.settings.sidebar_type === 'informations'
+            "
+          />
+
+          <Sidebar
+            v-else-if="
               $root.settings.has_sidebar_opened &&
               $root.settings.sidebar_type === 'options'
             "
@@ -55,6 +63,14 @@
             :medias="medias"
             :read_only="read_only"
           />
+
+          <Chats
+            v-else-if="
+              $root.settings.has_sidebar_opened &&
+              $root.settings.sidebar_type === 'chats'
+            "
+          />
+
           <!-- </transition> -->
 
           <template v-if="$root.state.mode !== 'export_web'">
@@ -89,6 +105,13 @@
             <div class="m_verticalButtons--container">
               <button
                 type="button"
+                @click.stop.prevent="toggleSidebar('informations')"
+              >
+                <span v-html="$t('informations')" />
+              </button>
+
+              <button
+                type="button"
                 @click.stop.prevent="toggleSidebar('options')"
               >
                 <span
@@ -99,13 +122,24 @@
               </button>
 
               <button
+                type="button"
+                @click.stop.prevent="toggleSidebar('chats')"
+              >
+                <span
+                  v-if="$root.settings.sidebar_type === 'chats'"
+                  v-html="`×&nbsp;` + $t('chats')"
+                />
+                <span v-else v-html="$t('chats')" />
+              </button>
+
+              <!-- <button
                 v-if="$root.settings.has_sidebar_opened"
                 type="button"
                 class="m_verticalButtons--slider"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
                 v-html="'|||'"
-              />
+              /> -->
 
               <button
                 type="button"
@@ -375,8 +409,6 @@
       </svg>
     </button>
 
-    <Chats v-if="$root.settings.show_chat_panel" />
-
     <EditMedia
       v-if="show_media_modal_for"
       :slugFolderName="slugFolderName"
@@ -403,6 +435,7 @@
 <script>
 import MediasBlock from "./components/MediasBlock.vue";
 import Sidebar from "./components/Sidebar.vue";
+import Informations from "./components/Informations.vue";
 import EditFolder from "./components/modals/EditFolder.vue";
 import AddMedias from "./components/AddMedias.vue";
 import { setTimeout } from "timers";
@@ -429,6 +462,7 @@ export default {
     AddMedias,
     EditMedia,
     Sidebar,
+    Informations,
     EditFolder,
     Resizer,
     Pane,
@@ -608,6 +642,10 @@ export default {
           this.debounce_translation_fct = undefined;
         }, this.debounce_translation_delay);
       }
+    },
+    "$root.settings.sidebar_type": function () {
+      if (this.$root.settings.sidebar_type === "") this.percent = 0;
+      else this.percent = 30;
     },
   },
   computed: {
@@ -1234,11 +1272,9 @@ export default {
       console.log(`METHODS • TimeLineView: toggleSidebar / ${type}`);
       if (this.$root.settings.sidebar_type === type) {
         this.$root.settings.has_sidebar_opened = false;
-        this.percent = 0;
         this.$root.settings.sidebar_type = "";
       } else {
         this.$root.settings.has_sidebar_opened = true;
-        this.percent = 30;
         this.$root.settings.sidebar_type = type;
       }
     },
