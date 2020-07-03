@@ -64,6 +64,7 @@ module.exports = (function () {
       last_read_message: "Dernier message lu",
       post_a_message: "Envoyer un message",
       edit_timeline: "Contribuer à la timeline",
+      label: "Étiquette",
 
       all_tags: "Liste des mots-clés disponibles",
       sort_by: "Organiser par",
@@ -87,6 +88,9 @@ module.exports = (function () {
 
       credits:
         'Un outil libre et open-source créé par l’<a href="https://latelier-des-chercheurs.fr" class="js--openInBrowser" target="_blank">Atelier des Chercheurs</a> avec et pour le <a href="https://www.studiotheatre.fr/" class="js--openInBrowser" target="_blank">Studio-Théâtre de Vitry-sur-Seine</a>.',
+      marker: "Marqueur",
+      text: "Texte",
+      embed: "Intégration",
 
       toconnectwithanotherdevice:
         "Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ",
@@ -268,6 +272,7 @@ module.exports = (function () {
       post_a_message: "Post a message",
 
       edit_timeline: "Contribute to timeline",
+      label: "Label",
 
       all_tags: "List of keywords available",
       sort_by: "Sort by",

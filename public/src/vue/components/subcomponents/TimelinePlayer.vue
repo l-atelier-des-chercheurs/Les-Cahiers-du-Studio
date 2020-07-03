@@ -2,21 +2,26 @@
   <div class="m_timelineplayer font-verysmall" v-if="active_players.length > 0">
     <div
       class="m_timelineplayer--item"
-      v-for="({ metaFileName, name, player, thumb }) in active_players"
+      v-for="{ metaFileName, name, player, thumb } in active_players"
       :key="metaFileName"
     >
       <button type="button" @click="showMedia(metaFileName)">
         <img class="_thumb" v-if="thumb" :src="thumb" />
         <span class="padding-left-small" v-else>{{ name }}</span>
-        <span class="_action">{{ $t('show') }}</span>
+        <span class="_action">{{ $t("show") }}</span>
       </button>
       <button type="button" @click="pausePlayer({ metaFileName, player })">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+        >
           <path
             d="M6 1H3c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h3c.6 0 1-.4 1-1V2c0-.6-.4-1-1-1zm6 0c-.6 0-1 .4-1 1v14c0 .6.4 1 1 1h3c.6 0 1-.4 1-1V2c0-.6-.4-1-1-1h-3z"
           />
         </svg>
-        <span class="_action">{{ $t('stop_playback') }}</span>
+        <span class="_action">{{ $t("stop_playback") }}</span>
       </button>
     </div>
   </div>
@@ -27,7 +32,7 @@ export default {
   components: {},
   data() {
     return {
-      active_players: []
+      active_players: [],
     };
   },
   created() {},
@@ -50,7 +55,7 @@ export default {
     playing({ plyr: player, metaFileName, name, thumb }) {
       console.log("METHODS • TimelinePlayer: playing");
       const existing_player = this.active_players.find(
-        p => p.metaFileName === metaFileName
+        (p) => p.metaFileName === metaFileName
       );
       if (existing_player) {
         existing_player.player.play();
@@ -61,7 +66,7 @@ export default {
         metaFileName,
         player,
         name,
-        thumb
+        thumb,
       });
     },
     stopped_playing({ plyr: player, metaFileName }) {
@@ -71,10 +76,10 @@ export default {
       console.log("METHODS • TimelinePlayer: pausePlayer");
       player.pause();
       this.active_players = this.active_players.filter(
-        p => p.metaFileName !== metaFileName
+        (p) => p.metaFileName !== metaFileName
       );
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -99,6 +104,7 @@ export default {
   padding: 0;
   margin-bottom: 0.2em;
   height: auto;
+  background-color: transparent;
 
   button {
     display: flex;
@@ -107,8 +113,9 @@ export default {
     background: var(--color-noir);
     color: white;
     // padding: 5px;
-    border-radius: 0;
+    border-radius: 2px;
     padding: 0;
+    padding-left: 4px;
     height: 2em;
 
     margin-right: 1em;

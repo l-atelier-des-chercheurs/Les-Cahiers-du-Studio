@@ -494,10 +494,6 @@ export default {
     media: Object,
     folder: Object,
     isRealtime: Boolean,
-    allAuthors: {
-      type: Array,
-      default: [],
-    },
     read_only: {
       type: Boolean,
       default: true,

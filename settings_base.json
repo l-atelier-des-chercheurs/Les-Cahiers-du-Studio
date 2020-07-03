@@ -127,6 +127,7 @@
               "audio",
               "text",
               "marker",
+              "embed",
               "document",
               "writeup",
               "other"

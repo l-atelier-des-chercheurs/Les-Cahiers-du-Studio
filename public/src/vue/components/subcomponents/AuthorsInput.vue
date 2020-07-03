@@ -1,32 +1,41 @@
 <template>
   <div class="m_authorField">
     <button
-      v-for="author in allAuthorsExceptWhenReadOnly"
+      v-for="author_slug in all_authors_slugs"
+      v-if="
+        !read_only ||
+        (read_only && authors.some((a) => a.slugFolderName === author_slug))
+      "
       type="button"
-      :key="author.name"
+      :key="author_slug"
       :class="{
-        'is--active': authors.filter((a) => a.name === author.name).length > 0,
+        'is--active': authors.some((a) => a.slugFolderName === author_slug),
+        'is--loggedInAuthor':
+          $root.current_author &&
+          $root.current_author.slugFolderName === author_slug,
       }"
-      @click="!read_only ? toggleAuthorName(author.name) : ''"
       :disabled="read_only"
+      @click="toggleAuthorName(author_slug)"
     >
-      <span :style="`color: ${author.color}`">•</span>
-      {{ author.name }}
+      {{ $root.getAuthor(author_slug).name }}
     </button>
-    <!-- <VueTagsInput
-      v-model="tag"
-      :placeholder="$t('add_authors')"
-      :autocomplete-items="filteredKeyword"
-      :tags="tags"
-      @tags-changed="newTags => editTags(newTags)"
-    />-->
+    <button
+      type="button"
+      @click="show_all_authors = true"
+      v-if="
+        max_authors_displayed_at_first <= all_authors_slugs.length &&
+        !show_all_authors &&
+        !read_only
+      "
+      class="m_authorField--show_all_authors"
+      v-html="$t('show_all_authors')"
+    />
   </div>
 </template>
 <script>
 export default {
   props: {
-    currentAuthors: [Array, String],
-    allAuthors: Array,
+    currentAuthors: Array,
     read_only: {
       type: Boolean,
       default: false,
@@ -35,37 +44,64 @@ export default {
   components: {},
   data() {
     return {
-      authors: Array.isArray(this.currentAuthors) ? this.currentAuthors : [],
+      show_all_authors: false,
+      max_authors_displayed_at_first: 8,
+      authors: [],
     };
   },
 
   created() {},
-  mounted() {},
+  mounted() {
+    // this.allAuthors = this.getAllUniqueAuthors();
+  },
   beforeDestroy() {},
 
-  watch: {},
+  watch: {
+    currentAuthors: {
+      handler() {
+        this.authors = !!this.currentAuthors ? this.currentAuthors.slice() : [];
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   computed: {
-    allAuthorsExceptWhenReadOnly() {
-      if (this.read_only) {
-        return this.allAuthors.filter((a) =>
-          this.authors.map((a) => a.name).includes(a.name)
-        );
+    all_authors_slugs() {
+      let _all_authors_slugs = [];
+
+      if (this.$root.current_author)
+        _all_authors_slugs.push(this.$root.current_author.slugFolderName);
+
+      this.authors.map((acc, a) => {
+        if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
+          _all_authors_slugs.push(a.slugFolderName);
+      });
+
+      this.$root.all_authors.map((a) => {
+        if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
+          _all_authors_slugs.push(a.slugFolderName);
+      });
+
+      if (this.show_all_authors) {
+        return _all_authors_slugs;
       } else {
-        return this.allAuthors;
+        return _all_authors_slugs.slice(0, this.max_authors_displayed_at_first);
       }
     },
   },
   methods: {
-    toggleAuthorName: function (authorName) {
-      // authorName is already in authors, then remove it
-      if (this.authors.filter((a) => a.name === authorName).length > 0) {
-        this.authors = this.authors.filter((a) => a.name !== authorName);
+    toggleAuthorName: function (author_slug) {
+      // author_slug is already in authors, then remove it
+      if (this.authors.some((a) => a.slugFolderName === author_slug)) {
+        this.authors = this.authors.filter(
+          (a) => a.slugFolderName !== author_slug
+        );
       } else {
         this.authors.push({
-          name: authorName,
+          slugFolderName: author_slug,
         });
       }
-      this.$emit("authorsChanged", this.authors);
+      this.$emit("update:currentAuthors", this.authors);
     },
   },
 };

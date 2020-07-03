@@ -5,6 +5,7 @@
       class="packery-item-content"
       :class="{
         'is--hovered': is_hovered && !is_resized,
+        'is--resized': is_resized,
         'is--text_overflowing': text_is_overflowing,
       }"
       :style="itemStylesWithSize"
@@ -27,6 +28,7 @@
       <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
 
       <div class="draggabilly_handle" @click="openMedia" />
+      <!-- v-if="media.type !== 'embed'" -->
       <!-- <div class="open_chat" @click="openChat">
         <svg
           version="1.1"
@@ -542,6 +544,12 @@ export default {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.19), 0 6px 26px rgba(0, 0, 0, 0.03);
   }
 
+  &.is--resized {
+    > * {
+      pointer-events: none;
+    }
+  }
+
   &.is--text_overflowing {
     &::after {
       content: "";
@@ -696,9 +704,18 @@ export default {
         }
       }
     }
+    &.type-embed {
+      > * {
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+      }
+    }
 
     img,
-    video {
+    video,
+    iframe {
       width: 100%;
       height: 100%;
       object-fit: cover;

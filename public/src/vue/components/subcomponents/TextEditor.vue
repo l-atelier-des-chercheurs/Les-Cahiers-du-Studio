@@ -22,18 +22,18 @@ export default {
   props: {
     value: {
       type: String,
-      default: "…"
+      default: "…",
     },
     media_metaFileName: String,
     slugFolderName: String,
     enable_collaboration: {
       type: Boolean,
-      default: false
+      default: false,
     },
     read_only: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   components: {},
   data() {
@@ -48,12 +48,12 @@ export default {
         [{ header: [false, 1, 2] }],
         ["italic", "underline", "link", "blockquote"],
         [{ list: "ordered" }, { list: "bullet" }],
-        ["clean"]
+        ["clean"],
       ],
 
       socket: null,
       connection_state: undefined,
-      requested_resource_url: undefined
+      requested_resource_url: undefined,
     };
   },
 
@@ -63,10 +63,10 @@ export default {
 
     this.editor = new Quill(this.$refs.editor, {
       modules: {
-        toolbar: this.custom_toolbar
+        toolbar: this.custom_toolbar,
       },
       theme: "snow",
-      formats: ["italic", "underline", "link", "header", "list"]
+      formats: ["italic", "underline", "link", "header", "list"],
     });
 
     this.editor.root.innerHTML = this.value;
@@ -96,25 +96,25 @@ export default {
     }
   },
   watch: {
-    read_only: function() {
+    read_only: function () {
       if (!this.read_only) {
         this.editor.enable();
       } else {
         this.editor.disable();
       }
-    }
+    },
   },
   computed: {
     spellcheckIsEnabled() {
       return !(this.$root.state.mode === "export_web");
-    }
+    },
   },
   methods: {
     initWebsocketMode() {
       const params = new URLSearchParams({
         type: "folders",
         slugFolderName: this.slugFolderName,
-        metaFileName: this.media_metaFileName
+        metaFileName: this.media_metaFileName,
       });
 
       const requested_querystring = "?" + params.toString();
@@ -135,7 +135,7 @@ export default {
 
       const doc = connection.get("writeup", requested_querystring);
 
-      doc.subscribe(err => {
+      doc.subscribe((err) => {
         if (err) {
           console.error(`ON • CollaborativeEditor: err ${err}`);
           return;
@@ -193,9 +193,8 @@ export default {
         this.editor.enable(false); // Disables user input
       }
       // 'connecting' 'connected' 'disconnected' 'closed' 'stopped'
-    }
-  }
+    },
+  },
 };
 </script>
-<style>
-</style>
+<style></style>

@@ -122,7 +122,7 @@ export default {
   height: 100%;
   background-color: var(--color-noir);
   color: white;
-  box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
+  // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
 
   // background-color: white;
   border: 4px solid var(--color-noir);
