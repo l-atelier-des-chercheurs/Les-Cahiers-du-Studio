@@ -518,6 +518,9 @@ export default {
   mounted() {
     console.log("MOUNTED • TimeLineView");
 
+    this.$root.settings.sidebar_type = "informations";
+    this.$root.settings.has_sidebar_opened = true;
+
     this.$eventHub.$on("scrollToMedia", this.scrollToMedia);
     this.$eventHub.$on("scrollToDate", this.scrollToDate);
     this.$eventHub.$on("timeline.openMediaModal", this.openMediaModal);
@@ -573,7 +576,6 @@ export default {
     window.removeEventListener("resize", this.onResize);
 
     this.$root.settings.has_sidebar_opened = false;
-    this.$root.settings.sidebar_type = "";
   },
   watch: {
     translation: function () {

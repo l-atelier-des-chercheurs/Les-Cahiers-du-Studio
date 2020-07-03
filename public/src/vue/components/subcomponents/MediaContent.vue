@@ -148,6 +148,7 @@
 </template>
 <script>
 import TextEditor from "./TextEditor.vue";
+import { Tweet } from "vue-tweet-embed";
 
 export default {
   props: {
@@ -186,6 +187,7 @@ export default {
   },
   components: {
     TextEditor,
+    Tweet,
   },
   data() {
     return {
