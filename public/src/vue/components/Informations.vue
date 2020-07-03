@@ -47,7 +47,7 @@ export default {
   position: relative;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  background-color: var(--color-noir);
+  background-color: var(--color-yellow);
   color: white;
 
   height: 100%;
