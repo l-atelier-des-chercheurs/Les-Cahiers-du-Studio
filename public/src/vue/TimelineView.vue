@@ -1558,7 +1558,8 @@ export default {
         background-color: var(--label-background);
         color: var(--label-color);
         border-radius: 1.1em;
-        padding: 4px 12px;
+        padding: 4px 12px 2px;
+        // padding-right: 8px;
         white-space: nowrap;
 
         &:hover {
