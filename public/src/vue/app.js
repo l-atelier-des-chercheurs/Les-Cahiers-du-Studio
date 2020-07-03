@@ -470,6 +470,9 @@ let vm = new Vue({
     formatDateToCalendar(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").calendar();
     },
+    formatDurationToMinuteHours(date) {
+      return this.$moment.utc(date).format("mm:ss");
+    },
     getUnreadMessageCount(chat) {
       if (!this.current_author) return false;
 

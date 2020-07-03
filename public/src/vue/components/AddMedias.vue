@@ -46,7 +46,7 @@
           @click="createTextMedia"
           :disabled="read_only"
         >
-          <span class="text_label show_on_hover">Texte</span>
+          <span class="text_label show_on_hover">{{ $t("text") }}</span>
 
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
             <path
@@ -91,7 +91,7 @@
           @click="createMarkerMedia"
           :disabled="read_only"
         >
-          <span class="text_label show_on_hover">Marker</span>
+          <span class="text_label show_on_hover">{{ $t("marker") }}</span>
 
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
             <path
@@ -100,6 +100,16 @@
             />
             <circle cx="20" cy="20" r="4.74" style="fill: currentColor;" />
           </svg>
+        </button>
+
+        <button
+          key="add_embed"
+          type="button"
+          class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
+          @click="createEmbedMedia"
+          :disabled="read_only"
+        >
+          <span class="text_label show_on_hover">{{ $t("embed") }}</span>
         </button>
 
         <template>
@@ -322,48 +332,59 @@ export default {
   },
   methods: {
     createMedia({ additionalMeta }) {
-      this.selected_files = [];
-      this.show_addmedia_options = false;
-
-      this.$root
-        .createMedia({
-          slugFolderName: this.slugFolderName,
-          type: "folders",
-          additionalMeta,
-        })
-        .then((mdata) => {
-          this.$eventHub.$emit("scrollToMedia", mdata.metaFileName);
-
-          if (mdata.type === "text") {
-            setTimeout(() => {
-              this.$eventHub.$emit(
-                "timeline.openMediaModal",
-                mdata.metaFileName
-              );
-            }, 500);
-          }
-        });
+      return new Promise((resolve, reject) => {
+        this.$root
+          .createMedia({
+            slugFolderName: this.slugFolderName,
+            type: "folders",
+            additionalMeta,
+          })
+          .then((mdata) => {
+            this.$eventHub.$emit("scrollToMedia", mdata.metaFileName);
+            return resolve(mdata);
+          });
+      });
     },
     createTextMedia() {
       if (window.state.dev_mode === "debug") {
         console.log("METHODS • AddMediaButton: createTextMedia");
       }
+      this.show_addmedia_options = false;
       const additionalMeta = {
         type: "text",
         w: 4,
         h: 4,
       };
-
-      this.createMedia({ additionalMeta });
+      this.createMedia({ additionalMeta }).then((mdata) => {
+        setTimeout(() => {
+          this.$eventHub.$emit("timeline.openMediaModal", mdata.metaFileName);
+        }, 500);
+      });
     },
     createMarkerMedia() {
-      if (window.state.dev_mode === "debug") {
+      if (window.state.dev_mode === "debug")
         console.log("METHODS • AddMediaButton: createMarkerMedia");
-      }
+
+      this.show_addmedia_options = false;
       const additionalMeta = {
         type: "marker",
       };
       this.createMedia({ additionalMeta });
+    },
+    createEmbedMedia() {
+      if (window.state.dev_mode === "debug")
+        console.log("METHODS • AddMediaButton: createMarkerMedia");
+
+      this.show_addmedia_options = false;
+
+      const additionalMeta = {
+        type: "embed",
+      };
+      this.createMedia({ additionalMeta }).then((mdata) => {
+        setTimeout(() => {
+          this.$eventHub.$emit("timeline.openMediaModal", mdata.metaFileName);
+        }, 500);
+      });
     },
 
     boitierPressed(event) {
@@ -500,7 +521,7 @@ button,
   }
 
   .text_label:not(.always_show) {
-    opacity: 0;
+    // opacity: 0;
     transition: opacity 0.08s;
 
     html.touchevents & {

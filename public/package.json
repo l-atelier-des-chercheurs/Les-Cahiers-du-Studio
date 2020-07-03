@@ -55,6 +55,7 @@
     "vue-scrollto": "^2.17.1",
     "vue-template-compiler": "^2.6.10",
     "vue-tippy": "^4.4.0",
+    "vue-tweet-embed": "^2.4.0",
     "vue2-animate": "^1.0.4"
   },
   "devDependencies": {

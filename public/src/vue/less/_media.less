@@ -10,12 +10,12 @@
     white-space: pre-wrap;
     .padding-small;
 
-    &[data-context="preview"] > * > * > *:first-child{
+    &[data-context="preview"] > * > * > *:first-child {
       margin-top: 0;
     }
   }
   &.type-other {
-    padding:10px;
+    padding: 10px;
     align-self: flex-start;
   }
   &.type-document {
@@ -28,15 +28,16 @@
 
 .mediaPreview {
   position: absolute;
-  width: 1px; height: 1px;
+  width: 1px;
+  height: 1px;
   text-rendering: optimizeSpeed;
 
   will-change: transform;
-  transition: transform .7s ease-in-out;
+  transition: transform 0.7s ease-in-out;
 
   .media {
     position: absolute;
-    right:0;
+    right: 0;
     top: 0;
     pointer-events: none;
 
@@ -46,7 +47,7 @@
       height: @t-anchor;
       right: 0;
       text-align: right;
-      top: -@t-anchor/2;
+      top: -@t-anchor / 2;
 
       display: flex;
       flex-flow: row nowrap;
@@ -69,18 +70,18 @@
       display: block;
       pointer-events: auto;
 
-      transition: all .2s ease-out;
-//       font-size:0;
+      transition: all 0.2s ease-out;
+      //       font-size:0;
 
       &:focus {
         outline: none;
       }
 
       &_droite {
-        right: -@t-anchor/2;
+        right: -@t-anchor / 2;
       }
       &_gauche {
-        left: -@t-anchor/2;
+        left: -@t-anchor / 2;
       }
     }
 
@@ -93,11 +94,11 @@
         transform-origin: center center;
         transform: scale(0.7);
         // background-color: white;
-//         border-color: @c-noir_light;
+        //         border-color: @c-noir_light;
       }
 
       .timelineMediaContent {
-//         background-color: transparent;
+        //         background-color: transparent;
         height: 2em !important;
         margin-right: -90px;
 
@@ -109,7 +110,7 @@
 
       // repère vertical
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         width: 2px;
         right: 0;
@@ -119,10 +120,11 @@
         pointer-events: none;
         z-index: -1;
       }
-
     }
 
-    .timelineMediaContent, .accroche, &::after {
+    .timelineMediaContent,
+    .accroche,
+    &::after {
       background-color: var(--media-color);
     }
 
@@ -141,7 +143,6 @@
       min-height: 2.5em;
       border-radius: @t-buttonradius 0px 0px 0px;
 
-
       transition: opacity 0.3s ease-out;
     }
 
@@ -151,11 +152,11 @@
     //   }
     //   opacity: 1;
     // }
-
   }
 
-
-  &.is--hovered, &.is--dragged, &.is--highlighted {
+  &.is--hovered,
+  &.is--dragged,
+  &.is--highlighted {
     z-index: 1000;
 
     .accroche {
@@ -164,33 +165,33 @@
 
     .timelineMediaContent {
       &::before {
-        content: '';
+        content: "";
         position: absolute;
-        background-color: rgba(255,255,255,.2);
+        background-color: rgba(255, 255, 255, 0.2);
         top: 0;
         bottom: 0;
         left: 0;
         right: 0;
         opacity: 0.2;
-      }  
+      }
     }
   }
 
   .timelineMediaContent {
     position: relative;
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
     background-color: white;
 
     overflow: hidden;
     transform-origin: top right;
     pointer-events: auto;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 
     cursor: move;
     border-radius: 4px;
 
-    transition: transform .2s ease-out;
+    transition: transform 0.2s ease-out;
 
     .mediaContainer {
       pointer-events: none;
@@ -224,13 +225,14 @@
 
     .mediaContour {
       position: absolute;
-      top: 0; left: 0;  right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       border-radius: 4px;
       pointer-events: none;
     }
-
   }
-
 
   &.is--collapsed:not(.is--highlighted) .timelineMediaContent {
     transform: scale(0);
@@ -249,9 +251,7 @@
       border-color: @c-noir_light;
     }
   }
-
 }
-
 
 .quillWrapper {
   display: flex;
@@ -261,14 +261,14 @@
     font-family: inherit;
     overflow-y: auto;
 
-    .custom_scrollbar(4px, 6px, 6px, rgba(255,255,255,0), #000);    
+    .custom_scrollbar(4px, 6px, 6px, rgba(255,255,255,0), #000);
   }
   .ql-container.ql-snow {
     border: none;
   }
   .ql-container.ql-disabled {
     opacity: 0.4;
-    cursor: not-allowed;    
+    cursor: not-allowed;
   }
 
   .ql-toolbar button {
@@ -284,7 +284,7 @@
   }
 
   .ql-snow .ql-picker:not(.ql-color-picker):not(.ql-icon-picker) svg {
-    min-width: 0;;
+    min-width: 0;
   }
 
   .ql-snow a {
@@ -293,7 +293,7 @@
 
   > * {
     flex: 0 0 auto;
-  
+
     &.ql-container {
       flex: 1 1 auto;
       height: auto;
@@ -308,15 +308,15 @@
       border-bottom: 1px solid #000;
 
       background-color: transparent;
-            
-      font-size:14pt !important;
 
-      transition: all .4s;
-  
+      font-size: 14pt !important;
+
+      transition: all 0.4s;
+
       // background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
       // background-size: 30px 30px;
       // background-attachment: local;
-  
+
       // background: linear-gradient(transparent, transparent ~"calc(@{t-skipline} - 2px)", rgba(0,0,0,.15) ~"calc(@{t-skipline} - 2px)");
       // background-size: @t-skipline @t-skipline;
       // background-attachment: local;
@@ -332,30 +332,40 @@
         margin-top: 0;
       }
 
-      p, ol, ul, pre, blockquote, h1, h2, h3, h4, h5, h6 {
-        margin: .5em 0;
+      p,
+      ol,
+      ul,
+      pre,
+      blockquote,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        margin: 0.5em 0;
       }
-    }    
-  } 
+    }
+  }
   .ql-toolbar {
     padding-left: 50px;
 
     &::before {
-      content: 'options';
+      content: "options";
       position: relative;
       display: inline-block;
-      font-size:1rem;
+      font-size: 1rem;
       vertical-align: middle;
       font-weight: 400;
       /* background-color: #333; */
       /* left: -8px; */
-      margin:0;
+      margin: 0;
       /* padding: 11px; */
       /* text-decoration: underline; */
-      font-size: .8rem;
+      font-size: 0.8rem;
       /* text-transform: uppercase; */
       margin-right: 15px;
       font-style: italic;
     }
-  }         
+  }
 }
