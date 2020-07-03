@@ -65,6 +65,8 @@ module.exports = (function () {
       post_a_message: "Envoyer un message",
       edit_timeline: "Contribuer à la timeline",
       label: "Étiquette",
+      unfold: "Déplier",
+      fold: "Replier",
 
       all_tags: "Liste des mots-clés disponibles",
       sort_by: "Organiser par",
@@ -273,6 +275,8 @@ module.exports = (function () {
 
       edit_timeline: "Contribute to timeline",
       label: "Label",
+      unfold: "Unfold",
+      fold: "Fold",
 
       all_tags: "List of keywords available",
       sort_by: "Sort by",

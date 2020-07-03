@@ -234,6 +234,7 @@
                   :class="{
                     'is--empty': day.is_empty,
                     'is--current_day': day.is_current_day,
+                    'is--folded': folded_days.includes(day.timestamp),
                   }"
                 >
                   <template v-if="day.hasOwnProperty('is_empty_period')">
@@ -250,40 +251,55 @@
                       <div
                         class="m_timeline--container--dates--day--daylabel--container"
                       >
-                        <span>
+                        <button
+                          type="button"
+                          @click="toggleDayFolding(day.timestamp)"
+                        >
                           {{ day.label }}
                           <span v-if="day.number_of_medias > 0">{{
                             day.number_of_medias
                           }}</span>
-                          <span v-else></span>
-                        </span>
+                          <div
+                            class="_unfold_button"
+                            v-if="folded_days.includes(day.timestamp)"
+                          >
+                            <span>
+                              {{ $t("unfold") }}
+                            </span>
+                          </div>
+                        </button>
                       </div>
                     </div>
 
-                    <div
-                      v-for="segment in day.segments"
-                      :key="segment.timestamp"
-                      class="m_timeline--container--dates--day--mediasblock"
-                      v-if="
-                        !segment.hasOwnProperty('hidelabel') ||
-                        !segment.hidelabel ||
-                        segment.medias.length > 0
-                      "
-                    >
+                    <template v-if="!folded_days.includes(day.timestamp)">
                       <div
-                        class="m_timeline--container--dates--day--mediasblock--label"
-                        v-if="
-                          !segment.hasOwnProperty('hidelabel') ||
-                          !segment.hidelabel
-                        "
+                        v-for="segment in day.segments"
+                        :key="segment.timestamp"
+                        class="m_timeline--container--dates--day--mediasblock"
                       >
-                        <div>
-                          <button
-                            type="button"
-                            @click="
-                              openMediaModal(segment.marker_meta_slugMediaName)
+                        <template
+                          v-if="
+                            !segment.hasOwnProperty('hidelabel') ||
+                            !segment.hidelabel ||
+                            segment.medias.length > 0
+                          "
+                        >
+                          <div
+                            class="m_timeline--container--dates--day--mediasblock--label"
+                            v-if="
+                              !segment.hasOwnProperty('hidelabel') ||
+                              !segment.hidelabel
                             "
-                            :style="`
+                          >
+                            <div>
+                              <button
+                                type="button"
+                                @click="
+                                  openMediaModal(
+                                    segment.marker_meta_slugMediaName
+                                  )
+                                "
+                                :style="`
                               --color-author: ${segment.color};
                               --label-color: ${
                                 segment.color === 'var(--color-noir)'
@@ -291,22 +307,24 @@
                                   : 'var(--color-noir)'
                               };
                               `"
-                            :data-has_author="!!segment.marker_author"
-                          >
-                            <span v-text="segment.label" />
-                          </button>
-                        </div>
-                      </div>
+                                :data-has_author="!!segment.marker_author"
+                              >
+                                <span v-text="segment.label" />
+                              </button>
+                            </div>
+                          </div>
 
-                      <MediasBlock
-                        v-if="segment.medias.length > 0"
-                        :key="segment.timestamp"
-                        :medias="segment.medias"
-                        :folder="folder"
-                        :slugFolderName="slugFolderName"
-                        :timeline_height="timeline_height"
-                      />
-                    </div>
+                          <MediasBlock
+                            v-if="segment.medias.length > 0"
+                            :key="segment.timestamp"
+                            :medias="segment.medias"
+                            :folder="folder"
+                            :slugFolderName="slugFolderName"
+                            :timeline_height="timeline_height"
+                          />
+                        </template>
+                      </div>
+                    </template>
                   </template>
                 </div>
               </div>
@@ -509,6 +527,8 @@ export default {
           },
         ],
       },
+
+      folded_days: [],
     };
   },
 
@@ -1101,6 +1121,11 @@ export default {
         this.$refs.timeline.offsetWidth;
       this.scrollTimelineToXPos(x);
     },
+    toggleDayFolding(timestamp) {
+      if (this.folded_days.includes(timestamp))
+        this.folded_days = this.folded_days.filter((t) => t !== timestamp);
+      else this.folded_days.push(timestamp);
+    },
     showingAddmediaOptions() {
       this.is_showing_addmedia_options = true;
     },
@@ -1481,6 +1506,21 @@ export default {
     padding-left: 10px;
   }
 
+  &.is--folded {
+    --rule-color: var(--color-noir);
+    .m_timeline--container--dates--day--daylabel--container {
+      > button {
+        border: 1px solid var(--color-noir);
+      }
+      ._unfold_button {
+        span {
+          color: white;
+          background-color: var(--color-noir);
+        }
+      }
+    }
+  }
+
   &.is--current_day {
     .m_timeline--container--dates--day--daylabel {
       --label-background: var(--color-rouge_vif);
@@ -1512,7 +1552,7 @@ export default {
       transform: rotate(-90deg);
       // transform-origin: center center;
 
-      > span {
+      > button {
         display: block;
         // min-width: 320px;
         background-color: var(--label-background);
@@ -1521,7 +1561,12 @@ export default {
         padding: 4px 12px;
         white-space: nowrap;
 
-        span {
+        &:hover {
+          background-color: var(--color-noir);
+          color: white;
+        }
+
+        > span {
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -1542,6 +1587,23 @@ export default {
             display: none;
             width: 0.5em;
             height: 0.5em;
+          }
+        }
+
+        ._unfold_button {
+          position: absolute;
+
+          top: 100%;
+          left: 0;
+          text-align: center;
+          width: 100%;
+          margin: 0 auto;
+          font-size: 0.7em;
+
+          span {
+            padding: 4px 18px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
           }
         }
       }
