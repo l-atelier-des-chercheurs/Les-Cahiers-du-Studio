@@ -136,6 +136,7 @@ module.exports = (function () {
       folder_information: "Informations du dossier",
       calendar: "Calendrier",
       now: "en ce moment",
+      today: "aujourd’hui",
       list: "Liste",
       fullscreen: "Plein écran",
       preview: "Aperçu",
@@ -355,6 +356,8 @@ module.exports = (function () {
       folder_information: "Folder information",
       calendar: "Calendar",
       now: "now",
+      today: "today",
+
       list: "List",
       fullscreen: "Fullscreen",
       preview: "Preview",

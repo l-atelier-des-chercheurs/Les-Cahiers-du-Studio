@@ -170,8 +170,24 @@
           >
             <div>
               <span>
+                <transition name="fade" :duration="450">
+                  <button
+                    type="button"
+                    v-if="visible_day_is_before_or_after === 'after'"
+                    class="_scrolltonow _scrolltonow_before"
+                    @click="scrollToToday()"
+                  >{{ $t('today')}}</button>
+                </transition>
                 <transition name="fade" mode="out-in" :duration="150">
                   <span :key="visible_day_human">{{ visible_day_human }}</span>
+                </transition>
+                <transition name="fade" :duration="450">
+                  <button
+                    type="button"
+                    class="_scrolltonow _scrolltonow_after"
+                    v-if="visible_day_is_before_or_after === 'before'"
+                    @click="scrollToToday()"
+                  >{{ $t('today')}}</button>
                 </transition>
               </span>
             </div>
@@ -1020,6 +1036,12 @@ export default {
         return true;
       return false;
     },
+    visible_day_is_before_or_after() {
+      const now = this.$moment(this.$root.current_time.days);
+      if (now.isSame(this.visible_day, "day")) return false;
+      if (now.isBefore(this.visible_day, "day")) return "after";
+      return "before";
+    },
     visible_day_human() {
       if (this.$root.lang.current === "fr") {
         return this.$moment(this.visible_day).calendar(null, {
@@ -1843,6 +1865,7 @@ export default {
     // max-width: auto;
 
     > * {
+      position: relative;
       display: inline-flex;
       min-height: 40px;
       background-color: var(--label-background);
@@ -1864,6 +1887,34 @@ export default {
         min-height: 20px;
       }
     }
+  }
+
+  ._scrolltonow {
+    position: absolute;
+    z-index: -1;
+    color: var(--color-rouge_vif);
+    background-color: transparent;
+    border-radius: 20px;
+    border: 1px solid currentColor;
+    background-color: white;
+    background-color: var(--timeline-bg);
+    border-radius: 20px;
+    min-height: 40px;
+  }
+
+  ._scrolltonow_before {
+    right: 100%;
+    padding: 0 25px 0 10px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-right: -20px;
+  }
+  ._scrolltonow_after {
+    left: 100%;
+    padding: 0 10px 0 25px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -20px;
   }
 }
 
