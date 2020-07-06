@@ -46,6 +46,7 @@ module.exports = (function () {
         "Pour ajouter des auteurs, fermez cette fenêtre et cliquez sur le bouton <i>s’identifier</i>.",
 
       loading: "chargement",
+      comments: "Commentaires",
       advanced_options: "Options avancées",
       close: "Fermer",
       open: "Ouvrir",
@@ -65,6 +66,8 @@ module.exports = (function () {
       post_a_message: "Envoyer un message",
       edit_timeline: "Contribuer à la timeline",
       label: "Étiquette",
+      unfold: "Déplier",
+      fold: "Replier",
 
       all_tags: "Liste des mots-clés disponibles",
       sort_by: "Organiser par",
@@ -133,6 +136,7 @@ module.exports = (function () {
       folder_information: "Informations du dossier",
       calendar: "Calendrier",
       now: "en ce moment",
+      today: "aujourd’hui",
       list: "Liste",
       fullscreen: "Plein écran",
       preview: "Aperçu",
@@ -250,6 +254,7 @@ module.exports = (function () {
         "To create authors, close this window and click on <i>login</i>.",
 
       loading: "loading",
+      comments: "Comments",
       open: "Open",
       save: "Save",
       save_and_close: "Save + close",
@@ -273,6 +278,8 @@ module.exports = (function () {
 
       edit_timeline: "Contribute to timeline",
       label: "Label",
+      unfold: "Unfold",
+      fold: "Fold",
 
       all_tags: "List of keywords available",
       sort_by: "Sort by",
@@ -349,6 +356,8 @@ module.exports = (function () {
       folder_information: "Folder information",
       calendar: "Calendar",
       now: "now",
+      today: "today",
+
       list: "List",
       fullscreen: "Fullscreen",
       preview: "Preview",
