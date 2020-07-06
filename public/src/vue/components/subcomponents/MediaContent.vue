@@ -1,15 +1,11 @@
 <template>
   <div
     class="mediaContainer"
-    :class="`type-${media.type}`"
+    :class="[{ 'is--playing' : is_playing }, 'type-' + media.type]"
     :data-context="context"
   >
     <template v-if="media.type === 'image'">
-      <img
-        :srcset="imageSrcSetAttr"
-        :sizes="imageSizesAttr"
-        :src="linkToImageThumb"
-      />
+      <img :srcset="imageSrcSetAttr" :sizes="imageSizesAttr" :src="linkToImageThumb" />
       <transition name="fade" :duration="600">
         <img
           v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb"
@@ -21,7 +17,7 @@
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
         <vue-plyr
-          :options="plyr_options['preview']"
+          :options="plyr_options"
           :emit="['playing', 'pause', 'ended']"
           @playing="playing"
           @pause="pause"
@@ -31,7 +27,7 @@
         </vue-plyr>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options['edit']">
+        <vue-plyr :options="plyr_options">
           <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" />
         </vue-plyr>
       </template>
@@ -40,7 +36,7 @@
     <template v-else-if="media.type === 'audio'">
       <template v-if="context === 'preview'">
         <vue-plyr
-          :options="plyr_options['preview']"
+          :options="plyr_options"
           :emit="['playing', 'pause', 'ended']"
           @playing="playing"
           @pause="pause"
@@ -50,7 +46,7 @@
         </vue-plyr>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options['edit']">
+        <vue-plyr :options="plyr_options">
           <audio :src="mediaURL" preload="none" />
         </vue-plyr>
       </template>
@@ -100,18 +96,19 @@
     </template>
 
     <template v-else-if="media.type === 'embed'">
-      <div v-if="context !== 'edit' && embedURL" class="">
-        <iframe
+      <div v-if="context !== 'edit' && embedURL" class>
+        <vue-plyr
           v-if="embedURL.type !== 'tweet'"
-          :src="embedURL.src"
-          frameborder="0"
-          allowfullscreen
-        />
-        <Tweet
-          v-else
-          :id="embedURL.id"
-          :options="{ cards: 'hidden', theme: 'light' }"
-        />
+          :options="plyr_options"
+          :emit="['playing', 'pause', 'ended']"
+          @playing="playing"
+          @pause="pause"
+          @ended="ended"
+        >
+          <div data-plyr-provider="youtube" data-plyr-embed-id="bTqVqk7FSmY"></div>
+        </vue-plyr>
+
+        <Tweet v-else :id="embedURL.id" :options="{ cards: 'hidden', theme: 'light' }" />
       </div>
       <input
         v-else
@@ -128,8 +125,7 @@
 
     <template v-else-if="media.type === 'document'">
       <div v-if="context !== 'edit'" class>
-        <pre
-          >{{ media.media_filename }}
+        <pre>{{ media.media_filename }}
         </pre>
       </div>
       <iframe v-else :src="mediaURL" />
@@ -197,30 +193,23 @@ export default {
       },
       htmlForEditor: this.value,
 
+      is_playing: false,
+
       plyr_options: {
-        preview: {
-          controls: ["play"],
-          iconUrl:
-            this.$root.state.mode !== "export_web"
-              ? "/images/plyr.svg"
-              : "./_images/plyr.svg",
-          hideControls: false,
-        },
-        edit: {
-          controls: [
-            "play-large",
-            "play",
-            "progress",
-            "current-time",
-            "mute",
-            "volume",
-            "fullscreen",
-          ],
-          iconUrl:
-            this.$root.state.mode !== "export_web"
-              ? "/images/plyr.svg"
-              : "./_images/plyr.svg",
-        },
+        controls: [
+          // "play-large",
+          "play",
+          "progress",
+          "current-time",
+          // "mute",
+          "volume",
+          "fullscreen",
+        ],
+        iconUrl:
+          this.$root.state.mode !== "export_web"
+            ? "/images/plyr.svg"
+            : "./_images/plyr.svg",
+        hideControls: false,
       },
     };
   },
@@ -235,27 +224,27 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    htmlForEditor: function () {
+    htmlForEditor: function() {
       this.$emit("input", this.htmlForEditor);
     },
   },
   computed: {
-    mediaURL: function () {
+    mediaURL: function() {
       return this.$root.state.mode === "export_web"
         ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`
         : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
     },
-    thumbRes: function () {
+    thumbRes: function() {
       return this.context === "preview" && this.element_width_for_sizes
         ? [50, 180, 360, 720, 1080, 1600].find(
-            (r) => r / 2 >= this.element_width_for_sizes
+            r => r / 2 >= this.element_width_for_sizes
           )
         : this.available_resolutions.default;
     },
-    thumbResHovered: function () {
+    thumbResHovered: function() {
       return this.available_resolutions.preview_hovered;
     },
-    linkToImageThumb: function () {
+    linkToImageThumb: function() {
       if (!this.media.hasOwnProperty("thumbs")) {
         return this.mediaURL;
       }
@@ -268,7 +257,7 @@ export default {
       }
 
       const small_thumb = this.media.thumbs.filter(
-        (m) => m.size === this.thumbRes
+        m => m.size === this.thumbRes
       );
       if (small_thumb.length == 0) {
         return this.mediaURL;
@@ -282,7 +271,7 @@ export default {
           : `/${pathToSmallestThumb}`;
       return url;
     },
-    imageSrcSetAttr: function () {
+    imageSrcSetAttr: function() {
       if (
         this.element_width_for_sizes ||
         this.mediaURL.toLowerCase().endsWith(".gif")
@@ -300,14 +289,14 @@ export default {
       }, []);
       return img_srcset.join(", ");
     },
-    videostillSrcSetAttr: function () {
+    videostillSrcSetAttr: function() {
       if (this.element_width_for_sizes) {
         return;
       }
 
       let timeMark = 0;
       let timeMarkThumbs = this.media.thumbs.filter(
-        (t) => !!t && t.timeMark === 0
+        t => !!t && t.timeMark === 0
       );
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
@@ -324,15 +313,15 @@ export default {
 
       return img_srcset.join(", ");
     },
-    imageSizesAttr: function () {
+    imageSizesAttr: function() {
       if (!this.element_width_for_sizes) {
         return;
       }
       return this.element_width_for_sizes + "px";
     },
-    linkToHoveredThumb: function () {
+    linkToHoveredThumb: function() {
       let pathToSmallestThumb = this.media.thumbs.filter(
-        (m) => m.size === this.thumbResHovered
+        m => m.size === this.thumbResHovered
       )[0].path;
 
       const url =
@@ -341,7 +330,7 @@ export default {
           : "/" + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
-    linkToVideoThumb: function () {
+    linkToVideoThumb: function() {
       if (
         !this.media["thumbs"] ||
         (typeof this.media.thumbs === "object" &&
@@ -352,7 +341,7 @@ export default {
 
       let timeMark = 0;
       let timeMarkThumbs = this.media.thumbs.filter(
-        (t) => !!t && t.timeMark === 0
+        t => !!t && t.timeMark === 0
       );
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
@@ -360,7 +349,7 @@ export default {
       }
 
       let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(
-        (m) => m.size === this.thumbRes
+        m => m.size === this.thumbRes
       )[0].path;
 
       let url =
@@ -369,31 +358,33 @@ export default {
           : "/" + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
-    embedURL: function () {
+    embedURL: function() {
       if (!this.media.content) return false;
-      if (this.media.content.includes("twitter.com"))
+      if (this.media.content.includes("twitter.com")) {
         return {
           type: "tweet",
           id: this.getTweetIdFromURL(this.media.content),
         };
-      else if (
+      } else if (
         this.media.content.includes("youtube.com") ||
         this.media.content.includes("youtu.be")
-      )
+      ) {
         return {
           type: "youtube",
-          src: this.getYoutubeEmbedURLFromURL(this.media.content),
+          src: this.getYoutubeIDFromURL(this.media.content),
         };
-      else if (this.media.content.includes("vimeo.com"))
+      } else if (this.media.content.includes("vimeo.com")) {
         return {
           type: "vimeo",
-          src: this.getVimeoEmbedURLFromURL(this.media.content),
+          src: this.getVimeoIDFromURL(this.media.content),
         };
+      }
       return this.media.content;
     },
   },
   methods: {
     playing(event) {
+      this.is_playing = true;
       this.$eventHub.$emit("timelineplayer.playing", {
         plyr: event.detail.plyr,
         metaFileName: this.media.metaFileName,
@@ -402,12 +393,14 @@ export default {
       });
     },
     pause(event) {
+      this.is_playing = false;
       this.$eventHub.$emit("timelineplayer.pause", {
         plyr: event.detail.plyr,
         metaFileName: this.media.metaFileName,
       });
     },
     ended(event) {
+      this.is_playing = false;
       this.$eventHub.$emit("timelineplayer.ended", {
         plyr: event.detail.plyr,
         metaFileName: this.media.metaFileName,
@@ -417,7 +410,7 @@ export default {
       let tweetRegex = /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(es)?\/([0-9]{19})/;
       return url.match(tweetRegex)[3];
     },
-    getYoutubeEmbedURLFromURL(url) {
+    getYoutubeIDFromURL(url) {
       function getId(url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
         const match = url.match(regExp);
@@ -425,18 +418,16 @@ export default {
         return match && match[2].length === 11 ? match[2] : null;
       }
 
-      const videoId = getId(url);
-      return `https://www.youtube.com/embed/${videoId}`;
+      return getId(url);
     },
-    getVimeoEmbedURLFromURL(url) {
+    getVimeoIDFromURL(url) {
       function getId(url) {
         const regExp = /(?:vimeo)\.com.*(?:videos|video|channels|)\/([\d]+)/i;
         const match = url.match(regExp);
         return match ? match[1] : null;
       }
 
-      const videoId = getId(url);
-      return `https://player.vimeo.com/video/${videoId}`;
+      return getId(url);
     },
   },
 };

@@ -75,7 +75,7 @@
 			c10.7,15.7,8.6,36.8-2.6,51.5C91.8,121.9,74.3,128,60.4,135.1z"
           />
         </svg>
-      </div> -->
+      </div>-->
 
       <div class="packery-item-content--meta">
         <span
@@ -86,12 +86,8 @@
           class="packery-item-content--meta--caption"
           :class="{ 'is--expanded': is_captionHovered }"
           :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : ''}`"
-          >{{ media.caption }}</span
-        >
-        <span
-          class="packery-item-content--meta--comments"
-          @click.stop="openChat"
-        >
+        >{{ media.caption }}</span>
+        <span class="packery-item-content--meta--comments" @click.stop="openChat">
           <svg
             version="1.1"
             class="inline-svg"
@@ -138,9 +134,11 @@
 			c10.7,15.7,8.6,36.8-2.6,51.5C91.8,121.9,74.3,128,60.4,135.1z"
             />
           </svg>
-          <template v-if="number_of_comments_for_media">{{
+          <template v-if="number_of_comments_for_media">
+            {{
             number_of_comments_for_media + " " + $t("comments")
-          }}</template>
+            }}
+          </template>
         </span>
       </div>
 
@@ -279,7 +277,7 @@ export default {
   },
   watch: {
     mediaSize: {
-      handler: function () {
+      handler: function() {
         if (this.is_mounted) {
           this.$emit("triggerPackeryLayout");
         }
@@ -287,13 +285,13 @@ export default {
       },
       deep: true,
     },
-    "media.content": function () {
+    "media.content": function() {
       this.checkTextOverflow();
     },
-    "media.w": function () {
+    "media.w": function() {
       this.setMediaSizeFromMeta();
     },
-    "media.h": function () {
+    "media.h": function() {
       this.setMediaSizeFromMeta();
     },
   },
@@ -665,7 +663,8 @@ export default {
     overflow: hidden;
 
     &.type-audio,
-    &.type-video {
+    &.type-video,
+    &.type-embed {
       > * {
         position: absolute;
         z-index: 1;
@@ -683,12 +682,15 @@ export default {
             background: transparent;
             bottom: 0;
             margin: 0;
+            pointer-events: auto;
+
+            > *:not(:first-child) {
+              opacity: 0;
+            }
           }
 
           .plyr__control {
-            pointer-events: auto;
-            background-color: rgba(255, 255, 255, 0.25);
-
+            background-color: rgba(255, 255, 255, 0.45);
             &:hover {
               background: #222;
             }
@@ -703,11 +705,21 @@ export default {
           }
         }
       }
+      &.is--playing {
+        // display: none;
+        .plyr__controls {
+          // background-color: rgba(255, 255, 255, 0.45);
+
+          > *:not(:first-child) {
+            opacity: 1;
+          }
+        }
+      }
     }
     &.type-embed {
       > * {
         position: absolute;
-        z-index: 1;
+        // z-index: 1;
         width: 100%;
         height: 100%;
       }
