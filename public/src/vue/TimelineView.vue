@@ -16,10 +16,7 @@
       class="m_navtimeline_wrapper--timeline_wrapper"
       :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
     >
-      <div
-        :style="{ cursor, userSelect }"
-        class="vue-splitter-container clearfix"
-      >
+      <div :style="{ cursor, userSelect }" class="vue-splitter-container clearfix">
         <Pane
           class="splitter-pane splitter-paneL"
           :class="{ 'is--dragged': is_dragged }"
@@ -91,10 +88,7 @@
           </template>
           <template v-else>
             <div class="folder_backbutton">
-              <span
-                class="margin-sides-small padding-verysmall text-centered"
-                >{{ folder.name }}</span
-              >
+              <span class="margin-sides-small padding-verysmall text-centered">{{ folder.name }}</span>
             </div>
           </template>
 
@@ -103,17 +97,11 @@
             :class="{ 'is--sidebarOpened': $root.settings.has_sidebar_opened }"
           >
             <div class="m_verticalButtons--container">
-              <button
-                type="button"
-                @click.stop.prevent="toggleSidebar('informations')"
-              >
+              <button type="button" @click.stop.prevent="toggleSidebar('informations')">
                 <span v-html="$t('informations')" />
               </button>
 
-              <button
-                type="button"
-                @click.stop.prevent="toggleSidebar('options')"
-              >
+              <button type="button" @click.stop.prevent="toggleSidebar('options')">
                 <span
                   v-if="$root.settings.sidebar_type === 'options'"
                   v-html="`×&nbsp;` + $t('options')"
@@ -121,10 +109,7 @@
                 <span v-else v-html="$t('options')" />
               </button>
 
-              <button
-                type="button"
-                @click.stop.prevent="toggleSidebar('chats')"
-              >
+              <button type="button" @click.stop.prevent="toggleSidebar('chats')">
                 <span
                   v-if="$root.settings.sidebar_type === 'chats'"
                   v-html="`×&nbsp;` + $t('chats')"
@@ -139,20 +124,15 @@
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
                 v-html="'|||'"
-              /> -->
+              />-->
 
-              <button
-                type="button"
-                @click.stop.prevent="toggleSidebar('journal')"
-              >
+              <button type="button" @click.stop.prevent="toggleSidebar('journal')">
                 <span
                   v-if="$root.settings.sidebar_type === 'journal'"
                   v-html="`×&nbsp;` + $t('journal')"
                 />
                 <span v-else v-html="$t('journal')" />
-                <span v-if="number_of_writeups" class="_writeups_number">
-                  {{ number_of_writeups }}
-                </span>
+                <span v-if="number_of_writeups" class="_writeups_number">{{ number_of_writeups }}</span>
               </button>
             </div>
           </div>
@@ -202,9 +182,7 @@
                 type="button"
                 @click="show_access_controller = !show_access_controller"
                 :class="{ 'is--active': show_access_controller }"
-              >
-                {{ $t("edit_timeline") }}
-              </button>
+              >{{ $t("edit_timeline") }}</button>
               <div v-if="show_access_controller">
                 <AccessController
                   :folder="folder"
@@ -243,29 +221,19 @@
                       v-html="day.is_empty_period"
                     />
                   </template>
-                  <template
-                    v-else-if="day.hasOwnProperty('is_empty')"
-                  ></template>
+                  <template v-else-if="day.hasOwnProperty('is_empty')"></template>
                   <template v-else>
                     <div class="m_timeline--container--dates--day--daylabel">
-                      <div
-                        class="m_timeline--container--dates--day--daylabel--container"
-                      >
-                        <button
-                          type="button"
-                          @click="toggleDayFolding(day.timestamp)"
-                        >
+                      <div class="m_timeline--container--dates--day--daylabel--container">
+                        <button type="button" @click="toggleDayFolding(day.timestamp)">
                           {{ day.label }}
-                          <span v-if="day.number_of_medias > 0">{{
+                          <span v-if="day.number_of_medias > 0">
+                            {{
                             day.number_of_medias
-                          }}</span>
-                          <div
-                            class="_unfold_button"
-                            v-if="folded_days.includes(day.timestamp)"
-                          >
-                            <span>
-                              {{ $t("unfold") }}
-                            </span>
+                            }}
+                          </span>
+                          <div class="_unfold_button" v-if="folded_days.includes(day.timestamp)">
+                            <span>{{ $t("unfold") }}</span>
                           </div>
                         </button>
                       </div>
@@ -330,13 +298,8 @@
               </div>
             </div>
 
-            <div
-              v-if="sort.current.field !== 'date_timeline'"
-              class="m_filterIndicator"
-            >
-              <div
-                class="flex-wrap flex-vertically-centered flex-horizontally-start"
-              >
+            <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
+              <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
                 <button
                   type="button"
                   class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
@@ -559,6 +522,12 @@ export default {
 
     this.setTimelineHeight();
 
+    this.$eventHub.$once("socketio.folders.medias_listed", () => {
+      setTimeout(() => {
+        this.scrollToToday();
+      }, 600);
+    });
+
     this.$eventHub.$emit("scrollToDate", +new Date());
 
     this.onResize = debounce(this.onResize, 300);
@@ -598,7 +567,7 @@ export default {
     this.$root.settings.has_sidebar_opened = false;
   },
   watch: {
-    translation: function () {
+    translation: function() {
       this.$refs.timeline.scrollLeft = this.translation;
 
       if (!this.debounce_translation_fct) {
@@ -608,7 +577,7 @@ export default {
         }, this.debounce_translation_delay);
       }
     },
-    "$root.settings.sidebar_type": function () {
+    "$root.settings.sidebar_type": function() {
       if (this.$root.settings.sidebar_type === "") this.percent = 0;
       else this.percent = 30;
     },
@@ -617,7 +586,7 @@ export default {
     number_of_writeups() {
       if (typeof this.medias === "object")
         return Object.values(this.medias).filter(
-          (media) => media.hasOwnProperty("type") && media.type === "writeup"
+          media => media.hasOwnProperty("type") && media.type === "writeup"
         ).length;
       return false;
     },
@@ -684,9 +653,7 @@ export default {
           if (typeof media_prop === "string") {
             media_prop = [{ [current_sort.field_name]: media_prop }];
           }
-          mediaDataToOrderBy = media_prop.map(
-            (a) => a[current_sort.field_name]
-          );
+          mediaDataToOrderBy = media_prop.map(a => a[current_sort.field_name]);
         }
 
         sortable.push({
@@ -724,7 +691,7 @@ export default {
             }
 
             let originalContentFromMedia = media_prop.map(
-              (a) => a[current_sort.field_name]
+              a => a[current_sort.field_name]
             );
 
             // search even for part of the word — problem: looking for Marie and not Marie-Claire wouldn’t be possible
@@ -756,7 +723,7 @@ export default {
       }
 
       // groupby day
-      let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
+      let mediaGroup = this.$_.groupBy(this.sortedMedias, media => {
         let date_to_reference_to = 0;
         if (media.hasOwnProperty("date_timeline")) {
           date_to_reference_to = media.date_timeline;
@@ -773,7 +740,7 @@ export default {
 
       if (this.make_mediasblock_with === "hours") {
         mediaGroup = mediaGroup.map(([day, medias]) => {
-          let medias_by_hours = this.$_.groupBy(medias, (media) => {
+          let medias_by_hours = this.$_.groupBy(medias, media => {
             let date_to_reference_to = 0;
             if (media.hasOwnProperty("date_timeline")) {
               date_to_reference_to = media.date_timeline;
@@ -879,7 +846,7 @@ export default {
       let temp_start = +this.$moment();
       let temp_end = +this.$moment();
 
-      this.sortedMedias.map((m) => {
+      this.sortedMedias.map(m => {
         if (this.$moment(m.date_timeline, "YYYY-MM-DD HH:mm:ss").isValid()) {
           const media_date = +this.$moment(
             m.date_timeline,
@@ -914,7 +881,7 @@ export default {
         let this_date = startDate.clone();
         let medias_for_date = [];
 
-        const has_media_for_date = this.groupedMedias.filter((i) =>
+        const has_media_for_date = this.groupedMedias.filter(i =>
           this.$moment(i.day).isSame(this_date, "day")
         );
 
@@ -986,7 +953,7 @@ export default {
               const x = 8;
 
               // if has more than X days since beginning, and if the last X days are empty
-              if (acc.length > x && !acc.slice(-x).some((d) => !d.is_empty)) {
+              if (acc.length > x && !acc.slice(-x).some(d => !d.is_empty)) {
                 const last_item = acc[acc.length - 1];
 
                 if (!last_item.hasOwnProperty("is_empty_period")) {
@@ -1123,7 +1090,7 @@ export default {
     },
     toggleDayFolding(timestamp) {
       if (this.folded_days.includes(timestamp))
-        this.folded_days = this.folded_days.filter((t) => t !== timestamp);
+        this.folded_days = this.folded_days.filter(t => t !== timestamp);
       else this.folded_days.push(timestamp);
     },
     showingAddmediaOptions() {
@@ -1136,11 +1103,11 @@ export default {
       if (
         !this.$refs.hasOwnProperty("timeline_dates") ||
         this.$refs.timeline_dates.children.length === 0
-      ) {
+      )
         return this.timeline_interval.start;
-      }
+
       const first_day = Array.from(this.$refs.timeline_dates.children).find(
-        (d) =>
+        d =>
           d.offsetLeft + d.offsetWidth >
           posX + this.$refs.timeline.offsetWidth / 2 - 25
       );
@@ -1162,7 +1129,7 @@ export default {
         return 0;
       }
       const first_day = Array.from(this.$refs.timeline_dates.children).find(
-        (d) =>
+        d =>
           d.dataset.hasOwnProperty("timestamp") &&
           Number(d.dataset.timestamp) >= day
       );
@@ -1199,7 +1166,7 @@ export default {
       if (this.show_media_modal_for) {
         // find in sortedMedias where this.show_media_modal_for and get the next one
         const current_media_index = this.sortedMedias.findIndex(
-          (m) => m.slugMediaName === this.show_media_modal_for
+          m => m.slugMediaName === this.show_media_modal_for
         );
 
         this.closeMediaModal();
@@ -1222,7 +1189,7 @@ export default {
       if (this.show_media_modal_for) {
         // find in sortedMedias where this.show_media_modal_for and get the next one
         const current_media_index = this.sortedMedias.findIndex(
-          (m) => m.slugMediaName === this.show_media_modal_for
+          m => m.slugMediaName === this.show_media_modal_for
         );
 
         this.closeMediaModal();
@@ -1267,7 +1234,7 @@ export default {
       if ($medias.length === 0) return false;
 
       const media_in_timeline = Array.from($medias).find(
-        (m) =>
+        m =>
           m.dataset.hasOwnProperty("slugmedianame") &&
           m.dataset.slugmedianame === slugMediaName
       );

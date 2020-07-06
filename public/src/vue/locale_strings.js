@@ -46,6 +46,7 @@ module.exports = (function () {
         "Pour ajouter des auteurs, fermez cette fenêtre et cliquez sur le bouton <i>s’identifier</i>.",
 
       loading: "chargement",
+      comments: "Commentaires",
       advanced_options: "Options avancées",
       close: "Fermer",
       open: "Ouvrir",
@@ -252,6 +253,7 @@ module.exports = (function () {
         "To create authors, close this window and click on <i>login</i>.",
 
       loading: "loading",
+      comments: "Comments",
       open: "Open",
       save: "Save",
       save_and_close: "Save + close",
