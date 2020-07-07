@@ -79,15 +79,22 @@
 
       <div class="packery-item-content--meta">
         <span
-          v-if="!!media.caption"
           @mouseenter="is_captionHovered = true"
           @mouseleave="is_captionHovered = false"
           @click="openMedia"
           class="packery-item-content--meta--caption"
           :class="{ 'is--expanded': is_captionHovered }"
           :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : ''}`"
-        >{{ media.caption }}</span>
-        <span class="packery-item-content--meta--comments" @click.stop="openChat">
+        >
+          <template v-if="!!media.caption">
+            {{ media.caption }}
+          </template></span
+        >
+        <span
+          class="packery-item-content--meta--comments"
+          @click.stop="openChat"
+        >
+          <!-- v-if="is_hovered && !is_resized" -->
           <svg
             version="1.1"
             class="inline-svg"
@@ -134,11 +141,9 @@
 			c10.7,15.7,8.6,36.8-2.6,51.5C91.8,121.9,74.3,128,60.4,135.1z"
             />
           </svg>
-          <template v-if="number_of_comments_for_media">
-            {{
-            number_of_comments_for_media + " " + $t("comments")
-            }}
-          </template>
+          <span v-if="number_of_comments_for_media">
+            {{ number_of_comments_for_media }}
+          </span>
         </span>
       </div>
 
@@ -277,7 +282,7 @@ export default {
   },
   watch: {
     mediaSize: {
-      handler: function() {
+      handler: function () {
         if (this.is_mounted) {
           this.$emit("triggerPackeryLayout");
         }
@@ -285,13 +290,13 @@ export default {
       },
       deep: true,
     },
-    "media.content": function() {
+    "media.content": function () {
       this.checkTextOverflow();
     },
-    "media.w": function() {
+    "media.w": function () {
       this.setMediaSizeFromMeta();
     },
-    "media.h": function() {
+    "media.h": function () {
       this.setMediaSizeFromMeta();
     },
   },
@@ -572,11 +577,10 @@ export default {
     $t-unstick_from_borders: 5px;
 
     position: absolute;
-    top: $t-unstick_from_borders;
-    left: $t-unstick_from_borders;
-    right: $t-unstick_from_borders;
-    height: 100%;
-    max-height: calc(100% - #{$t-unstick_from_borders} * 2);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     z-index: 1;
     overflow: visible;
 
@@ -584,13 +588,20 @@ export default {
     font-size: 70%;
     pointer-events: none;
 
-    span {
-      display: inline-block;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: space-between;
+
+    > span {
       background-color: rgba(255, 255, 255, 0.4);
       background-color: var(--author-color);
       max-width: 100%;
       max-height: 100%;
       pointer-events: auto;
+      margin: $t-unstick_from_borders;
+      margin-bottom: 0;
 
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
@@ -623,10 +634,17 @@ export default {
     }
   }
 
-  .packery-item-content--comments {
+  .packery-item-content--meta--comments {
+    display: flex;
+    flex-flow: row nowrap;
     svg {
-      width: 1rem;
-      height: 1rem;
+      display: block;
+      margin: 0;
+      height: 1.2em;
+      line-height: 1;
+    }
+    span {
+      padding: 1px 2px 0 2px;
     }
   }
 
