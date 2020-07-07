@@ -273,6 +273,7 @@
                       >
                         <button
                           type="button"
+                          :disabled="!day.segments || day.segments.length === 0"
                           @click="toggleDayFolding(day.timestamp)"
                         >
                           {{ day.label }}
@@ -1502,7 +1503,7 @@ export default {
   // min-width: 100vw;
 
   margin: 0px 0px;
-  padding: 16px 50vw;
+  padding: 16px 45vw;
   // border-right: 1px solid #000;
 }
 
@@ -1553,8 +1554,9 @@ export default {
 
   &.is--current_day {
     .m_timeline--container--dates--day--daylabel {
-      --label-background: var(--color-rouge_vif);
+      // --label-background: var(--color-rouge_vif);
       --label-color: white;
+      --label-color: var(--color-rouge_vif);
       // --rule-color: var(--color-rouge_vif);
     }
   }
@@ -1588,13 +1590,17 @@ export default {
         background-color: var(--label-background);
         color: var(--label-color);
         border-radius: 1.1em;
-        padding: 4px 12px 2px;
+        padding: 4px 12px 4px;
         // padding-right: 8px;
         white-space: nowrap;
 
-        &:hover {
+        &:hover:not([disabled]) {
           background-color: var(--color-noir);
           color: white;
+        }
+        &[disabled] {
+          opacity: 1;
+          cursor: initial;
         }
 
         > span {
