@@ -16,9 +16,7 @@
       }"
       :disabled="read_only"
       @click="toggleAuthorName(author_slug)"
-    >
-      {{ $root.getAuthor(author_slug).name }}
-    </button>
+    >{{ $root.getAuthor(author_slug).name }}</button>
     <button
       type="button"
       @click="show_all_authors = true"
@@ -77,7 +75,7 @@ export default {
           _all_authors_slugs.push(a.slugFolderName);
       });
 
-      this.$root.all_authors.map((a) => {
+      this.$root.all_authors.map(a => {
         if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
           _all_authors_slugs.push(a.slugFolderName);
       });
@@ -90,17 +88,18 @@ export default {
     },
   },
   methods: {
-    toggleAuthorName: function (author_slug) {
+    toggleAuthorName: function(author_slug) {
       // author_slug is already in authors, then remove it
-      if (this.authors.some((a) => a.slugFolderName === author_slug)) {
+      if (this.authors.some(a => a.slugFolderName === author_slug)) {
         this.authors = this.authors.filter(
-          (a) => a.slugFolderName !== author_slug
+          a => a.slugFolderName !== author_slug
         );
       } else {
         this.authors.push({
           slugFolderName: author_slug,
         });
       }
+
       this.$emit("update:currentAuthors", this.authors);
     },
   },

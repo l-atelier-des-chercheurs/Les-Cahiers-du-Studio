@@ -306,6 +306,7 @@ export default {
   created() {},
   mounted() {
     this.is_loading = true;
+
     this.$socketio.listFolders({
       type: "chats",
       slugFolderName: this.chat.slugFolderName,

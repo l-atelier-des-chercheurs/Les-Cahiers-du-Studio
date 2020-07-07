@@ -23,6 +23,7 @@
 
     <template slot="sidebar">
       <!-- Caption -->
+      {{ mediadata }}
       <div
         v-if="
           (!read_only || !!mediadata.caption) &&
@@ -43,46 +44,30 @@
       <div class="margin-bottom-small">
         <label>
           {{ $t("date") }}
-          <small v-if="!read_only">
-            {{ $t("for_the_placement_on_timeline") }}
-          </small>
+          <small v-if="!read_only">{{ $t("for_the_placement_on_timeline") }}</small>
         </label>
-        <DateTime
-          v-model="mediadata.date_timeline"
-          :twowaybinding="true"
-          :read_only="read_only"
-        ></DateTime>
+        <DateTime v-model="mediadata.date_timeline" :twowaybinding="true" :read_only="read_only"></DateTime>
 
         <template v-if="!read_only">
-          <div
-            class="margin-bottom-small"
-            v-if="media.date_created !== undefined"
-          >
+          <div class="margin-bottom-small" v-if="media.date_created !== undefined">
             <small>
               {{ $t("created_date") }}
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline(media.date_created)"
-              >
-                {{ date_created_human }}
-              </button>
+              >{{ date_created_human }}</button>
             </small>
           </div>
 
-          <div
-            class="margin-bottom-small"
-            v-if="media.date_upload !== undefined"
-          >
+          <div class="margin-bottom-small" v-if="media.date_upload !== undefined">
             <small>
               {{ $t("sent_date") }}
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline(media.date_upload)"
-              >
-                {{ date_uploaded_human }}
-              </button>
+              >{{ date_uploaded_human }}</button>
             </small>
           </div>
 
@@ -93,9 +78,7 @@
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline($root.current_time.seconds)"
-              >
-                {{ $root.currentTime_human }}
-              </button>
+              >{{ $root.currentTime_human }}</button>
             </small>
           </div>
         </template>
@@ -125,10 +108,7 @@
       </div>-->
 
       <!-- Keywords -->
-      <div
-        v-if="!read_only || !!mediadata.keywords"
-        class="margin-bottom-small"
-      >
+      <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
         <label>{{ $t("keywords") }}</label>
         <TagsInput
           :keywords="!!mediadata.keywords ? mediadata.keywords : []"
@@ -141,10 +121,9 @@
       <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
         <label>{{ $t("author") }}</label>
         <AuthorsInput
-          :currentAuthors="mediadata.authors"
+          :currentAuthors.sync="mediadata.authors"
           :allAuthors="allAuthors"
           :read_only="read_only"
-          @authorsChanged="(newAuthors) => (mediadata.authors = newAuthors)"
         />
         <small v-html="$t(author_instructions)" />
       </div>
@@ -173,12 +152,7 @@
           :disabled="read_only"
           v-if="!read_only"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="49"
-            height="49"
-            viewBox="0 0 49 49"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -251,12 +225,7 @@
           @click.prevent="printMedia()"
           v-if="!read_only"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="49"
-            height="49"
-            viewBox="0 0 49 49"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -334,10 +303,7 @@
 
         <template v-if="showQRModal">
           <hr />
-          <CreateQRCode
-            :slugFolderName="slugFolderName"
-            :media_filename="media.media_filename"
-          />
+          <CreateQRCode :slugFolderName="slugFolderName" :media_filename="media.media_filename" />
         </template>
 
         <button
@@ -414,12 +380,7 @@
               $root.state.export_options.allow_download !== 'false')
           "
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="49"
-            height="49"
-            viewBox="0 0 49 49"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -543,7 +504,7 @@ export default {
   mounted() {
     // document.addEventListener('keyup', this.keyPressed);
   },
-  beforeDestroy: function () {
+  beforeDestroy: function() {
     // document.removeEventListener('keyup', this.keyPressed);
   },
   computed: {
@@ -564,7 +525,7 @@ export default {
         return "";
       }
       const full_authors_info = this.folder.authors.filter(
-        (a) => a.name === media_authors[0].name
+        a => a.name === media_authors[0].name
       );
       if (full_authors_info.length == 0) {
         return "";
@@ -573,7 +534,7 @@ export default {
     },
   },
   methods: {
-    keyPressed: function (event) {
+    keyPressed: function(event) {
       // if (window.state.dev_mode === 'debug') {
       //   console.log('METHODS • EditMedia: keyPressed');
       // }
@@ -594,11 +555,11 @@ export default {
       //   this.editThisMedia();
       // }
     },
-    printMedia: function () {
+    printMedia: function() {
       window.print();
     },
-    openMediaNewWindow: function () {},
-    removeMedia: function () {
+    openMediaNewWindow: function() {},
+    removeMedia: function() {
       if (window.confirm(this.$t("sureToRemoveMedia"))) {
         this.$root.removeMedia({
           type: "folders",
@@ -615,10 +576,10 @@ export default {
         // }
       }
     },
-    setMediaDateTimeline: function (newDate) {
+    setMediaDateTimeline: function(newDate) {
       this.mediadata.date_timeline = newDate;
     },
-    editThisMedia: function () {
+    editThisMedia: function() {
       console.log("editThisMedia");
 
       this.$root.editMedia({

@@ -173,13 +173,13 @@
 
       <UploadFileModal
         v-if="selected_files.length > 0"
-        @close="selected_files = []"
         :slugFolderName="slugFolderName"
         :type="'folders'"
-        :selected_files="selected_files"
+        :selected_files.sync="selected_files"
         @insertMedias="
           (metaFileNames) => insertImportedMedias({ metaFileNames })
         "
+        @close="selected_files = []"
       />
     </div>
   </div>
@@ -438,10 +438,10 @@ export default {
       if (metaFileNames.length === 0) return false;
 
       const last_media_meta = metaFileNames[metaFileNames.length - 1];
+      this.show_addmedia_options = false;
 
       this.$eventHub.$once(`socketio.folders.media_listed`, () => {
         this.selected_files = [];
-        this.show_addmedia_options = false;
         setTimeout(() => {
           this.$eventHub.$emit("scrollToMedia", last_media_meta);
         }, 500);

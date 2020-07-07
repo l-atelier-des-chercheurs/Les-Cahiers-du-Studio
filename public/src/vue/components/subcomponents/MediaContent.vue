@@ -1,11 +1,15 @@
 <template>
   <div
     class="mediaContainer"
-    :class="[{ 'is--playing' : is_playing }, 'type-' + media.type]"
+    :class="[{ 'is--playing': is_playing }, 'type-' + media.type]"
     :data-context="context"
   >
     <template v-if="media.type === 'image'">
-      <img :srcset="imageSrcSetAttr" :sizes="imageSizesAttr" :src="linkToImageThumb" />
+      <img
+        :srcset="imageSrcSetAttr"
+        :sizes="imageSizesAttr"
+        :src="linkToImageThumb"
+      />
       <transition name="fade" :duration="600">
         <img
           v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb"
@@ -105,10 +109,17 @@
           @pause="pause"
           @ended="ended"
         >
-          <div data-plyr-provider="youtube" data-plyr-embed-id="bTqVqk7FSmY"></div>
+          <div
+            data-plyr-provider="youtube"
+            data-plyr-embed-id="bTqVqk7FSmY"
+          ></div>
         </vue-plyr>
 
-        <Tweet v-else :id="embedURL.id" :options="{ cards: 'hidden', theme: 'light' }" />
+        <Tweet
+          v-else
+          :id="embedURL.id"
+          :options="{ cards: 'hidden', theme: 'light' }"
+        />
       </div>
       <input
         v-else
@@ -125,7 +136,8 @@
 
     <template v-else-if="media.type === 'document'">
       <div v-if="context !== 'edit'" class>
-        <pre>{{ media.media_filename }}
+        <pre
+          >{{ media.media_filename }}
         </pre>
       </div>
       <iframe v-else :src="mediaURL" />
@@ -224,27 +236,27 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    htmlForEditor: function() {
+    htmlForEditor: function () {
       this.$emit("input", this.htmlForEditor);
     },
   },
   computed: {
-    mediaURL: function() {
+    mediaURL: function () {
       return this.$root.state.mode === "export_web"
         ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`
         : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
     },
-    thumbRes: function() {
+    thumbRes: function () {
       return this.context === "preview" && this.element_width_for_sizes
-        ? [50, 180, 360, 720, 1080, 1600].find(
-            r => r / 2 >= this.element_width_for_sizes
+        ? [50, 180, 360, 1600].find(
+            (r) => r / 2 >= this.element_width_for_sizes
           )
         : this.available_resolutions.default;
     },
-    thumbResHovered: function() {
+    thumbResHovered: function () {
       return this.available_resolutions.preview_hovered;
     },
-    linkToImageThumb: function() {
+    linkToImageThumb: function () {
       if (!this.media.hasOwnProperty("thumbs")) {
         return this.mediaURL;
       }
@@ -257,7 +269,7 @@ export default {
       }
 
       const small_thumb = this.media.thumbs.filter(
-        m => m.size === this.thumbRes
+        (m) => m.size === this.thumbRes
       );
       if (small_thumb.length == 0) {
         return this.mediaURL;
@@ -271,7 +283,7 @@ export default {
           : `/${pathToSmallestThumb}`;
       return url;
     },
-    imageSrcSetAttr: function() {
+    imageSrcSetAttr: function () {
       if (
         this.element_width_for_sizes ||
         this.mediaURL.toLowerCase().endsWith(".gif")
@@ -289,14 +301,14 @@ export default {
       }, []);
       return img_srcset.join(", ");
     },
-    videostillSrcSetAttr: function() {
+    videostillSrcSetAttr: function () {
       if (this.element_width_for_sizes) {
         return;
       }
 
       let timeMark = 0;
       let timeMarkThumbs = this.media.thumbs.filter(
-        t => !!t && t.timeMark === 0
+        (t) => !!t && t.timeMark === 0
       );
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
@@ -313,15 +325,15 @@ export default {
 
       return img_srcset.join(", ");
     },
-    imageSizesAttr: function() {
+    imageSizesAttr: function () {
       if (!this.element_width_for_sizes) {
         return;
       }
       return this.element_width_for_sizes + "px";
     },
-    linkToHoveredThumb: function() {
+    linkToHoveredThumb: function () {
       let pathToSmallestThumb = this.media.thumbs.filter(
-        m => m.size === this.thumbResHovered
+        (m) => m.size === this.thumbResHovered
       )[0].path;
 
       const url =
@@ -330,7 +342,7 @@ export default {
           : "/" + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
-    linkToVideoThumb: function() {
+    linkToVideoThumb: function () {
       if (
         !this.media["thumbs"] ||
         (typeof this.media.thumbs === "object" &&
@@ -341,7 +353,7 @@ export default {
 
       let timeMark = 0;
       let timeMarkThumbs = this.media.thumbs.filter(
-        t => !!t && t.timeMark === 0
+        (t) => !!t && t.timeMark === 0
       );
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
@@ -349,7 +361,7 @@ export default {
       }
 
       let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(
-        m => m.size === this.thumbRes
+        (m) => m.size === this.thumbRes
       )[0].path;
 
       let url =
@@ -358,7 +370,7 @@ export default {
           : "/" + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
-    embedURL: function() {
+    embedURL: function () {
       if (!this.media.content) return false;
       if (this.media.content.includes("twitter.com")) {
         return {
