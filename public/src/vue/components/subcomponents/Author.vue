@@ -90,7 +90,7 @@
           "
         />
         <div class="m_author--name">{{ author.name }}</div>
-        <div class="m_author--email" v-if="author.email">{{ author.email }}</div>
+        <!-- <div class="m_author--email" v-if="author.email">{{ author.email }}</div> -->
         <div class="m_author--role" v-if="author.role">
           <label>{{ $t(author.role) }}</label>
         </div>
@@ -334,16 +334,16 @@ import EditAuthor from "./../subcomponents/EditAuthor.vue";
 
 export default {
   props: {
-    author: Object
+    author: Object,
   },
   components: {
-    EditAuthor
+    EditAuthor,
   },
   data() {
     return {
       edit_author_mode: false,
       show_input_password_field: false,
-      show_connection_information: false
+      show_connection_information: false,
     };
   },
   created() {},
@@ -360,7 +360,7 @@ export default {
           this.$refs.passwordField.focus();
         });
       }
-    }
+    },
   },
   computed: {
     can_login_as_author() {
@@ -368,7 +368,7 @@ export default {
       // an author — this will delog him/her
       return this.canEditFolder({
         type: "authors",
-        slugFolderName: this.author.slugFolderName
+        slugFolderName: this.author.slugFolderName,
       });
     },
     is_logged_in_as_author() {
@@ -390,23 +390,23 @@ export default {
       if (!this.author_is_connected || !this.author_is_connected.data)
         return false;
       return this.author_is_connected.data;
-    }
+    },
   },
   methods: {
     setAuthorWithoutPassword() {
       this.$auth.removeAllFoldersPassword({
-        type: "authors"
+        type: "authors",
       });
 
       this.$auth.updateFoldersPasswords({
         authors: {
-          [this.author.slugFolderName]: ""
-        }
+          [this.author.slugFolderName]: "",
+        },
       });
       this.$socketio.sendAuth();
 
       this.checkResultsFromLogin({
-        slugFolderName: this.author.slugFolderName
+        slugFolderName: this.author.slugFolderName,
       });
     },
     canEditFolder: function({ type, slugFolderName }) {
@@ -435,7 +435,7 @@ export default {
 
     submitPassword({
       slugFolderName,
-      password = this.$auth.hashCode(this.$refs.passwordField.value)
+      password = this.$auth.hashCode(this.$refs.passwordField.value),
     }) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`Author • METHODS / submitPassword`);
@@ -444,18 +444,18 @@ export default {
         return;
 
       this.$auth.removeAllFoldersPassword({
-        type: "authors"
+        type: "authors",
       });
       this.$auth.updateFoldersPasswords({
         authors: {
-          [this.author.slugFolderName]: password
-        }
+          [this.author.slugFolderName]: password,
+        },
       });
       this.$socketio.sendAuth();
 
       // check if password matches or not
       this.checkResultsFromLogin({
-        slugFolderName: this.author.slugFolderName
+        slugFolderName: this.author.slugFolderName,
       });
     },
     checkResultsFromLogin({ slugFolderName }) {
@@ -503,7 +503,7 @@ export default {
         this.$eventHub.$emit("resizePanels", [
           { size: 40 },
           { size: 60 },
-          { size: 0 }
+          { size: 0 },
         ]);
       }
       this.$nextTick(() => {
@@ -517,7 +517,7 @@ export default {
         this.$eventHub.$emit("resizePanels", [
           { size: 40 },
           { size: 0 },
-          { size: 60 }
+          { size: 60 },
         ]);
       }
       this.$nextTick(() => {
@@ -536,7 +536,7 @@ export default {
           () => {
             this.$root.removeFolder({
               type: "authors",
-              slugFolderName: this.author.slugFolderName
+              slugFolderName: this.author.slugFolderName,
             });
           },
           () => {}
@@ -550,8 +550,8 @@ export default {
           ? `./${pathToSmallestThumb}`
           : `/${pathToSmallestThumb}`;
       return url;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -610,8 +610,9 @@ export default {
   .m_author--name {
     font-size: var(--font-size-large);
     font-weight: 200;
-    max-width: 15ch;
+    // max-width: 15ch;
     letter-spacing: -0.01em;
+    margin: 0 auto;
   }
 
   .m_author--email {

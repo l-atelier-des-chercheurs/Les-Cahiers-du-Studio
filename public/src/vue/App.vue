@@ -36,23 +36,34 @@
               draggable="false"
             />
           </div>
-          <div class="m_topbar--center--authors--name">
-            {{ $root.current_author.name }}
-          </div>
+          <div class="m_topbar--center--authors--name">{{ $root.current_author.name }}</div>
         </template>
         <template v-else>
           <div class="font-medium">({{ $t("authors") }})</div>
         </template>
       </button>
     </div>
-    <AuthorsList
-      v-if="$root.showAuthorsListModal"
-      :authors="$root.store.authors"
-      :prevent_close="
+
+    <template v-if="$root.showAuthorsListModal">
+      <SimpleAuthorLogin
+        v-if="
+          (!$root.current_author || $root.current_author.role === 'participant')
+        "
+        :prevent_close="
+          $root.state.local_options.force_login && !$root.current_author
+        "
+        @close="$root.showAuthorsListModal = false"
+      />
+
+      <AuthorsList
+        v-else
+        :authors="$root.store.authors"
+        :prevent_close="
         $root.state.local_options.force_login && !$root.current_author
       "
-      @close="$root.showAuthorsListModal = false"
-    />
+        @close="$root.showAuthorsListModal = false"
+      />
+    </template>
 
     <template v-if="view === 'ListView'">
       <ListView
@@ -82,6 +93,7 @@ import ListView from "./ListView.vue";
 import TimelineView from "./TimelineView.vue";
 import BottomFooter from "./components/BottomFooter.vue";
 import AuthorsList from "./components/modals/AuthorsList.vue";
+import SimpleAuthorLogin from "./components/modals/SimpleAuthorLogin.vue";
 
 export default {
   name: "app",
@@ -92,12 +104,13 @@ export default {
     TimelineView,
     BottomFooter,
     AuthorsList,
+    SimpleAuthorLogin,
   },
   data() {
     return {};
   },
   computed: {
-    view: function () {
+    view: function() {
       if (this.$root.settings.current_slugFolderName !== "") {
         return "TimelineView";
       }

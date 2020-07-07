@@ -285,8 +285,8 @@
         },
         "role": {
           "type": "string",
-          "options": ["contributor", "admin"],
-          "default": "contributor",
+          "options": ["participant", "contributor", "admin"],
+          "default": "participant",
           "only_admin_can_edit": true
         },
         "description": {

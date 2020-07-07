@@ -26,6 +26,7 @@ module.exports = (function () {
       "medias_shown:": "Médias affichés&nbsp;:",
       "file:": "Fichier&nbsp;:",
       change_color: "Modifier la couleur",
+      connect: "Se connecter",
       disconnect: "Se déconnecter",
       login: "S’identifier",
       options: "Options",
@@ -58,6 +59,7 @@ module.exports = (function () {
       remove: "Suppr.",
       rename: "Renommer",
       password: "Mot de passe",
+      change_password: "Modifier le mot de passe",
       protected_by_pass: "protégé par mot de passe",
       password_instructions:
         "Seuls les utilisateurs possédant ce mot de passe pourront éditer ce dossier, y ajouter du contenu et consulter les médias non publics.",
@@ -94,6 +96,7 @@ module.exports = (function () {
       marker: "Marqueur",
       text: "Texte",
       embed: "Intégration",
+      authors_list: "Inscrits",
 
       toconnectwithanotherdevice:
         "Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ",
@@ -142,6 +145,8 @@ module.exports = (function () {
       preview: "Aperçu",
       filter: "Filtre",
       add_keyword: "Ajouter un mot-clé",
+      old_password: "Ancien mot de passe",
+      new_password: "Nouveau mot de passe",
 
       export_folder: "Exporter en format WEB",
       export: "Exporter",
@@ -209,6 +214,7 @@ module.exports = (function () {
         password_is_valid: "Mot de passe accepté",
         connecting_using_saved_account:
           "Identification automatique en tant que ",
+        connected_as: "Connecté avec le compte ",
       },
     },
     en: {
@@ -236,6 +242,7 @@ module.exports = (function () {
       "medias_shown:": "Medias shown:",
       "file:": "File:",
       change_color: "Change color",
+      connect: "Se connecter",
       disconnect: "Disconnect",
       login: "Login",
       options: "Options",
@@ -264,6 +271,7 @@ module.exports = (function () {
       remove: "Remove",
       rename: "Rename",
       password: "Password",
+      change_password: "Change password",
 
       only_password_can_open: "Access limited with password",
       password_required_to_open: "Password required",
@@ -403,6 +411,7 @@ module.exports = (function () {
           "This action was blocked. You may need the password to do that.",
         password_is_valid: "Password is valid",
         connecting_using_saved_account: "Automatic login as ",
+        connected_as: "Connected as ",
       },
     },
   };

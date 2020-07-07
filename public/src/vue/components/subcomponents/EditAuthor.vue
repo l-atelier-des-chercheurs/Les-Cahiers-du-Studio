@@ -1,21 +1,16 @@
 <template>
-  <form
-    class
-    @close="$emit('close')"
-    v-on:submit.prevent="editAuthor"
-    :read_only="read_only"
-  >
+  <form class @close="$emit('close')" v-on:submit.prevent="editAuthor" :read_only="read_only">
     <!-- Human name -->
     <div class="margin-bottom-small">
       <label>{{ $t("name") }}</label>
       <input type="text" v-model.trim="authordata.name" required autofocus />
     </div>
 
-    <div class="margin-bottom-small">
+    <!-- <div class="margin-bottom-small">
       <label>{{ $t("email") }}</label>
       <input type="email" v-model.trim="authordata.email" />
       <small>{{ $t("email_instructions") }}</small>
-    </div>
+    </div>-->
 
     <!-- Role -->
     <div
@@ -23,9 +18,7 @@
       v-if="($root.current_author && $root.current_author.role === 'admin')
 "
     >
-      <label>
-        {{ $t("role") }}
-      </label>
+      <label>{{ $t("role") }}</label>
       <div>
         <select v-model="authordata.role">
           <option
@@ -36,9 +29,7 @@
               role === 'admin' &&
               (!$root.current_author || $root.current_author.role !== 'admin')
             "
-          >
-            {{ $t(role) }}
-          </option>
+          >{{ $t(role) }}</option>
         </select>
       </div>
     </div>
@@ -68,7 +59,7 @@
           "
         />
       </template>
-    </div> -->
+    </div>-->
 
     <!-- Password -->
     <!-- <div class="margin-bottom-small">
@@ -84,12 +75,8 @@
           :class="{ 'is--active': show_password }"
           @click.stop="show_password = !show_password"
         >
-          <template v-if="author.password === 'has_pass'">
-            {{ $t("change_password") }}
-          </template>
-          <template v-else>
-            {{ $t("add_password") }}
-          </template>
+          <template v-if="author.password === 'has_pass'">{{ $t("change_password") }}</template>
+          <template v-else>{{ $t("add_password") }}</template>
         </button>
       </label>
 
@@ -112,7 +99,6 @@
             v-model="authordata.password"
           />
         </div>
-        <small>{{ $t("password_instructions") }}</small>
       </div>
     </div>
 
@@ -132,11 +118,9 @@
       <template v-if="show_nfc">
         <input type="text" v-model="authordata.nfc_tag" />
       </template>
-    </div> -->
+    </div>-->
 
-    <button type="button" class="button-small" @click="$emit('close')">
-      {{ $t("cancel") }}
-    </button>
+    <button type="button" class="button-small" @click="$emit('close')">{{ $t("cancel") }}</button>
     <button type="submit" class="bg-bleuvert">{{ $t("save") }}</button>
   </form>
 </template>
@@ -178,7 +162,7 @@ export default {
       ) {
         return "";
       }
-      const thumb = this.author.preview.filter((p) => p.size === 640);
+      const thumb = this.author.preview.filter(p => p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }
@@ -192,11 +176,9 @@ export default {
     }
   },
   methods: {
-    editAuthor: function (event) {
+    editAuthor: function(event) {
       console.log("editAuthor");
-      let allAuthorsName = this.$root.allAuthors.map((a) =>
-        a.name.toLowerCase()
-      );
+      let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
 
       // check if author name (not slug) already exists
       if (this.author.name !== this.authordata.name) {
