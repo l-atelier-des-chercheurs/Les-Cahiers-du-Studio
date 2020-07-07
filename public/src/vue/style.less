@@ -116,8 +116,36 @@ video {
   margin: 0;
 }
 
-.alertify-logs {
+.alertify {
   z-index: 20000;
+  background-color: fade(#333, 86%);
+
+  .dialog > * {
+    width: 450px;
+    border-radius: 2px;
+
+    nav button.ok {
+      background-color: transparent;
+      border: none;
+      font-size: inherit;
+      font-family: inherit;
+      background-color: #fff;
+      display: inline-block;
+      text-decoration: none;
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: 500 !important;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+      margin: 0;
+      cursor: pointer;
+      min-height: 3.24rem;
+      padding: 0 0.81rem !important;
+      border-radius: 6px !important;
+      transition: color 0.25s ease-out, opacity 0.5s;
+      color: #fff !important;
+    }
+  }
 }
 
 .scroll-handle {
@@ -514,9 +542,13 @@ video {
     display: flex;
     flex-flow: row-reverse nowrap;
 
-    > * {
+    button {
       .margin-sides-small;
       white-space: nowrap;
+
+      &.is--active {
+        background-color: var(--color-vert_vif);
+      }
     }
   }
 
@@ -1537,9 +1569,7 @@ video {
     .custom_scrollbar(8px, 5px, 6px, transparent, #fff);
   }
 }
-.m_informationsview {
-  overflow-y: auto;
-  .padding-sides-small;
+.m_informations--presentation {
   .custom_scrollbar(8px, 5px, 6px, transparent, #fff);
 }
 
@@ -1930,4 +1960,18 @@ video {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+._color_items {
+  display: flex;
+  flex-flow: row wrap;
+
+  > * {
+    width: 35px;
+    height: 35px;
+    margin: 5px;
+
+    &.is--active {
+      border: 2px solid var(--color-noir);
+    }
+  }
 }

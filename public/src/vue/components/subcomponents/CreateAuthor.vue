@@ -1,9 +1,5 @@
 <template>
-  <form
-    @close="$emit('close')"
-    v-on:submit.prevent="newAuthor"
-    :read_only="read_only"
-  >
+  <form @close="$emit('close')" v-on:submit.prevent="newAuthor" :read_only="read_only">
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
     <!-- Human name -->
@@ -12,7 +8,7 @@
       <input type="text" v-model.trim="authordata.name" required autofocus />
     </div>
 
-    <div class="margin-bottom-small">
+    <!-- <div class="margin-bottom-small">
       <label>{{ $t("email") }}</label>
       <input
         type="email"
@@ -22,7 +18,7 @@
       <small v-if="mode !== 'simple_login'">
         {{ $t("email_instructions") }}
       </small>
-    </div>
+    </div>-->
 
     <!-- Role -->
     <div class="margin-bottom-small" v-if="mode !== 'simple_login'">
@@ -37,8 +33,7 @@
               role === 'admin' &&
               (!current_author || current_author.role !== 'admin')
             "
-            >{{ $t(role) }}</option
-          >
+          >{{ $t(role) }}</option>
         </select>
       </div>
     </div>
@@ -54,6 +49,22 @@
           "
           v-model="authordata.password"
           autocomplete="new-password"
+        />
+      </div>
+    </div>
+
+    <!-- Color -->
+    <div class="margin-bottom-small">
+      <label>{{ $t("color") }}</label>
+      <div class="_color_items">
+        <div
+          v-for="color in sortedRandomColorArray"
+          :key="color"
+          :class="{
+            'is--active' : authordata.color === color 
+            }"
+          @click="authordata.color = color"
+          :style="`background-color: ${color}`"
         />
       </div>
     </div>
@@ -81,7 +92,7 @@
           :load_from_projects_medias="true"
         />
       </template>
-    </div> -->
+    </div>-->
 
     <!-- NFC tag(s) -->
     <!-- <div class="margin-bottom-small" v-if="mode !== 'simple_login'">
@@ -98,7 +109,7 @@
       <template v-if="show_nfc">
         <input type="text" v-model="authordata.nfc_tag" />
       </template>
-    </div> -->
+    </div>-->
 
     <div class="flex-wrap flex-space-between margin-bottom-small">
       <button
@@ -106,29 +117,23 @@
         class="buttonLink"
         style="flex-grow: 0;"
         @click="$emit('close')"
-      >
-        {{ $t("cancel") }}
-      </button>
+      >{{ $t("cancel") }}</button>
 
       <button type="submit" class="bg-bleuvert">{{ $t("create") }}</button>
     </div>
 
     <div class="text-centered" v-if="mode !== 'simple_login'">
       <span class="switch switch-xs margin-top-small">
-        <input
-          id="login_after_creation"
-          type="checkbox"
-          v-model="login_after_creation"
-        />
-        <label for="login_after_creation">
-          {{ $t("login_after_creation") }}
-        </label>
+        <input id="login_after_creation" type="checkbox" v-model="login_after_creation" />
+        <label for="login_after_creation">{{ $t("login_after_creation") }}</label>
       </span>
     </div>
   </form>
 </template>
 <script>
 // import ImageSelect from "../subcomponents/ImageSelect.vue";
+import randomcolor from "randomcolor";
+import hexsorter from "hexsorter";
 
 export default {
   props: {
@@ -150,12 +155,12 @@ export default {
         password: "",
         role: "contributor",
         nfc_tag: "",
+        color: "",
       },
       preview: undefined,
       login_after_creation: true,
     };
   },
-  computed: {},
   created() {},
   mounted() {
     if (Modernizr !== undefined && !Modernizr.touchevents) {
@@ -163,13 +168,32 @@ export default {
       el.focus();
     }
   },
+  computed: {
+    randomColorArray() {
+      let random_color = randomcolor({
+        luminosity: "light",
+        count: 25,
+      });
+      return random_color;
+    },
+    sortedRandomColorArray() {
+      let sorted_color_array = [];
+      let input = this.randomColorArray;
+      for (let i = input.length - 1; i >= 0; i--) {
+        let color = hexsorter.mostBrightColor(input);
+        input.splice(input.indexOf(color), 1);
+        sorted_color_array.push(color);
+      }
+      return sorted_color_array;
+    },
+  },
   methods: {
-    newAuthor: function (event) {
+    newAuthor: function(event) {
       console.log("newAuthor");
 
       let data = JSON.parse(JSON.stringify(this.authordata));
 
-      let allAuthorsName = this.$root.all_authors.map((a) =>
+      let allAuthorsName = this.$root.all_authors.map(a =>
         a.name.toLowerCase()
       );
 
@@ -190,7 +214,7 @@ export default {
 
       if (!!data.password) data.password = this.$auth.hashCode(data.password);
 
-      this.$root.createFolder({ type: "authors", data }).then((adata) => {
+      this.$root.createFolder({ type: "authors", data }).then(adata => {
         if (this.login_after_creation) {
           this.$nextTick(() => {
             this.$eventHub.$emit("authors.submitPassword", {

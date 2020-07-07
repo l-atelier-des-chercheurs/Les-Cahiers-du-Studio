@@ -530,11 +530,9 @@ let vm = new Vue({
       this.settings.current_chat_slug = false;
     },
 
-    getNumberOfCommentsForChat(media_meta_linked) {
+    getChannelFromMedia(media_meta_linked) {
       if (window.state.dev_mode === "debug")
-        console.log(
-          `ROOT EVENT: getNumberOfCommentsForChat: ${media_meta_linked}`
-        );
+        console.log(`ROOT EVENT: getChannelFromMedia: ${media_meta_linked}`);
 
       const linked_channel = Object.values(this.store.chats).find(
         (c) => c.is_linked_to_media === media_meta_linked
@@ -542,7 +540,7 @@ let vm = new Vue({
 
       if (!linked_channel) return false;
 
-      return linked_channel.number_of_medias;
+      return linked_channel;
     },
 
     openOrCreateChatFromMedia(media_meta_linked) {
@@ -857,24 +855,16 @@ let vm = new Vue({
       }
 
       const first_media_author = media.authors.find(
-        (a) => a.hasOwnProperty("name") && !!a.name
+        (a) => a.hasOwnProperty("slugFolderName") && !!a.slugFolderName
       );
 
-      if (
-        !first_media_author ||
-        !Array.isArray(folder.authors) ||
-        folder.authors.length === 0
-      )
-        return false;
+      if (!first_media_author || this.all_authors.length === 0) return false;
 
-      const full_authors_info = folder.authors.filter(
-        (a) => a.name === first_media_author.name
+      const first_author = this.all_authors.find(
+        (a) => a.slugFolderName === first_media_author.slugFolderName
       );
-      if (full_authors_info.length == 0) {
-        return false;
-      }
 
-      return full_authors_info[0];
+      return first_author;
     },
     canEditFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
@@ -1029,7 +1019,12 @@ let vm = new Vue({
       return Object.values(this.store.authors);
     },
     current_chat() {
-      if (!this.settings.current_chat_slug) return false;
+      if (
+        !this.settings.current_chat_slug ||
+        !this.settings.has_sidebar_opened ||
+        this.settings.sidebar_type !== "chats"
+      )
+        return false;
 
       return Object.values(this.store.chats).find(
         (c) => c.slugFolderName === this.settings.current_chat_slug

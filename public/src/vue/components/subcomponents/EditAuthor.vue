@@ -1,21 +1,16 @@
 <template>
-  <form
-    class
-    @close="$emit('close')"
-    v-on:submit.prevent="editAuthor"
-    :read_only="read_only"
-  >
+  <form class @close="$emit('close')" v-on:submit.prevent="editAuthor" :read_only="read_only">
     <!-- Human name -->
     <div class="margin-bottom-small">
       <label>{{ $t("name") }}</label>
       <input type="text" v-model.trim="authordata.name" required autofocus />
     </div>
 
-    <div class="margin-bottom-small">
+    <!-- <div class="margin-bottom-small">
       <label>{{ $t("email") }}</label>
       <input type="email" v-model.trim="authordata.email" />
       <small>{{ $t("email_instructions") }}</small>
-    </div>
+    </div>-->
 
     <!-- Role -->
     <div
@@ -23,9 +18,7 @@
       v-if="($root.current_author && $root.current_author.role === 'admin')
 "
     >
-      <label>
-        {{ $t("role") }}
-      </label>
+      <label>{{ $t("role") }}</label>
       <div>
         <select v-model="authordata.role">
           <option
@@ -36,9 +29,7 @@
               role === 'admin' &&
               (!$root.current_author || $root.current_author.role !== 'admin')
             "
-          >
-            {{ $t(role) }}
-          </option>
+          >{{ $t(role) }}</option>
         </select>
       </div>
     </div>
@@ -68,7 +59,7 @@
           "
         />
       </template>
-    </div> -->
+    </div>-->
 
     <!-- Password -->
     <!-- <div class="margin-bottom-small">
@@ -84,12 +75,8 @@
           :class="{ 'is--active': show_password }"
           @click.stop="show_password = !show_password"
         >
-          <template v-if="author.password === 'has_pass'">
-            {{ $t("change_password") }}
-          </template>
-          <template v-else>
-            {{ $t("add_password") }}
-          </template>
+          <template v-if="author.password === 'has_pass'">{{ $t("change_password") }}</template>
+          <template v-else>{{ $t("add_password") }}</template>
         </button>
       </label>
 
@@ -112,7 +99,6 @@
             v-model="authordata.password"
           />
         </div>
-        <small>{{ $t("password_instructions") }}</small>
       </div>
     </div>
 
@@ -132,16 +118,36 @@
       <template v-if="show_nfc">
         <input type="text" v-model="authordata.nfc_tag" />
       </template>
-    </div> -->
+    </div>-->
 
-    <button type="button" class="button-small" @click="$emit('close')">
-      {{ $t("cancel") }}
-    </button>
+    <!-- Color -->
+    <div class="margin-bottom-small">
+      <label>{{ $t("color") }}</label>
+      <div class="_color_items" v-if="!!authordata.color">
+        <label>Actuelle</label>
+        <div :key="authordata.color" :style="`background-color: ${authordata.color}`" />
+      </div>
+      <div class="_color_items">
+        <div
+          v-for="color in sortedRandomColorArray"
+          :key="color"
+          :class="{
+            'is--active' : authordata.color === color 
+            }"
+          @click="authordata.color = color"
+          :style="`background-color: ${color}`"
+        />
+      </div>
+    </div>
+
+    <button type="button" class="button-small" @click="$emit('close')">{{ $t("cancel") }}</button>
     <button type="submit" class="bg-bleuvert">{{ $t("save") }}</button>
   </form>
 </template>
 <script>
 // import ImageSelect from "../subcomponents/ImageSelect.vue";
+import randomcolor from "randomcolor";
+import hexsorter from "hexsorter";
 
 export default {
   props: {
@@ -166,11 +172,30 @@ export default {
         password: "",
         _old_password: "",
         nfc_tag: this.author.nfc_tag,
+        color: this.author.color,
       },
       preview: undefined,
     };
   },
   computed: {
+    randomColorArray() {
+      let random_color = randomcolor({
+        luminosity: "light",
+        count: 25,
+      });
+      return random_color;
+    },
+    sortedRandomColorArray() {
+      let sorted_color_array = [];
+      let input = this.randomColorArray;
+      for (let i = input.length - 1; i >= 0; i--) {
+        let color = hexsorter.mostBrightColor(input);
+        input.splice(input.indexOf(color), 1);
+        sorted_color_array.push(color);
+      }
+      return sorted_color_array;
+    },
+
     previewURL() {
       if (
         !this.author.hasOwnProperty("preview") ||
@@ -178,7 +203,7 @@ export default {
       ) {
         return "";
       }
-      const thumb = this.author.preview.filter((p) => p.size === 640);
+      const thumb = this.author.preview.filter(p => p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }
@@ -192,9 +217,9 @@ export default {
     }
   },
   methods: {
-    editAuthor: function (event) {
+    editAuthor: function(event) {
       console.log("editAuthor");
-      let allAuthorsName = this.$root.allAuthors.map((a) =>
+      let allAuthorsName = this.$root.all_authors.map(a =>
         a.name.toLowerCase()
       );
 
@@ -219,7 +244,8 @@ export default {
         this.authordata.password = this.$auth.hashCode(
           this.authordata.password
         );
-      }
+      } else delete this.authordata.password;
+
       if (!!this.authordata._old_password) {
         this.authordata._old_password = this.$auth.hashCode(
           this.authordata._old_password
