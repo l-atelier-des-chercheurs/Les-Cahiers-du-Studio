@@ -40,6 +40,8 @@ module.exports = (function () {
       back_to_list: "Retour à la liste",
       journal: "Journal",
       chats: "Discussions",
+      no_message_yet: "Aucun message à afficher pour l’instant…",
+
       informations: "Informations",
       on_import_place_media_on_the_date_they_were_created:
         "À l’importation de médias, le placement se fait selon la date de création du fichier et non la date d’importation",
@@ -257,6 +259,9 @@ module.exports = (function () {
       untitled_document: "Untitled document",
       back_to_list: "Back to list",
       journal: "Journal",
+      chats: "Chats",
+      no_message_yet: "No message to display yet…",
+
       on_import_place_media_on_the_date_they_were_created:
         "On media import, place them according to the file creation date and not the importation date",
       author_instructions:
