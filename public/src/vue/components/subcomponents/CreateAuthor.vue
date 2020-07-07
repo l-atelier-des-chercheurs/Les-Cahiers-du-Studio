@@ -53,6 +53,22 @@
       </div>
     </div>
 
+    <!-- Color -->
+    <div class="margin-bottom-small">
+      <label>{{ $t("color") }}</label>
+      <div class="_color_items">
+        <div
+          v-for="color in sortedRandomColorArray"
+          :key="color"
+          :class="{
+            'is--active' : authordata.color === color 
+            }"
+          @click="authordata.color = color"
+          :style="`background-color: ${color}`"
+        />
+      </div>
+    </div>
+
     <!-- Preview -->
     <!-- <div class="margin-bottom-small" v-if="mode !== 'simple_login'">
       <label>
@@ -116,6 +132,8 @@
 </template>
 <script>
 // import ImageSelect from "../subcomponents/ImageSelect.vue";
+import randomcolor from "randomcolor";
+import hexsorter from "hexsorter";
 
 export default {
   props: {
@@ -137,18 +155,37 @@ export default {
         password: "",
         role: "contributor",
         nfc_tag: "",
+        color: "",
       },
       preview: undefined,
       login_after_creation: true,
     };
   },
-  computed: {},
   created() {},
   mounted() {
     if (Modernizr !== undefined && !Modernizr.touchevents) {
       const el = this.$el.querySelector("[autofocus]");
       el.focus();
     }
+  },
+  computed: {
+    randomColorArray() {
+      let random_color = randomcolor({
+        luminosity: "light",
+        count: 25,
+      });
+      return random_color;
+    },
+    sortedRandomColorArray() {
+      let sorted_color_array = [];
+      let input = this.randomColorArray;
+      for (let i = input.length - 1; i >= 0; i--) {
+        let color = hexsorter.mostBrightColor(input);
+        input.splice(input.indexOf(color), 1);
+        sorted_color_array.push(color);
+      }
+      return sorted_color_array;
+    },
   },
   methods: {
     newAuthor: function(event) {

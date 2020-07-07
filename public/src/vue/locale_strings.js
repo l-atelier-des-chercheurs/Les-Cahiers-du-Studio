@@ -45,6 +45,8 @@ module.exports = (function () {
         "À l’importation de médias, le placement se fait selon la date de création du fichier et non la date d’importation",
       author_instructions:
         "Pour ajouter des auteurs, fermez cette fenêtre et cliquez sur le bouton <i>s’identifier</i>.",
+      name_or_pseudo: "Nom ou pseudonyme",
+      create_account: "Créer un compte",
 
       loading: "chargement",
       comments: "Commentaires",
@@ -259,6 +261,8 @@ module.exports = (function () {
         "On media import, place them according to the file creation date and not the importation date",
       author_instructions:
         "To create authors, close this window and click on <i>login</i>.",
+      name_or_pseudo: "Name or nickname",
+      create_account: "Create account",
 
       loading: "loading",
       comments: "Comments",

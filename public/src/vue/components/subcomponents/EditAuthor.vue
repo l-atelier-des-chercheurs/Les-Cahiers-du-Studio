@@ -120,12 +120,34 @@
       </template>
     </div>-->
 
+    <!-- Color -->
+    <div class="margin-bottom-small">
+      <label>{{ $t("color") }}</label>
+      <div class="_color_items" v-if="!!authordata.color">
+        <label>Actuelle</label>
+        <div :key="authordata.color" :style="`background-color: ${authordata.color}`" />
+      </div>
+      <div class="_color_items">
+        <div
+          v-for="color in sortedRandomColorArray"
+          :key="color"
+          :class="{
+            'is--active' : authordata.color === color 
+            }"
+          @click="authordata.color = color"
+          :style="`background-color: ${color}`"
+        />
+      </div>
+    </div>
+
     <button type="button" class="button-small" @click="$emit('close')">{{ $t("cancel") }}</button>
     <button type="submit" class="bg-bleuvert">{{ $t("save") }}</button>
   </form>
 </template>
 <script>
 // import ImageSelect from "../subcomponents/ImageSelect.vue";
+import randomcolor from "randomcolor";
+import hexsorter from "hexsorter";
 
 export default {
   props: {
@@ -150,11 +172,30 @@ export default {
         password: "",
         _old_password: "",
         nfc_tag: this.author.nfc_tag,
+        color: this.author.color,
       },
       preview: undefined,
     };
   },
   computed: {
+    randomColorArray() {
+      let random_color = randomcolor({
+        luminosity: "light",
+        count: 25,
+      });
+      return random_color;
+    },
+    sortedRandomColorArray() {
+      let sorted_color_array = [];
+      let input = this.randomColorArray;
+      for (let i = input.length - 1; i >= 0; i--) {
+        let color = hexsorter.mostBrightColor(input);
+        input.splice(input.indexOf(color), 1);
+        sorted_color_array.push(color);
+      }
+      return sorted_color_array;
+    },
+
     previewURL() {
       if (
         !this.author.hasOwnProperty("preview") ||
@@ -178,7 +219,9 @@ export default {
   methods: {
     editAuthor: function(event) {
       console.log("editAuthor");
-      let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
+      let allAuthorsName = this.$root.all_authors.map(a =>
+        a.name.toLowerCase()
+      );
 
       // check if author name (not slug) already exists
       if (this.author.name !== this.authordata.name) {
@@ -201,7 +244,8 @@ export default {
         this.authordata.password = this.$auth.hashCode(
           this.authordata.password
         );
-      }
+      } else delete this.authordata.password;
+
       if (!!this.authordata._old_password) {
         this.authordata._old_password = this.$auth.hashCode(
           this.authordata._old_password

@@ -855,24 +855,16 @@ let vm = new Vue({
       }
 
       const first_media_author = media.authors.find(
-        (a) => a.hasOwnProperty("name") && !!a.name
+        (a) => a.hasOwnProperty("slugFolderName") && !!a.slugFolderName
       );
 
-      if (
-        !first_media_author ||
-        !Array.isArray(folder.authors) ||
-        folder.authors.length === 0
-      )
-        return false;
+      if (!first_media_author || this.all_authors.length === 0) return false;
 
-      const full_authors_info = folder.authors.filter(
-        (a) => a.name === first_media_author.name
+      const first_author = this.all_authors.find(
+        (a) => a.slugFolderName === first_media_author.slugFolderName
       );
-      if (full_authors_info.length == 0) {
-        return false;
-      }
 
-      return full_authors_info[0];
+      return first_author;
     },
     canEditFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;

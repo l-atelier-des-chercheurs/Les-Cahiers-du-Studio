@@ -271,6 +271,10 @@
           </div>
         </div>
 
+        <div class="_color_items" v-if="!!author.color">
+          <div :key="author.color" :style="`background-color: ${author.color}`" />
+        </div>
+
         <div
           class
           v-if="

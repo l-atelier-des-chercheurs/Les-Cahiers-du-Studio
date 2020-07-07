@@ -25,7 +25,7 @@
     <transition-group class="m_authors--authorList" name="list-complete">
       <template v-if="change_color_menu">
         <div v-for="color in sortedRandomColorArray" :key="color" @click="changeColor(color)">
-          <div class="color_item" :style="`background-color: ${color}`" />
+          <div class="_color_item" :style="`background-color: ${color}`" />
         </div>
       </template>
       <template v-else>
@@ -104,17 +104,17 @@ export default {
   props: {
     authors: {
       type: Array,
-      default: []
+      default: [],
     },
     slugFolderName: {
-      type: String
-    }
+      type: String,
+    },
   },
   components: {},
   data() {
     return {
       add_author: false,
-      change_color_menu: false
+      change_color_menu: false,
     };
   },
 
@@ -152,7 +152,7 @@ export default {
     randomColorArray() {
       let random_color = randomcolor({
         luminosity: "light",
-        count: 25
+        count: 25,
       });
       return random_color;
     },
@@ -165,7 +165,7 @@ export default {
         sorted_color_array.push(color);
       }
       return sorted_color_array;
-    }
+    },
   },
   methods: {
     createAuthor() {
@@ -185,15 +185,15 @@ export default {
       }
       _authors.push({
         name,
-        color: randomcolor({ luminosity: "light" })
+        color: randomcolor({ luminosity: "light" }),
       });
 
       this.$root.editFolder({
         type: "folders",
         slugFolderName: this.slugFolderName,
         data: {
-          authors: _authors
-        }
+          authors: _authors,
+        },
       });
 
       this.add_author = false;
@@ -202,13 +202,13 @@ export default {
       this.$root.settings.current_author_name = false;
       this.change_color_menu = false;
       this.$socketio.socket.emit("updateClientInfo", {
-        author_name: false
+        author_name: false,
       });
     },
     setAuthor(name) {
       this.$root.settings.current_author_name = name;
       this.$socketio.socket.emit("updateClientInfo", {
-        author_name: name
+        author_name: name,
       });
     },
     author_is_connected(name) {
@@ -228,21 +228,16 @@ export default {
         type: "folders",
         slugFolderName: this.slugFolderName,
         data: {
-          authors: this.authors
-        }
+          authors: this.authors,
+        },
       });
 
       this.change_color_menu = false;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
-.color_item {
-  width: 35px;
-  height: 35px;
-  margin: 5px;
-}
 .m_authors {
   position: relative;
   right: -15px;

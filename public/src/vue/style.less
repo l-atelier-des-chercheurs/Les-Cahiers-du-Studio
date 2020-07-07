@@ -1961,3 +1961,17 @@ video {
   justify-content: center;
   align-items: center;
 }
+._color_items {
+  display: flex;
+  flex-flow: row wrap;
+
+  > * {
+    width: 35px;
+    height: 35px;
+    margin: 5px;
+
+    &.is--active {
+      border: 2px solid var(--color-noir);
+    }
+  }
+}
