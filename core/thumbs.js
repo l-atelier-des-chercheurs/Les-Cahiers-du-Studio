@@ -4,8 +4,9 @@ const path = require("path"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
-  sharp = require("sharp");
+  StlThumbnailer = require("node-stl-to-thumbnail");
 
+const sharp = require("sharp");
 sharp.cache(false);
 
 const dev = require("./dev-log"),
@@ -147,12 +148,7 @@ module.exports = (function () {
           let screenshotsAngles = [0];
           screenshotsAngles.forEach((angle) => {
             let makeSTLScreenshot = new Promise((resolve, reject) => {
-              _makeSTLScreenshot({
-                slugFolderName,
-                thumbFolderPath,
-                filename,
-                angle,
-              })
+              _makeSTLScreenshot(mediaPath, thumbFolderPath, filename, angle)
                 .then(({ screenshotPath, screenshotName }) => {
                   // make screenshot, then make thumbs out of each screenshot and push this to thumbs
                   // naming :
@@ -615,16 +611,9 @@ module.exports = (function () {
     });
   }
 
-  function _makeSTLScreenshot({
-    slugFolderName,
-    thumbFolderPath,
-    filename,
-    angle,
-  }) {
+  function _makeSTLScreenshot(mediaPath, thumbFolderPath, filename, angle) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(
-        `Looking to make a STL screenshot for ${slugFolderName}/${filename}`
-      );
+      dev.logverbose(`Looking to make a STL screenshot for ${mediaPath}`);
 
       // todo : use angle to get screenshots all around an stl
 
@@ -636,56 +625,25 @@ module.exports = (function () {
       fs.access(fullScreenshotPath, fs.F_OK, function (err) {
         // if userDir folder doesn't exist yet at destination
         if (err) {
-          const { BrowserWindow } = require("electron");
+          var thumbnailer = new StlThumbnailer({
+            filePath: mediaPath,
+            requestThumbnails: [
+              {
+                width: 1800,
+                height: 1800,
+              },
+            ],
+          }).then(function (thumbnails) {
+            // thumbnails is an array (in matching order to your requests) of Canvas objects
+            // you can write them to disk, return them to web users, etc
+            // see node-canvas documentation at https://github.com/Automattic/node-canvas
+            thumbnails[0].toBuffer(function (err, buf) {
+              if (err) return reject();
 
-          let win = new BrowserWindow({
-            // width: 800,
-            // height: 600,
-            width: 1800,
-            height: 1800,
-            show: false,
+              fs.writeFileSync(fullScreenshotPath, buf);
+              return resolve({ screenshotPath, screenshotName });
+            });
           });
-          win.loadURL(
-            // `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/faire-de-la-3d-a-la-maison/bourlingue.stl`
-            `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/${slugFolderName}/${filename}`
-          );
-
-          win.webContents.on("did-finish-load", () => {
-            // Use default printing options
-            setTimeout(() => {
-              win.capturePage((image) => {
-                var conv = image.toPNG(1.0); // to PNG
-
-                fs.writeFile(fullScreenshotPath, conv, (error) => {
-                  if (error) throw error;
-                  dev.logverbose(
-                    `THUMBS — _makeSTLScreenshot : created image at ${fullScreenshotPath}`
-                  );
-                  return resolve({ screenshotPath, screenshotName });
-                });
-              });
-            }, 1000);
-          });
-
-          // var thumbnailer = new StlThumbnailer({
-          //   filePath: mediaPath,
-          //   requestThumbnails: [
-          //     {
-          //       width: 1800,
-          //       height: 1800,
-          //     },
-          //   ],
-          // }).then(function (thumbnails) {
-          //   // thumbnails is an array (in matching order to your requests) of Canvas objects
-          //   // you can write them to disk, return them to web users, etc
-          //   // see node-canvas documentation at https://github.com/Automattic/node-canvas
-          //   thumbnails[0].toBuffer(function (err, buf) {
-          //     if (err) return reject();
-
-          //     fs.writeFileSync(fullScreenshotPath, buf);
-          //     return resolve({ screenshotPath, screenshotName });
-          //   });
-          // });
         } else {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`
