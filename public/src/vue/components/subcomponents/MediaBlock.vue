@@ -93,6 +93,12 @@
         <span
           class="packery-item-content--meta--comments"
           @click.stop="openChat"
+          :class="{
+            'is--active':
+              channel_from_media &&
+              channel_from_media.slugFolderName ===
+                $root.current_chat.slugFolderName,
+          }"
         >
           <!-- v-if="is_hovered && !is_resized" -->
           <svg
@@ -141,8 +147,10 @@
 			c10.7,15.7,8.6,36.8-2.6,51.5C91.8,121.9,74.3,128,60.4,135.1z"
             />
           </svg>
-          <span v-if="number_of_comments_for_media">
-            {{ number_of_comments_for_media }}
+          <span
+            v-if="channel_from_media && channel_from_media.number_of_medias > 0"
+          >
+            {{ channel_from_media.number_of_medias }}
           </span>
         </span>
       </div>
@@ -319,8 +327,9 @@ export default {
         (this.mediaSize.height - 1) * this.gutter
       );
     },
-    number_of_comments_for_media() {
-      return this.$root.getNumberOfCommentsForChat(this.media.metaFileName);
+    channel_from_media() {
+      const channel = this.$root.getChannelFromMedia(this.media.metaFileName);
+      return channel;
     },
     widthForSizes() {
       // TODO
@@ -637,6 +646,11 @@ export default {
   .packery-item-content--meta--comments {
     display: flex;
     flex-flow: row nowrap;
+    &:hover,
+    &.is--active {
+      background-color: var(--color-noir);
+      color: white;
+    }
     svg {
       display: block;
       margin: 0;

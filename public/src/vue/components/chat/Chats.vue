@@ -65,7 +65,11 @@
     </div>
 
     <transition name="chatopen">
-      <Chat v-if="$root.current_chat" :chat="$root.current_chat" />
+      <Chat
+        v-if="$root.current_chat"
+        :key="$root.current_chat.slugFolderName"
+        :chat="$root.current_chat"
+      />
     </transition>
   </div>
 </template>

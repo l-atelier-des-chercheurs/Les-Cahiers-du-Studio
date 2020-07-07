@@ -514,9 +514,13 @@ video {
     display: flex;
     flex-flow: row-reverse nowrap;
 
-    > * {
+    button {
       .margin-sides-small;
       white-space: nowrap;
+
+      &.is--active {
+        background-color: var(--color-vert_vif);
+      }
     }
   }
 

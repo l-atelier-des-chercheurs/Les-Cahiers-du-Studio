@@ -105,42 +105,16 @@
             <div class="m_verticalButtons--container">
               <button
                 type="button"
-                @click.stop.prevent="toggleSidebar('informations')"
+                :class="{
+                  'is--active': $root.settings.sidebar_type === tab.key,
+                }"
+                v-for="tab in tabs"
+                :key="tab.key"
+                @click.stop.prevent="toggleSidebar(tab.key)"
               >
-                <span v-html="$t('informations')" />
+                <span v-html="$t(tab.key)" />
               </button>
-
-              <button
-                type="button"
-                @click.stop.prevent="toggleSidebar('options')"
-              >
-                <span
-                  v-if="$root.settings.sidebar_type === 'options'"
-                  v-html="`×&nbsp;` + $t('options')"
-                />
-                <span v-else v-html="$t('options')" />
-              </button>
-
-              <button
-                type="button"
-                @click.stop.prevent="toggleSidebar('chats')"
-              >
-                <span
-                  v-if="$root.settings.sidebar_type === 'chats'"
-                  v-html="`×&nbsp;` + $t('chats')"
-                />
-                <span v-else v-html="$t('chats')" />
-              </button>
-
-              <!-- <button
-                v-if="$root.settings.has_sidebar_opened"
-                type="button"
-                class="m_verticalButtons--slider"
-                @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
-                @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
-                v-html="'|||'"
-              />-->
-
+              <!-- 
               <button
                 type="button"
                 @click.stop.prevent="toggleSidebar('journal')"
@@ -153,7 +127,7 @@
                 <span v-if="number_of_writeups" class="_writeups_number">{{
                   number_of_writeups
                 }}</span>
-              </button>
+              </button> -->
             </div>
           </div>
         </Pane>
@@ -482,6 +456,21 @@ export default {
       resizeType: "left",
 
       make_mediasblock_with: "markers",
+
+      tabs: [
+        {
+          key: "informations",
+        },
+        {
+          key: "options",
+        },
+        {
+          key: "chats",
+        },
+        {
+          key: "journal",
+        },
+      ],
 
       filter: "",
       sort: {
