@@ -33,6 +33,9 @@
               $root.settings.has_sidebar_opened &&
               $root.settings.sidebar_type === 'informations'
             "
+            @close="
+              $root.settings.has_sidebar_opened = toggleSidebar('informations')
+            "
           />
 
           <Sidebar
@@ -77,15 +80,11 @@
             <button
               type="button"
               class="folder_backbutton"
-              @click="$root.closeFolder()"
-              @mouseover="collapse_foldername = false"
-              @mouseleave="collapse_foldername = true"
               :class="{
-                'is--collapsed': collapse_foldername,
                 'is--movedToRight': $root.settings.has_sidebar_opened,
               }"
             >
-              <span class="icon">←</span>
+              <!-- <span class="icon"></span> -->
               <span class="project_name">{{ folder.name }}</span>
             </button>
           </template>

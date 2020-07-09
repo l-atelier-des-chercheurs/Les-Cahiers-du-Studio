@@ -146,6 +146,7 @@ let vm = new Vue({
     state: window.state,
 
     access: false,
+    hide_app_while_loading: false,
 
     current_time: {
       seconds: "",
@@ -288,6 +289,13 @@ let vm = new Vue({
             });
           });
         }
+      } else {
+        this.hide_app_while_loading = true;
+        this.$eventHub.$once("socketio.folders.folders_listed", () => {
+          if (this.store.folders.hasOwnProperty("timeline"))
+            this.openFolder("timeline");
+          this.hide_app_while_loading = false;
+        });
       }
     }
 

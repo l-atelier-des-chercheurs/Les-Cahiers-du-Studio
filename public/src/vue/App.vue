@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-if="$root.access">
+  <div id="app" v-if="$root.access || $root.hide_app_while_loading">
     <SystemBar v-if="$root.settings.enable_system_bar" :view="view"></SystemBar>
 
     <div
@@ -36,7 +36,9 @@
               draggable="false"
             />
           </div>
-          <div class="m_topbar--center--authors--name">{{ $root.current_author.name }}</div>
+          <div class="m_topbar--center--authors--name">
+            {{ $root.current_author.name }}
+          </div>
         </template>
         <template v-else>
           <div class="font-medium">({{ $t("authors") }})</div>
@@ -59,8 +61,8 @@
         v-else
         :authors="$root.store.authors"
         :prevent_close="
-        $root.state.local_options.force_login && !$root.current_author
-      "
+          $root.state.local_options.force_login && !$root.current_author
+        "
         @close="$root.showAuthorsListModal = false"
       />
     </template>
@@ -110,7 +112,7 @@ export default {
     return {};
   },
   computed: {
-    view: function() {
+    view: function () {
       if (this.$root.settings.current_slugFolderName !== "") {
         return "TimelineView";
       }

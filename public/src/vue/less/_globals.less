@@ -121,7 +121,7 @@ button,
   &::-webkit-scrollbar-track,
   &::-webkit-scrollbar-thumb {
     border: @scrollbar-border solid rgba(255, 255, 255, 0);
-    border-radius: @scrollbar-border*0;
+    border-radius: @scrollbar-border / 2;
     background-clip: padding-box;
 
     transition: all 0.4s;
@@ -744,5 +744,22 @@ svg.inline-svg {
     height: 1.5em;
     margin-top: -0.25em;
     margin-bottom: -0.25em;
+  }
+}
+.button-nostyle {
+  appearance: none;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  background-color: transparent;
+  text-transform: none;
+  font-weight: inherit;
+  .padding-vert-verysmall;
+  margin-top: -@t-skipline / 4;
+  margin-bottom: -@t-skipline / 4;
+
+  &.is--active {
+    background-color: transparent;
+    color: inherit;
   }
 }

@@ -544,7 +544,7 @@ export default {
   background-color: var(--author-color);
   cursor: pointer;
 
-  border-radius: 4px;
+  // border-radius: 4px;
   border: 0px solid black;
 
   transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -691,7 +691,7 @@ export default {
     width: 100%;
     height: 100%;
     margin: 0;
-    border-radius: 4px;
+    // border-radius: 4px;
     overflow: hidden;
 
     &.type-audio,
