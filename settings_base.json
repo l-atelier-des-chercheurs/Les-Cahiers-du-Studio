@@ -286,7 +286,7 @@
         "role": {
           "type": "string",
           "options": ["participant", "contributor", "admin"],
-          "default": "participant",
+          "default": "contributor",
           "only_admin_can_edit": true
         },
         "description": {
