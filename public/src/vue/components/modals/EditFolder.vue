@@ -18,6 +18,25 @@
         <input type="text" v-model="folderdata.name" required />
       </div>
 
+      <!-- Author(s) -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >
+            {{ $t("author") }}
+          </button>
+        </label>
+
+        <div v-if="show_authors">
+          <AuthorsInput :currentAuthors.sync="folderdata.authors" />
+          <small v-html="$t('author_instructions')" />
+        </div>
+      </div>
+
       <!-- Access control -->
       <div class="margin-bottom-small">
         <label>{{ $t("manage_access") }}</label>
@@ -27,20 +46,10 @@
             :editing_limited_to.sync="folderdata.editing_limited_to"
             :viewing_limited_to.sync="folderdata.viewing_limited_to"
             :password.sync="folderdata.password"
-            :can_have_authors="false"
+            :authors.sync="folderdata.authors"
           />
         </div>
       </div>
-
-      <!-- Author(s) -->
-      <!-- <div v-if="!read_only && !!folderdata.authors" class="margin-bottom-small">
-        <label>{{ $t('author') }}</label>
-        <AuthorsInput
-          :currentAuthors="folderdata.authors"
-          :allAuthors="allAuthors"
-          @authorsChanged="newAuthors => folderdata.authors = newAuthors"
-        />
-      </div>-->
     </template>
 
     <template slot="submit_button">{{ $t("save") }}</template>
@@ -67,6 +76,7 @@ export default {
   data() {
     return {
       askBeforeClosingModal: false,
+      show_authors: !!this.folder.authors,
       folderdata: {
         name: this.folder.name,
         start: this.$moment(this.folder.start).isValid()

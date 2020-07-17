@@ -5,7 +5,7 @@ button,
   border: none;
   font-size: inherit;
   font-family: inherit;
-  background-color: #fff;
+  background-color: transparent;
   display: inline-block;
   text-transform: lowercase;
   text-decoration: none;
@@ -54,6 +54,46 @@ button,
     height: 48px;
     margin: auto;
   }
+
+  &.button-triangle {
+    padding: 0;
+    &::after {
+      content: "◄";
+      display: inline-block;
+      margin-left: 0.5em;
+      transition: transform 0.5s, color 0.5s;
+    }
+
+    &:hover {
+      background-color: transparent;
+
+      &::after {
+        color: var(--color-rouge_vif);
+      }
+    }
+
+    &.is--active {
+      color: var(--color-rouge_vif);
+      &::after {
+        transform: rotate(-90deg);
+      }
+
+      &:hover {
+        background: transparent;
+      }
+    }
+
+    &.bg-rouge {
+      &:hover {
+        &::after {
+          color: var(--color-noir);
+        }
+      }
+      &.is--active {
+        color: var(--color-noir);
+      }
+    }
+  }
 }
 
 .buttonLink {
@@ -93,7 +133,7 @@ button,
   }
 
   &:hover {
-    background-color: @c-gris_tresclair;
+    background-color: @c-gris;
     &::after {
       // border-bottom-width: 2px;
     }
