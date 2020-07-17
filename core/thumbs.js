@@ -3,11 +3,13 @@ const path = require("path"),
   pathToFfmpeg = require("ffmpeg-static"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
-  exifReader = require("exif-reader"),
-  StlThumbnailer = require("node-stl-to-thumbnail");
+  exifReader = require("exif-reader");
 
 const sharp = require("sharp");
 sharp.cache(false);
+
+const StlThumbnailer = require("node-stl-to-thumbnail");
+// const puppeteer = require("puppeteer");
 
 const dev = require("./dev-log"),
   api = require("./api");
@@ -148,7 +150,13 @@ module.exports = (function () {
           let screenshotsAngles = [0];
           screenshotsAngles.forEach((angle) => {
             let makeSTLScreenshot = new Promise((resolve, reject) => {
-              _makeSTLScreenshot(mediaPath, thumbFolderPath, filename, angle)
+              _makeSTLScreenshot({
+                mediaPath,
+                slugFolderName,
+                thumbFolderPath,
+                filename,
+                angle,
+              })
                 .then(({ screenshotPath, screenshotName }) => {
                   // make screenshot, then make thumbs out of each screenshot and push this to thumbs
                   // naming :
@@ -571,8 +579,8 @@ module.exports = (function () {
     timeMark
   ) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(
-        `Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark}`
+      dev.logfunction(
+        `THUMBS — _makeVideoScreenshot: for ${mediaPath} and timeMark = ${timeMark}`
       );
 
       let screenshotName = `${filename}.${timeMark}.jpeg`;
@@ -611,9 +619,17 @@ module.exports = (function () {
     });
   }
 
-  function _makeSTLScreenshot(mediaPath, thumbFolderPath, filename, angle) {
+  function _makeSTLScreenshot({
+    mediaPath,
+    slugFolderName,
+    thumbFolderPath,
+    filename,
+    angle,
+  }) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(`Looking to make a STL screenshot for ${mediaPath}`);
+      dev.logfunction(
+        `THUMBS — _makeSTLScreenshot: ${slugFolderName}/${filename}`
+      );
 
       // todo : use angle to get screenshots all around an stl
 
@@ -625,6 +641,68 @@ module.exports = (function () {
       fs.access(fullScreenshotPath, fs.F_OK, function (err) {
         // if userDir folder doesn't exist yet at destination
         if (err) {
+          /* puppeteer version: can’t work for now because of missing extensions */
+          // let browser;
+          // let urlToPubli = `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/${slugFolderName}/${filename}`;
+          // puppeteer
+          //   .launch({
+          //     headless: true,
+          //     ignoreHTTPSErrors: true,
+          //     args: ["--no-sandbox", "--font-render-hinting=none"],
+          //   })
+          //   .then((_browser) => {
+          //     browser = _browser;
+          //     return browser.newPage();
+          //   })
+          //   .then((page) => {
+          //     page.setViewport({
+          //       width: 1800,
+          //       height: 1800,
+          //       deviceScaleFactor: 2,
+          //     });
+
+          //     dev.logverbose(
+          //       `THUMBS — _makeSTLScreenshot : loading URL ${urlToPubli}`
+          //     );
+
+          //     function delay(duration) {
+          //       return new Promise((resolve) => {
+          //         setTimeout(() => resolve(), duration);
+          //       });
+          //     }
+
+          //     page
+          //       .goto(urlToPubli, {
+          //         waitUntil: "domcontentloaded",
+          //       })
+          //       .then(() => delay(1500))
+          //       .then(() => {
+          //         page
+          //           .screenshot({
+          //             clip: {
+          //               x: 0,
+          //               y: 0,
+          //               width: 1800,
+          //               height: 1800,
+          //             },
+          //             path: fullScreenshotPath,
+          //           })
+          //           .then(() => {
+          //             dev.logverbose(
+          //               `THUMBS — _makeSTLScreenshot : created image at ${fullScreenshotPath}`
+          //             );
+          //             browser.close();
+          //             return resolve({ screenshotPath, screenshotName });
+          //           });
+          //       })
+          //       .catch((err) => {
+          //         browser.close();
+          //         dev.error(
+          //           `THUMBS — _makeSTLScreenshot : failed to make STL screenshot = ${err}`
+          //         );
+          //       });
+          //   });
+
           var thumbnailer = new StlThumbnailer({
             filePath: mediaPath,
             requestThumbnails: [
@@ -656,7 +734,7 @@ module.exports = (function () {
 
   function getEXIFDataForVideoAndAudio(mediaPath) {
     return new Promise(function (resolve, reject) {
-      dev.logfunction(`getEXIFDataForVideoAndAudio: ${mediaPath}`);
+      dev.logfunction(`THUMBS — getEXIFDataForVideoAndAudio: ${mediaPath}`);
       ffmpeg.ffprobe(mediaPath, function (err, metadata) {
         if (err || typeof metadata === "undefined") {
           dev.log(`getEXIFDataForVideoAndAudio: PROBE DATA isn’t valid`);

@@ -21,6 +21,8 @@ module.exports = (function () {
       caption: "Légende",
       date: "Date",
       and: "Et",
+      logout: "Se déconnecter",
+      send: "Envoyer",
       action: "Action",
       "active_filter:": "Filtre actif&nbsp;:",
       "medias_shown:": "Médias affichés&nbsp;:",
@@ -151,6 +153,9 @@ module.exports = (function () {
       add_keyword: "Ajouter un mot-clé",
       old_password: "Ancien mot de passe",
       new_password: "Nouveau mot de passe",
+      login_to_create_channel: "Identifiez-vous pour créer un sujet",
+      only_authors_can_open: "Accès limité aux auteurs",
+      cancel: "annuler",
 
       export_folder: "Exporter en format WEB",
       export: "Exporter",
@@ -219,6 +224,8 @@ module.exports = (function () {
         connecting_using_saved_account:
           "Identification automatique en tant que ",
         connected_as: "Connecté avec le compte ",
+        "account_does_not_exist:": "Le compte demandé n’existe pas&nbsp;:",
+        wrong_password: "Mot de passe erroné",
       },
     },
     en: {
@@ -241,6 +248,9 @@ module.exports = (function () {
       caption: "Caption",
       date: "Date",
       and: "And",
+      logout: "Log-out",
+
+      send: "Send",
       action: "Action",
       "active_filter:": "Active filter:",
       "medias_shown:": "Medias shown:",
@@ -374,6 +384,9 @@ module.exports = (function () {
       calendar: "Calendar",
       now: "now",
       today: "today",
+      login_to_create_channel: "Login to create a topic",
+      only_authors_can_open: "Access limited to authors",
+      cancel: "cancel",
 
       list: "List",
       fullscreen: "Fullscreen",
@@ -421,6 +434,8 @@ module.exports = (function () {
         password_is_valid: "Password is valid",
         connecting_using_saved_account: "Automatic login as ",
         connected_as: "Connected as ",
+        "account_does_not_exist:": "The requested account does not exist:",
+        wrong_password: "Wrong password",
       },
     },
   };

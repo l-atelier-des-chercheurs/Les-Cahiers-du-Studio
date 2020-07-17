@@ -157,6 +157,7 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
+  align-items: center;
 
   padding: calc(var(--spacing) / 4);
   align-items: center;

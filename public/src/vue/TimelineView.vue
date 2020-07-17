@@ -193,25 +193,27 @@
             <div v-if="!can_edit_folder">
               <button
                 type="button"
-                @click="show_access_controller = !show_access_controller"
+                @click="toggleSidebar('options')"
                 :class="{ 'is--active': show_access_controller }"
               >
+                <!-- @click="show_access_controller = !show_access_controller" -->
                 {{ $t("edit_timeline") }}
               </button>
-              <div v-if="show_access_controller">
+              <!-- <div v-if="show_access_controller">
                 <AccessController
                   :folder="folder"
                   :context="'full'"
                   :type="'folders'"
                   @closeFolder="$root.closeFolder()"
                 />
-              </div>
+              </div> -->
             </div>
           </div>
 
           <div
             class="m_timeline"
             ref="timeline"
+            :style="timeline_width"
             @wheel="onMousewheel"
             @mouseup.self="onMouseUp"
             @scroll="onTimelineScroll"
@@ -1166,7 +1168,8 @@ export default {
       if (!!first_day && first_day.dataset.hasOwnProperty("timestamp")) {
         return +this.$moment(Number(first_day.dataset.timestamp));
       }
-      return this.timeline_interval.start;
+
+      return this.timeline_interval.end;
     },
     startEditModal() {
       if (this.can_see_folder) {

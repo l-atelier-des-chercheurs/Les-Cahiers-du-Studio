@@ -10,42 +10,6 @@
       {{ $t("notifications.contents_wont_be_editable") }}
     </div>
 
-    <div class="_openAuthorModal" v-if="view === 'ListView'">
-      <button
-        type="button"
-        class="m_topbar--center--authors--currentAuthor"
-        @click="$root.showAuthorsListModal = true"
-        :content="$t('login')"
-        v-tippy="{
-          placement: 'bottom',
-          delay: [600, 0],
-        }"
-      >
-        <template v-if="$root.current_author">
-          <div
-            class="m_topbar--center--authors--portrait"
-            v-if="
-              $root.current_author.hasOwnProperty('preview') &&
-              $root.current_author.preview.length !== ''
-            "
-          >
-            <img
-              :src="urlToPortrait($root.current_author.preview)"
-              width="100"
-              height="100"
-              draggable="false"
-            />
-          </div>
-          <div class="m_topbar--center--authors--name">
-            {{ $root.current_author.name }}
-          </div>
-        </template>
-        <template v-else>
-          <div class="font-medium">({{ $t("authors") }})</div>
-        </template>
-      </button>
-    </div>
-
     <template v-if="$root.showAuthorsListModal">
       <SimpleAuthorLogin
         v-if="
