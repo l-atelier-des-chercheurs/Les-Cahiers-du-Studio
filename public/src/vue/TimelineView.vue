@@ -213,6 +213,7 @@
           <div
             class="m_timeline"
             ref="timeline"
+            :style="timeline_width"
             @wheel="onMousewheel"
             @mouseup.self="onMouseUp"
             @scroll="onTimelineScroll"
@@ -1167,7 +1168,8 @@ export default {
       if (!!first_day && first_day.dataset.hasOwnProperty("timestamp")) {
         return +this.$moment(Number(first_day.dataset.timestamp));
       }
-      return this.timeline_interval.start;
+
+      return this.timeline_interval.end;
     },
     startEditModal() {
       if (this.can_see_folder) {
