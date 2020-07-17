@@ -13,7 +13,7 @@
             width="40.5px"
             height="26.1px"
             viewBox="0 0 40.5 26.1"
-            style="enable-background:new 0 0 40.5 26.1;"
+            style="enable-background: new 0 0 40.5 26.1;"
             xml:space="preserve"
           >
             <g>
@@ -23,7 +23,7 @@
             		c-1.3,0-2.4,0.5-5,1.9L15,4.3l1.1,2.3L23.1,3c-4,5.7-5.5,10.4-5.5,14.3c0,3.2,1.2,8.8,5.8,8.8c8.4,0,17.1-12.1,17.1-21.3
             		c0-3.3-1.5-4.8-3.6-4.8c-2,0-3.5,1.5-3.5,3.5C33.4,5.8,35.2,7.1,37.2,7.1 M0,21.4c0,2.8,2,4.7,4.6,4.7c2.6,0,4.8-1.9,4.8-4.7
             		c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4"
-                style="fill:#FFFFFF"
+                style="fill: #ffffff;"
               />
             </g>
           </svg>
@@ -51,72 +51,125 @@
       {{ $t("notifications.contents_wont_be_editable") }}
     </div>
 
-    <section class="flex-wrap flex-vertically-start limited-width padding-vert-medium">
+    <section
+      class="flex-wrap flex-vertically-start limited-width padding-vert-medium"
+    >
       <div
         class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-large"
       >
+        <div class="_openAuthorModal">
+          <button
+            type="button"
+            @click="$root.showAuthorsListModal = true"
+            :content="$t('login')"
+            v-tippy="{
+              placement: 'bottom',
+              delay: [600, 0],
+            }"
+          >
+            <template v-if="$root.current_author">
+              <div
+                class="m_topbar--center--authors--portrait"
+                v-if="
+                  $root.current_author.hasOwnProperty('preview') &&
+                  $root.current_author.preview.length !== ''
+                "
+              >
+                <img
+                  :src="urlToPortrait($root.current_author.preview)"
+                  width="100"
+                  height="100"
+                  draggable="false"
+                />
+              </div>
+              <div class="m_topbar--center--authors--name">
+                {{ $root.current_author.name }}
+              </div>
+            </template>
+            <template v-else>
+              <div class="font-medium">{{ $t("login") }}</div>
+            </template>
+          </button>
+        </div>
         <div class="border border-top-dashed">
           <p class="margin-vert-medium" v-html="$t('more_information')"></p>
         </div>
 
         <div class="border border-top-dashed">
           <div class="margin-vert-medium">
-            <label class="margin-none text-cap with-bullet">{{ $t("sort_by") }}</label>
+            <label class="margin-none text-cap with-bullet">{{
+              $t("sort_by")
+            }}</label>
             <div class="margin-sides-negative-small">
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="(sort.type = 'alph'), (sort.field = 'name')"
                 :class="{ 'is--active': sort.field === 'name' }"
-              >{{ $t("name") }}</button>
+              >
+                {{ $t("name") }}
+              </button>
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="(sort.type = 'date'), (sort.field = 'created')"
                 :class="{ 'is--active': sort.field === 'created' }"
-              >{{ $t("created_date") }}</button>
+              >
+                {{ $t("created_date") }}
+              </button>
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="(sort.type = 'date'), (sort.field = 'start')"
                 :class="{ 'is--active': sort.field === 'start' }"
-              >{{ $t("start_date") }}</button>
+              >
+                {{ $t("start_date") }}
+              </button>
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="(sort.type = 'date'), (sort.field = 'end')"
                 :class="{ 'is--active': sort.field === 'end' }"
-              >{{ $t("end_date") }}</button>
+              >
+                {{ $t("end_date") }}
+              </button>
             </div>
           </div>
 
           <div class="margin-vert-small">
-            <label class="margin-none text-cap with-bullet">{{ $t("in_the_order") }}</label>
+            <label class="margin-none text-cap with-bullet">{{
+              $t("in_the_order")
+            }}</label>
             <div class="margin-sides-negative-small">
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="sort.order = 'ascending'"
                 :class="{ 'is--active': sort.order === 'ascending' }"
-              >{{ $t("ascending") }}</button>
+              >
+                {{ $t("ascending") }}
+              </button>
               <button
                 type="button"
                 class="border-circled button-thin button-wide padding-verysmall margin-verysmall"
                 @click="sort.order = 'descending'"
                 :class="{ 'is--active': sort.order === 'descending' }"
-              >{{ $t("descending") }}</button>
+              >
+                {{ $t("descending") }}
+              </button>
             </div>
           </div>
         </div>
         <div class="border border-top-dashed">
-          <div class="margin-vert-medium" style="max-width: 200px">
+          <div class="margin-vert-medium" style="max-width: 200px;">
             <label v-html="$t('lang:')"></label>
             <select v-model="currentLang">
               <option
                 v-for="(name, code) in $root.lang.available"
                 :value="code"
                 :key="code"
-              >{{ name }}</option>
+                >{{ name }}</option
+              >
             </select>
           </div>
         </div>
@@ -151,21 +204,21 @@
               cy="23.5"
               r="23"
               transform="translate(-9.73 23.5) rotate(-45)"
-              style="fill: none;stroke: #333;stroke-miterlimit: 10"
+              style="fill: none; stroke: #333; stroke-miterlimit: 10;"
             />
             <line
               x1="23.5"
               y1="8.86"
               x2="23.5"
               y2="38.13"
-              style="fill: none;stroke: #333;stroke-miterlimit: 10"
+              style="fill: none; stroke: #333; stroke-miterlimit: 10;"
             />
             <line
               x1="8.86"
               y1="23.5"
               x2="38.13"
               y2="23.5"
-              style="fill: none;stroke: #333;stroke-miterlimit: 10"
+              style="fill: none; stroke: #333; stroke-miterlimit: 10;"
             />
           </svg>
         </button>
@@ -197,12 +250,12 @@ export default {
   props: {
     presentationMD: Object,
     read_only: Boolean,
-    folders: Object
+    folders: Object,
   },
   components: {
     CreateFolder,
     Folder,
-    VueMarkdown
+    VueMarkdown,
   },
   data() {
     return {
@@ -210,19 +263,19 @@ export default {
       sort: {
         type: "date",
         field: "created",
-        order: "descending"
+        order: "descending",
       },
-      currentLang: this.$root.lang.current
+      currentLang: this.$root.lang.current,
     };
   },
   watch: {
-    currentLang: function() {
+    currentLang: function () {
       this.$root.updateLocalLang(this.currentLang);
     },
-    folders: function() {}
+    folders: function () {},
   },
   computed: {
-    sortedFoldersSlug: function() {
+    sortedFoldersSlug: function () {
       if (this.folders.message === "no-folders") {
         return "has-no-folders";
       }
@@ -245,7 +298,7 @@ export default {
 
         sortable.push({ slugFolderName, orderBy });
       }
-      let sortedSortable = sortable.sort(function(a, b) {
+      let sortedSortable = sortable.sort(function (a, b) {
         let valA = a.orderBy;
         let valB = b.orderBy;
         if (typeof a.orderBy === "string" && typeof b.orderBy === "string") {
@@ -267,7 +320,7 @@ export default {
 
       return sortedSortable;
     },
-    presentationText: function() {
+    presentationText: function () {
       if (this.presentationMD.hasOwnProperty(this.currentLang)) {
         return this.presentationMD[this.currentLang];
       } else if (this.presentationMD.hasOwnProperty("content")) {
@@ -275,8 +328,8 @@ export default {
       }
 
       return this.presentationMD;
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

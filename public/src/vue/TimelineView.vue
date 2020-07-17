@@ -194,19 +194,20 @@
             <div v-if="!can_edit_folder">
               <button
                 type="button"
-                @click="show_access_controller = !show_access_controller"
+                @click="toggleSidebar('options')"
                 :class="{ 'is--active': show_access_controller }"
               >
+                <!-- @click="show_access_controller = !show_access_controller" -->
                 {{ $t("edit_timeline") }}
               </button>
-              <div v-if="show_access_controller">
+              <!-- <div v-if="show_access_controller">
                 <AccessController
                   :folder="folder"
                   :context="'full'"
                   :type="'folders'"
                   @closeFolder="$root.closeFolder()"
                 />
-              </div>
+              </div> -->
             </div>
           </div>
 

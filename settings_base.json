@@ -58,7 +58,7 @@
         },
         "editing_limited_to": {
           "type": "string",
-          "options": ["everybody", "with_password", "nobody"],
+          "options": ["everybody", "with_password", "only_authors"],
           "default": "everybody"
         },
         "viewing_limited_to": {

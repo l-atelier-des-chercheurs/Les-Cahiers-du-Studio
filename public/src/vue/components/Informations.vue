@@ -8,10 +8,9 @@
       vulputate massa felis, non pulvinar ex sollicitudin id.
     </div>
     <div class="m_informations--buttons" v-if="!$root.current_author">
-      <button
-        type="button"
-        @click="$root.showAuthorsListModal = true"
-      >{{ $t("login").toLowerCase() }}</button>
+      <button type="button" @click="$root.showAuthorsListModal = true">
+        {{ $t("login").toLowerCase() }}
+      </button>
     </div>
   </div>
 </template>
@@ -62,13 +61,16 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
+  align-items: center;
 
   padding: calc(var(--spacing) / 2);
-  background-color: #999;
+  // background-color: white;
 
   button {
     display: block;
     margin: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 2);
+    background-color: white;
   }
 }
 </style>
