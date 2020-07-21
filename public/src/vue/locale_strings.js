@@ -156,6 +156,7 @@ module.exports = (function () {
       login_to_create_channel: "Identifiez-vous pour créer un sujet",
       only_authors_can_open: "Accès limité aux auteurs",
       cancel: "annuler",
+      login_to_post: "Identifiez-vous pour envoyer un message",
 
       export_folder: "Exporter en format WEB",
       export: "Exporter",
@@ -387,6 +388,7 @@ module.exports = (function () {
       login_to_create_channel: "Login to create a topic",
       only_authors_can_open: "Access limited to authors",
       cancel: "cancel",
+      login_to_post: "Login to send a message",
 
       list: "List",
       fullscreen: "Fullscreen",

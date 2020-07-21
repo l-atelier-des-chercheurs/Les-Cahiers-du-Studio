@@ -36,6 +36,7 @@
       @mouseleave="/* show_addmedia_options = false */"
       :class="{ 'is--showing_options': show_addmedia_options }"
       :style="addMediaStyles"
+      v-if="can_edit_folder"
     >
       <!-- @mouseenter="!is_touch && show_drop_container === false ? show_addmedia_options = true : ''" -->
       <div class="menu_encart--options">
@@ -194,6 +195,10 @@ export default {
     slugFolderName: String,
     folder: Object,
     is_realtime: {
+      type: Boolean,
+      default: false,
+    },
+    can_edit_folder: {
       type: Boolean,
       default: false,
     },
