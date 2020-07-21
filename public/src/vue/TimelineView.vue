@@ -26,55 +26,55 @@
           :split="split"
           :style="{ [type]: percent + '%' }"
         >
-          <!-- <transition name="sidebar-animation" :duration="350" mode="out-in"> -->
+          <transition name="chatopen" :duration="350" mode="out-in">
+            <Informations
+              v-if="
+                $root.settings.has_sidebar_opened &&
+                $root.settings.sidebar_type === 'informations'
+              "
+              @close="
+                $root.settings.has_sidebar_opened = toggleSidebar(
+                  'informations'
+                )
+              "
+            />
 
-          <Informations
-            v-if="
-              $root.settings.has_sidebar_opened &&
-              $root.settings.sidebar_type === 'informations'
-            "
-            @close="
-              $root.settings.has_sidebar_opened = toggleSidebar('informations')
-            "
-          />
+            <Sidebar
+              v-else-if="
+                $root.settings.has_sidebar_opened &&
+                $root.settings.sidebar_type === 'options'
+              "
+              :folder="folder"
+              :slugFolderName="slugFolderName"
+              :timeline_start="timeline_interval.start"
+              :timeline_end="timeline_interval.end"
+              :visible_day="visible_day"
+              :medias="medias"
+              :sortedMedias="sortedMedias"
+              :date_interval="date_interval"
+              :sort="sort"
+              :filter="filter"
+              :is_realtime="is_realtime"
+              :read_only="read_only"
+              :can_edit_folder="can_edit_folder"
+            />
+            <WriteUp
+              v-else-if="
+                $root.settings.has_sidebar_opened &&
+                $root.settings.sidebar_type === 'journal'
+              "
+              :slugFolderName="slugFolderName"
+              :medias="medias"
+              :read_only="read_only"
+            />
 
-          <Sidebar
-            v-else-if="
-              $root.settings.has_sidebar_opened &&
-              $root.settings.sidebar_type === 'options'
-            "
-            :folder="folder"
-            :slugFolderName="slugFolderName"
-            :timeline_start="timeline_interval.start"
-            :timeline_end="timeline_interval.end"
-            :visible_day="visible_day"
-            :medias="medias"
-            :sortedMedias="sortedMedias"
-            :date_interval="date_interval"
-            :sort="sort"
-            :filter="filter"
-            :is_realtime="is_realtime"
-            :read_only="read_only"
-            :can_edit_folder="can_edit_folder"
-          />
-          <WriteUp
-            v-else-if="
-              $root.settings.has_sidebar_opened &&
-              $root.settings.sidebar_type === 'journal'
-            "
-            :slugFolderName="slugFolderName"
-            :medias="medias"
-            :read_only="read_only"
-          />
-
-          <Chats
-            v-else-if="
-              $root.settings.has_sidebar_opened &&
-              $root.settings.sidebar_type === 'chats'
-            "
-          />
-
-          <!-- </transition> -->
+            <Chats
+              v-else-if="
+                $root.settings.has_sidebar_opened &&
+                $root.settings.sidebar_type === 'chats'
+              "
+            />
+          </transition>
 
           <template v-if="$root.state.mode !== 'export_web'">
             <button
@@ -147,11 +147,11 @@
           :split="split"
         >
           <AddMedias
-            v-if="can_edit_folder"
             :slugFolderName="slugFolderName"
             :folder="folder"
             :is_realtime="is_realtime"
             :current_author="$root.current_author"
+            :can_edit_folder="can_edit_folder"
             :read_only="!$root.state.connected"
             :rightmostMedia="rightmostMedia"
           />
