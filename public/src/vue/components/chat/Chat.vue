@@ -261,7 +261,7 @@
           <div>
             <button
               type="button"
-              class="button-thin bg-bleumarine"
+              class="button-thin bg-blanc"
               @click="$root.showAuthorsListModal = true"
             >
               {{ $t("login_to_post") }}

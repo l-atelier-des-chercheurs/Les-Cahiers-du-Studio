@@ -159,7 +159,7 @@ export default {
     display: block;
     width: 33px;
     height: 33px;
-    stroke: currentColor;
+    stroke: white;
   }
 }
 

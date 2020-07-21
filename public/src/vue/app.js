@@ -172,8 +172,6 @@ let vm = new Vue({
       has_sidebar_opened: false,
       sidebar_type: "",
 
-      show_chat_panel: false,
-
       highlightMedia: "",
       is_loading_medias_for_folder: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
@@ -520,7 +518,9 @@ let vm = new Vue({
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: openChat: ${slugFolderName}`);
       }
-      if (!this.settings.show_chat_panel) this.settings.show_chat_panel = true;
+      if (!this.settings.has_sidebar_opened)
+        this.settings.has_sidebar_opened = true;
+      this.settings.sidebar_type = "chats";
       this.settings.current_chat_slug = slugFolderName;
     },
     closeChat() {
@@ -577,13 +577,16 @@ let vm = new Vue({
       }
     },
     closeChatPane() {
-      this.settings.show_chat_panel = false;
+      if (window.state.dev_mode === "debug")
+        console.log(`ROOT EVENT: closeChatPane`);
       this.closeChat();
+      this.settings.has_sidebar_opened = false;
+      this.settings.sidebar_type = "";
     },
     closeChat() {
-      if (window.state.dev_mode === "debug") {
+      if (window.state.dev_mode === "debug")
         console.log(`ROOT EVENT: closeChat`);
-      }
+
       this.settings.current_chat_slug = false;
     },
     setAuthor: function (author_slug) {
