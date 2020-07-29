@@ -24,9 +24,7 @@
         :disabled="read_only"
       >
         <!-- @mouseenter="!is_touch && show_drop_container === false ? show_authors_options = true : ''" -->
-        <template v-if="$root.current_author">
-          {{ $root.current_author.name }}
-        </template>
+        <template v-if="$root.current_author">{{ $root.current_author.name }}</template>
         <template v-else>{{ $t("login").toLowerCase() }}</template>
       </button>
     </div>
@@ -50,10 +48,7 @@
           <span class="text_label show_on_hover">{{ $t("text") }}</span>
 
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-            <path
-              d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z"
-              style="fill: currentColor;"
-            />
+            <path d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z" style="fill: currentColor;" />
             <line
               x1="15.21"
               y1="14.41"
@@ -149,9 +144,7 @@
         @click="show_addmedia_options = !show_addmedia_options"
         @drop="dropHandler($event)"
       >
-        <span class="text_label always_show" v-if="show_drop_container"
-          >Déposez vos fichiers ici</span
-        >
+        <span class="text_label always_show" v-if="show_drop_container">Déposez vos fichiers ici</span>
         <!-- TODO scroll to now au click -->
         <svg
           version="1.1"
@@ -374,7 +367,11 @@ export default {
       const additionalMeta = {
         type: "marker",
       };
-      this.createMedia({ additionalMeta });
+      this.createMedia({ additionalMeta }).then((mdata) => {
+        setTimeout(() => {
+          this.$eventHub.$emit("timeline.openMediaModal", mdata.metaFileName);
+        }, 500);
+      });
     },
     createEmbedMedia() {
       if (window.state.dev_mode === "debug")

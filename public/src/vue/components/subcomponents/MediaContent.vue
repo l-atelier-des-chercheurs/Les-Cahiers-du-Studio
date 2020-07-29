@@ -5,11 +5,7 @@
     :data-context="context"
   >
     <template v-if="media.type === 'image'">
-      <img
-        :srcset="imageSrcSetAttr"
-        :sizes="imageSizesAttr"
-        :src="linkToImageThumb"
-      />
+      <img :srcset="imageSrcSetAttr" :sizes="imageSizesAttr" :src="linkToImageThumb" />
       <transition name="fade" :duration="600">
         <img
           v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb"
@@ -109,17 +105,10 @@
           @pause="pause"
           @ended="ended"
         >
-          <div
-            data-plyr-provider="youtube"
-            data-plyr-embed-id="bTqVqk7FSmY"
-          ></div>
+          <div :data-plyr-provider="embedURL.type" :data-plyr-embed-id="embedURL.src"></div>
         </vue-plyr>
 
-        <Tweet
-          v-else
-          :id="embedURL.id"
-          :options="{ cards: 'hidden', theme: 'light' }"
-        />
+        <Tweet v-else :id="embedURL.id" :options="{ cards: 'hidden', theme: 'light' }" />
       </div>
       <input
         v-else
@@ -136,8 +125,7 @@
 
     <template v-else-if="media.type === 'document'">
       <div v-if="context !== 'edit'" class>
-        <pre
-          >{{ media.media_filename }}
+        <pre>{{ media.media_filename }}
         </pre>
       </div>
       <iframe v-else :src="mediaURL" />
