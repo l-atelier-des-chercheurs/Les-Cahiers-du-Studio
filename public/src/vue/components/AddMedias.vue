@@ -367,7 +367,11 @@ export default {
       const additionalMeta = {
         type: "marker",
       };
-      this.createMedia({ additionalMeta });
+      this.createMedia({ additionalMeta }).then((mdata) => {
+        setTimeout(() => {
+          this.$eventHub.$emit("timeline.openMediaModal", mdata.metaFileName);
+        }, 500);
+      });
     },
     createEmbedMedia() {
       if (window.state.dev_mode === "debug")
