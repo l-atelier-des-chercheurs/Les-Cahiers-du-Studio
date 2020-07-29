@@ -16,10 +16,7 @@
       class="m_navtimeline_wrapper--timeline_wrapper"
       :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
     >
-      <div
-        :style="{ cursor, userSelect }"
-        class="vue-splitter-container clearfix"
-      >
+      <div :style="{ cursor, userSelect }" class="vue-splitter-container clearfix">
         <Pane
           class="splitter-pane splitter-paneL"
           :class="{ 'is--dragged': is_dragged }"
@@ -89,10 +86,7 @@
           </template>
           <template v-else>
             <div class="folder_backbutton">
-              <span
-                class="margin-sides-small padding-verysmall text-centered"
-                >{{ folder.name }}</span
-              >
+              <span class="margin-sides-small padding-verysmall text-centered">{{ folder.name }}</span>
             </div>
           </template>
 
@@ -125,7 +119,7 @@
                 <span v-if="number_of_writeups" class="_writeups_number">{{
                   number_of_writeups
                 }}</span>
-              </button> -->
+              </button>-->
             </div>
           </div>
         </Pane>
@@ -168,9 +162,7 @@
                     v-if="visible_day_is_before_or_after === 'after'"
                     class="_scrolltonow _scrolltonow_before"
                     @click="scrollToToday()"
-                  >
-                    ←&nbsp;{{ $t("today") }}
-                  </button>
+                  >←&nbsp;{{ $t("today") }}</button>
                 </transition>
                 <transition name="fade" mode="out-in" :duration="150">
                   <span :key="visible_day_human">{{ visible_day_human }}</span>
@@ -181,9 +173,7 @@
                     class="_scrolltonow _scrolltonow_after"
                     v-if="visible_day_is_before_or_after === 'before'"
                     @click="scrollToToday()"
-                  >
-                    {{ $t("today") }}&nbsp;→
-                  </button>
+                  >{{ $t("today") }}&nbsp;→</button>
                 </transition>
               </span>
             </div>
@@ -205,7 +195,7 @@
                   :type="'folders'"
                   @closeFolder="$root.closeFolder()"
                 />
-              </div> -->
+              </div>-->
             </div>
           </div>
 
@@ -237,27 +227,20 @@
                       v-html="day.is_empty_period"
                     />
                   </template>
-                  <template
-                    v-else-if="day.hasOwnProperty('is_empty')"
-                  ></template>
+                  <template v-else-if="day.hasOwnProperty('is_empty')"></template>
                   <template v-else>
                     <div class="m_timeline--container--dates--day--daylabel">
-                      <div
-                        class="m_timeline--container--dates--day--daylabel--container"
-                      >
+                      <div class="m_timeline--container--dates--day--daylabel--container">
                         <button
                           type="button"
                           :disabled="!day.segments || day.segments.length === 0"
                           @click="toggleDayFolding(day.timestamp)"
                         >
                           {{ day.label }}
-                          <span v-if="day.number_of_medias > 0">
-                            {{ day.number_of_medias }}
-                          </span>
-                          <div
-                            class="_unfold_button"
-                            v-if="folded_days.includes(day.timestamp)"
-                          >
+                          <span
+                            v-if="day.number_of_medias > 0"
+                          >{{ day.number_of_medias }}</span>
+                          <div class="_unfold_button" v-if="folded_days.includes(day.timestamp)">
                             <span>{{ $t("unfold") }}</span>
                           </div>
                         </button>
@@ -269,6 +252,7 @@
                         v-for="segment in day.segments"
                         :key="segment.timestamp"
                         class="m_timeline--container--dates--day--mediasblock"
+                        :class="{ 'has--label' : !segment.hidelabel }"
                       >
                         <template
                           v-if="
@@ -323,13 +307,8 @@
               </div>
             </div>
 
-            <div
-              v-if="sort.current.field !== 'date_timeline'"
-              class="m_filterIndicator"
-            >
-              <div
-                class="flex-wrap flex-vertically-centered flex-horizontally-start"
-              >
+            <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
+              <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
                 <button
                   type="button"
                   class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
@@ -765,6 +744,8 @@ export default {
     groupedMedias() {
       console.log("COMPUTED • TimeLineView: groupedMedias");
 
+      var t0 = performance.now();
+
       if (this.sortedMedias.length === 0) {
         return [];
       }
@@ -886,6 +867,13 @@ export default {
           };
         });
       }
+
+      var t1 = performance.now();
+      console.log(
+        "COMPUTED • TimeLineView: groupedMedias took " +
+          (t1 - t0) +
+          " milliseconds."
+      );
 
       return mediaGroup;
     },
@@ -1625,6 +1613,7 @@ export default {
           text-align: center;
           width: 100%;
           margin: 0 auto;
+          margin-top: 2px;
           font-size: 0.7em;
 
           span {
@@ -1724,8 +1713,11 @@ export default {
   .m_timeline--container--dates--day--mediasblock {
     position: relative;
     height: 100%;
-    min-width: 176px;
     display: flex;
+
+    &.has--label {
+      min-width: 176px;
+    }
   }
 
   .m_timeline--container--dates--day--mediasblock--label {
