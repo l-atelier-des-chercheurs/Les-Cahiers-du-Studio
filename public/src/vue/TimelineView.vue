@@ -1,10 +1,7 @@
 <template>
   <div class="m_navtimeline_wrapper">
-    <transition name="fade" :duration="350">
-      <div
-        v-if="$root.settings.is_loading_medias_for_folder"
-        class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
-      >
+    <transition name="fade" :duration="350" v-if="$root.settings.is_loading_medias_for_folder">
+      <div class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered">
         <span class="animated flash">{{ $t("loading") }}</span>
       </div>
     </transition>
@@ -13,13 +10,11 @@
     <!-- <pre>{{ groupedMedias }}</pre> -->
 
     <div
+      v-else
       class="m_navtimeline_wrapper--timeline_wrapper"
       :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
     >
-      <div
-        :style="{ cursor, userSelect }"
-        class="vue-splitter-container clearfix"
-      >
+      <div :style="{ cursor, userSelect }" class="vue-splitter-container clearfix">
         <Pane
           class="splitter-pane splitter-paneL"
           :class="{ 'is--dragged': is_dragged }"
@@ -76,7 +71,7 @@
             />
           </transition>
 
-          <template v-if="$root.state.mode !== 'export_web'">
+          <!-- <template v-if="$root.state.mode !== 'export_web'">
             <button
               type="button"
               class="folder_backbutton"
@@ -84,18 +79,14 @@
                 'is--movedToRight': $root.settings.has_sidebar_opened,
               }"
             >
-              <!-- <span class="icon"></span> -->
               <span class="project_name">{{ folder.name }}</span>
             </button>
           </template>
           <template v-else>
             <div class="folder_backbutton">
-              <span
-                class="margin-sides-small padding-verysmall text-centered"
-                >{{ folder.name }}</span
-              >
+              <span class="margin-sides-small padding-verysmall text-centered">{{ folder.name }}</span>
             </div>
-          </template>
+          </template>-->
 
           <div
             class="m_verticalButtons"
@@ -169,9 +160,7 @@
                     v-if="visible_day_is_before_or_after === 'after'"
                     class="_scrolltonow _scrolltonow_before"
                     @click="scrollToToday()"
-                  >
-                    ←&nbsp;{{ $t("today") }}
-                  </button>
+                  >←&nbsp;{{ $t("today") }}</button>
                 </transition>
                 <transition name="fade" mode="out-in" :duration="150">
                   <span :key="visible_day_human">{{ visible_day_human }}</span>
@@ -182,9 +171,7 @@
                     class="_scrolltonow _scrolltonow_after"
                     v-if="visible_day_is_before_or_after === 'before'"
                     @click="scrollToToday()"
-                  >
-                    {{ $t("today") }}&nbsp;→
-                  </button>
+                  >{{ $t("today") }}&nbsp;→</button>
                 </transition>
               </span>
             </div>
@@ -238,27 +225,22 @@
                       v-html="day.is_empty_period"
                     />
                   </template>
-                  <template
-                    v-else-if="day.hasOwnProperty('is_empty')"
-                  ></template>
+                  <template v-else-if="day.hasOwnProperty('is_empty')"></template>
                   <template v-else>
                     <div class="m_timeline--container--dates--day--daylabel">
-                      <div
-                        class="m_timeline--container--dates--day--daylabel--container"
-                      >
+                      <div class="m_timeline--container--dates--day--daylabel--container">
                         <button
                           type="button"
                           :disabled="!day.segments || day.segments.length === 0"
                           @click="toggleDayFolding(day.timestamp)"
                         >
                           {{ day.label }}
-                          <span v-if="day.number_of_medias > 0">{{
+                          <span v-if="day.number_of_medias > 0">
+                            {{
                             day.number_of_medias
-                          }}</span>
-                          <div
-                            class="_unfold_button"
-                            v-if="folded_days.includes(day.timestamp)"
-                          >
+                            }}
+                          </span>
+                          <div class="_unfold_button" v-if="folded_days.includes(day.timestamp)">
                             <span>{{ $t("unfold") }}</span>
                           </div>
                         </button>
@@ -325,13 +307,8 @@
               </div>
             </div>
 
-            <div
-              v-if="sort.current.field !== 'date_timeline'"
-              class="m_filterIndicator"
-            >
-              <div
-                class="flex-wrap flex-vertically-centered flex-horizontally-start"
-              >
+            <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
+              <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
                 <button
                   type="button"
                   class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
