@@ -871,9 +871,9 @@ export default {
               // avancer dans l’array, en ajoutant dans un accumulator
               if (media.type === "marker") {
                 const label =
-                  this.$moment(media.date_timeline).format("HH:mm") +
-                  "\n" +
-                  (!!media.content ? media.content : "");
+                  // this.$moment(media.date_timeline).format("HH:mm") +
+                  // "\n" +
+                  !!media.content ? media.content : "";
                 const color = this.$root.mediaColorFromFirstAuthor(
                   media,
                   this.folder
