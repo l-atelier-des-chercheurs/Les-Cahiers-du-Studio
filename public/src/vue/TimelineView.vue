@@ -177,23 +177,47 @@
             </div>
             <TimelinePlayer />
 
-            <div v-if="!can_edit_folder">
-              <button
-                type="button"
-                @click="toggleSidebar('options')"
-                :class="{ 'is--active': show_access_controller }"
-              >
-                <!-- @click="show_access_controller = !show_access_controller" -->
-                {{ $t("edit_timeline") }}
-              </button>
-              <!-- <div v-if="show_access_controller">
-                <AccessController
-                  :folder="folder"
-                  :context="'full'"
-                  :type="'folders'"
-                  @closeFolder="$root.closeFolder()"
-                />
-              </div>-->
+            <div>
+              <div>
+                <div class>
+                  <div class>
+                    <div class="switch switch-xs switch_twoway padding-top-verysmall">
+                      <label
+                        for="media_switch"
+                        class="cursor-pointer"
+                        :class="{
+                  'is--active': content_to_show === 'contributed',
+                }"
+                      >
+                        <span class>{{ $t('contributed_content')}}</span>
+                      </label>
+                      <input
+                        type="checkbox"
+                        id="media_switch"
+                        v-model="content_to_show"
+                        true-value="comite"
+                        false-value="contributed"
+                      />
+                      <label
+                        for="media_switch"
+                        :class="{
+                  'is--active': content_to_show === 'comite',
+                }"
+                      >
+                        <span class>{{ $t('comite_content')}}</span>
+                      </label>
+                    </div>
+                    <div class="margin-bottom-verysmall">
+                      <small>
+                        <a
+                          href="mailto:info@delure.org?subject=Contribuer%20à%20la%20timeline&body=Dites-nous%20ici%20qui%20vous%20êtes%20et%20ce%20que%20vous%20aimeriez%20contribuer%20!"
+                          target="_blank"
+                        >{{ $t("contribute").toLowerCase() }}</a>
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -412,6 +436,8 @@ export default {
       debounce_translation_delay: 100,
       debounce_translation_fct: undefined,
       current_scroll_event: undefined,
+
+      content_to_show: "comite",
 
       is_realtime: false,
       timeline_height: window.innerHeight,
@@ -680,6 +706,28 @@ export default {
           mediaDataToOrderBy = media_prop.map(
             (a) => a[current_sort.field_name]
           );
+        }
+
+        // if mode is comite
+        if (this.content_to_show === "comite") {
+          if (
+            !media.hasOwnProperty("authors") ||
+            typeof media.authors !== "object" ||
+            media.authors.length === 0 ||
+            !media.authors.find(
+              ({ slugFolderName }) => slugFolderName === "comite"
+            )
+          )
+            continue;
+        } else if (this.content_to_show === "contributed") {
+          if (
+            typeof media.authors === "object" &&
+            media.authors.length > 0 &&
+            media.authors.find(
+              ({ slugFolderName }) => slugFolderName === "comite"
+            )
+          )
+            continue;
         }
 
         sortable.push({
