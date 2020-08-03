@@ -844,9 +844,20 @@ let vm = new Vue({
       return kbs;
     },
     mediaColorFromFirstAuthor(media, folder) {
-      const author = this.mediaFirstAuthor(media, folder);
-      if (author) {
-        return author.color;
+      if (
+        !media.hasOwnProperty("authors") ||
+        typeof media.authors !== "object" ||
+        media.authors.length === 0
+      )
+        return false;
+
+      const author_slug = media.authors[0].slugFolderName;
+      if (author_slug) {
+        const author = this.getAuthor(author_slug);
+        if (author && author.color) {
+          debugger;
+          return author.color;
+        }
       }
       return false;
     },
