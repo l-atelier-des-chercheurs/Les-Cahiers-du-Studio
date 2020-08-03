@@ -652,7 +652,7 @@ button,
   line-height: 1;
 
   border-radius: 3px;
-  background-color: var(--color-noir);
+  background-color: #57a3da;
   color: #fff;
   // color: --color-noir;
 
@@ -703,7 +703,7 @@ button,
   .menu_encart {
     pointer-events: none;
     // --color-author: white;
-    --color-author: var(--color-noir);
+    --color-author: #57a3da;
 
     .menu_encart--options {
       flex: 1 1 auto;
@@ -804,7 +804,7 @@ button,
 
 .m_authorMenu {
   pointer-events: auto;
-  --color-author: var(--color-noir);
+  --color-author: #57a3da;
 
   .m_authorMenu--button {
     flex: 0 0 auto;
