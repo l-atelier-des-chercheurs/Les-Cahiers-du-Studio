@@ -401,7 +401,7 @@
           </span>
         </a>-->
 
-        <a
+        <!-- <a
           :download="media.media_filename"
           :href="mediaURL"
           :title="media.media_filename"
@@ -456,7 +456,7 @@
             </g>
           </svg>
           <span class="text-cap font-verysmall">{{ $t("download") }}</span>
-        </a>
+        </a>-->
       </div>
     </template>
 
