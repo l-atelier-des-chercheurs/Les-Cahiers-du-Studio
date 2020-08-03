@@ -24,7 +24,9 @@
         :disabled="read_only"
       >
         <!-- @mouseenter="!is_touch && show_drop_container === false ? show_authors_options = true : ''" -->
-        <template v-if="$root.current_author">{{ $root.current_author.name }}</template>
+        <template v-if="$root.current_author">{{
+          $root.current_author.name
+        }}</template>
         <template v-else>{{ $t("login").toLowerCase() }}</template>
       </button>
     </div>
@@ -47,36 +49,86 @@
         >
           <span class="text_label show_on_hover">{{ $t("text") }}</span>
 
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-            <path d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z" style="fill: currentColor;" />
-            <line
-              x1="15.21"
-              y1="14.41"
-              x2="24.71"
-              y2="14.41"
-              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
+          <svg
+            id="Calque_1"
+            data-name="Calque 1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 56.69 56.69"
+          >
+            <rect
+              x="17.57"
+              y="13.73"
+              width="21.55"
+              height="29.23"
+              style="
+                fill: none;
+                stroke: currentColor;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+              "
             />
-            <line
-              x1="15.21"
-              y1="17.88"
-              x2="24.71"
-              y2="17.88"
-              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
-            />
-            <line
-              x1="15.21"
-              y1="21.26"
-              x2="24.71"
-              y2="21.26"
-              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
-            />
-            <line
-              x1="15.21"
-              y1="24.62"
-              x2="22.88"
-              y2="24.62"
-              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
-            />
+            <g>
+              <line
+                x1="20.55"
+                y1="20.16"
+                x2="33.46"
+                y2="20.16"
+                style="
+                  fill: none;
+                  stroke: currentColor;
+                  stroke-linecap: round;
+                  stroke-linejoin: round;
+                "
+              />
+              <line
+                x1="20.55"
+                y1="24.4"
+                x2="35.72"
+                y2="24.4"
+                style="
+                  fill: none;
+                  stroke: currentColor;
+                  stroke-linecap: round;
+                  stroke-linejoin: round;
+                "
+              />
+              <line
+                x1="20.55"
+                y1="28.55"
+                x2="33.58"
+                y2="28.59"
+                style="
+                  fill: none;
+                  stroke: currentColor;
+                  stroke-linecap: round;
+                  stroke-linejoin: round;
+                "
+              />
+              <line
+                x1="20.55"
+                y1="32.63"
+                x2="35.14"
+                y2="32.56"
+                style="
+                  fill: none;
+                  stroke: currentColor;
+                  stroke-linecap: round;
+                  stroke-linejoin: round;
+                "
+              />
+              <line
+                x1="20.55"
+                y1="36.54"
+                x2="32.4"
+                y2="36.54"
+                style="
+                  fill: none;
+                  stroke: currentColor;
+                  stroke-linecap: round;
+                  stroke-linejoin: round;
+                "
+              />
+            </g>
           </svg>
         </button>
 
@@ -89,12 +141,34 @@
         >
           <span class="text_label show_on_hover">{{ $t("marker") }}</span>
 
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-            <path
-              d="M20,11.59A8.41,8.41,0,1,1,11.59,20,8.42,8.42,0,0,1,20,11.59m0-1A9.41,9.41,0,1,0,29.41,20,9.41,9.41,0,0,0,20,10.59Z"
-              style="fill: currentColor;"
+          <svg
+            id="Calque_1"
+            data-name="Calque 1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 56.69 56.69"
+          >
+            <circle
+              cx="28.35"
+              cy="28.35"
+              r="10.22"
+              style="
+                fill: none;
+                stroke: currentColor;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+              "
             />
-            <circle cx="20" cy="20" r="4.74" style="fill: currentColor;" />
+            <circle
+              cx="28.35"
+              cy="28.35"
+              r="4.5"
+              style="
+                fill: none;
+                stroke: currentColor;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+              "
+            />
           </svg>
         </button>
 
@@ -106,6 +180,45 @@
           :disabled="read_only"
         >
           <span class="text_label show_on_hover">{{ $t("embed") }}</span>
+
+          <svg
+            id="Calque_1"
+            data-name="Calque 1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 56.69 56.69"
+          >
+            <line
+              x1="23.53"
+              y1="23.92"
+              x2="33.13"
+              y2="33.52"
+              style="
+                fill: none;
+                stroke: currentColor;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+              "
+            />
+
+            <path
+              d="M30.09,21.9,27.22,19a6.05,6.05,0,0,0-8.57,0h0a6.05,6.05,0,0,0,0,8.57l2.86,2.87"
+              style="
+                fill: none;
+                stroke: currentColor;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+              "
+            />
+            <path
+              d="M26.58,35.54l2.87,2.86a6.05,6.05,0,0,0,8.57,0h0a6.05,6.05,0,0,0,0-8.57L35.15,27"
+              style="
+                fill: none;
+                stroke: currentColor;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+              "
+            />
+          </svg>
         </button>
 
         <template>
@@ -144,7 +257,9 @@
         @click="show_addmedia_options = !show_addmedia_options"
         @drop="dropHandler($event)"
       >
-        <span class="text_label always_show" v-if="show_drop_container">Déposez vos fichiers ici</span>
+        <span class="text_label always_show" v-if="show_drop_container"
+          >Déposez vos fichiers ici</span
+        >
         <!-- TODO scroll to now au click -->
         <svg
           version="1.1"
@@ -221,20 +336,12 @@ export default {
           accept: "audio/*",
           capture: true,
           svg: `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-            <line x1="5.83" y1="21.69" x2="5.83" y2="18.31" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="8.41" y1="16.52" x2="8.41" y2="23.48" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="10.99" y1="17.83" x2="10.99" y2="22.17" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="13.56" y1="24.94" x2="13.56" y2="15.06" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="16.14" y1="22.53" x2="16.14" y2="17.47" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="18.71" y1="16.9" x2="18.71" y2="23.1" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="21.29" y1="18.06" x2="21.29" y2="21.94" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="23.86" y1="22.67" x2="23.86" y2="17.33" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="26.44" y1="26.02" x2="26.44" y2="13.98" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="29.01" y1="22.73" x2="29.01" y2="17.27" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="31.59" y1="23.73" x2="31.59" y2="16.27" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="34.17" y1="21.43" x2="34.17" y2="18.57" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            </svg>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56.69 56.69">
+    <line x1="22.61" y1="44.73" x2="34.42" y2="44.73" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+    <line x1="28.26" y1="44.73" x2="28.26" y2="34.68" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+    <path d="M36.88,22v4a8.53,8.53,0,0,1-8.53,8.54h0A8.54,8.54,0,0,1,19.81,26V22" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+    <rect x="23.28" y="11.96" width="10.14" height="19.06" rx="5.07" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+</svg>
           `,
         },
         {
@@ -243,10 +350,10 @@ export default {
           accept: "",
           capture: false,
           svg: `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-              <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: currentColor"/>
-              <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
-            </svg>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56.69 56.69">
+    <polygon points="17.57 42.96 17.57 13.75 30.44 13.75 39.12 22.21 39.12 42.96 17.57 42.96" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+    <polyline points="38.99 22.19 30.54 22.19 30.54 13.73" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+</svg>
           `,
         },
         {
@@ -255,11 +362,10 @@ export default {
           accept: "video/*",
           capture: true,
           svg: `
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px"
-              height="40px" viewBox="0 0 40 40" style="enable-background:new 0 0 40 40;" xml:space="preserve">
-              <rect style="fill:none;stroke:currentColor" x="12.3" y="11" transform="matrix(-1.836970e-16 1 -1 -1.836970e-16 40 3.552714e-15)" style="fill:none;stroke:currentColor" width="15.3" height="18"/>
-              <polygon  style="fill:none;stroke:currentColor" style="fill:none;stroke:currentColor" points="23.8,20 17.4,23.6 17.4,16.4 "/>
-            </svg>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56.69 56.69">
+<rect x="13.74" y="17.57" width="29.21" height="21.55" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+<polygon points="25.33 23.27 33.76 28.51 25.33 33.45 25.33 23.27" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+</svg>
           `,
         },
         {
@@ -268,11 +374,12 @@ export default {
           accept: "image/*",
           capture: true,
           svg: `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-              <path d="M28,13.35v13.3H12V13.35H28m1-1H11v15.3H29V12.35Z" style="fill: currentColor"/>
-              <line x1="13.85" y1="14.99" x2="26.48" y2="25.12" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-              <line x1="13.85" y1="25.12" x2="26.48" y2="14.99" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            </svg>
+          <svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56.69 56.69">
+            <path d="M40.26,39.12,32.59,24.51a1,1,0,0,0-1.69,0l-4.73,9.11a1,1,0,0,1-1.65.08l-2.08-3.26a1,1,0,0,0-1.65.08L16.44,39" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <circle cx="20.88" cy="23.72" r="2.21" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+            <rect x="13.74" y="17.57" width="29.21" height="21.55" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+          </svg>
+
           `,
         },
       ],
