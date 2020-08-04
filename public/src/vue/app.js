@@ -552,6 +552,10 @@ let vm = new Vue({
 
       if (!this.settings.show_chat_panel) this.settings.show_chat_panel = true;
 
+      if (this.$root.settings.sidebar_type !== "chats")
+        this.$root.settings.sidebar_type = "chats";
+      this.$root.settings.has_sidebar_opened = true;
+
       if (!media_meta_linked) return;
 
       const linked_channel = Object.values(this.store.chats).find(
