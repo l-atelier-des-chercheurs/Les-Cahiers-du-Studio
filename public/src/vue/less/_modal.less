@@ -354,10 +354,16 @@
     // .bg-gris_clair;
     .bg-blanc;
 
-    &[data-context="edit"] {
+    &[data-context="edit"],
+    &[data-context="full"] {
       > * {
         width: 100%;
         height: 100%;
+
+        .plyr {
+          height: 100%;
+          .bg-noir;
+        }
       }
     }
 
