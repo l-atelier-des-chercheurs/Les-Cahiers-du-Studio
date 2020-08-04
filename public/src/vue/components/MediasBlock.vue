@@ -3,9 +3,11 @@
     <div
       v-packery="grid_options"
       class="packery-container"
-      :class="{ 'is--showing_grid' : show_grid }"
+      :class="{ 'is--showing_grid': show_grid }"
       ref="packery"
-      :style="`padding: ${grid_options.gutter/2}px; --gridstep: ${grid_options.columnWidth + grid_options.gutter}px`"
+      :style="`padding: ${grid_options.gutter / 2}px; --gridstep: ${
+        grid_options.columnWidth + grid_options.gutter
+      }px`"
     >
       <!-- <div class="packery-grid-sizer"></div> -->
 
@@ -23,6 +25,7 @@
         :rowHeight="grid_options.rowHeight"
         :base_edge="base_edge"
         :gutter="grid_options.gutter"
+        :can_edit="can_edit"
         @triggerPackeryLayout="triggerPackeryLayout()"
         @dragStarted="showGrid"
         @dragEnded="hideGrid"
@@ -40,10 +43,11 @@ export default {
   props: {
     medias: Array,
     folder: Object,
-    slugFolderName: String
+    slugFolderName: String,
+    can_edit: Boolean,
   },
   components: {
-    MediaBlock
+    MediaBlock,
   },
   data() {
     return {
@@ -56,10 +60,10 @@ export default {
         rowHeight: 40,
         horizontal: true,
         stamp: ".stamp",
-        transitionDuration: "0.4s"
+        transitionDuration: "0.4s",
         // originTop: false
         // stagger: 30
-      }
+      },
     };
   },
   created() {},
@@ -68,9 +72,9 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    medias: function() {
+    medias: function () {
       this.triggerPackeryLayout();
-    }
+    },
   },
   computed: {
     base_edge() {
@@ -78,7 +82,7 @@ export default {
         return 2;
       }
       return 3;
-    }
+    },
   },
   methods: {
     triggerPackeryLayout() {
@@ -91,8 +95,8 @@ export default {
     },
     hideGrid() {
       this.show_grid = false;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss">

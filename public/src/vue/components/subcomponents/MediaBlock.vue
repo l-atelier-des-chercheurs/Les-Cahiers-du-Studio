@@ -155,7 +155,7 @@
         </span>
       </div>
 
-      <template v-if="is_hovered && !is_resized">
+      <template v-if="is_hovered && !is_resized && can_edit">
         <div class="handle handle_resizeMedia handle_resizeMedia_bottomright">
           <div
             @mousedown.stop.prevent="
@@ -209,6 +209,7 @@ export default {
     columnWidth: Number,
     rowHeight: Number,
     gutter: Number,
+    can_edit: Boolean,
   },
   components: {
     MediaContent,

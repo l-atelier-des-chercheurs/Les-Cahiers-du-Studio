@@ -65,6 +65,8 @@ export default {
       modules: {
         toolbar: this.custom_toolbar,
       },
+      bounds: this.$refs.editor,
+
       theme: "snow",
       formats: ["italic", "underline", "link", "header", "list"],
     });
