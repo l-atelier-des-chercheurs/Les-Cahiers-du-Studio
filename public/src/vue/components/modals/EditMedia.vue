@@ -5,7 +5,7 @@
     @submit="editThisMedia"
     @arrow_left="$eventHub.$emit('editmediamodal.previousmedia')"
     @arrow_right="$eventHub.$emit('editmediamodal.nextmedia')"
-    :read_only="read_only"
+    :read_only="read_only || !can_edit"
     :typeOfModal="
       media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'
     "
@@ -25,7 +25,7 @@
       <!-- Caption -->
       <div
         v-if="
-          (!read_only || !!mediadata.caption) &&
+          (can_edit || !!mediadata.caption) &&
           mediadata.type !== 'marker' &&
           mediadata.type !== 'text'
         "
@@ -36,41 +36,53 @@
         <textarea
           :class="{ 'is--tall': !!media.caption }"
           v-model="mediadata.caption"
-          :readonly="read_only"
+          :readonly="!can_edit"
         ></textarea>
       </div>
 
       <div class="margin-bottom-small">
         <label>
           {{ $t("date") }}
-          <small v-if="!read_only">
-            {{
-            $t("for_the_placement_on_timeline")
-            }}
+          <small v-if="can_edit">
+            {{ $t("for_the_placement_on_timeline") }}
           </small>
         </label>
-        <DateTime v-model="mediadata.date_timeline" :twowaybinding="true" :read_only="read_only"></DateTime>
+        <DateTime
+          v-model="mediadata.date_timeline"
+          :twowaybinding="true"
+          :read_only="!can_edit"
+        ></DateTime>
 
-        <template v-if="!read_only">
-          <div class="margin-bottom-small" v-if="media.date_created !== undefined">
+        <template v-if="can_edit">
+          <div
+            class="margin-bottom-small"
+            v-if="media.date_created !== undefined"
+          >
             <small>
               {{ $t("created_date") }}
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline(media.date_created)"
-              >{{ date_created_human }}</button>
+              >
+                {{ date_created_human }}
+              </button>
             </small>
           </div>
 
-          <div class="margin-bottom-small" v-if="media.date_upload !== undefined">
+          <div
+            class="margin-bottom-small"
+            v-if="media.date_upload !== undefined"
+          >
             <small>
               {{ $t("sent_date") }}
               <button
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline(media.date_upload)"
-              >{{ date_uploaded_human }}</button>
+              >
+                {{ date_uploaded_human }}
+              </button>
             </small>
           </div>
 
@@ -81,7 +93,9 @@
                 type="button"
                 class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
                 @click="setMediaDateTimeline($root.current_time.seconds)"
-              >{{ $root.currentTime_human }}</button>
+              >
+                {{ $root.currentTime_human }}
+              </button>
             </small>
           </div>
         </template>
@@ -111,11 +125,19 @@
       </div>-->
 
       <!-- Keywords -->
-      <div v-if="!read_only || !!mediadata.keywords" class="margin-bottom-small">
+
+      <div
+        v-if="
+          (typeof mediadata.keywords === 'object' &&
+            !!mediadata.keywords.length > 0) ||
+          can_edit
+        "
+        class="margin-bottom-small"
+      >
         <label>{{ $t("keywords") }}</label>
         <TagsInput
           :keywords="!!mediadata.keywords ? mediadata.keywords : []"
-          :read_only="read_only"
+          :read_only="read_only || !can_edit"
           @tagsChanged="(newTags) => (mediadata.keywords = newTags)"
         />
       </div>
@@ -123,16 +145,19 @@
       <!-- Author(s) -->
       <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
         <label>{{ $t("author") }}</label>
-        <AuthorsInput :currentAuthors.sync="mediadata.authors" :read_only="read_only" />
+        <AuthorsInput
+          :currentAuthors.sync="mediadata.authors"
+          :read_only="read_only || !can_edit"
+        />
         <small v-html="$t(author_instructions)" />
       </div>
 
       <!-- Public or private -->
-      <div v-if="!read_only" class="margin-bottom-small">
-        <span class="switch">
+      <div v-if="!read_only && can_edit" class="margin-bottom-small">
+        <span class="switch switch-xs">
           <input
             type="checkbox"
-            class="switch"
+            class=""
             id="publicswitch"
             v-model="mediadata.public"
             :readonly="read_only"
@@ -149,9 +174,14 @@
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click="removeMedia()"
           :disabled="read_only"
-          v-if="!read_only"
+          v-if="can_edit"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="49"
+            height="49"
+            viewBox="0 0 49 49"
+          >
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -222,9 +252,14 @@
           type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click.prevent="printMedia()"
-          v-if="!read_only"
+          v-if="can_edit"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="49"
+            height="49"
+            viewBox="0 0 49 49"
+          >
             <g id="Calque_2" data-name="Calque 2">
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
@@ -302,7 +337,10 @@
 
         <template v-if="showQRModal">
           <hr />
-          <CreateQRCode :slugFolderName="slugFolderName" :media_filename="media.media_filename" />
+          <CreateQRCode
+            :slugFolderName="slugFolderName"
+            :media_filename="media.media_filename"
+          />
         </template>
 
         <button
@@ -374,9 +412,10 @@
           target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
           v-if="
-            $root.state.mode !== 'export_web' ||
-            ($root.state.hasOwnProperty('export_options') &&
-              $root.state.export_options.allow_download !== 'false')
+            can_edit &&
+            ($root.state.mode !== 'export_web' ||
+              ($root.state.hasOwnProperty('export_options') &&
+                $root.state.export_options.allow_download !== 'false'))
           "
         >
           <svg
@@ -433,7 +472,7 @@
 
     <template slot="preview">
       <MediaContent
-        :context="'edit'"
+        :context="can_edit ? 'edit' : 'full'"
         :slugMediaName="slugMediaName"
         :slugFolderName="slugFolderName"
         :media="media"
@@ -462,6 +501,10 @@ export default {
     read_only: {
       type: Boolean,
       default: true,
+    },
+    can_edit: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

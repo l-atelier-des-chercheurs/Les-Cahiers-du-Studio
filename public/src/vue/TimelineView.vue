@@ -1,7 +1,13 @@
 <template>
   <div class="m_navtimeline_wrapper">
-    <transition name="fade" :duration="350" v-if="$root.settings.is_loading_medias_for_folder">
-      <div class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered">
+    <transition
+      name="fade"
+      :duration="350"
+      v-if="$root.settings.is_loading_medias_for_folder"
+    >
+      <div
+        class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
+      >
         <span class="animated flash">{{ $t("loading") }}</span>
       </div>
     </transition>
@@ -14,7 +20,10 @@
       class="m_navtimeline_wrapper--timeline_wrapper"
       :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
     >
-      <div :style="{ cursor, userSelect }" class="vue-splitter-container clearfix">
+      <div
+        :style="{ cursor, userSelect }"
+        class="vue-splitter-container clearfix"
+      >
         <Pane
           class="splitter-pane splitter-paneL"
           :class="{ 'is--dragged': is_dragged }"
@@ -84,7 +93,10 @@
           </template>
           <template v-else>
             <div class="folder_backbutton">
-              <span class="margin-sides-small padding-verysmall text-centered">{{ folder.name }}</span>
+              <span
+                class="margin-sides-small padding-verysmall text-centered"
+                >{{ folder.name }}</span
+              >
             </div>
           </template>-->
 
@@ -160,7 +172,9 @@
                     v-if="visible_day_is_before_or_after === 'after'"
                     class="_scrolltonow _scrolltonow_before"
                     @click="scrollToToday()"
-                  >←&nbsp;{{ $t("today") }}</button>
+                  >
+                    ←&nbsp;{{ $t("today") }}
+                  </button>
                 </transition>
                 <transition name="fade" mode="out-in" :duration="150">
                   <span :key="visible_day_human">{{ visible_day_human }}</span>
@@ -171,7 +185,9 @@
                     class="_scrolltonow _scrolltonow_after"
                     v-if="visible_day_is_before_or_after === 'before'"
                     @click="scrollToToday()"
-                  >{{ $t("today") }}&nbsp;→</button>
+                  >
+                    {{ $t("today") }}&nbsp;→
+                  </button>
                 </transition>
               </span>
             </div>
@@ -181,15 +197,17 @@
               <div>
                 <div class>
                   <div class>
-                    <div class="switch switch-xs switch_twoway padding-top-verysmall">
+                    <div
+                      class="switch switch-xs switch_twoway padding-top-verysmall"
+                    >
                       <label
                         for="media_switch"
                         class="cursor-pointer"
                         :class="{
-                  'is--active': content_to_show === 'contributed',
-                }"
+                          'is--active': content_to_show === 'contributed',
+                        }"
                       >
-                        <span class>{{ $t('contributed_content')}}</span>
+                        <span class>{{ $t("contributed_content") }}</span>
                       </label>
                       <input
                         type="checkbox"
@@ -201,10 +219,10 @@
                       <label
                         for="media_switch"
                         :class="{
-                  'is--active': content_to_show === 'comite',
-                }"
+                          'is--active': content_to_show === 'comite',
+                        }"
                       >
-                        <span class>{{ $t('comite_content')}}</span>
+                        <span class>{{ $t("comite_content") }}</span>
                       </label>
                     </div>
                     <div class="margin-bottom-verysmall">
@@ -212,7 +230,8 @@
                         <a
                           href="mailto:info@delure.org?subject=Contribuer%20à%20la%20timeline&body=Dites-nous%20ici%20qui%20vous%20êtes%20et%20ce%20que%20vous%20aimeriez%20contribuer%20!"
                           target="_blank"
-                        >{{ $t("contribute").toLowerCase() }}</a>
+                          >{{ $t("contribute").toLowerCase() }}</a
+                        >
                       </small>
                     </div>
                   </div>
@@ -249,22 +268,27 @@
                       v-html="day.is_empty_period"
                     />
                   </template>
-                  <template v-else-if="day.hasOwnProperty('is_empty')"></template>
+                  <template
+                    v-else-if="day.hasOwnProperty('is_empty')"
+                  ></template>
                   <template v-else>
                     <div class="m_timeline--container--dates--day--daylabel">
-                      <div class="m_timeline--container--dates--day--daylabel--container">
+                      <div
+                        class="m_timeline--container--dates--day--daylabel--container"
+                      >
                         <button
                           type="button"
                           :disabled="!day.segments || day.segments.length === 0"
                           @click="toggleDayFolding(day.timestamp)"
                         >
                           {{ day.label }}
-                          <span v-if="day.number_of_medias > 0">
-                            {{
+                          <span v-if="day.number_of_medias > 0">{{
                             day.number_of_medias
-                            }}
-                          </span>
-                          <div class="_unfold_button" v-if="folded_days.includes(day.timestamp)">
+                          }}</span>
+                          <div
+                            class="_unfold_button"
+                            v-if="folded_days.includes(day.timestamp)"
+                          >
                             <span>{{ $t("unfold") }}</span>
                           </div>
                         </button>
@@ -321,6 +345,7 @@
                             :medias="segment.medias"
                             :folder="folder"
                             :slugFolderName="slugFolderName"
+                            :can_edit="can_edit_folder"
                             :timeline_height="timeline_height"
                           />
                         </template>
@@ -331,8 +356,13 @@
               </div>
             </div>
 
-            <div v-if="sort.current.field !== 'date_timeline'" class="m_filterIndicator">
-              <div class="flex-wrap flex-vertically-centered flex-horizontally-start">
+            <div
+              v-if="sort.current.field !== 'date_timeline'"
+              class="m_filterIndicator"
+            >
+              <div
+                class="flex-wrap flex-vertically-centered flex-horizontally-start"
+              >
                 <button
                   type="button"
                   class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
@@ -374,7 +404,8 @@
       :folder="folder"
       :isRealtime="is_realtime"
       @close="show_media_modal_for = false"
-      :read_only="!$root.state.connected || !can_edit_folder"
+      :read_only="!$root.state.connected"
+      :can_edit="can_edit_folder"
       :allAuthors="Array.isArray(folder.authors) ? folder.authors : []"
     />
     <EditFolder
