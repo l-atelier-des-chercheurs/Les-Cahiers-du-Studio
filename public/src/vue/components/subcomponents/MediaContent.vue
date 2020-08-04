@@ -102,7 +102,7 @@
     </template>
 
     <template v-else-if="media.type === 'embed'">
-      <div v-if="context !== 'edit' && embedURL" class>
+      <div v-if="embedURL" class>
         <vue-plyr
           v-if="embedURL.type !== 'tweet'"
           :options="plyr_options"
@@ -124,7 +124,7 @@
         />
       </div>
       <input
-        v-else
+        v-if="context === 'edit'"
         type="url"
         class="border-none bg-transparent"
         placeholder="URL"

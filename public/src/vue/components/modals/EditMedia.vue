@@ -5,7 +5,7 @@
     @submit="editThisMedia"
     @arrow_left="$eventHub.$emit('editmediamodal.previousmedia')"
     @arrow_right="$eventHub.$emit('editmediamodal.nextmedia')"
-    :read_only="read_only"
+    :read_only="read_only || !can_edit"
     :typeOfModal="
       media.type !== 'text' ? 'LargeAndNoScroll' : 'LargeAndNoScroll'
     "
@@ -25,7 +25,7 @@
       <!-- Caption -->
       <div
         v-if="
-          (!read_only || !!mediadata.caption) &&
+          (can_edit || !!mediadata.caption) &&
           mediadata.type !== 'marker' &&
           mediadata.type !== 'text'
         "
@@ -36,24 +36,24 @@
         <textarea
           :class="{ 'is--tall': !!media.caption }"
           v-model="mediadata.caption"
-          :readonly="read_only"
+          :readonly="!can_edit"
         ></textarea>
       </div>
 
       <div class="margin-bottom-small">
         <label>
           {{ $t("date") }}
-          <small v-if="!read_only">
+          <small v-if="can_edit">
             {{ $t("for_the_placement_on_timeline") }}
           </small>
         </label>
         <DateTime
           v-model="mediadata.date_timeline"
           :twowaybinding="true"
-          :read_only="read_only"
+          :read_only="!can_edit"
         ></DateTime>
 
-        <template v-if="!read_only">
+        <template v-if="can_edit">
           <div
             class="margin-bottom-small"
             v-if="media.date_created !== undefined"
@@ -125,14 +125,19 @@
       </div>-->
 
       <!-- Keywords -->
+
       <div
-        v-if="!read_only || !!mediadata.keywords"
+        v-if="
+          (typeof mediadata.keywords === 'object' &&
+            !!mediadata.keywords.length > 0) ||
+          can_edit
+        "
         class="margin-bottom-small"
       >
         <label>{{ $t("keywords") }}</label>
         <TagsInput
           :keywords="!!mediadata.keywords ? mediadata.keywords : []"
-          :read_only="read_only"
+          :read_only="read_only || !can_edit"
           @tagsChanged="(newTags) => (mediadata.keywords = newTags)"
         />
       </div>
@@ -142,13 +147,13 @@
         <label>{{ $t("author") }}</label>
         <AuthorsInput
           :currentAuthors.sync="mediadata.authors"
-          :read_only="read_only"
+          :read_only="read_only || !can_edit"
         />
         <small v-html="$t(author_instructions)" />
       </div>
 
       <!-- Public or private -->
-      <div v-if="!read_only" class="margin-bottom-small">
+      <div v-if="!read_only && can_edit" class="margin-bottom-small">
         <span class="switch switch-xs">
           <input
             type="checkbox"
@@ -169,7 +174,7 @@
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click="removeMedia()"
           :disabled="read_only"
-          v-if="!read_only"
+          v-if="can_edit"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -247,7 +252,7 @@
           type="button"
           class="bg-transparent button-round margin-verysmall padding-verysmall"
           @click.prevent="printMedia()"
-          v-if="!read_only"
+          v-if="can_edit"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -407,9 +412,10 @@
           target="_blank"
           class="button bg-transparent button-round margin-verysmall padding-verysmall"
           v-if="
-            $root.state.mode !== 'export_web' ||
-            ($root.state.hasOwnProperty('export_options') &&
-              $root.state.export_options.allow_download !== 'false')
+            can_edit &&
+            ($root.state.mode !== 'export_web' ||
+              ($root.state.hasOwnProperty('export_options') &&
+                $root.state.export_options.allow_download !== 'false'))
           "
         >
           <svg
