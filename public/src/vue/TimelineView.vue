@@ -1673,7 +1673,7 @@ export default {
           text-align: center;
           vertical-align: middle;
           // line-height: 2;
-          font-weight: bold;
+          font-weight: 400;
 
           transform: rotate(90deg);
           font-variant-numeric: tabular-nums;

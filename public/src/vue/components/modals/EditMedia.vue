@@ -125,7 +125,6 @@
       </div>-->
 
       <!-- Keywords -->
-
       <div
         v-if="
           (typeof mediadata.keywords === 'object' &&
@@ -153,7 +152,7 @@
       </div>
 
       <!-- Public or private -->
-      <div v-if="!read_only && can_edit" class="margin-bottom-small">
+      <!-- <div v-if="!read_only && can_edit" class="margin-bottom-small">
         <span class="switch switch-xs">
           <input
             type="checkbox"
@@ -164,6 +163,64 @@
           />
           <label for="publicswitch">{{ $t("public") }}</label>
         </span>
+      </div> -->
+
+      <!-- Enable chat -->
+      <div
+        v-if="
+          (can_edit)
+        "
+        class="margin-bottom-medium"
+      >
+        <span class="switch switch-xs">
+          <input
+            type="checkbox"
+            class=""
+            id="enable_chat_link"
+            v-model="mediadata.enable_chat_link"
+            :readonly="read_only"
+          />
+          <label for="enable_chat_link"
+            >• (Lure) afficher la bulle de chat</label
+          >
+        </span>
+      </div>
+
+      <!-- Disallow Click -->
+      <div
+        v-if="
+          (can_edit)
+        "
+        class="margin-bottom-medium"
+      >
+        <span class="switch switch-xs">
+          <input
+            type="checkbox"
+            class=""
+            id="disallow_click_for_visitors"
+            v-model="mediadata.disallow_click_for_visitors"
+            :readonly="read_only"
+          />
+          <label for="disallow_click_for_visitors"
+            >• (Lure) désactiver le clic sur la vignette pour les
+            visiteurs</label
+          >
+        </span>
+      </div>
+
+      <!-- Linkto -->
+      <div
+        v-if="
+          (can_edit || !!mediadata.linkto) &&
+          !mediadata.disallow_click_for_visitors
+        "
+        class="margin-bottom-small"
+      >
+        <label
+          >• (Lure) rediriger le clic d’un visiteur sur la vignette vers</label
+        >
+        <br />
+        <input v-model="mediadata.linkto" :readonly="!can_edit" type="url" />
       </div>
 
       <div
@@ -530,6 +587,9 @@ export default {
             : [],
         public: this.media.public,
         content: this.media.content,
+        linkto: this.media.linkto,
+        disallow_click_for_visitors: this.media.disallow_click_for_visitors,
+        enable_chat_link: this.media.enable_chat_link,
       },
       mediaURL:
         this.$root.state.mode === "export_web"

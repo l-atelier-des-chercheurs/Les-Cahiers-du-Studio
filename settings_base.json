@@ -138,6 +138,16 @@
             "type": "boolean",
             "default": false
           },
+          "disallow_click_for_visitors": {
+            "type": "boolean"
+          },
+          "enable_chat_link": {
+            "type": "boolean",
+            "default": true
+          },
+          "linkto": {
+            "type": "string"
+          },
           "ratio": {
             "type": "number"
           },

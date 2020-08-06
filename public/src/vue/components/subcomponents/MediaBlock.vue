@@ -7,6 +7,8 @@
         'is--hovered': is_hovered && !is_resized,
         'is--resized': is_resized,
         'is--text_overflowing': text_is_overflowing,
+        'is--click_disabled': opening_is_disabled,
+        'is--editable': can_edit,
       }"
       :style="itemStylesWithSize"
       @mouseenter="is_hovered = true"
@@ -27,7 +29,12 @@
 
       <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
 
-      <div class="draggabilly_handle" @click="openMedia" />
+      <div
+        class="draggabilly_handle"
+        v-if="!opening_is_disabled"
+        @click="openMedia"
+      />
+
       <!-- v-if="media.type !== 'embed'" -->
       <!-- <div class="open_chat" @click="openChat">
         <svg
@@ -92,6 +99,7 @@
         >
         <span
           class="packery-item-content--meta--comments"
+          v-if="media.enable_chat_link"
           @click.stop="openChat"
           :class="{
             'is--active':
@@ -309,6 +317,13 @@ export default {
         ? this.mediaWidth
         : this.mediaHeight;
     },
+    opening_is_disabled() {
+      return (
+        this.media.disallow_click_for_visitors === true &&
+        (!this.$root.current_author ||
+          !this.$root.current_author.role === "participant")
+      );
+    },
     itemStylesWithSize() {
       return Object.assign(
         {
@@ -369,7 +384,18 @@ export default {
       if (this.$root.state.dev_mode === "debug") {
         console.log("METHODS • MediaBlock: openMedia");
       }
-      this.$eventHub.$emit("timeline.openMediaModal", this.media.slugMediaName);
+      if (
+        !!this.media.linkto &&
+        (!this.$root.current_author ||
+          !this.$root.current_author.role === "participant")
+      ) {
+        window.open(this.media.linkto);
+      } else {
+        this.$eventHub.$emit(
+          "timeline.openMediaModal",
+          this.media.slugMediaName
+        );
+      }
     },
     resizeMedia(type, origin) {
       if (this.$root.state.dev_mode === "debug") {
@@ -512,14 +538,17 @@ export default {
   height: 100%;
   background-color: white;
   background-color: var(--author-color);
-  cursor: pointer;
 
   // border-radius: 4px;
   border: 0px solid black;
 
   transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
 
-  &.is--hovered {
+  &:not(.is--click_disabled) {
+    cursor: pointer;
+  }
+
+  &.is--editable.is--hovered {
     // background-color: white;
     z-index: 1;
     // transform: translateY(-8px);
