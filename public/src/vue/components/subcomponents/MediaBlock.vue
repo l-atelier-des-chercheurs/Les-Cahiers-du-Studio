@@ -351,11 +351,6 @@ export default {
       }
     },
     openChat() {
-      if (this.$root.settings.sidebar_type !== "chats") {
-        this.$root.settings.sidebar_type = "chats";
-      }
-      this.$root.settings.has_sidebar_opened = true;
-
       this.$root.openOrCreateChatFromMedia(this.media.slugMediaName);
     },
     setMediaSizeFromMeta() {
