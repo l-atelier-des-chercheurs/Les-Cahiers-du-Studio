@@ -98,6 +98,17 @@
         <small>Crédits et technologies utilisées… </small>
       </p>
     </div>
+    <div>
+      <select v-model="currentLang">
+        <option
+          v-for="(name, code) in $root.lang.available"
+          :value="code"
+          :key="code"
+          >{{ name }}</option
+        >
+      </select>
+    </div>
+
     <div class="m_informations--buttons" v-if="!$root.current_author">
       <button type="button" @click="$root.showAuthorsListModal = true">
         {{ $t("login").toLowerCase() }}
@@ -110,12 +121,18 @@ export default {
   props: {},
   components: {},
   data() {
-    return {};
+    return {
+      currentLang: this.$root.lang.current,
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    currentLang: function () {
+      this.$root.updateLocalLang(this.currentLang);
+    },
+  },
   computed: {},
   methods: {},
 };
@@ -137,7 +154,9 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 
-  button {
+  button,
+  input,
+  select {
     color: var(--color-noir);
   }
 }
