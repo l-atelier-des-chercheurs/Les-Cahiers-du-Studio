@@ -124,7 +124,7 @@ module.exports = (function () {
       archive_instructions:
         "En activant cette option, tous les contenus de ce dossier ne pourront plus être modifiés.",
       contributed_content: "Contenus contribués",
-      comite_content: "Contenus du comité",
+      comite_content: "Programmation",
 
       more_information:
         'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
@@ -354,7 +354,7 @@ module.exports = (function () {
       archive_instructions:
         "If checked, no new media can be added to this folder and existing media can’t be edited or removed. This option can be changed at all time in this modal.",
       contributed_content: "Contributed contents",
-      comite_content: "Official contents",
+      comite_content: "Program",
 
       more_information:
         'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
