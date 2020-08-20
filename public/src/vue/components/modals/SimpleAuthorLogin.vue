@@ -7,18 +7,28 @@
     :is_loading="is_sending_content_to_server"
   >
     <template slot="header">
-      <span class>{{ $t("account") }}</span>
+      <span class>{{ $t("login") }}</span>
     </template>
 
     <template slot="preview">
       <div class v-if="!$root.current_author">
         <div class="m_sideBySideSwitches">
           <label for="CreateAccount">
-            <input type="radio" id="CreateAccount" value="CreateAccount" v-model="current_mode" />
+            <input
+              type="radio"
+              id="CreateAccount"
+              value="CreateAccount"
+              v-model="current_mode"
+            />
             {{ $t("create_account") }}
           </label>
           <label for="Login">
-            <input type="radio" id="Login" value="Login" v-model="current_mode" />
+            <input
+              type="radio"
+              id="Login"
+              value="Login"
+              v-model="current_mode"
+            />
             {{ $t("login") }}
           </label>
         </div>
@@ -32,11 +42,19 @@
                 :mode="'simple_login'"
               />
             </div>
-            <form v-else-if="current_mode === 'Login'" @submit.prevent="loginAs">
+            <form
+              v-else-if="current_mode === 'Login'"
+              @submit.prevent="loginAs"
+            >
               <!-- Human name -->
               <div class="margin-bottom-small">
                 <label>{{ $t("name_or_pseudo") }}</label>
-                <input type="text" v-model.trim="login_author_name" required autofocus />
+                <input
+                  type="text"
+                  v-model.trim="login_author_name"
+                  required
+                  autofocus
+                />
               </div>
 
               <input type="email" disabled="disabled" style="display: none;" />
@@ -117,7 +135,7 @@ export default {
         console.log(`Author • METHODS / submitPassword`);
 
       const author = Object.values(this.$root.store.authors).find(
-        a => a.name === this.login_author_name
+        (a) => a.name === this.login_author_name
       );
       const password = this.$auth.hashCode(this.$refs.passwordField.value);
 
@@ -171,7 +189,7 @@ export default {
         this.$eventHub.$once("socketio.authentificated", () => {
           if (
             this.$root.state.list_authorized_folders.some(
-              f =>
+              (f) =>
                 f.type === "authors" &&
                 f.allowed_slugFolderNames.includes(slugFolderName)
             )
