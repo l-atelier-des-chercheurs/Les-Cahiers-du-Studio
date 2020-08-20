@@ -75,6 +75,20 @@
         </p>
       </div>
 
+      <div>
+        <label>
+          <h3 class="margin-none text-cap with-bullet">{{ $t("lang") }}</h3>
+        </label>
+        <select v-model="currentLang">
+          <option
+            v-for="(name, code) in $root.lang.available"
+            :value="code"
+            :key="code"
+            >{{ name }}</option
+          >
+        </select>
+      </div>
+
       <h2>
         Comment utiliser cet outil ?
       </h2>
@@ -97,16 +111,6 @@
         </small>
         <small>Crédits et technologies utilisées… </small>
       </p>
-    </div>
-    <div>
-      <select v-model="currentLang">
-        <option
-          v-for="(name, code) in $root.lang.available"
-          :value="code"
-          :key="code"
-          >{{ name }}</option
-        >
-      </select>
     </div>
 
     <div class="m_informations--buttons" v-if="!$root.current_author">
