@@ -884,6 +884,9 @@ let vm = new Vue({
 
       return first_author;
     },
+    current_author_is_admin() {
+      return this.current_author && this.current_author.role === "admin";
+    },
     canEditFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
