@@ -202,27 +202,27 @@
                     >
                       <label
                         for="media_switch"
+                        :class="{
+                          'is--active': content_to_show === 'comite',
+                        }"
+                      >
+                        <span class>{{ $t("comite_content") }}</span>
+                      </label>
+                      <input
+                        type="checkbox"
+                        id="media_switch"
+                        v-model="content_to_show"
+                        true-value="contributed"
+                        false-value="comite"
+                      />
+                      <label
+                        for="media_switch"
                         class="cursor-pointer"
                         :class="{
                           'is--active': content_to_show === 'contributed',
                         }"
                       >
                         <span class>{{ $t("contributed_content") }}</span>
-                      </label>
-                      <input
-                        type="checkbox"
-                        id="media_switch"
-                        v-model="content_to_show"
-                        true-value="comite"
-                        false-value="contributed"
-                      />
-                      <label
-                        for="media_switch"
-                        :class="{
-                          'is--active': content_to_show === 'comite',
-                        }"
-                      >
-                        <span class>{{ $t("comite_content") }}</span>
                       </label>
                     </div>
                     <div class="margin-bottom-verysmall">
