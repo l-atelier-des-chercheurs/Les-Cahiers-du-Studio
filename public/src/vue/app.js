@@ -851,7 +851,6 @@ let vm = new Vue({
       if (author_slug) {
         const author = this.getAuthor(author_slug);
         if (author && author.color) {
-          debugger;
           return author.color;
         }
       }
@@ -883,9 +882,6 @@ let vm = new Vue({
       );
 
       return first_author;
-    },
-    current_author_is_admin() {
-      return this.current_author && this.current_author.role === "admin";
     },
     canEditFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
@@ -1032,6 +1028,9 @@ let vm = new Vue({
         return this.store.folders[this.settings.current_slugFolderName];
       }
       return {};
+    },
+    current_author_is_admin() {
+      return this.current_author && this.current_author.role === "admin";
     },
     currentTime_human() {
       return this.$moment(this.current_time.seconds).format("l LTS");

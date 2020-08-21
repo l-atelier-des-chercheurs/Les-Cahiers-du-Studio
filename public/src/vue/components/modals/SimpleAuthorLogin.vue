@@ -80,7 +80,7 @@
                   :disabled="is_sending_content_to_server"
                   class="button button-bg_rounded bg-bleuvert"
                 >
-                  <img src="/images/i_enregistre.svg" draggable="false" />
+                  <!-- <img src="/images/i_enregistre.svg" draggable="false" /> -->
                   <span class="text-cap font-verysmall">{{ $t("send") }}</span>
                 </button>
               </div>
