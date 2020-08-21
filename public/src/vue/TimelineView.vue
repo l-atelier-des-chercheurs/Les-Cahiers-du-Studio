@@ -493,21 +493,6 @@ export default {
 
       make_mediasblock_with: "markers",
 
-      tabs: [
-        {
-          key: "informations",
-        },
-        {
-          key: "options",
-        },
-        {
-          key: "chats",
-        },
-        {
-          key: "journal",
-        },
-      ],
-
       filter: "",
       sort: {
         current: {},
@@ -688,6 +673,31 @@ export default {
         ? this.folder.authors
         : [];
     },
+    tabs() {
+      if (this.$root.current_author_is_admin) {
+        return [
+          {
+            key: "informations",
+          },
+          {
+            key: "options",
+          },
+          {
+            key: "chats",
+          },
+        ];
+      } else {
+        return [
+          {
+            key: "informations",
+          },
+          {
+            key: "chats",
+          },
+        ];
+      }
+    },
+
     sortedMedias() {
       console.log("COMPUTED • TimeLineView: sortedMedias");
       var sortable = [];
