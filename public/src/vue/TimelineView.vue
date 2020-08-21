@@ -62,6 +62,13 @@
               :medias="medias"
               :read_only="read_only"
             />
+            <Filters
+              v-else-if="
+                $root.settings.has_sidebar_opened &&
+                $root.settings.sidebar_type === 'filters'
+              "
+              :medias="medias"
+            />
 
             <Chats
               v-else-if="
@@ -398,6 +405,7 @@ import AddMedias from "./components/AddMedias.vue";
 import { setTimeout } from "timers";
 import EditMedia from "./components/modals/EditMedia.vue";
 import WriteUp from "./components/WriteUp.vue";
+import Filters from "./components/Filters.vue";
 import Resizer from "./components/splitpane/Resizer.vue";
 import Pane from "./components/splitpane/Pane.vue";
 import TimelinePlayer from "./components/subcomponents/TimelinePlayer.vue";
@@ -420,6 +428,7 @@ export default {
     EditMedia,
     Sidebar,
     Informations,
+    Filters,
     EditFolder,
     Resizer,
     Pane,
@@ -439,6 +448,7 @@ export default {
 
       is_realtime: false,
       timeline_height: window.innerHeight,
+
       collapse_foldername: false,
 
       show_media_modal_for: false,
@@ -466,6 +476,9 @@ export default {
         },
         {
           key: "options",
+        },
+        {
+          key: "filters",
         },
         {
           key: "chats",
@@ -628,6 +641,11 @@ export default {
     "$root.settings.sidebar_type": function () {
       if (this.$root.settings.sidebar_type === "") this.percent = 0;
       else this.percent = 30;
+    },
+    percent: function () {
+      if (this.$root.settings.windowWidth < 600) {
+        if (this.percent > 0) this.percent = 90;
+      }
     },
   },
   computed: {
@@ -1378,84 +1396,84 @@ export default {
       this.filter = newFilter;
     },
 
-    dragPubliPanel(event, type) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(
-          `METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`
-        );
-      }
+    // dragPubliPanel(event, type) {
+    //   if (this.$root.state.dev_mode === "debug") {
+    //     console.log(
+    //       `METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`
+    //     );
+    //   }
 
-      this.drag_offset = -event.target.offsetWidth + event.offsetX;
-      if (!this.drag_offset) {
-        this.drag_offset = 0;
-      }
+    //   this.drag_offset = -event.target.offsetWidth + event.offsetX;
+    //   if (!this.drag_offset) {
+    //     this.drag_offset = 0;
+    //   }
 
-      if (type === "mouse") {
-        window.addEventListener("mousemove", this.dragMove);
-        window.addEventListener("mouseup", this.dragUp);
-      } else if (type === "touch") {
-        window.addEventListener("touchmove", this.dragMove);
-        window.addEventListener("touchend", this.dragUp);
-      }
-    },
-    dragMove(event) {
-      console.log("METHODS • App: dragMove");
+    //   if (type === "mouse") {
+    //     window.addEventListener("mousemove", this.dragMove);
+    //     window.addEventListener("mouseup", this.dragUp);
+    //   } else if (type === "touch") {
+    //     window.addEventListener("touchmove", this.dragMove);
+    //     window.addEventListener("touchend", this.dragUp);
+    //   }
+    // },
+    // dragMove(event) {
+    //   console.log("METHODS • App: dragMove");
 
-      if (!this.is_dragged) {
-        this.is_dragged = true;
-      } else {
-        let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
-        pageX = pageX - this.drag_offset;
+    //   if (!this.is_dragged) {
+    //     this.is_dragged = true;
+    //   } else {
+    //     let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
+    //     pageX = pageX - this.drag_offset;
 
-        const percent =
-          Math.floor((pageX / this.$root.settings.windowWidth) * 10000) / 100;
+    //     const percent =
+    //       Math.floor((pageX / this.$root.settings.windowWidth) * 10000) / 100;
 
-        if (percent > this.minPercent && percent < 100 - this.minPercent) {
-          this.percent = percent;
-        }
+    //     if (percent > this.minPercent && percent < 100 - this.minPercent) {
+    //       this.percent = percent;
+    //     }
 
-        this.$emit("resize");
-        this.hasMoved = true;
-      }
-    },
-    dragUp(event) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(
-          `METHODS • App: dragUp with is_dragged = ${this.is_dragged}`
-        );
-      }
-      window.removeEventListener("mousemove", this.dragMove);
-      window.removeEventListener("mouseup", this.dragUp);
-      window.removeEventListener("touchmove", this.dragMove);
-      window.removeEventListener("touchend", this.dragUp);
+    //     this.$emit("resize");
+    //     this.hasMoved = true;
+    //   }
+    // },
+    // dragUp(event) {
+    //   if (this.$root.state.dev_mode === "debug") {
+    //     console.log(
+    //       `METHODS • App: dragUp with is_dragged = ${this.is_dragged}`
+    //     );
+    //   }
+    //   window.removeEventListener("mousemove", this.dragMove);
+    //   window.removeEventListener("mouseup", this.dragUp);
+    //   window.removeEventListener("touchmove", this.dragMove);
+    //   window.removeEventListener("touchend", this.dragUp);
 
-      if (this.is_dragged) {
-        this.is_dragged = false;
+    //   if (this.is_dragged) {
+    //     this.is_dragged = false;
 
-        if (this.percent >= 70) {
-          this.percent = 70;
-          // this.$root.closePubliPanel();
-          // return;
-        }
+    //     if (this.percent >= 70) {
+    //       this.percent = 70;
+    //       // this.$root.closePubliPanel();
+    //       // return;
+    //     }
 
-        // if(this.$root.settings.show_publi_panel === false) {
-        //   this.$root.openPubliPanel();
-        // }
-        if (this.percent <= 10) {
-          this.percent = 0;
-        }
-      } else {
-        // if(!this.$root.settings.show_publi_panel) {
-        //   this.percent = 50;
-        //   this.$root.openPubliPanel();
-        // } else {
-        //   this.percent = 100;
-        //   this.$root.closePubliPanel();
-        // }
-      }
+    //     // if(this.$root.settings.show_publi_panel === false) {
+    //     //   this.$root.openPubliPanel();
+    //     // }
+    //     if (this.percent <= 10) {
+    //       this.percent = 0;
+    //     }
+    //   } else {
+    //     // if(!this.$root.settings.show_publi_panel) {
+    //     //   this.percent = 50;
+    //     //   this.$root.openPubliPanel();
+    //     // } else {
+    //     //   this.percent = 100;
+    //     //   this.$root.closePubliPanel();
+    //     // }
+    //   }
 
-      return false;
-    },
+    //   return false;
+    // },
   },
 };
 </script>
