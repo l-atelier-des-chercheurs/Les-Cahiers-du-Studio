@@ -698,11 +698,8 @@ export default {
                 (k) => k.title === this.$root.settings.media_keyword_filter
               )
             )
-          ) {
+          )
             continue;
-          } else {
-            debugger;
-          }
         }
 
         // if media is missing the
