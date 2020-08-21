@@ -45,9 +45,7 @@
 </template>
 <script>
 export default {
-  props: {
-    medias: Array,
-  },
+  props: {},
   components: {},
   data() {
     return {
@@ -60,7 +58,7 @@ export default {
   watch: {
     selected_keyword: {
       handler() {
-        this.$root.media_keyword_filter = this.selected_keyword;
+        this.$root.settings.media_keyword_filter = this.selected_keyword;
       },
       immediate: true,
     },
