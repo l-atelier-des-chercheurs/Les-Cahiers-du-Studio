@@ -13,6 +13,15 @@
           >
             {{ $t("edit") }}
           </button>
+          <button
+            v-if="can_edit_folder"
+            type="button"
+            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="removeFolder"
+            :disabled="read_only"
+          >
+            {{ $t("remove") }}
+          </button>
         </h3>
       </div>
 
@@ -395,6 +404,22 @@ export default {
 
     scrollToToday() {
       this.$eventHub.$emit("timeline.scrollToToday");
+    },
+    removeFolder() {
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sureToRemoveFolder"),
+          () => {
+            this.$root.removeFolder({
+              type: "folders",
+              slugFolderName: this.slugFolderName,
+            });
+            this.$root.closeFolder();
+          },
+          () => {}
+        );
     },
   },
 };

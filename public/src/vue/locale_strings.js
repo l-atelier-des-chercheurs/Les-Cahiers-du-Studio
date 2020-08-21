@@ -45,6 +45,7 @@ module.exports = (function () {
       no_message_yet: "Aucun message à afficher pour l’instant…",
 
       informations: "Informations",
+      filters: "Filtres",
       on_import_place_media_on_the_date_they_were_created:
         "À l’importation de médias, le placement se fait selon la date de création du fichier et non la date d’importation",
       author_instructions:
@@ -190,6 +191,7 @@ module.exports = (function () {
 
       channels_instructions:
         "Espaces de discussion : échangez avec les autres utilisateurs en créant un sujet !",
+      filters_instructions: "Filtrer les contenus par mot-clé",
       manage_access: "Gérer l’accès au contenu",
       last_message: "Dernier message",
       pinned: "Discussions épinglés",
@@ -274,6 +276,9 @@ module.exports = (function () {
       journal: "Journal",
       chats: "Chats",
       no_message_yet: "No message to display yet…",
+
+      informations: "Informations",
+      filters: "Filters",
 
       on_import_place_media_on_the_date_they_were_created:
         "On media import, place them according to the file creation date and not the importation date",
