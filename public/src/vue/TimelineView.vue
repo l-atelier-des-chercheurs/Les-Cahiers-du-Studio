@@ -67,7 +67,7 @@
                 $root.settings.has_sidebar_opened &&
                 $root.settings.sidebar_type === 'filters'
               "
-              :medias="medias"
+              :sortedMedias="sortedMedias"
             />
 
             <Chats
@@ -686,6 +686,20 @@ export default {
 
         if (media.hasOwnProperty("type") && media.type === "writeup") {
           continue;
+        }
+
+        if (this.$root.settings.media_keyword_filter) {
+          if (
+            !(
+              media.hasOwnProperty("keywords") &&
+              typeof media.keywords === "object" &&
+              media.keywords.length > 0 &&
+              media.keywords.find(
+                (k) => k.title === this.$root.settings.media_keyword_filter
+              )
+            )
+          )
+            continue;
         }
 
         // if media is missing the
