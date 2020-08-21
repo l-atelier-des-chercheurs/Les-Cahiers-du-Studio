@@ -183,6 +183,7 @@ let vm = new Vue({
 
       current_chat_slug: false,
       current_author_slug: false,
+      media_keyword_filter: false,
 
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
@@ -584,14 +585,17 @@ let vm = new Vue({
       if (window.state.dev_mode === "debug")
         console.log(`ROOT EVENT: closeChatPane`);
       this.closeChat();
-      this.settings.has_sidebar_opened = false;
-      this.settings.sidebar_type = "";
+      this.closeSidebar();
     },
     closeChat() {
       if (window.state.dev_mode === "debug")
         console.log(`ROOT EVENT: closeChat`);
 
       this.settings.current_chat_slug = false;
+    },
+    closeSidebar() {
+      this.settings.has_sidebar_opened = false;
+      this.settings.sidebar_type = "";
     },
     setAuthor: function (author_slug) {
       if (this.settings.current_author_slug === author_slug) return;

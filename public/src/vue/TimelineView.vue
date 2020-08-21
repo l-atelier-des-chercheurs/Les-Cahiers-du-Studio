@@ -62,6 +62,13 @@
               :medias="medias"
               :read_only="read_only"
             />
+            <Filters
+              v-else-if="
+                $root.settings.has_sidebar_opened &&
+                $root.settings.sidebar_type === 'filters'
+              "
+              :medias="medias"
+            />
 
             <Chats
               v-else-if="
@@ -398,6 +405,7 @@ import AddMedias from "./components/AddMedias.vue";
 import { setTimeout } from "timers";
 import EditMedia from "./components/modals/EditMedia.vue";
 import WriteUp from "./components/WriteUp.vue";
+import Filters from "./components/Filters.vue";
 import Resizer from "./components/splitpane/Resizer.vue";
 import Pane from "./components/splitpane/Pane.vue";
 import TimelinePlayer from "./components/subcomponents/TimelinePlayer.vue";
@@ -420,6 +428,7 @@ export default {
     EditMedia,
     Sidebar,
     Informations,
+    Filters,
     EditFolder,
     Resizer,
     Pane,
@@ -467,6 +476,9 @@ export default {
         },
         {
           key: "options",
+        },
+        {
+          key: "filters",
         },
         {
           key: "chats",
