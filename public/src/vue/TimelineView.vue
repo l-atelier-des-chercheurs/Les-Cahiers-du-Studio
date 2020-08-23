@@ -200,7 +200,7 @@
             </div>
             <TimelinePlayer />
 
-            <div>
+            <div v-if="false">
               <div>
                 <div class>
                   <div class>
@@ -785,26 +785,26 @@ export default {
         }
 
         // if mode is comite
-        if (this.content_to_show === "comite") {
-          if (
-            !media.hasOwnProperty("authors") ||
-            typeof media.authors !== "object" ||
-            media.authors.length === 0 ||
-            !media.authors.find(
-              ({ slugFolderName }) => slugFolderName === "comite"
-            )
-          )
-            continue;
-        } else if (this.content_to_show === "contributed") {
-          if (
-            typeof media.authors === "object" &&
-            media.authors.length > 0 &&
-            media.authors.find(
-              ({ slugFolderName }) => slugFolderName === "comite"
-            )
-          )
-            continue;
-        }
+        // if (this.content_to_show === "comite") {
+        //   if (
+        //     !media.hasOwnProperty("authors") ||
+        //     typeof media.authors !== "object" ||
+        //     media.authors.length === 0 ||
+        //     !media.authors.find(
+        //       ({ slugFolderName }) => slugFolderName === "comite"
+        //     )
+        //   )
+        //     continue;
+        // } else if (this.content_to_show === "contributed") {
+        //   if (
+        //     typeof media.authors === "object" &&
+        //     media.authors.length > 0 &&
+        //     media.authors.find(
+        //       ({ slugFolderName }) => slugFolderName === "comite"
+        //     )
+        //   )
+        //     continue;
+        // }
 
         sortable.push({
           slugMediaName,
