@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-if="$root.access || $root.hide_app_while_loading">
+  <div id="app" v-if="$root.show_app">
     <SystemBar v-if="$root.settings.enable_system_bar" :view="view"></SystemBar>
 
     <div

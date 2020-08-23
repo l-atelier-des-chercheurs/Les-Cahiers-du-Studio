@@ -78,49 +78,118 @@
 
       <div class="m_informations--presentation--text">
         <h1>
-          Bienvenu•e•s aux 68<sup>es</sup> Rencontres internationales de
-          Lure&nbsp;!
+          <template v-if="$root.lang.current === 'fr'">
+            Bienvenu•e•s aux 68<sup>es</sup> Rencontres internationales de
+            Lure&nbsp;!
+          </template>
+          <template v-else>
+            Welcome to the 68<sup>th</sup> Rencontres internationales de Lure
+            Summer School !
+          </template>
         </h1>
 
         <p>
-          Chaque jour, venez découvrir des conférences filmées, des audios, des
-          liens, des images, quand vous voulez, d’où vous voulez. Chaque jour,
-          venez partager vos découvertes, vos recherches, vos projets. Chaque
-          jour à 17 h, venez suivre une conférence de l’ANRT puis échanger avec
-          l’intervenant. Chaque jour venez poster et/ou télécharger des sets de
-          table/specimen typographiques. Certains posts peuvent faire l’objet de
-          commentaires et de débats&nbsp;!
+          <template v-if="$root.lang.current === 'fr'">
+            Chaque jour, venez découvrir des conférences filmées, des audios,
+            des liens, des images, quand vous voulez, d’où vous voulez. Chaque
+            jour, venez partager vos découvertes, vos recherches, vos projets.
+            Chaque jour à 17 h, venez suivre une conférence de l’ANRT puis
+            échanger avec l’intervenant. Chaque jour venez poster et/ou
+            télécharger des sets de table/specimen typographiques. Certains
+            posts peuvent faire l’objet de commentaires et de débats&nbsp;!
+          </template>
+          <template v-else>
+            Every day, visit our site to discover from wherever you are, and
+            whenever you like, for videoconferences, spoken-word and visual
+            content, and other links. Every day come along and share your
+            discoveries, your research and your projects. Every day at 5pm, join
+            us for an ANRT presentation, and take the opportunity to exchange
+            with the presenter. Every day you will be welcome to upload or
+            download content, including our traditional LURE typography
+            table-mats. All of your posts can be made available for comments and
+            discussion.
+          </template>
         </p>
       </div>
 
       <h2>
-        Comment utiliser cet outil ?
+        <template v-if="$root.lang.current === 'fr'">
+          Comment utiliser cet outil ?
+        </template>
+        <template v-else>
+          How to use this website?
+        </template>
       </h2>
 
       <ol class="margin-sides-medium">
-        <li>Les contenus sont accessibles à tous, sans inscription.</li>
         <li>
-          Pour commenter, il suffit de s’enregistrer.
+          <template v-if="$root.lang.current === 'fr'">
+            Les contenus sont accessibles à tous, sans inscription.
+          </template>
+          <template v-else>
+            All content is freely available to all ; there is no need to sign
+            up.
+          </template>
         </li>
         <li>
-          Pour poster des contenus, faites une demande par mail à
-          info@delure.org
+          <template v-if="$root.lang.current === 'fr'">
+            Pour commenter, il suffit de s’enregistrer.
+          </template>
+          <template v-else>
+            If you wish to comment, registration is easy.
+          </template>
+        </li>
+        <li>
+          <template v-if="$root.lang.current === 'fr'">
+            Pour poster des contenus, faites une demande par mail à
+            <a href="mailto:info@delure.org" target="_blank">
+              info@delure.org
+            </a>
+          </template>
+          <template v-else>
+            To upload content, please send your request by email to
+            <a href="mailto:info@delure.org" target="_blank">
+              info@delure.org
+            </a>
+          </template>
         </li>
       </ol>
 
       <p>
-        Et, en cette année périlleuse, n’oubliez pas de soutenir les Rencontres
-        de Lure en adhérent à l’association >
-        <a
-          href="https://www.helloasso.com/associations/rencontres-internationales-de-lure/adhesions/adhesion-2020"
-          target="_blank"
-          >c’est par ici</a
-        >.
+        <template v-if="$root.lang.current === 'fr'">
+          Et, en cette année périlleuse, n’oubliez pas de soutenir les
+          Rencontres de Lure en adhérent à l’association >
+          <a
+            href="https://www.helloasso.com/associations/rencontres-internationales-de-lure/adhesions/adhesion-2020"
+            target="_blank"
+            >c’est par ici</a
+          >.
+        </template>
+        <template v-else>
+          And, this year more than ever, please remember to support les
+          Rencontres internationales de Lure by becoming a member, or by
+          renewing your membership >
+          <a
+            href="https://www.helloasso.com/associations/rencontres-internationales-de-lure/adhesions/adhesion-2020"
+            target="_blank"
+            >on this page</a
+          >.
+        </template>
       </p>
       <p>
         <small>
-          Besoin d’aide, des questions ? Envoyez un email à
-          <a href="mailto:info@delure.org" target="_blank">info@delure.org </a>
+          <template v-if="$root.lang.current === 'fr'">
+            Besoin d’aide, des questions ? Envoyez un email à
+            <a href="mailto:info@delure.org" target="_blank"
+              >info@delure.org
+            </a>
+          </template>
+          <template v-else>
+            Need help, questions? Send an email to
+            <a href="mailto:info@delure.org" target="_blank"
+              >info@delure.org
+            </a>
+          </template>
         </small>
         <!-- <small>Crédits et technologies utilisées… </small> -->
       </p>

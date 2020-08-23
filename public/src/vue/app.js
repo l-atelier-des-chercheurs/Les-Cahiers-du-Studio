@@ -146,7 +146,7 @@ let vm = new Vue({
     state: window.state,
 
     access: false,
-    hide_app_while_loading: false,
+    show_app: false,
 
     current_time: {
       seconds: "",
@@ -236,8 +236,6 @@ let vm = new Vue({
       }
     }
 
-    this.access = true;
-
     if (this.state.mode === "export_web") {
       // this.settings.has_sidebar_opened = true;
       if (Object.keys(this.store.folders).length > 0) {
@@ -289,14 +287,12 @@ let vm = new Vue({
           });
         }
       } else {
-        this.hide_app_while_loading = true;
         this.$eventHub.$once("socketio.folders.folders_listed", () => {
           if (this.store.folders.hasOwnProperty("timeline")) {
             this.openFolder("timeline");
-            setTimeout(() => {
-              this.hide_app_while_loading = true;
-            }, 600);
-          } else this.hide_app_while_loading = false;
+            this.show_app = true;
+            setTimeout(() => {}, 600);
+          } else this.show_app = true;
         });
       }
     }
@@ -742,11 +738,11 @@ let vm = new Vue({
         });
       });
 
-      history.pushState(
-        { slugFolderName },
-        this.store.folders[slugFolderName].name,
-        "/" + slugFolderName
-      );
+      // history.pushState(
+      //   { slugFolderName },
+      //   this.store.folders[slugFolderName].name,
+      //   "/" + slugFolderName
+      // );
 
       this.$eventHub.$once("socketio.folders.medias_listed", () => {
         this.settings.is_loading_medias_for_folder = false;
