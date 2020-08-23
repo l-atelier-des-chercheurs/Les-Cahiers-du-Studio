@@ -1843,6 +1843,10 @@ export default {
     &.has--label {
       min-width: 176px;
     }
+
+    + .m_timeline--container--dates--day--mediasblock {
+      margin-left: 10ch;
+    }
   }
 
   .m_timeline--container--dates--day--mediasblock--label {
@@ -1851,7 +1855,7 @@ export default {
     height: 100%;
     top: 0;
     padding: 0;
-    margin-right: -25ch;
+    margin-right: -20ch;
     background-color: transparent;
     // padding: 24px;
     display: flex;
@@ -1892,7 +1896,7 @@ export default {
           // background-color: var(--color-author);
           // color: var(--label-color);
           box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
-          padding: 4px 8px;
+          padding: 1px 8px 4px;
           white-space: pre-line;
 
           -webkit-box-decoration-break: clone;
