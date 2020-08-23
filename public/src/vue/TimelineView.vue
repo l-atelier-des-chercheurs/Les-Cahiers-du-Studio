@@ -200,13 +200,18 @@
             </div>
             <TimelinePlayer />
 
-            <div v-if="false">
+            <div>
               <div>
                 <div class>
                   <div class>
-                    <div
-                      class="switch switch-xs switch_twoway padding-top-verysmall"
-                    >
+                    <div class="switch switch-xs switch_twoway">
+                      <input
+                        type="checkbox"
+                        id="media_switch"
+                        v-model="content_to_show"
+                        true-value="comite"
+                        false-value="all"
+                      />
                       <label
                         for="media_switch"
                         :class="{
@@ -215,14 +220,7 @@
                       >
                         <span class>{{ $t("comite_content") }}</span>
                       </label>
-                      <input
-                        type="checkbox"
-                        id="media_switch"
-                        v-model="content_to_show"
-                        true-value="contributed"
-                        false-value="comite"
-                      />
-                      <label
+                      <!-- <label
                         for="media_switch"
                         class="cursor-pointer"
                         :class="{
@@ -230,9 +228,9 @@
                         }"
                       >
                         <span class>{{ $t("contributed_content") }}</span>
-                      </label>
+                      </label> -->
                     </div>
-                    <div class="margin-bottom-verysmall">
+                    <!-- <div class="margin-bottom-verysmall">
                       <small>
                         <a
                           href="mailto:info@delure.org?subject=Contribuer%20à%20la%20timeline&body=Dites-nous%20ici%20qui%20vous%20êtes%20et%20ce%20que%20vous%20aimeriez%20contribuer%20!"
@@ -240,7 +238,7 @@
                           >{{ $t("contribute").toLowerCase() }}</a
                         >
                       </small>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>
@@ -477,7 +475,7 @@ export default {
       debounce_translation_fct: undefined,
       current_scroll_event: undefined,
 
-      content_to_show: "comite",
+      content_to_show: "all",
 
       is_realtime: false,
       timeline_height: window.innerHeight,
@@ -785,16 +783,17 @@ export default {
         }
 
         // if mode is comite
-        // if (this.content_to_show === "comite") {
-        //   if (
-        //     !media.hasOwnProperty("authors") ||
-        //     typeof media.authors !== "object" ||
-        //     media.authors.length === 0 ||
-        //     !media.authors.find(
-        //       ({ slugFolderName }) => slugFolderName === "comite"
-        //     )
-        //   )
-        //     continue;
+        if (this.content_to_show === "comite") {
+          if (
+            !media.hasOwnProperty("authors") ||
+            typeof media.authors !== "object" ||
+            media.authors.length === 0 ||
+            !media.authors.find(
+              ({ slugFolderName }) => slugFolderName === "comite"
+            )
+          )
+            continue;
+        }
         // } else if (this.content_to_show === "contributed") {
         //   if (
         //     typeof media.authors === "object" &&
