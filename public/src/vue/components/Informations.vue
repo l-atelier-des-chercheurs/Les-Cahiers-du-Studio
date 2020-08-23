@@ -77,7 +77,10 @@
       </svg>
 
       <div class="m_informations--presentation--text">
-        <h1>Bienvenu•e•s aux 68es Rencontres internationales de Lure&nbsp;!</h1>
+        <h1>
+          Bienvenu•e•s aux 68<sup>es</sup> Rencontres internationales de
+          Lure&nbsp;!
+        </h1>
 
         <p>
           Chaque jour, venez découvrir des conférences filmées, des audios, des

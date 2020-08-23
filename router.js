@@ -33,7 +33,8 @@ module.exports = function (app, io, m) {
 
       let pageData = {};
 
-      pageData.pageTitle = "Les Cahiers du Studio";
+      pageData.pageTitle =
+        "Rencontres de Lure 2020 • D’ailleurs — Altérités, horizons nouveaux, design graphique et typographies d’ailleurs";
       // full path on the storage space, as displayed in the footer
       pageData.folderPath = api.getFolderPath();
       pageData.slugFolderName = "";
