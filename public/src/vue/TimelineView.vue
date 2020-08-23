@@ -1605,7 +1605,7 @@ export default {
   // min-width: 100vw;
 
   margin: 0px 0px;
-  padding: 16px 45vw;
+  padding: 16px 5vw;
   // border-right: 1px solid #000;
 }
 
