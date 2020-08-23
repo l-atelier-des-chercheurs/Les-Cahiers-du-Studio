@@ -31,6 +31,7 @@
             <button
               type="button"
               class="buttonLink"
+              v-if="$root.current_author_is_admin"
               :class="{ 'is--active': show_chat_options }"
               @click="show_chat_options = !show_chat_options"
             >
