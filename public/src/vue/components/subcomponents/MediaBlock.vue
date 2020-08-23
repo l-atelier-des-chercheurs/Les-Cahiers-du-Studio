@@ -704,6 +704,8 @@ export default {
           width: 100%;
           height: 100%;
           min-width: 0;
+          display: flex;
+          align-items: center;
 
           .plyr__controls {
             position: absolute;
@@ -754,8 +756,7 @@ export default {
     }
 
     img,
-    video,
-    iframe {
+    video {
       width: 100%;
       height: 100%;
       object-fit: cover;
