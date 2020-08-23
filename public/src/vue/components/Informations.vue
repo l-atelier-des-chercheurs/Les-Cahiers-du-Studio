@@ -16,6 +16,20 @@
       </svg>
     </button>
     <div class="m_informations--presentation">
+      <div>
+        <label>
+          <!-- <h3 class="margin-none text-cap with-bullet">{{ $t("lang") }}</h3> -->
+          <select v-model="currentLang" style="max-width: 11ch;">
+            <option
+              v-for="(name, code) in $root.lang.available"
+              :value="code"
+              :key="code"
+              >{{ name }}</option
+            >
+          </select>
+        </label>
+      </div>
+
       <svg
         version="1.1"
         class="_logo"
@@ -63,30 +77,17 @@
       </svg>
 
       <div class="m_informations--presentation--text">
-        <h1>Plate-forme de découverte et de partage …</h1>
+        <h1>Bienvenu•e•s aux 68es Rencontres internationales de Lure&nbsp;!</h1>
 
         <p>
-          Cras mollis fermentum risus, imperdiet lacinia neque mollis a.
-          Praesent eget quam metus. Integer pharetra, neque ac auctor suscipit,
-          justo tortor hendrerit urna, tincidunt malesuada ligula risus in erat.
-          Fusce volutpat nisi ipsum. Vestibulum varius lacus at ante scelerisque
-          viverra. Quisque vulputate massa felis, non pulvinar ex sollicitudin
-          id.
+          Chaque jour, venez découvrir des conférences filmées, des audios, des
+          liens, des images, quand vous voulez, d’où vous voulez. Chaque jour,
+          venez partager vos découvertes, vos recherches, vos projets. Chaque
+          jour à 17 h, venez suivre une conférence de l’ANRT puis échanger avec
+          l’intervenant. Chaque jour venez poster et/ou télécharger des sets de
+          table/specimen typographiques. Certains posts peuvent faire l’objet de
+          commentaires et de débats&nbsp;!
         </p>
-      </div>
-
-      <div>
-        <label>
-          <h3 class="margin-none text-cap with-bullet">{{ $t("lang") }}</h3>
-        </label>
-        <select v-model="currentLang">
-          <option
-            v-for="(name, code) in $root.lang.available"
-            :value="code"
-            :key="code"
-            >{{ name }}</option
-          >
-        </select>
       </div>
 
       <h2>
@@ -94,22 +95,31 @@
       </h2>
 
       <ol class="margin-sides-medium">
-        <li>Premier point</li>
+        <li>Les contenus sont accessibles à tous, sans inscription.</li>
         <li>
-          Deuxième point
+          Pour commenter, il suffit de s’enregistrer.
         </li>
-        <li>Troisième point</li>
+        <li>
+          Pour poster des contenus, faites une demande par mail à
+          info@delure.org
+        </li>
       </ol>
 
       <p>
-        Utilisation des données et responsable de publication
+        Et, en cette année périlleuse, n’oubliez pas de soutenir les Rencontres
+        de Lure en adhérent à l’association >
+        <a
+          href="https://www.helloasso.com/associations/rencontres-internationales-de-lure/adhesions/adhesion-2020"
+          target="_blank"
+          >c’est par ici</a
+        >.
       </p>
       <p>
-        <small
-          >Besoin d’aide, des questions ? Envoyez un email à
+        <small>
+          Besoin d’aide, des questions ? Envoyez un email à
           <a href="mailto:info@delure.org" target="_blank">info@delure.org </a>
         </small>
-        <small>Crédits et technologies utilisées… </small>
+        <!-- <small>Crédits et technologies utilisées… </small> -->
       </p>
     </div>
 
