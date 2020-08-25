@@ -34,6 +34,9 @@ module.exports = (function () {
       options: "Options",
       show_all_keywords: "Afficher l’ensemble des mots-clés",
       hide_all_keywords: "Masquer l’ensemble des mots-clés",
+      show_all_authors: "Afficher l’ensemble des auteurs",
+      hide_all_authors: "Masquer l’ensemble des auteurs",
+
       creation_of_the_timeline: "Création du dossier",
       author_name: "Nom de l’auteur associé",
       key: "Touche du clavier",
@@ -267,6 +270,8 @@ module.exports = (function () {
       options: "Options",
       show_all_keywords: "Show all keywords",
       hide_all_keywords: "Hide all keywords",
+      show_all_authors: "Show all authors",
+      hide_all_authors: "Hide all authors",
       creation_of_the_timeline: "Creation of the timeline",
       author_name: "Associated author",
       key: "Key",

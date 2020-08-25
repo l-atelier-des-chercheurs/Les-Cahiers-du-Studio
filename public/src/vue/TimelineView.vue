@@ -2038,10 +2038,11 @@ export default {
       transition: background-color 0.4s ease-out;
 
       @media screen and (max-width: 50rem) {
-        width: 100%;
-        max-width: none;
-        border-radius: 0;
-        min-height: 20px;
+        // padding: 0 10px;
+        // width: 100%;
+        // max-width: none;
+        // border-radius: 0;
+        min-height: 30px;
       }
     }
   }
@@ -2050,8 +2051,7 @@ export default {
     position: absolute;
     z-index: -1;
     color: var(--color-rouge_vif);
-    background-color: transparent;
-    border-radius: 20px;
+
     border: 1px solid currentColor;
     background-color: white;
     background-color: var(--timeline-bg);
@@ -2059,6 +2059,16 @@ export default {
     min-height: 40px;
 
     font-size: 0.75em;
+
+    @media screen and (max-width: 50rem) {
+      min-height: 30px;
+      font-size: inherit;
+      // position: relative;
+      // left: auto !important;
+      // right: auto !important;
+      // margin: 0 !important;
+      // background: white;
+    }
   }
 
   ._scrolltonow_before {
