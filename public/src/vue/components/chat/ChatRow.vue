@@ -20,11 +20,22 @@
           }"
           >{{ $root.getUnreadMessageCount(chat) }}</span
         >
-        <span class="m_chatRow--name">
+
+        <span class="m_chatRow--name" v-if="!linked_media">
           {{ chat.name }}
           <ProtectedLock
             :editing_limited_to="chat.editing_limited_to"
-            :is_protected="!can_see_chat"
+            :is_protected="false"
+          />
+        </span>
+        <span v-else class="m_chatRow--preview">
+          <MediaContent
+            v-model="linked_media.content"
+            :slugFolderName="chat.attached_to_folder"
+            :slugMediaName="chat.is_linked_to_media"
+            :media="linked_media"
+            :context="'preview'"
+            :read_only="read_only"
           />
         </span>
       </div>
@@ -95,6 +106,8 @@
 <script>
 import AccessController from "../subcomponents/AccessController.vue";
 import ProtectedLock from "../subcomponents/ProtectedLock.vue";
+import MediaContent from "../subcomponents/MediaContent.vue";
+
 // import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 
 export default {
@@ -104,6 +117,7 @@ export default {
   components: {
     AccessController,
     ProtectedLock,
+    MediaContent,
     // ClientsCheckingOut
   },
   data() {
@@ -121,6 +135,30 @@ export default {
         type: "chats",
         slugFolderName: this.chat.slugFolderName,
       });
+    },
+    linked_media: function () {
+      if (
+        !this.chat.hasOwnProperty("attached_to_folder") ||
+        !this.chat.hasOwnProperty("is_linked_to_media")
+      )
+        return false;
+
+      const folder = Object.values(this.$root.store.folders).find(
+        (f) => f.slugFolderName === this.chat.attached_to_folder
+      );
+
+      if (
+        !folder ||
+        !folder.hasOwnProperty("medias") ||
+        typeof folder.medias !== "object"
+      )
+        return false;
+
+      const media = Object.values(folder.medias).find(
+        (m) => m.metaFileName === this.chat.is_linked_to_media
+      );
+
+      return media;
     },
   },
   methods: {
