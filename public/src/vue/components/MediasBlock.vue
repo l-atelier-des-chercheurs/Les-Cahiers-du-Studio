@@ -60,7 +60,7 @@ export default {
         rowHeight: 40,
         horizontal: true,
         stamp: ".stamp",
-        transitionDuration: "0.4s",
+        transitionDuration: "0s",
         // originTop: false
         // stagger: 30
       },
