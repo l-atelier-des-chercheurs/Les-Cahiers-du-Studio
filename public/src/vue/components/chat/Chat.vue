@@ -19,11 +19,21 @@
             ‹
           </button>
 
-          <span class="m_chat--content--topbar--name">
+          <span class="m_chat--content--topbar--name" v-if="!linked_media">
             {{ chat.name }}
             <ProtectedLock
               :editing_limited_to="chat.editing_limited_to"
               :is_protected="false"
+            />
+          </span>
+          <span v-else class="m_chat--content--topbar--preview">
+            <MediaContent
+              v-model="linked_media.content"
+              :slugFolderName="chat.attached_to_folder"
+              :slugMediaName="chat.is_linked_to_media"
+              :media="linked_media"
+              :context="'preview'"
+              :read_only="read_only"
             />
           </span>
 
@@ -277,6 +287,7 @@
 import ProtectedLock from "../subcomponents/ProtectedLock.vue";
 import AccessController from "../subcomponents/AccessController.vue";
 import EditChat from "../modals/EditChat.vue";
+import MediaContent from "../subcomponents/MediaContent.vue";
 // import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 
 export default {
@@ -287,6 +298,7 @@ export default {
     ProtectedLock,
     AccessController,
     EditChat,
+    MediaContent,
     // ClientsCheckingOut
   },
   data() {
@@ -404,6 +416,30 @@ export default {
         return _sorted_messages.slice(this.first_message_index_to_show);
 
       return _sorted_messages;
+    },
+    linked_media: function () {
+      if (
+        !this.chat.hasOwnProperty("attached_to_folder") ||
+        !this.chat.hasOwnProperty("is_linked_to_media")
+      )
+        return false;
+
+      const folder = Object.values(this.$root.store.folders).find(
+        (f) => f.slugFolderName === this.chat.attached_to_folder
+      );
+
+      if (
+        !folder ||
+        !folder.hasOwnProperty("medias") ||
+        typeof folder.medias !== "object"
+      )
+        return false;
+
+      const media = Object.values(folder.medias).find(
+        (m) => m.metaFileName === this.chat.is_linked_to_media
+      );
+
+      return media;
     },
     grouped_messages: function () {
       if (this.sorted_messages.length === 0) return [];
