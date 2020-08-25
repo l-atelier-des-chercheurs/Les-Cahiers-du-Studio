@@ -274,6 +274,7 @@ let vm = new Vue({
         this.settings.is_loading_medias_for_folder = this.store.request.slugFolderName;
         this.$eventHub.$once("socketio.folders.folders_listed", () => {
           this.openFolder(this.store.request.slugFolderName);
+          this.show_app = true;
         });
         // requesting edit of a media
         if (this.store.request.metaFileName) {
@@ -283,6 +284,7 @@ let vm = new Vue({
                 "timeline.openMediaModal",
                 this.store.request.metaFileName + ".txt"
               );
+              this.show_app = true;
             });
           });
         }
@@ -738,11 +740,11 @@ let vm = new Vue({
         });
       });
 
-      // history.pushState(
-      //   { slugFolderName },
-      //   this.store.folders[slugFolderName].name,
-      //   "/" + slugFolderName
-      // );
+      history.pushState(
+        { slugFolderName },
+        this.store.folders[slugFolderName].name,
+        "/" + slugFolderName
+      );
 
       this.$eventHub.$once("socketio.folders.medias_listed", () => {
         this.settings.is_loading_medias_for_folder = false;
