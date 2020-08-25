@@ -10,17 +10,6 @@
   >
     <div class="m_chatRow--firstLine">
       <div>
-        <span
-          v-if="$root.getUnreadMessageCount(chat) && can_see_chat"
-          class="m_chatRow--unreadCounter"
-          :content="$t('unread_messages')"
-          v-tippy="{
-            placement: 'bottom',
-            delay: [600, 0],
-          }"
-          >{{ $root.getUnreadMessageCount(chat) }}</span
-        >
-
         <span class="m_chatRow--name" v-if="!linked_media">
           {{ chat.name }}
           <ProtectedLock
@@ -39,6 +28,17 @@
           />
         </span>
       </div>
+
+      <span
+        v-if="$root.getUnreadMessageCount(chat) && can_see_chat"
+        class="m_chatRow--unreadCounter"
+        :content="$t('unread_messages')"
+        v-tippy="{
+          placement: 'bottom',
+          delay: [600, 0],
+        }"
+        >{{ $root.getUnreadMessageCount(chat) }}</span
+      >
 
       <small class>
         {{ $t("last_message") }} —
