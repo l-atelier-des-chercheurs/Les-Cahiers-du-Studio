@@ -16,8 +16,14 @@
       }"
       :disabled="read_only"
       @click="toggleAuthorName(author_slug)"
-      :style="`--author_color: ${$root.getAuthor(author_slug).color ? $root.getAuthor(author_slug).color : 'white'}`"
-    >{{ $root.getAuthor(author_slug).name }}</button>
+      :style="`--author_color: ${
+        $root.getAuthor(author_slug).color
+          ? $root.getAuthor(author_slug).color
+          : 'white'
+      }`"
+    >
+      {{ $root.getAuthor(author_slug).name }}
+    </button>
     <button
       type="button"
       @click="show_all_authors = true"
@@ -71,7 +77,7 @@ export default {
       if (this.$root.current_author)
         _all_authors_slugs.push(this.$root.current_author.slugFolderName);
 
-      this.authors.map((acc, a) => {
+      this.authors.map((a) => {
         if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
           _all_authors_slugs.push(a.slugFolderName);
       });
