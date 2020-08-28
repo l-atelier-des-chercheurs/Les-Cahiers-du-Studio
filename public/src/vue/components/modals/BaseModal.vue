@@ -24,16 +24,12 @@
             <template v-if="!this.$slots['sidebar']">
               <div class="m_modal--header">
                 <h3 class="margin-none">
-                  <slot name="header">
-                    default header
-                  </slot>
+                  <slot name="header"> default header </slot>
                 </h3>
               </div>
             </template>
 
-            <slot name="preview">
-              default preview
-            </slot>
+            <slot name="preview"> default preview </slot>
           </div>
 
           <form
@@ -56,16 +52,12 @@
             >
               <div class="m_modal--header">
                 <h3 class="margin-none">
-                  <slot name="header">
-                    default header
-                  </slot>
+                  <slot name="header"> default header </slot>
                 </h3>
               </div>
 
               <div class="m_modal--metaOptions">
-                <slot name="sidebar">
-                  default sidebar
-                </slot>
+                <slot name="sidebar"> default sidebar </slot>
               </div>
 
               <div
@@ -77,6 +69,23 @@
                   class="button m_modal--buttons--save button-bg_rounded bg-bleuvert"
                   :disabled="read_only || is_loading"
                 >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="48"
+                    height="48"
+                    viewBox="0 0 48 48"
+                  >
+                    <circle cx="24" cy="24" r="24" style="fill: transparent" />
+                    <polyline
+                      points="35.48 13.74 22.2 36.41 12.81 25.55"
+                      style="
+                        fill: none;
+                        stroke: #fff;
+                        stroke-miterlimit: 10;
+                        stroke-width: 2px;
+                      "
+                    />
+                  </svg>
                   <span class="text-cap font-verysmall">
                     <slot name="submit_button">
                       {{ $t("save") }}
