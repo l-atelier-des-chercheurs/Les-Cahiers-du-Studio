@@ -382,6 +382,11 @@
     .plyr__poster {
       background-color: transparent;
     }
+
+    .plyr__poster {
+      display: none;
+    }
+
     .plyr--video .plyr__controls {
       // background: linear-gradient(fade(@c-gris, 0%),fade(@c-gris, 100%));
     }
@@ -410,6 +415,30 @@
         width: 500px;
         margin: auto;
         height: 50%;
+      }
+    }
+
+    &.type-embed {
+      display: flex;
+      flex-flow: column nowrap;
+
+      > * {
+        flex: 1 1 auto;
+        height: auto;
+
+        &:first-child {
+          // height: 100%;
+          position: relative;
+
+          > * {
+            position: absolute;
+          }
+        }
+
+        &:nth-child(2) {
+          flex: 0 0 auto;
+          .padding-verysmall;
+        }
       }
     }
 
