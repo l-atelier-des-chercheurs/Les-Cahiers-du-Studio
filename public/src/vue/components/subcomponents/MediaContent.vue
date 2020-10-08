@@ -105,6 +105,7 @@
       <div v-if="embedURL" class>
         <vue-plyr
           v-if="embedURL.type !== 'tweet'"
+          :key="embedURL.type + '/' + embedURL.src"
           :options="plyr_options"
           :emit="['playing', 'pause', 'ended']"
           @playing="playing"
@@ -123,17 +124,20 @@
           :options="{ cards: 'hidden', theme: 'light' }"
         />
       </div>
-      <input
-        v-if="context === 'edit'"
-        type="url"
-        class="border-none bg-transparent"
-        placeholder="URL"
-        name="url"
-        :value="value"
-        @input="$emit('input', $event.target.value)"
-        ref="textField"
-        :readonly="read_only"
-      />
+      <div>
+        <label>URL</label>
+        <input
+          v-if="context === 'edit'"
+          type="url"
+          class="border-none bg-transparent"
+          placeholder="URL"
+          name="url"
+          :value="value"
+          @input="$emit('input', $event.target.value)"
+          ref="textField"
+          :readonly="read_only"
+        />
+      </div>
     </template>
 
     <template v-else-if="media.type === 'document'">
@@ -373,27 +377,30 @@ export default {
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
     embedURL: function () {
-      if (!this.media.content) return false;
-      if (this.media.content.includes("twitter.com")) {
+      const content =
+        this.value !== undefined ? this.value : this.media.content;
+
+      if (content === undefined) return false;
+      if (content.includes("twitter.com")) {
         return {
           type: "tweet",
-          id: this.getTweetIdFromURL(this.media.content),
+          id: this.getTweetIdFromURL(content),
         };
       } else if (
-        this.media.content.includes("youtube.com") ||
-        this.media.content.includes("youtu.be")
+        content.includes("youtube.com") ||
+        content.includes("youtu.be")
       ) {
         return {
           type: "youtube",
-          src: this.getYoutubeIDFromURL(this.media.content),
+          src: this.getYoutubeIDFromURL(content),
         };
-      } else if (this.media.content.includes("vimeo.com")) {
+      } else if (content.includes("vimeo.com")) {
         return {
           type: "vimeo",
-          src: this.getVimeoIDFromURL(this.media.content),
+          src: this.getVimeoIDFromURL(content),
         };
       }
-      return this.media.content;
+      return content;
     },
   },
   methods: {
