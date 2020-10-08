@@ -243,58 +243,50 @@
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
                   <g>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d;" />
+                    <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d" />
                     <circle
                       cx="24.5"
                       cy="24.5"
                       r="24"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                   </g>
                   <g>
                     <path
                       d="M16.79,35.19l-.72-16.86H33l-.72,16.86a1.42,1.42,0,0,1-1.46,1.31H18.25A1.42,1.42,0,0,1,16.79,35.19Z"
-                      style="
-                        fill: #4d4d4d;
-                        stroke: #fff;
-                        stroke-miterlimit: 10;
-                      "
+                      style="fill: #4d4d4d; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <path
                       d="M20.83,15.41v-2a.89.89,0,0,1,.92-.86h5.52a.89.89,0,0,1,.92.86v2Z"
-                      style="
-                        fill: #4d4d4d;
-                        stroke: #fff;
-                        stroke-miterlimit: 10;
-                      "
+                      style="fill: #4d4d4d; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <line
                       x1="20.75"
                       y1="34.18"
                       x2="20.75"
                       y2="21.01"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <line
                       x1="24.66"
                       y1="34.18"
                       x2="24.66"
                       y2="21.01"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <line
                       x1="28.58"
                       y1="34.18"
                       x2="28.58"
                       y2="21.01"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <line
                       x1="14"
                       y1="15.41"
                       x2="35"
                       y2="15.41"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                   </g>
                 </g>
@@ -321,12 +313,12 @@
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
                   <g>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d;" />
+                    <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d" />
                     <circle
                       cx="24.5"
                       cy="24.5"
                       r="24"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                   </g>
                   <g>
@@ -335,54 +327,50 @@
                       y="18.57"
                       width="24"
                       height="12.78"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <polyline
                       points="16.83 18.57 16.83 15.54 20.38 12.03 32.17 12.03 32.17 18.57"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <rect
                       x="16.83"
                       y="25.95"
                       width="15.33"
                       height="10.08"
-                      style="
-                        fill: #4d4d4d;
-                        stroke: #fff;
-                        stroke-miterlimit: 10;
-                      "
+                      style="fill: #4d4d4d; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <line
                       x1="19.12"
                       y1="29.29"
                       x2="29.53"
                       y2="29.29"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <line
                       x1="19.12"
                       y1="32.17"
                       x2="29.53"
                       y2="32.17"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <line
                       x1="14.11"
                       y1="25.95"
                       x2="34.86"
                       y2="25.95"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <ellipse
                       cx="32.37"
                       cy="22.15"
                       rx="0.75"
                       ry="0.74"
-                      style="fill: #fff; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: #fff; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <polyline
                       points="20.02 11.99 20.02 15.49 16.52 15.49"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                   </g>
                 </g>
@@ -414,20 +402,20 @@
             width="49px"
             height="49px"
             viewBox="0 0 49 49"
-            style="enable-background: new 0 0 49 49;"
+            style="enable-background: new 0 0 49 49"
             xml:space="preserve"
           >
             <g>
-              <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d;" />
+              <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d" />
               <circle
                 cx="24.5"
                 cy="24.5"
                 r="24"
-                style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                style="fill: none; stroke: #fff; stroke-miterlimit: 10"
               />
             </g>
             <path
-              style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+              style="fill: none; stroke: #fff; stroke-miterlimit: 10"
               d="M25.7,14v9.2H35V14H25.7z M16.7,32.3h3.9v-3.9h-3.9V32.3z M14,35h9.2v-9.2H14V35z M14,23.3h9.2V14H14V23.3z
               M29,25.7h-3.3v2.9H29V25.7z M30.4,27.1h1.8v1.5h-1.8v2.6h-1.8v-1.8h-2v1.8h1.1v2h-2V35h4.6v-1.8h2.9v-2h-1.1v-1.8H35v-3.7h-4.6
               V27.1z M35,35v-1.8h-1.8V35H35z M16.7,20.6h3.9v-3.9h-3.9V20.6z M32.3,16.7h-3.9v3.9h3.9V16.7z"
@@ -485,25 +473,25 @@
               <g id="Editeur_txt" data-name="Editeur txt">
                 <g>
                   <g>
-                    <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d;" />
+                    <circle cx="24.5" cy="24.5" r="24" style="fill: #4d4d4d" />
                     <circle
                       cx="24.5"
                       cy="24.5"
                       r="24"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                   </g>
                   <g>
                     <polyline
                       points="33.12 20.63 24.5 28.82 15.88 20.63"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                     <line
                       x1="24.5"
                       y1="28.82"
                       x2="24.5"
                       y2="12.53"
-                      style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                      style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                     />
                   </g>
                   <line
@@ -511,7 +499,7 @@
                     y1="34.05"
                     x2="35.74"
                     y2="34.05"
-                    style="fill: none; stroke: #fff; stroke-miterlimit: 10;"
+                    style="fill: none; stroke: #fff; stroke-miterlimit: 10"
                   />
                 </g>
               </g>
