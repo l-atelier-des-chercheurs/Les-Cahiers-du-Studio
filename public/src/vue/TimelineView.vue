@@ -576,12 +576,6 @@ export default {
     this.$root.settings.sidebar_type = "informations";
     this.$root.settings.has_sidebar_opened = true;
 
-    // const startDate = this.$moment(1598191200000);
-    // while (startDate.diff(this.$moment().subtract(1, "days")) < 0) {
-    //   this.folded_days.push(+startDate);
-    //   startDate.add(1, "days").startOf("day");
-    // }
-
     this.$eventHub.$on("scrollToMedia", this.scrollToMedia);
     this.$eventHub.$on("scrollToDate", this.scrollToDate);
     this.$eventHub.$on("timeline.openMediaModal", this.openMediaModal);
@@ -600,11 +594,17 @@ export default {
 
     this.setTimelineHeight();
 
-    this.$eventHub.$once("socketio.folders.medias_listed", () => {
-      setTimeout(() => {
-        this.scrollToToday();
-      }, 600);
-    });
+    // const startDate = this.$moment(1598191200000);
+    // while (startDate.diff(this.$moment().subtract(1, "days")) < 0) {
+    //   this.folded_days.push(+startDate);
+    //   startDate.add(1, "days").startOf("day");
+    // }
+
+    // this.$eventHub.$once("socketio.folders.medias_listed", () => {
+    //   setTimeout(() => {
+    //     this.scrollToToday();
+    //   }, 600);
+    // });
 
     this.$eventHub.$emit("scrollToDate", +new Date());
 
