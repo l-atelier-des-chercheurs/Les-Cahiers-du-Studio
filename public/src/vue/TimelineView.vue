@@ -594,11 +594,12 @@ export default {
 
     this.setTimelineHeight();
 
-    // const startDate = this.$moment(1598191200000);
-    // while (startDate.diff(this.$moment().subtract(1, "days")) < 0) {
-    //   this.folded_days.push(+startDate);
-    //   startDate.add(1, "days").startOf("day");
-    // }
+    const startDate = this.$moment(1598191200000);
+    while (startDate.diff(this.$moment().subtract(1, "days")) < 0) {
+      this.folded_days.push(+startDate);
+      startDate.add(1, "days").startOf("day");
+    }
+    this.folded_days.shift();
 
     // this.$eventHub.$once("socketio.folders.medias_listed", () => {
     //   setTimeout(() => {
