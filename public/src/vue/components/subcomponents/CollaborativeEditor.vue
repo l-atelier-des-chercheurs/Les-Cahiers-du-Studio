@@ -736,7 +736,7 @@ html[lang="fr"] .ql-tooltip::before {
 
     // caret-color: var(--active-color);
     line-height: inherit;
-    padding: var(--spacing) calc(var(--spacing) * 2) 250px;
+    padding: var(--spacing)/2 calc(var(--spacing)) 250px;
 
     transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 

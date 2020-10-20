@@ -124,10 +124,9 @@
           :options="{ cards: 'hidden', theme: 'light' }"
         />
       </div>
-      <div>
+      <div v-if="context === 'edit'">
         <label>URL</label>
         <input
-          v-if="context === 'edit'"
           type="url"
           class="border-none bg-transparent"
           placeholder="URL"
