@@ -18,8 +18,6 @@ const dev = require("./dev-log"),
 ffmpeg.setFfmpegPath(pathToFfmpeg);
 ffmpeg.setFfprobePath(ffprobestatic.path);
 
-const renice = 0;
-
 module.exports = (function () {
   return {
     loadPublication: (slugPubliName, pageData) =>
@@ -375,14 +373,36 @@ module.exports = (function () {
         let publication_meta = "";
 
         let resolution = {
-          width: 1280,
-          height: 720,
+          width: undefined,
+          height: undefined,
         };
-        if (options.hasOwnProperty("resolution")) {
-          if (options.resolution.hasOwnProperty("width"))
-            resolution.width = options.resolution.width;
-          if (options.resolution.hasOwnProperty("height"))
+        if (!options.hasOwnProperty("resolution")) {
+          resolution = {
+            width: 1280,
+            height: 720,  
+          }
+        } else {
+          if(options.resolution.hasOwnProperty("height")) {
             resolution.height = options.resolution.height;
+            if(options.resolution.hasOwnProperty("width")) {
+              resolution.width = options.resolution.width;
+            } else {
+              switch (resolution.height) {
+                case 360:
+                  resolution.width = 640;
+                  break;
+                case 480:
+                  resolution.width = 854;
+                  break;
+                case 720:
+                  resolution.width = 1280;
+                  break;
+                case 1080:
+                  resolution.width = 1920;
+                  break;
+              } 
+            }
+          }
         }
 
         let bitrate = options.hasOwnProperty("bitrate")
@@ -421,6 +441,7 @@ module.exports = (function () {
                   medias_with_original_filepath,
                   cachePath,
                   videoName,
+                  resolution,
                   socket,
                 })
                   .then(() => {
@@ -435,6 +456,7 @@ module.exports = (function () {
                   medias_with_original_filepath,
                   cachePath,
                   videoName,
+                  resolution,
                   socket,
                 })
                   .then(() => {
@@ -549,8 +571,7 @@ module.exports = (function () {
                   dev.logverbose(
                     `duration : ${numberOfImagesToProcess / framerate}`
                   );
-                  const ffmpeg_cmd = new ffmpeg()
-                    .renice(renice)
+                  const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
                     .input(path.join(imagesCachePath, "img-%04d.jpeg"))
                     .inputFPS(framerate)
                     .withVideoCodec("libx264")
@@ -867,7 +888,7 @@ module.exports = (function () {
       const vm = medias_with_original_filepath.find((m) => m.type === "video");
 
       ffmpeg.ffprobe(vm.full_path, function (err, metadata) {
-        const ffmpeg_cmd = new ffmpeg().renice(renice);
+        const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
         ffmpeg_cmd.input(vm.full_path);
 
@@ -921,7 +942,7 @@ module.exports = (function () {
             inputs: "output",
             outputs: "output",
           });
-          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
         } else if (effect.type === "colored_filter") {
           if (
             !!effect.color &&
@@ -939,7 +960,7 @@ module.exports = (function () {
               outputs: "output",
             });
             // .complexFilter(["color[c];[0:v][c]overlay=shortest=1"]);
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: color is not set correctly`
@@ -993,7 +1014,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -1010,7 +1031,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -1077,7 +1098,8 @@ module.exports = (function () {
               //   outputs: "output"
               // }
             );
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+
             // if (metadata && metadata.format && metadata.format.duration)
             //   ffmpeg_cmd.duration(metadata.format.duration);
           } else {
@@ -1248,7 +1270,7 @@ module.exports = (function () {
           )}`
         );
 
-        const ffmpeg_cmd = new ffmpeg().renice(renice);
+        const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
         temp_videos_array.map((v) => {
           ffmpeg_cmd.addInput(v.temp_video_path);
@@ -1558,13 +1580,14 @@ module.exports = (function () {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
     socket,
   }) {
     return new Promise(function (resolve, reject) {
       dev.logfunction("EXPORTER — _mixAudioAndVideo");
 
       const videoPath = path.join(cachePath, videoName);
-      let ffmpeg_cmd = new ffmpeg().renice(renice);
+      const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
       let video_files = medias_with_original_filepath.filter(
         (m) => m.type === "video"
@@ -1612,6 +1635,9 @@ module.exports = (function () {
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
         .addOptions(["-map 0:v:0", "-map 1:a:0"])
+        .videoFilters(
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
+        )
         .toFormat("mp4")
         .on("start", function (commandLine) {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
@@ -1638,13 +1664,14 @@ module.exports = (function () {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
     socket,
   }) {
     return new Promise(function (resolve, reject) {
       dev.logfunction("EXPORTER — _mixAudioAndImage");
 
       const videoPath = path.join(cachePath, videoName);
-      const ffmpeg_cmd = new ffmpeg().renice(renice);
+      const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
       let image_files = medias_with_original_filepath.filter(
         (m) => m.type === "image"
@@ -1662,10 +1689,6 @@ module.exports = (function () {
 
       let time_since_last_report = 0;
 
-      let resolution = _calculateResolutionAccordingToRatio(
-        image_files[0].ratio
-      );
-
       dev.logverbose(
         `About to create a speaking picture with resolution = ${JSON.stringify(
           resolution
@@ -1680,7 +1703,7 @@ module.exports = (function () {
         .withAudioBitrate("128k")
         .addOptions(["-tune stillimage"])
         .videoFilters(
-          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=increase`
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
         )
         .outputFPS(30)
         .toFormat("mp4")
@@ -1749,7 +1772,7 @@ module.exports = (function () {
       fs.access(temp_video_path, fs.F_OK, function (err) {
         if (err) {
           ffmpeg.ffprobe(vm.full_path, function (err, metadata) {
-            const ffmpeg_cmd = new ffmpeg().renice(renice);
+            const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
             ffmpeg_cmd.input(vm.full_path);
 
@@ -1896,7 +1919,7 @@ module.exports = (function () {
               dev.logverbose(
                 `EXPORTER — _prepareImageForMontageAndWeb: created temp image`
               );
-              const ffmpeg_cmd = new ffmpeg().renice(renice);
+              const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
               ffmpeg_cmd.input(temp_image_path);
 
@@ -2015,7 +2038,7 @@ module.exports = (function () {
               dev.logverbose(
                 `EXPORTER — _prepareSolidColorForMontageAndWeb: created temp image`
               );
-              const ffmpeg_cmd = new ffmpeg().renice(renice);
+              const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
               ffmpeg_cmd.input(temp_image_path);
 
@@ -2070,22 +2093,22 @@ module.exports = (function () {
     });
   }
 
-  function _calculateResolutionAccordingToRatio(ratio) {
-    let default_video_height = 720;
-    let resolution = {
-      width: 0,
-      height: default_video_height,
-    };
+  // function _calculateResolutionAccordingToRatio(ratio) {
+  //   let default_video_height = 720;
+  //   let resolution = {
+  //     width: 0,
+  //     height: default_video_height,
+  //   };
 
-    if (!ratio) {
-      ratio = 0.75;
-    }
+  //   if (!ratio) {
+  //     ratio = 0.75;
+  //   }
 
-    const new_width = 2 * Math.round(default_video_height / ratio / 2);
-    resolution.width = new_width;
+  //   const new_width = 2 * Math.round(default_video_height / ratio / 2);
+  //   resolution.width = new_width;
 
-    return resolution;
-  }
+  //   return resolution;
+  // }
 
   function _notifyFfmpegProgress({ socket, progress }) {
     let not_localized_string;
