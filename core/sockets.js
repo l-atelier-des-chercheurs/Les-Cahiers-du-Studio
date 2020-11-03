@@ -94,6 +94,7 @@ module.exports = (function () {
       socket.on("disconnect", (d) => onClientDisconnect(socket));
 
       socket.on("loadJournal", (d) => onLoadJournal(socket));
+      socket.on("emptyJournal", (d) => onEmptyJournal(socket));
     });
   }
 
@@ -1028,7 +1029,7 @@ module.exports = (function () {
       `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
     );
 
-    await file.getFolder({ type, slugFolderName }).catch((err) => {
+    let foldersData = await file.getFolder({ type, slugFolderName }).catch((err) => {
       dev.error(`No folder found: ${err}`);
       throw err;
     });
@@ -1048,9 +1049,7 @@ module.exports = (function () {
     let folders_and_medias = await file.readMediaList({ type, medias_list });
     dev.logverbose(`Got medias, now sending to the right clients`);
 
-    let foldersData = {
-      [slugFolderName]: { medias: {} },
-    };
+    foldersData[slugFolderName].medias = {};
 
     if (
       folders_and_medias !== undefined &&
@@ -1130,8 +1129,43 @@ module.exports = (function () {
   }
 
   async function onLoadJournal(socket) {
+    dev.logfunction(`EVENT - onLoadJournal`);
+
+    const socket_is_admin = await auth.isSocketSessionAdmin(socket);
+    if (!socket_is_admin) {
+      dev.error(`Non-admin attempted to load journal`);
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: you need to be an admin to read the journal`,
+        type: "error",
+      });
+      throw `Non-admin attempted to load journal`;
+    }
+
     const journal_content = await changelog.read();
     api.sendEventWithContent("loadJournal", journal_content, io, socket);
+  }
+
+  async function onEmptyJournal(socket) {
+    dev.logfunction(`EVENT - onEmptyJournal`);
+
+    const socket_is_admin = await auth.isSocketSessionAdmin(socket);
+    if (!socket_is_admin) {
+      dev.error(`Non-admin attempted to empty journal`);
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: you need to be an admin to empty the journal`,
+        type: "error",
+      });
+      throw `Non-admin attempted to empty journal`;
+    }
+
+    await changelog.empty();
+    await onLoadJournal(socket);
   }
 
   return API;

@@ -286,7 +286,7 @@ module.exports = (function () {
     dev.logfunction(`AUTH — checkIfAuthorIsFoldersAuthor`);
 
     // return there if socket has no authorized list
-    if (!sockets_authors_slugs) throw new Error("no_author");
+    if (!sockets_authors_slugs) throw new Error("socket_is_not_logged_in");
 
     if (
       folderData.authors &&
@@ -414,14 +414,7 @@ module.exports = (function () {
 
     const slugFolderName = Object.keys(folders_and_medias)[0];
 
-    const can_see_folder = await canSeeFolder(
-      socket,
-      folders_and_medias[slugFolderName],
-      type
-    );
-
-    if (
-      !(await canSeeFolder(
+    if(!(await canSeeFolder(
         socket,
         folders_and_medias[slugFolderName],
         type
