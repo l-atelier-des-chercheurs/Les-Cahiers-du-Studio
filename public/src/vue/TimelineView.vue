@@ -1695,13 +1695,15 @@ export default {
         // min-width: 320px;
         background-color: var(--label-background);
         color: var(--label-color);
-        border-radius: 1.1em;
+
         padding: 4px 12px 4px;
         // padding-right: 8px;
         white-space: nowrap;
+        color: #f50000;
+        border-radius: 0em;
 
         &:hover:not([disabled]) {
-          background-color: var(--color-noir);
+          background-color: #f50000;
           color: white;
         }
         &[disabled] {
@@ -1713,7 +1715,7 @@ export default {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background-color: var(--color-noir);
+          background-color: #f50000;
           border-radius: 50%;
           color: white;
           font-size: 0.8em;
@@ -1901,7 +1903,6 @@ export default {
           color: #ffebf0;
           padding: 30px 15px 30px;
 
-          padding: 1px 8px 4px;
           white-space: pre-line;
 
           -webkit-box-decoration-break: clone;
@@ -2036,7 +2037,7 @@ export default {
       pointer-events: auto;
       padding: 0 20px;
       background-color: #f50000;
-      border-radius: 20px;
+      // border-radius: 20px;
 
       align-items: center;
       align-content: center;
@@ -2062,7 +2063,7 @@ export default {
     border: 1px solid currentColor;
     background-color: white;
     background-color: var(--timeline-bg);
-    border-radius: 20px;
+    border-radius: 0;
     min-height: 40px;
 
     font-size: 0.75em;

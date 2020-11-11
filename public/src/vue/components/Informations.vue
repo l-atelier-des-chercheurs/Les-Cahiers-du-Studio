@@ -78,25 +78,53 @@
       </svg> -->
 
       <div class="m_informations--presentation--text">
-        <h1>
-          Text and confused<br />
-          Fonts and Faces #7
-        </h1>
+        <template v-if="$root.lang.current === 'fr'">
+          <h1>
+            Fonts and Faces N°7 <br />
+            Text and confused
+          </h1>
+          <h2>Colloque international de typographie</h2>
+        </template>
+        <template v-else>
+          <h1>
+            Text and confused<br />
+            Fonts and Faces #7
+          </h1>
 
-        <h2>International Type Symposium</h2>
+          <h2>International Type Symposium</h2>
+        </template>
 
-        <p>
-          Lire un texte, acte qui se donne comme automatique une fois
-          l’expérience acquise, nous livre l’accès au sens sémantique propagé
-          par son auteur·trice. S’il y a automatisme, automatisation, c’est que
-          la mécanique réside dans l’acte même d’encodage et de décodage de la
-          lettre où le dessinateur / la dessinatrice de caractères a les clés —
-          de lecture. Qu’il s’agisse de circonscrire l’écriture, de la perturber
-          voire de s’affranchir du sens, leurs graphies brouillent la lecture
-          jusqu’à la rendre impénétrable. Leurs créations, moins attachées à des
-          formes conventionnelles, créent un schisme entre le sens et la forme
-          et donnent le sentiment d’une volonté d’un texte insaisissable.
-        </p>
+        <br />
+
+        <template v-if="$root.lang.current === 'fr'">
+          <p>
+            Lire un texte, acte qui se donne comme automatique une fois
+            l’expérience acquise, nous livre l’accès au sens sémantique propagé
+            par son auteur·trice. S’il y a automatisme, automatisation, c’est
+            que la mécanique réside dans l’acte même d’encodage et de décodage
+            de la lettre où le dessinateur / la dessinatrice de caractères a les
+            clés — de lecture. Qu’il s’agisse de circonscrire l’écriture, de la
+            perturber voire de s’affranchir du sens, leurs graphies brouillent
+            la lecture jusqu’à la rendre impénétrable. Leurs créations, moins
+            attachées à des formes conventionnelles, créent un schisme entre le
+            sens et la forme et donnent le sentiment d’une volonté d’un texte
+            insaisissable.
+          </p>
+        </template>
+        <template v-else>
+          <p>
+            Read a text, an act that gives itself as automatic once the
+            experience is acquired, gives us access to the semantic meaning
+            propagated by its author. If there is automatism, automation, it is
+            because the mechanics lie in the very act of encoding and decoding
+            the letter, where the type designer has the keys to reading. Whether
+            it is a question of circumscribing the writing, disturbing it or
+            even freeing oneself from meaning, their spellings blur the reading
+            to the point of making it impenetrable. Their creations, less
+            attached to conventional forms, create a schism between meaning and
+            form and give the feeling of a desire for an elusive text.
+          </p>
+        </template>
 
         <button
           type="button"
@@ -106,53 +134,111 @@
         >
           <template v-if="!show_detail">►</template>
           <template v-else>▼</template>
-          plus d’informations…
+          <template v-if="$root.lang.current === 'fr'">
+            plus d’informations…
+          </template>
+          <template v-else> more informations… </template>
         </button>
-        <p v-if="show_detail">
-          Organisée au Campus Fonderie, cette journée d’étude interrogera des
-          créateurs et des créatrices sur les questions d’intelligibilité d’un
-          texte. Comment s’affranchissent-ils et elles de la question de la
-          lisibilité et se focalisent-ils et elles sur des questions liées à
-          l’imperméabilité de leurs caractères ? Nous tenterons de comprendre ce
-          qui motive leur démarche, aussi multiple soit-elle et comment ces
-          nouvelles formes de lettres se dégagent de toutes représentations
-          connues.
-        </p>
 
-        <ul>
-          <li>Brando Corradini</li>
-          <li>Toan Vu-Huu (Baldinger•Vu-Huu)</li>
-          <li>Barry Spencer</li>
-          <li>Alexandra Aïn</li>
-          <li>Velvetyne Type Foundry (Ariel Martín Pérez & Sébastien Hayez)</li>
-          <li>Grosso Modo</li>
-          <li>Sophie Cure</li>
-          <li>Margot Mourrier Sanyas</li>
-          <li>Ariane Dubois</li>
-        </ul>
+        <template v-if="show_detail">
+          <template v-if="$root.lang.current === 'fr'">
+            <p>
+              Organisée au Campus Fonderie, cette journée d’étude interrogera
+              des créateurs et des créatrices sur les questions
+              d’intelligibilité d’un texte. Comment s’affranchissent-ils et
+              elles de la question de la lisibilité et se focalisent-ils et
+              elles sur des questions liées à l’imperméabilité de leurs
+              caractères ? Nous tenterons de comprendre ce qui motive leur
+              démarche, aussi multiple soit-elle et comment ces nouvelles formes
+              de lettres se dégagent de toutes représentations connues.
+            </p>
+          </template>
+
+          <template v-else>
+            <p>
+              Organized at the Campus Fonderie de l'Image, this event will
+              question creators on the questions of intelligibility of a text.
+              How do they free themselves from the question of legibility and
+              focus on questions related to the impermeability of their
+              characters?
+            </p>
+          </template>
+        </template>
+
+        <template v-if="$root.lang.current === 'fr'">
+          <ul>
+            <li>09h55 iiintroduction</li>
+            <li>10h00 Brando Corradini</li>
+            <li>11h00 Toan Vu-Huu (Baldinger•Vu-Huu)</li>
+            <li>12h00 Barry Spencer</li>
+            <li>Pause</li>
+            <li>14h30 Ariane Dubois</li>
+            <li>15h00 Alexandra Aïn</li>
+            <li>16h00 VTF (Ariel Martín Pérez & Sébastien Hayez)</li>
+            <li>
+              Projets satellites
+              <ul>
+                <li>Grosso-Modo (avec Saber Zammouri)</li>
+                <li>Sophie Cure</li>
+                <li>Margot Mourrier-Sanyas</li>
+              </ul>
+            </li>
+          </ul>
+        </template>
+        <template v-else>
+          <ul>
+            <li>09h55 iiintroduction</li>
+            <li>10h00 Brando Corradini</li>
+            <li>11h00 Toan Vu-Huu</li>
+            <li>12h00 Barry Spencer</li>
+            <li>Break</li>
+            <li>14h30 Ariane Dubois</li>
+            <li>15h00 Alexandra Aïn</li>
+            <li>16h00 Velvetyne Type Foundry</li>
+            <li>
+              Satellites Projects
+              <ul>
+                <li>Grosso-Modo (with Saber Zammouri)</li>
+                <li>Sophie Cure</li>
+                <li>Margot Mourrier-Sanyas</li>
+              </ul>
+            </li>
+          </ul>
+        </template>
 
         <p>
-          #fontsandfaces<br />
+          #fontsandfaces →
+          <a
+            href="https://twitter.com/hashtag/fontsandfaces?src=hashtag_click"
+            target="_blank"
+          >
+            twitter
+          </a>
+          <!-- <br />
           <a
             href="https://www.instagram.com/campus_fonderie_de_limage/"
             target="_blank"
           >
             instagram.com/campus_fonderie_de_limage
           </a>
+          <br />
           <a href="https://twitter.com/campuslfi" target="_blank"
             >twitter.com/campuslfi</a
           >
+          <br />
           <a
             href="https://facebook.com/campusfonderiedelimage/"
             target="_blank"
           >
             facebook.com/campusfonderiedelimage
           </a>
+          -->
         </p>
 
-        <small>
-          Campus Fonderie de l’Image<br />80 rue Jules Ferry<br />93170 Bagnolet
-        </small>
+        <!-- <small>
+            Campus Fonderie de l’Image<br />80 rue Jules Ferry<br />93170
+            Bagnolet
+          </small> -->
       </div>
 
       <h2>
@@ -217,23 +303,44 @@
         </small>
         <br />
         <br />
-        <small>
-          Cette plate-forme a été créée et développée par
-          <a href="https://latelier-des-chercheurs.fr/" target="_blank"
-            >l’Atelier des chercheurs</a
+        <template v-if="$root.lang.current === 'fr'">
+          <small>
+            Cette plate-forme a été créée et développée par
+            <a href="https://latelier-des-chercheurs.fr/" target="_blank"
+              >l’Atelier des chercheurs</a
+            >
+            avec et pour les organisateurs du colloque Text and confused. Elle
+            se base sur le logiciel libre et open-source
+            <a
+              href="https://latelier-des-chercheurs.fr/outils/les-cahiers-du-studio"
+              target="_bank"
+              >Les Cahiers du Studio</a
+            >
+            et sa variante développée pour les
+            <a href="https://dailleurs.delure.org/" target="_blank"
+              >Rencontres de Lure 2020</a
+            >.</small
           >
-          avec et pour les organisateurs du colloque Text and confused. Elle se
-          base sur le logiciel libre et open-source
-          <a
-            href="https://latelier-des-chercheurs.fr/outils/les-cahiers-du-studio"
-            target="_bank"
-            >Les Cahiers du Studio</a
-          >
-          et sa variante développée pour les
-          <a href="https://dailleurs.delure.org/" target="_blank"
-            >Rencontres de Lure 2020</a
-          >.</small
-        >
+        </template>
+        <template v-else>
+          <small>
+            This website/platform was created and programed by
+            <a href="https://latelier-des-chercheurs.fr/" target="_blank"
+              >l’Atelier des chercheurs</a
+            >
+            with and for the organizers of Text and confused. It is based on the
+            free software
+            <a
+              href="https://latelier-des-chercheurs.fr/en/tools/les-cahiers-du-studio"
+              target="_bank"
+              >The Studio's Notebooks/Les Cahiers du Studio</a
+            >
+            and its variant made for the
+            <a href="https://dailleurs.delure.org/" target="_blank">
+              Rencontres de Lure 2020</a
+            >.
+          </small>
+        </template>
 
         <!-- <small>Crédits et technologies utilisées… </small> -->
       </p>
@@ -290,6 +397,18 @@ export default {
   select {
     color: currentColor;
     border: none;
+  }
+
+  h1,
+  h2 {
+    font-size: 4.5em;
+    font-family: "CipherI Small", "Minimal", sans-serif;
+    line-height: 0.5em;
+  }
+  ul {
+    ul {
+      margin-top: 0.5em;
+    }
   }
 }
 
