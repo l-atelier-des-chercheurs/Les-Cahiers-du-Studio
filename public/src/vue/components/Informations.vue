@@ -244,7 +244,7 @@ export default {
   background-color: var(--color-yellow);
   // color: white;
 
-  font-size: 1.1em;
+  font-size: 1em;
   height: 100%;
 
   // padding-top: calc(var(--spacing) / 2);

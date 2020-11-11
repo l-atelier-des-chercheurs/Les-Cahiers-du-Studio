@@ -736,7 +736,7 @@ html[lang="fr"] .ql-tooltip::before {
 
     // caret-color: var(--active-color);
     line-height: inherit;
-    padding: var(--spacing)/2 calc(var(--spacing)) 250px;
+    padding: var(--spacing) / 2 calc(var(--spacing)) 250px;
 
     transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -929,7 +929,7 @@ html[lang="fr"] .ql-tooltip::before {
     // lh : 1.41
     // scale : 1.31
 
-    font-size: 1.1em;
+    font-size: inherit;
     line-height: 1.4375em;
     // max-width: 773px;
     // margin: auto;
