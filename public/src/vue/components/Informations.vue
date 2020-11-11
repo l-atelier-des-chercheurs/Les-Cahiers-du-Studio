@@ -19,18 +19,19 @@
       <div>
         <label>
           <!-- <h3 class="margin-none text-cap with-bullet">{{ $t("lang") }}</h3> -->
-          <select v-model="currentLang" style="max-width: 11ch;">
+          <select v-model="currentLang" style="max-width: 11ch">
             <option
               v-for="(name, code) in $root.lang.available"
               :value="code"
               :key="code"
-              >{{ name }}</option
             >
+              {{ name }}
+            </option>
           </select>
         </label>
       </div>
 
-      <svg
+      <!-- <svg
         version="1.1"
         class="_logo"
         id="Layer_1"
@@ -41,7 +42,7 @@
         width="960px"
         height="277.15px"
         viewBox="0 0 960 277.15"
-        style="enable-background: new 0 0 960 277.15;"
+        style="enable-background: new 0 0 960 277.15"
         xml:space="preserve"
       >
         <path
@@ -74,51 +75,80 @@
           <path class="st0" d="M55.81,244.67v30.15h102.51v-30.15H55.81z" />
           <rect y="51.59" class="st0" width="34.31" height="171.61" />
         </g>
-      </svg>
+      </svg> -->
 
       <div class="m_informations--presentation--text">
         <h1>
-          <template v-if="$root.lang.current === 'fr'">
-            Bienvenu•e•s aux 68<sup>es</sup> Rencontres internationales de
-            Lure&nbsp;!
-          </template>
-          <template v-else>
-            Welcome to the 68<sup>th</sup> Rencontres internationales de Lure
-            Summer School !
-          </template>
+          Text and confused<br />
+          Fonts and Faces #7
         </h1>
 
+        <h2>International Type Symposium</h2>
+
         <p>
-          <template v-if="$root.lang.current === 'fr'">
-            Chaque jour, venez découvrir des conférences filmées, des audios,
-            des liens, des images, quand vous voulez, d’où vous voulez. Chaque
-            jour, venez partager vos découvertes, vos recherches, vos projets.
-            Chaque jour à 17 h, venez suivre une conférence de l’ANRT puis
-            échanger avec l’intervenant. Chaque jour venez poster et/ou
-            télécharger des sets de table/specimen typographiques. Certains
-            posts peuvent faire l’objet de commentaires et de débats&nbsp;!
-          </template>
-          <template v-else>
-            Every day, visit our site to discover from wherever you are, and
-            whenever you like, for videoconferences, spoken-word and visual
-            content, and other links. Every day come along and share your
-            discoveries, your research and your projects. Every day at 5pm, join
-            us for an ANRT presentation, and take the opportunity to exchange
-            with the presenter. Every day you will be welcome to upload or
-            download content, including our traditional LURE typography
-            table-mats. All of your posts can be made available for comments and
-            discussion.
-          </template>
+          Lire un texte, acte qui se donne comme automatique une fois
+          l’expérience acquise, nous livre l’accès au sens sémantique propagé
+          par son auteur·trice. S’il y a automatisme, automatisation, c’est que
+          la mécanique réside dans l’acte même d’encodage et de décodage de la
+          lettre où le dessinateur / la dessinatrice de caractères a les clés —
+          de lecture. Qu’il s’agisse de circonscrire l’écriture, de la perturber
+          voire de s’affranchir du sens, leurs graphies brouillent la lecture
+          jusqu’à la rendre impénétrable. Leurs créations, moins attachées à des
+          formes conventionnelles, créent un schisme entre le sens et la forme
+          et donnent le sentiment d’une volonté d’un texte insaisissable.
         </p>
+        <p>
+          Organisée au Campus Fonderie, cette journée d’étude interrogera des
+          créateurs et des créatrices sur les questions d’intelligibilité d’un
+          texte. Comment s’affranchissent-ils et elles de la question de la
+          lisibilité et se focalisent-ils et elles sur des questions liées à
+          l’imperméabilité de leurs caractères ? Nous tenterons de comprendre ce
+          qui motive leur démarche, aussi multiple soit-elle et comment ces
+          nouvelles formes de lettres se dégagent de toutes représentations
+          connues.
+        </p>
+
+        <ul>
+          <li>Brando Corradini</li>
+          <li>Toan Vu-Huu (Baldinger•Vu-Huu)</li>
+          <li>Barry Spencer</li>
+          <li>Alexandra Aïn</li>
+          <li>Velvetyne Type Foundry (Ariel Martín Pérez & Sébastien Hayez)</li>
+          <li>Grosso Modo</li>
+          <li>Sophie Cure</li>
+          <li>Margot Mourrier Sanyas</li>
+          <li>Ariane Dubois</li>
+        </ul>
+
+        <p>
+          #fontsandfaces<br />
+          <a
+            href="https://www.instagram.com/campus_fonderie_de_limage/"
+            target="_blank"
+          >
+            instagram.com/campus_fonderie_de_limage
+          </a>
+          <a href="https://twitter.com/campuslfi" target="_blank"
+            >twitter.com/campuslfi</a
+          >
+          <a
+            href="https://facebook.com/campusfonderiedelimage/"
+            target="_blank"
+          >
+            facebook.com/campusfonderiedelimage
+          </a>
+        </p>
+
+        <small>
+          Campus Fonderie de l’Image<br />80 rue Jules Ferry<br />93170 Bagnolet
+        </small>
       </div>
 
       <h2>
         <template v-if="$root.lang.current === 'fr'">
           Comment utiliser cet outil ?
         </template>
-        <template v-else>
-          How to use this website?
-        </template>
+        <template v-else> How to use this website? </template>
       </h2>
 
       <ol class="margin-sides-medium">
@@ -139,7 +169,7 @@
             If you wish to comment, registration is easy.
           </template>
         </li>
-        <li>
+        <!-- <li>
           <template v-if="$root.lang.current === 'fr'">
             Pour poster des contenus, faites une demande par mail à
             <a href="mailto:info@delure.org" target="_blank">
@@ -152,42 +182,25 @@
               info@delure.org
             </a>
           </template>
-        </li>
+        </li> -->
       </ol>
 
       <p>
-        <template v-if="$root.lang.current === 'fr'">
-          Et, en cette année périlleuse, n’oubliez pas de soutenir les
-          Rencontres de Lure en adhérent à l’association >
-          <a
-            href="https://www.helloasso.com/associations/rencontres-internationales-de-lure/adhesions/adhesion-2020"
-            target="_blank"
-            >c’est par ici</a
-          >.
-        </template>
-        <template v-else>
-          And, this year more than ever, please remember to support les
-          Rencontres internationales de Lure by becoming a member, or by
-          renewing your membership >
-          <a
-            href="https://www.helloasso.com/associations/rencontres-internationales-de-lure/adhesions/adhesion-2020"
-            target="_blank"
-            >on this page</a
-          >.
-        </template>
+        <template v-if="$root.lang.current === 'fr'"> </template>
+        <template v-else> </template>
       </p>
       <p>
         <small>
           <template v-if="$root.lang.current === 'fr'">
             Besoin d’aide, des questions ? Envoyez un email à
-            <a href="mailto:info@delure.org" target="_blank"
-              >info@delure.org
+            <a href="mailto:vfried@campusfonderiedelimage.org" target="_blank">
+              vfried@campusfonderiedelimage.org
             </a>
           </template>
           <template v-else>
             Need help, questions? Send an email to
-            <a href="mailto:info@delure.org" target="_blank"
-              >info@delure.org
+            <a href="mailto:vfried@campusfonderiedelimage.org" target="_blank">
+              vfried@campusfonderiedelimage.org
             </a>
           </template>
         </small>
@@ -229,7 +242,7 @@ export default {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   background-color: var(--color-yellow);
-  color: white;
+  // color: white;
 
   font-size: 1.1em;
   height: 100%;
@@ -254,7 +267,7 @@ export default {
 }
 
 .m_informations--presentation--text {
-  text-align: center;
+  // text-align: center;
 }
 
 .m_informations--buttons {

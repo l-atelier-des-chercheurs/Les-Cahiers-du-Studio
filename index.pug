@@ -6,108 +6,13 @@ html
 
     title #{pageTitle}
     
-    - if(mode === 'export_web')
+    - if(mode !== 'export_web')
       style.
-        @font-face {
-          font-family: 'nw';
-          font-style: normal;
-          font-weight: 800;
-          src: local('•'), local('•'),
-              url('./_fonts/NationalWeb-Black.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: normal;
-          font-weight: 600;
-          src: local('•'), local('•'),
-              url('./_fonts/NationalWeb-Bold.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: italic;
-          font-weight: 600;
-          src: local('•'), local('•'),
-              url('./_fonts/NationalWeb-BoldItalic.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: normal;
-          font-weight: 500;
-          src: local('•'), local('•'),
-              url('./_fonts/NationalWeb-Book.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: italic;
-          font-weight: 500;
-          src: local('•'), local('•'),
-              url('./_fonts/NationalWeb-BookItalic.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: normal;
-          font-weight: 300;
-          src: local('•'), local('•'),
-              url('./_fonts/NationalWeb-Light.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: italic;
-          font-weight: 300;
-          src: local('•'), local('•'),
-              url('./_fonts/NationalWeb-LightItalic.woff') format('woff');
-        }
+        @import "/fonts/fonts.css";
     - else
       style.
-        @font-face {
-          font-family: 'nw';
-          font-style: normal;
-          font-weight: 800;
-          src: local('•'), local('•'),
-              url('/fonts/NationalWeb-Black.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: normal;
-          font-weight: 600;
-          src: local('•'), local('•'),
-              url('/fonts/NationalWeb-Bold.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: italic;
-          font-weight: 600;
-          src: local('•'), local('•'),
-              url('/fonts/NationalWeb-BoldItalic.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: normal;
-          font-weight: 500;
-          src: local('•'), local('•'),
-              url('/fonts/NationalWeb-Book.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: italic;
-          font-weight: 500;
-          src: local('•'), local('•'),
-              url('/fonts/NationalWeb-BookItalic.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: normal;
-          font-weight: 300;
-          src: local('•'), local('•'),
-              url('/fonts/NationalWeb-Light.woff') format('woff');
-        }
-        @font-face {
-          font-family: 'nw';
-          font-style: italic;
-          font-weight: 300;
-          src: local('•'), local('•'),
-              url('/fonts/NationalWeb-LightItalic.woff') format('woff');
-        }
+        @import "./_fonts/fonts.css";
+
 
     script.
       /***********

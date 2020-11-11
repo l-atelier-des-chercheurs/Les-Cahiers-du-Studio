@@ -1,0 +1,50 @@
+@font-face {
+  font-family: "CipherI Small";
+  font-style: normal;
+  font-weight: 400;
+  src: local("CipherISmall Regular"),
+    url("CipherI_small_mono-Regular.woff2") format("woff2"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url("CipherI_small_mono-Regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+@font-face {
+  font-family: "Minimal";
+  font-style: normal;
+  font-weight: 900;
+  src: local("Minimal Black"), url("minimal_V0-Black.woff2") format("woff2"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */ url("minimal_V0-Black.woff")
+      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: "Minimal";
+  font-style: normal;
+  font-weight: 700;
+  src: local("Minimal Bold"), url("minimal_V0-Bold.woff2") format("woff2"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */ url("minimal_V0-Bold.woff")
+      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: "Minimal";
+  font-style: normal;
+  font-weight: 350;
+  src: local("Minimal Book"), url("minimal_V0-Book.woff2") format("woff2"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */ url("minimal_V0-Book.woff")
+      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: "Minimal";
+  font-style: normal;
+  font-weight: 500;
+  src: local("Minimal Medium"), url("minimal_V0-Medium.woff2") format("woff2"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */ url("minimal_V0-Medium.woff")
+      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: "Minimal";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Minimal Regular"), url("minimal_V0-Regular.woff2") format("woff2"),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */ url("minimal_V0-Regular.woff")
+      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}

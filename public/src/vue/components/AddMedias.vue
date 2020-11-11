@@ -240,7 +240,7 @@
               @change="updateInputFiles($event)"
               :accept="field.accept"
               :capture="field.capture"
-              style="width: 1px; height: 1px; overflow: hidden;"
+              style="width: 1px; height: 1px; overflow: hidden"
             />
           </div>
         </template>
@@ -270,11 +270,11 @@
           width="24px"
           height="24px"
           viewBox="0 0 24 24"
-          style="enable-background: new 0 0 24 24;"
+          style="enable-background: new 0 0 24 24"
           xml:space="preserve"
         >
           <path
-            style="fill: currentColor;"
+            style="fill: currentColor"
             d="M0,10.5h10.5V0h2.9v10.5H24v2.9H13.5V24h-2.9V13.5H0V10.5z"
           />
         </svg>
@@ -430,7 +430,7 @@ export default {
         props["--color-author"] = this.$root.current_author.color;
         props["--color-text_on_author_color"] = "var(--color-noir)";
       } else {
-        props["--color-text_on_author_color"] = "#fff";
+        props["--color-text_on_author_color"] = "#333";
       }
       return props;
     },
@@ -653,12 +653,12 @@ button,
 
   border-radius: 3px;
   background-color: var(--color-bleu_vif);
-  color: #fff;
+  // color: #fff;
   // color: --color-noir;
 
   // background-color: white;
   // color: black;
-  box-shadow: 2px 4px 13px #bbb;
+  // box-shadow: 2px 4px 13px #bbb;
 
   top: 50%;
   transform: translate(0, -50%);
