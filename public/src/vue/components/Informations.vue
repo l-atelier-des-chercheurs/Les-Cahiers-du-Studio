@@ -97,7 +97,17 @@
           formes conventionnelles, créent un schisme entre le sens et la forme
           et donnent le sentiment d’une volonté d’un texte insaisissable.
         </p>
-        <p>
+
+        <button
+          type="button"
+          :class="{ 'is--active': show_detail }"
+          @click="show_detail = !show_detail"
+        >
+          <template v-if="!show_detail">►</template>
+          <template v-else>▼</template>
+          plus d’informations
+        </button>
+        <p v-if="show_detail">
           Organisée au Campus Fonderie, cette journée d’étude interrogera des
           créateurs et des créatrices sur les questions d’intelligibilité d’un
           texte. Comment s’affranchissent-ils et elles de la question de la
@@ -204,6 +214,26 @@
             </a>
           </template>
         </small>
+        <br />
+        <br />
+        <small>
+          Cette plate-forme a été créée et développée par
+          <a href="https://latelier-des-chercheurs.fr/" target="_blank"
+            >l’Atelier des chercheurs</a
+          >
+          avec et pour les organisateurs du colloque Text and confused. Elle se
+          base sur le logiciel libre et open-source
+          <a
+            href="https://latelier-des-chercheurs.fr/outils/les-cahiers-du-studio"
+            target="_bank"
+            >Les Cahiers du Studio</a
+          >
+          et sa variante développée pour les
+          <a href="https://dailleurs.delure.org/" target="_blank"
+            >Rencontres de Lure 2020</a
+          >.</small
+        >
+
         <!-- <small>Crédits et technologies utilisées… </small> -->
       </p>
     </div>
@@ -222,6 +252,7 @@ export default {
   data() {
     return {
       currentLang: this.$root.lang.current,
+      show_detail: false,
     };
   },
   created() {},
@@ -256,7 +287,9 @@ export default {
   button,
   input,
   select {
-    color: var(--color-noir);
+    background-color: var(--color-bleu_vif);
+    color: currentColor;
+    font-size: 0.8em;
   }
 }
 
@@ -268,6 +301,9 @@ export default {
 
 .m_informations--presentation--text {
   // text-align: center;
+}
+
+button {
 }
 
 .m_informations--buttons {
