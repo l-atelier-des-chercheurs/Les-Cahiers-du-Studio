@@ -100,12 +100,13 @@
 
         <button
           type="button"
+          class="_unfold_button"
           :class="{ 'is--active': show_detail }"
           @click="show_detail = !show_detail"
         >
           <template v-if="!show_detail">►</template>
           <template v-else>▼</template>
-          plus d’informations
+          plus d’informations…
         </button>
         <p v-if="show_detail">
           Organisée au Campus Fonderie, cette journée d’étude interrogera des
@@ -287,9 +288,8 @@ export default {
   button,
   input,
   select {
-    background-color: var(--color-bleu_vif);
     color: currentColor;
-    font-size: 0.8em;
+    border: none;
   }
 }
 
@@ -301,9 +301,6 @@ export default {
 
 .m_informations--presentation--text {
   // text-align: center;
-}
-
-button {
 }
 
 .m_informations--buttons {
@@ -383,5 +380,11 @@ ol li::before {
   text-align: center;
 
   margin-right: 4px;
+}
+
+._unfold_button {
+  background-color: var(--color-bleu_vif);
+  font-size: 0.8em;
+  padding: 0.3em;
 }
 </style>
