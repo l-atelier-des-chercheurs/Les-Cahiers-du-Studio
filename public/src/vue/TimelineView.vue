@@ -198,7 +198,7 @@
             </div>
             <TimelinePlayer />
 
-            <div>
+            <div v-if="false">
               <div>
                 <div class>
                   <div class>
