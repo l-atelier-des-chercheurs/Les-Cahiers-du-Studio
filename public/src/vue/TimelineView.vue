@@ -1871,9 +1871,11 @@ export default {
 
     div {
       display: block;
-      transform: rotate(-15deg) translateX(-20px);
+
+      transform: rotate(0deg) translateX(-50px);
+      font-style: normal;
+
       transform-origin: left center;
-      font-style: italic;
 
       button {
         padding: 0;
@@ -1895,11 +1897,10 @@ export default {
           border-radius: 0;
 
           display: inline;
-          background-color: var(--color-noir);
-          color: white;
-          // background-color: var(--color-author);
-          // color: var(--label-color);
-          box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
+          background-color: #f50000;
+          color: #ffebf0;
+          padding: 30px 15px 30px;
+
           padding: 1px 8px 4px;
           white-space: pre-line;
 
@@ -1911,7 +1912,7 @@ export default {
           pointer-events: auto;
         }
         &[data-has_author="true"] span::before {
-          content: "• ";
+          // content: "• ";
           color: var(--color-author);
           position: relative;
         }
@@ -2005,6 +2006,7 @@ export default {
 
   pointer-events: none;
 
+  border-radius: 20px;
   --label-background: var(--color-noir);
 
   body.has_systembar & {
@@ -2030,11 +2032,11 @@ export default {
       position: relative;
       display: inline-flex;
       min-height: 40px;
-      background-color: var(--label-background);
       color: white;
       pointer-events: auto;
-      border-radius: 20px;
       padding: 0 20px;
+      background-color: #f50000;
+      border-radius: 20px;
 
       align-items: center;
       align-content: center;

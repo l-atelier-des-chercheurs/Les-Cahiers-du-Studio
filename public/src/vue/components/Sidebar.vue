@@ -80,8 +80,9 @@
             v-for="(name, code) in $root.lang.available"
             :value="code"
             :key="code"
-            >{{ name }}</option
           >
+            {{ name }}
+          </option>
         </select>
       </div>
     </SidebarSection>

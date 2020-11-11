@@ -55,7 +55,7 @@
                 width="77.6px"
                 height="85.4px"
                 viewBox="0 0 77.6 85.4"
-                style="enable-background: new 0 0 77.6 85.4;"
+                style="enable-background: new 0 0 77.6 85.4"
                 xml:space="preserve"
               >
                 <defs />
@@ -207,7 +207,7 @@
                       width="91.6px"
                       height="95px"
                       viewBox="0 0 91.6 95"
-                      style="enable-background: new 0 0 91.6 95;"
+                      style="enable-background: new 0 0 91.6 95"
                       xml:space="preserve"
                     >
                       <path
@@ -246,9 +246,7 @@
           class="m_chat--content--scrollToBottom"
           v-if="!is_scrolled_to_bottom"
         >
-          <button type="button" @click="scrollToBottom()">
-            →
-          </button>
+          <button type="button" @click="scrollToBottom()">→</button>
         </div>
       </transition>
 

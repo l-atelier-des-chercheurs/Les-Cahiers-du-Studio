@@ -329,7 +329,7 @@ export default {
         {
           "--author-color": this.mediaColorFromFirstAuthor
             ? this.mediaColorFromFirstAuthor
-            : "#fff",
+            : "#ffd9eb",
         },
         this.itemSize
       );
@@ -620,7 +620,6 @@ export default {
       overflow: hidden;
 
       padding: 2px;
-      border-radius: 2px;
 
       box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.35);
 

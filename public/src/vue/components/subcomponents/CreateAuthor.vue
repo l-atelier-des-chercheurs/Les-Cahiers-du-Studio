@@ -1,5 +1,9 @@
 <template>
-  <form @close="$emit('close')" v-on:submit.prevent="newAuthor" :read_only="read_only">
+  <form
+    @close="$emit('close')"
+    v-on:submit.prevent="newAuthor"
+    :read_only="read_only"
+  >
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
     <!-- Human name -->
@@ -33,7 +37,9 @@
               role === 'admin' &&
               (!current_author || current_author.role !== 'admin')
             "
-          >{{ $t(role) }}</option>
+          >
+            {{ $t(role) }}
+          </option>
         </select>
       </div>
     </div>
@@ -54,7 +60,7 @@
     </div>
 
     <!-- Color -->
-    <div class="margin-bottom-small">
+    <!-- <div class="margin-bottom-small">
       <label>{{ $t("color") }}</label>
       <div class="_color_items">
         <div
@@ -67,7 +73,7 @@
           :style="`background-color: ${color}`"
         />
       </div>
-    </div>
+    </div> -->
 
     <!-- Preview -->
     <!-- <div class="margin-bottom-small" v-if="mode !== 'simple_login'">
@@ -115,17 +121,25 @@
       <button
         type="button"
         class="buttonLink"
-        style="flex-grow: 0;"
+        style="flex-grow: 0"
         @click="$emit('close')"
-      >{{ $t("cancel") }}</button>
+      >
+        {{ $t("cancel") }}
+      </button>
 
       <button type="submit" class="bg-bleuvert">{{ $t("create") }}</button>
     </div>
 
     <div class="text-centered" v-if="mode !== 'simple_login'">
       <span class="switch switch-xs margin-top-small">
-        <input id="login_after_creation" type="checkbox" v-model="login_after_creation" />
-        <label for="login_after_creation">{{ $t("login_after_creation") }}</label>
+        <input
+          id="login_after_creation"
+          type="checkbox"
+          v-model="login_after_creation"
+        />
+        <label for="login_after_creation">{{
+          $t("login_after_creation")
+        }}</label>
       </span>
     </div>
   </form>
@@ -188,12 +202,12 @@ export default {
     },
   },
   methods: {
-    newAuthor: function(event) {
+    newAuthor: function (event) {
       console.log("newAuthor");
 
       let data = JSON.parse(JSON.stringify(this.authordata));
 
-      let allAuthorsName = this.$root.all_authors.map(a =>
+      let allAuthorsName = this.$root.all_authors.map((a) =>
         a.name.toLowerCase()
       );
 
@@ -214,7 +228,7 @@ export default {
 
       if (!!data.password) data.password = this.$auth.hashCode(data.password);
 
-      this.$root.createFolder({ type: "authors", data }).then(adata => {
+      this.$root.createFolder({ type: "authors", data }).then((adata) => {
         if (this.login_after_creation) {
           this.$nextTick(() => {
             this.$eventHub.$emit("authors.submitPassword", {

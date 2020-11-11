@@ -97,16 +97,15 @@ export default {
   // flex: 0 0 420px;
 
   height: 100%;
-  background-color: var(--color-noir);
-  color: white;
+  background-color: #ffaad2;
+  border: 4px solid #ffaad2;
   // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
 
   // background-color: white;
-  border: 4px solid var(--color-noir);
+  // border: 4px solid var(--color-noir);
   // margin: 2em;
   // padding: 1em;
-  padding-top: calc(var(--spacing) / 2);
-  padding-bottom: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 4);
 
   // border-radius: 8px;
 
