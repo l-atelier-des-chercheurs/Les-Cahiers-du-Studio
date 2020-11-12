@@ -532,7 +532,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: white;
-  background-color: var(--author-color);
+  background-color: #ffd9eb;
 
   // border-radius: 4px;
   border: 0px solid black;
@@ -558,7 +558,7 @@ export default {
 
   &.is--text_overflowing {
     &::after {
-      content: "";
+      // content: "";
       display: block;
       position: absolute;
       bottom: 0;

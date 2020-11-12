@@ -81,17 +81,18 @@
         <template v-if="$root.lang.current === 'fr'">
           <h1>
             Fonts and Faces N°7 <br />
-            Text and confused
+
+            Colloque international de typographie
           </h1>
-          <h2>Colloque international de typographie</h2>
+          <h2>Text and confused</h2>
         </template>
         <template v-else>
           <h1>
-            Text and confused<br />
-            Fonts and Faces #7
+            Fonts and Faces #7<br />
+            International Type Symposium
           </h1>
 
-          <h2>International Type Symposium</h2>
+          <h2>Text and confused</h2>
         </template>
 
         <br />
@@ -167,14 +168,14 @@
 
         <template v-if="$root.lang.current === 'fr'">
           <ul>
-            <li>09h55 iiintroduction</li>
-            <li>10h00 Brando Corradini</li>
-            <li>11h00 Toan Vu-Huu (Baldinger•Vu-Huu)</li>
-            <li>12h00 Barry Spencer</li>
+            <li>09h55<span class="_spacer" />iiintroduction</li>
+            <li>10h00<span class="_spacer" />Brando Corradini</li>
+            <li>11h00<span class="_spacer" />Toan Vu-Huu</li>
+            <li>12h00<span class="_spacer" />Barry Spencer</li>
             <li>Pause</li>
-            <li>14h30 Ariane Dubois</li>
-            <li>15h00 Alexandra Aïn</li>
-            <li>16h00 VTF (Ariel Martín Pérez & Sébastien Hayez)</li>
+            <li>14h30<span class="_spacer" />Ariane Dubois</li>
+            <li>15h00<span class="_spacer" />Alexandra Aïn</li>
+            <li>16h00<span class="_spacer" />Velvetyne Type Foundry</li>
             <li>
               Projets satellites
               <ul>
@@ -187,14 +188,14 @@
         </template>
         <template v-else>
           <ul>
-            <li>09h55 iiintroduction</li>
-            <li>10h00 Brando Corradini</li>
-            <li>11h00 Toan Vu-Huu</li>
-            <li>12h00 Barry Spencer</li>
+            <li>09h55<span class="_spacer" />iiintroduction</li>
+            <li>10h00<span class="_spacer" />Brando Corradini</li>
+            <li>11h00<span class="_spacer" />Toan Vu-Huu</li>
+            <li>12h00<span class="_spacer" />Barry Spencer</li>
             <li>Break</li>
-            <li>14h30 Ariane Dubois</li>
-            <li>15h00 Alexandra Aïn</li>
-            <li>16h00 Velvetyne Type Foundry</li>
+            <li>14h30<span class="_spacer" />Ariane Dubois</li>
+            <li>15h00<span class="_spacer" />Alexandra Aïn</li>
+            <li>16h00<span class="_spacer" />Velvetyne Type Foundry</li>
             <li>
               Satellites Projects
               <ul>
@@ -505,5 +506,28 @@ ol li::before {
   background-color: var(--color-bleu_vif);
   font-size: 0.8em;
   padding: 0.3em;
+}
+
+ul {
+  margin-left: 0;
+  padding-left: 0;
+  list-style-type: none;
+
+  li {
+    margin-left: 0;
+    padding-left: 0;
+
+    ._spacer {
+      padding-left: 3ch;
+    }
+
+    li {
+      padding-left: 7.8ch;
+    }
+  }
+
+  > li {
+    // padding-left: 3ch;
+  }
 }
 </style>
