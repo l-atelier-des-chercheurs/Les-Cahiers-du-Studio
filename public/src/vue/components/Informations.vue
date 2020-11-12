@@ -167,7 +167,7 @@
         </template>
 
         <template v-if="$root.lang.current === 'fr'">
-          <ul>
+          <ul class="_planning">
             <li>09h55<span class="_spacer" />iiintroduction</li>
             <li>10h00<span class="_spacer" />Brando Corradini</li>
             <li>11h00<span class="_spacer" />Toan Vu-Huu</li>
@@ -176,6 +176,7 @@
             <li>14h30<span class="_spacer" />Ariane Dubois</li>
             <li>15h00<span class="_spacer" />Alexandra Aïn</li>
             <li>16h00<span class="_spacer" />Velvetyne Type Foundry</li>
+            <br />
             <li>
               Projets satellites
               <ul>
@@ -187,7 +188,7 @@
           </ul>
         </template>
         <template v-else>
-          <ul>
+          <ul class="_planning">
             <li>09h55<span class="_spacer" />iiintroduction</li>
             <li>10h00<span class="_spacer" />Brando Corradini</li>
             <li>11h00<span class="_spacer" />Toan Vu-Huu</li>
@@ -196,6 +197,7 @@
             <li>14h30<span class="_spacer" />Ariane Dubois</li>
             <li>15h00<span class="_spacer" />Alexandra Aïn</li>
             <li>16h00<span class="_spacer" />Velvetyne Type Foundry</li>
+            <br />
             <li>
               Satellites Projects
               <ul>
@@ -325,7 +327,7 @@
         </template>
         <template v-else>
           <small>
-            This website/platform was created and programed by
+            This website/platform was created by
             <a href="https://latelier-des-chercheurs.fr/" target="_blank"
               >l’Atelier des chercheurs</a
             >
@@ -508,10 +510,16 @@ ol li::before {
   padding: 0.3em;
 }
 
-ul {
+._planning {
   margin-left: 0;
   padding-left: 0;
   list-style-type: none;
+
+  ul {
+    margin-left: 0;
+    padding-left: 0;
+    list-style-type: none;
+  }
 
   li {
     margin-left: 0;
@@ -529,5 +537,9 @@ ul {
   > li {
     // padding-left: 3ch;
   }
+}
+
+ol {
+  margin-top: 3em;
 }
 </style>
