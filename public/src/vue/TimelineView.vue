@@ -1644,7 +1644,7 @@ export default {
   }
 
   &.is--folded {
-    --rule-color: var(--color-noir);
+    // --rule-color: var(--color-noir);
     .m_timeline--container--dates--day--daylabel--container {
       > button {
         border: 1px solid var(--color-noir);
