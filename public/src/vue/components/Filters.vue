@@ -33,6 +33,7 @@
             class="tag"
             :class="{
               'is--unselectable': keyword.text !== selected_keyword,
+              'is--active': selected_keyword === keyword.text,
             }"
             @click="toggleKeyword(keyword.text)"
           >
@@ -97,8 +98,8 @@ export default {
   // flex: 0 0 420px;
 
   height: 100%;
-  background-color: #ffaad2;
-  border: 4px solid #ffaad2;
+  background-color: #ffd9eb;
+  // border: 4px solid #ffd9eb;
   // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
 
   // background-color: white;
@@ -147,5 +148,9 @@ export default {
 .m_keywordField {
   padding-left: calc(var(--spacing) / 2);
   padding-right: calc(var(--spacing) / 2);
+}
+
+.tag.is--active {
+  font-weight: inherit;
 }
 </style>

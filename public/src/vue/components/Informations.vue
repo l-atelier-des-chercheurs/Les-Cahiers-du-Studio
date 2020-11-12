@@ -138,7 +138,7 @@
           <template v-if="$root.lang.current === 'fr'">
             plus d’informations…
           </template>
-          <template v-else> more informations… </template>
+          <template v-else>more informations… </template>
         </button>
 
         <template v-if="show_detail">
@@ -383,7 +383,7 @@ export default {
   position: relative;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  background-color: var(--color-yellow);
+  background-color: #ffd9eb;
   // color: white;
 
   font-size: 1em;
@@ -400,6 +400,10 @@ export default {
   select {
     color: currentColor;
     border: none;
+  }
+
+  button {
+    background: transparent;
   }
 
   h1,

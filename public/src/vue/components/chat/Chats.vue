@@ -124,8 +124,8 @@ export default {
   // flex: 0 0 420px;
 
   height: 100%;
-  background-color: #ffaad2;
-  border: 4px solid #ffaad2;
+  background-color: #ffd9eb;
+  // border: 4px solid #ffaad2;
   color: white;
   // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
 
