@@ -168,7 +168,7 @@
 
         <template v-if="$root.lang.current === 'fr'">
           <ul class="_planning">
-            <li>09h55<span class="_spacer" />iiintroduction</li>
+            <li>09h55<span class="_spacer" />Simon Renaud</li>
             <li>10h00<span class="_spacer" />Brando Corradini</li>
             <li>11h00<span class="_spacer" />Toan Vu-Huu</li>
             <li>12h00<span class="_spacer" />Barry Spencer</li>
@@ -189,7 +189,7 @@
         </template>
         <template v-else>
           <ul class="_planning">
-            <li>09h55<span class="_spacer" />iiintroduction</li>
+            <li>09h55<span class="_spacer" />Simon Renaud</li>
             <li>10h00<span class="_spacer" />Brando Corradini</li>
             <li>11h00<span class="_spacer" />Toan Vu-Huu</li>
             <li>12h00<span class="_spacer" />Barry Spencer</li>
