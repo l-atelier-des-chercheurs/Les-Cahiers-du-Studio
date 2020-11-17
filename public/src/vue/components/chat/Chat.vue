@@ -489,8 +489,10 @@ export default {
     },
 
     setReadMessageToLast() {
-      // if logged in, set author last_messages_read_in_channels to metaFileName of chat
+      // disable :: too costly
       return;
+
+      // if logged in, set author last_messages_read_in_channels to metaFileName of chat
 
       if (this.$root.current_author && this.sorted_messages.length > 0) {
         const last_message_channel = {
