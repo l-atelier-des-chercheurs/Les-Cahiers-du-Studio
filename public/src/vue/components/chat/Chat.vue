@@ -490,6 +490,8 @@ export default {
 
     setReadMessageToLast() {
       // if logged in, set author last_messages_read_in_channels to metaFileName of chat
+      return;
+
       if (this.$root.current_author && this.sorted_messages.length > 0) {
         const last_message_channel = {
           channel: this.chat.slugFolderName,
