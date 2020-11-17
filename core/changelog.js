@@ -26,6 +26,7 @@ module.exports = (function () {
 
   const API = {
     append: ({ author, action, detail }) => {
+      return;
       const timestamp = +new Date();
       if (!author) author = "anonymous";
       if (detail) {
