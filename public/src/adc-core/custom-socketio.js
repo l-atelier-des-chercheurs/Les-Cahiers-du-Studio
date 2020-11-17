@@ -328,14 +328,14 @@ module.exports = (function () {
 
           // for projects, authors and publications
           _onListFolders(data) {
-            console.log("Received _onListFolders packet.");
-
             if (typeof data !== "object") {
               return;
             }
 
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
+
+            console.log("Received _onListFolders packet. : " + type);
 
             console.log(`Type is ${type}`);
 
