@@ -88,10 +88,9 @@ module.exports = (function () {
       socket.on("copyFolder", (d) => onCopyFolder(socket, d));
 
       socket.on("updateNetworkInfos", (d) => onUpdateNetworkInfos(socket, d));
-      socket.on("updateClientInfo", (d) => onUpdateClientInfo(socket, d));
-      socket.on("listClientsInfo", (d) => onListClientsInfo(socket, d));
-
-      socket.on("disconnect", (d) => onClientDisconnect(socket));
+      // socket.on("updateClientInfo", (d) => onUpdateClientInfo(socket, d));
+      // socket.on("listClientsInfo", (d) => onListClientsInfo(socket, d));
+      // socket.on("disconnect", (d) => onClientDisconnect(socket));
 
       socket.on("loadJournal", (d) => onLoadJournal(socket));
       socket.on("emptyJournal", (d) => onEmptyJournal(socket));
@@ -1029,10 +1028,12 @@ module.exports = (function () {
       `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
     );
 
-    let foldersData = await file.getFolder({ type, slugFolderName }).catch((err) => {
-      dev.error(`No folder found: ${err}`);
-      throw err;
-    });
+    let foldersData = await file
+      .getFolder({ type, slugFolderName })
+      .catch((err) => {
+        dev.error(`No folder found: ${err}`);
+        throw err;
+      });
 
     const list_metaFileName = await file.getMediaMetaNames({
       type,
