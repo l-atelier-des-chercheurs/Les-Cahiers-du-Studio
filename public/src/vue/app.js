@@ -382,6 +382,9 @@ let vm = new Vue({
           });
         }
       });
+    } else if (this.state.mode === "export_web") {
+      console.log("ROOT EVENT: created / export_web mode");
+      this.show_app = true;
     }
   },
   methods: {
