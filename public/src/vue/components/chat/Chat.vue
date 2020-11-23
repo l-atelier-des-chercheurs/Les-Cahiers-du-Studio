@@ -316,6 +316,8 @@ export default {
   },
   created() {},
   mounted() {
+    if (this.$root.state.mode === "export_web") return;
+
     this.is_loading = true;
 
     this.$socketio.listFolders({
@@ -326,8 +328,6 @@ export default {
       type: "chats",
       slugFolderName: this.chat.slugFolderName,
     });
-
-    this.$eventHub.$once("socketio.chats.medias_listed", () => {});
 
     this.$eventHub.$once("socketio.chats.medias_listed", () => {
       this.is_loading = false;

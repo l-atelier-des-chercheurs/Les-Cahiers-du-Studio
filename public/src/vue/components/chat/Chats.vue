@@ -95,6 +95,8 @@ export default {
   },
   created() {},
   mounted() {
+    if (this.$root.state.mode === "export_web") return;
+
     this.$socketio.listFolders({ type: "chats" });
   },
   beforeDestroy() {},
