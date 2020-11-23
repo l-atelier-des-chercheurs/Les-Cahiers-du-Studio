@@ -87,7 +87,6 @@ module.exports = function (app, io, m) {
               pageData.slugFolderName = slugFolderName;
               foldersData = api.removePasswordFromFoldersMeta(foldersData);
               pageData.folderAndMediaData = foldersData;
-              pageData.folderAndMediaData = foldersData;
               if (metaFileName) {
                 pageData.metaFileName = metaFileName;
               }
@@ -109,14 +108,31 @@ module.exports = function (app, io, m) {
     );
   }
 
-  function exportFolderWithMedias(req, res) {
+  async function exportFolderWithMedias(req, res) {
     let slugFolderName = req.param("slugFolderName");
     let type = req.param("type");
-    generatePageData(req).then((pageData) => {
-      // get medias for a folder
 
-      file.getFolder({ type, slugFolderName }).then((foldersData) => {
-        if (foldersData === undefined) return;
+    let pageData = undefined;
+    generatePageData(req)
+      .then((_pageData) => (pageData = _pageData))
+      .then(() => getChatsAndMediasAttachedToFolder({ slugFolderName }))
+      .then((chatsdata) => {
+        pageData.chatsAndMediaData = chatsdata;
+      })
+      .then(() =>
+        // get medias for a folder
+        file.getFolder({ type, slugFolderName: "123" })
+      )
+      .catch((err, p) => {
+        dev.error(`Failed to get folder: ${err}`);
+        pageData.noticeOfError = "failed_to_find_folder";
+        res.render("index", pageData);
+      })
+      .then((foldersData) => {
+        if (foldersData === undefined) {
+          throw "Missing folder";
+          return;
+        }
 
         file
           .getMediaMetaNames({
@@ -274,20 +290,9 @@ module.exports = function (app, io, m) {
                       }
                     );
                 });
-              })
-              .catch((err, p) => {
-                dev.error(`Failed to gather medias: ${err}`);
-                pageData.noticeOfError = "failed_to_find_folder";
-                res.render("index", pageData);
               });
-          })
-          .catch((err, p) => {
-            dev.error(`Failed to get folder: ${err}`);
-            pageData.noticeOfError = "failed_to_find_folder";
-            res.render("index", pageData);
           });
       });
-    });
   }
 
   async function postFile(req, res) {
@@ -351,5 +356,50 @@ module.exports = function (app, io, m) {
       throw "User can’t edit folder";
 
     return true;
+  }
+
+  async function getChatsAndMediasAttachedToFolder({ slugFolderName }) {
+    const all_chats = await file.getFolder({ type: "chats", slugFolderName });
+    if (!all_chats || typeof all_chats !== "object") return {};
+
+    const chats_attached_to_folder = Object.values(all_chats).filter(
+      (c) => c.attached_to_folder === slugFolderName
+    );
+    if (chats_attached_to_folder.length === 0) return {};
+
+    const getChatsMedias = async ({ slugFolderName }) => {
+      const list_metaFileName = await file.getMediaMetaNames({
+        type: "chats",
+        slugFolderName,
+      });
+
+      let medias_list = list_metaFileName.map((_metaFileName) => ({
+        slugFolderName,
+        metaFileName: _metaFileName,
+      }));
+
+      const folders_and_medias = await file.readMediaList({
+        type: "chats",
+        medias_list,
+      });
+      return folders_and_medias;
+    };
+
+    let chatsdata = {};
+    for (const chat of chats_attached_to_folder) {
+      const chats_medias = await getChatsMedias({
+        slugFolderName: chat.slugFolderName,
+      });
+      if (
+        typeof chats_medias === "object" &&
+        Object.values(chats_medias).length &&
+        Object.values(chats_medias)[0] &&
+        Object.values(chats_medias)[0].medias
+      ) {
+        chat.medias = Object.values(chats_medias)[0].medias;
+        chatsdata[chat.slugFolderName] = chat;
+      }
+    }
+    return chatsdata;
   }
 };
