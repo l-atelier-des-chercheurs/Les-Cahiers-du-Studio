@@ -615,7 +615,7 @@ export default {
     if (this.$root.state.mode === "export_web") {
       this.percent = 50;
       this.$root.settings.has_sidebar_opened = true;
-      this.$root.settings.sidebar_type = "journal";
+      this.$root.settings.sidebar_type = "informations";
     }
 
     setTimeout(() => {
