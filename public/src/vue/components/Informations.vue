@@ -19,13 +19,14 @@
       <div>
         <label>
           <!-- <h3 class="margin-none text-cap with-bullet">{{ $t("lang") }}</h3> -->
-          <select v-model="currentLang" style="max-width: 11ch;">
+          <select v-model="currentLang" style="max-width: 11ch">
             <option
               v-for="(name, code) in $root.lang.available"
               :value="code"
               :key="code"
-              >{{ name }}</option
             >
+              {{ name }}
+            </option>
           </select>
         </label>
       </div>
@@ -41,7 +42,7 @@
         width="960px"
         height="277.15px"
         viewBox="0 0 960 277.15"
-        style="enable-background: new 0 0 960 277.15;"
+        style="enable-background: new 0 0 960 277.15"
         xml:space="preserve"
       >
         <path
@@ -116,9 +117,7 @@
         <template v-if="$root.lang.current === 'fr'">
           Comment utiliser cet outil ?
         </template>
-        <template v-else>
-          How to use this website?
-        </template>
+        <template v-else> How to use this website? </template>
       </h2>
 
       <ol class="margin-sides-medium">
@@ -195,7 +194,10 @@
       </p>
     </div>
 
-    <div class="m_informations--buttons" v-if="!$root.current_author">
+    <div
+      class="m_informations--buttons"
+      v-if="!$root.current_author && $root.state.mode !== 'export_web'"
+    >
       <button type="button" @click="$root.showAuthorsListModal = true">
         {{ $t("login").toLowerCase() }}
       </button>
