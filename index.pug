@@ -127,7 +127,7 @@ html
         },
         presentationMD: !{JSON.stringify(presentationMD)},
         folders: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
-        authors: {},
+        authors: !{ !!authorsData ? JSON.stringify(authorsData) : "{}" },
         chats: !{ !!chatsAndMediaData ? JSON.stringify(chatsAndMediaData) : "{}" },
       };
 

@@ -120,6 +120,14 @@ module.exports = function (app, io, m) {
       .then((chatsdata) => {
         pageData.chatsAndMediaData = chatsdata;
       })
+      .then(() => file.getFolder({ type: "authors" }))
+      .then((authorsData) => {
+        Object.keys(authorsData).map((author_slug) => {
+          if (authorsData[author_slug].hasOwnProperty("password"))
+            delete authorsData[author_slug].password;
+        });
+        pageData.authorsData = authorsData;
+      })
       .then(() =>
         // get medias for a folder
         file.getFolder({ type, slugFolderName })
