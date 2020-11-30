@@ -122,7 +122,7 @@ module.exports = function (app, io, m) {
       })
       .then(() =>
         // get medias for a folder
-        file.getFolder({ type, slugFolderName: "123" })
+        file.getFolder({ type, slugFolderName })
       )
       .catch((err, p) => {
         dev.error(`Failed to get folder: ${err}`);
