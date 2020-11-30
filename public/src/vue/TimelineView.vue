@@ -155,6 +155,7 @@
           :split="split"
         >
           <AddMedias
+            v-if="$root.state.mode !== 'export_web'"
             :slugFolderName="slugFolderName"
             :folder="folder"
             :is_realtime="is_realtime"
