@@ -126,7 +126,7 @@ export default {
   // flex: 0 0 420px;
 
   height: 100%;
-  background-color: #ffd9eb;
+  background-color: var(--color-vert_vif);
   // border: 4px solid #ffaad2;
   color: white;
   // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
@@ -144,7 +144,7 @@ export default {
 
   button,
   label {
-    color: #f50000;
+    color: #059cf5;
   }
 }
 

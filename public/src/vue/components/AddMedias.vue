@@ -428,9 +428,9 @@ export default {
         this.$root.current_author.hasOwnProperty("color")
       ) {
         props["--color-author"] = this.$root.current_author.color;
-        props["--color-text_on_author_color"] = "#F50000";
+        props["--color-text_on_author_color"] = "#059cf5";
       } else {
-        props["--color-text_on_author_color"] = "#F50000";
+        props["--color-text_on_author_color"] = "#059cf5";
       }
       return props;
     },

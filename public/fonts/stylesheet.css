@@ -1,0 +1,50 @@
+@font-face {
+    font-family: 'Compagnie II';
+    src: url('Compagnie-II.woff2') format('woff2'),
+        url('Compagnie-II.woff') format('woff'),
+        url('Compagnie-II.svg#Compagnie-II') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Suisse Int\'l Book';
+    src: url('SuisseIntl-Book.woff2') format('woff2'),
+        url('SuisseIntl-Book.woff') format('woff'),
+        url('SuisseIntl-Book.svg#SuisseIntl-Book') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Suisse Int\'l';
+    src: url('SuisseIntl-Regular.woff2') format('woff2'),
+        url('SuisseIntl-Regular.woff') format('woff'),
+        url('SuisseIntl-Regular.svg#SuisseIntl-Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Suisse Int\'l';
+    src: url('SuisseIntl-Medium.woff2') format('woff2'),
+        url('SuisseIntl-Medium.woff') format('woff'),
+        url('SuisseIntl-Medium.svg#SuisseIntl-Medium') format('svg');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Suisse Int\'l';
+    src: url('SuisseIntl-Bold.woff2') format('woff2'),
+        url('SuisseIntl-Bold.woff') format('woff'),
+        url('SuisseIntl-Bold.svg#SuisseIntl-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+

@@ -1699,11 +1699,11 @@ export default {
         padding: 4px 12px 4px;
         // padding-right: 8px;
         white-space: nowrap;
-        color: #f50000;
+        color: #059cf5;
         border-radius: 0em;
 
         &:hover:not([disabled]) {
-          background-color: #f50000;
+          background-color: #059cf5;
           color: white;
         }
         &[disabled] {
@@ -1715,7 +1715,7 @@ export default {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background-color: #f50000;
+          background-color: #059cf5;
           border-radius: 50%;
           color: white;
           font-size: 0.8em;
@@ -1899,7 +1899,7 @@ export default {
           border-radius: 0;
 
           display: inline;
-          background-color: #f50000;
+          background-color: #059cf5;
           color: #ffebf0;
           padding: 30px 15px 30px;
 
@@ -2036,7 +2036,7 @@ export default {
       color: white;
       pointer-events: auto;
       padding: 0 20px;
-      background-color: #f50000;
+      background-color: #059cf5;
       // border-radius: 20px;
 
       align-items: center;

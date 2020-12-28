@@ -1,50 +1,49 @@
 @font-face {
-  font-family: "CipherI Small";
+  font-family: "Compagnie II";
+  src: url("Compagnie-II.woff2") format("woff2"),
+    url("Compagnie-II.woff") format("woff"),
+    url("Compagnie-II.svg#Compagnie-II") format("svg");
+  font-weight: normal;
   font-style: normal;
-  font-weight: 400;
-  src: local("CipherISmall Regular"),
-    url("CipherI_small_mono-Regular.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("CipherI_small_mono-Regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "Minimal";
+  font-family: "Suisse Int'l Book";
+  src: url("SuisseIntl-Book.woff2") format("woff2"),
+    url("SuisseIntl-Book.woff") format("woff"),
+    url("SuisseIntl-Book.svg#SuisseIntl-Book") format("svg");
+  font-weight: normal;
   font-style: normal;
-  font-weight: 900;
-  src: local("Minimal Black"), url("minimal_V0-Black.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */ url("minimal_V0-Black.woff")
-      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  font-display: swap;
 }
+
 @font-face {
-  font-family: "Minimal";
+  font-family: "Suisse Int'l";
+  src: url("SuisseIntl-Regular.woff2") format("woff2"),
+    url("SuisseIntl-Regular.woff") format("woff"),
+    url("SuisseIntl-Regular.svg#SuisseIntl-Regular") format("svg");
+  font-weight: normal;
   font-style: normal;
-  font-weight: 700;
-  src: local("Minimal Bold"), url("minimal_V0-Bold.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */ url("minimal_V0-Bold.woff")
-      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  font-display: swap;
 }
+
 @font-face {
-  font-family: "Minimal";
-  font-style: normal;
-  font-weight: 350;
-  src: local("Minimal Book"), url("minimal_V0-Book.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */ url("minimal_V0-Book.woff")
-      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
-@font-face {
-  font-family: "Minimal";
-  font-style: normal;
+  font-family: "Suisse Int'l";
+  src: url("SuisseIntl-Medium.woff2") format("woff2"),
+    url("SuisseIntl-Medium.woff") format("woff"),
+    url("SuisseIntl-Medium.svg#SuisseIntl-Medium") format("svg");
   font-weight: 500;
-  src: local("Minimal Medium"), url("minimal_V0-Medium.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */ url("minimal_V0-Medium.woff")
-      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
-@font-face {
-  font-family: "Minimal";
   font-style: normal;
-  font-weight: 400;
-  src: local("Minimal Regular"), url("minimal_V0-Regular.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */ url("minimal_V0-Regular.woff")
-      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Suisse Int'l";
+  src: url("SuisseIntl-Bold.woff2") format("woff2"),
+    url("SuisseIntl-Bold.woff") format("woff"),
+    url("SuisseIntl-Bold.svg#SuisseIntl-Bold") format("svg");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
 }

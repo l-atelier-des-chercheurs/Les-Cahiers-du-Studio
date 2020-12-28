@@ -98,7 +98,7 @@ export default {
   // flex: 0 0 420px;
 
   height: 100%;
-  background-color: #ffd9eb;
+  background-color: var(--color-rouge_vif);
   // border: 4px solid #ffd9eb;
   // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
 
