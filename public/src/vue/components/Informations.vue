@@ -314,6 +314,7 @@ h1 {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+  background-color: #fff;
 
   padding: calc(var(--spacing) / 4);
   align-items: center;
@@ -322,8 +323,9 @@ h1 {
   button {
     display: block;
     margin: calc(var(--spacing) / 2);
-    background-color: #fff;
     color: currentColor;
+    background-color: #f9f9f9;
+
     max-width: 23ch;
     padding: 5px 50px;
     min-height: 50px;
