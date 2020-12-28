@@ -155,6 +155,7 @@
           :split="split"
         >
           <AddMedias
+            v-if="false"
             :slugFolderName="slugFolderName"
             :folder="folder"
             :is_realtime="is_realtime"
