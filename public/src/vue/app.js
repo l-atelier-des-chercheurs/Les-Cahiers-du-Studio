@@ -328,16 +328,16 @@ let vm = new Vue({
 
       if (!this.$root.state.is_electron) {
         this.$eventHub.$on("socketio.connect", () => {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .success(this.$t('notifications["connected_to_lescahiers"]'));
+          // this.$alertify
+          //   .closeLogOnClick(true)
+          //   .delay(4000)
+          //   .success(this.$t('notifications["connected_to_lescahiers"]'));
         });
         this.$eventHub.$on("socketio.reconnect", () => {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .success(this.$t('notifications["connected_to_lescahiers"]'));
+          // this.$alertify
+          //   .closeLogOnClick(true)
+          //   .delay(4000)
+          //   .success(this.$t('notifications["connected_to_lescahiers"]'));
         });
       }
 
