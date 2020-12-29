@@ -254,7 +254,7 @@
       </div>
     </div>
 
-    <div class="m_informations--buttons" v-if="!$root.current_author && false">
+    <div class="m_informations--buttons" v-if="!$root.current_author">
       <button type="button" @click="$root.showAuthorsListModal = true">
         {{ $t("login").toLowerCase() }}
       </button>
