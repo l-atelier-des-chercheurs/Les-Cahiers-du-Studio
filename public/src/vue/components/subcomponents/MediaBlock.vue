@@ -329,7 +329,7 @@ export default {
         {
           "--author-color": this.mediaColorFromFirstAuthor
             ? this.mediaColorFromFirstAuthor
-            : "#ffd9eb",
+            : "#96D7FD",
         },
         this.itemSize
       );
@@ -532,7 +532,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: white;
-  background-color: #ffd9eb;
+  background-color: #96d7fd;
 
   // border-radius: 4px;
   border: 0px solid black;

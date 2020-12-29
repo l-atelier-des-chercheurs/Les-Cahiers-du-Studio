@@ -99,7 +99,7 @@ export default {
 
   height: 100%;
   background-color: var(--color-rouge_vif);
-  // border: 4px solid #ffd9eb;
+  // border: 4px solid #059cf5;
   // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
 
   // background-color: white;
