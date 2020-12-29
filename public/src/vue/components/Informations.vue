@@ -86,7 +86,31 @@
             <template v-else> </template>
           </p>
 
-          <h3><span>Care</span></h3>
+          <h3>
+            <span
+              >Care
+              <svg
+                class="_picto-bg"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="94.6px"
+                height="33.9px"
+                viewBox="0 0 94.6 33.9"
+                style="overflow: visible; enable-background: new 0 0 94.6 33.9"
+                xml:space="preserve"
+              >
+                <path
+                  class="st0"
+                  style="fill: #059cf5"
+                  d="M82.7,33.9c6.9,0,11.9-5.1,11.9-11.8c0-4.3-2.3-8.1-5.8-10.3C86.9,10.7,47.3,0,47.3,0S7.7,10.8,5.8,12
+	C2.3,14.1,0,17.9,0,22.2c0,6.7,5.2,11.6,12,11.6L82.7,33.9z"
+                />
+              </svg>
+            </span>
+          </h3>
 
           <p class="f-compagnie">
             Michela Deni (PROJEKT)<br />
@@ -103,7 +127,9 @@
             </small>
           </p>
 
-          <h3><span>Territoires</span></h3>
+          <h3>
+            <span>Territoires </span>
+          </h3>
 
           <p class="f-compagnie">
             Ludovic Duhem (ESAD Valenciennes)<br />
@@ -113,7 +139,30 @@
             Fanny Ehl - Doctorante à l’université Lyon 2 en géographie
           </p>
 
-          <h3><span>Ressources</span></h3>
+          <h3>
+            <span
+              >Ressources
+              <svg
+                class="_picto-bg"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="111px"
+                height="44.9px"
+                viewBox="0 0 111 44.9"
+                style="overflow: visible; enable-background: new 0 0 111 44.9"
+                xml:space="preserve"
+              >
+                <path
+                  style="fill: #059cf5"
+                  d="M111,21.5L94.5,0c0,0-19.4,7.3-39,7.3S16.6,0,16.6,0L0,21.5l16.6,23.4c8.4-5.2,22.3-9,38.9-9
+	c16.6,0,30.6,3.8,39,9L111,21.5z"
+                />
+              </svg>
+            </span>
+          </h3>
 
           <p class="f-compagnie">
             Florian Dach et Dimitri Zephir (dach&zephir / Éloj Kréyol) <br />
@@ -450,34 +499,56 @@ h3 {
     position: relative;
     z-index: 1;
     display: inline-block;
-
-    &::before {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      width: 100%;
-      height: 100%;
-      padding: 0.8em 1.6em 1em;
-      left: -1.6em;
-      top: -0.9em;
-      background-color: var(--color-rouge_vif);
-      border-radius: 1.5em;
-    }
   }
   &:first-of-type {
     span {
-      transform: rotate(-10deg);
+      transform: rotate(-9deg);
+
+      ._picto-bg {
+        width: 130px;
+        max-width: none;
+        z-index: -1;
+        height: 60px;
+        margin: -23px -40px;
+      }
     }
   }
   &:nth-of-type(2) {
     span {
       transform: rotate(5deg);
+      margin-left: -8px;
+
+      &::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        padding: 0.6em 1em 0.8em;
+        left: -1em;
+        top: -0.9em;
+        background-color: var(--color-rouge_vif);
+      }
     }
   }
   &:nth-of-type(3) {
     span {
-      transform: rotate(-5deg);
+      margin-left: -12px;
+      transform: rotate(-13.5deg);
+      ._picto-bg {
+        width: 140px;
+        max-width: none;
+        z-index: -1;
+        height: 70px;
+        margin: -24px -15px;
+      }
     }
   }
+}
+
+._picto-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>
