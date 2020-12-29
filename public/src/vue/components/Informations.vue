@@ -99,9 +99,8 @@
           <p>
             <small>
               Alliance France Design, <br />
-              11, rue Belzunce, Paris 09<br />
-              Médiateurs : Silvia Dore et Michela Deni</small
-            >
+              11, rue Belzunce, Paris 09
+            </small>
           </p>
 
           <h3><span>Territoires</span></h3>
@@ -134,9 +133,8 @@
         <p>
           <small>
             Alliance France Design, <br />
-            11, rue Belzunce, Paris 09<br />
-            Médiateurs : Silvia Dore et Michela Deni</small
-          >
+            11, rue Belzunce, Paris 09
+          </small>
         </p>
 
         <p>
