@@ -166,12 +166,7 @@
       </div> -->
 
       <!-- Enable chat -->
-      <div
-        v-if="
-          (can_edit)
-        "
-        class="margin-bottom-medium"
-      >
+      <div v-if="can_edit" class="margin-bottom-medium">
         <span class="switch switch-xs">
           <input
             type="checkbox"
@@ -180,19 +175,12 @@
             v-model="mediadata.enable_chat_link"
             :readonly="read_only"
           />
-          <label for="enable_chat_link"
-            >• (Lure) afficher la bulle de chat</label
-          >
+          <label for="enable_chat_link">• afficher la bulle de chat</label>
         </span>
       </div>
 
       <!-- Disallow Click -->
-      <div
-        v-if="
-          (can_edit)
-        "
-        class="margin-bottom-medium"
-      >
+      <div v-if="can_edit" class="margin-bottom-medium">
         <span class="switch switch-xs">
           <input
             type="checkbox"
@@ -202,8 +190,7 @@
             :readonly="read_only"
           />
           <label for="disallow_click_for_visitors"
-            >• (Lure) désactiver le clic sur la vignette pour les
-            visiteurs</label
+            >• désactiver le clic sur la vignette pour les visiteurs</label
           >
         </span>
       </div>
@@ -216,9 +203,7 @@
         "
         class="margin-bottom-small"
       >
-        <label
-          >• (Lure) rediriger le clic d’un visiteur sur la vignette vers</label
-        >
+        <label>• rediriger le clic d’un visiteur sur la vignette vers</label>
         <br />
         <input v-model="mediadata.linkto" :readonly="!can_edit" type="url" />
       </div>
