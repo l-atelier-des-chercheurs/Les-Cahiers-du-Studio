@@ -13,14 +13,15 @@
           v-for="(name, code) in $root.lang.available"
           :value="code"
           :key="code"
-          >{{ name }}</option
         >
+          {{ name }}
+        </option>
       </select>
     </div>
 
     <div
       class="m_informations--buttons"
-      v-if="!$root.current_author && $root.state.mode !== 'export_publication'"
+      v-if="!$root.current_author && $root.state.mode !== 'export_web'"
     >
       <button type="button" @click="$root.showAuthorsListModal = true">
         {{ $t("login").toLowerCase() }}

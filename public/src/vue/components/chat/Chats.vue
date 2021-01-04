@@ -26,7 +26,7 @@
       <div class="m_channels--content">
         <h3 class="font-folder_title">{{ $t("channels_list") }}</h3>
         <div class="margin-vert-small">
-          <template v-if="$root.state.mode !== 'export_publication'">
+          <template v-if="$root.state.mode !== 'export_web'">
             <template v-if="$root.current_author">
               <button
                 type="button"
