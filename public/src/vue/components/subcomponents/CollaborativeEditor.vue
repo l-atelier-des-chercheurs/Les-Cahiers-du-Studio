@@ -429,7 +429,7 @@ export default {
     addMediaAtIndex(index, media) {
       console.log(`CollaborativeEditor • addMediaAtIndex ${index}`);
       const mediaURL =
-        this.$root.state.mode === "export_publication"
+        this.$root.state.mode === "export_web"
           ? `./${this.slugFolderName}/${media.media_filename}`
           : `/${this.slugFolderName}/${media.media_filename}`;
 
@@ -736,7 +736,7 @@ html[lang="fr"] .ql-tooltip::before {
 
     // caret-color: var(--active-color);
     line-height: inherit;
-    padding: var(--spacing)/2 calc(var(--spacing)) 250px;
+    padding: var(--spacing) / 2 calc(var(--spacing)) 250px;
 
     transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 

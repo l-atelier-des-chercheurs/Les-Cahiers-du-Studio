@@ -336,7 +336,7 @@
           v-if="
             author.slugFolderName !== $root.current_author.slugFolderName &&
             can_login_as_author &&
-            $root.state.mode !== 'export_publication'
+            $root.state.mode !== 'export_web'
           "
           class="button-thin bg-bleumarine"
           @click.stop="setAuthorWithoutPassword()"
@@ -572,7 +572,7 @@ export default {
       if (!preview) return "";
       let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
       let url =
-        this.$root.state.mode === "export_publication"
+        this.$root.state.mode === "export_web"
           ? `./${pathToSmallestThumb}`
           : `/${pathToSmallestThumb}`;
       return url;
