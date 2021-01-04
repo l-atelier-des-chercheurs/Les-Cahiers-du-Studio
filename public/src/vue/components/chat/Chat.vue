@@ -266,7 +266,7 @@
             />
           </form>
         </template>
-        <template v-else-if="$root.state.mode !== 'export_publication'">
+        <template v-else-if="$root.state.mode !== 'export_web'">
           <div>
             <button
               type="button"

@@ -75,7 +75,7 @@
         v-if="
           (context === 'full' ||
             (viewing_limited_to !== 'everybody' && context !== 'full')) &&
-          $root.state.mode !== 'export_publication'
+          $root.state.mode !== 'export_web'
         "
       >
         <button

@@ -429,7 +429,7 @@ export default {
     addMediaAtIndex(index, media) {
       console.log(`CollaborativeEditor • addMediaAtIndex ${index}`);
       const mediaURL =
-        this.$root.state.mode === "export_publication"
+        this.$root.state.mode === "export_web"
           ? `./${this.slugFolderName}/${media.media_filename}`
           : `/${this.slugFolderName}/${media.media_filename}`;
 
