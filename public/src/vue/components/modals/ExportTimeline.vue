@@ -12,7 +12,11 @@
     <template slot="sidebar">
       <div class="margin-bottom-small">
         <label>{{ $t("password_protect") }}</label>
-        <input type="password" v-model="export_options.password_protect" />
+        <input
+          type="password"
+          v-model="export_options.password_protect"
+          autocomplete="current-password"
+        />
       </div>
 
       <div class="margin-bottom-small">

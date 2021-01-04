@@ -1,7 +1,11 @@
 <template>
   <div>
     <div v-if="edit_author_mode" class="m_authorsList--editAuthor">
-      <EditAuthor :author="author" @close="edit_author_mode = false" :read_only="read_only" />
+      <EditAuthor
+        :author="author"
+        @close="edit_author_mode = false"
+        :read_only="read_only"
+      />
     </div>
 
     <div
@@ -31,7 +35,7 @@
           width="100.7px"
           height="101px"
           viewBox="0 0 100.7 101"
-          style="enable-background: new 0 0 100.7 101;"
+          style="enable-background: new 0 0 100.7 101"
           xml:space="preserve"
         >
           <path
@@ -40,7 +44,7 @@
                 L19.1,91.5z"
           />
         </svg>
-        <span class style="display: none;">{{ $t("edit") }}</span>
+        <span class style="display: none">{{ $t("edit") }}</span>
       </button>
 
       <button
@@ -62,7 +66,7 @@
           width="91.6px"
           height="95px"
           viewBox="0 0 91.6 95"
-          style="enable-background: new 0 0 91.6 95;"
+          style="enable-background: new 0 0 91.6 95"
           xml:space="preserve"
         >
           <path
@@ -71,7 +75,7 @@
                     l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
           />
         </svg>
-        <span class style="display: none;">{{ $t("remove") }}</span>
+        <span class style="display: none">{{ $t("remove") }}</span>
       </button>
 
       <div class="m_author--card">
@@ -104,7 +108,9 @@
               @click.stop="
                 show_connection_information = !show_connection_information
               "
-            >{{ $t("currently_connected") }}</button>
+            >
+              {{ $t("currently_connected") }}
+            </button>
           </label>
           <div v-if="show_connection_information && author_looking_at">
             <div
@@ -133,14 +139,14 @@
                     placement: 'top',
                     delay: [600, 0],
                   }"
-                  style="text-transform: initial;"
+                  style="text-transform: initial"
                 >
                   {{
-                  $root.getFolder({
-                  type: "projects",
-                  slugFolderName:
-                  author_looking_at.looking_at_project.slugFolderName,
-                  }).name
+                    $root.getFolder({
+                      type: "projects",
+                      slugFolderName:
+                        author_looking_at.looking_at_project.slugFolderName,
+                    }).name
                   }}
                   ↑
                 </button>
@@ -176,14 +182,14 @@
                     placement: 'top',
                     delay: [600, 0],
                   }"
-                  style="text-transform: initial;"
+                  style="text-transform: initial"
                 >
                   {{
-                  $root.getFolder({
-                  type: "projects",
-                  slugFolderName:
-                  author_looking_at.looking_at_project.slugFolderName,
-                  }).name
+                    $root.getFolder({
+                      type: "projects",
+                      slugFolderName:
+                        author_looking_at.looking_at_project.slugFolderName,
+                    }).name
                   }}
                   / {{ author_looking_at.editing_media.metaFileName }}
                   ↑
@@ -216,14 +222,14 @@
                     placement: 'top',
                     delay: [600, 0],
                   }"
-                  style="text-transform: initial;"
+                  style="text-transform: initial"
                 >
                   {{
-                  $root.getFolder({
-                  type: "publications",
-                  slugFolderName:
-                  author_looking_at.looking_at_publi.slugFolderName,
-                  }).name
+                    $root.getFolder({
+                      type: "publications",
+                      slugFolderName:
+                        author_looking_at.looking_at_publi.slugFolderName,
+                    }).name
                   }}
                   ↑
                 </button>
@@ -255,14 +261,14 @@
                     placement: 'top',
                     delay: [600, 0],
                   }"
-                  style="text-transform: initial;"
+                  style="text-transform: initial"
                 >
                   {{
-                  $root.getFolder({
-                  type: "chats",
-                  slugFolderName:
-                  author_looking_at.looking_at_chat.slugFolderName,
-                  }).name
+                    $root.getFolder({
+                      type: "chats",
+                      slugFolderName:
+                        author_looking_at.looking_at_chat.slugFolderName,
+                    }).name
                   }}
                   ↑
                 </button>
@@ -272,7 +278,10 @@
         </div>
 
         <div class="_color_items" v-if="!!author.color">
-          <div :key="author.color" :style="`background-color: ${author.color}`" />
+          <div
+            :key="author.color"
+            :style="`background-color: ${author.color}`"
+          />
         </div>
 
         <div
@@ -293,7 +302,9 @@
           style
           :readonly="read_only"
           @click.stop="show_input_password_field = !show_input_password_field"
-        >{{ $t("password_required_to_open") }}</button>
+        >
+          {{ $t("password_required_to_open") }}
+        </button>
 
         <div
           class="padding-verysmall _pwd_input"
@@ -311,24 +322,35 @@
             />
           </div>
 
-          <button type="button" class="button-greenthin" @click="submitPassword">{{ $t("send") }}</button>
+          <button
+            type="button"
+            class="button-greenthin"
+            @click="submitPassword"
+          >
+            {{ $t("send") }}
+          </button>
         </div>
 
         <button
           type="button"
           v-if="
             author.slugFolderName !== $root.current_author.slugFolderName &&
-            can_login_as_author
+            can_login_as_author &&
+            $root.state.mode !== 'export_publication'
           "
           class="button-thin bg-bleumarine"
           @click.stop="setAuthorWithoutPassword()"
-        >{{ $t("login") }}</button>
+        >
+          {{ $t("login") }}
+        </button>
         <button
           type="button"
           v-if="author.slugFolderName === $root.current_author.slugFolderName"
           class="button-redthin"
           @click.stop="$root.unsetAuthor()"
-        >{{ $t("logout") }}</button>
+        >
+          {{ $t("logout") }}
+        </button>
       </div>
     </div>
   </div>
@@ -358,7 +380,7 @@ export default {
     this.$eventHub.$off("authors.submitPassword", this.submitPassword);
   },
   watch: {
-    show_input_password_field: function() {
+    show_input_password_field: function () {
       if (this.show_input_password_field) {
         this.$nextTick(() => {
           this.$refs.passwordField.focus();
@@ -382,7 +404,7 @@ export default {
     },
     author_is_connected() {
       if (!this.$root.unique_clients) return false;
-      return this.$root.unique_clients.find(client => {
+      return this.$root.unique_clients.find((client) => {
         return (
           client.data &&
           client.data.author &&
@@ -413,7 +435,7 @@ export default {
         slugFolderName: this.author.slugFolderName,
       });
     },
-    canEditFolder: function({ type, slugFolderName }) {
+    canEditFolder: function ({ type, slugFolderName }) {
       if (!this.$root.store[type].hasOwnProperty(slugFolderName)) return false;
 
       const folder = this.$root.store[type][slugFolderName];
@@ -423,7 +445,7 @@ export default {
 
       // if password is set
       if (folder.password === "has_pass") {
-        return this.$root.state.list_authorized_folders.some(i => {
+        return this.$root.state.list_authorized_folders.some((i) => {
           return (
             !!i &&
             i.hasOwnProperty("type") &&
@@ -466,7 +488,7 @@ export default {
       this.$eventHub.$once("socketio.authentificated", () => {
         if (
           this.$root.state.list_authorized_folders.some(
-            f =>
+            (f) =>
               f.type === "authors" &&
               f.allowed_slugFolderNames.includes(slugFolderName)
           )
@@ -548,7 +570,7 @@ export default {
     },
     urlToPortrait(preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.find(m => m.size === 180).path;
+      let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
       let url =
         this.$root.state.mode === "export_publication"
           ? `./${pathToSmallestThumb}`
