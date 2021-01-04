@@ -349,7 +349,10 @@
       </p>
     </div>
 
-    <div class="m_informations--buttons" v-if="!$root.current_author">
+    <div
+      class="m_informations--buttons"
+      v-if="!$root.current_author && $root.state.mode !== 'export_web'"
+    >
       <button type="button" @click="$root.showAuthorsListModal = true">
         {{ $t("login").toLowerCase() }}
       </button>

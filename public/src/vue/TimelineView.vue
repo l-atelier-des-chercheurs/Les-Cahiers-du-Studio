@@ -85,7 +85,7 @@
             />
           </transition>
 
-          <!-- <template v-if="$root.state.mode !== 'export_web'">
+          <!-- <template v-if="$root.state.mode !== 'export_publication'">
             <button
               type="button"
               class="folder_backbutton"
@@ -155,6 +155,7 @@
           :split="split"
         >
           <AddMedias
+            v-if="$root.state.mode !== 'export_publication'"
             :slugFolderName="slugFolderName"
             :folder="folder"
             :is_realtime="is_realtime"
@@ -612,7 +613,7 @@ export default {
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);
 
-    if (this.$root.state.mode === "export_web") {
+    if (this.$root.state.mode === "export_publication") {
       this.percent = 50;
       this.$root.settings.has_sidebar_opened = true;
       this.$root.settings.sidebar_type = "informations";
@@ -1609,7 +1610,7 @@ export default {
   // min-width: 100vw;
 
   margin: 0px 0px;
-  padding: 16px 10vw;
+  padding: 16px 5vw;
   // border-right: 1px solid #000;
 }
 
