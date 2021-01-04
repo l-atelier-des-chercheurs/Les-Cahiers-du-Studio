@@ -15,8 +15,12 @@
     <div class="m_metaField" v-if="!!_viewing_limited_to && context === 'full'">
       <div>{{ $t("consultation") }}</div>
       <div>
-        <template v-if="_viewing_limited_to === 'everybody'">{{ $t("visible_to_all") }}</template>
-        <template v-else-if="_viewing_limited_to === 'only_authors'">{{ $t("only_authors") }}</template>
+        <template v-if="_viewing_limited_to === 'everybody'">{{
+          $t("visible_to_all")
+        }}</template>
+        <template v-else-if="_viewing_limited_to === 'only_authors'">{{
+          $t("only_authors")
+        }}</template>
       </div>
     </div>
 
@@ -69,8 +73,9 @@
       <div
         class="text-centered"
         v-if="
-          context === 'full' ||
-          (viewing_limited_to !== 'everybody' && context !== 'full')
+          (context === 'full' ||
+            (viewing_limited_to !== 'everybody' && context !== 'full')) &&
+          $root.state.mode !== 'export_publication'
         "
       >
         <button
@@ -79,7 +84,9 @@
           class="buttonLink"
           style
           @click.stop="$root.showAuthorsListModal = true"
-        >{{ $t("login_to_edit_project") }}</button>
+        >
+          {{ $t("login_to_edit_project") }}
+        </button>
 
         <button
           v-else-if="
@@ -89,7 +96,9 @@
           class="buttonLink"
           style
           @click.stop="$root.showAuthorsListModal = true"
-        >{{ $t("login_to_access_project") }}</button>
+        >
+          {{ $t("login_to_access_project") }}
+        </button>
 
         <button
           v-else-if="!can_see_folder"
@@ -97,7 +106,9 @@
           class="buttonLink"
           style
           @click.stop="requestAccessToProject"
-        >{{ $t("ask_to_be_added_to_authors") }}</button>
+        >
+          {{ $t("ask_to_be_added_to_authors") }}
+        </button>
       </div>
     </template>
 
@@ -113,7 +124,9 @@
       :class="{ 'is--active': showInputPasswordField }"
       style
       @click.stop="showInputPasswordField = !showInputPasswordField"
-    >{{ $t("password_required_to_open") }}</button>
+    >
+      {{ $t("password_required_to_open") }}
+    </button>
 
     <button
       v-if="
@@ -128,7 +141,9 @@
       :class="{ 'is--active': showInputPasswordField }"
       style
       @click.stop="showInputPasswordField = !showInputPasswordField"
-    >{{ $t("password_required_to_edit") }}</button>
+    >
+      {{ $t("password_required_to_edit") }}
+    </button>
 
     <div class="padding-verysmall _pwd_input" v-if="showInputPasswordField">
       <div class="margin-bottom-small">
@@ -147,7 +162,9 @@
         type="button"
         class="button button-greenthin"
         @click.stop="submitPassword"
-      >{{ $t("send") }}</button>
+      >
+        {{ $t("send") }}
+      </button>
     </div>
 
     <div
@@ -164,7 +181,9 @@
         @click="showCurrentPassword = !showCurrentPassword"
         v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
       />
-      <div v-if="showCurrentPassword && can_see_folder">{{ folderPassword() }}</div>
+      <div v-if="showCurrentPassword && can_see_folder">
+        {{ folderPassword() }}
+      </div>
     </div>
 
     <button
@@ -178,27 +197,29 @@
       type="button"
       class="_button_forgetpassword"
       @click="forgetPassword"
-    >{{ $t("forget_password_and_close") }}</button>
+    >
+      {{ $t("forget_password_and_close") }}
+    </button>
   </div>
 </template>
 <script>
 export default {
   props: {
     folder: {
-      type: Object
+      type: Object,
     },
     context: {
-      type: String
+      type: String,
     },
     type: {
-      type: String
-    }
+      type: String,
+    },
   },
   components: {},
   data() {
     return {
       showInputPasswordField: false,
-      showCurrentPassword: false
+      showCurrentPassword: false,
     };
   },
   created() {},
@@ -223,13 +244,13 @@ export default {
         this.$emit("closeFolder");
       }
     },
-    showInputPasswordField: function() {
+    showInputPasswordField: function () {
       if (this.showInputPasswordField) {
         this.$nextTick(() => {
           this.$refs.passwordField.focus();
         });
       }
-    }
+    },
   },
   computed: {
     slugFolderName() {
@@ -247,13 +268,13 @@ export default {
     can_see_folder() {
       return this.$root.canSeeFolder({
         type: this.type,
-        slugFolderName: this.slugFolderName
+        slugFolderName: this.slugFolderName,
       });
     },
     can_edit_folder() {
       return this.$root.canEditFolder({
         type: this.type,
-        slugFolderName: this.slugFolderName
+        slugFolderName: this.slugFolderName,
       });
     },
     _editing_limited_to() {
@@ -263,7 +284,7 @@ export default {
     _viewing_limited_to() {
       if (!!this.viewing_limited_to) return this.viewing_limited_to;
       else return "";
-    }
+    },
   },
   methods: {
     submitPassword() {
@@ -271,8 +292,8 @@ export default {
 
       this.$auth.updateFoldersPasswords({
         [this.type]: {
-          [this.slugFolderName]: this.$refs.passwordField.value
-        }
+          [this.slugFolderName]: this.$refs.passwordField.value,
+        },
       });
 
       this.$socketio.sendAuth();
@@ -280,7 +301,7 @@ export default {
       // check if password matches or not
       this.$eventHub.$once("socketio.authentificated", () => {
         const has_passworded_folder = window.state.list_authorized_folders.filter(
-          f =>
+          (f) =>
             f.type === this.type &&
             f.allowed_slugFolderNames.includes(this.slugFolderName)
         );
@@ -317,13 +338,13 @@ export default {
 
       this.$eventHub.$emit("requestToBeAddedToAuthors", {
         type: "projects",
-        slugFolderName: this.slugFolderName
+        slugFolderName: this.slugFolderName,
       });
     },
     forgetPassword() {
       this.$auth.removeFolderPassword({
         type: this.type,
-        slugFolderName: this.slugFolderName
+        slugFolderName: this.slugFolderName,
       });
       this.$socketio.sendAuth();
       this.$emit("closeFolder");
@@ -334,10 +355,10 @@ export default {
 
       return this.$root.getFolderPassword({
         type: this.type,
-        slugFolderName: this.slugFolderName
+        slugFolderName: this.slugFolderName,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
