@@ -24,7 +24,7 @@
     "@johmun/vue-tags-input": "^2.1.0",
     "@xkeshi/vue-qrcode": "^1.0.0",
     "alertify.js": "^1.0.12",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "debounce": "^1.2.0",
     "draggabilly": "^2.2.0",
     "hexsorter": "^1.5.0",
