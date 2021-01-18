@@ -374,6 +374,10 @@
               >
                 r.diant@alliance-francaise-des-designers.org
               </a>
+              ou
+              <a href="mailto:s.dore@afd.eu.com" target="_blank">
+                s.dore@afd.eu.com
+              </a>
             </template>
             <template v-else>
               Need help, questions? Send an email to
@@ -382,6 +386,10 @@
                 target="_blank"
               >
                 r.diant@alliance-francaise-des-designers.org
+              </a>
+              or
+              <a href="mailto:s.dore@afd.eu.com" target="_blank">
+                s.dore@afd.eu.com
               </a>
             </template>
           </small>
