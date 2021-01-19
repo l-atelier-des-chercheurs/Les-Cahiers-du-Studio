@@ -197,7 +197,7 @@
         <img src="/images/schema-afd.svg" width="200" />
 
         <h2>Merci à tous ceux qui nous soutiennent</h2>
-        <img src="/images/logos-afd.svg" width="200" />
+        <img class="margin-top-small" src="/images/logos-afd.svg" width="200" />
 
         <div class="_signature">
           <p>
