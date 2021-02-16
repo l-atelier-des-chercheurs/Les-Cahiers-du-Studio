@@ -28,6 +28,9 @@
         >
           <transition name="chatopen" :duration="350" mode="out-in">
             <Informations
+              :folder="folder"
+              :introduction_media="introduction_media"
+              :slugFolderName="slugFolderName"
               v-if="
                 $root.settings.has_sidebar_opened &&
                 $root.settings.sidebar_type === 'informations'
@@ -563,8 +566,8 @@ export default {
   mounted() {
     console.log("MOUNTED • TimeLineView");
 
-    this.$root.settings.sidebar_type = "informations";
-    this.$root.settings.has_sidebar_opened = true;
+    // this.$root.settings.sidebar_type = "informations";
+    // this.$root.settings.has_sidebar_opened = true;
 
     this.$eventHub.$on("scrollToMedia", this.scrollToMedia);
     this.$eventHub.$on("scrollToDate", this.scrollToDate);
@@ -595,11 +598,11 @@ export default {
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);
 
-    if (this.$root.state.mode === "export_web") {
-      this.percent = 50;
-      this.$root.settings.has_sidebar_opened = true;
-      this.$root.settings.sidebar_type = "informations";
-    }
+    // if (this.$root.state.mode === "export_web") {
+    this.percent = 35;
+    this.$root.settings.has_sidebar_opened = true;
+    this.$root.settings.sidebar_type = "informations";
+    // }
 
     setTimeout(() => {
       this.collapse_foldername = true;
@@ -662,6 +665,14 @@ export default {
         type: "folders",
         slugFolderName: this.slugFolderName,
       });
+    },
+    introduction_media() {
+      if (typeof this.medias === "object")
+        return Object.values(this.medias).find(
+          (media) =>
+            media.hasOwnProperty("type") && media.type === "introduction"
+        );
+      return false;
     },
     can_see_folder() {
       return this.$root.canSeeFolder({
@@ -1538,7 +1549,7 @@ export default {
   // min-width: 100vw;
 
   margin: 0px 0px;
-  padding: 16px 45vw;
+  padding: 16px 45vw 16px 15vw;
   // border-right: 1px solid #000;
 }
 

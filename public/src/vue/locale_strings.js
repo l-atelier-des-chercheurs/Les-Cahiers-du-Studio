@@ -4,7 +4,7 @@ module.exports = (function () {
     fr: {
       ascending: "Croissant",
       descending: "Décroissant",
-      create_a_folder: "Créer un dossier",
+      create_a_folder: "Créer une timeline",
       name: "Nom",
       created_date: "Date de création",
       start_date: "Date de début",
@@ -48,6 +48,8 @@ module.exports = (function () {
       no_message_yet: "Aucun message à afficher pour l’instant…",
 
       informations: "Informations",
+      show_instructions: "Afficher les instructions",
+
       filters: "Filtres",
       on_import_place_media_on_the_date_they_were_created:
         "À l’importation de médias, le placement se fait selon la date de création du fichier et non la date d’importation",

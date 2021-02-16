@@ -1,22 +1,74 @@
 <template>
   <div class="m_informations">
     <div class="m_informations--presentation">
-      Cras mollis fermentum risus, imperdiet lacinia neque mollis a. Praesent
-      eget quam metus. Integer pharetra, neque ac auctor suscipit, justo tortor
-      hendrerit urna, tincidunt malesuada ligula risus in erat. Fusce volutpat
-      nisi ipsum. Vestibulum varius lacus at ante scelerisque viverra. Quisque
-      vulputate massa felis, non pulvinar ex sollicitudin id.
-    </div>
-    <div>
-      <select v-model="currentLang">
-        <option
-          v-for="(name, code) in $root.lang.available"
-          :value="code"
-          :key="code"
+      <div class="m_informations--presentation--langSelector">
+        <select v-model="currentLang">
+          <option
+            v-for="(name, code) in $root.lang.available"
+            :value="code"
+            :key="code"
+          >
+            {{ name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="m_informations--presentation--folder">
+        <h2
+          class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large"
         >
-          {{ name }}
-        </option>
-      </select>
+          {{ folder.name }}
+        </h2>
+      </div>
+
+      <div class="m_metaField" v-if="!!folder.authors">
+        <div>{{ $t("author") }}</div>
+        <AuthorsInput :currentAuthors="folder.authors" :read_only="true" />
+      </div>
+
+      <div class="m_informations--presentation--instructions">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_instructions }"
+            @click="show_instructions = !show_instructions"
+          >
+            {{ $t("show_instructions") }}
+          </button>
+        </label>
+        <p v-if="show_instructions">
+          <small>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit
+            deleniti praesentium ullam quas quidem? Labore debitis assumenda
+            quidem, fugit, dolor voluptatibus magni voluptates quae optio vero
+            laborum ab nisi facilis.
+          </small>
+        </p>
+      </div>
+
+      <!-- {{ introduction_media }} -->
+
+      <div class="m_informations--presentation--introduction">
+        <template v-if="!introduction_media">
+          <button type="button" @click="createIntroduction">
+            Create introduction
+          </button>
+        </template>
+        <template v-else>
+          <CollaborativeEditor
+            :slugFolderName="slugFolderName"
+            :enable_collaboration="true"
+            :media="introduction_media"
+            :spellcheck="spellcheck"
+            @connectionStateChanged="
+              (_connection_state) => (connection_state = _connection_state)
+            "
+            ref="textField"
+            :read_only="read_only"
+          />
+        </template>
+      </div>
     </div>
 
     <div
@@ -30,12 +82,21 @@
   </div>
 </template>
 <script>
+import CollaborativeEditor from "./subcomponents/CollaborativeEditor.vue";
+
 export default {
-  props: {},
-  components: {},
+  props: {
+    folder: Object,
+    slugFolderName: String,
+    introduction_media: Object,
+  },
+  components: {
+    CollaborativeEditor,
+  },
   data() {
     return {
       currentLang: this.$root.lang.current,
+      show_instructions: false,
     };
   },
   created() {},
@@ -47,7 +108,17 @@ export default {
     },
   },
   computed: {},
-  methods: {},
+  methods: {
+    createIntroduction() {
+      this.$root.createMedia({
+        slugFolderName: this.slugFolderName,
+        type: "folders",
+        additionalMeta: {
+          type: "introduction",
+        },
+      });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -69,7 +140,12 @@ export default {
   button,
   input,
   select {
+    background-color: white;
     color: var(--color-noir);
+
+    &:hover {
+      background-color: rgba(210, 210, 210, 1);
+    }
   }
 }
 
@@ -77,6 +153,12 @@ export default {
   overflow-y: auto;
   padding: var(--spacing);
   flex: 1 1 auto;
+  color: white;
+}
+
+.m_informations--presentation--langSelector {
+  max-width: 14ch;
+  margin-left: auto;
 }
 
 .m_informations--buttons {
