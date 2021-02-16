@@ -260,11 +260,10 @@ module.exports = (function () {
               height: publiData.height ? publiData.height : 297,
             };
 
-            fs.ensureDir(cachePath)
-              .then(() => {
-                dev.logverbose(
-                  `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
-                );
+            fs.ensureDir(cachePath).then(() => {
+              dev.logverbose(
+                `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
+              );
 
               let browser;
 
