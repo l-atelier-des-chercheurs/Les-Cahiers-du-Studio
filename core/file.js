@@ -1205,6 +1205,8 @@ module.exports = (function () {
               if (
                 (meta.type === "text" ||
                   meta.type === "marker" ||
+                  meta.type === "writeup" ||
+                  meta.type === "introduction" ||
                   meta.type === "embed" ||
                   meta.type === "link" ||
                   meta.type === "code") &&
@@ -1477,6 +1479,8 @@ module.exports = (function () {
         } else if (
           additionalMeta.type === "text" ||
           additionalMeta.type === "marker" ||
+          additionalMeta.type === "writeup" ||
+          additionalMeta.type === "introduction" ||
           additionalMeta.type === "embed" ||
           additionalMeta.type === "link"
         ) {
@@ -1801,6 +1805,8 @@ module.exports = (function () {
               (mediaData.type === "text" ||
                 mediaData.type === "marker" ||
                 mediaData.type === "embed" ||
+                mediaData.type === "writeup" ||
+                mediaData.type === "introduction" ||
                 mediaData.type === "link" ||
                 mediaData.type === "code") &&
               mediaData.hasOwnProperty("media_filename")

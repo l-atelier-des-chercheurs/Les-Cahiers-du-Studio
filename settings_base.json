@@ -141,6 +141,7 @@
               "embed",
               "document",
               "writeup",
+              "introduction",
               "other"
             ],
             "default": "other"
