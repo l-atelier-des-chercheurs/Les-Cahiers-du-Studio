@@ -40,7 +40,6 @@
     },
     "linux": {
       "target": "AppImage"
-    },
     }
   },
   "dependencies": {
