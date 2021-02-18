@@ -13,7 +13,7 @@
             width="40.5px"
             height="26.1px"
             viewBox="0 0 40.5 26.1"
-            style="enable-background: new 0 0 40.5 26.1;"
+            style="enable-background: new 0 0 40.5 26.1"
             xml:space="preserve"
           >
             <g>
@@ -23,7 +23,7 @@
             		c-1.3,0-2.4,0.5-5,1.9L15,4.3l1.1,2.3L23.1,3c-4,5.7-5.5,10.4-5.5,14.3c0,3.2,1.2,8.8,5.8,8.8c8.4,0,17.1-12.1,17.1-21.3
             		c0-3.3-1.5-4.8-3.6-4.8c-2,0-3.5,1.5-3.5,3.5C33.4,5.8,35.2,7.1,37.2,7.1 M0,21.4c0,2.8,2,4.7,4.6,4.7c2.6,0,4.8-1.9,4.8-4.7
             		c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4"
-                style="fill: #ffffff;"
+                style="fill: #ffffff"
               />
             </g>
           </svg>
@@ -36,9 +36,26 @@
           </div>
         </div>
         <div
-          class="text-formatting flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-medium"
+          class="text-formatting flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-small"
         >
+          <div class="_langSelector" style="">
+            <!-- <label v-html="$t('lang:')"></label> -->
+            <select v-model="currentLang">
+              <option
+                v-for="(name, code) in $root.lang.available"
+                :value="code"
+                :key="code"
+              >
+                {{ name }}
+              </option>
+            </select>
+          </div>
+
           <VueMarkdown :html="true" :source="presentationText" />
+
+          <div class="border border-top-dashed">
+            <p class="margin-vert-medium" v-html="$t('more_information')"></p>
+          </div>
         </div>
       </div>
     </header>
@@ -91,11 +108,16 @@
             </template>
           </button>
         </div>
-        <div class="border border-top-dashed">
-          <p class="margin-vert-medium" v-html="$t('more_information')"></p>
-        </div>
+      </div>
 
-        <div class="border border-top-dashed">
+      <CreateFolder
+        v-if="showCreateFolderModal"
+        @close="showCreateFolderModal = false"
+        :read_only="read_only"
+      ></CreateFolder>
+
+      <div class="flex-size-3/5 flex-collapse-on-mobile">
+        <div class="" v-if="false">
           <div class="margin-vert-medium">
             <label class="margin-none text-cap with-bullet">{{
               $t("sort_by")
@@ -160,84 +182,114 @@
             </div>
           </div>
         </div>
-        <div class="border border-top-dashed">
-          <div class="margin-vert-medium" style="max-width: 200px;">
-            <label v-html="$t('lang:')"></label>
-            <select v-model="currentLang">
-              <option
-                v-for="(name, code) in $root.lang.available"
-                :value="code"
-                :key="code"
-                >{{ name }}</option
+        <div
+          class="margin-sides-small padding-bottom-small border border-bottom-dashed"
+        >
+          <div class="flex-wrap flex-space-between">
+            <div>{{ $t("list_of_folders") }}</div>
+            <div class="_searchButton">
+              <button
+                type="button"
+                @click="show_search = !show_search"
+                :class="{ 'is--active': show_search }"
               >
-            </select>
+                <svg
+                  class="svg-icon"
+                  viewBox="0 0 20 20"
+                  width="1em"
+                  height="1em"
+                >
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    d="M12.323,2.398c-0.741-0.312-1.523-0.472-2.319-0.472c-2.394,0-4.544,1.423-5.476,3.625C3.907,7.013,3.896,8.629,4.49,10.102c0.528,1.304,1.494,2.333,2.72,2.99L5.467,17.33c-0.113,0.273,0.018,0.59,0.292,0.703c0.068,0.027,0.137,0.041,0.206,0.041c0.211,0,0.412-0.127,0.498-0.334l1.74-4.23c0.583,0.186,1.18,0.309,1.795,0.309c2.394,0,4.544-1.424,5.478-3.629C16.755,7.173,15.342,3.68,12.323,2.398z M14.488,9.77c-0.769,1.807-2.529,2.975-4.49,2.975c-0.651,0-1.291-0.131-1.897-0.387c-0.002-0.004-0.002-0.004-0.002-0.004c-0.003,0-0.003,0-0.003,0s0,0,0,0c-1.195-0.508-2.121-1.452-2.607-2.656c-0.489-1.205-0.477-2.53,0.03-3.727c0.764-1.805,2.525-2.969,4.487-2.969c0.651,0,1.292,0.129,1.898,0.386C14.374,4.438,15.533,7.3,14.488,9.77z"
+                  ></path>
+                </svg>
+                {{ $t("search_among_timeline") }}
+              </button>
+            </div>
+          </div>
+          <div
+            v-if="show_search || debounce_search_folder_name.length > 0"
+            class="rounded _searchField"
+          >
+            <div>{{ $t("folder_name_to_find") }}</div>
+
+            <div class="input-group">
+              <input type="text" class v-model="debounce_search_folder_name" />
+              <span
+                class="input-addon"
+                v-if="debounce_search_folder_name.length > 0"
+              >
+                <button
+                  type="button"
+                  :disabled="debounce_search_folder_name.length === 0"
+                  @click="debounce_search_folder_name = ''"
+                >
+                  ×
+                </button>
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-
-      <CreateFolder
-        v-if="showCreateFolderModal"
-        @close="showCreateFolderModal = false"
-        :read_only="read_only"
-      ></CreateFolder>
-
-      <transition-group
-        tag="div"
-        name="list-complete"
-        class="m_home--folders flex-size-3/5 flex-collapse-on-mobile margin-vert-large flex-wrap flex-vertically-start"
-      >
-        <button
-          class="m_home--folders--card m_home--folders--card_createButton margin-small button-inline"
-          @click="showCreateFolderModal = true"
-          :disabled="read_only"
-          :key="'createButton'"
+        <transition-group
+          tag="div"
+          name="list-complete"
+          class="flex-wrap flex-vertically-start m_home--folders margin-vert-small"
         >
-          <span class="margin-medium">{{ $t("create_a_folder") }}</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="46.99"
-            height="46.99"
-            viewBox="0 0 46.99 46.99"
+          <button
+            class="m_home--folders--card m_home--folders--card_createButton margin-small button-inline"
+            @click="showCreateFolderModal = true"
+            :disabled="read_only"
+            :key="'createButton'"
           >
-            <circle
-              cx="23.5"
-              cy="23.5"
-              r="23"
-              transform="translate(-9.73 23.5) rotate(-45)"
-              style="fill: none; stroke: #333; stroke-miterlimit: 10;"
-            />
-            <line
-              x1="23.5"
-              y1="8.86"
-              x2="23.5"
-              y2="38.13"
-              style="fill: none; stroke: #333; stroke-miterlimit: 10;"
-            />
-            <line
-              x1="8.86"
-              y1="23.5"
-              x2="38.13"
-              y2="23.5"
-              style="fill: none; stroke: #333; stroke-miterlimit: 10;"
-            />
-          </svg>
-        </button>
+            <span class="margin-small">{{ $t("create_a_folder") }}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="46.99"
+              height="46.99"
+              viewBox="0 0 46.99 46.99"
+            >
+              <circle
+                cx="23.5"
+                cy="23.5"
+                r="23"
+                transform="translate(-9.73 23.5) rotate(-45)"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
+              />
+              <line
+                x1="23.5"
+                y1="8.86"
+                x2="23.5"
+                y2="38.13"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
+              />
+              <line
+                x1="8.86"
+                y1="23.5"
+                x2="38.13"
+                y2="23.5"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
+              />
+            </svg>
+          </button>
 
-        <template v-if="sortedFoldersSlug !== 'no-folders'">
-          <div
-            class="m_home--folders--card margin-small"
-            v-for="sortedFolder in sortedFoldersSlug"
-            :key="sortedFolder.slugFolderName"
-          >
-            <Folder
-              :slugFolderName="sortedFolder.slugFolderName"
-              :folder="folders[sortedFolder.slugFolderName]"
-              :read_only="read_only"
-              :sort_field="sort.field"
-            ></Folder>
-          </div>
-        </template>
-      </transition-group>
+          <template v-if="sortedFoldersSlug !== 'no-folders'">
+            <div
+              class="m_home--folders--card margin-small"
+              v-for="sortedFolder in sortedFoldersSlug"
+              :key="sortedFolder.slugFolderName"
+            >
+              <Folder
+                :slugFolderName="sortedFolder.slugFolderName"
+                :folder="folders[sortedFolder.slugFolderName]"
+                :read_only="read_only"
+                :sort_field="sort.field"
+              ></Folder>
+            </div>
+          </template>
+        </transition-group>
+      </div>
     </section>
   </main>
 </template>
@@ -260,12 +312,17 @@ export default {
   data() {
     return {
       showCreateFolderModal: false,
+      show_search: false,
+
       sort: {
         type: "date",
         field: "created",
         order: "descending",
       },
       currentLang: this.$root.lang.current,
+
+      debounce_search_folder_name: this.$root.settings.folder_filter.name,
+      debounce_search_folder_name_function: undefined,
     };
   },
   watch: {
@@ -273,6 +330,13 @@ export default {
       this.$root.updateLocalLang(this.currentLang);
     },
     folders: function () {},
+    debounce_search_folder_name: function () {
+      if (this.debounce_search_folder_name_function)
+        clearTimeout(this.debounce_search_folder_name_function);
+      this.debounce_search_folder_name_function = setTimeout(() => {
+        this.$root.settings.folder_filter.name = this.debounce_search_folder_name;
+      }, 340);
+    },
   },
   computed: {
     sortedFoldersSlug: function () {
@@ -282,21 +346,32 @@ export default {
 
       var sortable = [];
 
-      for (let slugFolderName in this.folders) {
+      for (let folder of Object.values(this.folders)) {
         let orderBy;
         if (this.sort.type === "date") {
           orderBy = +this.$moment(
-            this.folders[slugFolderName][this.sort.field],
+            folder[this.sort.field],
             "YYYY-MM-DD HH:mm:ss"
           );
         } else if (this.sort.type === "alph") {
-          orderBy = this.folders[slugFolderName][this.sort.field];
+          orderBy = folder[this.sort.field];
         }
         if (Number.isNaN(orderBy)) {
           orderBy = 0;
         }
 
-        sortable.push({ slugFolderName, orderBy });
+        if (this.$root.settings.folder_filter.name !== "") {
+          if (
+            !folder.name
+              .toLowerCase()
+              .includes(this.$root.settings.folder_filter.name.toLowerCase())
+          )
+            continue;
+        }
+
+        debugger;
+
+        sortable.push({ slugFolderName: folder.slugFolderName, orderBy });
       }
       let sortedSortable = sortable.sort(function (a, b) {
         let valA = a.orderBy;
@@ -332,4 +407,36 @@ export default {
   },
 };
 </script>
-<style></style>
+<style scoped lang="scss">
+._langSelector {
+  // position: absolute;
+  // right: 0;
+  max-width: 150px;
+  color: var(--color-noir);
+  // margin: var(--spacing);
+}
+._searchButton {
+  flex: 0 0 auto;
+
+  button {
+    display: flex;
+    flex-flow: row nowrap;
+    svg {
+      width: 1em;
+      height: 1em;
+    }
+  }
+}
+._searchField {
+  // background-color: var(--color-noir);
+  // color: white;
+  padding: calc(var(--spacing) / 4);
+  max-width: 320px;
+  margin: 0 auto;
+  margin-right: 0;
+
+  .input-group {
+    margin-bottom: 0;
+  }
+}
+</style>

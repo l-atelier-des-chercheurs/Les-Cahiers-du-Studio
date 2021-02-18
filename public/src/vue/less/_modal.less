@@ -303,7 +303,7 @@
 
   .m_modal--metaOptions {
     flex: 1 1 auto;
-    .padding-vert-small;
+    .padding-vert-medium;
     overflow-y: auto;
     .custom_scrollbar(4px, 6px, 6px, rgba(255, 255, 255, 0));
 
@@ -323,6 +323,13 @@
             padding: 0;
           }
         }
+      }
+
+      > label ~ div {
+        padding: ~"calc(var(--spacing) / 2)";
+        // border: 1px solid black;
+        background-color: var(--color-noir);
+        border-radius: 4px;
       }
 
       &:first-child {

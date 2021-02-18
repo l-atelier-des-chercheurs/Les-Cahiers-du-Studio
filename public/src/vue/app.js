@@ -185,6 +185,10 @@ let vm = new Vue({
       current_author_slug: false,
       media_keyword_filter: false,
 
+      folder_filter: {
+        name: "",
+      },
+
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
 

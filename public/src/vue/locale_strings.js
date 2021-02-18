@@ -5,6 +5,9 @@ module.exports = (function () {
       ascending: "Croissant",
       descending: "Décroissant",
       create_a_folder: "Créer une timeline",
+      list_of_folders: "Liste des timelines",
+      search_among_timeline: "Chercher par nom",
+      folder_name_to_find: "Nom à trouver",
       name: "Nom",
       created_date: "Date de création",
       start_date: "Date de début",
@@ -54,7 +57,7 @@ module.exports = (function () {
       on_import_place_media_on_the_date_they_were_created:
         "À l’importation de médias, le placement se fait selon la date de création du fichier et non la date d’importation",
       author_instructions:
-        "Pour ajouter des auteurs, fermez cette fenêtre et cliquez sur le bouton <i>s’identifier</i>.",
+        "Pour créer un auteur, fermez cette fenêtre et cliquez sur le bouton <i>s’identifier</i>.",
       name_or_pseudo: "Nom ou pseudonyme",
       create_account: "Créer un compte",
 
@@ -119,7 +122,6 @@ module.exports = (function () {
       sureToRemoveAuthor: "Êtes-vous sûr de vouloir supprimer cet auteur ?",
       sureToCloseModal: "Êtes-vous sûr de vouloir fermer cette fenêtre ?",
 
-      create_a_folder: "Créer un dossier",
       edit_the_media: "Éditer le média",
       edit_folder: "Éditer le dossier",
 
@@ -239,7 +241,11 @@ module.exports = (function () {
     en: {
       ascending: "Ascending",
       descending: "Descending",
-      create_a_folder: "Create a folder",
+      create_a_folder: "Create a timeline",
+      list_of_folders: "List of timelines",
+      search_among_timeline: "Search by name",
+      folder_name_to_find: "Name to find",
+
       name: "Name",
       created_date: "Created date",
       start_date: "Start date",
@@ -353,7 +359,6 @@ module.exports = (function () {
       sureToRemoveAuthor: "Do you really want to delete this author?",
       sureToCloseModal: "Do you really want to close this window?",
 
-      create_a_folder: "Create a folder",
       edit_the_media: "Edit media",
       edit_folder: "Edit folder",
 
