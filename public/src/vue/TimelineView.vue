@@ -696,7 +696,10 @@ export default {
         let mediaDataToOrderBy;
         const media = this.medias[slugMediaName];
 
-        if (media.hasOwnProperty("type") && media.type === "writeup") {
+        if (
+          media.hasOwnProperty("type") &&
+          (media.type === "writeup" || media.type === "introduction")
+        ) {
           continue;
         }
 
