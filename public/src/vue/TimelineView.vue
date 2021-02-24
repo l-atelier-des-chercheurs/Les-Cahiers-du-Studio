@@ -27,7 +27,7 @@
           :style="{ [type]: percent + '%' }"
         >
           <transition name="chatopen" :duration="350" mode="out-in">
-            <Informations
+            <!-- <Informations
               :folder="folder"
               :introduction_media="introduction_media"
               :slugFolderName="slugFolderName"
@@ -35,17 +35,18 @@
                 $root.settings.has_sidebar_opened &&
                 $root.settings.sidebar_type === 'informations'
               "
-            />
+            /> -->
 
             <Sidebar
-              v-else-if="
+              v-if="
                 $root.settings.has_sidebar_opened &&
-                $root.settings.sidebar_type === 'options'
+                $root.settings.sidebar_type === 'informations'
               "
               :folder="folder"
               :slugFolderName="slugFolderName"
               :timeline_start="timeline_interval.start"
               :timeline_end="timeline_interval.end"
+              :introduction_media="introduction_media"
               :visible_day="visible_day"
               :medias="medias"
               :sortedMedias="sortedMedias"
@@ -478,9 +479,9 @@ export default {
         {
           key: "informations",
         },
-        {
-          key: "options",
-        },
+        // {
+        //   key: "options",
+        // },
         {
           key: "filters",
         },

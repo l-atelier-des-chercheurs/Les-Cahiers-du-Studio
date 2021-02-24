@@ -28,20 +28,15 @@ Vue.use(VuePackeryPlugin);
 import VuePlyr from "vue-plyr";
 Vue.use(VuePlyr);
 
-Vue.component("Loader", {
-  name: "Loader",
-  template: `
-    <div class="_loader">
-      <span class="loader" />
-    </div>
-  `,
-});
-
 import VueDragscroll from "vue-dragscroll";
 Vue.use(VueDragscroll);
 
 import Modal from "./components/modals/BaseModal.vue";
 Vue.component("Modal", Modal);
+import DateFieldComponent from "./components/subcomponents/DateField.vue";
+Vue.component("DateField", DateFieldComponent);
+import PasswordFieldComponent from "./components/subcomponents/PasswordField.vue";
+Vue.component("PasswordField", PasswordFieldComponent);
 
 Vue.component("Loader", {
   name: "Loader",
@@ -469,9 +464,11 @@ let vm = new Vue({
     formatDateToHuman(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LL");
     },
-
     formatDateToCalendar(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").calendar();
+    },
+    formatDateToPrecise(date) {
+      return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");
     },
     formatDurationToMinuteHours(date) {
       return this.$moment.utc(date).format("mm:ss");

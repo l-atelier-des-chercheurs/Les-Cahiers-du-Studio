@@ -14,30 +14,12 @@
         </mark>
       </div>
 
-      <div class="folder_metapreview margin-medium">
-        <template v-if="sort_field === 'created'">
-          <i>{{ $t("created_date") }}</i>
-          <br />
-          {{ formatDateToHuman(folder.created) }}
-        </template>
-        <template v-else-if="sort_field === 'name'"></template>
-        <template v-else-if="sort_field === 'start'">
-          <i>{{ $t("start_date") }}</i>
-          <br />
-          {{ formatDateToHuman(folder.start) }}
-        </template>
-        <template v-else-if="sort_field === 'end'">
-          <i>{{ $t("end_date") }}</i>
-          <br />
-          {{ formatDateToHuman(folder.end) }}
-        </template>
-        <template v-else>
-          <i>{{ $t("created_date") }}</i>
-          <br />
-          {{ formatDateToHuman(folder.created) }}
-        </template>
+      <div class="margin-sides-medium margin-vert-small">
+        <DateField :title="'created_date'" :date="folder.created" />
       </div>
-
+      <div class="margin-sides-medium margin-vert-small">
+        <DateField :title="'last_modified'" :date="folder.date_modified" />
+      </div>
       <div class="m_metaField margin-sides-medium" v-if="!!folder.authors">
         <div>{{ $t("author") }}</div>
         <AuthorsInput :currentAuthors="folder.authors" :read_only="true" />
@@ -255,9 +237,6 @@ export default {
     },
   },
   methods: {
-    formatDateToHuman(date) {
-      return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LLL");
-    },
     openFolder() {
       this.$root.openFolder(this.slugFolderName);
     },

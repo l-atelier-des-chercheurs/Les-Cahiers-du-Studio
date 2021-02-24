@@ -54,6 +54,11 @@
           "default": "current",
           "read_only": true
         },
+        "date_modified": {
+          "type": "date",
+          "default": "current",
+          "override": true
+        },
         "start": {
           "type": "date",
           "default": "current"

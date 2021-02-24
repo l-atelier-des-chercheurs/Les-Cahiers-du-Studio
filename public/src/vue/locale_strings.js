@@ -17,6 +17,7 @@ module.exports = (function () {
       contributor: "Contributeur",
       participant: "Participant",
       create_introduction: "Créer un texte d’introduction",
+      forget_password_and_close: "Oublier le mot de passe et fermer",
 
       list_of_folders: "Liste des timelines",
       list_of_authors: "Liste des auteurs",
@@ -171,7 +172,7 @@ module.exports = (function () {
       years_later: "&nbsp;ans plus tard…",
       contents_are_stored:
         "Les contenus de cette timeline sont enregistrés dans ",
-      folder_information: "Informations de la timeline",
+      folder_information: "Informations sur la timeline",
       calendar: "Calendrier",
       now: "en ce moment",
       today: "aujourd’hui",
@@ -272,6 +273,7 @@ module.exports = (function () {
       contributor: "Contributor",
       participant: "Participant",
       create_introduction: "Create introduction text",
+      forget_password_and_close: "Forget password and close",
 
       login_to_access_project:
         "Connect with an authorized account to access project",

@@ -1,5 +1,15 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
+    <select class="_langSelector" v-model="currentLang">
+      <option
+        v-for="(name, code) in $root.lang.available"
+        :value="code"
+        :key="code"
+      >
+        {{ name }}
+      </option>
+    </select>
+
     <SidebarSection
       v-if="$root.state.mode !== 'export_web'"
       :open_by_default="true"
@@ -7,38 +17,20 @@
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("folder_information") }}
-          <button
-            v-if="can_edit_folder"
-            type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="editFolder"
-            :disabled="read_only"
-          >
-            {{ $t("edit") }}
-          </button>
-          <button
-            v-if="can_edit_folder"
-            type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="removeFolder"
-            :disabled="read_only"
-          >
-            {{ $t("remove") }}
-          </button>
         </h3>
       </div>
 
       <div slot="body">
         <div class="margin-bottom-small">
-          <AccessController
+          <Folder
+            :slugFolderName="folder.slugFolderName"
             :folder="folder"
+            :read_only="read_only"
             :context="'full'"
-            :type="'folders'"
-            @closeFolder="$root.closeFolder()"
           />
         </div>
 
-        <div class="" v-if="can_edit_folder">
+        <!-- <div class="" v-if="can_edit_folder">
           <span class="switch">
             <input
               type="checkbox"
@@ -50,6 +42,48 @@
               $t("on_import_place_media_on_the_date_they_were_created")
             }}</label>
           </span>
+        </div> -->
+      </div>
+    </SidebarSection>
+
+    <SidebarSection>
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t("presentation") }}
+        </h3>
+      </div>
+      <div slot="body">
+        <div class="m_informations--presentation--introduction">
+          <template v-if="!introduction_media">
+            <button type="button" @click="createIntroduction">
+              {{ $t("create_introduction") }}
+            </button>
+          </template>
+          <template v-else>
+            <template v-if="!edit_introduction">
+              <div class="ql-editor" v-html="introduction_media.content" />
+            </template>
+            <template v-else>
+              <CollaborativeEditor
+                :slugFolderName="slugFolderName"
+                :enable_collaboration="true"
+                :media="introduction_media"
+                :spellcheck="spellcheck"
+                @connectionStateChanged="
+                  (_connection_state) => (connection_state = _connection_state)
+                "
+                ref="textField"
+                :read_only="read_only"
+              />
+            </template>
+
+            <button
+              type="button"
+              @click="edit_introduction = !edit_introduction"
+            >
+              {{ $t("edit_text") }}
+            </button>
+          </template>
         </div>
       </div>
     </SidebarSection>
@@ -77,17 +111,7 @@
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">{{ $t("lang") }}</h3>
       </div>
-      <div slot="body">
-        <select v-model="currentLang">
-          <option
-            v-for="(name, code) in $root.lang.available"
-            :value="code"
-            :key="code"
-          >
-            {{ name }}
-          </option>
-        </select>
-      </div>
+      <div slot="body"></div>
     </SidebarSection>
 
     <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
@@ -232,7 +256,7 @@
   </div>
 </template>
 <script>
-import Informations from "./sidebar/Informations.vue";
+import Folder from "./Folder.vue";
 import Calendrier from "./sidebar/Calendrier.vue";
 import Tableau from "./sidebar/Tableau.vue";
 import SidebarSection from "./sidebar/SidebarSection.vue";
@@ -243,9 +267,11 @@ import qrcode from "@xkeshi/vue-qrcode";
 import alertify from "alertify.js";
 import CreateQRCode from "./qr/CreateQRCode.vue";
 import AccessController from "./subcomponents/AccessController.vue";
+import CollaborativeEditor from "./subcomponents/CollaborativeEditor.vue";
 
 export default {
   components: {
+    Folder,
     SidebarSection,
     Tableau,
     MediasList,
@@ -253,6 +279,7 @@ export default {
     ExportTimeline,
     CreateQRCode,
     AccessController,
+    CollaborativeEditor,
   },
   props: {
     slugFolderName: String,
@@ -266,6 +293,7 @@ export default {
     sort: Object,
     filter: String,
     can_edit_folder: Boolean,
+    introduction_media: Object,
     is_realtime: {
       type: Boolean,
       default: false,
@@ -279,6 +307,7 @@ export default {
       showWriteupModal: false,
       showExportTimelineModal: false,
       currentLang: this.$root.lang.current,
+      edit_introduction: false,
     };
   },
   mounted() {},
@@ -353,6 +382,19 @@ export default {
       }
 
       return dates;
+    },
+    createIntroduction() {
+      this.$root
+        .createMedia({
+          slugFolderName: this.slugFolderName,
+          type: "folders",
+          additionalMeta: {
+            type: "introduction",
+          },
+        })
+        .then(() => {
+          this.edit_introduction = true;
+        });
     },
 
     isDayToday(timestamp) {
@@ -429,4 +471,12 @@ export default {
 };
 </script>
 
-<style lang="sass"></style>
+<style lang="scss" scoped>
+._langSelector {
+  margin-left: auto;
+  margin-top: var(--spacing);
+}
+.m_folder {
+  border: 2px solid currentColor;
+}
+</style>

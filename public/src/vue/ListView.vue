@@ -101,6 +101,7 @@
                 />
               </div>
               <div class="m_topbar--center--authors--name">
+                <span>•</span>
                 <span v-html="$t('connected_as:')" />
                 <u>
                   {{ $root.current_author.name }}
@@ -108,7 +109,10 @@
               </div>
             </template>
             <template v-else>
-              <div class="font-medium">{{ $t("login_or_create_account") }}</div>
+              <div class="">
+                <span>•</span>
+                {{ $t("login_or_create_account") }}
+              </div>
             </template>
           </button>
         </div>
