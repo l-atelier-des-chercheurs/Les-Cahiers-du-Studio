@@ -16,6 +16,7 @@ module.exports = (function () {
       admin: "Administrateur",
       contributor: "Contributeur",
       participant: "Participant",
+      create_introduction: "Créer un texte d’introduction",
 
       list_of_folders: "Liste des timelines",
       list_of_authors: "Liste des auteurs",
@@ -54,11 +55,11 @@ module.exports = (function () {
       hide_all_authors: "Masquer l’ensemble des auteurs",
 
       when_logged_as_author_content_will_be_tagged:
-        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes que vous créez porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
+        "Lorsque vous êtes identifié comme auteur toutes les timelines que vous créez porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
       more_informations_on_authors:
-        "Vous pourrez ajouter d’autres co-auteurs directement dans les projets, médias et recettes. Si vous supprimez un auteur, tous les médias, projets et recettes conserveront le nom d’auteur et ne seront pas supprimées.",
+        "Vous pourrez ajouter d’autres co-auteurs aux timelines pour pouvoir les modifier à plusieurs. Si vous supprimez un auteur, toutes les timelines et médias conserveront le nom d’auteur et ne seront pas supprimées.",
 
-      creation_of_the_timeline: "Création du dossier",
+      creation_of_the_timeline: "Création de la timeline",
       author_name: "Nom de l’auteur associé",
       key: "Touche du clavier",
       none: "Aucun",
@@ -69,7 +70,7 @@ module.exports = (function () {
       no_message_yet: "Aucun message à afficher pour l’instant…",
 
       informations: "Informations",
-      show_instructions: "Afficher les instructions",
+      show_instructions: "Comment utiliser cet outil ?",
 
       filters: "Filtres",
       on_import_place_media_on_the_date_they_were_created:
@@ -82,6 +83,7 @@ module.exports = (function () {
       loading: "chargement",
       comments: "Commentaires",
       advanced_options: "Options avancées",
+      edit_text: "Modifier le texte d’introduction",
       close: "Fermer",
       open: "Ouvrir",
       save: "Enregistrer",
@@ -95,7 +97,7 @@ module.exports = (function () {
       change_password: "Modifier le mot de passe",
       protected_by_pass: "protégé par mot de passe",
       password_instructions:
-        "Seuls les utilisateurs possédant ce mot de passe pourront éditer ce dossier, y ajouter du contenu et consulter les médias non publics.",
+        "Seuls les utilisateurs possédant ce mot de passe pourront éditer cette timeline, y ajouter du contenu et consulter les médias non publics.",
 
       last_read_message: "Dernier message lu",
       post_a_message: "Envoyer un message",
@@ -134,26 +136,26 @@ module.exports = (function () {
       toconnectwithanotherdevice:
         "Pour accéder aux Cahiers avec un autre appareil, connectez-vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ",
       toconnectwithanotherdevicetothisfolder:
-        "Pour accéder à ce dossier avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ",
-      sureToRemoveFolder: "Êtes-vous sûr de vouloir supprimer ce dossier ?",
+        "Pour accéder à cette timeline avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web&nbsp;: ",
+      sureToRemoveFolder: "Êtes-vous sûr de vouloir supprimer cette timeline ?",
       sureToRemoveMedia: "Êtes-vous sûr de vouloir supprimer ce média ?",
       sureToRemoveAuthor: "Êtes-vous sûr de vouloir supprimer cet auteur ?",
       sureToCloseModal: "Êtes-vous sûr de vouloir fermer cette fenêtre ?",
 
       edit_the_media: "Éditer le média",
-      edit_folder: "Éditer le dossier",
+      edit_folder: "Éditer la timeline",
 
       capture_start: "Début de la capture",
       capture_end: "Fin de la capture",
       currently: "Actuellement",
-      archive_this_folder: "Archiver ce dossier",
+      archive_this_folder: "Archiver cette timeline",
       archive_instructions:
-        "En activant cette option, tous les contenus de ce dossier ne pourront plus être modifiés.",
+        "En activant cette option, tous les contenus de cette timeline ne pourront plus être modifiés.",
 
       more_information:
         'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
-      no_media_in_folder: "Aucun média dans ce dossier.",
-      no_public_media_in_folder: "Aucun média public dans ce dossier.",
+      no_media_in_folder: "Aucun média dans cette timeline.",
+      no_public_media_in_folder: "Aucun média public dans cette timeline.",
       auto_scroll: "défilement<br>automatique",
       scale: "échelle&nbsp;:",
       scale_items: {
@@ -167,8 +169,9 @@ module.exports = (function () {
       weeks_later: "&nbsp;semaines plus tard…",
       months_later: "&nbsp;mois plus tard…",
       years_later: "&nbsp;ans plus tard…",
-      contents_are_stored: "Les contenus de ce dossier sont enregistrés dans ",
-      folder_information: "Informations du dossier",
+      contents_are_stored:
+        "Les contenus de cette timeline sont enregistrés dans ",
+      folder_information: "Informations de la timeline",
       calendar: "Calendrier",
       now: "en ce moment",
       today: "aujourd’hui",
@@ -232,17 +235,17 @@ module.exports = (function () {
           "Les modifications et ajouts ne seront plus pris en compte.",
         connection_error: "La connexion au serveur n’a pu se faire.",
         "wrong_password_for_folder:":
-          "Le password n’est pas le bon pour le dossier&nbsp;:",
+          "Le password n’est pas le bon pour la timeline&nbsp;:",
         "created_edited_media:":
-          "Création ou édition d’un média pour le dossier&nbsp;:",
+          "Création ou édition d’un média pour la timeline&nbsp;:",
         author_name_exists: "Ce nom d’auteur existe déjà.",
         document_name_exists:
           "Ce nom de document existe déjà, utilisez-en un autre.",
         folder_name_exists:
-          "Ce nom de dossier existe déjà, utilisez-en un autre.",
+          "Ce nom de timeline existe déjà, utilisez-en un autre.",
         folder_name_needs_alphanumeric_characters:
-          "Les noms de dossier doivent contenir au moins un caractère alphanumérique.",
-        "failed_to_get_folder:": "Le dossier suivant n’a pas été trouvé:",
+          "Les noms de timeline doivent contenir au moins un caractère alphanumérique.",
+        "failed_to_get_folder:": "La timeline suivante n’a pas été trouvé:",
         folder_export_started: "Préparation du fichier à exporter en cours…",
         connected_to_lescahiers: "Connection aux Cahiers active",
         media_type_not_handled:
@@ -268,6 +271,7 @@ module.exports = (function () {
       admin: "Administrator",
       contributor: "Contributor",
       participant: "Participant",
+      create_introduction: "Create introduction text",
 
       login_to_access_project:
         "Connect with an authorized account to access project",

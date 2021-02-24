@@ -1,6 +1,9 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-    <SidebarSection v-if="$root.state.mode !== 'export_web'">
+    <SidebarSection
+      v-if="$root.state.mode !== 'export_web'"
+      :open_by_default="true"
+    >
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("folder_information") }}

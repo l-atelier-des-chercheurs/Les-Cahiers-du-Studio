@@ -37,7 +37,7 @@
 
   /* Components */
   --component-bg-color: #f2f2f2;
-  --component-border-color: #ddd;
+  --component-border-color: var(--color-gris_fonce);
   --component-border-radius: 0.25rem;
   --component-border-width: 1px;
   --component-spacing: 1rem;

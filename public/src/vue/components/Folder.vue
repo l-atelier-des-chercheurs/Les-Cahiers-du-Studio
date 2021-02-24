@@ -2,7 +2,7 @@
   <div class="m_folder">
     <h2
       class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large"
-      @click="$root.openFolder(slugFolderName)"
+      @click="context !== 'full' ? $root.openFolder(slugFolderName) : ''"
     >
       {{ folder.name }}
     </h2>
@@ -49,7 +49,7 @@
         class="margin-small flex-wrap flex-vertically-start flex-horizontally-start"
       >
         <button
-          v-if="can_see_folder"
+          v-if="can_see_folder && context !== 'full'"
           type="button"
           :disabled="read_only"
           class="button-round margin-verysmall padding-verysmall"
@@ -93,24 +93,8 @@
           <span class="text-cap font-verysmall">{{ $t("open") }}</span>
         </button>
 
-        <!-- <button
-          v-if="!can_edit_folder"
-          type="button"
-          class="button-round margin-verysmall padding-verysmall"
-          :readonly="read_only"
-          @click="showInputPasswordField = !showInputPasswordField"
-        >
-          <span class="text-cap font-verysmall">{{ $t("password") }}</span>
-        </button>-->
-        <!--
-        <button v-if="can_admin_folder" type="button" class="button-round margin-verysmall padding-verysmall" @click="debugFolderContent = !debugFolderContent">
-          <span class="text-cap font-verysmall">
-            Vue de debug
-          </span>
-        </button>
-        -->
-        <!-- <button
-          v-if="can_admin_folder"
+        <button
+          v-if="can_edit_folder && context === 'full'"
           type="button"
           class="button-round margin-verysmall padding-verysmall"
           @click="showEditFolderModal = true"
@@ -128,109 +112,93 @@
                 cx="23.5"
                 cy="23.5"
                 r="23"
-                style="fill: none;stroke: #4d4d4d;stroke-miterlimit: 10"
+                style="fill: none; stroke: #4d4d4d; stroke-miterlimit: 10"
               />
             </g>
             <g>
               <polygon
                 points="17.91 33.77 13.32 34.3 13.85 29.71 22.36 21.2 30.86 12.69 32.9 14.72 34.93 16.76 26.42 25.26 17.91 33.77"
-                style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
               />
               <line
                 x1="16.13"
                 y1="27.43"
                 x2="20.19"
                 y2="31.49"
-                style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
               />
             </g>
           </svg>
-          <span class="text-cap font-verysmall">{{ $t('edit') }}</span>
-        </button>-->
-        <!-- <button
-          v-if="can_admin_folder"
+          <span class="text-cap font-verysmall">{{ $t("edit") }}</span>
+        </button>
+        <button
+          v-if="can_edit_folder && context === 'full'"
           type="button"
           class="button-round margin-verysmall padding-verysmall"
           @click="removeFolder()"
           :disabled="read_only"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="49" height="49" viewBox="0 0 49 49">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="49"
+            height="49"
+            viewBox="0 0 49 49"
+          >
             <g>
               <circle cx="24.5" cy="24.5" r="24" style="fill: #fff" />
               <circle
                 cx="24.5"
                 cy="24.5"
                 r="24"
-                style="fill: none;stroke: #4d4d4d;stroke-miterlimit: 10"
+                style="fill: none; stroke: #4d4d4d; stroke-miterlimit: 10"
               />
             </g>
             <g>
               <path
                 d="M16.79,35.19l-.72-16.86H33l-.72,16.86a1.42,1.42,0,0,1-1.46,1.31H18.25A1.42,1.42,0,0,1,16.79,35.19Z"
-                style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
               />
               <path
                 d="M20.83,15.41v-2a.89.89,0,0,1,.92-.86h5.52a.89.89,0,0,1,.92.86v2Z"
-                style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
               />
               <line
                 x1="20.75"
                 y1="34.18"
                 x2="20.75"
                 y2="21.01"
-                style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
               />
               <line
                 x1="24.66"
                 y1="34.18"
                 x2="24.66"
                 y2="21.01"
-                style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
               />
               <line
                 x1="28.58"
                 y1="34.18"
                 x2="28.58"
                 y2="21.01"
-                style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
               />
               <line
                 x1="14"
                 y1="15.41"
                 x2="35"
                 y2="15.41"
-                style="fill: none;stroke: #333;stroke-miterlimit: 10"
+                style="fill: none; stroke: #333; stroke-miterlimit: 10"
               />
             </g>
           </svg>
-          <span class="text-cap font-verysmall">{{ $t('remove') }}</span>
-        </button>-->
-
-        <!-- <div
-          v-if="showInputPasswordField && !can_admin_folder"
-          class="margin-bottom-small"
-        >
-          <input
-            type="password"
-            ref="passwordField"
-            @keyup.enter="submitPassword"
-            autofocus
-            placeholder="…"
-          />
-          <button
-            type="button"
-            class="border-circled button-thin padding-verysmall"
-            @click="submitPassword"
-          >
-            Envoyer
-          </button>
-        </div>-->
+          <span class="text-cap font-verysmall">{{ $t("remove") }}</span>
+        </button>
       </div>
 
       <AccessController
-        v-if="!can_see_folder"
         :folder="folder"
-        :context="''"
+        :context="context"
         :type="'folders'"
         @openFolder="openFolder"
         @closeFolder="closeFolder"
@@ -255,6 +223,7 @@ import AuthorsInput from "./subcomponents/AuthorsInput.vue";
 export default {
   props: {
     folder: Object,
+    context: String,
     slugFolderName: String,
     read_only: Boolean,
     sort_field: String,
@@ -338,4 +307,9 @@ export default {
   watch: {},
 };
 </script>
-<style scoped></style>
+<style scoped>
+.m_folder {
+  background: white;
+  color: var(--color-noir);
+}
+</style>

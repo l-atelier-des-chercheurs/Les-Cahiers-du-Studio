@@ -38,9 +38,9 @@
         <div
           class="text-formatting flex-size-3/5 flex-collapse-on-mobile padding-small padding-vert-small"
         >
-          <div class="_langSelector" style="">
+          <div style="">
             <!-- <label v-html="$t('lang:')"></label> -->
-            <select v-model="currentLang">
+            <select class="_langSelector" v-model="currentLang">
               <option
                 v-for="(name, code) in $root.lang.available"
                 :value="code"
@@ -300,7 +300,7 @@
                 :folder="folders[sortedFolder.slugFolderName]"
                 :read_only="read_only"
                 :sort_field="sort.field"
-              ></Folder>
+              />
             </div>
           </template>
         </transition-group>
@@ -429,13 +429,6 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-._langSelector {
-  // position: absolute;
-  // right: 0;
-  max-width: 150px;
-  color: var(--color-noir);
-  // margin: var(--spacing);
-}
 ._searchButton {
   flex: 0 0 auto;
 
