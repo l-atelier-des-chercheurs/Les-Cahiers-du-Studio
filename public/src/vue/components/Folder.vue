@@ -38,7 +38,7 @@
         </template>
       </div>
 
-      <div class="m_metaField" v-if="!!folder.authors">
+      <div class="m_metaField margin-sides-medium" v-if="!!folder.authors">
         <div>{{ $t("author") }}</div>
         <AuthorsInput :currentAuthors="folder.authors" :read_only="true" />
       </div>

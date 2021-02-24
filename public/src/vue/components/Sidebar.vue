@@ -35,7 +35,7 @@
           />
         </div>
 
-        <div class="margin-bottom-small">
+        <div class="" v-if="can_edit_folder">
           <span class="switch">
             <input
               type="checkbox"
@@ -80,13 +80,14 @@
             v-for="(name, code) in $root.lang.available"
             :value="code"
             :key="code"
-            >{{ name }}</option
           >
+            {{ name }}
+          </option>
         </select>
       </div>
     </SidebarSection>
 
-    <SidebarSection v-if="$root.state.mode !== 'export_web'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("keyboard_shortcuts") }}
@@ -108,7 +109,7 @@
       @close="showKeyboardShortcutsList = false"
     ></KeyboardShortcuts>
 
-    <SidebarSection v-if="$root.state.mode !== 'export_web'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("export_folder") }}

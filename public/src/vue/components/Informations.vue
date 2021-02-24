@@ -21,11 +21,6 @@
         </h2>
       </div>
 
-      <div class="m_metaField" v-if="!!folder.authors">
-        <div>{{ $t("author") }}</div>
-        <AuthorsInput :currentAuthors="folder.authors" :read_only="true" />
-      </div>
-
       <div class="m_informations--presentation--instructions">
         <label>
           <button

@@ -68,12 +68,13 @@
       {{ $t("notifications.contents_wont_be_editable") }}
     </div>
 
-    <section
-      class="flex-wrap flex-vertically-start limited-width padding-vert-medium"
-    >
-      <div
-        class="m_home--filtres flex-size-2/5 flex-collapse-on-mobile padding-sides-medium margin-vert-large"
-      >
+    <section class="limited-width padding-vert-small">
+      <div class="m_home--filtres padding-vert-small">
+        <!-- <div
+          class="margin-sides-small padding-bottom-small border border-bottom-dashed margin-bottom-medium"
+        >
+          <div>{{ $t("list_of_authors") }}</div>
+        </div> -->
         <div class="_openAuthorModal">
           <button
             type="button"
@@ -100,14 +101,27 @@
                 />
               </div>
               <div class="m_topbar--center--authors--name">
-                {{ $root.current_author.name }}
+                <span v-html="$t('connected_as:')" />
+                <u>
+                  {{ $root.current_author.name }}
+                </u>
               </div>
             </template>
             <template v-else>
-              <div class="font-medium">{{ $t("login") }}</div>
+              <div class="font-medium">{{ $t("login_or_create_account") }}</div>
             </template>
           </button>
         </div>
+
+        <!-- <div class="m_allAuthors">
+          <div v-for="author in sortedAuthors" :key="author.slugFolderName">
+            <Author
+              :author="author"
+              :key="author.slugFolderName"
+              @close="$emit('close')"
+            />
+          </div>
+        </div> -->
       </div>
 
       <CreateFolder
@@ -116,7 +130,7 @@
         :read_only="read_only"
       ></CreateFolder>
 
-      <div class="flex-size-3/5 flex-collapse-on-mobile">
+      <div class="">
         <div class="" v-if="false">
           <div class="margin-vert-medium">
             <label class="margin-none text-cap with-bullet">{{
@@ -240,6 +254,7 @@
           <button
             class="m_home--folders--card m_home--folders--card_createButton margin-small button-inline"
             @click="showCreateFolderModal = true"
+            v-if="$root.settings.folder_filter.name === ''"
             :disabled="read_only"
             :key="'createButton'"
           >
@@ -291,11 +306,13 @@
         </transition-group>
       </div>
     </section>
+    <footer class="_credits" v-html="$t('credits')" />
   </main>
 </template>
 <script>
 import Folder from "./components/Folder.vue";
 import CreateFolder from "./components/modals/CreateFolder.vue";
+import Author from "./components/subcomponents/Author.vue";
 import VueMarkdown from "vue-markdown";
 
 export default {
@@ -308,6 +325,7 @@ export default {
     CreateFolder,
     Folder,
     VueMarkdown,
+    Author,
   },
   data() {
     return {
@@ -369,8 +387,6 @@ export default {
             continue;
         }
 
-        debugger;
-
         sortable.push({ slugFolderName: folder.slugFolderName, orderBy });
       }
       let sortedSortable = sortable.sort(function (a, b) {
@@ -403,6 +419,11 @@ export default {
       }
 
       return this.presentationMD;
+    },
+    sortedAuthors: function () {
+      return Object.values(this.$root.store.authors).sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
     },
   },
 };
@@ -438,5 +459,17 @@ export default {
   .input-group {
     margin-bottom: 0;
   }
+}
+.m_allAuthors {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+._credits {
+  margin: var(--spacing) auto;
+  font-size: 75%;
+  width: 100%;
+  text-align: center;
+  max-width: 66ch;
 }
 </style>

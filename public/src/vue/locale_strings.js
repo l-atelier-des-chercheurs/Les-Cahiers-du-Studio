@@ -5,7 +5,20 @@ module.exports = (function () {
       ascending: "Croissant",
       descending: "Décroissant",
       create_a_folder: "Créer une timeline",
+      more_informations: "Plus d’informations",
+      "connected_as:": "Connecté avec le compte&nbsp;:",
+      login_after_creation: "S’identifier avec ce compte",
+
+      login_to_access_project:
+        "Connectez-vous avec un compte autorisé pour accéder à ce projet",
+      login_to_edit_project: "Identifiez-vous pour contribuer",
+
+      admin: "Administrateur",
+      contributor: "Contributeur",
+      participant: "Participant",
+
       list_of_folders: "Liste des timelines",
+      list_of_authors: "Liste des auteurs",
       search_among_timeline: "Chercher par nom",
       folder_name_to_find: "Nom à trouver",
       name: "Nom",
@@ -39,6 +52,11 @@ module.exports = (function () {
       hide_all_keywords: "Masquer l’ensemble des mots-clés",
       show_all_authors: "Afficher l’ensemble des auteurs",
       hide_all_authors: "Masquer l’ensemble des auteurs",
+
+      when_logged_as_author_content_will_be_tagged:
+        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes que vous créez porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
+      more_informations_on_authors:
+        "Vous pourrez ajouter d’autres co-auteurs directement dans les projets, médias et recettes. Si vous supprimez un auteur, tous les médias, projets et recettes conserveront le nom d’auteur et ne seront pas supprimées.",
 
       creation_of_the_timeline: "Création du dossier",
       author_name: "Nom de l’auteur associé",
@@ -165,6 +183,7 @@ module.exports = (function () {
       only_authors_can_open: "Accès limité aux auteurs",
       cancel: "annuler",
       login_to_post: "Identifiez-vous pour envoyer un message",
+      login_or_create_account: "Créer un compte ou s’identifier",
 
       export_folder: "Exporter en format WEB",
       export: "Exporter",
@@ -242,7 +261,20 @@ module.exports = (function () {
       ascending: "Ascending",
       descending: "Descending",
       create_a_folder: "Create a timeline",
+      more_informations: "More informations",
+      "connected_as:": "Connected as:",
+      login_after_creation: "Login with this account",
+
+      admin: "Administrator",
+      contributor: "Contributor",
+      participant: "Participant",
+
+      login_to_access_project:
+        "Connect with an authorized account to access project",
+      login_to_edit_project: "Login to contribute",
+
       list_of_folders: "List of timelines",
+      list_of_authors: "List of authos",
       search_among_timeline: "Search by name",
       folder_name_to_find: "Name to find",
 
@@ -310,6 +342,11 @@ module.exports = (function () {
       rename: "Rename",
       password: "Password",
       change_password: "Change password",
+
+      when_logged_as_author_content_will_be_tagged:
+        "When logged in as an author all projects, medias and recipes you create will be tagged with your name.",
+      more_informations_on_authors:
+        "You can add co-authors in the projects, medias and recipes. If you remove an author, all the projects, medias and recipes will keep this author name and won’t be removed.",
 
       only_password_can_open: "Access limited with password",
       password_required_to_open: "Password required",
@@ -406,6 +443,7 @@ module.exports = (function () {
       only_authors_can_open: "Access limited to authors",
       cancel: "cancel",
       login_to_post: "Login to send a message",
+      login_or_create_account: "Create an account or login",
 
       list: "List",
       fullscreen: "Fullscreen",

@@ -275,9 +275,12 @@ video {
 }
 
 .m_home--filtres {
+  text-align: center;
 }
 
 .m_home--folders {
+  position: relative;
+
   .m_home--folders--card {
     width: 235px;
     min-height: 200px;
@@ -2089,8 +2092,8 @@ video {
 .switch input + label {
   position: relative;
   min-width: ~"calc(var(--switch-size) * 2)";
-  height: var(--switch-size);
-  line-height: var(--switch-size);
+  min-height: var(--switch-size);
+  line-height: ~"calc(var(--switch-size) / 1.5)";
   display: inline-block;
   cursor: pointer;
   outline: none;
