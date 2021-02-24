@@ -168,7 +168,6 @@ let vm = new Vue({
       sidebar_type: "",
 
       highlightMedia: "",
-      is_loading_medias_for_folder: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
       perf_mode: "low",
 
@@ -271,7 +270,6 @@ let vm = new Vue({
 
       if (this.store.request.slugFolderName) {
         this.settings.current_slugFolderName = this.store.request.slugFolderName;
-        this.settings.is_loading_medias_for_folder = this.store.request.slugFolderName;
         this.$eventHub.$once("socketio.folders.folders_listed", () => {
           this.openFolder(this.store.request.slugFolderName);
         });
@@ -723,24 +721,12 @@ let vm = new Vue({
       }
 
       this.settings.current_slugFolderName = slugFolderName;
-      this.settings.is_loading_medias_for_folder = slugFolderName;
-
-      this.$nextTick(() => {
-        this.$socketio.listMedias({
-          type: "folders",
-          slugFolderName,
-        });
-      });
 
       history.pushState(
         { slugFolderName },
         this.store.folders[slugFolderName].name,
         "/" + slugFolderName
       );
-
-      this.$eventHub.$once("socketio.folders.medias_listed", () => {
-        this.settings.is_loading_medias_for_folder = false;
-      });
     },
     closeFolder: function () {
       if (window.state.dev_mode === "debug") {

@@ -65,7 +65,7 @@
           </template>
 
           <button type="button" @click="edit_introduction = !edit_introduction">
-            {{ $t("edit_text") }}
+            {{ $t("edit_introduction_text") }}
           </button>
         </template>
       </div>

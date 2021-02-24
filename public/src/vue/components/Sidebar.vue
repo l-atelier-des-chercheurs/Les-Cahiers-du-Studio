@@ -14,6 +14,7 @@
       v-if="$root.state.mode !== 'export_web'"
       :open_by_default="true"
     >
+      <!-- <div class="border border-bottom-dashed padding-medium"> -->
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("folder_information") }}
@@ -22,12 +23,29 @@
 
       <div slot="body">
         <div class="margin-bottom-small">
+          <div class="m_folder" v-if="!show_informations">
+            <h2
+              data-v-2dc30bca=""
+              class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large"
+            >
+              {{ folder.name }}
+            </h2>
+          </div>
           <Folder
+            v-else
             :slugFolderName="folder.slugFolderName"
             :folder="folder"
             :read_only="read_only"
             :context="'full'"
           />
+          <button
+            type="button"
+            class="buttonLink"
+            style="margin-left: auto; margin-right: 0"
+            @click="show_informations = !show_informations"
+          >
+            {{ $t("more_informations") }}
+          </button>
         </div>
 
         <!-- <div class="" v-if="can_edit_folder">
@@ -43,17 +61,16 @@
             }}</label>
           </span>
         </div> -->
-      </div>
-    </SidebarSection>
+        <!-- </div> -->
 
-    <SidebarSection>
-      <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">
-          {{ $t("presentation") }}
+        <!-- <SidebarSection :open_by_default="true"> -->
+        <!-- <div slot="header"> -->
+        <h3 class="margin-none">
+          <small>{{ $t("presentation") }}</small>
         </h3>
-      </div>
-      <div slot="body">
-        <div class="m_informations--presentation--introduction">
+        <!-- </div> -->
+        <!-- <div slot="body"> -->
+        <div class="_introduction">
           <template v-if="!introduction_media">
             <button type="button" @click="createIntroduction">
               {{ $t("create_introduction") }}
@@ -61,7 +78,10 @@
           </template>
           <template v-else>
             <template v-if="!edit_introduction">
-              <div class="ql-editor" v-html="introduction_media.content" />
+              <div
+                class="mediaWriteupContent"
+                v-html="introduction_media.content"
+              />
             </template>
             <template v-else>
               <CollaborativeEditor
@@ -77,12 +97,18 @@
               />
             </template>
 
-            <button
-              type="button"
-              @click="edit_introduction = !edit_introduction"
-            >
-              {{ $t("edit_text") }}
-            </button>
+            <div class="_editButton">
+              <button
+                type="button"
+                class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+                @click="edit_introduction = !edit_introduction"
+                v-html="
+                  !edit_introduction
+                    ? $t('edit_introduction_text')
+                    : $t('submit')
+                "
+              />
+            </div>
           </template>
         </div>
       </div>
@@ -90,7 +116,9 @@
 
     <SidebarSection>
       <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">{{ $t("share") }}</h3>
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t("access_with_other_devices") }}
+        </h3>
       </div>
       <div slot="body">
         <CreateQRCode :slugFolderName="slugFolderName" />
@@ -105,13 +133,6 @@
           </template>
         </p>-->
       </div>
-    </SidebarSection>
-
-    <SidebarSection>
-      <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">{{ $t("lang") }}</h3>
-      </div>
-      <div slot="body"></div>
     </SidebarSection>
 
     <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
@@ -308,6 +329,7 @@ export default {
       showExportTimelineModal: false,
       currentLang: this.$root.lang.current,
       edit_introduction: false,
+      show_informations: false,
     };
   },
   mounted() {},
@@ -473,10 +495,17 @@ export default {
 
 <style lang="scss" scoped>
 ._langSelector {
-  margin-left: auto;
-  margin-top: var(--spacing);
+  margin: 0 auto;
+  margin-top: calc(var(--spacing) / 2);
 }
 .m_folder {
   border: 2px solid currentColor;
+}
+._editButton {
+  margin-top: var(--spacing);
+  text-align: center;
+}
+
+._introduction {
 }
 </style>

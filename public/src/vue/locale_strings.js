@@ -84,12 +84,14 @@ module.exports = (function () {
       loading: "chargement",
       comments: "Commentaires",
       advanced_options: "Options avancées",
-      edit_text: "Modifier le texte d’introduction",
+      edit_introduction_text: "Modifier le texte d’introduction",
       close: "Fermer",
       open: "Ouvrir",
       save: "Enregistrer",
       save_and_close: "Enregistrer + fermer",
       edit: "Éditer",
+      submit: "Valider",
+
       print: "Imprimer",
       create: "Créer",
       remove: "Suppr.",
@@ -118,6 +120,7 @@ module.exports = (function () {
       author_connected: "Auteurs connectés",
       no_medias_sent_yet: "Aucun média à afficher",
       show: "Afficher",
+      hide: "Masquer",
       stop_playback: "arrêter la lecture",
 
       "lang:": "Changer la langue&nbsp;:",
@@ -202,6 +205,7 @@ module.exports = (function () {
       password_required_to_open: "Mot de passe requis",
       password_required_to_edit: "Mot de passe requis pour contribuer",
       only_password_can_open: "Accès limité par mot de passe",
+      access_with_other_devices: "Connecter d’autres appareils",
       show_password: "Afficher le mot de passe",
       who_can_edit: "Qui peut contribuer",
       consultation: "Consultation",
@@ -342,6 +346,7 @@ module.exports = (function () {
       save: "Save",
       save_and_close: "Save + close",
       edit: "Edit",
+      submit: "Submit",
       print: "Print",
       create: "Create",
       remove: "Remove",
@@ -355,6 +360,7 @@ module.exports = (function () {
         "You can add co-authors in the projects, medias and recipes. If you remove an author, all the projects, medias and recipes will keep this author name and won’t be removed.",
 
       only_password_can_open: "Access limited with password",
+      access_with_other_devices: "Access with other devices",
       password_required_to_open: "Password required",
       password_required_to_edit: "Password required to contribute",
       show_password: "Show password",
@@ -381,6 +387,8 @@ module.exports = (function () {
       author_connected: "Connected author",
       no_medias_sent_yet: "No media to show",
       show: "Show",
+      hide: "Hide",
+
       stop_playback: "stop playback",
 
       "lang:": "Select lang:",

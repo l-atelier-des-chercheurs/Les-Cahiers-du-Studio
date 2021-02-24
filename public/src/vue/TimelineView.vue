@@ -1,13 +1,18 @@
 <template>
   <div class="m_navtimeline_wrapper">
-    <transition name="fade" :duration="350">
+    <transition name="fade" :duration="400">
       <div
-        v-if="$root.settings.is_loading_medias_for_folder"
+        v-if="is_loading"
         class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
       >
         <span class="animated flash">{{ $t("loading") }}</span>
       </div>
     </transition>
+
+    <!-- <transition name="fade" :duration="400">
+      <Loader v-if="is_loading" />
+      <span class="animated flash">{{ $t("loading") }}</span>
+    </transition> -->
 
     <!-- <pre>{{ sortedMedias }}</pre> -->
     <!-- <pre>{{ groupedMedias }}</pre> -->
@@ -204,7 +209,7 @@
             <div v-if="!can_edit_folder">
               <button
                 type="button"
-                @click="toggleSidebar('options')"
+                @click="toggleSidebar('informations')"
                 :class="{ 'is--active': show_access_controller }"
               >
                 <!-- @click="show_access_controller = !show_access_controller" -->
@@ -452,6 +457,7 @@ export default {
       current_scroll_event: undefined,
 
       is_realtime: false,
+      is_loading: true,
       timeline_height: window.innerHeight,
 
       collapse_foldername: false,
@@ -566,6 +572,16 @@ export default {
   },
   mounted() {
     console.log("MOUNTED • TimeLineView");
+
+    this.$socketio.listMedias({
+      type: "folders",
+      slugFolderName: this.slugFolderName,
+    });
+    this.$eventHub.$once("socketio.folders.medias_listed", () => {
+      setTimeout(() => {
+        this.is_loading = false;
+      }, 500);
+    });
 
     // this.$root.settings.sidebar_type = "informations";
     // this.$root.settings.has_sidebar_opened = true;
