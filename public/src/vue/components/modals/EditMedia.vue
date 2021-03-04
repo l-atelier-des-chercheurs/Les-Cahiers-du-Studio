@@ -47,58 +47,59 @@
             {{ $t("for_the_placement_on_timeline") }}
           </small>
         </label>
-        <DateTime
-          v-model="mediadata.date_timeline"
-          :twowaybinding="true"
-          :read_only="!can_edit"
-        ></DateTime>
+        <div>
+          <DateTime
+            v-model="mediadata.date_timeline"
+            :twowaybinding="true"
+            :read_only="!can_edit"
+          />
+          <template v-if="can_edit">
+            <div
+              class="margin-bottom-verysmall"
+              v-if="media.date_created !== undefined"
+            >
+              <small class="font-verysmall">
+                {{ $t("created_date") }}
+                <button
+                  type="button"
+                  class="currentTime_human border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+                  @click="setMediaDateTimeline(media.date_created)"
+                >
+                  {{ date_created_human }}
+                </button>
+              </small>
+            </div>
 
-        <template v-if="can_edit">
-          <div
-            class="margin-bottom-small"
-            v-if="media.date_created !== undefined"
-          >
-            <small>
-              {{ $t("created_date") }}
-              <button
-                type="button"
-                class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                @click="setMediaDateTimeline(media.date_created)"
-              >
-                {{ date_created_human }}
-              </button>
-            </small>
-          </div>
+            <div
+              class="margin-bottom-verysmall"
+              v-if="media.date_upload !== undefined"
+            >
+              <small class="font-verysmall">
+                {{ $t("sent_date") }}
+                <button
+                  type="button"
+                  class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+                  @click="setMediaDateTimeline(media.date_upload)"
+                >
+                  {{ date_uploaded_human }}
+                </button>
+              </small>
+            </div>
 
-          <div
-            class="margin-bottom-small"
-            v-if="media.date_upload !== undefined"
-          >
-            <small>
-              {{ $t("sent_date") }}
-              <button
-                type="button"
-                class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                @click="setMediaDateTimeline(media.date_upload)"
-              >
-                {{ date_uploaded_human }}
-              </button>
-            </small>
-          </div>
-
-          <div class="margin-bottom-small" v-if="isRealtime">
-            <small>
-              {{ $t("currently") }}
-              <button
-                type="button"
-                class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                @click="setMediaDateTimeline($root.current_time.seconds)"
-              >
-                {{ $root.currentTime_human }}
-              </button>
-            </small>
-          </div>
-        </template>
+            <div class="">
+              <small class="font-verysmall">
+                {{ $t("currently") }}
+                <button
+                  type="button"
+                  class="currentTime_human border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+                  @click="setMediaDateTimeline($root.current_time.seconds)"
+                >
+                  {{ $root.currentTime_human }}
+                </button>
+              </small>
+            </div>
+          </template>
+        </div>
       </div>
 
       <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -485,7 +486,6 @@ export default {
     slugMediaName: String,
     media: Object,
     folder: Object,
-    isRealtime: Boolean,
     read_only: {
       type: Boolean,
       default: true,

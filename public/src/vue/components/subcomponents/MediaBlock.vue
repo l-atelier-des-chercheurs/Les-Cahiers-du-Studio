@@ -396,6 +396,12 @@ export default {
         console.log("METHODS • MediaBlock: openMedia");
       }
       this.$eventHub.$emit("timeline.openMediaModal", this.media.slugMediaName);
+
+      // pause video if playing
+      debugger;
+      if (this.$refs.MediaContent && this.$refs.MediaContent.$refs.player) {
+        this.$refs.MediaContent.$refs.player.player.pause();
+      }
     },
     resizeMedia(type, origin) {
       if (this.$root.state.dev_mode === "debug") {
@@ -642,6 +648,8 @@ export default {
   .packery-item-content--meta--comments {
     display: flex;
     flex-flow: row nowrap;
+    color: var(--author-color);
+
     &:hover,
     &.is--active {
       background-color: var(--color-noir);
@@ -660,6 +668,7 @@ export default {
 
   .plyr__controls {
     color: var(--color-noir);
+    border-radius: 0;
   }
 
   .author_indicator {
@@ -711,10 +720,17 @@ export default {
             bottom: 0;
             margin: 0;
             pointer-events: auto;
+            justify-content: flex-start;
 
             > *:not(:first-child) {
-              opacity: 0;
+              display: none;
             }
+          }
+
+          .plyr__time {
+            background-color: rgba(255, 255, 255, 0.45);
+            border-radius: 2px;
+            padding: 0 0.2em;
           }
 
           .plyr__control {
@@ -737,8 +753,8 @@ export default {
         // display: none;
         .plyr__controls {
           // background-color: rgba(255, 255, 255, 0.45);
-
           > *:not(:first-child) {
+            display: block;
             opacity: 1;
           }
         }

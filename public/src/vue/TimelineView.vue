@@ -58,7 +58,6 @@
               :date_interval="date_interval"
               :sort="sort"
               :filter="filter"
-              :is_realtime="is_realtime"
               :read_only="read_only"
               :can_edit_folder="can_edit_folder"
             />
@@ -165,7 +164,6 @@
             v-if="$root.state.mode !== 'export_web'"
             :slugFolderName="slugFolderName"
             :folder="folder"
-            :is_realtime="is_realtime"
             :current_author="$root.current_author"
             :can_edit_folder="can_edit_folder"
             :read_only="!$root.state.connected"
@@ -388,7 +386,6 @@
       :slugMediaName="show_media_modal_for"
       :media="medias[show_media_modal_for]"
       :folder="folder"
-      :isRealtime="is_realtime"
       @close="show_media_modal_for = false"
       :read_only="!$root.state.connected"
       :can_edit="can_edit_folder"
@@ -456,7 +453,6 @@ export default {
       debounce_translation_fct: undefined,
       current_scroll_event: undefined,
 
-      is_realtime: false,
       is_loading: true,
       timeline_height: window.innerHeight,
 

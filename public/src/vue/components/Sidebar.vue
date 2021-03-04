@@ -186,7 +186,6 @@
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("calendar") }}
           <button
-            v-if="is_realtime"
             type="button"
             class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
@@ -319,10 +318,6 @@ export default {
     filter: String,
     can_edit_folder: Boolean,
     introduction_media: Object,
-    is_realtime: {
-      type: Boolean,
-      default: false,
-    },
     read_only: Boolean,
   },
   data() {
