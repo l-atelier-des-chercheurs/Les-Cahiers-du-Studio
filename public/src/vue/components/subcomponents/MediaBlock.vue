@@ -398,7 +398,6 @@ export default {
       this.$eventHub.$emit("timeline.openMediaModal", this.media.slugMediaName);
 
       // pause video if playing
-      debugger;
       if (this.$refs.MediaContent && this.$refs.MediaContent.$refs.player) {
         this.$refs.MediaContent.$refs.player.player.pause();
       }

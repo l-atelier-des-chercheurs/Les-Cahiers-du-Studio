@@ -1526,9 +1526,6 @@ export default {
   --color-author: var(--color-noir);
   --label-color: white;
 
-  --timeline-bg: #f1f2f0;
-  --timeline-bg: #f8f8f8;
-
   // --rule-color: rgb(220,220,220);
   --rule-color: rgb(210, 210, 210);
 

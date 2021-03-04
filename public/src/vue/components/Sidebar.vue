@@ -190,7 +190,7 @@
             class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
           >
-            {{ $t("now") }}
+            {{ $t("today") }}
           </button>
         </h3>
       </div>
