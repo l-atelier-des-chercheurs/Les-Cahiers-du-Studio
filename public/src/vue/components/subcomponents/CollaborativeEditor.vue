@@ -155,7 +155,15 @@ export default {
       bounds: this.$refs.editor,
 
       theme: "snow",
-      formats: ["italic", "underline", "link", "header", "list", "media"],
+      formats: [
+        "italic",
+        "underline",
+        "link",
+        "header",
+        "list",
+        "media",
+        "blockquote",
+      ],
       placeholder: "…",
     });
 

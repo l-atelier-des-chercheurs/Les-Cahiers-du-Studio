@@ -14,7 +14,7 @@
       />
     </header>
 
-    <div class="margin-top-small" v-if="!!$slots['body'] && is_open">
+    <div class="" v-if="!!$slots['body'] && is_open">
       <slot name="body"></slot>
     </div>
   </section>

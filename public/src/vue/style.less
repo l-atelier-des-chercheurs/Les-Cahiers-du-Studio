@@ -1833,12 +1833,15 @@ video {
       right: 0;
       .margin-medium;
       .bg-blanc;
-      border: 3px solid @c-noir;
+      // border: 3px solid @c-noir;
       pointer-events: auto;
       border-radius: 50%;
       transform: rotate(90deg);
 
       font-family: "Fira Code";
+      // background-color: var(--color-vert_vif);
+      background-color: var(--color-noir);
+      color: white;
 
       width: 48px;
       height: 48px;
@@ -1862,7 +1865,9 @@ video {
   .m_chat--content--post {
     position: relative;
     z-index: 1;
-    background-color: @c-gris_clair;
+    // background-color: @c-gris_clair;
+    box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
+
     // border-top: 2px solid var(--color-rouge_fonce);
 
     .padding-verysmall;
@@ -1876,6 +1881,23 @@ video {
 
     .input-group {
       margin-bottom: 0;
+    }
+
+    button[type="submit"] {
+      &:disabled {
+        animation: bump 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      }
+      @keyframes bump {
+        0% {
+          transform: scale(1);
+        }
+        30% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
     }
   }
 }
@@ -1901,10 +1923,12 @@ video {
     justify-content: space-between;
     align-items: center;
     background-color: @c-gris_tresclair;
+    color: var(--color-noir);
 
     .is--currentauthor& {
-      background-color: @c-bleu !important;
-      color: @c-bleu_vif !important;
+      background-color: var(--color-author);
+      // background-color: @c-vert !important;
+      // color: @c-blanc !important;
     }
 
     // border-bottom: 2px solid @c-gris_tresclair;
@@ -1921,8 +1945,9 @@ video {
       text-transform: initial;
       margin-right: @t-skipline / 4 !important;
       padding: 0.2rem 0.6rem 0.2rem 0.2rem;
-      color: @c-gris_fonce;
+      color: @c-noir;
       border-top-left-radius: 4px;
+      line-height: 1;
 
       .is--currentauthor& {
         &::before {
@@ -1954,10 +1979,17 @@ video {
   }
   .m_message--meta--date {
     text-transform: uppercase;
-    .font-small;
+    .font-verysmall;
     padding: 0.2rem 0.4rem 0.2rem 0.2rem;
     margin-right: 0;
     text-align: right;
+    display: flex;
+    align-items: center;
+
+    line-height: 1;
+
+    button {
+    }
   }
   .m_message--text {
     padding-right: var(--spacing);
@@ -2319,6 +2351,11 @@ video {
     content: counter(list-0, decimal) ". ";
     font-size: 75%;
     // font-weight: 600;
+  }
+
+  ul li:before {
+    // content: "•";
+    // font-size: 75%;
   }
 
   strong,

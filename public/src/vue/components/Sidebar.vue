@@ -1,14 +1,16 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-    <select class="_langSelector" v-model="currentLang">
-      <option
-        v-for="(name, code) in $root.lang.available"
-        :value="code"
-        :key="code"
-      >
-        {{ name }}
-      </option>
-    </select>
+    <div class="margin-sides-small">
+      <select class="_langSelector" v-model="currentLang">
+        <option
+          v-for="(name, code) in $root.lang.available"
+          :value="code"
+          :key="code"
+        >
+          {{ name }}
+        </option>
+      </select>
+    </div>
 
     <SidebarSection
       v-if="$root.state.mode !== 'export_web'"
@@ -202,7 +204,9 @@
           class="m_calendar--month"
           :key="month"
         >
-          <h3 class="margin-bottom-small text-ital font-small">{{ month }}</h3>
+          <h3 class="">
+            {{ month }}
+          </h3>
           <div class="m_calendar--days">
             <div
               v-for="(daymeta, index) in days"
@@ -503,13 +507,22 @@ export default {
   background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='41px' height='26px' viewBox='0 0 41 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpolygon id='Path-3' fill='%23222222' points='0 5.38215461 19.9830489 25.3652035 40.1398855 5.20836689 34.9315186 0 19.8691842 15.0623344 4.83971338 0.0328636246'%3E%3C/polygon%3E%3C/g%3E%3C/svg%3E%0A");
 }
 .m_folder {
-  border: 2px solid currentColor;
+  // border: 2px solid currentColor;
 }
 ._editButton {
   margin-top: var(--spacing);
   text-align: center;
 }
-
-._introduction {
+</style>
+<style lang="scss">
+._introduction .m_collaborativeEditor {
+  .ql-toolbar.ql-snow {
+    position: sticky;
+    top: 0;
+  }
+  .ql-editor {
+    height: auto;
+    overflow: visible;
+  }
 }
 </style>

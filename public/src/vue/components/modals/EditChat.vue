@@ -18,7 +18,7 @@
         <input type="text" v-model.trim="chatdata.name" required autofocus />
       </div>
 
-      <div class="margin-bottom-small">
+      <!-- <div class="margin-bottom-small">
         <span class="switch switch-xs">
           <input
             type="checkbox"
@@ -53,7 +53,7 @@
             </svg>
           </label>
         </span>
-      </div>
+      </div> -->
 
       <!-- Author(s) -->
       <div class="margin-bottom-small">
