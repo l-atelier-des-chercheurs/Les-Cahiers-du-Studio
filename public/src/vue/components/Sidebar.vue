@@ -100,7 +100,7 @@
             <div class="_editButton">
               <button
                 type="button"
-                class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+                class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
                 @click="edit_introduction = !edit_introduction"
                 v-html="
                   !edit_introduction
@@ -141,7 +141,7 @@
           {{ $t("keyboard_shortcuts") }}
           <button
             type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showKeyboardShortcutsList = true"
             :disabled="read_only"
           >
@@ -163,7 +163,7 @@
           {{ $t("export_folder") }}
           <button
             type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showExportTimelineModal = true"
             :disabled="read_only"
           >
@@ -186,7 +186,7 @@
           <button
             v-if="is_realtime"
             type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
+            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
           >
             {{ $t("now") }}
@@ -235,7 +235,7 @@
           {{ $t("list") }}
           <button
             type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showMediasListModal = true"
           >
             {{ $t("fullscreen") }}
@@ -497,6 +497,10 @@ export default {
 ._langSelector {
   margin: 0 auto;
   margin-top: calc(var(--spacing) / 2);
+  margin-right: 0;
+  background-color: transparent;
+  color: var(--color-noir);
+  background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='41px' height='26px' viewBox='0 0 41 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpolygon id='Path-3' fill='%23222222' points='0 5.38215461 19.9830489 25.3652035 40.1398855 5.20836689 34.9315186 0 19.8691842 15.0623344 4.83971338 0.0328636246'%3E%3C/polygon%3E%3C/g%3E%3C/svg%3E%0A");
 }
 .m_folder {
   border: 2px solid currentColor;

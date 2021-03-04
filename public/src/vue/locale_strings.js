@@ -16,6 +16,7 @@ module.exports = (function () {
       admin: "Administrateur",
       contributor: "Contributeur",
       participant: "Participant",
+      presentation: "Présentation",
       create_introduction: "Créer un texte d’introduction",
       forget_password_and_close: "Oublier le mot de passe et fermer",
 
@@ -276,6 +277,8 @@ module.exports = (function () {
       admin: "Administrator",
       contributor: "Contributor",
       participant: "Participant",
+      presentation: "Présentation",
+
       create_introduction: "Create introduction text",
       forget_password_and_close: "Forget password and close",
 

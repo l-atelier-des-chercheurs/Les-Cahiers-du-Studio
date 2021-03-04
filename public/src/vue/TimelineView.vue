@@ -1829,6 +1829,8 @@ export default {
       transform: rotate(-15deg) translateX(-20px);
       transform-origin: left center;
       font-style: italic;
+      margin-top: auto;
+      margin-bottom: auto;
 
       button {
         padding: 0;
