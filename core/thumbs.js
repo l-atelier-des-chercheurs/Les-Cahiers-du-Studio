@@ -869,18 +869,24 @@ module.exports = (function () {
         `THUMBS — _getLinkOpenGraph: ${slugFolderName}/${filename}`
       );
 
-      let meta_cache_filename = `${filename}.sitemeta.json`;
+      let url = mediaData.content;
+      if (!url) {
+        dev.error(`THUMBS — _getLinkOpenGraph / no URL`);
+        return reject(`no url`);
+      }
+
+      function addhttp(url) {
+        if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
+        return url;
+      }
+      url = addhttp(url);
+
+      let meta_cache_filename = `${api.slug(url)}.sitemeta.json`;
       let meta_cache_path = path.join(thumbFolderPath, meta_cache_filename);
       let meta_cache_fullpath = api.getFolderPath(meta_cache_path);
 
       fs.pathExists(meta_cache_fullpath).then((exists) => {
         if (!exists) {
-          const url = mediaData.content;
-          if (!url) {
-            dev.error(`THUMBS — _getLinkOpenGraph / no URL`);
-            return reject(`no url`);
-          }
-
           _getPageMetadata({ url })
             .then((_metadata) => {
               let results = {};
@@ -926,6 +932,8 @@ module.exports = (function () {
 
   function _getPageMetadata({ url }) {
     return new Promise((resolve, reject) => {
+      dev.logfunction(`THUMBS — _getPageMetadata: ${url}`);
+
       const { BrowserWindow } = require("electron");
       let win = new BrowserWindow({
         show: false,
@@ -947,9 +955,9 @@ module.exports = (function () {
       });
       win.webContents.on("did-fail-load", (err) => {
         dev.error(
-          `THUMBS — _getPageMetadata / Failed to load link page with error ${err}`
+          `THUMBS — _getPageMetadata / Failed to load link page with error ${err.message}`
         );
-        return reject(err);
+        return reject(err.message);
       });
     });
   }
