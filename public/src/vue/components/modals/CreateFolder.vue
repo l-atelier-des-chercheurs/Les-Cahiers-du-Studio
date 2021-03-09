@@ -88,7 +88,7 @@ export default {
   watch: {
     folderdata: {
       handler() {
-        this.askBeforeClosingModal = true;
+        // this.askBeforeClosingModal = true;
       },
       deep: true,
     },

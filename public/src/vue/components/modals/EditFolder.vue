@@ -21,17 +21,10 @@
       <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_authors }"
-            @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
+          {{ $t("author") }}
         </label>
 
-        <div v-if="show_authors">
+        <div>
           <AuthorsInput :currentAuthors.sync="folderdata.authors" />
           <small v-html="$t('author_instructions')" />
         </div>
