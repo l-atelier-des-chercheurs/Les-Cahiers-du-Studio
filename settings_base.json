@@ -54,6 +54,11 @@
           "default": "current",
           "read_only": true
         },
+        "date_modified": {
+          "type": "date",
+          "default": "current",
+          "override": true
+        },
         "start": {
           "type": "date",
           "default": "current"
@@ -113,6 +118,10 @@
           "media_filename": {
             "type": "string"
           },
+          "original_media_filename": {
+            "type": "string"
+          },
+
           "public": {
             "type": "boolean",
             "default": false
@@ -141,6 +150,7 @@
               "embed",
               "document",
               "writeup",
+              "introduction",
               "other"
             ],
             "default": "other"

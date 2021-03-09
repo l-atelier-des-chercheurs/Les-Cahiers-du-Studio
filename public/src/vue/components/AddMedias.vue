@@ -24,7 +24,9 @@
         :disabled="read_only"
       >
         <!-- @mouseenter="!is_touch && show_drop_container === false ? show_authors_options = true : ''" -->
-        <template v-if="$root.current_author">{{ $root.current_author.name }}</template>
+        <template v-if="$root.current_author">{{
+          $root.current_author.name
+        }}</template>
         <template v-else>{{ $t("login").toLowerCase() }}</template>
       </button>
     </div>
@@ -48,34 +50,37 @@
           <span class="text_label show_on_hover">{{ $t("text") }}</span>
 
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-            <path d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z" style="fill: currentColor;" />
+            <path
+              d="M26.51,12V28h-13V12h13m1-1h-15V29h15V11Z"
+              style="fill: currentColor"
+            />
             <line
               x1="15.21"
               y1="14.41"
               x2="24.71"
               y2="14.41"
-              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
+              style="fill: none; stroke: currentColor; stroke-miterlimit: 10"
             />
             <line
               x1="15.21"
               y1="17.88"
               x2="24.71"
               y2="17.88"
-              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
+              style="fill: none; stroke: currentColor; stroke-miterlimit: 10"
             />
             <line
               x1="15.21"
               y1="21.26"
               x2="24.71"
               y2="21.26"
-              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
+              style="fill: none; stroke: currentColor; stroke-miterlimit: 10"
             />
             <line
               x1="15.21"
               y1="24.62"
               x2="22.88"
               y2="24.62"
-              style="fill: none; stroke: currentColor; stroke-miterlimit: 10;"
+              style="fill: none; stroke: currentColor; stroke-miterlimit: 10"
             />
           </svg>
         </button>
@@ -92,9 +97,9 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
             <path
               d="M20,11.59A8.41,8.41,0,1,1,11.59,20,8.42,8.42,0,0,1,20,11.59m0-1A9.41,9.41,0,1,0,29.41,20,9.41,9.41,0,0,0,20,10.59Z"
-              style="fill: currentColor;"
+              style="fill: currentColor"
             />
-            <circle cx="20" cy="20" r="4.74" style="fill: currentColor;" />
+            <circle cx="20" cy="20" r="4.74" style="fill: currentColor" />
           </svg>
         </button>
 
@@ -127,7 +132,7 @@
               @change="updateInputFiles($event)"
               :accept="field.accept"
               :capture="field.capture"
-              style="width: 1px; height: 1px; overflow: hidden;"
+              style="width: 1px; height: 1px; overflow: hidden"
             />
           </div>
         </template>
@@ -144,7 +149,9 @@
         @click="show_addmedia_options = !show_addmedia_options"
         @drop="dropHandler($event)"
       >
-        <span class="text_label always_show" v-if="show_drop_container">Déposez vos fichiers ici</span>
+        <span class="text_label always_show" v-if="show_drop_container"
+          >Déposez vos fichiers ici</span
+        >
         <!-- TODO scroll to now au click -->
         <svg
           version="1.1"
@@ -155,11 +162,11 @@
           width="24px"
           height="24px"
           viewBox="0 0 24 24"
-          style="enable-background: new 0 0 24 24;"
+          style="enable-background: new 0 0 24 24"
           xml:space="preserve"
         >
           <path
-            style="fill: currentColor;"
+            style="fill: currentColor"
             d="M0,10.5h10.5V0h2.9v10.5H24v2.9H13.5V24h-2.9V13.5H0V10.5z"
           />
         </svg>
@@ -187,10 +194,6 @@ export default {
   props: {
     slugFolderName: String,
     folder: Object,
-    is_realtime: {
-      type: Boolean,
-      default: false,
-    },
     can_edit_folder: {
       type: Boolean,
       default: false,

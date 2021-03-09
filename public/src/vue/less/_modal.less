@@ -308,7 +308,7 @@
     .custom_scrollbar(4px, 6px, 6px, rgba(255, 255, 255, 0));
 
     > * {
-      .margin-sides-medium;
+      .margin-sides-small;
 
       &.m_modal--buttonrow {
         margin: 0;
@@ -323,6 +323,13 @@
             padding: 0;
           }
         }
+      }
+
+      > label ~ div {
+        padding: ~"calc(var(--spacing) / 4)";
+        // border: 1px solid black;
+        background-color: var(--color-noir);
+        border-radius: 4px;
       }
 
       &:first-child {

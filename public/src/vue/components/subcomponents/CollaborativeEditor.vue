@@ -155,7 +155,15 @@ export default {
       bounds: this.$refs.editor,
 
       theme: "snow",
-      formats: ["italic", "underline", "link", "header", "list", "media"],
+      formats: [
+        "italic",
+        "underline",
+        "link",
+        "header",
+        "list",
+        "media",
+        "blockquote",
+      ],
       placeholder: "…",
     });
 
@@ -599,7 +607,6 @@ export default {
   },
 };
 </script>
-<style src="../../../../node_modules/quill/dist/quill.snow.css"></style>
 <style lang="scss">
 html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
 html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
@@ -635,7 +642,6 @@ html[lang="fr"] .ql-tooltip::before {
   // padding: 0 0.1em;
   // color: rgb(27, 39, 41);
 
-  --active-color: black;
   --c-popup-bg: white;
   --c-popup-c: black;
   --size-column-width: 800px;
@@ -907,213 +913,6 @@ html[lang="fr"] .ql-tooltip::before {
 
     &:hover {
       color: black;
-    }
-  }
-
-  .mediaWriteupContent {
-    color: inherit;
-    font-family: inherit;
-    overflow: visible;
-    width: 100%;
-
-    > *:first-child {
-      margin-top: 0;
-
-      > *:first-child {
-        margin-top: 0;
-      }
-    }
-
-    // https://www.gridlover.net/try
-    // fz : 16px
-    // lh : 1.41
-    // scale : 1.31
-
-    font-size: 1.1em;
-    line-height: 1.4375em;
-    // max-width: 773px;
-    // margin: auto;
-
-    h1,
-    .h1 {
-      font-size: 2.25em;
-      line-height: 1.27777778em;
-      margin-top: 0.319444445em;
-      margin-bottom: 0em;
-    }
-    h2,
-    .h2 {
-      font-size: 1.6875em;
-      line-height: 1.7037037em;
-      margin-top: 0.85185185em;
-      margin-bottom: 0em;
-    }
-    h3,
-    .h3 {
-      font-size: 1em;
-      line-height: 1.4375em;
-      margin-top: 1.4375em;
-      margin-bottom: 0em;
-    }
-    h4,
-    .h4 {
-      font-size: 1em;
-      line-height: 1.4375em;
-      margin-top: 1.4375em;
-      margin-bottom: 0em;
-    }
-    h5,
-    .h5 {
-      font-size: 1em;
-      line-height: 1.4375em;
-      margin-top: 1.4375em;
-      margin-bottom: 0em;
-    }
-    p,
-    ul,
-    ol,
-    pre,
-    table,
-    blockquote {
-      margin-top: 0em;
-      margin-bottom: 0em;
-    }
-    ul ul,
-    ol ol,
-    ul ol,
-    ol ul {
-      margin-top: 0em;
-      margin-bottom: 0em;
-    }
-
-    /* Let's make sure all's aligned */
-    hr,
-    .hr {
-      border: 1px solid;
-      margin: -1px 0;
-    }
-    // a,
-    // b,
-    // i,
-    // strong,
-    // em,
-    // small,
-    // code {
-    //   line-height: 0;
-    // }
-    // sub,
-    // sup {
-    //   line-height: 0;
-    //   position: relative;
-    //   vertical-align: baseline;
-    // }
-    sup {
-      top: -0.5em;
-    }
-    sub {
-      bottom: -0.25em;
-    }
-    // gridlover end
-
-    h1,
-    h2 {
-      & + h2 {
-        margin-top: 0;
-      }
-    }
-
-    ol,
-    ul {
-      padding: calc(var(--spacing) / 2) 1.5em;
-      > li {
-        padding-left: 0em;
-      }
-    }
-    ul > li {
-      list-style-type: disc;
-
-      &::before {
-        content: none;
-        // content: "\2022";
-      }
-    }
-
-    li::before {
-      display: inline-block;
-      white-space: nowrap;
-      width: 1.2em;
-    }
-
-    ol li {
-      counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8
-        list-9;
-      counter-increment: list-0;
-    }
-    ol li:before {
-      content: counter(list-0, decimal) ". ";
-      font-size: 75%;
-      // font-weight: 600;
-    }
-
-    strong,
-    b {
-      // font-weight: 600;
-    }
-
-    p > a {
-      text-decoration: underline;
-      text-decoration-style: solid;
-      color: var(--active-color);
-      // font-weight: 600;
-    }
-
-    h1,
-    h2 {
-      -webkit-hyphens: auto;
-      -ms-hyphens: auto;
-      hyphens: auto;
-
-      strong,
-      b {
-        // font-weight: 800;
-      }
-    }
-
-    h1 {
-      // font-weight: 600;
-    }
-
-    h2,
-    h3,
-    h4 {
-      // font-weight: 600;
-    }
-
-    blockquote {
-      border-left: 4px solid #ccc;
-      margin-bottom: 5px;
-      margin-top: 5px;
-      padding-left: 16px;
-
-      > *:first-child {
-        margin-top: 0;
-      }
-    }
-
-    code,
-    pre {
-      background-color: #f0f0f0;
-      border-radius: 3px;
-    }
-    pre {
-      white-space: pre-wrap;
-      margin-bottom: 5px;
-      margin-top: 5px;
-      padding: 5px 10px;
-    }
-    code {
-      font-size: 85%;
-      padding: 2px 4px;
     }
   }
 

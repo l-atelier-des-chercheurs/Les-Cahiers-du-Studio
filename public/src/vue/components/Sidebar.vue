@@ -1,41 +1,56 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-    <SidebarSection v-if="$root.state.mode !== 'export_web'">
+    <div class="margin-sides-small">
+      <select class="_langSelector" v-model="currentLang">
+        <option
+          v-for="(name, code) in $root.lang.available"
+          :value="code"
+          :key="code"
+        >
+          {{ name }}
+        </option>
+      </select>
+    </div>
+
+    <SidebarSection
+      v-if="$root.state.mode !== 'export_web'"
+      :open_by_default="true"
+    >
+      <!-- <div class="border border-bottom-dashed padding-medium"> -->
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("folder_information") }}
-          <button
-            v-if="can_edit_folder"
-            type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="editFolder"
-            :disabled="read_only"
-          >
-            {{ $t("edit") }}
-          </button>
-          <button
-            v-if="can_edit_folder"
-            type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="removeFolder"
-            :disabled="read_only"
-          >
-            {{ $t("remove") }}
-          </button>
         </h3>
       </div>
 
       <div slot="body">
         <div class="margin-bottom-small">
-          <AccessController
+          <div class="m_folder" v-if="!show_informations">
+            <h2
+              data-v-2dc30bca=""
+              class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large"
+            >
+              {{ folder.name }}
+            </h2>
+          </div>
+          <Folder
+            v-else
+            :slugFolderName="folder.slugFolderName"
             :folder="folder"
+            :read_only="read_only"
             :context="'full'"
-            :type="'folders'"
-            @closeFolder="$root.closeFolder()"
           />
+          <button
+            type="button"
+            class="buttonLink"
+            style="margin-left: auto; margin-right: 0"
+            @click="show_informations = !show_informations"
+          >
+            {{ $t("more_informations") }}
+          </button>
         </div>
 
-        <div class="margin-bottom-small">
+        <!-- <div class="" v-if="can_edit_folder">
           <span class="switch">
             <input
               type="checkbox"
@@ -47,13 +62,65 @@
               $t("on_import_place_media_on_the_date_they_were_created")
             }}</label>
           </span>
+        </div> -->
+        <!-- </div> -->
+
+        <!-- <SidebarSection :open_by_default="true"> -->
+        <!-- <div slot="header"> -->
+        <h3 class="margin-none">
+          <small>{{ $t("presentation") }}</small>
+        </h3>
+        <!-- </div> -->
+        <!-- <div slot="body"> -->
+        <div class="_introduction">
+          <template v-if="!introduction_media">
+            <button type="button" @click="createIntroduction">
+              {{ $t("create_introduction") }}
+            </button>
+          </template>
+          <template v-else>
+            <template v-if="!edit_introduction">
+              <div
+                class="mediaWriteupContent"
+                v-html="introduction_media.content"
+              />
+            </template>
+            <template v-else>
+              <CollaborativeEditor
+                :slugFolderName="slugFolderName"
+                :enable_collaboration="true"
+                :media="introduction_media"
+                :spellcheck="spellcheck"
+                @connectionStateChanged="
+                  (_connection_state) => (connection_state = _connection_state)
+                "
+                ref="textField"
+                :read_only="read_only"
+              />
+            </template>
+
+            <div class="_editButton">
+              <button
+                type="button"
+                class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
+                @click="edit_introduction = !edit_introduction"
+                v-html="
+                  !edit_introduction
+                    ? $t('edit_introduction_text')
+                    : $t('submit')
+                "
+              />
+            </div>
+          </template>
         </div>
       </div>
     </SidebarSection>
 
     <SidebarSection>
       <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">{{ $t("share") }}</h3>
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t("access_with_other_devices") }}
+        </h3>
       </div>
       <div slot="body">
         <CreateQRCode :slugFolderName="slugFolderName" />
@@ -70,29 +137,13 @@
       </div>
     </SidebarSection>
 
-    <SidebarSection>
-      <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">{{ $t("lang") }}</h3>
-      </div>
-      <div slot="body">
-        <select v-model="currentLang">
-          <option
-            v-for="(name, code) in $root.lang.available"
-            :value="code"
-            :key="code"
-            >{{ name }}</option
-          >
-        </select>
-      </div>
-    </SidebarSection>
-
-    <SidebarSection v-if="$root.state.mode !== 'export_web'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("keyboard_shortcuts") }}
           <button
             type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showKeyboardShortcutsList = true"
             :disabled="read_only"
           >
@@ -108,13 +159,13 @@
       @close="showKeyboardShortcutsList = false"
     ></KeyboardShortcuts>
 
-    <SidebarSection v-if="$root.state.mode !== 'export_web'">
+    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("export_folder") }}
           <button
             type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showExportTimelineModal = true"
             :disabled="read_only"
           >
@@ -135,12 +186,11 @@
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("calendar") }}
           <button
-            v-if="is_realtime"
             type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
+            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
           >
-            {{ $t("now") }}
+            {{ $t("today") }}
           </button>
         </h3>
       </div>
@@ -153,7 +203,9 @@
           class="m_calendar--month"
           :key="month"
         >
-          <h3 class="margin-bottom-small text-ital font-small">{{ month }}</h3>
+          <h3 class="">
+            {{ month }}
+          </h3>
           <div class="m_calendar--days">
             <div
               v-for="(daymeta, index) in days"
@@ -186,7 +238,7 @@
           {{ $t("list") }}
           <button
             type="button"
-            class="button-small border-circled button-thin button-wide padding-verysmall margin-none"
+            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
             @click="showMediasListModal = true"
           >
             {{ $t("fullscreen") }}
@@ -228,7 +280,7 @@
   </div>
 </template>
 <script>
-import Informations from "./sidebar/Informations.vue";
+import Folder from "./Folder.vue";
 import Calendrier from "./sidebar/Calendrier.vue";
 import Tableau from "./sidebar/Tableau.vue";
 import SidebarSection from "./sidebar/SidebarSection.vue";
@@ -239,9 +291,11 @@ import qrcode from "@xkeshi/vue-qrcode";
 import alertify from "alertify.js";
 import CreateQRCode from "./qr/CreateQRCode.vue";
 import AccessController from "./subcomponents/AccessController.vue";
+import CollaborativeEditor from "./subcomponents/CollaborativeEditor.vue";
 
 export default {
   components: {
+    Folder,
     SidebarSection,
     Tableau,
     MediasList,
@@ -249,6 +303,7 @@ export default {
     ExportTimeline,
     CreateQRCode,
     AccessController,
+    CollaborativeEditor,
   },
   props: {
     slugFolderName: String,
@@ -262,10 +317,7 @@ export default {
     sort: Object,
     filter: String,
     can_edit_folder: Boolean,
-    is_realtime: {
-      type: Boolean,
-      default: false,
-    },
+    introduction_media: Object,
     read_only: Boolean,
   },
   data() {
@@ -275,6 +327,8 @@ export default {
       showWriteupModal: false,
       showExportTimelineModal: false,
       currentLang: this.$root.lang.current,
+      edit_introduction: false,
+      show_informations: false,
     };
   },
   mounted() {},
@@ -349,6 +403,19 @@ export default {
       }
 
       return dates;
+    },
+    createIntroduction() {
+      this.$root
+        .createMedia({
+          slugFolderName: this.slugFolderName,
+          type: "folders",
+          additionalMeta: {
+            type: "introduction",
+          },
+        })
+        .then(() => {
+          this.edit_introduction = true;
+        });
     },
 
     isDayToday(timestamp) {
@@ -425,4 +492,32 @@ export default {
 };
 </script>
 
-<style lang="sass"></style>
+<style lang="scss" scoped>
+._langSelector {
+  margin: 0 auto;
+  margin-top: calc(var(--spacing) / 2);
+  margin-right: 0;
+  background-color: transparent;
+  color: var(--color-noir);
+  background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='41px' height='26px' viewBox='0 0 41 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpolygon id='Path-3' fill='%23222222' points='0 5.38215461 19.9830489 25.3652035 40.1398855 5.20836689 34.9315186 0 19.8691842 15.0623344 4.83971338 0.0328636246'%3E%3C/polygon%3E%3C/g%3E%3C/svg%3E%0A");
+}
+.m_folder {
+  // border: 2px solid currentColor;
+}
+._editButton {
+  margin-top: var(--spacing);
+  text-align: center;
+}
+</style>
+<style lang="scss">
+._introduction .m_collaborativeEditor {
+  .ql-toolbar.ql-snow {
+    position: sticky;
+    top: 0;
+  }
+  .ql-editor {
+    height: auto;
+    overflow: visible;
+  }
+}
+</style>

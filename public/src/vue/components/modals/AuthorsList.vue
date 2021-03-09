@@ -47,7 +47,7 @@
                 v-if="openCreateAuthorPanel == false"
                 class="m_authorsList--createAuthor--createButton bg-bleumarine"
               >
-                {{ $t("create_an_author") }}
+                {{ $t("create_account") }}
               </button>
               <CreateAuthor
                 v-else

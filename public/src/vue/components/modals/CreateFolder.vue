@@ -20,18 +20,9 @@
 
       <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_authors }"
-            @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
-        </label>
+        <label>{{ $t("author") }} </label>
 
-        <div v-if="show_authors">
+        <div>
           <AuthorsInput :currentAuthors.sync="folderdata.authors" />
           <small v-html="$t('author_instructions')" />
         </div>
@@ -83,8 +74,6 @@ export default {
   data() {
     return {
       askBeforeClosingModal: false,
-      show_password_field: false,
-      show_authors: false,
 
       is_sending_content_to_server: false,
       folderdata: {
@@ -99,7 +88,7 @@ export default {
   watch: {
     folderdata: {
       handler() {
-        this.askBeforeClosingModal = true;
+        // this.askBeforeClosingModal = true;
       },
       deep: true,
     },

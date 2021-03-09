@@ -7,7 +7,7 @@ button,
   font-family: inherit;
   background-color: transparent;
   display: inline-block;
-  text-transform: lowercase;
+  // text-transform: lowercase;
   text-decoration: none;
   text-align: center;
   user-select: none;
@@ -56,11 +56,11 @@ button,
   }
 
   &.button-triangle {
-    padding: 0;
+    // padding: 0;
     &::after {
-      content: "◄";
+      content: "←";
       display: inline-block;
-      margin-left: 0.5em;
+      margin-left: 0em;
       transition: transform 0.5s, color 0.5s;
     }
 
@@ -133,7 +133,7 @@ button,
   }
 
   &:hover {
-    background-color: @c-gris;
+    background-color: @c-gris_clair;
     &::after {
       // border-bottom-width: 2px;
     }
@@ -322,24 +322,24 @@ b {
 }
 
 .font-medium {
-  font-size: 1em;
+  font-size: 1rem;
   line-height: 1.25;
 }
 .font-small {
-  font-size: 0.9em;
+  font-size: 0.9rem;
   line-height: 1.25;
 }
 .font-verysmall {
-  font-size: 0.7em;
+  font-size: 0.7rem;
 }
 .font-veryverysmall {
-  font-size: 0.5em;
+  font-size: 0.5rem;
 }
 .font-large {
-  font-size: 1.1em;
+  font-size: 1.1rem;
 }
 .font-verylarge {
-  font-size: 1.3em;
+  font-size: 1.3rem;
 }
 .text-centered {
   text-align: center;
@@ -463,6 +463,9 @@ b {
 .padding-verysmall {
   padding: @t-skipline / 4;
 }
+.padding-veryverysmall {
+  padding: @t-skipline / 8;
+}
 .padding-sides-verysmall {
   padding-left: @t-skipline / 4;
   padding-right: @t-skipline / 4;
@@ -499,6 +502,9 @@ b {
 
 .button-small {
   .font-small;
+}
+.button-verysmall {
+  .font-verysmall;
 }
 
 .button-round {
@@ -604,6 +610,10 @@ input[type="checkbox"] {
   + label {
     display: inline;
   }
+}
+
+label {
+  .font-small;
 }
 
 .input-group {
@@ -763,6 +773,9 @@ th {
 }
 .flex-size-3\/5 {
   flex: 1 1 60%;
+}
+.flex-size-4\/5 {
+  flex: 1 1 80%;
 }
 
 @media screen and (max-width: 50rem) {

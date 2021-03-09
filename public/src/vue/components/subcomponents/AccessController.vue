@@ -376,10 +376,10 @@ export default {
   display: block;
   height: auto;
   // border: 1px solid var(--color-noir);
-  background-color: var(--color-noir);
-  color: white;
+  // background-color: var(--color-noir);
+  // color: white;
   border-radius: 4px;
-  padding: calc(var(--spacing) / 3);
+  padding: 0 calc(var(--spacing) / 3);
 }
 
 button {

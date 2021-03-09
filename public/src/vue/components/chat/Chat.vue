@@ -168,6 +168,7 @@
                 'is--lastReadMessage':
                   message.metaFileName === last_read_message_on_opening,
               }"
+              :style="authorStyles(message)"
             >
               <div class="m_message--meta" v-if="message.authors">
                 <div
@@ -193,7 +194,7 @@
                     v-if="
                       isCurrentAuthor(message) || $root.current_author_is_admin
                     "
-                    class="button-nostyle padding-top-verysmall"
+                    class="button-nostyle"
                     @click="removeMessage(message)"
                   >
                     <svg
@@ -240,7 +241,7 @@
         </transition>
       </div>
 
-      <transition name="fade" :duration="400">
+      <transition name="slideupfrombottomright" :duration="400">
         <div
           class="m_chat--content--scrollToBottom"
           v-if="!is_scrolled_to_bottom"
@@ -254,13 +255,15 @@
         :class="{ 'has--hidden_content_above': !is_scrolled_to_bottom }"
       >
         <template v-if="$root.current_author">
-          <label>{{ $t("post_a_message") }}</label>
+          <label class="margin-none"
+            ><small>{{ $t("post_a_message") }}</small></label
+          >
           <form @submit.prevent="postNewMessage()" class="input-group">
             <input type="text" v-model.trim="new_message" required autofocus />
             <button
               type="submit"
               :disabled="!new_message"
-              v-html="'✓'"
+              v-html="$t('send')"
               class="bg-vert_vif button button-round"
             />
           </form>
@@ -485,6 +488,15 @@ export default {
         0,
         last_message_read_index - 10
       );
+    },
+    authorStyles(message) {
+      let color = "#ffffff";
+      const author = this.getMessageAuthor(message);
+      if (author.hasOwnProperty("color")) color = author.color;
+
+      return {
+        "--color-author": color,
+      };
     },
 
     setReadMessageToLast() {

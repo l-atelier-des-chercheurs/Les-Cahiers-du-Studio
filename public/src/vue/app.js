@@ -28,20 +28,15 @@ Vue.use(VuePackeryPlugin);
 import VuePlyr from "vue-plyr";
 Vue.use(VuePlyr);
 
-Vue.component("Loader", {
-  name: "Loader",
-  template: `
-    <div class="_loader">
-      <span class="loader" />
-    </div>
-  `,
-});
-
 import VueDragscroll from "vue-dragscroll";
 Vue.use(VueDragscroll);
 
 import Modal from "./components/modals/BaseModal.vue";
 Vue.component("Modal", Modal);
+import DateFieldComponent from "./components/subcomponents/DateField.vue";
+Vue.component("DateField", DateFieldComponent);
+import PasswordFieldComponent from "./components/subcomponents/PasswordField.vue";
+Vue.component("PasswordField", PasswordFieldComponent);
 
 Vue.component("Loader", {
   name: "Loader",
@@ -173,7 +168,6 @@ let vm = new Vue({
       sidebar_type: "",
 
       highlightMedia: "",
-      is_loading_medias_for_folder: false,
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
       perf_mode: "low",
 
@@ -184,6 +178,10 @@ let vm = new Vue({
       current_chat_slug: false,
       current_author_slug: false,
       media_keyword_filter: false,
+
+      folder_filter: {
+        name: "",
+      },
 
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
@@ -272,7 +270,6 @@ let vm = new Vue({
 
       if (this.store.request.slugFolderName) {
         this.settings.current_slugFolderName = this.store.request.slugFolderName;
-        this.settings.is_loading_medias_for_folder = this.store.request.slugFolderName;
         this.$eventHub.$once("socketio.folders.folders_listed", () => {
           this.openFolder(this.store.request.slugFolderName);
         });
@@ -465,13 +462,19 @@ let vm = new Vue({
     formatDateToHuman(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LL");
     },
-
     formatDateToCalendar(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").calendar();
+    },
+    formatDateToPrecise(date) {
+      return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");
     },
     formatDurationToMinuteHours(date) {
       return this.$moment.utc(date).format("mm:ss");
     },
+    formatDurationToHoursMinutesSeconds(date) {
+      return this.$moment.utc(date).format("HH:mm:ss");
+    },
+
     getUnreadMessageCount(chat) {
       if (!this.current_author) return false;
 
@@ -687,16 +690,46 @@ let vm = new Vue({
       this.$socketio.removeMedia(mdata);
     },
     editMedia: function (mdata) {
-      if (window.state.dev_mode === "debug") {
-        console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`);
-      }
-      this.$socketio.editMedia(mdata);
-    },
-    editMedia: function (mdata) {
-      if (window.state.dev_mode === "debug") {
-        console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`);
-      }
-      this.$socketio.editMedia(mdata);
+      return new Promise((resolve, reject) => {
+        if (window.state.dev_mode === "debug") {
+          console.log(
+            `ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`
+          );
+        }
+
+        mdata.id =
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15);
+
+        this.$socketio.editMedia(mdata);
+
+        const editMediaTimeout = setTimeout(() => {
+          this.$eventHub.$off(
+            `socketio.media_created_or_updated`,
+            catchMediaCreation
+          );
+          return reject();
+        }, 2000);
+
+        const catchMediaCreation = (d) => {
+          if (mdata.id === d.id) {
+            clearTimeout(editMediaTimeout);
+            this.$nextTick(() => {
+              return resolve(d);
+            });
+          } else {
+            this.$eventHub.$once(
+              `socketio.media_created_or_updated`,
+              catchMediaCreation
+            );
+          }
+        };
+
+        this.$eventHub.$once(
+          `socketio.media_created_or_updated`,
+          catchMediaCreation
+        );
+      });
     },
 
     openFolder: function (slugFolderName) {
@@ -722,24 +755,12 @@ let vm = new Vue({
       }
 
       this.settings.current_slugFolderName = slugFolderName;
-      this.settings.is_loading_medias_for_folder = slugFolderName;
-
-      this.$nextTick(() => {
-        this.$socketio.listMedias({
-          type: "folders",
-          slugFolderName,
-        });
-      });
 
       history.pushState(
         { slugFolderName },
         this.store.folders[slugFolderName].name,
         "/" + slugFolderName
       );
-
-      this.$eventHub.$once("socketio.folders.medias_listed", () => {
-        this.settings.is_loading_medias_for_folder = false;
-      });
     },
     closeFolder: function () {
       if (window.state.dev_mode === "debug") {

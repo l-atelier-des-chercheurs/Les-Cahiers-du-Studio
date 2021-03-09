@@ -96,8 +96,12 @@
         <div class="m_author--name">{{ author.name }}</div>
         <!-- <div class="m_author--email" v-if="author.email">{{ author.email }}</div> -->
         <div class="m_author--role" v-if="author.role">
-          <label>{{ $t(author.role) }}</label>
+          <label>
+            <i>{{ $t(author.role) }} </i>
+          </label>
         </div>
+
+        <br />
 
         <div class="m_author--connected" v-if="author_is_connected" @click.stop>
           <label class>
@@ -292,7 +296,9 @@
             context !== 'full'
           "
         >
-          <label>{{ $t("protected_by_pass") }}</label>
+          <label>
+            <small>{{ $t("protected_by_pass") }} </small>
+          </label>
         </div>
         <button
           v-if="!can_login_as_author"
@@ -346,7 +352,7 @@
         <button
           type="button"
           v-if="author.slugFolderName === $root.current_author.slugFolderName"
-          class="button-redthin"
+          class="buttonLink"
           @click.stop="$root.unsetAuthor()"
         >
           {{ $t("logout") }}
@@ -619,13 +625,14 @@ export default {
     padding-right: calc(var(--spacing) / 2);
 
     > * {
-      margin-right: calc(var(--spacing) / 2);
+      // margin-right: calc(var(--spacing) / 2);
     }
   }
 
   &.is--selected {
     color: var(--color-bleu_vif);
-    background-color: white hr {
+    background-color: var(--color-bleu);
+    hr {
       border-color: currentColor;
     }
     .buttonLink {

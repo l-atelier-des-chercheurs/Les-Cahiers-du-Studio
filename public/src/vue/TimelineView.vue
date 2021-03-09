@@ -1,13 +1,18 @@
 <template>
   <div class="m_navtimeline_wrapper">
-    <transition name="fade" :duration="350">
+    <transition name="fade" :duration="400">
       <div
-        v-if="$root.settings.is_loading_medias_for_folder"
+        v-if="is_loading"
         class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
       >
         <span class="animated flash">{{ $t("loading") }}</span>
       </div>
     </transition>
+
+    <!-- <transition name="fade" :duration="400">
+      <Loader v-if="is_loading" />
+      <span class="animated flash">{{ $t("loading") }}</span>
+    </transition> -->
 
     <!-- <pre>{{ sortedMedias }}</pre> -->
     <!-- <pre>{{ groupedMedias }}</pre> -->
@@ -27,29 +32,32 @@
           :style="{ [type]: percent + '%' }"
         >
           <transition name="chatopen" :duration="350" mode="out-in">
-            <Informations
+            <!-- <Informations
+              :folder="folder"
+              :introduction_media="introduction_media"
+              :slugFolderName="slugFolderName"
               v-if="
                 $root.settings.has_sidebar_opened &&
                 $root.settings.sidebar_type === 'informations'
               "
-            />
+            /> -->
 
             <Sidebar
-              v-else-if="
+              v-if="
                 $root.settings.has_sidebar_opened &&
-                $root.settings.sidebar_type === 'options'
+                $root.settings.sidebar_type === 'informations'
               "
               :folder="folder"
               :slugFolderName="slugFolderName"
               :timeline_start="timeline_interval.start"
               :timeline_end="timeline_interval.end"
+              :introduction_media="introduction_media"
               :visible_day="visible_day"
               :medias="medias"
               :sortedMedias="sortedMedias"
               :date_interval="date_interval"
               :sort="sort"
               :filter="filter"
-              :is_realtime="is_realtime"
               :read_only="read_only"
               :can_edit_folder="can_edit_folder"
             />
@@ -156,7 +164,6 @@
             v-if="$root.state.mode !== 'export_web'"
             :slugFolderName="slugFolderName"
             :folder="folder"
-            :is_realtime="is_realtime"
             :current_author="$root.current_author"
             :can_edit_folder="can_edit_folder"
             :read_only="!$root.state.connected"
@@ -200,7 +207,7 @@
             <div v-if="!can_edit_folder">
               <button
                 type="button"
-                @click="toggleSidebar('options')"
+                @click="toggleSidebar('informations')"
                 :class="{ 'is--active': show_access_controller }"
               >
                 <!-- @click="show_access_controller = !show_access_controller" -->
@@ -379,7 +386,6 @@
       :slugMediaName="show_media_modal_for"
       :media="medias[show_media_modal_for]"
       :folder="folder"
-      :isRealtime="is_realtime"
       @close="show_media_modal_for = false"
       :read_only="!$root.state.connected"
       :can_edit="can_edit_folder"
@@ -447,7 +453,7 @@ export default {
       debounce_translation_fct: undefined,
       current_scroll_event: undefined,
 
-      is_realtime: false,
+      is_loading: true,
       timeline_height: window.innerHeight,
 
       collapse_foldername: false,
@@ -475,9 +481,9 @@ export default {
         {
           key: "informations",
         },
-        {
-          key: "options",
-        },
+        // {
+        //   key: "options",
+        // },
         {
           key: "filters",
         },
@@ -563,8 +569,18 @@ export default {
   mounted() {
     console.log("MOUNTED • TimeLineView");
 
-    this.$root.settings.sidebar_type = "informations";
-    this.$root.settings.has_sidebar_opened = true;
+    this.$socketio.listMedias({
+      type: "folders",
+      slugFolderName: this.slugFolderName,
+    });
+    this.$eventHub.$once("socketio.folders.medias_listed", () => {
+      setTimeout(() => {
+        this.is_loading = false;
+      }, 500);
+    });
+
+    // this.$root.settings.sidebar_type = "informations";
+    // this.$root.settings.has_sidebar_opened = true;
 
     this.$eventHub.$on("scrollToMedia", this.scrollToMedia);
     this.$eventHub.$on("scrollToDate", this.scrollToDate);
@@ -595,11 +611,11 @@ export default {
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);
 
-    if (this.$root.state.mode === "export_web") {
-      this.percent = 50;
-      this.$root.settings.has_sidebar_opened = true;
-      this.$root.settings.sidebar_type = "informations";
-    }
+    // if (this.$root.state.mode === "export_web") {
+    this.percent = 35;
+    this.$root.settings.has_sidebar_opened = true;
+    this.$root.settings.sidebar_type = "informations";
+    // }
 
     setTimeout(() => {
       this.collapse_foldername = true;
@@ -663,6 +679,14 @@ export default {
         slugFolderName: this.slugFolderName,
       });
     },
+    introduction_media() {
+      if (typeof this.medias === "object")
+        return Object.values(this.medias).find(
+          (media) =>
+            media.hasOwnProperty("type") && media.type === "introduction"
+        );
+      return false;
+    },
     can_see_folder() {
       return this.$root.canSeeFolder({
         type: "folders",
@@ -685,7 +709,10 @@ export default {
         let mediaDataToOrderBy;
         const media = this.medias[slugMediaName];
 
-        if (media.hasOwnProperty("type") && media.type === "writeup") {
+        if (
+          media.hasOwnProperty("type") &&
+          (media.type === "writeup" || media.type === "introduction")
+        ) {
           continue;
         }
 
@@ -1499,9 +1526,6 @@ export default {
   --color-author: var(--color-noir);
   --label-color: white;
 
-  --timeline-bg: #f1f2f0;
-  --timeline-bg: #f8f8f8;
-
   // --rule-color: rgb(220,220,220);
   --rule-color: rgb(210, 210, 210);
 
@@ -1538,7 +1562,7 @@ export default {
   // min-width: 100vw;
 
   margin: 0px 0px;
-  padding: 16px 45vw;
+  padding: 16px 45vw 16px 15vw;
   // border-right: 1px solid #000;
 }
 
@@ -1798,6 +1822,8 @@ export default {
       transform: rotate(-15deg) translateX(-20px);
       transform-origin: left center;
       font-style: italic;
+      margin-top: auto;
+      margin-bottom: auto;
 
       button {
         padding: 0;
