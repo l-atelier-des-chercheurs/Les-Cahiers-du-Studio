@@ -118,6 +118,10 @@
           "media_filename": {
             "type": "string"
           },
+          "original_media_filename": {
+            "type": "string"
+          },
+
           "public": {
             "type": "boolean",
             "default": false

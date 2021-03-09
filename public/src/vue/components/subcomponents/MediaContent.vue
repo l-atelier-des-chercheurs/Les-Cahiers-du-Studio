@@ -32,7 +32,12 @@
         </vue-plyr>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options" ref="player">
+        <vue-plyr
+          :options="plyr_options"
+          :emit="['timeupdate']"
+          ref="player"
+          @timeupdate="videoTimeUpdated"
+        >
           <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" />
         </vue-plyr>
       </template>
@@ -52,7 +57,12 @@
         </vue-plyr>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options" ref="player">
+        <vue-plyr
+          :options="plyr_options"
+          :emit="['timeupdate']"
+          ref="player"
+          @timeupdate="videoTimeUpdated"
+        >
           <audio :src="mediaURL" preload="none" />
         </vue-plyr>
       </template>
@@ -451,6 +461,10 @@ export default {
       }
 
       return getId(url);
+    },
+    videoTimeUpdated(event) {
+      console.log("videoTimeUpdated");
+      this.$emit("videoTimeUpdated", event.detail.plyr.media.currentTime);
     },
   },
 };

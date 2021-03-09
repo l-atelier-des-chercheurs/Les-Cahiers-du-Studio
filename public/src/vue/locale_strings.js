@@ -24,6 +24,10 @@ module.exports = (function () {
       list_of_authors: "Liste des auteurs",
       search_among_timeline: "Chercher par nom",
       folder_name_to_find: "Nom à trouver",
+      quality: "Qualité",
+      adjust_infos:
+        "Vous pourrez toujours revenir au média d’origine si nécessaire.",
+
       name: "Nom",
       created_date: "Date de création",
       start_date: "Date de début",
@@ -36,6 +40,13 @@ module.exports = (function () {
       author: "Auteur(s)",
       share: "Partager",
       zoom: "Zoom",
+
+      very_high: "Très élevée",
+      high: "Élevée",
+      medium: "Moyenne",
+      low: "Basse",
+      draft: "Ébauche",
+
       download: "Télécharger",
       caption: "Légende",
       date: "Date",
@@ -73,6 +84,27 @@ module.exports = (function () {
 
       informations: "Informations",
       show_instructions: "Comment utiliser cet outil ?",
+
+      "error:": "Erreur&nbsp;:",
+
+      optimize: "Optimiser",
+      optimize_instructions:
+        "Convertir le média vidéo ou audio pour optimiser la compatibilité avec tous les appareils et réduire le poids (codec vidéo mp4/h264, codec audio mp3).",
+      trim: "Raccourcir",
+      trim_instructions:
+        "Indiquez le début et la fin souhaités.\nVous pouvez lire et mettre la vidéo en pause puis utiliser les boutons en bas de la vidéo pour copier le temps de lecture.",
+      playback: "Lecture",
+      trim_help: "Modification du début et de la fin de la coupe",
+      beginning: "Début",
+      end: "Fin",
+      play_video_from_this_moment: "Lire la vidéo à partir de ce moment là",
+      use_current_time: "Copier le temps du lecteur",
+      set_as_beginning: "placer le début",
+      set_as_end: "placer la fin",
+      replace: "Remplacer",
+      test: "Tester",
+
+      revert_to_original: "Revenir à l’original",
 
       filters: "Filtres",
       on_import_place_media_on_the_date_they_were_created:
@@ -235,6 +267,8 @@ module.exports = (function () {
         file_was_sent: "Le fichier a été envoyé.",
         file_upload_not_allowed:
           "Votre navigateur web ne prend pas en charge l’envoi de fichiers.",
+        creating_video: "En cours de création de la vidéo…",
+
         connection_active: "La connexion au serveur est active.",
         connection_lost: "La connexion au serveur a été perdue.",
         contents_wont_be_editable:
