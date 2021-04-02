@@ -10,7 +10,10 @@
         <div>
           {{ $t("keywords") }}
         </div>
-        <div class="m_keywordField">
+        <div v-if="all_keywords.length === 0">
+          <i>{{ $t("none").toLowerCase() }}</i>
+        </div>
+        <div v-else class="m_keywordField">
           <button
             type="button"
             v-for="{ term, count } in all_keywords"
@@ -31,7 +34,10 @@
           {{ $t("author") }}
         </div>
 
-        <div class="m_authorField">
+        <div v-if="!all_authors || all_authors.length === 0">
+          <i>{{ $t("none").toLowerCase() }}</i>
+        </div>
+        <div v-else class="m_authorField">
           <button
             type="button"
             v-for="{ term: author_slug, count } in all_authors"
@@ -115,6 +121,7 @@ export default {
       const kw_sorted = Object.values(medias).reduce((acc, m) => {
         if (m[type] && m[type].length > 0) {
           m[type].map(({ [prop_name]: val }) => {
+            if (!val) return;
             const fit = acc.find((i) => i.term === val);
             if (fit) {
               fit.count = fit.count + 1;
