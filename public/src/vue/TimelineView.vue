@@ -742,7 +742,6 @@ export default {
             )
           )
             continue;
-          debugger;
         }
 
         // if media is missing the

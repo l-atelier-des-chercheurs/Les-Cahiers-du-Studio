@@ -851,7 +851,6 @@ export default {
     },
     adjust_mode() {
       if (this.adjust_mode === "trim") {
-        debugger;
         this.trim_options.beginning = "00:00:00";
         this.trim_options.end = this.$root.formatDurationToHoursMinutesSeconds(
           this.media_duration * 1000
@@ -876,8 +875,6 @@ export default {
       const _beginning = +this.$moment.duration(this.trim_options.beginning);
       const _end = +this.$moment.duration(this.trim_options.end);
       const _duration = +this.$moment.duration(this.media_duration * 1000);
-
-      debugger;
 
       // if beginning is after clip end
       if (_beginning >= _end)
