@@ -46,6 +46,8 @@ module.exports = (function () {
       medium: "Moyenne",
       low: "Basse",
       draft: "Ébauche",
+      reveal_password: "Révéler le mot de passe",
+      hide_password: "Masquer le mot de passe",
 
       download: "Télécharger",
       caption: "Légende",
@@ -132,6 +134,8 @@ module.exports = (function () {
       password: "Mot de passe",
       change_password: "Modifier le mot de passe",
       protected_by_pass: "protégé par mot de passe",
+      add_password: "Protéger par un mot de passe",
+
       password_instructions:
         "Seuls les utilisateurs possédant ce mot de passe pourront éditer cette timeline, y ajouter du contenu et consulter les médias non publics.",
 

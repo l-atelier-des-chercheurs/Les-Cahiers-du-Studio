@@ -90,24 +90,28 @@
       </label>
 
       <div v-if="show_password">
-        <div class="margin-bottom-verysmall">
-          <input
-            type="password"
+        <div
+          class="margin-bottom-verysmall"
+          v-if="!$root.current_author_is_admin"
+        >
+          <PasswordField
             v-if="author.password === 'has_pass'"
-            :placeholder="$t('old_password').toLowerCase()"
             v-model="authordata._old_password"
+            :placeholder="$t('old_password').toLowerCase()"
           />
         </div>
         <div>
-          <input
-            type="password"
+          <PasswordField
+            v-if="show_password"
+            v-model="authordata.password"
             :required="
               $root.state.local_options.force_author_password ? true : false
             "
+            :field_type="'new-password'"
             :placeholder="$t('new_password').toLowerCase()"
-            v-model="authordata.password"
           />
         </div>
+        <small>{{ $t("password_instructions") }}</small>
       </div>
     </div>
 

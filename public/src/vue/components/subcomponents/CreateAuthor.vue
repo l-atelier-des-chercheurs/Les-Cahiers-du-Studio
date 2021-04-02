@@ -1,5 +1,9 @@
 <template>
-  <form @close="$emit('close')" v-on:submit.prevent="newAuthor" :read_only="read_only">
+  <form
+    @close="$emit('close')"
+    v-on:submit.prevent="newAuthor"
+    :read_only="read_only"
+  >
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
     <!-- Human name -->
@@ -31,9 +35,11 @@
             :key="role"
             :disabled="
               role === 'admin' &&
-              (!current_author || current_author.role !== 'admin')
+              (!$root.current_author || $root.current_author.role !== 'admin')
             "
-          >{{ $t(role) }}</option>
+          >
+            {{ $t(role) }}
+          </option>
         </select>
       </div>
     </div>
@@ -41,16 +47,15 @@
     <!-- Password -->
     <div class="margin-bottom-small">
       <label>{{ $t("password") }}</label>
-      <div v-if="show_password">
-        <input
-          type="password"
-          :required="
-            $root.state.local_options.force_author_password ? true : false
-          "
-          v-model="authordata.password"
-          autocomplete="new-password"
-        />
-      </div>
+
+      <PasswordField
+        v-if="show_password"
+        v-model="authordata.password"
+        :required="
+          $root.state.local_options.force_author_password ? true : false
+        "
+        :field_type="'new-password'"
+      />
     </div>
 
     <!-- Color -->
@@ -61,8 +66,8 @@
           v-for="color in sortedRandomColorArray"
           :key="color"
           :class="{
-            'is--active' : authordata.color === color 
-            }"
+            'is--active': authordata.color === color,
+          }"
           @click="authordata.color = color"
           :style="`background-color: ${color}`"
         />
@@ -115,17 +120,25 @@
       <button
         type="button"
         class="buttonLink"
-        style="flex-grow: 0;"
+        style="flex-grow: 0"
         @click="$emit('close')"
-      >{{ $t("cancel") }}</button>
+      >
+        {{ $t("cancel") }}
+      </button>
 
       <button type="submit" class="bg-bleuvert">{{ $t("create") }}</button>
     </div>
 
     <div class="text-centered" v-if="mode !== 'simple_login'">
       <span class="switch switch-xs margin-top-small">
-        <input id="login_after_creation" type="checkbox" v-model="login_after_creation" />
-        <label for="login_after_creation">{{ $t("login_after_creation") }}</label>
+        <input
+          id="login_after_creation"
+          type="checkbox"
+          v-model="login_after_creation"
+        />
+        <label for="login_after_creation">{{
+          $t("login_after_creation")
+        }}</label>
       </span>
     </div>
   </form>
@@ -188,12 +201,12 @@ export default {
     },
   },
   methods: {
-    newAuthor: function(event) {
+    newAuthor: function (event) {
       console.log("newAuthor");
 
       let data = JSON.parse(JSON.stringify(this.authordata));
 
-      let allAuthorsName = this.$root.all_authors.map(a =>
+      let allAuthorsName = this.$root.all_authors.map((a) =>
         a.name.toLowerCase()
       );
 
@@ -214,7 +227,7 @@ export default {
 
       if (!!data.password) data.password = this.$auth.hashCode(data.password);
 
-      this.$root.createFolder({ type: "authors", data }).then(adata => {
+      this.$root.createFolder({ type: "authors", data }).then((adata) => {
         if (this.login_after_creation) {
           this.$nextTick(() => {
             this.$eventHub.$emit("authors.submitPassword", {

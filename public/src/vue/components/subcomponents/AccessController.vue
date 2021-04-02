@@ -148,13 +148,13 @@
     <div class="padding-verysmall _pwd_input" v-if="showInputPasswordField">
       <div class="margin-bottom-small">
         <label>{{ $t("password") }}</label>
-        <input
-          type="password"
-          ref="passwordField"
-          @keydown.enter.prevent="submitPassword"
-          required
-          autofocus
-          placeholder="…"
+        <PasswordField
+          v-model="entered_password"
+          :required="true"
+          :autofocus="true"
+          :placeholder="'…'"
+          :field_type="'new-password'"
+          @enter-was-pressed="submitPassword"
         />
       </div>
 
@@ -246,9 +246,6 @@ export default {
     },
     showInputPasswordField: function () {
       if (this.showInputPasswordField) {
-        this.$nextTick(() => {
-          this.$refs.passwordField.focus();
-        });
       }
     },
   },
@@ -292,7 +289,7 @@ export default {
 
       this.$auth.updateFoldersPasswords({
         [this.type]: {
-          [this.slugFolderName]: this.$refs.passwordField.value,
+          [this.slugFolderName]: this.entered_password,
         },
       });
 
@@ -311,8 +308,7 @@ export default {
             .closeLogOnClick(true)
             .delay(4000)
             .error(this.$t("notifications.wrong_password"));
-          this.$refs.passwordField.value = "";
-          this.$refs.passwordField.focus();
+          this.entered_password = "";
         } else {
           this.$alertify
             .closeLogOnClick(true)
