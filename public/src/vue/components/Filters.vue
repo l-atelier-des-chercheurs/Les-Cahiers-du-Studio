@@ -1,8 +1,6 @@
 <template>
   <div class="m_filtersview">
     <section class="bg-noir_light c-blanc padding-medium">
-      {{ $root.settings.media_author_filter }}
-
       <header class="margin-vert-small">
         <div class="flex-vertically-centered">
           <h3 class="margin-none text-cap with-bullet">{{ $t("filters") }}</h3>
