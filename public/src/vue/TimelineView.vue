@@ -75,7 +75,7 @@
                 $root.settings.has_sidebar_opened &&
                 $root.settings.sidebar_type === 'filters'
               "
-              :sortedMedias="sortedMedias"
+              :medias="Object.values(medias)"
             />
 
             <Chats
@@ -657,7 +657,7 @@ export default {
     },
     "$root.settings.sidebar_type": function () {
       if (this.$root.settings.sidebar_type === "") this.percent = 0;
-      else this.percent = 30;
+      else this.percent = 40;
     },
     percent: function () {
       if (this.$root.settings.windowWidth < 600) {
@@ -728,6 +728,21 @@ export default {
             )
           )
             continue;
+        }
+        if (this.$root.settings.media_author_filter) {
+          if (
+            !(
+              media.hasOwnProperty("authors") &&
+              typeof media.authors === "object" &&
+              media.authors.length > 0 &&
+              media.authors.find(
+                (a) =>
+                  a.slugFolderName === this.$root.settings.media_author_filter
+              )
+            )
+          )
+            continue;
+          debugger;
         }
 
         // if media is missing the

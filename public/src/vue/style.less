@@ -534,7 +534,7 @@ video {
 .m_verticalButtons {
   position: absolute;
   height: 100%;
-  width: 0em;
+  width: 1px;
   z-index: 1;
 
   right: 0;
@@ -877,6 +877,7 @@ video {
   // flex-basis: 768px !important;
   .bg-noir_light;
   .c-blanc;
+  padding-top: ~"calc(var(--spacing) / 2)";
 }
 
 .m_filterIndicator {
@@ -1591,10 +1592,9 @@ video {
 }
 
 .m_chatsview {
+  overflow-y: auto;
+  .custom_scrollbar(8px, 5px, 6px, transparent, #fff);
   .m_channels {
-    overflow-y: auto;
-    .padding-sides-small;
-    .custom_scrollbar(8px, 5px, 6px, transparent, #fff);
   }
 }
 .m_informations--presentation {

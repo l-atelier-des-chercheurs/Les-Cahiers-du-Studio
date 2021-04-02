@@ -1,78 +1,88 @@
 <template>
   <div class="m_chatsview">
-    <div class="m_chatsview--topbar">
-      <div class="m_actionbar">
-        <div class="m_actionbar--buttonBar"></div>
-        <div class="m_actionbar--text">{{ $t("channels_instructions") }}</div>
+    <section class="padding-medium">
+      <header class="margin-vert-small">
+        <div class="flex-vertically-centered">
+          <h3 class="margin-none text-cap with-bullet">{{ $t("chats") }}</h3>
+        </div>
+      </header>
+
+      <div class="m_chatsview--topbar">
+        <div class="m_actionbar">
+          <div class="m_actionbar--buttonBar"></div>
+          <div class="m_actionbar--text">{{ $t("channels_instructions") }}</div>
+        </div>
+
+        <button
+          class="button-round _closeChatButton padding-verysmall"
+          @click="$root.closeChatPane()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            viewBox="0 0 48 48"
+          >
+            <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" />
+            <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" />
+          </svg>
+        </button>
       </div>
 
-      <button
-        class="button-round _closeChatButton padding-verysmall"
-        @click="$root.closeChatPane()"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="48"
-          height="48"
-          viewBox="0 0 48 48"
-        >
-          <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" />
-          <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" />
-        </svg>
-      </button>
-    </div>
-
-    <div class="m_channels">
-      <div class="m_channels--content">
-        <h3 class="font-folder_title">{{ $t("channels_list") }}</h3>
-        <div class="margin-vert-small">
-          <template v-if="$root.state.mode !== 'export_web'">
-            <template v-if="$root.current_author">
-              <button
-                type="button"
-                class="barButton barButton_createChannel"
-                @click="show_create_channel_modal = !show_create_channel_modal"
-              >
-                <span>{{ $t("create") }}</span>
-              </button>
-
-              <CreateChat
-                v-if="show_create_channel_modal"
-                @close="show_create_channel_modal = false"
-              />
-            </template>
-            <template v-else>
-              <div>
+      <div class="m_channels">
+        <div class="m_channels--content">
+          <h3 class="font-folder_title">{{ $t("channels_list") }}</h3>
+          <div class="margin-vert-small">
+            <template v-if="$root.state.mode !== 'export_web'">
+              <template v-if="$root.current_author">
                 <button
                   type="button"
-                  class="button-thin bg-bleumarine margin-left-none"
-                  @click="$root.showAuthorsListModal = true"
+                  class="barButton barButton_createChannel"
+                  @click="
+                    show_create_channel_modal = !show_create_channel_modal
+                  "
                 >
-                  {{ $t("login_to_create_channel") }}
+                  <span>{{ $t("create") }}</span>
                 </button>
-              </div>
-            </template>
-          </template>
-        </div>
 
-        <label>{{ $t("pinned") }}</label>
-        <div class="m_chats--list">
-          <ChatRow
-            v-for="(chat, index) in filtered_chats"
-            :key="index"
-            :chat="chat"
-          />
+                <CreateChat
+                  v-if="show_create_channel_modal"
+                  @close="show_create_channel_modal = false"
+                />
+              </template>
+              <template v-else>
+                <div>
+                  <button
+                    type="button"
+                    class="button-thin bg-bleumarine margin-left-none"
+                    @click="$root.showAuthorsListModal = true"
+                  >
+                    {{ $t("login_to_create_channel") }}
+                  </button>
+                </div>
+              </template>
+            </template>
+          </div>
+
+          <label>{{ $t("pinned") }}</label>
+          <div class="m_chats--list">
+            <ChatRow
+              v-for="(chat, index) in filtered_chats"
+              :key="index"
+              :chat="chat"
+            />
+          </div>
         </div>
       </div>
-    </div>
 
-    <transition name="chatopen">
-      <Chat
-        v-if="$root.current_chat"
-        :key="$root.current_chat.slugFolderName"
-        :chat="$root.current_chat"
-      />
-    </transition>
+      <transition name="chatopen">
+        <Chat
+          v-if="$root.current_chat"
+          :key="$root.current_chat.slugFolderName"
+          :chat="$root.current_chat"
+        />
+      </transition>
+    </section>
   </div>
 </template>
 <script>
@@ -168,8 +178,8 @@ export default {
 }
 
 .m_chatsview--topbar {
-  padding-left: calc(var(--spacing) / 4);
-  padding-right: calc(var(--spacing) / 4);
+  // padding-left: calc(var(--spacing) / 4);
+  // padding-right: calc(var(--spacing) / 4);
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;

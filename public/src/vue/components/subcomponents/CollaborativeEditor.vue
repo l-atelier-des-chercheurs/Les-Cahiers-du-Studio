@@ -735,14 +735,14 @@ html[lang="fr"] .ql-tooltip::before {
 
   .ql-editor {
     position: relative;
-    padding: 0;
+    // padding: 0;
     overflow: visible;
     height: 100%;
     overflow-y: auto;
 
     // caret-color: var(--active-color);
     line-height: inherit;
-    padding: var(--spacing) / 2 calc(var(--spacing)) 250px;
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) * 2) 150px;
 
     transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -953,7 +953,8 @@ html[lang="fr"] .ql-tooltip::before {
   }
 
   .ql-toolbar.ql-snow {
-    position: relative;
+    position: sticky;
+    top: 0;
     // top: 30%;
     // left: 10px;
 
@@ -969,7 +970,8 @@ html[lang="fr"] .ql-tooltip::before {
     // top: 121px;
     z-index: 10;
     background-color: var(--c-popup-bg);
-    border-radius: 4px;
+    border-radius: 0px;
+    border-bottom: 1px solid black;
 
     // &::before {
     //   content: "";

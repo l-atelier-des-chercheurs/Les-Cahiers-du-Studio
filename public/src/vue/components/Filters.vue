@@ -1,55 +1,76 @@
 <template>
   <div class="m_filtersview">
-    <div class="m_filtersview--topbar">
-      <div class="m_actionbar">
-        <div class="m_actionbar--buttonBar"></div>
-        <div class="m_actionbar--text">{{ $t("filters_instructions") }}</div>
-      </div>
+    <section class="bg-noir_light c-blanc padding-medium">
+      {{ $root.settings.media_author_filter }}
 
-      <button
-        class="button-round _closeChatButton padding-verysmall"
-        @click="$root.closeSidebar()"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="48"
-          height="48"
-          viewBox="0 0 48 48"
-        >
-          <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" />
-          <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" />
-        </svg>
-      </button>
-    </div>
-
-    <div class="m_keywordField">
-      <div class="">
-        <!-- <label>{{ $t("all_tags") }}</label> -->
+      <header class="margin-vert-small">
+        <div class="flex-vertically-centered">
+          <h3 class="margin-none text-cap with-bullet">{{ $t("filters") }}</h3>
+        </div>
+      </header>
+      <div class="margin-vert-small">
         <div>
+          {{ $t("keywords") }}
+        </div>
+        <div class="m_keywordField">
           <button
             type="button"
-            v-for="keyword in all_keywords"
-            :key="keyword.text"
+            v-for="{ term, count } in all_keywords"
+            :key="term"
             class="tag"
             :class="{
-              'is--unselectable': keyword.text !== selected_keyword,
+              'is--active': term === selected_keyword,
             }"
-            @click="toggleKeyword(keyword.text)"
+            @click="toggleKeyword(term)"
           >
-            {{ keyword.text }}
+            {{ term }}
+            <span class="_tagCounter">{{ count }}</span>
           </button>
         </div>
       </div>
-    </div>
+      <div class="margin-vert-small">
+        <div>
+          {{ $t("author") }}
+        </div>
+
+        <div class="m_authorField">
+          <button
+            type="button"
+            v-for="{ term: author_slug, count } in all_authors"
+            v-if="$root.getAuthor(author_slug)"
+            :key="author_slug"
+            class="tag"
+            :class="{
+              'is--unselectable': author_slug !== selected_author,
+              'is--active': author_slug === selected_author,
+              'is--loggedInAuthor':
+                $root.current_author &&
+                $root.current_author.slugFolderName === author_slug,
+            }"
+            @click="toggleAuthor(author_slug)"
+          >
+            {{ $root.getAuthor(author_slug).name }}
+            <span class="_tagCounter">{{ count }}</span>
+          </button>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 <script>
+import AuthorsInput from "./subcomponents/AuthorsInput.vue";
+
 export default {
-  props: {},
-  components: {},
+  props: {
+    medias: Array,
+  },
+  components: {
+    AuthorsInput,
+  },
   data() {
     return {
       selected_keyword: false,
+      selected_author: false,
     };
   },
   created() {},
@@ -62,21 +83,55 @@ export default {
       },
       immediate: true,
     },
+    selected_author: {
+      handler() {
+        this.$root.settings.media_author_filter = this.selected_author;
+      },
+      immediate: true,
+    },
   },
   computed: {
     all_keywords() {
-      return this.$root.allKeywords;
+      return this.getAllAndCount({
+        medias: this.medias,
+        type: "keywords",
+        prop_name: "title",
+      });
     },
-    // allKeywordsExceptCurrent() {
-    //   return .filter(
-    //     (i) => !this.tags.find((t) => t.text === i.text)
-    //   );
-    // },
+    all_authors() {
+      return this.getAllAndCount({
+        medias: this.medias,
+        type: "authors",
+        prop_name: "slugFolderName",
+      });
+    },
   },
   methods: {
     toggleKeyword(kw) {
-      if (this.selected_keyword === kw) this.selected_keyword = false;
-      else this.selected_keyword = kw;
+      this.selected_keyword = this.selected_keyword === kw ? false : kw;
+    },
+    toggleAuthor(a) {
+      this.selected_author = this.selected_author === a ? false : a;
+    },
+    getAllAndCount({ medias, type, prop_name }) {
+      const kw_sorted = Object.values(medias).reduce((acc, m) => {
+        if (m[type] && m[type].length > 0) {
+          m[type].map(({ [prop_name]: val }) => {
+            const fit = acc.find((i) => i.term === val);
+            if (fit) {
+              fit.count = fit.count + 1;
+            } else {
+              acc.push({
+                term: val,
+                count: 1,
+              });
+            }
+          });
+        }
+        return acc;
+      }, []);
+
+      return kw_sorted;
     },
   },
 };
@@ -97,6 +152,7 @@ export default {
   // flex: 0 0 420px;
 
   height: 100%;
+  overflow: auto;
   background-color: var(--color-noir);
   color: white;
   // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
@@ -127,6 +183,7 @@ export default {
   padding: 0;
   width: 33px;
   height: 33px;
+  position: absolute;
 
   svg {
     display: block;
@@ -137,8 +194,8 @@ export default {
 }
 
 .m_filtersview--topbar {
-  padding-left: calc(var(--spacing) / 2);
-  padding-right: calc(var(--spacing) / 2);
+  // padding-left: calc(var(--spacing) / 2);
+  // padding-right: calc(var(--spacing) / 2);
   margin-bottom: 0;
   display: flex;
   flex-flow: row nowrap;
@@ -146,7 +203,22 @@ export default {
 }
 
 .m_keywordField {
-  padding-left: calc(var(--spacing) / 2);
-  padding-right: calc(var(--spacing) / 2);
+  display: flex;
+  // padding-left: calc(var(--spacing) / 2);
+  // padding-right: calc(var(--spacing) / 2);
+}
+
+._tagCounter {
+  background: white;
+  // margin: 0.5em;
+  margin-left: 0.5em;
+  // padding: 0.5em;
+  min-width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

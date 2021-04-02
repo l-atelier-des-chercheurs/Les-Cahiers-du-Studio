@@ -253,6 +253,7 @@ module.exports = (function () {
 
       last_modified: "Dernière modification",
       save_changes: "Enregistrer",
+      last_saved_on: "Enregistré le",
 
       channels_instructions:
         "Espaces de discussion : échangez avec les autres utilisateurs en créant un sujet !",
