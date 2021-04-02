@@ -150,6 +150,15 @@
           @click="authordata.color = color"
           :style="`background-color: ${color}`"
         />
+        <div class="_color_items--custom">
+          <input
+            id="colorPicker"
+            type="color"
+            :value="authordata.color"
+            @input="authordata.color = $event.target.value"
+          />
+          <label for="colorPicker">{{ $t("custom") }}</label>
+        </div>
       </div>
     </div>
 

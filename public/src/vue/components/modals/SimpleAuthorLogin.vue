@@ -33,7 +33,7 @@
           </label>
         </div>
 
-        <div class="margin-medium">
+        <div class="m_simpleLoginModal">
           <transition name="fade_fast" mode="out-in" :duration="250">
             <div v-if="current_mode === 'CreateAccount'">
               <CreateAuthor
@@ -78,7 +78,7 @@
                 <button
                   type="submit"
                   :disabled="is_sending_content_to_server"
-                  class="button button-bg_rounded bg-bleuvert"
+                  class="buttonLink bg-vert_vif"
                 >
                   <!-- <img src="/images/i_enregistre.svg" draggable="false" /> -->
                   <span class="text-cap font-verysmall">{{ $t("send") }}</span>
@@ -204,4 +204,11 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss">
+.m_simpleLoginModal {
+  form {
+    padding: calc(var(--spacing) / 2);
+    // border-radius: var(--size-buttonradius);
+  }
+}
+</style>

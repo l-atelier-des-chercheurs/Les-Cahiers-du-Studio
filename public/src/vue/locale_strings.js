@@ -29,6 +29,7 @@ module.exports = (function () {
         "Vous pourrez toujours revenir au média d’origine si nécessaire.",
 
       name: "Nom",
+      custom: "Personnalisée",
       created_date: "Date de création",
       start_date: "Date de début",
       end_date: "Date de fin",

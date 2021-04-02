@@ -3,6 +3,7 @@
     @close="$emit('close')"
     v-on:submit.prevent="newAuthor"
     :read_only="read_only"
+    :style="`background-color: ${authordata.color}`"
   >
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
@@ -71,6 +72,15 @@
           @click="authordata.color = color"
           :style="`background-color: ${color}`"
         />
+        <div class="_color_items--custom">
+          <input
+            id="colorPicker"
+            type="color"
+            value="#0096ff"
+            @input="authordata.color = $event.target.value"
+          />
+          <label for="colorPicker">{{ $t("custom") }}</label>
+        </div>
       </div>
     </div>
 
@@ -116,7 +126,7 @@
       </template>
     </div>-->
 
-    <div class="flex-wrap flex-space-between margin-bottom-small">
+    <div class="flex-wrap flex-horizontally-centered margin-bottom-small">
       <button
         type="button"
         class="buttonLink"
@@ -126,7 +136,9 @@
         {{ $t("cancel") }}
       </button>
 
-      <button type="submit" class="bg-bleuvert">{{ $t("create") }}</button>
+      <button type="submit" class="buttonLink bg-vert_vif" style="flex-grow: 0">
+        {{ $t("create") }}
+      </button>
     </div>
 
     <div class="text-centered" v-if="mode !== 'simple_login'">
