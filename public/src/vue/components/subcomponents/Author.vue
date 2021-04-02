@@ -15,6 +15,7 @@
         'is--selected': is_logged_in_as_author,
         'is--editMode': edit_author_mode,
       }"
+      :style="`background-color: ${author.color}`"
     >
       <button
         v-if="
@@ -281,12 +282,12 @@
           </div>
         </div>
 
-        <div class="_color_items" v-if="!!author.color">
+        <!-- <div class="_color_items" v-if="!!author.color">
           <div
             :key="author.color"
             :style="`background-color: ${author.color}`"
           />
-        </div>
+        </div> -->
 
         <div
           class

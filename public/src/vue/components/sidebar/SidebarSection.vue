@@ -7,7 +7,7 @@
       <button
         type="button"
         class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
-        v-if="!!$slots['body']"
+        v-if="!!$slots['body'] && can_collapse"
         :class="{ 'is--active': is_open }"
         @click="is_open = !is_open"
         v-html="is_open ? $t('hide') : $t('show')"
@@ -25,6 +25,10 @@ export default {
     open_by_default: {
       type: Boolean,
       default: false,
+    },
+    can_collapse: {
+      type: Boolean,
+      default: true,
     },
   },
   components: {},

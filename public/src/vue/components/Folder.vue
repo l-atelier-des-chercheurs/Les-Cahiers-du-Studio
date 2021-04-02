@@ -20,8 +20,12 @@
       <div class="margin-sides-medium margin-vert-small">
         <DateField :title="'last_modified'" :date="folder.date_modified" />
       </div>
-      <div class="m_metaField margin-sides-medium" v-if="!!folder.authors">
+      <div
+        class="m_metaField margin-sides-medium"
+        v-if="!!folder.authors && Array.isArray(folder.authors)"
+      >
         <div>{{ $t("author") }}</div>
+
         <AuthorsInput :currentAuthors="folder.authors" :read_only="true" />
       </div>
 

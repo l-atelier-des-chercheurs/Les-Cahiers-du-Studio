@@ -12,10 +12,10 @@
     <template slot="sidebar">
       <div class="margin-bottom-small">
         <label>{{ $t("password_protect") }}</label>
-        <input
-          type="password"
+        <PasswordField
           v-model="export_options.password_protect"
-          autocomplete="current-password"
+          :field_type="'current-password'"
+          @enter-was-pressed="downloadExport"
         />
       </div>
 

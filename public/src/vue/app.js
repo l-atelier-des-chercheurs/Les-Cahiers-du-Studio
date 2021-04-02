@@ -177,7 +177,9 @@ let vm = new Vue({
 
       current_chat_slug: false,
       current_author_slug: false,
+
       media_keyword_filter: false,
+      media_author_filter: false,
 
       folder_filter: {
         name: "",

@@ -1,62 +1,71 @@
 <template>
   <div class="m_writeupeditor">
-    <div class="m_writeupeditor--topbar padding-small">
-      <template v-if="!show_rename_field">
-        <span class="m_writeupeditor--topbar--title padding-verysmall">{{
-          media.name
-        }}</span>
-      </template>
-      <template v-else>
-        <span class="padding-verysmall">
-          <div class="input-group">
-            <span class="input-addon input-addon-xs">Nom</span>
-            <input
-              type="text"
-              ref="nameInput"
-              class="input-xs"
-              v-model="new_name"
-            />
-            <button
-              type="button"
-              class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
-              @click="renameWriteup()"
-            >
-              {{ $t("save") }}
-            </button>
-          </div>
+    <small>
+      {{ $t("last_saved_on") }}&nbsp;{{
+        $root.formatDateToPrecise(media.date_modified)
+      }}
+    </small>
+    <div class="bg-blanc c-noir">
+      <div class="m_writeupeditor--topbar padding-small">
+        <template v-if="!show_rename_field">
+          <span class="m_writeupeditor--topbar--title padding-verysmall">{{
+            media.name
+          }}</span>
+        </template>
+        <template v-else>
+          <span class="padding-verysmall">
+            <div class="input-group">
+              <span class="input-addon input-addon-xs">Nom</span>
+              <input
+                type="text"
+                ref="nameInput"
+                class="input-xs"
+                v-model="new_name"
+              />
+              <button
+                type="button"
+                class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
+                @click="renameWriteup()"
+              >
+                {{ $t("save") }}
+              </button>
+            </div>
+          </span>
+        </template>
+        <span
+          class="m_writeupeditor--topbar--buttons"
+          v-if="!show_rename_field"
+        >
+          <button
+            type="button"
+            class="button-verysmall border-circled button-thin padding-verysmall margin-none bg-transparent"
+            @click="show_rename_field = !show_rename_field"
+          >
+            {{ $t("rename") }}
+          </button>
+          <button
+            type="button"
+            class="button-verysmall border-circled button-thin padding-verysmall margin-none bg-transparent"
+            @click="removeWriteupMedia"
+          >
+            {{ $t("remove") }}
+          </button>
         </span>
-      </template>
-      <span class="m_writeupeditor--topbar--buttons" v-if="!show_rename_field">
-        <button
-          type="button"
-          class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
-          @click="show_rename_field = !show_rename_field"
-        >
-          {{ $t("rename") }}
-        </button>
-        <button
-          type="button"
-          class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
-          @click="removeWriteupMedia"
-        >
-          {{ $t("remove") }}
-        </button>
-      </span>
-    </div>
+      </div>
 
-    <CollaborativeEditor
-      v-model="content"
-      :slugFolderName="slugFolderName"
-      :enable_collaboration="true"
-      :media="media"
-      :spellcheck="spellcheck"
-      @connectionStateChanged="
-        (_connection_state) => (connection_state = _connection_state)
-      "
-      ref="textField"
-      :read_only="read_only"
-    />
-    <!-- <div>
+      <CollaborativeEditor
+        v-model="content"
+        :slugFolderName="slugFolderName"
+        :enable_collaboration="true"
+        :media="media"
+        :spellcheck="spellcheck"
+        @connectionStateChanged="
+          (_connection_state) => (connection_state = _connection_state)
+        "
+        ref="textField"
+        :read_only="read_only"
+      />
+      <!-- <div>
       <button
         type="button"
         class="button_saveContent"
@@ -64,6 +73,7 @@
         :disabled="!hasAnyChangesBeenMadeToContent"
       >{{ $t('save_changes') }}</button>
     </div>-->
+    </div>
   </div>
 </template>
 <script>

@@ -24,7 +24,7 @@
       </div>
 
       <div slot="body">
-        <div class="margin-bottom-small">
+        <div class="margin-bottom-small border-circled">
           <div class="m_folder" v-if="!show_informations">
             <h2
               data-v-2dc30bca=""
@@ -137,50 +137,6 @@
       </div>
     </SidebarSection>
 
-    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
-      <div slot="header">
-        <h3 class="margin-none text-cap with-bullet">
-          {{ $t("keyboard_shortcuts") }}
-          <button
-            type="button"
-            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="showKeyboardShortcutsList = true"
-            :disabled="read_only"
-          >
-            {{ $t("open") }}
-          </button>
-        </h3>
-      </div>
-    </SidebarSection>
-
-    <KeyboardShortcuts
-      v-if="showKeyboardShortcutsList === true"
-      :folder="folder"
-      @close="showKeyboardShortcutsList = false"
-    ></KeyboardShortcuts>
-
-    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
-      <div slot="header" class="flex-vertically-centered">
-        <h3 class="margin-none text-cap with-bullet">
-          {{ $t("export_folder") }}
-          <button
-            type="button"
-            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
-            @click="showExportTimelineModal = true"
-            :disabled="read_only"
-          >
-            {{ $t("open") }}
-          </button>
-        </h3>
-      </div>
-    </SidebarSection>
-
-    <ExportTimeline
-      v-if="showExportTimelineModal === true"
-      :slugFolderName="slugFolderName"
-      @close="showExportTimelineModal = false"
-    ></ExportTimeline>
-
     <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
@@ -231,6 +187,50 @@
         </div>
       </div>
     </SidebarSection>
+
+    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t("keyboard_shortcuts") }}
+          <button
+            type="button"
+            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="showKeyboardShortcutsList = true"
+            :disabled="read_only"
+          >
+            {{ $t("open") }}
+          </button>
+        </h3>
+      </div>
+    </SidebarSection>
+
+    <KeyboardShortcuts
+      v-if="showKeyboardShortcutsList === true"
+      :folder="folder"
+      @close="showKeyboardShortcutsList = false"
+    ></KeyboardShortcuts>
+
+    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
+      <div slot="header" class="flex-vertically-centered">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t("export_folder") }}
+          <button
+            type="button"
+            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
+            @click="showExportTimelineModal = true"
+            :disabled="read_only"
+          >
+            {{ $t("open") }}
+          </button>
+        </h3>
+      </div>
+    </SidebarSection>
+
+    <ExportTimeline
+      v-if="showExportTimelineModal === true"
+      :slugFolderName="slugFolderName"
+      @close="showExportTimelineModal = false"
+    ></ExportTimeline>
 
     <SidebarSection>
       <div slot="header">

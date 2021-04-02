@@ -1,5 +1,11 @@
 <template>
-  <form class @close="$emit('close')" v-on:submit.prevent="editAuthor" :read_only="read_only">
+  <form
+    class
+    @close="$emit('close')"
+    v-on:submit.prevent="editAuthor"
+    :read_only="read_only"
+    :style="`background-color: ${authordata.color}`"
+  >
     <!-- Human name -->
     <div class="margin-bottom-small">
       <label>{{ $t("name") }}</label>
@@ -15,8 +21,7 @@
     <!-- Role -->
     <div
       class="margin-bottom-small"
-      v-if="($root.current_author && $root.current_author.role === 'admin')
-"
+      v-if="$root.current_author && $root.current_author.role === 'admin'"
     >
       <label>{{ $t("role") }}</label>
       <div>
@@ -29,7 +34,9 @@
               role === 'admin' &&
               (!$root.current_author || $root.current_author.role !== 'admin')
             "
-          >{{ $t(role) }}</option>
+          >
+            {{ $t(role) }}
+          </option>
         </select>
       </div>
     </div>
@@ -75,30 +82,36 @@
           :class="{ 'is--active': show_password }"
           @click.stop="show_password = !show_password"
         >
-          <template v-if="author.password === 'has_pass'">{{ $t("change_password") }}</template>
+          <template v-if="author.password === 'has_pass'">{{
+            $t("change_password")
+          }}</template>
           <template v-else>{{ $t("add_password") }}</template>
         </button>
       </label>
 
       <div v-if="show_password">
-        <div class="margin-bottom-verysmall">
-          <input
-            type="password"
+        <div
+          class="margin-bottom-verysmall"
+          v-if="!$root.current_author_is_admin"
+        >
+          <PasswordField
             v-if="author.password === 'has_pass'"
-            :placeholder="$t('old_password').toLowerCase()"
             v-model="authordata._old_password"
+            :placeholder="$t('old_password').toLowerCase()"
           />
         </div>
         <div>
-          <input
-            type="password"
+          <PasswordField
+            v-if="show_password"
+            v-model="authordata.password"
             :required="
               $root.state.local_options.force_author_password ? true : false
             "
+            :field_type="'new-password'"
             :placeholder="$t('new_password').toLowerCase()"
-            v-model="authordata.password"
           />
         </div>
+        <small>{{ $t("password_instructions") }}</small>
       </div>
     </div>
 
@@ -123,24 +136,35 @@
     <!-- Color -->
     <div class="margin-bottom-small">
       <label>{{ $t("color") }}</label>
-      <div class="_color_items" v-if="!!authordata.color">
+      <!-- <div class="_color_items" v-if="!!authordata.color">
         <label>Actuelle</label>
         <div :key="authordata.color" :style="`background-color: ${authordata.color}`" />
-      </div>
+      </div> -->
       <div class="_color_items">
         <div
           v-for="color in sortedRandomColorArray"
           :key="color"
           :class="{
-            'is--active' : authordata.color === color 
-            }"
+            'is--active': authordata.color === color,
+          }"
           @click="authordata.color = color"
           :style="`background-color: ${color}`"
         />
+        <div class="_color_items--custom">
+          <input
+            id="colorPicker"
+            type="color"
+            :value="authordata.color"
+            @input="authordata.color = $event.target.value"
+          />
+          <label for="colorPicker">{{ $t("custom") }}</label>
+        </div>
       </div>
     </div>
 
-    <button type="button" class="button-small" @click="$emit('close')">{{ $t("cancel") }}</button>
+    <button type="button" class="button-small" @click="$emit('close')">
+      {{ $t("cancel") }}
+    </button>
     <button type="submit" class="bg-bleuvert">{{ $t("save") }}</button>
   </form>
 </template>
@@ -203,7 +227,7 @@ export default {
       ) {
         return "";
       }
-      const thumb = this.author.preview.filter(p => p.size === 640);
+      const thumb = this.author.preview.filter((p) => p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }
@@ -217,9 +241,9 @@ export default {
     }
   },
   methods: {
-    editAuthor: function(event) {
+    editAuthor: function (event) {
       console.log("editAuthor");
-      let allAuthorsName = this.$root.all_authors.map(a =>
+      let allAuthorsName = this.$root.all_authors.map((a) =>
         a.name.toLowerCase()
       );
 

@@ -126,7 +126,7 @@ export default {
   flex-flow: row wrap;
   align-items: flex-start;
   justify-content: flex-start;
-  margin: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
   > * {
     // .margin-sides-small;
@@ -138,14 +138,11 @@ export default {
 
   .m_authorsList--createAuthor,
   .m_authorsList--editAuthor {
-    padding: calc(var(--spacing) / 2);
     margin: calc(var(--spacing) / 2);
 
     position: relative;
-    border: 4px dashed var(--color-bleu_vif);
     background-color: #fff;
     // border: 4px solid @c-gris_clair;
-    border-radius: var(--size-buttonradius);
     font-size: var(--font-size-small);
     line-height: var(--line-height-small);
 
@@ -155,18 +152,27 @@ export default {
     justify-content: center;
     max-width: none;
 
+    > * {
+      padding: calc(var(--spacing) / 2);
+      border: 2px solid var(--color-gris_tresclair);
+      border-radius: var(--size-buttonradius);
+    }
+
     .m_authorsList--createAuthor--createButton {
       max-height: none;
       display: block;
-      border: none;
       padding-left: calc(var(--spacing) / 4);
       padding-right: calc(var(--spacing) / 4);
 
-      // .bg-gris_tresclair;
+      width: 100%;
+
+      &:hover {
+        background-color: var(--color-gris_tresclair);
+      }
     }
 
     > form {
-      width: 265px;
+      width: 255px;
     }
   }
 }
