@@ -13,18 +13,26 @@
         type="button"
         class="m_authors--currentAuthor--changeColor"
         @click="change_color_menu = !change_color_menu"
-      >{{ $t('change_color') }}</button>
+      >
+        {{ $t("change_color") }}
+      </button>
 
       <button
         type="button"
         class="m_authors--currentAuthor--changeColor"
         @click="unsetAuthor"
-      >{{ $t('disconnect') }}</button>
+      >
+        {{ $t("disconnect") }}
+      </button>
     </div>
 
     <transition-group class="m_authors--authorList" name="list-complete">
       <template v-if="change_color_menu">
-        <div v-for="color in sortedRandomColorArray" :key="color" @click="changeColor(color)">
+        <div
+          v-for="color in sortedRandomColorArray"
+          :key="color"
+          @click="changeColor(color)"
+        >
           <div class="_color_item" :style="`background-color: ${color}`" />
         </div>
       </template>
@@ -32,7 +40,8 @@
         <label
           :key="'connected_auth_label'"
           v-if="connected_authors.length > 0"
-        >{{ $t('author_connected') }}</label>
+          >{{ $t("author_connected") }}</label
+        >
 
         <button
           type="button"
@@ -40,12 +49,15 @@
           :key="author.name"
           @click="setAuthor(author.name)"
           :style="`background-color: ${author.color}`"
-        >{{ author.name }}</button>
+        >
+          {{ author.name }}
+        </button>
 
         <label
           :key="'not_connected_auth_label'"
           v-if="not_connected_authors.length > 0"
-        >{{ $t('not_connected') }}</label>
+          >{{ $t("not_connected") }}</label
+        >
 
         <button
           type="button"
@@ -54,20 +66,28 @@
           @click="setAuthor(author.name)"
         >
           <span :style="`color: ${author.color}`">•</span>
-          {{author.name }}
+          {{ author.name }}
         </button>
       </template>
     </transition-group>
 
     <div class="m_authors--createButton">
       <template v-if="!add_author">
-        <button type="button" @click="add_author = true">{{ $t('add_author') }}</button>
+        <button type="button" @click="add_author = true">
+          {{ $t("add_author") }}
+        </button>
       </template>
       <template v-else>
         <div class="input-group">
-          <span class="input-addon input-addon-xs">{{ $t('name') }}</span>
+          <span class="input-addon input-addon-xs">{{ $t("name") }}</span>
           <input type="text" ref="nameInput" class="input-xs" />
-          <button type="button" class="button input-addon-xs" @click="createAuthor">{{ $t('add') }}</button>
+          <button
+            type="button"
+            class="button input-addon-xs"
+            @click="createAuthor"
+          >
+            {{ $t("add") }}
+          </button>
         </div>
       </template>
     </div>
@@ -129,24 +149,24 @@ export default {
     },
     authors_except_current() {
       return this.authors.filter(
-        c => c.name !== this.$root.settings.current_author_name
+        (c) => c.name !== this.$root.settings.current_author_name
       );
     },
     connected_authors() {
-      return this.authors_except_current.filter(a => {
+      return this.authors_except_current.filter((a) => {
         const name = a.name;
         return this.author_is_connected(name);
       });
     },
     not_connected_authors() {
-      return this.authors_except_current.filter(a => {
+      return this.authors_except_current.filter((a) => {
         const name = a.name;
         return !this.author_is_connected(name);
       });
     },
     current_author() {
       return this.authors.filter(
-        c => c.name === this.$root.settings.current_author_name
+        (c) => c.name === this.$root.settings.current_author_name
       )[0];
     },
     randomColorArray() {
@@ -174,7 +194,7 @@ export default {
       let _authors = [];
       if (!!this.authors) {
         // check for existing name, refuse if already there
-        if (this.authors.filter(a => a.name === name).length > 0) {
+        if (this.authors.filter((a) => a.name === name).length > 0) {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
@@ -213,7 +233,7 @@ export default {
     },
     author_is_connected(name) {
       return (
-        this.clients.filter(c => {
+        this.clients.filter((c) => {
           return (
             c.data.hasOwnProperty("author_name") && c.data.author_name === name
           );
@@ -245,7 +265,7 @@ export default {
   max-width: 300px;
   max-height: 250px;
   box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.35);
-  margin: 15px;
+  margin: calc(var(--spacing) / 4);
   color: white;
   pointer-events: auto;
 }
