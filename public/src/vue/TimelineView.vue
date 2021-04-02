@@ -657,7 +657,7 @@ export default {
     },
     "$root.settings.sidebar_type": function () {
       if (this.$root.settings.sidebar_type === "") this.percent = 0;
-      else this.percent = 40;
+      else this.percent = 35;
     },
     percent: function () {
       if (this.$root.settings.windowWidth < 600) {
