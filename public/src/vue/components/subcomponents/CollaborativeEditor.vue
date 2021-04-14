@@ -21,14 +21,18 @@
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import ShareDB from "sharedb/lib/client";
 import Quill from "quill";
+// import Delta from "quill-delta";
 import QuillCursors from "quill-cursors";
 import debounce from "debounce";
 
 import MediaBlot from "./quill_modules/MediaBlot";
 import CardEditableModule from "./quill_modules/CardEditableModule";
+import TimestampBlot from "./quill_modules/TimestampBlot.js";
 
+Quill.register("formats/timestamp", TimestampBlot);
 Quill.register("formats/media", MediaBlot);
 Quill.register("modules/cardEditable", CardEditableModule);
+// Quill.register("formats/timestamp", TimestampBlot);
 
 Quill.register("modules/cursors", QuillCursors);
 ShareDB.types.register(require("rich-text").type);
@@ -44,6 +48,24 @@ var quill_kb_bindings = {
 
   // There is no default binding named 'custom'
   // so this will be added without overwriting anything
+  enter: {
+    key: 13,
+    handler: function (range, context) {
+      console.log("Enter Key!!!");
+
+      const timestamp = +new Date();
+      this.quill.insertEmbed(
+        this.quill.getLength() - 1,
+        "timestamp",
+        { timestamp },
+        Quill.sources.USER
+      );
+
+      this.quill.setSelection(this.quill.getLength(), 0, "user");
+
+      return false;
+    },
+  },
   backspace: {
     key: 8,
     handler: function (range, context) {
@@ -163,6 +185,8 @@ export default {
         "list",
         "media",
         "blockquote",
+        "timestamp",
+        "quote",
       ],
       placeholder: "…",
     });
@@ -204,7 +228,6 @@ export default {
           "input",
           this.editor.getText() ? this.editor.root.innerHTML : ""
         );
-
         // this.$nextTick(() => {
         //   this.updateFocusedLines();
         // });
@@ -212,14 +235,53 @@ export default {
         // cursorsOne.moveCursor(1, range);
       });
 
+      this.editor.on("text-change", (delta, oldDelta, source) => {
+        // check if new line at the end of doc,
+        // if so, add timestamp to beginning of line
+        console.log(
+          `CollaborativeEditor / text-change with ${JSON.stringify(delta)}`
+        );
+
+        // if (
+        //   source === "user" &&
+        //   delta.ops &&
+        //   delta.ops.some((op) => op.insert === "\n") &&
+        //   !delta.ops.some(
+        //     (op) =>
+        //       op.hasOwnProperty("attributes") &&
+        //       op.attributes.hasOwnProperty("timestamp")
+        //   )
+        // ) {
+
+        //   const timestamp = +new Date();
+
+        //   this.$nextTick(() => {
+        //     console.log(
+        //       `CollaborativeEditor / text-change will insert timestamp`
+        //     );
+        //     this.editor.insertEmbed(
+        //       this.editor.getLength() - 1,
+        //       "timestamp",
+        //       { timestamp },
+        //       Quill.sources.USER
+        //     );
+        //     this.$nextTick(() => {
+        //       this.$nextTick(() => {
+        //         this.editor.setSelection(this.editor.getLength(), 0, "user");
+        //       });
+        //     });
+        //   });
+        // }
+      });
+
       this.editor.on("selection-change", (range, oldRange, source) => {
-        console.log("selection changed");
+        // console.log("selection changed");
         if (range === null && oldRange !== null) this.is_focused = false;
         else if (range !== null && oldRange === null) this.is_focused = true;
 
         // cursorsOne.moveCursor(1, range);
         if (!!range && range.length == 0) {
-          console.log("User cursor is on", range.index);
+          // console.log("User cursor is on", range.index);
           this.updateCaretPosition();
         }
 
@@ -325,13 +387,13 @@ export default {
         );
 
         this.editor.on("text-change", (delta, oldDelta, source) => {
-          if (source == "user") {
+          if (source === "user") {
             console.log(`ON • CollaborativeEditor: text-change by user`);
             doc.submitOp(delta, { source: this.editor_id });
 
             this.updateTextMedia();
           } else {
-            console.log(`ON • CollaborativeEditor: text-change by API`);
+            console.log(`ON • CollaborativeEditor: text-change by ${source}`);
           }
         });
 
@@ -351,7 +413,7 @@ export default {
       });
     },
     updateCaretPosition() {
-      console.log(`CollaborativeEditor • METHODS: updateCaretPosition`);
+      // console.log(`CollaborativeEditor • METHODS: updateCaretPosition`);
       var selection = this.editor.getSelection(true);
       const caretPos = this.editor.getBounds(selection);
       this.caret_position = { top: caretPos.top, left: caretPos.left };
@@ -404,7 +466,7 @@ export default {
       }, 1000);
     },
     broadcastMediasPresentInWriteup() {
-      console.log(`CollaborativeEditor • broadcastMediasPresentInWriteup`);
+      // console.log(`CollaborativeEditor • broadcastMediasPresentInWriteup`);
 
       // var t0 = performance.now();
 
@@ -1159,6 +1221,36 @@ html[lang="fr"] .ql-tooltip::before {
     text-align: center;
 
     // border-bottom-left-radius: 2px;
+  }
+}
+
+.ql-timestamp {
+  display: block;
+  font-size: 0.7em;
+
+  button {
+    line-height: 1;
+    border-radius: 0;
+    min-height: 0;
+    padding: 4px 6px 3px;
+  }
+
+  > ._edit_timestamp {
+    background-color: var(--color-noir);
+    color: white;
+    font-style: italic;
+    box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
+    font-size: inherit;
+
+    white-space: pre-line;
+    -webkit-box-decoration-break: clone;
+  }
+
+  ._button_removeTimestamp {
+    margin: 0;
+    background-color: var(--color-noir);
+    color: white;
+    font-size: inherit;
   }
 }
 </style>
