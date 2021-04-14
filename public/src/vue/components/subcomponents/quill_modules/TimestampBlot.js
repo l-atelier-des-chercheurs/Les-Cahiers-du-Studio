@@ -69,7 +69,12 @@ class TimestampBlot extends BlockEmbed {
     removeButton.addEventListener("click", () => {
       const quill = Quill.find(node.parentElement.parentElement);
       quill.enable(true);
-      super.remove();
+      node.style.animation = "scale-out 0.5s cubic-bezier(0.19, 1, 0.22, 1)";
+      node.addEventListener("animationend", () => {
+        super.remove();
+        // node.remove();
+        // supprimer du bloc proprement
+      });
     });
     node.appendChild(removeButton);
   }

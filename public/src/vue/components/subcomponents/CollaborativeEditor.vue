@@ -1224,20 +1224,30 @@ html[lang="fr"] .ql-tooltip::before {
   }
 }
 
-.ql-timestamp {
+.ql-timestamp.ql-timestamp {
   display: block;
   font-size: 0.7em;
+  margin-left: -6px;
+  // margin-top: var(--spacing);
+  counter-increment: none;
+
+  --color-bg: var(--color-vert_vif);
+
+  // line count
+  &::before {
+    display: none;
+  }
 
   button {
     line-height: 1;
     border-radius: 0;
     min-height: 0;
     padding: 4px 6px 3px;
+    background-color: var(--color-bg);
+    color: white;
   }
 
   > ._edit_timestamp {
-    background-color: var(--color-noir);
-    color: white;
     font-style: italic;
     box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
     font-size: inherit;
@@ -1248,8 +1258,6 @@ html[lang="fr"] .ql-tooltip::before {
 
   ._button_removeTimestamp {
     margin: 0;
-    background-color: var(--color-noir);
-    color: white;
     font-size: inherit;
   }
 }
