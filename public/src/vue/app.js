@@ -235,8 +235,6 @@ let vm = new Vue({
       }
     }
 
-    this.access = true;
-
     if (this.state.mode === "export_web") {
       // this.settings.has_sidebar_opened = true;
       if (Object.keys(this.store.folders).length > 0) {
@@ -337,6 +335,13 @@ let vm = new Vue({
         this.$socketio.listFolders({ type: "folders" });
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "chats" });
+
+        -this.$eventHub.$once("socketio.folders.folders_listed", () => {
+          if (this.store.folders.hasOwnProperty("champ-du-signe")) {
+            this.openFolder("champ-du-signe");
+            this.access = true;
+          } else this.access = true;
+        });
 
         if (this.current_project) {
           this.$socketio.listMedias({

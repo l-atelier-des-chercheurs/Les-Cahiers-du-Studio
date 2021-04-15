@@ -86,7 +86,7 @@
             />
           </transition>
 
-          <template v-if="$root.state.mode !== 'export_web'">
+          <template v-if="$root.state.mode !== 'export_web' && false">
             <button
               type="button"
               class="folder_backbutton"
