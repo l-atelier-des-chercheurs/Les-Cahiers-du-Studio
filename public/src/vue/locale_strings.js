@@ -27,6 +27,7 @@ module.exports = (function () {
       quality: "Qualité",
       adjust_infos:
         "Vous pourrez toujours revenir au média d’origine si nécessaire.",
+      unread_messages: "Messages non-lus",
 
       name: "Nom",
       custom: "Personnalisée",
@@ -455,6 +456,7 @@ module.exports = (function () {
 
       edit_the_media: "Edit media",
       edit_folder: "Edit folder",
+      unread_messages: "Unread messages",
 
       capture_start: "Start of the capture",
       capture_end: "End of the capture",
