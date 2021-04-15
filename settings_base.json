@@ -317,7 +317,8 @@
           "type": "string"
         },
         "last_messages_read_in_channels": {
-          "type": "array"
+          "type": "array",
+          "show_only_to": ["self", "admin"]
         },
         "color": {
           "type": "string"

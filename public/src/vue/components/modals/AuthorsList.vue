@@ -12,6 +12,8 @@
 
     <template slot="preview">
       <div class>
+        {{ authors["comite"] }}
+
         <div class="margin-sides-medium margin-vert-small">
           <div
             v-if="

@@ -28,6 +28,7 @@ module.exports = (function () {
       adjust_infos:
         "Vous pourrez toujours revenir au média d’origine si nécessaire.",
       unread_messages: "Messages non-lus",
+      show_older_messages: "Voir les messages plus anciens",
 
       name: "Nom",
       custom: "Personnalisée",
@@ -457,6 +458,7 @@ module.exports = (function () {
       edit_the_media: "Edit media",
       edit_folder: "Edit folder",
       unread_messages: "Unread messages",
+      show_older_messages: "See older messages",
 
       capture_start: "Start of the capture",
       capture_end: "End of the capture",
