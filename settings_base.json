@@ -162,6 +162,15 @@
           "ratio": {
             "type": "number"
           },
+          "action_on_tile_click": {
+            "type": "string"
+          },
+          "url_to_open_in_new_tab": {
+            "type": "string"
+          },
+          "enable_chat_link": {
+            "type": "boolean"
+          },
           "duration": {
             "type": "number"
           },
@@ -317,7 +326,8 @@
           "type": "string"
         },
         "last_messages_read_in_channels": {
-          "type": "array"
+          "type": "array",
+          "show_only_to": ["self", "admin"]
         },
         "color": {
           "type": "string"

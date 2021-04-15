@@ -42,12 +42,19 @@
 
       <div class="margin-bottom-small">
         <label>
-          {{ $t("date") }}
-          <small v-if="can_edit">
-            {{ $t("for_the_placement_on_timeline") }}
-          </small>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_date }"
+            @click="show_date = !show_date"
+          >
+            {{ $t("date") }}
+            <small v-if="can_edit">
+              {{ $t("for_the_placement_on_timeline") }}
+            </small>
+          </button>
         </label>
-        <div>
+        <div v-if="show_date">
           <DateTime
             v-model="mediadata.date_timeline"
             :twowaybinding="true"
@@ -135,8 +142,19 @@
         "
         class="margin-bottom-small"
       >
-        <label>{{ $t("keywords") }}</label>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_keywords }"
+            @click="show_keywords = !show_keywords"
+          >
+            {{ $t("keywords") }}
+          </button>
+        </label>
+
         <TagsInput
+          v-if="show_keywords"
           :keywords="!!mediadata.keywords ? mediadata.keywords : []"
           :read_only="read_only || !can_edit"
           @tagsChanged="(newTags) => (mediadata.keywords = newTags)"
@@ -145,12 +163,23 @@
 
       <!-- Author(s) -->
       <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
-        <label>{{ $t("author") }}</label>
-        <AuthorsInput
-          :currentAuthors.sync="mediadata.authors"
-          :read_only="read_only || !can_edit"
-        />
-        <small v-html="$t(author_instructions)" />
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >
+            {{ $t("author") }}
+          </button>
+        </label>
+        <template v-if="show_authors">
+          <AuthorsInput
+            :currentAuthors.sync="mediadata.authors"
+            :read_only="read_only || !can_edit"
+          />
+          <small v-html="$t(author_instructions)" />
+        </template>
       </div>
 
       <!-- Public or private -->
@@ -165,6 +194,82 @@
           />
           <label for="publicswitch">{{ $t("public") }}</label>
         </span>
+      </div>
+
+      <div class="margin-bottom-small" v-if="can_edit">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_tile_options }"
+            @click="show_tile_options = !show_tile_options"
+          >
+            {{ $t("tile_options") }}
+          </button>
+        </label>
+        <div v-if="show_tile_options">
+          <!-- Enable chat -->
+          <div class="margin-bottom-small">
+            <span class="switch switch-xs">
+              <input
+                type="checkbox"
+                class=""
+                id="enable_chat_link"
+                v-model="mediadata.enable_chat_link"
+                :readonly="read_only"
+              />
+              <label for="enable_chat_link">
+                {{ $t("show_chat_bubble") }}
+              </label>
+            </span>
+          </div>
+
+          <div class="margin-bottom-small">
+            <label>
+              {{ $t("action_on_tile_click_for_visitors") }}
+            </label>
+            <select v-model="mediadata.action_on_tile_click">
+              <option
+                v-for="({ key, label }, index) in [
+                  {
+                    key: '',
+                    label: $t('open_modal'),
+                  },
+                  {
+                    key: 'open_external_link',
+                    label: $t('open_external_link'),
+                  },
+                  {
+                    key: 'do_nothing',
+                    label: $t('do_nothing'),
+                  },
+                ]"
+                :value="key"
+                :key="index"
+              >
+                {{ label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Linkto -->
+          <div
+            v-if="mediadata.action_on_tile_click === 'open_external_link'"
+            class="margin-bottom-small"
+          >
+            <label>
+              {{ $t("link_to_open_in_a_new_tab") }}
+            </label>
+            <br />
+            <input
+              v-model="mediadata.url_to_open_in_new_tab"
+              :readonly="!can_edit"
+              type="text"
+              autofocus
+              placeholder="www."
+            />
+          </div>
+        </div>
       </div>
 
       <div class="bg-noir padding-veryverysmall" v-if="!!adjust_mode">
@@ -780,6 +885,11 @@ export default {
   },
   data() {
     return {
+      show_date: true,
+      show_keywords: false,
+      show_authors: false,
+      show_tile_options: false,
+
       mediadata: {
         date_timeline: this.media.date_timeline,
         type: this.media.type,
@@ -794,6 +904,16 @@ export default {
             : [],
         public: this.media.public,
         content: this.media.content,
+
+        enable_chat_link: this.media.hasOwnProperty("enable_chat_link")
+          ? this.media.enable_chat_link
+          : true,
+        action_on_tile_click: this.media.action_on_tile_click
+          ? this.media.action_on_tile_click
+          : "",
+        url_to_open_in_new_tab: this.media.url_to_open_in_new_tab
+          ? this.media.url_to_open_in_new_tab
+          : "",
       },
       mediaURL:
         this.$root.state.mode === "export_web"

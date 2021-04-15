@@ -263,14 +263,17 @@ module.exports = (function () {
           _onLoadJournal(data) {
             console.log("Received _onLoadJournal packet.");
             window.state.journal = data;
+            this.$eventHub.$emit(`socketio.journal.is_loaded`);
           },
 
           // for projects, authors and publications
           _onListFolder(data) {
-            console.log("Received _onListFolder packet.");
             const type = Object.keys(data)[0];
             const content = Object.values(data)[0];
             const slugFolderName = Object.keys(content)[0];
+            console.log(
+              `Received _onListFolder packet ${type}/${slugFolderName}`
+            );
 
             // supprimer chaque key du folder
             // Object.keys(window.store[type][slugFolderName]).map((k) =>
@@ -328,8 +331,6 @@ module.exports = (function () {
 
           // for projects, authors and publications
           _onListFolders(data) {
-            console.log("Received _onListFolders packet.");
-
             if (typeof data !== "object") {
               return;
             }
@@ -337,7 +338,7 @@ module.exports = (function () {
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
 
-            console.log(`Type is ${type}`);
+            console.log(`Received _onListFolders packet for ${type}`);
 
             // to prevent override of fully formed medias in folders, we copy back the ones we have already
             for (let slugFolderName in content) {
@@ -435,6 +436,9 @@ module.exports = (function () {
           },
           loadJournal() {
             this.socket.emit("loadJournal");
+          },
+          emptyJournal() {
+            this.socket.emit("emptyJournal");
           },
         },
       });

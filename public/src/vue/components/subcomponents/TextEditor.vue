@@ -59,7 +59,7 @@ export default {
 
   created() {},
   mounted() {
-    console.log(`MOUNTED • CollaborativeEditor`);
+    console.log(`MOUNTED • TextEditor`);
 
     this.editor = new Quill(this.$refs.editor, {
       modules: {
@@ -128,7 +128,7 @@ export default {
         requested_querystring;
 
       console.log(
-        `METHODS • CollaborativeEditor: initWebsocketMode for ${this.requested_resource_url}`
+        `METHODS • TextEditor: initWebsocketMode for ${this.requested_resource_url}`
       );
 
       this.socket = new ReconnectingWebSocket(this.requested_resource_url);
@@ -139,21 +139,21 @@ export default {
 
       doc.subscribe((err) => {
         if (err) {
-          console.error(`ON • CollaborativeEditor: err ${err}`);
+          console.error(`ON • TextEditor: err ${err}`);
           return;
         }
-        console.log(`ON • CollaborativeEditor: subscribe`);
+        console.log(`ON • TextEditor: subscribe`);
 
         if (!doc.type) {
           console.log(
-            `ON • CollaborativeEditor: no type found on doc, creating a new one with content ${JSON.stringify(
+            `ON • TextEditor: no type found on doc, creating a new one with content ${JSON.stringify(
               this.editor.getContents()
             )}`
           );
           doc.create(this.editor.getContents(), "rich-text");
         } else {
           console.log(
-            `ON • CollaborativeEditor: doc already exists and doc.data = ${JSON.stringify(
+            `ON • TextEditor: doc already exists and doc.data = ${JSON.stringify(
               doc.data,
               null,
               4
@@ -168,23 +168,23 @@ export default {
 
         this.editor.on("text-change", (delta, oldDelta, source) => {
           if (source == "user") {
-            console.log(`ON • CollaborativeEditor: text-change by user`);
+            console.log(`ON • TextEditor: text-change by user`);
             doc.submitOp(delta, { source: this.editor_id });
           } else {
-            console.log(`ON • CollaborativeEditor: text-change by API`);
+            console.log(`ON • TextEditor: text-change by API`);
           }
         });
 
         doc.on("op", (op, source) => {
           if (source === this.editor_id) return;
-          console.log(`ON • CollaborativeEditor: operation applied to quill`);
+          console.log(`ON • TextEditor: operation applied to quill`);
           this.editor.updateContents(op);
         });
       });
     },
     wsState(state, reason) {
       console.log(
-        `METHODS • CollaborativeEditor: wsState with state = ${state} and reason = ${reason}`
+        `METHODS • TextEditor: wsState with state = ${state} and reason = ${reason}`
       );
       this.connection_state = state.toString();
       this.$emit("connectionStateChanged", this.connection_state);

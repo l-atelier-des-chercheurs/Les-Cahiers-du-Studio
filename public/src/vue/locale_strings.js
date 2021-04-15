@@ -27,6 +27,18 @@ module.exports = (function () {
       quality: "Qualité",
       adjust_infos:
         "Vous pourrez toujours revenir au média d’origine si nécessaire.",
+      unread_messages: "Messages non-lus",
+      show_older_messages: "Voir les messages plus anciens",
+      drop_here_to_import: "Déposez les médias ici pour les importer",
+      tile_options: "Options de la tuile",
+      show_chat_bubble: "Afficher la bulle de chat",
+      action_on_tile_click_for_visitors:
+        "Action lorsqu’un visiteur non-contributeur clique sur la tuile dans la timeline",
+      open_modal: "Ouvrir cette fenêtre",
+      open_external_link: "Ouvrir un lien externe vers…",
+      do_nothing: "Ne rien faire",
+      link_to_open_in_a_new_tab:
+        "URL de la page à ouvrir dans un nouvel onglet",
 
       name: "Nom",
       custom: "Personnalisée",
@@ -330,6 +342,9 @@ module.exports = (function () {
       list_of_authors: "List of authos",
       search_among_timeline: "Search by name",
       folder_name_to_find: "Name to find",
+      show_chat_bubble: "Show chat bubble",
+      action_on_tile_click_for_visitors:
+        "What happens when a non-contributing visitors clicks on this tile in the timeline",
 
       name: "Name",
       created_date: "Created date",
@@ -455,6 +470,10 @@ module.exports = (function () {
 
       edit_the_media: "Edit media",
       edit_folder: "Edit folder",
+      unread_messages: "Unread messages",
+      show_older_messages: "See older messages",
+      drop_here_to_import: "Drop medias here to import",
+      tile_options: "Tile options",
 
       capture_start: "Start of the capture",
       capture_end: "End of the capture",

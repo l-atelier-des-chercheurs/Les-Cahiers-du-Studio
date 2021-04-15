@@ -163,11 +163,11 @@ export default {
   // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
 
   // background-color: white;
-  border: 4px solid var(--color-noir);
+  // border: 4px solid var(--color-noir);
   // margin: 2em;
   // padding: 1em;
-  padding-top: calc(var(--spacing) / 2);
-  padding-bottom: calc(var(--spacing) / 2);
+  // padding-top: calc(var(--spacing) / 2);
+  // padding-bottom: calc(var(--spacing) / 2);
 
   // border-radius: 8px;
 

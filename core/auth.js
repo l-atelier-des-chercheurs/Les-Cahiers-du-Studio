@@ -450,32 +450,32 @@ module.exports = (function () {
       meta.password = "has_pass";
     }
 
-    const field_to_act_on = Object.entries(fields).find(([key, f]) =>
+    const fields_to_act_on = Object.entries(fields).filter(([key, f]) =>
       f.hasOwnProperty("show_only_to")
     );
-    if (!field_to_act_on) return meta;
+    if (!fields_to_act_on) return meta;
 
-    const field_name = field_to_act_on[0];
-    const field_props = field_to_act_on[1];
+    fields_to_act_on.map((field_to_act_on) => {
+      const field_name = field_to_act_on[0];
+      const field_props = field_to_act_on[1];
 
-    // check if author is one of field_to_act_on.show_only_to
-    if (field_props.show_only_to.includes("self")) {
-      // check is socket is amongst the authors of this content
-      if (isSocketAuthorizedForFolders({ socket, type, slugFolderName })) {
-        return meta;
+      // remove prop if
+
+      if (
+        // if author and author is auth
+        (field_props.show_only_to.includes("self") &&
+          isSocketAuthorizedForFolders({ socket, type, slugFolderName })) ||
+        //if is admin and admin are auth
+        (field_props.show_only_to.includes("admin") && socket_is_admin)
+      ) {
+        // else
+      } else {
+        // remove field
+        if (meta.hasOwnProperty(field_name) && !!meta[field_name])
+          delete meta[field_name];
       }
-    }
+    });
 
-    if (field_props.show_only_to.includes("admin")) {
-      // check is socket is amongst the authors of this content
-      if (socket_is_admin) {
-        return meta;
-      }
-    }
-
-    // hide field
-    if (meta.hasOwnProperty(field_name) && !!meta[field_name])
-      delete meta[field_name];
     return meta;
   }
 
