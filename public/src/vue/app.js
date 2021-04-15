@@ -336,7 +336,7 @@ let vm = new Vue({
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "chats" });
 
-        -this.$eventHub.$once("socketio.folders.folders_listed", () => {
+        this.$eventHub.$once("socketio.folders.folders_listed", () => {
           if (this.store.folders.hasOwnProperty("champ-du-signe")) {
             this.openFolder("champ-du-signe");
             this.access = true;
