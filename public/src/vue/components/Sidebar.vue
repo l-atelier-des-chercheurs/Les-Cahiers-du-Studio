@@ -87,6 +87,7 @@
             </template>
             <template v-else>
               <CollaborativeEditor
+                v-model="introduction_media.content"
                 :slugFolderName="slugFolderName"
                 :enable_collaboration="true"
                 :media="introduction_media"
