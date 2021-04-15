@@ -1,7 +1,13 @@
 <template>
   <div
     class="mediaContainer"
-    :class="[{ 'is--playing': is_playing }, 'type-' + media.type]"
+    :class="[
+      {
+        'is--playing': is_playing,
+        'is--paused_while_playing': is_paused_while_playing,
+      },
+      'type-' + media.type,
+    ]"
     :data-context="context"
   >
     <template v-if="media.type === 'image'">
@@ -224,6 +230,7 @@ export default {
       htmlForEditor: this.value,
 
       is_playing: false,
+      is_paused_while_playing: false,
 
       plyr_options: {
         controls: [
@@ -418,6 +425,8 @@ export default {
   methods: {
     playing(event) {
       this.is_playing = true;
+      this.is_paused_while_playing = false;
+
       this.$eventHub.$emit("timelineplayer.playing", {
         plyr: event.detail.plyr,
         metaFileName: this.media.metaFileName,
@@ -427,6 +436,8 @@ export default {
     },
     pause(event) {
       this.is_playing = false;
+      this.is_paused_while_playing = true;
+
       this.$eventHub.$emit("timelineplayer.pause", {
         plyr: event.detail.plyr,
         metaFileName: this.media.metaFileName,

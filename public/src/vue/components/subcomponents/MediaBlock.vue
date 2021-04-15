@@ -402,7 +402,7 @@ export default {
       this.mediaSize.height += increment;
     },
     limitMediaWidth(w) {
-      return Math.max(2, Math.min(12, w));
+      return Math.max(2, Math.min(16, w));
     },
     limitMediaHeight(h) {
       return Math.max(2, Math.min(12, h));
@@ -770,7 +770,8 @@ export default {
           }
 
           .plyr__control {
-            background-color: rgba(255, 255, 255, 0.45);
+            color: white;
+            background-color: rgba(41, 41, 41, 0.75);
             &:hover {
               background: #222;
             }
@@ -785,7 +786,8 @@ export default {
           }
         }
       }
-      &.is--playing {
+      &.is--playing,
+      &.is--paused_while_playing {
         // display: none;
         .plyr__controls {
           // background-color: rgba(255, 255, 255, 0.45);
