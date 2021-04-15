@@ -653,6 +653,10 @@ export default {
     &.is--active {
       background-color: var(--color-noir);
       color: white;
+
+      span {
+        color: var(--author-color);
+      }
     }
     svg {
       display: block;
@@ -662,6 +666,7 @@ export default {
     }
     span {
       padding: 1px 2px 0 2px;
+      color: var(--color-noir);
     }
   }
 
