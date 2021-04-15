@@ -33,7 +33,7 @@ module.exports = function (app, io, m) {
 
       let pageData = {};
 
-      pageData.pageTitle = "Les Cahiers du Studio";
+      pageData.pageTitle = "Champ du signe";
       // full path on the storage space, as displayed in the footer
       pageData.folderPath = api.getFolderPath();
       pageData.slugFolderName = "";
