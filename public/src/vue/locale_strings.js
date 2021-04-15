@@ -29,6 +29,7 @@ module.exports = (function () {
         "Vous pourrez toujours revenir au média d’origine si nécessaire.",
       unread_messages: "Messages non-lus",
       show_older_messages: "Voir les messages plus anciens",
+      drop_here_to_import: "Déposez les médias ici pour les importer",
 
       name: "Nom",
       custom: "Personnalisée",
@@ -459,6 +460,7 @@ module.exports = (function () {
       edit_folder: "Edit folder",
       unread_messages: "Unread messages",
       show_older_messages: "See older messages",
+      drop_here_to_import: "Drop medias here to import",
 
       capture_start: "Start of the capture",
       capture_end: "End of the capture",
