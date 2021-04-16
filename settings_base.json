@@ -195,14 +195,14 @@
             "type": "number",
             "clip": {
               "min": 1,
-              "max": 12
+              "max": 16
             }
           },
           "h": {
             "type": "number",
             "clip": {
               "min": 1,
-              "max": 12
+              "max": 16
             }
           },
           "t": {
