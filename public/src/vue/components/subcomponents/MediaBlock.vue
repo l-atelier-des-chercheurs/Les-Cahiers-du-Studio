@@ -405,7 +405,7 @@ export default {
       return Math.max(2, Math.min(16, w));
     },
     limitMediaHeight(h) {
-      return Math.max(2, Math.min(12, h));
+      return Math.max(2, Math.min(16, h));
     },
     clickOnMedia() {
       if (this.$root.state.dev_mode === "debug") {
