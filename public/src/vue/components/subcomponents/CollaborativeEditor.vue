@@ -6,6 +6,7 @@
       'is--receptiveToDrop': !!$root.settings.media_being_dragged,
       'is--dragover': is_being_dragover,
       'is--disabled': editor_not_enabled,
+      'is--onlastline': is_on_last_line && !editor_not_enabled,
     }"
     autofocus="autofocus"
     @dragover="ondragover($event)"
@@ -51,7 +52,11 @@ var quill_kb_bindings = {
   enter: {
     key: 13,
     handler: function (range, context) {
-      console.log("Enter Key!!!");
+      console.log(`range.index = ${range.index}`);
+      console.log(`this.quill.getLength() = ${this.quill.getLength()}`);
+
+      if (range.index !== this.quill.getLength() - 1 || range.length !== 0)
+        return true;
 
       const timestamp = +new Date();
       this.quill.insertEmbed(
@@ -126,6 +131,7 @@ export default {
       is_focused: false,
       is_being_dragover: false,
       is_being_dragover_on_blot: false,
+      is_on_last_line: false,
 
       debounce_textUpdate: undefined,
       caret_position: {
@@ -283,6 +289,15 @@ export default {
         if (!!range && range.length == 0) {
           // console.log("User cursor is on", range.index);
           this.updateCaretPosition();
+        }
+
+        console.log(range.index);
+        console.log(this.editor.getLength());
+
+        if (range.index === this.editor.getLength() - 1 && range.length === 0) {
+          this.is_on_last_line = true;
+        } else {
+          this.is_on_last_line = false;
         }
 
         // this.updateFocusedLines();
@@ -714,6 +729,18 @@ html[lang="fr"] .ql-tooltip::before {
 
   &.is--focussed {
     background-color: blue;
+  }
+
+  &.is--onlastline {
+    .ql-editor {
+      > *:last-child {
+        &::after {
+          content: "•";
+          color: var(--color-vert_vif);
+          // border-bottom: 2px solid var(--color-vert_vif);
+        }
+      }
+    }
   }
 
   &.is--disabled {
@@ -1232,6 +1259,7 @@ html[lang="fr"] .ql-tooltip::before {
   counter-increment: none;
 
   --color-bg: var(--color-vert_vif);
+  // --color-bg: var(--color-blanc);
 
   // line count
   &::before {
@@ -1244,7 +1272,7 @@ html[lang="fr"] .ql-tooltip::before {
     min-height: 0;
     padding: 4px 6px 3px;
     background-color: var(--color-bg);
-    color: white;
+    color: var(--color-noir);
   }
 
   > ._edit_timestamp {

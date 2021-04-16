@@ -58,6 +58,7 @@ class TimestampBlot extends BlockEmbed {
     // content_button.addEventListener("click", ($event) => {
     //   const input = window.document.createElement("input");
     //   input.setAttribute("type", "text");
+    //   input.value = timestamp;
     //   node.appendChild(input);
     // });
 
