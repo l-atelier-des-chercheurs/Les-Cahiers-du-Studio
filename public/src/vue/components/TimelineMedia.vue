@@ -3,14 +3,18 @@
     class="mediaPreview font-small"
     :style="{
       transform: `translate(${posX}px, ${mediaStyles.y}px`,
-      '--media-color': color ? color : '#ffffff'
+      '--media-color': color ? color : '#ffffff',
     }"
-    :class="[{
-      'has--duration' : media.duration !== undefined,
-      'is--hovered'   : is_hovered,
-      'is--dragged'   : is_dragged,
-      'is--collapsed' : is_collapsed,
-    }, 'type-' + media.type, class_from_first_author ]"
+    :class="[
+      {
+        'has--duration': media.duration !== undefined,
+        'is--hovered': is_hovered,
+        'is--dragged': is_dragged,
+        'is--collapsed': is_collapsed,
+      },
+      'type-' + media.type,
+      class_from_first_author,
+    ]"
     @mousedown.prevent="mousedown"
     @mouseover="mouseover"
     @mouseleave="mouseleave"
@@ -22,7 +26,10 @@
           <button class="accroche accroche_gauche"></button>
           <div class="accrocheDurationLine"></div>
         </template>
-        <button class="accroche accroche_droite" @mouseup.stop="toggleCollapseMedia"></button>
+        <button
+          class="accroche accroche_droite"
+          @mouseup.stop="toggleCollapseMedia"
+        ></button>
       </div>
 
       <div class="timelineMediaContent" :style="getMediaSize()">
@@ -48,11 +55,15 @@
           <button
             type="button"
             class="button_openmedia bg-noir c-blanc"
-            :class="{ 'padding-verysmall button-thin' : this.media.type === 'marker' }"
+            :class="{
+              'padding-verysmall button-thin': this.media.type === 'marker',
+            }"
             style="animation-duration: 0.3s"
             v-if="!is_placeholder && is_hovered"
             @mousedown.stop="openMedia"
-          >{{ $t('open') }}</button>
+          >
+            {{ $t("open") }}
+          </button>
         </transition>
       </div>
     </div>
@@ -69,18 +80,18 @@ export default {
     timelineScale: Number,
     posX: {
       type: Number,
-      default: 0
+      default: 0,
     },
     timelineHeight: Number,
     is_placeholder: Boolean,
     read_only: {
       type: Boolean,
-      default: true
+      default: true,
     },
-    color: String
+    color: String,
   },
   components: {
-    MediaContent
+    MediaContent,
   },
   data() {
     return {
@@ -89,41 +100,41 @@ export default {
       is_collapsed: this.media.collapsed == true,
       dragOffset: {
         x: "",
-        y: ""
+        y: "",
       },
       mediaStylesOld: {
         x: "",
-        y: ""
+        y: "",
       },
       mediaStyles: {
         ratio: parseFloat(this.media.ratio),
         y: this.limitMediaYPos(parseFloat(this.media.y) * this.timelineHeight),
         w: 180,
         h: 180,
-        mediaWidthFromDuration: 0
-      }
+        mediaWidthFromDuration: 0,
+      },
     };
   },
   computed: {},
   watch: {
-    media: function() {},
-    "media.collapsed": function() {
+    media: function () {},
+    "media.collapsed": function () {
       this.is_collapsed = this.media.collapsed == true;
     },
-    "media.y": function() {
+    "media.y": function () {
       this.mediaStyles.y = this.limitMediaYPos(
         parseFloat(this.media.y) * this.timelineHeight
       );
     },
-    timelineHeight: function() {
+    timelineHeight: function () {
       this.mediaStyles.y = this.limitMediaYPos(
         parseFloat(this.media.y) * this.timelineHeight
       );
     },
-    timelineScale: function() {
+    timelineScale: function () {
       this.setMediaWidthFromDuration();
       this.setMediaSize();
-    }
+    },
   },
   mounted() {
     this.setMediaWidthFromDuration();
@@ -195,7 +206,7 @@ export default {
       // if(this.$root.state.dev_mode === 'debug') { console.log('METHODS • TimelineMedia: getMediaSize'); }
       return {
         width: `${this.mediaStyles.w}px`,
-        height: `${this.mediaStyles.h}px`
+        height: `${this.mediaStyles.h}px`,
       };
     },
     mousedown(event) {
@@ -250,8 +261,8 @@ export default {
             slugFolderName: this.slugFolderName,
             slugMediaName: this.slugMediaName,
             data: {
-              y: getHeightInPercent
-            }
+              y: getHeightInPercent,
+            },
           });
         }
         this.is_dragged = false;
@@ -301,14 +312,13 @@ export default {
         slugFolderName: this.slugFolderName,
         slugMediaName: this.slugMediaName,
         data: {
-          collapsed: this.is_collapsed
-        }
+          collapsed: this.is_collapsed,
+        },
       });
 
       event.stopPropagation();
-    }
-  }
+    },
+  },
 };
 </script>
-<style lang="sass">
-</style>
+<style lang="sass"></style>

@@ -87,16 +87,39 @@ body {
     background: var(--color-noir);
   }
   .plyr__control--overlaid {
-    background: var(--color-noir) _light;
+    background: var(--color-vert_vif) !important;
+    pointer-events: auto;
   }
 
   .plyr__controls {
     // background: linear-gradient(fade(var(--color-noir), 0%), fade(var(--color-noir), 50%));
-    background: var(--color-noir) _light;
+    background: var(--color-noir);
     color: #eee;
     padding: 10px 15px 10px 10px;
     margin: 10px;
     border-radius: 5px;
+  }
+}
+
+.plyr--stopped {
+  .plyr__controls {
+    height: 100%;
+    .plyr__control {
+      margin: 0 auto;
+      background: var(--color-vert_vif) !important;
+      border-radius: 50%;
+      padding: 0.9rem;
+
+      transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      svg {
+        transform: translateX(1px);
+      }
+    }
   }
 }
 

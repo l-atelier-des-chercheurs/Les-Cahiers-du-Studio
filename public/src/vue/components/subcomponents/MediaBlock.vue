@@ -24,6 +24,13 @@
         :media="media"
         :context="'preview'"
         :element_width_for_sizes="widthForSizes"
+        :plyr_controls="[
+          'play',
+          'progress',
+          'current-time',
+          'volume',
+          'fullscreen',
+        ]"
         ref="MediaContent"
       />
 

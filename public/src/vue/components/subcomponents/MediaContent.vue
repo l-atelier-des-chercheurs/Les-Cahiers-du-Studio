@@ -216,6 +216,16 @@ export default {
       type: Number,
       default: 0,
     },
+    plyr_controls: {
+      type: Array,
+      default: () => [
+        "play",
+        "progress",
+        "current-time",
+        "volume",
+        "fullscreen",
+      ],
+    },
   },
   components: {
     TextEditor,
@@ -233,15 +243,7 @@ export default {
       is_paused_while_playing: false,
 
       plyr_options: {
-        controls: [
-          // "play-large",
-          "play",
-          "progress",
-          "current-time",
-          // "mute",
-          "volume",
-          "fullscreen",
-        ],
+        controls: this.plyr_controls,
         iconUrl:
           this.$root.state.mode !== "export_web"
             ? "/images/plyr.svg"
