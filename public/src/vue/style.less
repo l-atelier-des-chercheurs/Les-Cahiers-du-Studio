@@ -901,7 +901,14 @@ video {
   // flex-basis: 768px !important;
   .bg-noir_light;
   .c-blanc;
-  padding-top: ~"calc(var(--spacing) / 2)";
+
+  > *:first-child {
+    padding-top: ~"calc(var(--spacing) / 1)";
+  }
+
+  table {
+    --table-border-color: white;
+  }
 }
 
 .m_filterIndicator {

@@ -6,92 +6,92 @@
           {{ $t("journal") }}
         </h3>
       </div>
-      <div slot="body">
-        <div>
-          <table class v-if="mode === 'writeup_list'">
-            <thead>
-              <tr>
-                <th style>{{ $t("name") }}</th>
-                <th>{{ $t("last_modified") }}</th>
-                <th>
-                  <!-- {{ $t('action') }} -->
-                </th>
-              </tr>
-            </thead>
-            <transition-group tag="tbody" name="list-complete">
-              <tr v-for="w in writeup_medias" :key="w.metaFileName">
-                <td>{{ w.name }}</td>
-                <td>{{ $moment(w.date_modified).format("l LTS") }}</td>
+    </SidebarSection>
+    <div>
+      <div>
+        <table class v-if="mode === 'writeup_list'">
+          <thead>
+            <tr>
+              <th style>{{ $t("name") }}</th>
+              <th>{{ $t("last_modified") }}</th>
+              <th>
+                <!-- {{ $t('action') }} -->
+              </th>
+            </tr>
+          </thead>
+          <transition-group tag="tbody" name="list-complete">
+            <tr v-for="w in writeup_medias" :key="w.metaFileName">
+              <td>{{ w.name }}</td>
+              <td>{{ $moment(w.date_modified).format("l LTS") }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
+                  @click="openWriteupMedia(w.metaFileName)"
+                >
+                  {{ $t("open") }}
+                </button>
+              </td>
+            </tr>
+            <tr :key="'create'">
+              <template v-if="!show_createwriteup_section">
+                <td colspan="3">
+                  <button
+                    type="button"
+                    class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+                    @click="
+                      show_createwriteup_section = !show_createwriteup_section
+                    "
+                  >
+                    {{ $t("create") }}
+                  </button>
+                </td>
+              </template>
+
+              <template v-else>
+                <td colspan="2">
+                  <input
+                    type="text"
+                    class="input-xs"
+                    ref="nameInput"
+                    @keydown.enter.prevent="createWriteupMedia"
+                  />
+                </td>
                 <td>
                   <button
                     type="button"
-                    class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
-                    @click="openWriteupMedia(w.metaFileName)"
+                    class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+                    @click="createWriteupMedia"
                   >
-                    {{ $t("open") }}
+                    {{ $t("create") }}
                   </button>
                 </td>
-              </tr>
-              <tr :key="'create'">
-                <template v-if="!show_createwriteup_section">
-                  <td colspan="3">
-                    <button
-                      type="button"
-                      class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                      @click="
-                        show_createwriteup_section = !show_createwriteup_section
-                      "
-                    >
-                      {{ $t("create") }}
-                    </button>
-                  </td>
-                </template>
-
-                <template v-else>
-                  <td colspan="2">
-                    <input
-                      type="text"
-                      class="input-xs"
-                      ref="nameInput"
-                      @keydown.enter.prevent="createWriteupMedia"
-                    />
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
-                      @click="createWriteupMedia"
-                    >
-                      {{ $t("create") }}
-                    </button>
-                  </td>
-                </template>
-              </tr>
-            </transition-group>
-          </table>
-          <div
-            v-else-if="mode === 'single_writeup'"
-            class="margin-small text-centered"
+              </template>
+            </tr>
+          </transition-group>
+        </table>
+        <div
+          v-else-if="mode === 'single_writeup'"
+          class="margin-small text-centered"
+        >
+          <button
+            type="button"
+            class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
+            @click="closeWriteupMedia"
           >
-            <button
-              type="button"
-              class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
-              @click="closeWriteupMedia"
-            >
-              {{ $t("back_to_list") }}
-            </button>
-          </div>
+            {{ $t("back_to_list") }}
+          </button>
         </div>
-
-        <WriteUpEditor
-          v-if="current_writeup_media"
-          :slugFolderName="slugFolderName"
-          :media="current_writeup_media"
-          :readonly="read_only"
-          @close="closeWriteupMedia"
-        />
       </div>
-    </SidebarSection>
+
+      <WriteUpEditor
+        v-if="current_writeup_media"
+        :slugFolderName="slugFolderName"
+        :media="current_writeup_media"
+        :readonly="read_only"
+        @close="closeWriteupMedia"
+      />
+    </div>
   </div>
 </template>
 <script>
