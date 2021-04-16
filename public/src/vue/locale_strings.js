@@ -93,6 +93,8 @@ module.exports = (function () {
       none: "Aucun",
       untitled_document: "Document sans-titre",
       back_to_list: "Retour à la liste",
+      back_to_home: "Retourner à l’accueil",
+
       journal: "Journal",
       chats: "Discussions",
       no_message_yet: "Aucun message à afficher pour l’instant…",
@@ -384,6 +386,7 @@ module.exports = (function () {
       none: "None",
       untitled_document: "Untitled document",
       back_to_list: "Back to list",
+      back_to_home: "Back to home",
       journal: "Journal",
       chats: "Chats",
       no_message_yet: "No message to display yet…",
