@@ -33,7 +33,6 @@ import TimestampBlot from "./quill_modules/TimestampBlot.js";
 Quill.register("formats/timestamp", TimestampBlot);
 Quill.register("formats/media", MediaBlot);
 Quill.register("modules/cardEditable", CardEditableModule);
-// Quill.register("formats/timestamp", TimestampBlot);
 
 Quill.register("modules/cursors", QuillCursors);
 ShareDB.types.register(require("rich-text").type);
