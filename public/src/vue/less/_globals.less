@@ -59,6 +59,8 @@ button,
     // padding: 0;
     &::after {
       content: "←";
+      transform: scale(1.5);
+      transform-origin: center;
       display: inline-block;
       margin-left: 0em;
       transition: transform 0.5s, color 0.5s;
@@ -75,7 +77,7 @@ button,
     &.is--active {
       color: var(--color-rouge_vif);
       &::after {
-        transform: rotate(-90deg);
+        transform: rotate(-90deg) scale(1.5);
       }
 
       &:hover {
@@ -93,6 +95,20 @@ button,
         color: var(--color-noir);
       }
     }
+  }
+}
+
+.button-nostyle {
+  appearance: none;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  background-color: transparent;
+  text-transform: none;
+  font-weight: inherit;
+  &.is--active {
+    background-color: transparent;
+    color: inherit;
   }
 }
 

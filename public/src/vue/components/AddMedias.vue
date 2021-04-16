@@ -149,9 +149,9 @@
         @click="show_addmedia_options = !show_addmedia_options"
         @drop="dropHandler($event)"
       >
-        <span class="text_label always_show" v-if="show_drop_container"
-          >Déposez vos fichiers ici</span
-        >
+        <span class="text_label always_show" v-if="show_drop_container">{{
+          $t("drop_here_to_import")
+        }}</span>
         <!-- TODO scroll to now au click -->
         <svg
           version="1.1"

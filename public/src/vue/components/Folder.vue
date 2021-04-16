@@ -253,6 +253,7 @@ export default {
           type: "folders",
           slugFolderName: this.slugFolderName,
         });
+        this.$root.closeFolder();
       }
     },
     submitPassword() {

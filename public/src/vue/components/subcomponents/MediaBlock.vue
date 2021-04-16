@@ -7,6 +7,8 @@
         'is--hovered': is_hovered && !is_resized,
         'is--resized': is_resized,
         'is--text_overflowing': text_is_overflowing,
+        'is--click_disabled': opening_is_disabled,
+        'is--opening_URL': opening_is_set_to_external_url,
       }"
       :style="itemStylesWithSize"
       @mouseenter="is_hovered = true"
@@ -27,7 +29,7 @@
 
       <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
 
-      <div class="draggabilly_handle" @click="openMedia" />
+      <div class="draggabilly_handle" @click="clickOnMedia" />
       <!-- v-if="media.type !== 'embed'" -->
       <!-- <div class="open_chat" @click="openChat">
         <svg
@@ -81,7 +83,7 @@
         <span
           @mouseenter="is_captionHovered = true"
           @mouseleave="is_captionHovered = false"
-          @click="openMedia"
+          @click="clickOnMedia"
           class="packery-item-content--meta--caption"
           :class="{ 'is--expanded': is_captionHovered }"
           :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : ''}`"
@@ -92,6 +94,7 @@
         >
         <span
           class="packery-item-content--meta--comments"
+          v-if="media.enable_chat_link !== false"
           @click.stop="openChat"
           :class="{
             'is--active':
@@ -278,7 +281,7 @@ export default {
       this.$emit("dragEnded");
     });
     this.$el.draggie.on("staticClick", () => {
-      this.openMedia();
+      this.clickOnMedia();
     });
 
     this.$nextTick(() => {
@@ -353,6 +356,19 @@ export default {
     mediaColorFromFirstAuthor() {
       return this.$root.mediaColorFromFirstAuthor(this.media, this.folder);
     },
+    opening_is_disabled() {
+      return (
+        this.media.action_on_tile_click === "do_nothing" &&
+        this.can_edit === false
+      );
+    },
+    opening_is_set_to_external_url() {
+      return (
+        this.media.action_on_tile_click === "open_external_link" &&
+        !!this.media.url_to_open_in_new_tab &&
+        this.can_edit === false
+      );
+    },
   },
   methods: {
     checkTextOverflow() {
@@ -386,21 +402,31 @@ export default {
       this.mediaSize.height += increment;
     },
     limitMediaWidth(w) {
-      return Math.max(2, Math.min(12, w));
+      return Math.max(2, Math.min(16, w));
     },
     limitMediaHeight(h) {
       return Math.max(2, Math.min(12, h));
     },
-    openMedia() {
+    clickOnMedia() {
       if (this.$root.state.dev_mode === "debug") {
-        console.log("METHODS • MediaBlock: openMedia");
+        console.log("METHODS • MediaBlock: clickOnMedia");
       }
-      this.$eventHub.$emit("timeline.openMediaModal", this.media.slugMediaName);
+
+      if (this.opening_is_disabled) {
+        return false;
+      }
 
       // pause video if playing
       if (this.$refs.MediaContent && this.$refs.MediaContent.$refs.player) {
         this.$refs.MediaContent.$refs.player.player.pause();
       }
+
+      if (this.opening_is_set_to_external_url) {
+        window.open(this.media.url_to_open_in_new_tab);
+        return;
+      }
+
+      this.$eventHub.$emit("timeline.openMediaModal", this.media.slugMediaName);
     },
     resizeMedia(type, origin) {
       if (this.$root.state.dev_mode === "debug") {
@@ -543,14 +569,20 @@ export default {
   height: 100%;
   background-color: white;
   background-color: var(--author-color);
-  cursor: pointer;
 
   border-radius: 4px;
   border: 0px solid black;
 
   transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
 
-  &.is--hovered {
+  &:not(.is--click_disabled) {
+    cursor: pointer;
+  }
+  &.is--opening_URL {
+    cursor: alias;
+  }
+
+  &:not(.is--click_disabled).is--hovered {
     // background-color: white;
     z-index: 1;
     // transform: translateY(-8px);
@@ -653,6 +685,10 @@ export default {
     &.is--active {
       background-color: var(--color-noir);
       color: white;
+
+      span {
+        color: var(--author-color);
+      }
     }
     svg {
       display: block;
@@ -662,6 +698,7 @@ export default {
     }
     span {
       padding: 1px 2px 0 2px;
+      color: var(--color-noir);
     }
   }
 
@@ -720,6 +757,7 @@ export default {
             margin: 0;
             pointer-events: auto;
             justify-content: flex-start;
+            color: white;
 
             > *:not(:first-child) {
               display: none;
@@ -727,13 +765,13 @@ export default {
           }
 
           .plyr__time {
-            background-color: rgba(255, 255, 255, 0.45);
+            background-color: rgba(41, 41, 41, 0.75);
             border-radius: 2px;
             padding: 0 0.2em;
           }
 
           .plyr__control {
-            background-color: rgba(255, 255, 255, 0.45);
+            background-color: rgba(41, 41, 41, 0.75);
             &:hover {
               background: #222;
             }
@@ -748,7 +786,8 @@ export default {
           }
         }
       }
-      &.is--playing {
+      &.is--playing,
+      &.is--paused_while_playing {
         // display: none;
         .plyr__controls {
           // background-color: rgba(255, 255, 255, 0.45);

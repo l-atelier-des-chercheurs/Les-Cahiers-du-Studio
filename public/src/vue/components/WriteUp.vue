@@ -49,7 +49,12 @@
 
                 <template v-else>
                   <td colspan="2">
-                    <input type="text" class="input-xs" ref="nameInput" />
+                    <input
+                      type="text"
+                      class="input-xs"
+                      ref="nameInput"
+                      @keydown.enter.prevent="createWriteupMedia"
+                    />
                   </td>
                   <td>
                     <button
