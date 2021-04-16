@@ -86,7 +86,7 @@
             />
           </transition>
 
-          <template v-if="$root.state.mode !== 'export_web' && false">
+          <!-- <template v-if="$root.state.mode !== 'export_web'">
             <button
               type="button"
               class="folder_backbutton"
@@ -109,7 +109,7 @@
                 >{{ folder.name }}</span
               >
             </div>
-          </template>
+          </template> -->
 
           <div
             class="m_verticalButtons"
