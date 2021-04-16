@@ -21,18 +21,11 @@
       class="m_navtimeline_wrapper--timeline_wrapper"
       :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
     >
-      <div
-        :style="{ cursor, userSelect }"
-        class="vue-splitter-container clearfix"
-      >
-        <Pane
-          class="splitter-pane splitter-paneL"
-          :class="{ 'is--dragged': is_dragged }"
-          :split="split"
-          :style="{ [type]: percent + '%' }"
-        >
-          <transition name="chatopen" :duration="350" mode="out-in">
-            <!-- <Informations
+      <splitpanes style="" class="default-theme">
+        <pane min-size="" class="_leftSidebar">
+          <div class="_leftSidebar--content">
+            <transition name="chatopen" :duration="350" mode="out-in">
+              <!-- <Informations
               :folder="folder"
               :introduction_media="introduction_media"
               :slugFolderName="slugFolderName"
@@ -41,75 +34,50 @@
                 $root.settings.sidebar_type === 'informations'
               "
             /> -->
+              <Sidebar
+                v-if="
+                  $root.settings.has_sidebar_opened &&
+                  $root.settings.sidebar_type === 'informations'
+                "
+                :folder="folder"
+                :slugFolderName="slugFolderName"
+                :timeline_start="timeline_interval.start"
+                :timeline_end="timeline_interval.end"
+                :introduction_media="introduction_media"
+                :visible_day="visible_day"
+                :medias="medias"
+                :sortedMedias="sortedMedias"
+                :date_interval="date_interval"
+                :sort="sort"
+                :filter="filter"
+                :read_only="read_only"
+                :can_edit_folder="can_edit_folder"
+              />
+              <WriteUp
+                v-else-if="
+                  $root.settings.has_sidebar_opened &&
+                  $root.settings.sidebar_type === 'journal'
+                "
+                :slugFolderName="slugFolderName"
+                :medias="medias"
+                :read_only="read_only"
+              />
+              <Filters
+                v-else-if="
+                  $root.settings.has_sidebar_opened &&
+                  $root.settings.sidebar_type === 'filters'
+                "
+                :medias="Object.values(medias)"
+              />
 
-            <Sidebar
-              v-if="
-                $root.settings.has_sidebar_opened &&
-                $root.settings.sidebar_type === 'informations'
-              "
-              :folder="folder"
-              :slugFolderName="slugFolderName"
-              :timeline_start="timeline_interval.start"
-              :timeline_end="timeline_interval.end"
-              :introduction_media="introduction_media"
-              :visible_day="visible_day"
-              :medias="medias"
-              :sortedMedias="sortedMedias"
-              :date_interval="date_interval"
-              :sort="sort"
-              :filter="filter"
-              :read_only="read_only"
-              :can_edit_folder="can_edit_folder"
-            />
-            <WriteUp
-              v-else-if="
-                $root.settings.has_sidebar_opened &&
-                $root.settings.sidebar_type === 'journal'
-              "
-              :slugFolderName="slugFolderName"
-              :medias="medias"
-              :read_only="read_only"
-            />
-            <Filters
-              v-else-if="
-                $root.settings.has_sidebar_opened &&
-                $root.settings.sidebar_type === 'filters'
-              "
-              :medias="Object.values(medias)"
-            />
-
-            <Chats
-              v-else-if="
-                $root.settings.has_sidebar_opened &&
-                $root.settings.sidebar_type === 'chats'
-              "
-            />
-          </transition>
-
-          <template v-if="$root.state.mode !== 'export_web'">
-            <button
-              type="button"
-              class="folder_backbutton"
-              @click="$root.closeFolder()"
-              @mouseover="collapse_foldername = false"
-              @mouseleave="collapse_foldername = true"
-              :class="{
-                'is--collapsed': collapse_foldername,
-                'is--movedToRight': $root.settings.has_sidebar_opened,
-              }"
-            >
-              <span class="icon">←</span>
-              <span class="project_name">{{ folder.name }}</span>
-            </button>
-          </template>
-          <template v-else>
-            <div class="folder_backbutton">
-              <span
-                class="margin-sides-small padding-verysmall text-centered"
-                >{{ folder.name }}</span
-              >
-            </div>
-          </template>
+              <Chats
+                v-else-if="
+                  $root.settings.has_sidebar_opened &&
+                  $root.settings.sidebar_type === 'chats'
+                "
+              />
+            </transition>
+          </div>
 
           <div
             class="m_verticalButtons"
@@ -143,23 +111,36 @@
               </button>-->
             </div>
           </div>
-        </Pane>
+        </pane>
 
-        <Resizer
-          :class="{ 'is--dragged': is_dragged }"
-          :className="className"
-          :style="{ [resizeType]: percent + '%' }"
-          :split="split"
-          @mousedown.native="onMouseDown"
-          @click.native="onClick"
-        />
+        <pane min-size="20">
+          <div>
+            <template v-if="$root.state.mode !== 'export_web'">
+              <button
+                type="button"
+                class="folder_backbutton"
+                @click="$root.closeFolder()"
+                @mouseover="collapse_foldername = false"
+                @mouseleave="collapse_foldername = true"
+                :class="{
+                  'is--collapsed': collapse_foldername,
+                  'is--movedToRight': $root.settings.has_sidebar_opened,
+                }"
+              >
+                <span class="icon">×</span>
+                <span class="project_name">{{ folder.name }}</span>
+              </button>
+            </template>
+            <template v-else>
+              <div class="folder_backbutton">
+                <span
+                  class="margin-sides-small padding-verysmall text-centered"
+                  >{{ folder.name }}</span
+                >
+              </div>
+            </template>
+          </div>
 
-        <Pane
-          class="splitter-pane splitter-paneR"
-          :class="{ 'is--dragged': is_dragged }"
-          :style="{ [type]: 100 - percent + '%' }"
-          :split="split"
-        >
           <AddMedias
             v-if="$root.state.mode !== 'export_web'"
             :slugFolderName="slugFolderName"
@@ -376,8 +357,8 @@
               </div>
             </div>
           </div>
-        </Pane>
-      </div>
+        </pane>
+      </splitpanes>
     </div>
 
     <EditMedia
@@ -413,13 +394,13 @@ import { setTimeout } from "timers";
 import EditMedia from "./components/modals/EditMedia.vue";
 import WriteUp from "./components/WriteUp.vue";
 import Filters from "./components/Filters.vue";
-import Resizer from "./components/splitpane/Resizer.vue";
-import Pane from "./components/splitpane/Pane.vue";
+
 import TimelinePlayer from "./components/subcomponents/TimelinePlayer.vue";
 import AccessController from "./components/subcomponents/AccessController.vue";
 import Chats from "./components/chat/Chats.vue";
 
 import debounce from "debounce";
+import { Splitpanes, Pane } from "splitpanes";
 
 export default {
   props: {
@@ -437,11 +418,12 @@ export default {
     Informations,
     Filters,
     EditFolder,
-    Resizer,
     Pane,
     TimelinePlayer,
     AccessController,
     Chats,
+    Splitpanes,
+    Pane,
   },
   data() {
     return {
@@ -1897,7 +1879,8 @@ export default {
 .folder_backbutton {
   position: absolute;
   top: 20px;
-  left: ~"calc(100% + 40px)";
+  left: 20px;
+  // left: ~"calc(100% + 40px)";
   z-index: 10000;
   border-radius: 22px;
 
@@ -1913,7 +1896,7 @@ export default {
   background-color: var(--color-noir);
 
   body.has_systembar & {
-    top: 35px;
+    top: 20px;
   }
 
   &.is--movedToRight {
