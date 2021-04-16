@@ -377,8 +377,9 @@ export default {
       }
 
       let timeMark = 0;
+
       let timeMarkThumbs = this.media.thumbs.filter(
-        (t) => !!t && t.timeMark === 0
+        (t) => !!t && t.timeMark === "50%"
       );
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
