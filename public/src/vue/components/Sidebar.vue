@@ -117,7 +117,7 @@
       </div>
     </SidebarSection>
 
-    <SidebarSection>
+    <!-- <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("access_with_other_devices") }}
@@ -125,20 +125,10 @@
       </div>
       <div slot="body">
         <CreateQRCode :slugFolderName="slugFolderName" />
-        <!-- <p class="font-small" v-if="$root.state.is_electron">
-          {{ $t("contents_are_stored") }}
-          <template>
-            <a
-              :href="folder.fullFolderPath"
-              @click.prevent="openInFinder(folder.fullFolderPath)"
-              >{{ folder.fullFolderPath.replace(/\//g, "\/\u200B") }}</a
-            >
-          </template>
-        </p>-->
       </div>
-    </SidebarSection>
+    </SidebarSection> -->
 
-    <SidebarSection>
+    <!-- <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("calendar") }}
@@ -187,9 +177,9 @@
           </div>
         </div>
       </div>
-    </SidebarSection>
+    </SidebarSection> -->
 
-    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
+    <!-- <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("keyboard_shortcuts") }}
@@ -203,15 +193,15 @@
           </button>
         </h3>
       </div>
-    </SidebarSection>
+    </SidebarSection> -->
 
-    <KeyboardShortcuts
+    <!-- <KeyboardShortcuts
       v-if="showKeyboardShortcutsList === true"
       :folder="folder"
       @close="showKeyboardShortcutsList = false"
-    ></KeyboardShortcuts>
+    ></KeyboardShortcuts> -->
 
-    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
+    <!-- <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("export_folder") }}
@@ -225,15 +215,15 @@
           </button>
         </h3>
       </div>
-    </SidebarSection>
+    </SidebarSection> -->
 
-    <ExportTimeline
+    <!-- <ExportTimeline
       v-if="showExportTimelineModal === true"
       :slugFolderName="slugFolderName"
       @close="showExportTimelineModal = false"
-    ></ExportTimeline>
+    ></ExportTimeline> -->
 
-    <SidebarSection>
+    <!-- <SidebarSection>
       <div slot="header">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("list") }}
@@ -258,9 +248,9 @@
           :timeline_end="timeline_end"
         ></Tableau>
       </div>
-    </SidebarSection>
+    </SidebarSection> -->
 
-    <MediasList
+    <!-- <MediasList
       v-if="showMediasListModal"
       :filter="filter"
       :sort="sort"
@@ -269,7 +259,7 @@
       :timeline_start="timeline_start"
       :timeline_end="timeline_end"
       @close="showMediasListModal = false"
-    />
+    /> -->
 
     <div class="c-gris font-small margin-medium">
       <p>
