@@ -1,7 +1,7 @@
 <template>
   <div class="m_informations">
     <div class="m_informations--presentation">
-      <div class="m_informations--presentation--langSelector">
+      <div class="m_informations--presentation--langSelector" v-if="false">
         <select v-model="currentLang" class="_langSelector">
           <option
             v-for="(name, code) in $root.lang.available"

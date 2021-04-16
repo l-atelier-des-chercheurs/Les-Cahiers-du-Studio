@@ -1,7 +1,7 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
     <div class="margin-sides-small">
-      <select class="_langSelector" v-model="currentLang">
+      <select class="_langSelector" v-model="currentLang" v-if="false">
         <option
           v-for="(name, code) in $root.lang.available"
           :value="code"
@@ -15,16 +15,17 @@
     <SidebarSection
       v-if="$root.state.mode !== 'export_web'"
       :open_by_default="true"
+      :can_collapse="false"
     >
       <!-- <div class="border border-bottom-dashed padding-medium"> -->
       <div slot="header" class="flex-vertically-centered">
-        <h3 class="margin-none text-cap with-bullet">
+        <!-- <h3 class="margin-none text-cap with-bullet">
           {{ $t("folder_information") }}
-        </h3>
+        </h3> -->
       </div>
 
       <div slot="body">
-        <div class="margin-bottom-small border-circled">
+        <div class="margin-bottom-small border-circled" v-if="false">
           <div class="m_folder" v-if="!show_informations">
             <h2
               data-v-2dc30bca=""
@@ -67,7 +68,7 @@
 
         <!-- <SidebarSection :open_by_default="true"> -->
         <!-- <div slot="header"> -->
-        <h3 class="margin-none">
+        <h3 class="margin-none" v-if="false">
           <small>{{ $t("presentation") }}</small>
         </h3>
         <!-- </div> -->
@@ -501,6 +502,10 @@ export default {
 }
 </style>
 <style lang="scss">
+._introduction {
+  margin-top: 1rem;
+}
+
 ._introduction .m_collaborativeEditor {
   .ql-toolbar.ql-snow {
     position: sticky;
