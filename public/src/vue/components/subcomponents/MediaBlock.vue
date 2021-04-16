@@ -687,7 +687,7 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     color: var(--author-color);
-
+    font-size: 1.3em;
     &:hover,
     &.is--active {
       background-color: var(--color-noir);
@@ -700,7 +700,8 @@ export default {
     svg {
       display: block;
       margin: 0;
-      height: 1.2em;
+      height: 2em;
+      width: 2em;
       line-height: 1;
     }
     span {
