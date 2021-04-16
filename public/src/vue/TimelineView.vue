@@ -205,14 +205,13 @@
             <TimelinePlayer />
 
             <div v-if="!can_edit_folder">
-              <button
+              <!-- <button
                 type="button"
                 @click="toggleSidebar('informations')"
                 :class="{ 'is--active': show_access_controller }"
               >
-                <!-- @click="show_access_controller = !show_access_controller" -->
                 {{ $t("edit_timeline") }}
-              </button>
+              </button> -->
               <!-- <div v-if="show_access_controller">
                 <AccessController
                   :folder="folder"
