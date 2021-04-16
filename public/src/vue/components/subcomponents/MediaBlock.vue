@@ -710,6 +710,31 @@ export default {
     }
   }
 
+  .plyr--stopped {
+    .plyr__controls {
+      height: 100%;
+      pointer-events: none !important;
+
+      .plyr__control {
+        margin: 0 auto;
+        background: var(--color-vert_vif) !important;
+        border-radius: 50%;
+        padding: 0.9rem;
+        pointer-events: auto;
+
+        transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+        &:hover {
+          transform: scale(1.1);
+        }
+
+        svg {
+          transform: translateX(1px);
+        }
+      }
+    }
+  }
+
   .plyr__controls {
     color: var(--color-noir);
     border-radius: 0;
