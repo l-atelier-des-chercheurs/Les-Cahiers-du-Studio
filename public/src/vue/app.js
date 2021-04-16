@@ -763,18 +763,18 @@ let vm = new Vue({
 
       this.settings.current_slugFolderName = slugFolderName;
 
-      history.pushState(
-        { slugFolderName },
-        this.store.folders[slugFolderName].name,
-        "/" + slugFolderName
-      );
+      // history.pushState(
+      //   { slugFolderName },
+      //   this.store.folders[slugFolderName].name,
+      //   "/" + slugFolderName
+      // );
     },
     closeFolder: function () {
       if (window.state.dev_mode === "debug") {
         console.log("ROOT EVENT: closeFolder");
       }
       this.settings.current_slugFolderName = "";
-      history.pushState({ slugFolderName: "" }, "", "/");
+      // history.pushState({ slugFolderName: "" }, "", "/");
     },
     updateFolderScale: function (slugFolderName, timelineViewport_scale) {
       if (window.state.dev_mode === "debug") {
