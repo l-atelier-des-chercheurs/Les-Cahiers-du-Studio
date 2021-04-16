@@ -1,6 +1,6 @@
 <template>
   <div class="m_writeupeditor">
-    <small>
+    <small class="padding-sides-verysmall">
       {{ $t("last_saved_on") }}&nbsp;{{
         $root.formatDateToPrecise(media.date_modified)
       }}
@@ -167,8 +167,8 @@ export default {
 };
 </script>
 <style>
-.quillWrapper .ql-toolbar {
-  padding-left: 1em;
+.m_writeupeditor .ql-toolbar {
+  border: none;
 }
 
 .m_writeupeditor--topbar {

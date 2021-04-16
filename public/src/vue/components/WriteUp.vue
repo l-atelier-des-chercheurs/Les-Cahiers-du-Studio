@@ -72,14 +72,14 @@
         </table>
         <div
           v-else-if="mode === 'single_writeup'"
-          class="margin-small text-centered"
+          class="margin-sides-verysmall margin-vert-small"
         >
           <button
             type="button"
-            class="button-small border-circled button-thin padding-verysmall margin-none bg-transparent"
+            class="button-verysmall border-circled button-thin padding-verysmall margin-none bg-transparent"
             @click="closeWriteupMedia"
           >
-            {{ $t("back_to_list") }}
+            ← {{ $t("back_to_list") }}
           </button>
         </div>
       </div>
