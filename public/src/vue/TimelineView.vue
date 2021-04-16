@@ -1867,7 +1867,7 @@ export default {
           pointer-events: auto;
         }
         &[data-has_author="true"] span::before {
-          content: "• ";
+          // content: "• ";
           color: var(--color-author);
           position: relative;
         }
