@@ -221,15 +221,15 @@ export default {
     unsetAuthor() {
       this.$root.settings.current_author_name = false;
       this.change_color_menu = false;
-      this.$socketio.socket.emit("updateClientInfo", {
-        author_name: false,
-      });
+      // this.$socketio.socket.emit("updateClientInfo", {
+      //   author_name: false,
+      // });
     },
     setAuthor(name) {
       this.$root.settings.current_author_name = name;
-      this.$socketio.socket.emit("updateClientInfo", {
-        author_name: name,
-      });
+      // this.$socketio.socket.emit("updateClientInfo", {
+      //   author_name: name,
+      // });
     },
     author_is_connected(name) {
       return (
