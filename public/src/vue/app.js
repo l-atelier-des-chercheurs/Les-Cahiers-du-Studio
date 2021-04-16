@@ -620,9 +620,9 @@ let vm = new Vue({
 
       this.settings.current_author_slug = author_slug;
 
-      this.$socketio.socket.emit("updateClientInfo", {
-        author: { slugFolderName: author.slugFolderName },
-      });
+      // this.$socketio.socket.emit("updateClientInfo", {
+      //   author: { slugFolderName: author.slugFolderName },
+      // });
       this.$socketio.listFolders({ type: "authors" });
       this.$eventHub.$emit("authors.newAuthorSet");
     },
@@ -638,7 +638,7 @@ let vm = new Vue({
       this.$socketio.sendAuth();
 
       this.settings.current_author_slug = false;
-      this.$socketio.socket.emit("updateClientInfo", { author: {} });
+      // this.$socketio.socket.emit("updateClientInfo", { author: {} });
     },
     updateClientInfo(val) {
       if (this.$socketio.socket) {

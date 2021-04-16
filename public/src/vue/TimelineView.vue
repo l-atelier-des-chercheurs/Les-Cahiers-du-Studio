@@ -920,10 +920,7 @@ export default {
             (acc, media) => {
               // avancer dans l’array, en ajoutant dans un accumulator
               if (media.type === "marker") {
-                const label =
-                  this.$moment(media.date_timeline).format("HH:mm") +
-                  "\n" +
-                  (!!media.content ? media.content : "");
+                const label = !!media.content ? media.content : "";
                 const color = this.$root.mediaColorFromFirstAuthor(
                   media,
                   this.folder
@@ -1821,7 +1818,8 @@ export default {
     height: 100%;
     top: 0;
     padding: 0;
-    margin-right: -25ch;
+    margin-right: -16ch;
+    margin-left: 5ch;
     background-color: transparent;
     // padding: 24px;
     display: flex;
@@ -1833,9 +1831,9 @@ export default {
 
     div {
       display: block;
-      transform: rotate(-15deg) translateX(-20px);
+      // transform: rotate(-15deg) translateX(-20px);
       transform-origin: left center;
-      font-style: italic;
+      // font-style: italic;
       margin-top: auto;
       margin-bottom: auto;
 
@@ -1856,17 +1854,12 @@ export default {
         }
 
         span {
-          border-radius: 0;
-
+          border-radius: 50%;
           display: inline;
-          background-color: var(--color-noir);
-          color: white;
-          // background-color: var(--color-author);
-          // color: var(--label-color);
-          box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
-          padding: 4px 8px;
+          background-color: #000;
+          color: #fff;
+          padding: 30px 15px;
           white-space: pre-line;
-
           -webkit-box-decoration-break: clone;
           -ms-box-decoration-break: clone;
           -o-box-decoration-break: clone;
