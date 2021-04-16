@@ -22,7 +22,7 @@
       :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
     >
       <splitpanes style="" class="default-theme">
-        <pane min-size="" class="_leftSidebar">
+        <pane size="35" class="_leftSidebar">
           <div class="_leftSidebar--content">
             <transition name="chatopen" :duration="350" mode="out-in">
               <!-- <Informations
@@ -125,6 +125,11 @@
                 :class="{
                   'is--collapsed': collapse_foldername,
                   'is--movedToRight': $root.settings.has_sidebar_opened,
+                }"
+                :content="$t('back_to_home')"
+                v-tippy="{
+                  placement: 'bottom',
+                  delay: [600, 0],
                 }"
               >
                 <span class="icon">×</span>
