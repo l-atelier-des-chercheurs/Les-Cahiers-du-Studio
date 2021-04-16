@@ -490,9 +490,9 @@ export default {
         {
           key: "chats",
         },
-        {
-          key: "journal",
-        },
+        // {
+        //   key: "journal",
+        // },
       ],
 
       filter: "",
