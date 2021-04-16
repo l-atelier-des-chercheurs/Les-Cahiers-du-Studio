@@ -393,10 +393,6 @@ export default {
     },
 
     boitierPressed(event) {
-      if (window.state.dev_mode === "debug") {
-        console.log("METHODS • AddMediaButton: boitierPressed");
-      }
-
       // if there is a modal opened, let’s not do something
       if (this.$root.settings.has_modal_opened === true) {
         return;
@@ -411,6 +407,10 @@ export default {
         event.target.className.includes("ql-editor")
       ) {
         return;
+      }
+
+      if (window.state.dev_mode === "debug") {
+        console.log("METHODS • AddMediaButton: boitierPressed");
       }
 
       var key = event.key;

@@ -4,7 +4,15 @@ let BlockEmbed = Quill.import("blots/block/embed");
 const humanTime = function ({ timestamp, duration }) {
   function dateString(date) {
     const _date = new Date(date);
+
+    let day =
+      new Date().toLocaleDateString() === _date.toLocaleDateString()
+        ? "aujourd’hui"
+        : _date.toLocaleDateString();
+
     return (
+      day +
+      " • " +
       _date.getHours() +
       ":" +
       (_date.getMinutes() < 10 ? "0" : "") +
