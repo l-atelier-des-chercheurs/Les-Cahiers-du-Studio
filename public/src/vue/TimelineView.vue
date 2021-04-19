@@ -150,7 +150,6 @@
             v-if="$root.state.mode !== 'export_web'"
             :slugFolderName="slugFolderName"
             :folder="folder"
-            :current_author="$root.current_author"
             :can_edit_folder="can_edit_folder"
             :read_only="!$root.state.connected"
             :rightmostMedia="rightmostMedia"
@@ -1524,7 +1523,6 @@ export default {
 .m_timeline {
   padding-left: 0;
 
-  --color-author: var(--color-noir);
   --label-color: white;
 
   // --rule-color: rgb(220,220,220);
