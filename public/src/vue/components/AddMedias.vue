@@ -1,21 +1,6 @@
 <template>
   <div class="m_addMedias" :style="author_styles">
-    <div
-      class="m_addMedias--overlay"
-      v-if="show_addmedia_options"
-      @click="show_addmedia_options = false"
-    />
-
-    <div class="m_authorMenu" @mouseleave="/* show_authors_options = false */">
-      <transition name="slideupfrombottomright">
-        <Authors
-          v-if="show_authors_options"
-          class="m_authorMenu--options--authors"
-          :slugFolderName="slugFolderName"
-          :authors="folder_authors"
-        />
-      </transition>
-
+    <div class="m_authorMenu">
       <button
         type="button"
         class="m_authorMenu--button"
@@ -34,12 +19,15 @@
       :read_only="read_only"
       :slugFolderName="slugFolderName"
     />
+
+    <CaptureMedias v-if="can_edit_folder" :slugFolderName="slugFolderName" />
   </div>
 </template>
 <script>
 import debounce from "debounce";
 import Authors from "./subcomponents/Authors.vue";
 import ImportMedias from "./subcomponents/ImportMedias.vue";
+import CaptureMedias from "./subcomponents/CaptureMedias.vue";
 
 export default {
   props: {
@@ -57,13 +45,11 @@ export default {
   components: {
     Authors,
     ImportMedias,
+    CaptureMedias,
   },
   data() {
     return {
       showImportModal: false,
-
-      show_addmedia_options: false,
-      show_authors_options: false,
     };
   },
   mounted: function () {
@@ -77,20 +63,6 @@ export default {
   },
   watch: {
     file: function () {},
-    show_addmedia_options() {
-      if (this.show_addmedia_options) {
-        this.$eventHub.$emit("showingAddmediaOptions");
-      } else {
-        this.$eventHub.$emit("hidingAddmediaOptions");
-      }
-    },
-    show_authors_options() {
-      if (this.show_authors_options) {
-        this.$eventHub.$emit("showingAddmediaOptions");
-      } else {
-        this.$eventHub.$emit("hidingAddmediaOptions");
-      }
-    },
   },
   computed: {
     is_touch() {
@@ -160,13 +132,15 @@ export default {
 <style lang="less" scoped>
 .m_addMedias {
   position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
 
-  bottom: 8vh;
-  right: 4vw;
+  padding-bottom: 8vh;
+  padding-right: 4vw;
 
-  z-index: 55000;
-  min-height: 100px;
-  max-height: 80vh;
+  z-index: 1000;
 
   // width: 100px;
   height: auto;
@@ -178,33 +152,9 @@ export default {
 
   align-items: flex-end;
   align-content: center;
-  justify-content: center;
+  justify-content: flex-end;
 
   pointer-events: none;
-
-  .m_addMedias--overlay {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.8);
-    pointer-events: auto;
-    // background-color: red;
-  }
-
-  .m_addMedias--dropContainer {
-    position: absolute;
-    z-index: 0;
-    bottom: 0;
-    right: 0;
-
-    border-radius: 6px;
-
-    width: 320px;
-    height: 320px;
-    background-color: var(--color-noir);
-  }
 }
 
 .m_authorMenu {
@@ -216,7 +166,8 @@ export default {
     transition: all cubic-bezier(0.19, 1, 0.22, 1) 0.8s;
     display: block;
     margin-left: auto;
-    margin-right: 20px;
+    margin-right: var(--spacing-verysmall);
+
     margin-bottom: 22px;
     text-transform: initial;
     pointer-events: auto;

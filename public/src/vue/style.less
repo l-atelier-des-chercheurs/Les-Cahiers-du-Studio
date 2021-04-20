@@ -550,7 +550,6 @@ video {
   // position: absolute;
   // height: 100%;
   // width: 1px;
-  z-index: 1;
 
   right: 0;
   top: 0;
@@ -569,7 +568,7 @@ video {
   // transform: translateX(0);
   transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.45s;
 
-  z-index: 1500;
+  z-index: 900;
   text-align: center;
 
   &.is--sidebarOpened {
@@ -850,8 +849,6 @@ video {
 
   background-color: @c-bg_sidebar;
   border-right: 1px solid var(--color-noir);
-
-  z-index: 1500;
 
   @scrollbar-height: 4px;
   @scrollbar-padding: 6px;
@@ -2582,4 +2579,15 @@ video {
 .default-theme.splitpanes--horizontal > .splitpanes__splitter:after,
 .default-theme .splitpanes--horizontal > .splitpanes__splitter:after {
   margin-top: 1px;
+}
+
+._modalOverlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  pointer-events: auto;
+  // background-color: red;
 }

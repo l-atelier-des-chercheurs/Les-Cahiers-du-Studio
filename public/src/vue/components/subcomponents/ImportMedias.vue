@@ -5,6 +5,10 @@
     :class="{ 'is--showing_options': show_addmedia_options }"
     v-if="can_edit_folder"
   >
+    <div v-if="show_addmedia_options" class="_modalOverlay" 
+      @click="show_addmedia_options = false;"
+    />
+
     <div class="m_importMedias--options">
       <button
         key="add_text"
@@ -370,6 +374,7 @@ export default {
 <style lang="less" scoped>
 .m_importMedias {
   pointer-events: none;
+  margin: 0 var(--spacing-verysmall);
   // --color-author: white;
   // --color-author: var(--color-noir);
 
@@ -459,7 +464,7 @@ export default {
 .button_addMedia {
   width: 64px;
   height: 64px;
-  padding: 0 20px;
+  padding: 0 ~"calc(var(--spacing)/4)";
   margin: 0 auto !important;
   background-color: var(--color-author);
 }
@@ -467,7 +472,7 @@ export default {
 button,
 .button {
   position: relative;
-  box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.35);
+  box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.15);
   // margin: .3em;
 
   &:active {

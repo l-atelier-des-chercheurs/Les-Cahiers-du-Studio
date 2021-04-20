@@ -37,6 +37,8 @@ import DateFieldComponent from "./components/subcomponents/DateField.vue";
 Vue.component("DateField", DateFieldComponent);
 import PasswordFieldComponent from "./components/subcomponents/PasswordField.vue";
 Vue.component("PasswordField", PasswordFieldComponent);
+import ImageSelectComponent from "./components/subcomponents/ImageSelect.vue";
+Vue.component("ImageSelect", ImageSelectComponent);
 
 Vue.component("Loader", {
   name: "Loader",
@@ -147,6 +149,7 @@ let vm = new Vue({
       minutes: "",
       days: "",
     },
+    currentTime_millis: "",
 
     justCreatedMediaID: false,
     justCreatedFolderID: false,
@@ -170,6 +173,27 @@ let vm = new Vue({
       highlightMedia: "",
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
       perf_mode: "low",
+
+      ask_before_leaving_capture: false,
+
+      capture_options: {
+        selected_mode: "",
+        selected_devicesId: {
+          audioinput: "",
+          videoinput: "",
+          audiooutput: "",
+        },
+        selected_devices: {},
+        last_working_resolution: false,
+
+        distant_flux: {
+          active: false,
+          username: `les-cahiers-${(
+            Math.random().toString(36) + "00000000000000000"
+          ).slice(2, 3 + 2)}`,
+          callee_username: "",
+        },
+      },
 
       keyboard_shortcuts: [],
 
@@ -236,6 +260,18 @@ let vm = new Vue({
     }
 
     this.access = true;
+
+    const roundMillisForMoment = (m) => {
+      const _m = m.clone();
+      const millis_decimal = Math.round(_m.get("millisecond") / 100);
+      _m.millisecond(millis_decimal * 100);
+      return _m;
+    };
+
+    this.currentTime_millis = roundMillisForMoment(this.$moment());
+    setInterval(() => {
+      this.currentTime_millis = roundMillisForMoment(this.$moment());
+    }, 50);
 
     if (this.state.mode === "export_web") {
       // this.settings.has_sidebar_opened = true;
@@ -475,6 +511,27 @@ let vm = new Vue({
     },
     formatDurationToHoursMinutesSeconds(date) {
       return this.$moment.utc(date).format("HH:mm:ss");
+    },
+
+    formatBytes(a, b) {
+      if (0 == a) return `0 ${this.$t("bytes")}`;
+
+      var e = [
+        this.$t("bytes"),
+        this.$t("kb"),
+        this.$t("mb"),
+        this.$t("gb"),
+        "TB",
+        "PB",
+        "EB",
+        "ZB",
+        "YB",
+      ];
+
+      var c = 1024,
+        d = b || 2,
+        f = Math.floor(Math.log(a) / Math.log(c));
+      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f];
     },
 
     getUnreadMessageCount(chat) {

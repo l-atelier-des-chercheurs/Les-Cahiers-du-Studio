@@ -17,10 +17,7 @@
     <!-- <pre>{{ sortedMedias }}</pre> -->
     <!-- <pre>{{ groupedMedias }}</pre> -->
 
-    <div
-      class="m_navtimeline_wrapper--timeline_wrapper"
-      :class="{ 'is--showingAddmediaOptions': is_showing_addmedia_options }"
-    >
+    <div class="m_navtimeline_wrapper--timeline_wrapper">
       <splitpanes style="" class="default-theme">
         <pane size="35" class="_leftSidebar">
           <div class="_leftSidebar--content">
@@ -446,7 +443,6 @@ export default {
 
       show_media_modal_for: false,
       show_edit_folder_modal: false,
-      is_showing_addmedia_options: false,
 
       convert_empty_days_to_periods: true,
       show_access_controller: false,
@@ -581,8 +577,6 @@ export default {
       "editmediamodal.previousmedia",
       this.editModalPreviousMedia
     );
-    this.$eventHub.$on("showingAddmediaOptions", this.showingAddmediaOptions);
-    this.$eventHub.$on("hidingAddmediaOptions", this.hidingAddmediaOptions);
 
     this.setTimelineHeight();
 
@@ -623,8 +617,6 @@ export default {
       "editmediamodal.previousmedia",
       this.editModalPreviousMedia
     );
-    this.$eventHub.$off("showingAddmediaOptions", this.showingAddmediaOptions);
-    this.$eventHub.$off("hidingAddmdiaOptions", this.hidingAddmediaOptions);
 
     window.removeEventListener("resize", this.onResize);
 
@@ -1217,12 +1209,6 @@ export default {
       if (this.folded_days.includes(timestamp))
         this.folded_days = this.folded_days.filter((t) => t !== timestamp);
       else this.folded_days.push(timestamp);
-    },
-    showingAddmediaOptions() {
-      this.is_showing_addmedia_options = true;
-    },
-    hidingAddmediaOptions() {
-      this.is_showing_addmedia_options = false;
     },
     findDayAtPosX(posX) {
       if (
@@ -1884,7 +1870,7 @@ export default {
   top: 20px;
   left: 20px;
   // left: ~"calc(100% + 40px)";
-  z-index: 10000;
+  z-index: 950;
   border-radius: 22px;
 
   padding: 0;

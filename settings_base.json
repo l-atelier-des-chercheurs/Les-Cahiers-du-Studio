@@ -333,6 +333,61 @@
           "type": "string"
         }
       }
+    },
+    "stopmotions": {
+      "path": "_stopmotions",
+      "fields": {
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified": {
+          "type": "date",
+          "default": "current",
+          "override": true
+        },
+        "authors": {
+          "type": "array"
+        },
+        "linked_project": {
+          "type": "string",
+          "comment": "is_deprecated_and_replaced_with_linked_folder"
+        },
+        "linked_folder": {
+          "type": "string"
+        },
+        "linked_type": {
+          "type": "string"
+        }
+      },
+      "medias": {
+        "thumbs": {
+          "resolutions": [150, 1200]
+        },
+        "fields": {
+          "date_uploaded": {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
+          "media_filename": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "options": ["image"],
+            "default": "other"
+          },
+          "authors": {
+            "type": "array"
+          },
+          "file_meta": {
+            "type": "array",
+            "read_only": true
+          }
+        }
+      }
     }
   }
 }
