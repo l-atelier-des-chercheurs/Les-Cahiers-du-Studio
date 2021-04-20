@@ -376,9 +376,9 @@ export default {
         return this.mediaURL;
       }
 
-      let timeMark = 0;
+      let timeMark = "00:00:00";
       let timeMarkThumbs = this.media.thumbs.filter(
-        (t) => !!t && t.timeMark === 0
+        (t) => !!t && t.timeMark === timeMark
       );
 
       if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
