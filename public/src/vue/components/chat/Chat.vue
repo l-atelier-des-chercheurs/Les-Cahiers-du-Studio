@@ -182,7 +182,7 @@
                       :src="urlToPortrait(getMessageAuthor(message))"
                     />
                     <span v-else class="_no_pp"></span>
-                    {{ getMessageAuthor(message).name }}
+                    <span>{{ getMessageAuthor(message).name }}</span>
                   </span>
                 </div>
                 <div class="m_message--meta--date">

@@ -10,7 +10,15 @@
     <!-- Human name -->
     <div class="margin-bottom-small">
       <label>{{ $t("name_or_pseudo") }}</label>
-      <input type="text" v-model.trim="authordata.name" required autofocus />
+      <input
+        type="text"
+        v-model.trim="authordata.name"
+        required
+        id="username"
+        name="username"
+        autofocus
+        autocomplete="off"
+      />
     </div>
 
     <!-- <div class="margin-bottom-small">

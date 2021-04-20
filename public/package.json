@@ -29,6 +29,7 @@
     "draggabilly": "^2.2.0",
     "hexsorter": "^1.5.0",
     "i18n": "^0.8.4",
+    "imagetracerjs": "^1.2.6",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "node-lessify": "^0.1.5",
@@ -38,7 +39,9 @@
     "quill-cursors": "^2.2.1",
     "randomcolor": "^0.5.4",
     "reconnectingwebsocket": "^1.0.0",
+    "recordrtc": "^5.6.2",
     "rich-text": "^4.1.0",
+    "rtcmulticonnection": "^3.7.0",
     "sharedb": "^1.0.0-beta.26",
     "shoelace-css": "^1.0.0-beta9",
     "slugg": "^1.2.1",
@@ -57,7 +60,8 @@
     "vue-template-compiler": "^2.6.10",
     "vue-tippy": "^4.4.0",
     "vue-tweet-embed": "^2.4.0",
-    "vue2-animate": "^1.0.4"
+    "vue2-animate": "^1.0.4",
+    "webrtc-adapter": "^7.7.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

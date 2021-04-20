@@ -550,7 +550,6 @@ video {
   // position: absolute;
   // height: 100%;
   // width: 1px;
-  z-index: 1;
 
   right: 0;
   top: 0;
@@ -569,7 +568,7 @@ video {
   // transform: translateX(0);
   transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.45s;
 
-  z-index: 1500;
+  z-index: 900;
   text-align: center;
 
   &.is--sidebarOpened {
@@ -850,8 +849,6 @@ video {
 
   background-color: @c-bg_sidebar;
   border-right: 1px solid var(--color-noir);
-
-  z-index: 1500;
 
   @scrollbar-height: 4px;
   @scrollbar-padding: 6px;
@@ -1874,7 +1871,7 @@ video {
     position: relative;
     z-index: 1;
     // background-color: @c-gris_clair;
-    box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
 
     // border-top: 2px solid var(--color-rouge_fonce);
 
@@ -1930,11 +1927,12 @@ video {
     flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
-    background-color: @c-gris_tresclair;
+    background-color: @c-blanc;
     color: var(--color-noir);
+    .font-small;
+    // border-bottom: 1px dashed #eee;
 
     .is--currentauthor& {
-      background-color: var(--color-author);
       // background-color: @c-vert !important;
       // color: @c-blanc !important;
     }
@@ -1962,14 +1960,14 @@ video {
           opacity: 0.6;
         }
       }
-
       ._pp,
       ._no_pp {
         width: 20px;
         height: 20px;
         border-radius: 50%;
-        margin-right: 0.2em;
+        margin-right: 0.4em;
         object-fit: cover;
+        background-color: var(--color-author);
       }
 
       ._no_pp {
@@ -1979,8 +1977,8 @@ video {
           vertical-align: baseline;
           width: 20px;
           height: 20px;
-          opacity: 0.2;
-          transform: scale(0.8);
+          opacity: 0.4;
+          transform: scale(0.6);
         }
       }
     }
@@ -1996,7 +1994,8 @@ video {
 
     line-height: 1;
 
-    button {
+    > * {
+      margin-left: ~"calc(var(--spacing) / 4)";
     }
   }
   .m_message--text {
@@ -2580,4 +2579,15 @@ video {
 .default-theme.splitpanes--horizontal > .splitpanes__splitter:after,
 .default-theme .splitpanes--horizontal > .splitpanes__splitter:after {
   margin-top: 1px;
+}
+
+._modalOverlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  pointer-events: auto;
+  // background-color: red;
 }
