@@ -1214,7 +1214,7 @@ html[lang="fr"] .ql-tooltip::before {
         color: transparent;
         color: hsl(210, 11%, 78%);
 
-        transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 
         content: counter(listCounter);
         // font-size: 0.8rem;
@@ -1245,7 +1245,7 @@ html[lang="fr"] .ql-tooltip::before {
         &::after {
           margin: var(--spacing) 0;
           height: 4px;
-          transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
         }
       }
     }
