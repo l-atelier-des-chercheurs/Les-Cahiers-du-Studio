@@ -15,6 +15,27 @@
     <!-- connection_state : {{ connection_state }}
     <br />-->
     <div ref="editor" class="mediaWriteupContent" />
+
+    <div class="_instructions">
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_timestamp_instructions }"
+          @click.stop="
+            show_timestamp_instructions = !show_timestamp_instructions
+          "
+        >
+          {{ $t("timestamp") }}
+        </button>
+      </label>
+
+      <div v-if="show_timestamp_instructions">
+        <small>
+          {{ $t("timestamp_instructions") }}
+        </small>
+      </div>
+    </div>
     <!-- <div class="_customCaret" :style="_customCaret_style" /> -->
   </div>
 </template>
@@ -131,6 +152,7 @@ export default {
       is_being_dragover: false,
       is_being_dragover_on_blot: false,
       is_on_last_line: false,
+      show_timestamp_instructions: false,
 
       debounce_textUpdate: undefined,
       caret_position: {
@@ -1254,8 +1276,8 @@ html[lang="fr"] .ql-tooltip::before {
 .ql-timestamp.ql-timestamp {
   display: block;
   font-size: 0.7em;
-  margin-left: -6px;
-  // margin-top: var(--spacing);
+  // margin-left: -6px;
+  // margin-top: calc(var(--spacing) / 4);
   counter-increment: none;
 
   --color-bg: var(--color-vert_vif);
@@ -1288,5 +1310,9 @@ html[lang="fr"] .ql-tooltip::before {
     margin: 0;
     font-size: inherit;
   }
+}
+
+._instructions {
+  padding: calc(var(--spacing) * 2);
 }
 </style>

@@ -46,6 +46,10 @@ module.exports = (function () {
       link_to_open_in_a_new_tab:
         "URL de la page à ouvrir dans un nouvel onglet",
 
+      timestamp: "Pastilles d’horodatage",
+      timestamp_instructions:
+        "La création de pastilles d’horodatage se fait en plaçant son curseur à la dernière ligne et en ajoutant un retour à la ligne avec ENTRÉE. Pour ne pas créer de pastilles en dernière ligne utilisez SHIFT+ENTRÉE.",
+
       name: "Nom",
       custom: "Personnalisée",
       created_date: "Date de création",
