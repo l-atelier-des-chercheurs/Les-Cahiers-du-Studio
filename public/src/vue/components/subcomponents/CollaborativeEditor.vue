@@ -6,7 +6,8 @@
       'is--receptiveToDrop': !!$root.settings.media_being_dragged,
       'is--dragover': is_being_dragover,
       'is--disabled': editor_not_enabled,
-      'is--onlastline': is_on_last_line && !editor_not_enabled,
+      'is--onlastline':
+        is_on_last_line && !editor_not_enabled && insert_timestamp_on_enter,
     }"
     autofocus="autofocus"
     @dragover="ondragover($event)"
@@ -17,6 +18,17 @@
     <div ref="editor" class="mediaWriteupContent" />
 
     <div class="_instructions">
+      <div>
+        <label for="enable_timestamp_on_enter">
+          <input
+            type="checkbox"
+            id="enable_timestamp_on_enter"
+            v-model="insert_timestamp_on_enter"
+          />
+          {{ $t("timestamp") }}
+        </label>
+      </div>
+
       <label>
         <button
           type="button"
@@ -26,7 +38,7 @@
             show_timestamp_instructions = !show_timestamp_instructions
           "
         >
-          {{ $t("timestamp") }}
+          {{ $t("informations") }}
         </button>
       </label>
 
@@ -75,6 +87,7 @@ var quill_kb_bindings = {
       console.log(`range.index = ${range.index}`);
       console.log(`this.quill.getLength() = ${this.quill.getLength()}`);
 
+      if (!this.quill.options._vm.insert_timestamp_on_enter) return true;
       if (range.index !== this.quill.getLength() - 1 || range.length !== 0)
         return true;
 
@@ -152,7 +165,9 @@ export default {
       is_being_dragover: false,
       is_being_dragover_on_blot: false,
       is_on_last_line: false,
+
       show_timestamp_instructions: false,
+      insert_timestamp_on_enter: false,
 
       debounce_textUpdate: undefined,
       caret_position: {
@@ -202,6 +217,7 @@ export default {
         },
       },
       bounds: this.$refs.editor,
+      _vm: this,
 
       theme: "snow",
       formats: [
@@ -217,8 +233,6 @@ export default {
       ],
       placeholder: "…",
     });
-
-    this.$refs.editor.dataset.quill = this.editor;
 
     this.$root.settings.has_writeup_opended = this.media.metaFileName;
 
