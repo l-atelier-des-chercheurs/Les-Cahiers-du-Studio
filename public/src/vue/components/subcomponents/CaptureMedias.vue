@@ -27,9 +27,9 @@
           :available_modes="['photo', 'video', 'stopmotion', 'audio']"
           :can_add_to_fav="false"
           :return_temp_media="false"
-          :must_validate_media="true"
+          :must_validate_media="false"
           @close="show_capture_pane = false"
-          @tempMedia="tempMedia"
+          @insertMedias="insertMedias"
         />
       </div>
     </template>
@@ -56,7 +56,12 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    tempMedia() {},
+    insertMedias(metaFileNames) {
+      setTimeout(() => {
+        const last_media_meta = metaFileNames[0];
+        this.$eventHub.$emit("scrollToMedia", last_media_meta);
+      }, 500);
+    },
   },
 };
 </script>
