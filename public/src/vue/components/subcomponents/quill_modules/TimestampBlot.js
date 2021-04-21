@@ -12,7 +12,7 @@ const humanTime = function ({ timestamp, duration }) {
 
     return (
       day +
-      " • " +
+      " — " +
       _date.getHours() +
       ":" +
       (_date.getMinutes() < 10 ? "0" : "") +

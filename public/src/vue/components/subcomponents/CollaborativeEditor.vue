@@ -1275,12 +1275,12 @@ html[lang="fr"] .ql-tooltip::before {
 
 .ql-timestamp.ql-timestamp {
   display: block;
-  font-size: 0.7em;
-  // margin-left: -6px;
-  // margin-top: calc(var(--spacing) / 4);
+  font-size: 0.6em;
+  // margin-left: -28px;
+  // text-align: center;
+  margin-top: calc(var(--spacing) / 2);
   counter-increment: none;
 
-  --color-bg: var(--color-vert_vif);
   // --color-bg: var(--color-blanc);
 
   // line count
@@ -1293,13 +1293,23 @@ html[lang="fr"] .ql-tooltip::before {
     border-radius: 0;
     min-height: 0;
     padding: 4px 6px 3px;
-    background-color: var(--color-bg);
-    color: var(--color-noir);
+    margin-left: -6px;
+    // padding: 0;
+    // margin-right: 6px;
+    // background-color: var(--color-vert_vif);
+    color: var(--color-vert_vif);
+    // background-color: var(--color-noir);
+    // color: var(--color-noir);
+
+    &:hover {
+      background-color: var(--color-vert_vif);
+      color: var(--color-noir);
+    }
   }
 
   > ._edit_timestamp {
     font-style: italic;
-    box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
+    // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
     font-size: inherit;
 
     white-space: pre-line;
@@ -1313,6 +1323,6 @@ html[lang="fr"] .ql-tooltip::before {
 }
 
 ._instructions {
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) / 2) var(--spacing);
 }
 </style>
