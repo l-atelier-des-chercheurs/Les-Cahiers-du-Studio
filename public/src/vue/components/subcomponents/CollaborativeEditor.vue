@@ -1294,16 +1294,21 @@ html[lang="fr"] .ql-tooltip::before {
     min-height: 0;
     padding: 4px 6px 3px;
     margin-left: -6px;
+    margin-right: 1px;
     // padding: 0;
     // margin-right: 6px;
     // background-color: var(--color-vert_vif);
     color: var(--color-vert_vif);
     // background-color: var(--color-noir);
     // color: var(--color-noir);
+    background-color: var(--color-vert_vif);
+    color: var(--color-noir);
+
+    transition: none;
 
     &:hover {
-      background-color: var(--color-vert_vif);
-      color: var(--color-noir);
+      color: var(--color-vert_vif);
+      background-color: var(--color-noir);
     }
   }
 
