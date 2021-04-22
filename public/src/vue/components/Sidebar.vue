@@ -202,7 +202,7 @@
       @close="showKeyboardShortcutsList = false"
     ></KeyboardShortcuts> -->
 
-    <!-- <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
+    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("export_folder") }}
@@ -216,13 +216,13 @@
           </button>
         </h3>
       </div>
-    </SidebarSection> -->
+    </SidebarSection>
 
-    <!-- <ExportTimeline
+    <ExportTimeline
       v-if="showExportTimelineModal === true"
       :slugFolderName="slugFolderName"
       @close="showExportTimelineModal = false"
-    ></ExportTimeline> -->
+    ></ExportTimeline>
 
     <!-- <SidebarSection>
       <div slot="header">
