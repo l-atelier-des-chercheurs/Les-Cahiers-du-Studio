@@ -601,7 +601,7 @@ export default {
 
     this.$eventHub.$once("socketio.folders.medias_listed", () => {
       setTimeout(() => {
-        this.scrollToToday();
+        // this.scrollToToday();
       }, 600);
     });
 
