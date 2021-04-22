@@ -300,7 +300,15 @@ module.exports = function (app, io, m) {
                           `Failed while preparing/making a web export: ${err}`
                         );
                       }
-                    );
+                    )
+                    .catch((err) => {
+                      sockets.notify({
+                        socketid,
+                        localized_string: `failed_to_make_export`,
+                        not_localized_string: err.message,
+                        type: "error",
+                      });
+                    });
                 });
               });
           });
