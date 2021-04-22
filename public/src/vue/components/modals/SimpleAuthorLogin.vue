@@ -51,9 +51,12 @@
                 <label>{{ $t("name_or_pseudo") }}</label>
                 <input
                   type="text"
+                  id="username"
+                  name="username"
                   v-model.trim="login_author_name"
                   required
                   autofocus
+                  autocomplete="username"
                 />
               </div>
 
@@ -69,6 +72,7 @@
                       : false
                   "
                   :autofocus="true"
+                  :field_type="'currentpassword'"
                   :placeholder="'…'"
                   @enter-was-pressed="loginAs"
                 />

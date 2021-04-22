@@ -20,6 +20,11 @@ module.exports = (function () {
       create_introduction: "Créer un texte d’introduction",
       forget_password_and_close: "Oublier le mot de passe et fermer",
 
+      bytes: "octets",
+      kb: "ko",
+      mb: "Mo",
+      gb: "Go",
+
       list_of_folders: "Liste des timelines",
       list_of_authors: "Liste des auteurs",
       search_among_timeline: "Chercher par nom",
@@ -31,7 +36,8 @@ module.exports = (function () {
       show_older_messages: "Voir les messages plus anciens",
       drop_here_to_import: "Déposez les médias ici pour les importer",
       tile_options: "Options de la tuile",
-      show_chat_bubble: "Afficher la bulle de chat",
+      show_chat_bubble:
+        "Afficher le raccourci vers la discussion correspondante",
       action_on_tile_click_for_visitors:
         "Action lorsqu’un visiteur non-contributeur clique sur la tuile dans la timeline",
       open_modal: "Ouvrir cette fenêtre",
@@ -93,6 +99,8 @@ module.exports = (function () {
       none: "Aucun",
       untitled_document: "Document sans-titre",
       back_to_list: "Retour à la liste",
+      back_to_home: "Retourner à l’accueil",
+
       journal: "Journal",
       chats: "Discussions",
       no_message_yet: "Aucun message à afficher pour l’instant…",
@@ -384,6 +392,7 @@ module.exports = (function () {
       none: "None",
       untitled_document: "Untitled document",
       back_to_list: "Back to list",
+      back_to_home: "Back to home",
       journal: "Journal",
       chats: "Chats",
       no_message_yet: "No message to display yet…",

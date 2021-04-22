@@ -757,6 +757,7 @@ export default {
             margin: 0;
             pointer-events: auto;
             justify-content: flex-start;
+            color: white;
 
             > *:not(:first-child) {
               display: none;
@@ -764,13 +765,12 @@ export default {
           }
 
           .plyr__time {
-            background-color: rgba(255, 255, 255, 0.45);
+            background-color: rgba(41, 41, 41, 0.75);
             border-radius: 2px;
             padding: 0 0.2em;
           }
 
           .plyr__control {
-            color: white;
             background-color: rgba(41, 41, 41, 0.75);
             &:hover {
               background: #222;

@@ -14,7 +14,7 @@
         <label>{{ $t("password_protect") }}</label>
         <PasswordField
           v-model="export_options.password_protect"
-          :field_type="'current-password'"
+          :field_type="'new-password'"
           @enter-was-pressed="downloadExport"
         />
       </div>
