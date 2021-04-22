@@ -202,9 +202,13 @@ module.exports = function (app, io, m) {
                   exporter
                     .copyFolderContent({
                       html,
-                      folders_and_medias,
+                      all_medias: [
+                        {
+                          folders_and_medias: folders_and_medias,
+                          type: "folders",
+                        },
+                      ],
                       slugFolderName,
-                      type: "folders",
                     })
                     .then(
                       (cachePath) => {
