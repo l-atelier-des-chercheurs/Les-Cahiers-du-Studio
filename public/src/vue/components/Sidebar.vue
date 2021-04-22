@@ -12,11 +12,7 @@
       </select>
     </div>
 
-    <SidebarSection
-      v-if="$root.state.mode !== 'export_web'"
-      :open_by_default="true"
-      :can_collapse="false"
-    >
+    <SidebarSection :open_by_default="true" :can_collapse="false">
       <!-- <div class="border border-bottom-dashed padding-medium"> -->
       <div slot="header" class="flex-vertically-centered">
         <!-- <h3 class="margin-none text-cap with-bullet">

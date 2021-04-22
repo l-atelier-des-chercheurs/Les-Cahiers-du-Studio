@@ -568,15 +568,19 @@ export default {
   mounted() {
     console.log("MOUNTED • TimeLineView");
 
-    this.$socketio.listMedias({
-      type: "folders",
-      slugFolderName: this.slugFolderName,
-    });
-    this.$eventHub.$once("socketio.folders.medias_listed", () => {
-      setTimeout(() => {
-        this.is_loading = false;
-      }, 500);
-    });
+    if (this.$root.state.mode !== "export_web") {
+      this.$socketio.listMedias({
+        type: "folders",
+        slugFolderName: this.slugFolderName,
+      });
+      this.$eventHub.$once("socketio.folders.medias_listed", () => {
+        setTimeout(() => {
+          this.is_loading = false;
+        }, 500);
+      });
+    } else {
+      this.is_loading = false;
+    }
 
     // this.$root.settings.sidebar_type = "informations";
     // this.$root.settings.has_sidebar_opened = true;
@@ -605,7 +609,7 @@ export default {
       }, 600);
     });
 
-    this.$eventHub.$emit("scrollToDate", +new Date());
+    // this.$eventHub.$emit("scrollToDate", +new Date());
 
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);

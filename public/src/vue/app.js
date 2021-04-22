@@ -236,6 +236,7 @@ let vm = new Vue({
     }
 
     if (this.state.mode === "export_web") {
+      this.access = true;
       // this.settings.has_sidebar_opened = true;
       if (Object.keys(this.store.folders).length > 0) {
         this.settings.current_slugFolderName = Object.keys(
