@@ -146,6 +146,7 @@
             type="button"
             class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none c-rouge_vif"
             @click="scrollToToday()"
+            v-if="$root.state.mode !== 'export_web'"
           >
             {{ $t("today") }}
           </button>

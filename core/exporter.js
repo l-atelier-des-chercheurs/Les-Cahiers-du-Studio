@@ -217,7 +217,7 @@ module.exports = (function () {
                 resolve(cachePath);
               })
               .catch((err) => {
-                dev.error(`Failed to create cache folder: ${err}`);
+                dev.error(`Failed to copy to cache folder: ${err}`);
                 reject(err);
               });
           })
