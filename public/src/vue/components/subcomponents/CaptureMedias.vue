@@ -72,7 +72,7 @@ export default {
   padding: 0 calc(var(--spacing) / 2);
   border-radius: 50%;
   margin: 0 auto;
-  background-color: var(--color-author);
+  background-color: var(--c-author);
   box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.15);
   cursor: pointer;
   pointer-events: auto;

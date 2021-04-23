@@ -80,10 +80,11 @@ export default {
         this.$root.current_author &&
         this.$root.current_author.hasOwnProperty("color")
       ) {
-        props["--color-author"] = this.$root.current_author.color;
-        props["--color-text_on_author_color"] = "#000";
+        props["--c-author"] = this.$root.current_author.color;
+        props["--c-text_on_author_color"] = "#000";
       } else {
-        props["--color-text_on_author_color"] = "#fff";
+        props["--c-author"] = `var(--c-noir)`;
+        props["--c-text_on_author_color"] = "#fff";
       }
       return props;
     },
@@ -145,7 +146,7 @@ export default {
   // width: 100px;
   height: auto;
 
-  // color: var(--color-blanc);
+  // color: var(--c-blanc);
 
   display: flex;
   flex-flow: row nowrap;
@@ -159,7 +160,7 @@ export default {
 
 .m_authorMenu {
   pointer-events: auto;
-  // --color-author: var(--color-noir);
+  // --c-author: var(--c-noir);
 
   .m_authorMenu--button {
     flex: 0 0 auto;
@@ -171,8 +172,8 @@ export default {
     margin-bottom: 22px;
     text-transform: initial;
     pointer-events: auto;
-    background-color: var(--color-author);
-    color: var(--color-text_on_author_color);
+    background-color: var(--c-author);
+    color: var(--c-text_on_author_color);
   }
 }
 </style>

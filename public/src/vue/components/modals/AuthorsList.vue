@@ -154,7 +154,7 @@ export default {
 
     > * {
       padding: calc(var(--spacing) / 2);
-      border: 2px solid var(--color-gris_tresclair);
+      border: 2px solid var(--c-gris_tresclair);
       border-radius: var(--size-buttonradius);
     }
 
@@ -167,7 +167,7 @@ export default {
       width: 100%;
 
       &:hover {
-        background-color: var(--color-gris_tresclair);
+        background-color: var(--c-gris_tresclair);
       }
     }
 

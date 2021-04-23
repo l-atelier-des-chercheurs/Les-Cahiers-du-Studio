@@ -105,6 +105,7 @@ module.exports = (function () {
       untitled_document: "Document sans-titre",
       back_to_list: "Retour à la liste",
       back_to_home: "Retourner à l’accueil",
+      close_sidebar: "Fermer la barre latérale",
 
       journal: "Journal",
       chats: "Discussions",
@@ -398,6 +399,7 @@ module.exports = (function () {
       untitled_document: "Untitled document",
       back_to_list: "Back to list",
       back_to_home: "Back to home",
+      close_sidebar: "Close sidebar",
       journal: "Journal",
       chats: "Chats",
       no_message_yet: "No message to display yet…",

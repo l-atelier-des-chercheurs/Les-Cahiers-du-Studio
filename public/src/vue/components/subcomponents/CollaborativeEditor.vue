@@ -759,7 +759,7 @@ html[lang="fr"] .ql-tooltip::before {
   --size-column-width: 800px;
   --spacing: 0.8rem;
 
-  --c-toolbar-warning-bg: var(--color-rouge_vif);
+  --c-toolbar-warning-bg: var(--c-rouge_vif);
   --c-toolbar-warning-c: white;
 
   &.is--focussed {
@@ -771,8 +771,8 @@ html[lang="fr"] .ql-tooltip::before {
       > *:last-child {
         &::after {
           content: "•";
-          color: var(--color-vert_vif);
-          // border-bottom: 2px solid var(--color-vert_vif);
+          color: var(--c-vert_vif);
+          // border-bottom: 2px solid var(--c-vert_vif);
         }
       }
     }
@@ -1252,7 +1252,7 @@ html[lang="fr"] .ql-tooltip::before {
         width: 100%;
         height: 0;
         margin: 0;
-        background-color: var(--color-rouge_vif);
+        background-color: var(--c-rouge_vif);
       }
 
       &.is--dragover {
@@ -1270,7 +1270,7 @@ html[lang="fr"] .ql-tooltip::before {
     top: calc(var(--spacing) / 2);
     // top: 0;
     right: calc(var(--spacing) / -2);
-    background: var(--color-noir);
+    background: var(--c-noir);
     color: white;
     text-decoration: none;
     line-height: 0;
@@ -1295,7 +1295,7 @@ html[lang="fr"] .ql-tooltip::before {
   margin-top: calc(var(--spacing) / 2);
   counter-increment: none;
 
-  // --color-bg: var(--color-blanc);
+  // --c-bg: var(--c-blanc);
 
   // line count
   &::before {
@@ -1311,18 +1311,18 @@ html[lang="fr"] .ql-tooltip::before {
     margin-right: 1px;
     // padding: 0;
     // margin-right: 6px;
-    // background-color: var(--color-vert_vif);
-    color: var(--color-vert_vif);
-    // background-color: var(--color-noir);
-    // color: var(--color-noir);
-    background-color: var(--color-vert_vif);
-    color: var(--color-noir);
+    // background-color: var(--c-vert_vif);
+    color: var(--c-vert_vif);
+    // background-color: var(--c-noir);
+    // color: var(--c-noir);
+    background-color: var(--c-vert_vif);
+    color: var(--c-noir);
 
     transition: none;
 
     &:hover {
-      color: var(--color-vert_vif);
-      background-color: var(--color-noir);
+      color: var(--c-vert_vif);
+      background-color: var(--c-noir);
     }
   }
 

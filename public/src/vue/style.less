@@ -31,7 +31,7 @@ html {
 
   @scrollbar-height: 4px;
   @scrollbar-padding: 6px;
-  --active-color: var(--color-vert_vif);
+  --active-color: var(--c-vert_vif);
 
   &::-webkit-scrollbar {
     height: ((@scrollbar-padding * 2) + @scrollbar-height);
@@ -84,15 +84,15 @@ body {
   .plyr__control[aria-expanded="true"] {
     box-shadow: 0 0 0 5px fade(@c-vert_vif, 20%);
     box-shadow: none;
-    background: var(--color-noir);
+    background: var(--c-noir);
   }
   .plyr__control--overlaid {
-    background: var(--color-noir);
+    background: var(--c-noir);
   }
 
   .plyr__controls {
-    // background: linear-gradient(fade(var(--color-noir), 0%), fade(var(--color-noir), 50%));
-    background: var(--color-noir);
+    // background: linear-gradient(fade(var(--c-noir), 0%), fade(var(--c-noir), 50%));
+    background: var(--c-noir);
     color: #eee;
     padding: 10px 15px 10px 10px;
     margin: 10px;
@@ -195,8 +195,8 @@ video {
   overflow: hidden;
   height: 100%;
 
-  --color-background: var(--color-noir);
-  --color-shapes: currentColor;
+  --c-background: var(--c-noir);
+  --c-shapes: currentColor;
 
   ._openChatButton {
     position: absolute;
@@ -245,8 +245,8 @@ video {
     position: fixed;
     width: 100%;
     height: @t-systemBarHeight;
-    color: var(--color-noir);
-    // background-color: var(--color-noir);
+    color: var(--c-noir);
+    // background-color: var(--c-noir);
     padding: 4px;
     z-index: 15000;
     overflow: hidden;
@@ -286,7 +286,7 @@ video {
     width: 235px;
     min-height: 200px;
     background-color: white;
-    // border: 1px solid var(--color-noir);
+    // border: 1px solid var(--c-noir);
     flex-grow: 0;
 
     &.m_home--folders--card_createButton {
@@ -401,7 +401,7 @@ video {
 
 .m_authors {
   width: 100%;
-  background-color: var(--color-noir);
+  background-color: var(--c-noir);
   // background-color: #e0e0e0;
   // background-color: #fff;
   min-height: 40px;
@@ -423,7 +423,7 @@ video {
   .m_authors--currentAuthor {
     position: relative;
     flex: 0 0 auto;
-    background-color: var(--color-noir);
+    background-color: var(--c-noir);
     .padding-verysmall;
 
     > button:first-child {
@@ -521,11 +521,11 @@ video {
 }
 
 .alertify-logs > .error {
-  color: var(--color-rouge_vif);
+  color: var(--c-rouge_vif);
   color: white;
 }
 .alertify-logs > .success {
-  color: var(--color-vert_vif);
+  color: var(--c-vert_vif);
   color: white;
 }
 
@@ -554,8 +554,8 @@ video {
   right: 0;
   top: 0;
 
-  background-color: var(--color-noir);
-  // background-color: var(--color-noir);
+  background-color: var(--c-noir);
+  // background-color: var(--c-noir);
 
   display: flex;
   align-items: center;
@@ -596,7 +596,7 @@ video {
       white-space: nowrap;
 
       &.is--active {
-        background-color: var(--color-vert_vif);
+        background-color: var(--c-vert_vif);
       }
     }
   }
@@ -605,7 +605,7 @@ video {
     display: block;
     pointer-events: auto;
 
-    background-color: var(--color-noir);
+    background-color: var(--c-noir);
     color: white;
 
     border-radius: 0 0 6px 6px;
@@ -616,7 +616,7 @@ video {
   .m_verticalButtons--slider {
     font-size: 60%;
 
-    // background-color: var(--color-noir);
+    // background-color: var(--c-noir);
     pointer-events: auto;
 
     z-index: 1;
@@ -848,7 +848,7 @@ video {
   overflow-y: auto;
 
   background-color: @c-bg_sidebar;
-  border-right: 1px solid var(--color-noir);
+  border-right: 1px solid var(--c-noir);
 
   @scrollbar-height: 4px;
   @scrollbar-padding: 6px;
@@ -1309,7 +1309,7 @@ video {
     border-radius: 4px !important;
     background-color: @c-gris;
     // color: white !important;
-    color: var(--color-noir) !important;
+    color: var(--c-noir) !important;
     font-size: inherit !important;
     .padding-sides-verysmall !important;
     .padding-vert-verysmall !important;
@@ -1537,7 +1537,7 @@ video {
     // font-weight: 500;
 
     .tippy-backdrop {
-      background: var(--color-noir) !important;
+      background: var(--c-noir) !important;
     }
   }
   code {
@@ -1615,7 +1615,7 @@ video {
   &.is--open {
     background-color: @c-noir_light;
     // .padding-left-small;
-    // border-color: var(--color-noir);
+    // border-color: var(--c-noir);
   }
 
   &.is--pinned {
@@ -1636,7 +1636,7 @@ video {
   }
 
   .m_chatRow--secondLine {
-    // border-top: 2px solid var(--color-rouge_fonce);
+    // border-top: 2px solid var(--c-rouge_fonce);
     background-color: @c-noir_light;
 
     .padding-verysmall;
@@ -1686,7 +1686,7 @@ video {
 
   .m_chatRow--unreadCounter {
     border-radius: 50%;
-    background-color: var(--color-rouge_fonce);
+    background-color: var(--c-rouge_fonce);
     width: 2em;
     height: 2em;
     .margin-sides-verysmall;
@@ -1706,7 +1706,7 @@ video {
   // padding-top: var(--spacing);
   width: 100%;
   height: 100%;
-  color: var(--color-noir);
+  color: var(--c-noir);
   z-index: 100;
 }
 
@@ -1813,7 +1813,7 @@ video {
 
     background-color: @c-gris_tresclair;
 
-    .custom_scrollbar(8px, 5px, 6px, transparent, var(--color-noir));
+    .custom_scrollbar(8px, 5px, 6px, transparent, var(--c-noir));
     .padding-sides-verysmall;
 
     ._no_message_message {
@@ -1844,8 +1844,8 @@ video {
       transform: rotate(90deg);
 
       font-family: "Fira Code";
-      // background-color: var(--color-vert_vif);
-      background-color: var(--color-noir);
+      // background-color: var(--c-vert_vif);
+      background-color: var(--c-noir);
       color: white;
 
       width: 48px;
@@ -1873,7 +1873,7 @@ video {
     // background-color: @c-gris_clair;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
 
-    // border-top: 2px solid var(--color-rouge_fonce);
+    // border-top: 2px solid var(--c-rouge_fonce);
 
     .padding-verysmall;
     margin-bottom: 0;
@@ -1928,7 +1928,7 @@ video {
     justify-content: space-between;
     align-items: center;
     background-color: @c-blanc;
-    color: var(--color-noir);
+    color: var(--c-noir);
     .font-small;
     // border-bottom: 1px dashed #eee;
 
@@ -1967,7 +1967,7 @@ video {
         border-radius: 50%;
         margin-right: 0.4em;
         object-fit: cover;
-        background-color: var(--color-author);
+        background-color: var(--c-author);
       }
 
       ._no_pp {
@@ -2040,7 +2040,7 @@ video {
   // width: ~"calc(100% - var(--spacing) * 2)";
   .margin-vert-small;
   .font-verysmall;
-  background-color: var(--color-blanc);
+  background-color: var(--c-blanc);
 
   display: flex;
   justify-content: center;
@@ -2087,7 +2087,7 @@ video {
     margin: 5px;
 
     &.is--active {
-      border: 2px solid var(--color-noir);
+      border: 2px solid var(--c-noir);
     }
 
     &._color_items--custom {
@@ -2121,8 +2121,8 @@ video {
     margin: 0;
     padding: 0;
     min-width: 150px;
-    border-bottom: 1px solid var(--color-noir);
-    border-right: 1px solid var(--color-noir);
+    border-bottom: 1px solid var(--c-noir);
+    border-right: 1px solid var(--c-noir);
     display: flex;
     align-items: center;
 
@@ -2139,7 +2139,7 @@ video {
 }
 
 .switch {
-  --switch-bg-color-checked: var(--color-yellow);
+  --switch-bg-color-checked: var(--c-yellow);
 }
 
 .switch-xs {
@@ -2224,14 +2224,14 @@ video {
   // position: absolute;
   // right: 0;
   max-width: 14ch;
-  background-color: var(--color-noir);
+  background-color: var(--c-noir);
   color: white;
   background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='41px' height='26px' viewBox='0 0 41 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpolygon id='Path-3' fill='%23ffffff' points='0 5.38215461 19.9830489 25.3652035 40.1398855 5.20836689 34.9315186 0 19.8691842 15.0623344 4.83971338 0.0328636246'%3E%3C/polygon%3E%3C/g%3E%3C/svg%3E%0A");
-  // color: var(--color-noir);
+  // color: var(--c-noir);
   // margin: var(--spacing);
 
   &:hover {
-    background-color: var(--color-gris);
+    background-color: var(--c-gris);
   }
 }
 
@@ -2508,7 +2508,7 @@ video {
   background-color: #f2f2f2;
 }
 .splitpanes.default-theme .splitpanes__splitter {
-  background-color: var(--color-noir);
+  background-color: var(--c-noir);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   position: relative;

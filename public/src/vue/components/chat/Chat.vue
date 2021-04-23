@@ -495,7 +495,7 @@ export default {
       if (author.hasOwnProperty("color")) color = author.color;
 
       return {
-        "--color-author": color,
+        "--c-author": color,
       };
     },
 
