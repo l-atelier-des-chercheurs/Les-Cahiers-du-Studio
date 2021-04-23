@@ -27,9 +27,9 @@
           :available_modes="['photo', 'video', 'stopmotion', 'audio']"
           :can_add_to_fav="false"
           :return_temp_media="false"
-          :must_validate_media="true"
+          :must_validate_media="false"
           @close="show_capture_pane = false"
-          @tempMedia="tempMedia"
+          @insertMedias="insertMedias"
         />
       </div>
     </template>
@@ -56,7 +56,12 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    tempMedia() {},
+    insertMedias(metaFileNames) {
+      setTimeout(() => {
+        const last_media_meta = metaFileNames[0];
+        this.$eventHub.$emit("scrollToMedia", last_media_meta);
+      }, 500);
+    },
   },
 };
 </script>
@@ -67,7 +72,7 @@ export default {
   padding: 0 calc(var(--spacing) / 2);
   border-radius: 50%;
   margin: 0 auto;
-  background-color: var(--color-author);
+  background-color: var(--c-author);
   box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.15);
   cursor: pointer;
   pointer-events: auto;

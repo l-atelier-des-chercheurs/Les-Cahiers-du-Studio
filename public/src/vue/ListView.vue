@@ -446,7 +446,7 @@ export default {
   }
 }
 ._searchField {
-  // background-color: var(--color-noir);
+  // background-color: var(--c-noir);
   // color: white;
   padding: calc(var(--spacing) / 4);
   max-width: 320px;

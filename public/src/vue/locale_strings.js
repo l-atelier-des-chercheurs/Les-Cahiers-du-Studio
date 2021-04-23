@@ -46,6 +46,11 @@ module.exports = (function () {
       link_to_open_in_a_new_tab:
         "URL de la page à ouvrir dans un nouvel onglet",
 
+      timestamp: "EXPÉRIMENTAL : Pastilles d’horodatage",
+      active: "Actif",
+      timestamp_instructions:
+        "La création de pastilles d’horodatage se fait en plaçant son curseur à la dernière ligne et en ajoutant un retour à la ligne avec ENTRÉE. Pour ne pas créer de pastilles en dernière ligne utilisez SHIFT+ENTRÉE.",
+
       name: "Nom",
       custom: "Personnalisée",
       created_date: "Date de création",
@@ -100,6 +105,7 @@ module.exports = (function () {
       untitled_document: "Document sans-titre",
       back_to_list: "Retour à la liste",
       back_to_home: "Retourner à l’accueil",
+      close_sidebar: "Fermer la barre latérale",
 
       journal: "Journal",
       chats: "Discussions",
@@ -393,6 +399,7 @@ module.exports = (function () {
       untitled_document: "Untitled document",
       back_to_list: "Back to list",
       back_to_home: "Back to home",
+      close_sidebar: "Close sidebar",
       journal: "Journal",
       chats: "Chats",
       no_message_yet: "No message to display yet…",

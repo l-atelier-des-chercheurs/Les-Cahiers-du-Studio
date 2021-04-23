@@ -294,6 +294,6 @@ export default {
 <style scoped>
 .m_folder {
   background: white;
-  color: var(--color-noir);
+  color: var(--c-noir);
 }
 </style>

@@ -112,17 +112,15 @@
 
         <pane min-size="20">
           <div>
-            <template v-if="$root.state.mode !== 'export_web'">
+            <div
+              class="m_topnavlabel"
+              @mouseover="collapse_foldername = false"
+              @mouseleave="collapse_foldername = true"
+            >
               <button
                 type="button"
-                class="folder_backbutton"
-                @click="$root.closeFolder()"
-                @mouseover="collapse_foldername = false"
-                @mouseleave="collapse_foldername = true"
-                :class="{
-                  'is--collapsed': collapse_foldername,
-                  'is--movedToRight': $root.settings.has_sidebar_opened,
-                }"
+                v-if="$root.settings.has_sidebar_opened"
+                @click="$root.closeSidebar()"
                 :content="$t('back_to_home')"
                 v-tippy="{
                   placement: 'bottom',
@@ -130,17 +128,21 @@
                 }"
               >
                 <span class="icon">×</span>
-                <span class="project_name">{{ folder.name }}</span>
               </button>
-            </template>
-            <template v-else>
-              <div class="folder_backbutton">
-                <span
-                  class="margin-sides-small padding-verysmall text-centered"
-                  >{{ folder.name }}</span
-                >
-              </div>
-            </template>
+              <button
+                type="button"
+                v-if="$root.state.mode !== 'export_web'"
+                @click="$root.closeFolder()"
+                :content="$t('back_to_home')"
+                v-tippy="{
+                  placement: 'bottom',
+                  delay: [600, 0],
+                }"
+              >
+                <span class="icon">←</span>
+              </button>
+              <span class="project_name">{{ folder.name }}</span>
+            </div>
           </div>
 
           <AddMedias
@@ -214,7 +216,6 @@
             @mouseup.self="onMouseUp"
             @scroll="onTimelineScroll"
           >
-            <!-- v-dragscroll -->
             <div class="m_timeline--container">
               <div class="m_timeline--container--dates" ref="timeline_dates">
                 <div
@@ -291,11 +292,11 @@
                                   )
                                 "
                                 :style="`
-                              --color-author: ${segment.color};
+                              --c-author: ${segment.color};
                               --label-color: ${
-                                segment.color === 'var(--color-noir)'
-                                  ? 'var(--color-blanc)'
-                                  : 'var(--color-noir)'
+                                segment.color === 'var(--c-noir)'
+                                  ? 'var(--c-blanc)'
+                                  : 'var(--c-noir)'
                               };
                               `"
                                 :data-has_author="!!segment.marker_author"
@@ -911,7 +912,7 @@ export default {
                   this.folder
                 )
                   ? this.$root.mediaColorFromFirstAuthor(media, this.folder)
-                  : "var(--color-noir)";
+                  : "var(--c-noir)";
                 const marker_author = this.$root.mediaFirstAuthor(
                   media,
                   this.folder
@@ -1384,7 +1385,7 @@ export default {
       }
 
       // xPos_new -= 50;
-      xPos_new -= this.$refs.timeline.offsetWidth / 2;
+      xPos_new -= this.$refs.timeline.offsetWidth * 0.25;
 
       this.current_scroll_event = this.$scrollTo(
         ".m_timeline--container",
@@ -1529,7 +1530,7 @@ export default {
 
   // TODO
   // pour un futur mode nuit
-  // --color-author: #000;
+  // --c-author: #000;
   // --label-color: white;
 
   // --timeline-bg: #F1F2F0;
@@ -1562,7 +1563,7 @@ export default {
   display: flex;
   // align-items: center;
   margin: 0;
-  // background-color: var(--color-author);
+  // background-color: var(--c-author);
 
   // border: 2px solid white;
 
@@ -1586,15 +1587,15 @@ export default {
   }
 
   &.is--folded {
-    --rule-color: var(--color-noir);
+    --rule-color: var(--c-noir);
     .m_timeline--container--dates--day--daylabel--container {
       > button {
-        border: 1px solid var(--color-noir);
+        border: 1px solid var(--c-noir);
       }
       ._unfold_button {
         span {
           color: white;
-          background-color: var(--color-noir);
+          background-color: var(--c-noir);
         }
       }
     }
@@ -1602,10 +1603,10 @@ export default {
 
   &.is--current_day {
     .m_timeline--container--dates--day--daylabel {
-      // --label-background: var(--color-rouge_vif);
+      // --label-background: var(--c-rouge_vif);
       --label-color: white;
-      --label-color: var(--color-rouge_vif);
-      // --rule-color: var(--color-rouge_vif);
+      --label-color: var(--c-rouge_vif);
+      // --rule-color: var(--c-rouge_vif);
     }
   }
 
@@ -1643,7 +1644,7 @@ export default {
         white-space: nowrap;
 
         &:hover:not([disabled]) {
-          background-color: var(--color-noir);
+          background-color: var(--c-noir);
           color: white;
         }
         &[disabled] {
@@ -1655,7 +1656,7 @@ export default {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background-color: var(--color-noir);
+          background-color: var(--c-noir);
           border-radius: 50%;
           color: white;
           font-size: 0.7em;
@@ -1834,9 +1835,9 @@ export default {
           border-radius: 0;
 
           display: inline;
-          background-color: var(--color-noir);
+          background-color: var(--c-noir);
           color: white;
-          // background-color: var(--color-author);
+          // background-color: var(--c-author);
           // color: var(--label-color);
           box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
           padding: 4px 8px;
@@ -1851,7 +1852,7 @@ export default {
         }
         &[data-has_author="true"] span::before {
           content: "• ";
-          color: var(--color-author);
+          color: var(--c-author);
           position: relative;
         }
       }
@@ -1869,13 +1870,13 @@ export default {
   }
 }
 
-.folder_backbutton {
+.m_topnavlabel {
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 0px;
   // left: ~"calc(100% + 40px)";
   z-index: 950;
-  border-radius: 22px;
+  // border-radius: 22px;
 
   padding: 0;
 
@@ -1884,16 +1885,12 @@ export default {
   align-items: center;
   justify-content: flex-start;
 
-  border: 2px solid var(--color-noir);
+  border: 2px solid var(--c-noir);
   color: white;
-  background-color: var(--color-noir);
+  background-color: var(--c-noir);
 
   body.has_systembar & {
     top: 20px;
-  }
-
-  &.is--movedToRight {
-    // left: var(--sidebar-width);
   }
 
   .icon {
@@ -1906,7 +1903,7 @@ export default {
 
     color: white;
     // border: 2px solid white;
-    background-color: var(--color-noir);
+    background-color: var(--c-noir);
 
     font-size: 1.5em;
   }
@@ -1945,14 +1942,14 @@ export default {
 
   pointer-events: none;
 
-  --label-background: var(--color-noir);
+  --label-background: var(--c-noir);
 
   body.has_systembar & {
     // top: 35px;
   }
 
   &.is--current_day {
-    --label-background: var(--color-rouge_vif);
+    --label-background: var(--c-rouge_vif);
   }
 
   @media screen and (max-width: 50rem) {
@@ -1995,7 +1992,7 @@ export default {
   ._scrolltonow {
     position: absolute;
     z-index: -1;
-    color: var(--color-rouge_vif);
+    color: var(--c-rouge_vif);
 
     border: 1px solid currentColor;
     background-color: white;

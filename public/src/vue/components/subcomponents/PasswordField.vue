@@ -124,7 +124,7 @@ export default {
 
   button {
     // padding: calc(var(--spacing) / 2);
-    background-color: var(--color-vert_vif);
+    background-color: var(--c-vert_vif);
     min-height: 0;
     padding: 0;
     display: flex;

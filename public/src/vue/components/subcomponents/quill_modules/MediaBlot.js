@@ -55,7 +55,7 @@ class MediaBlot extends BlockEmbed {
 
     // todo for later: allow drag from cards in quill
     // to move inside document or to composition
-    node.addEventListener("dragstart", $event => {
+    node.addEventListener("dragstart", ($event) => {
       $event.dataTransfer.setData("text/plain", "media_in_quill");
       $event.dataTransfer.effectAllowed = "move";
       // this.is_dragged = true;
@@ -150,7 +150,7 @@ class MediaBlot extends BlockEmbed {
         src: img.getAttribute("src"),
         metaFileName: node.dataset.metaFileName,
         type: node.dataset.type,
-        caption: figcaption ? figcaption.innerText : null
+        caption: figcaption ? figcaption.innerText : null,
       };
     } else if (node.dataset.type === "video") {
       let video = node.querySelector("video");
@@ -161,7 +161,7 @@ class MediaBlot extends BlockEmbed {
         src: video.getAttribute("src"),
         metaFileName: node.dataset.metaFileName,
         type: node.dataset.type,
-        caption: figcaption ? figcaption.innerText : null
+        caption: figcaption ? figcaption.innerText : null,
       };
     } else if (node.dataset.type === "audio") {
       let audio = node.querySelector("audio");
@@ -172,7 +172,7 @@ class MediaBlot extends BlockEmbed {
         src: audio.getAttribute("src"),
         metaFileName: node.dataset.metaFileName,
         type: node.dataset.type,
-        caption: figcaption ? figcaption.innerText : null
+        caption: figcaption ? figcaption.innerText : null,
       };
     } else if (node.dataset.type === "text") {
       let blockquote = node.querySelector("blockquote");
@@ -182,7 +182,7 @@ class MediaBlot extends BlockEmbed {
         metaFileName: node.dataset.metaFileName,
         content: blockquote.innerHTML,
         type: node.dataset.type,
-        caption: figcaption ? figcaption.innerText : null
+        caption: figcaption ? figcaption.innerText : null,
       };
     }
   }

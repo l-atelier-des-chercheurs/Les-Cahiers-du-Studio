@@ -371,8 +371,8 @@ export default {
 .m_accessController {
   display: block;
   height: auto;
-  // border: 1px solid var(--color-noir);
-  // background-color: var(--color-noir);
+  // border: 1px solid var(--c-noir);
+  // background-color: var(--c-noir);
   // color: white;
   border-radius: 4px;
   padding: 0 calc(var(--spacing) / 3);

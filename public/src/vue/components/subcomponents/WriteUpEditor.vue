@@ -166,7 +166,11 @@ export default {
   },
 };
 </script>
-<style>
+<style lang="scss">
+.m_writeupeditor {
+  margin-bottom: calc(var(--spacing) * 2);
+}
+
 .m_writeupeditor .ql-toolbar {
   border: none;
 }

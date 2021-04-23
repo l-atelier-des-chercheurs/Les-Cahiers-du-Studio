@@ -133,7 +133,7 @@ export default {
   position: relative;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  background-color: var(--color-noir);
+  background-color: var(--c-noir);
   // color: white;
 
   height: 100%;
@@ -147,7 +147,7 @@ export default {
   button,
   input {
     background-color: white;
-    color: var(--color-noir);
+    color: var(--c-noir);
 
     &:hover {
       background-color: rgba(210, 210, 210, 1);
