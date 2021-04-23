@@ -18,8 +18,13 @@
     <!-- <pre>{{ groupedMedias }}</pre> -->
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
-      <splitpanes style="" class="default-theme">
-        <pane size="35" class="_leftSidebar">
+      <splitpanes
+        style=""
+        class="default-theme"
+        watch-slots
+        @resize="panelResize"
+      >
+        <pane class="_leftSidebar" :size="panels_width.sidebar">
           <div class="_leftSidebar--content">
             <transition name="chatopen" :duration="350" mode="out-in">
               <!-- <Informations
@@ -88,7 +93,7 @@
                 }"
                 v-for="tab in tabs"
                 :key="tab.key"
-                @click.stop.prevent="toggleSidebar(tab.key)"
+                @click.stop.prevent="toggleSidebar({ type: tab.key })"
               >
                 <span v-html="$t(tab.key)" />
               </button>
@@ -110,7 +115,7 @@
           </div>
         </pane>
 
-        <pane min-size="20">
+        <pane min-size="20" :size="panels_width.timeline">
           <div>
             <div
               class="m_topnavlabel"
@@ -119,15 +124,19 @@
             >
               <button
                 type="button"
-                v-if="$root.settings.has_sidebar_opened"
-                @click="$root.closeSidebar()"
-                :content="$t('back_to_home')"
+                @click="toggleSidebar()"
+                :content="$t('close_sidebar')"
                 v-tippy="{
                   placement: 'bottom',
                   delay: [600, 0],
                 }"
               >
-                <span class="icon">×</span>
+                <span class="icon">
+                  <template v-if="$root.settings.has_sidebar_opened">
+                    ×
+                  </template>
+                  <template v-else> ☰ </template>
+                </span>
               </button>
               <button
                 type="button"
@@ -191,7 +200,7 @@
             <div v-if="!can_edit_folder">
               <button
                 type="button"
-                @click="toggleSidebar('informations')"
+                @click="toggleSidebar({ type: 'informations' })"
                 :class="{ 'is--active': show_access_controller }"
               >
                 <!-- @click="show_access_controller = !show_access_controller" -->
@@ -429,6 +438,11 @@ export default {
   },
   data() {
     return {
+      panels_width: {
+        sidebar: 35,
+        timeline: 65,
+      },
+
       translation: 0,
       // translation but refreshed at specific interval
       debounce_translation: 0,
@@ -1191,10 +1205,44 @@ export default {
       const el = this.$refs.timeline;
       setTimeout(() => (this.translation = el.scrollLeft), 300);
     },
+    toggleSidebar({ type } = {}) {
+      console.log(`METHODS • TimeLineView: toggleSidebar / ${type}`);
+      if (
+        this.$root.settings.has_sidebar_opened &&
+        (!type || type === this.$root.settings.sidebar_type)
+      )
+        this.closeSidebar();
+      else this.openSidebar({ type });
+    },
+
+    openSidebar({ type = "informations" }) {
+      console.log(`METHODS • TimeLineView: openSidebar`);
+      this.$root.settings.has_sidebar_opened = true;
+      this.$root.settings.sidebar_type = type;
+      if (this.panels_width.sidebar === 0) {
+        this.panels_width.sidebar = 30;
+        this.panels_width.timeline = 100;
+      }
+    },
+    closeSidebar() {
+      console.log(`METHODS • TimeLineView: closeSidebar`);
+      this.$root.settings.has_sidebar_opened = false;
+      this.$root.settings.sidebar_type = "";
+      this.panels_width.sidebar = 0;
+      this.panels_width.timeline = 100;
+    },
     onResize() {
       console.log(`METHODS • TimeLineView: onResize`);
       this.setTimelineHeight();
     },
+    panelResize($event) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • App: splitpanes resize`);
+
+      this.panels_width.sidebar = $event[0].size;
+      this.panels_width.timeline = $event[1].size;
+    },
+
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
       if (this.timeline_height !== window.innerHeight) {
@@ -1322,16 +1370,6 @@ export default {
       }
     },
 
-    toggleSidebar(type) {
-      console.log(`METHODS • TimeLineView: toggleSidebar / ${type}`);
-      if (this.$root.settings.sidebar_type === type) {
-        this.$root.settings.has_sidebar_opened = false;
-        this.$root.settings.sidebar_type = "";
-      } else {
-        this.$root.settings.has_sidebar_opened = true;
-        this.$root.settings.sidebar_type = type;
-      }
-    },
     scrollToDate(timestamp) {
       console.log(
         `METHODS • TimeLineView: scrollToDate / timestamp: ${timestamp}`

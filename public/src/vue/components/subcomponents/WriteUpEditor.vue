@@ -65,6 +65,7 @@
         ref="textField"
         :read_only="read_only"
       />
+
       <!-- <div>
       <button
         type="button"
@@ -104,9 +105,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
 
-  watch: {
-    content: function () {},
-  },
+  watch: {},
   computed: {
     hasAnyChangesBeenMadeToContent() {
       if (this.media.content.length !== this.content.length) {

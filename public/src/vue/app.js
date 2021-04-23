@@ -655,10 +655,6 @@ let vm = new Vue({
 
       this.settings.current_chat_slug = false;
     },
-    closeSidebar() {
-      this.settings.has_sidebar_opened = false;
-      this.settings.sidebar_type = "";
-    },
     setAuthor: function (author_slug) {
       if (this.settings.current_author_slug === author_slug) return;
 
