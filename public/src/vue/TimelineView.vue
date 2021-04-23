@@ -135,7 +135,17 @@
                   <template v-if="$root.settings.has_sidebar_opened">
                     ×
                   </template>
-                  <template v-else> ☰ </template>
+                  <template v-else>
+                    <svg class="svg-icon" viewBox="0 0 20 20">
+                      <path
+                        fill="currentColor"
+                        d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314
+								c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743
+								s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314
+								c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"
+                      ></path>
+                    </svg>
+                  </template>
                 </span>
               </button>
               <button
@@ -1722,7 +1732,7 @@ export default {
           text-align: center;
           width: 100%;
           margin: 0 auto;
-          margin-top: 2px;
+          margin-top: 1px;
           font-size: 0.7em;
 
           span {
@@ -1944,6 +1954,15 @@ export default {
     background-color: var(--c-noir);
 
     font-size: 1.5em;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  button {
+    padding: 0;
   }
 
   .project_name {
@@ -1961,10 +1980,6 @@ export default {
       padding-right: 0;
       max-width: 0px;
     }
-  }
-
-  &.is--moved_to_right {
-    // left: 340px;
   }
 }
 
