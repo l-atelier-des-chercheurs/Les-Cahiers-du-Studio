@@ -63,6 +63,7 @@
                 :slugFolderName="slugFolderName"
                 :medias="medias"
                 :read_only="read_only"
+                :can_edit_folder="can_edit_folder"
               />
               <Filters
                 v-else-if="
@@ -208,14 +209,13 @@
             <TimelinePlayer />
 
             <div v-if="!can_edit_folder">
-              <button
+              <!-- <button
                 type="button"
                 @click="toggleSidebar({ type: 'informations' })"
                 :class="{ 'is--active': show_access_controller }"
               >
-                <!-- @click="show_access_controller = !show_access_controller" -->
                 {{ $t("edit_timeline") }}
-              </button>
+              </button> -->
               <!-- <div v-if="show_access_controller">
                 <AccessController
                   :folder="folder"
@@ -456,7 +456,6 @@ export default {
       translation: 0,
       // translation but refreshed at specific interval
       debounce_translation: 0,
-      // -
       debounce_translation_delay: 100,
       debounce_translation_fct: undefined,
       current_scroll_event: undefined,
@@ -471,16 +470,6 @@ export default {
 
       convert_empty_days_to_periods: true,
       show_access_controller: false,
-
-      minPercent: 0,
-      split: "vertical",
-      is_dragged: false,
-      drag_offset: 0,
-      hasMoved: false,
-      height: null,
-      percent: 0,
-      type: "width",
-      resizeType: "left",
 
       make_mediasblock_with: "markers",
 
@@ -620,8 +609,6 @@ export default {
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);
 
-    // if (this.$root.state.mode === "export_web") {
-    this.percent = 35;
     this.$root.settings.has_sidebar_opened = true;
     this.$root.settings.sidebar_type = "informations";
     // }
@@ -662,13 +649,13 @@ export default {
         }, this.debounce_translation_delay);
       }
     },
-    "$root.settings.sidebar_type": function () {
-      if (this.$root.settings.sidebar_type === "") this.percent = 0;
-      else this.percent = 35;
-    },
-    percent: function () {
-      if (this.$root.settings.windowWidth < 600) {
-        if (this.percent > 0) this.percent = 90;
+
+    "panels_width.sidebar": function () {
+      if (
+        this.panels_width.sidebar > 0 &&
+        this.$root.settings.sidebar_type === ""
+      ) {
+        this.$root.settings.sidebar_type = "informations";
       }
     },
   },
@@ -1476,85 +1463,6 @@ export default {
       console.log("METHODS • TimeLineView: setFilter");
       this.filter = newFilter;
     },
-
-    // dragPubliPanel(event, type) {
-    //   if (this.$root.state.dev_mode === "debug") {
-    //     console.log(
-    //       `METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`
-    //     );
-    //   }
-
-    //   this.drag_offset = -event.target.offsetWidth + event.offsetX;
-    //   if (!this.drag_offset) {
-    //     this.drag_offset = 0;
-    //   }
-
-    //   if (type === "mouse") {
-    //     window.addEventListener("mousemove", this.dragMove);
-    //     window.addEventListener("mouseup", this.dragUp);
-    //   } else if (type === "touch") {
-    //     window.addEventListener("touchmove", this.dragMove);
-    //     window.addEventListener("touchend", this.dragUp);
-    //   }
-    // },
-    // dragMove(event) {
-    //   console.log("METHODS • App: dragMove");
-
-    //   if (!this.is_dragged) {
-    //     this.is_dragged = true;
-    //   } else {
-    //     let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
-    //     pageX = pageX - this.drag_offset;
-
-    //     const percent =
-    //       Math.floor((pageX / this.$root.settings.windowWidth) * 10000) / 100;
-
-    //     if (percent > this.minPercent && percent < 100 - this.minPercent) {
-    //       this.percent = percent;
-    //     }
-
-    //     this.$emit("resize");
-    //     this.hasMoved = true;
-    //   }
-    // },
-    // dragUp(event) {
-    //   if (this.$root.state.dev_mode === "debug") {
-    //     console.log(
-    //       `METHODS • App: dragUp with is_dragged = ${this.is_dragged}`
-    //     );
-    //   }
-    //   window.removeEventListener("mousemove", this.dragMove);
-    //   window.removeEventListener("mouseup", this.dragUp);
-    //   window.removeEventListener("touchmove", this.dragMove);
-    //   window.removeEventListener("touchend", this.dragUp);
-
-    //   if (this.is_dragged) {
-    //     this.is_dragged = false;
-
-    //     if (this.percent >= 70) {
-    //       this.percent = 70;
-    //       // this.$root.closePubliPanel();
-    //       // return;
-    //     }
-
-    //     // if(this.$root.settings.show_publi_panel === false) {
-    //     //   this.$root.openPubliPanel();
-    //     // }
-    //     if (this.percent <= 10) {
-    //       this.percent = 0;
-    //     }
-    //   } else {
-    //     // if(!this.$root.settings.show_publi_panel) {
-    //     //   this.percent = 50;
-    //     //   this.$root.openPubliPanel();
-    //     // } else {
-    //     //   this.percent = 100;
-    //     //   this.$root.closePubliPanel();
-    //     // }
-    //   }
-
-    //   return false;
-    // },
   },
 };
 </script>

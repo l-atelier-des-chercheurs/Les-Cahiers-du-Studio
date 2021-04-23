@@ -7,9 +7,9 @@
         </h3>
       </div>
     </SidebarSection>
-    <div>
-      <div>
-        <table class v-if="mode === 'writeup_list'">
+    <div class="">
+      <div class="margin-sides-medium margin-vert-medium">
+        <table class="margin-none" v-if="mode === 'writeup_list'">
           <thead>
             <tr>
               <th style>{{ $t("name") }}</th>
@@ -33,7 +33,7 @@
                 </button>
               </td>
             </tr>
-            <tr :key="'create'">
+            <tr :key="'create'" v-if="can_edit_folder">
               <template v-if="!show_createwriteup_section">
                 <td colspan="3">
                   <button
@@ -61,6 +61,7 @@
                   <button
                     type="button"
                     class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+                    v-if="can_edit_folder"
                     @click="createWriteupMedia"
                   >
                     {{ $t("create") }}
@@ -70,10 +71,7 @@
             </tr>
           </transition-group>
         </table>
-        <div
-          v-else-if="mode === 'single_writeup'"
-          class="margin-sides-verysmall margin-vert-small"
-        >
+        <div v-else-if="mode === 'single_writeup'" class="">
           <button
             type="button"
             class="button-verysmall border-circled button-thin padding-verysmall margin-none bg-transparent"
@@ -89,6 +87,7 @@
         :slugFolderName="slugFolderName"
         :media="current_writeup_media"
         :readonly="read_only"
+        :can_edit_folder="can_edit_folder"
         @close="closeWriteupMedia"
       />
     </div>
@@ -102,6 +101,7 @@ export default {
   props: {
     slugFolderName: String,
     medias: Object,
+    can_edit_folder: Boolean,
   },
   components: {
     WriteUpEditor,

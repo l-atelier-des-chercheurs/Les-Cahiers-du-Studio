@@ -343,7 +343,7 @@ module.exports = (function () {
       admin: "Administrator",
       contributor: "Contributor",
       participant: "Participant",
-      presentation: "Présentation",
+      presentation: "Presentation",
 
       create_introduction: "Create introduction text",
       forget_password_and_close: "Forget password and close",

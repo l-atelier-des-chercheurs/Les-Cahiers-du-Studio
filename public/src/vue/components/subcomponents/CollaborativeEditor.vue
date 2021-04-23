@@ -6,6 +6,7 @@
       'is--receptiveToDrop': !!$root.settings.media_being_dragged,
       'is--dragover': is_being_dragover,
       'is--disabled': editor_not_enabled,
+      'is--readonly': read_only,
       'is--onlastline':
         is_on_last_line && !editor_not_enabled && insert_timestamp_on_enter,
     }"
@@ -17,7 +18,7 @@
     <br />-->
     <div ref="editor" class="mediaWriteupContent" />
 
-    <div class="_instructions">
+    <div class="_instructions" v-if="!read_only">
       <div>
         <label for="enable_timestamp_on_enter">
           <input
@@ -150,6 +151,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    read_only: Boolean,
   },
   components: {},
   data() {
@@ -240,15 +242,15 @@ export default {
 
     this.setSpellCheck();
 
-    if (this.$root.preview_mode) {
-      this.editor.disable();
-    }
-
     const cursorsOne = this.editor.getModule("cursors");
     cursorsOne.createCursor(1, "User 1", "#0a997f");
 
     this.$nextTick(() => {
-      if (this.$root.state.mode === "live" && this.enable_collaboration) {
+      if (
+        this.$root.state.mode === "live" &&
+        this.enable_collaboration &&
+        !this.read_only
+      ) {
         this.initWebsocketMode();
         this.editor.focus();
       } else {
@@ -261,7 +263,9 @@ export default {
           });
           content = el.innerHTML;
         }
+
         this.editor.root.innerHTML = content;
+        this.editor.disable();
       }
 
       this.editor.on("text-change", (delta, oldDelta, source) => {
@@ -349,25 +353,19 @@ export default {
     this.$root.settings.medias_present_in_writeup = [];
   },
   watch: {
-    "$root.preview_mode": function () {
-      // if (this.$root.preview_mode) {
-      //   this.editor.disable();
-      // } else {
-      //   this.editor.enable();
-      // }
-    },
     spellcheck: function () {
       this.setSpellCheck();
     },
     value: function () {
       this.broadcastMediasPresentInWriteup();
     },
-    editor_not_enabled: function () {
-      if (this.editor_not_enabled) {
-        this.editor.disable();
-      } else {
-        this.editor.enable();
-      }
+    editor_not_enabled: {
+      handler() {
+        if (!this.editor) return;
+        if (this.editor_not_enabled) this.editor.disable();
+        else this.editor.enable();
+      },
+      immediate: true,
     },
   },
   computed: {
@@ -377,7 +375,10 @@ export default {
       };
     },
     editor_not_enabled() {
-      return this.enable_collaboration && this.connection_state !== "connected";
+      return (
+        this.read_only ||
+        (this.enable_collaboration && this.connection_state !== "connected")
+      );
     },
   },
   methods: {
@@ -778,7 +779,7 @@ html[lang="fr"] .ql-tooltip::before {
     }
   }
 
-  &.is--disabled {
+  &.is--disabled:not(.is--readonly) {
     cursor: not-allowed;
     .ql-toolbar {
       background-color: var(--c-toolbar-warning-bg);
@@ -799,6 +800,12 @@ html[lang="fr"] .ql-tooltip::before {
       }
     }
     // border-left: 2px solid rgba(255, 0, 0, 0.5);
+  }
+
+  &.is--readonly {
+    .ql-toolbar {
+      display: none;
+    }
   }
 
   &.is--receptiveToDrop {
@@ -872,7 +879,7 @@ html[lang="fr"] .ql-tooltip::before {
 
     &[contenteditable="false"] {
       > *:not(.is--focused) {
-        opacity: 0.5;
+        // opacity: 0.5;
         cursor: default;
       }
     }

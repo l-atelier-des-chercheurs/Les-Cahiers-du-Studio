@@ -100,7 +100,7 @@
               />
             </template>
 
-            <div class="_editButton">
+            <div class="_editButton" v-if="can_edit_folder">
               <button
                 type="button"
                 class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
