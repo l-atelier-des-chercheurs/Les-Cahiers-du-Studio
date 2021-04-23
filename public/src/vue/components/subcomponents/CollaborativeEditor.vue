@@ -759,7 +759,7 @@ html[lang="fr"] .ql-tooltip::before {
   --size-column-width: 800px;
   --spacing: 0.8rem;
 
-  --c-toolbar-warning-bg: var(--c-rouge_vif);
+  --c-toolbar-warning-bg: var(--c-rouge);
   --c-toolbar-warning-c: white;
 
   &.is--focussed {
@@ -1252,7 +1252,7 @@ html[lang="fr"] .ql-tooltip::before {
         width: 100%;
         height: 0;
         margin: 0;
-        background-color: var(--c-rouge_vif);
+        background-color: var(--c-rouge);
       }
 
       &.is--dragover {

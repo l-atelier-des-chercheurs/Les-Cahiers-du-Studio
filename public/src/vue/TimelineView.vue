@@ -1651,10 +1651,10 @@ export default {
 
   &.is--current_day {
     .m_timeline--container--dates--day--daylabel {
-      // --label-background: var(--c-rouge_vif);
+      // --label-background: var(--c-rouge);
       --label-color: white;
-      --label-color: var(--c-rouge_vif);
-      // --rule-color: var(--c-rouge_vif);
+      --label-color: var(--c-rouge);
+      // --rule-color: var(--c-rouge);
     }
   }
 
@@ -2002,7 +2002,7 @@ export default {
   }
 
   &.is--current_day {
-    --label-background: var(--c-rouge_vif);
+    --label-background: var(--c-rouge);
   }
 
   @media screen and (max-width: 50rem) {
@@ -2045,7 +2045,7 @@ export default {
   ._scrolltonow {
     position: absolute;
     z-index: -1;
-    color: var(--c-rouge_vif);
+    color: var(--c-rouge);
 
     border: 1px solid currentColor;
     background-color: white;
