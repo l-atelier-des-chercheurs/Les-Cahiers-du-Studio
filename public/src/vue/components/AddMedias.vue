@@ -132,14 +132,14 @@ export default {
 </script>
 <style lang="less" scoped>
 .m_addMedias {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
+  // position: absolute;
+  // left: 0;
+  // right: 0;
+  // bottom: 0;
+  // top: 0;
 
-  padding-bottom: 8vh;
-  padding-right: 4vw;
+  // padding-bottom: 8vh;
+  // padding-right: 4vw;
 
   z-index: 1000;
 
@@ -149,7 +149,7 @@ export default {
   // color: var(--c-blanc);
 
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
 
   align-items: flex-end;
   align-content: center;

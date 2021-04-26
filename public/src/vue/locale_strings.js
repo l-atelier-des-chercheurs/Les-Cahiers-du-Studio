@@ -81,7 +81,7 @@ module.exports = (function () {
       logout: "Se déconnecter",
       send: "Envoyer",
       action: "Action",
-      "active_filter:": "Filtre actif&nbsp;:",
+      "active_filter:": "Filtre(s) actif(s)&nbsp;:",
       "medias_shown:": "Médias affichés&nbsp;:",
       "file:": "Fichier&nbsp;:",
       change_color: "Modifier la couleur",
@@ -133,6 +133,7 @@ module.exports = (function () {
       set_as_end: "placer la fin",
       replace: "Remplacer",
       test: "Tester",
+      interval: "Interval",
 
       revert_to_original: "Revenir à l’original",
 

@@ -51,7 +51,6 @@
                 :sortedMedias="sortedMedias"
                 :date_interval="date_interval"
                 :sort="sort"
-                :filter="filter"
                 :read_only="read_only"
                 :can_edit_folder="can_edit_folder"
               />
@@ -165,23 +164,15 @@
             </div>
           </div>
 
-          <AddMedias
-            v-if="$root.state.mode !== 'export_web'"
-            :slugFolderName="slugFolderName"
-            :folder="folder"
-            :can_edit_folder="can_edit_folder"
-            :read_only="!$root.state.connected"
-            :rightmostMedia="rightmostMedia"
-          />
-
           <div
             class="m_floater"
             @wheel="onMousewheel"
             :class="{ 'is--current_day': visible_day_is_today }"
           >
+            <!-- <div></div> -->
             <div v-if="$root.state.mode !== 'export_web'">
-              <span>
-                <transition name="fade" :duration="450">
+              <div class="_bubbleIndicator">
+                <div>
                   <button
                     type="button"
                     v-if="visible_day_is_before_or_after === 'after'"
@@ -190,11 +181,13 @@
                   >
                     ←&nbsp;{{ $t("today") }}
                   </button>
-                </transition>
-                <transition name="fade" mode="out-in" :duration="150">
-                  <span :key="visible_day_human">{{ visible_day_human }}</span>
-                </transition>
-                <transition name="fade" :duration="450">
+                  <span>
+                    <transition name="fade" mode="out-in" :duration="150">
+                      <span :key="visible_day_human">{{
+                        visible_day_human
+                      }}</span>
+                    </transition>
+                  </span>
                   <button
                     type="button"
                     class="_scrolltonow _scrolltonow_after"
@@ -203,28 +196,42 @@
                   >
                     {{ $t("today") }}&nbsp;→
                   </button>
-                </transition>
-              </span>
-            </div>
-            <TimelinePlayer />
+                </div>
 
-            <div v-if="!can_edit_folder">
-              <!-- <button
+                <TimelinePlayer />
+
+                <!-- <div v-if="!can_edit_folder">
+                  <button
                 type="button"
                 @click="toggleSidebar({ type: 'informations' })"
                 :class="{ 'is--active': show_access_controller }"
               >
                 {{ $t("edit_timeline") }}
-              </button> -->
-              <!-- <div v-if="show_access_controller">
+              </button>
+              <div v-if="show_access_controller">
                 <AccessController
                   :folder="folder"
                   :context="'full'"
                   :type="'folders'"
                   @closeFolder="$root.closeFolder()"
                 />
-              </div>-->
+              </div>
+                </div> -->
+                <FilterIndicator
+                  :medias="medias"
+                  :sortedMedias="sortedMedias"
+                />
+              </div>
             </div>
+
+            <AddMedias
+              v-if="$root.state.mode !== 'export_web'"
+              :slugFolderName="slugFolderName"
+              :folder="folder"
+              :can_edit_folder="can_edit_folder"
+              :read_only="!$root.state.connected"
+              :rightmostMedia="rightmostMedia"
+            />
           </div>
 
           <div
@@ -341,39 +348,6 @@
                 </div>
               </div>
             </div>
-
-            <div
-              v-if="sort.current.field !== 'date_timeline'"
-              class="m_filterIndicator"
-            >
-              <div
-                class="flex-wrap flex-vertically-centered flex-horizontally-start"
-              >
-                <button
-                  type="button"
-                  class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
-                  v-html="'x'"
-                  @click="setSort(sort.available[0])"
-                />
-                <small>
-                  <div class>
-                    <span v-html="$t('active_filter:')" />
-                    {{ " " }}
-                    <span v-html="sort.current.name" />
-                  </div>
-                  <div class>
-                    <span v-html="$t('medias_shown:')" />
-                    <span
-                      v-html="
-                        this.sortedMedias.length +
-                        '/' +
-                        Object.keys(this.medias).length
-                      "
-                    />
-                  </div>
-                </small>
-              </div>
-            </div>
           </div>
         </pane>
       </splitpanes>
@@ -415,6 +389,7 @@ import Filters from "./components/Filters.vue";
 
 import TimelinePlayer from "./components/subcomponents/TimelinePlayer.vue";
 import AccessController from "./components/subcomponents/AccessController.vue";
+import FilterIndicator from "./components/subcomponents/FilterIndicator.vue";
 import Chats from "./components/chat/Chats.vue";
 
 import debounce from "debounce";
@@ -439,6 +414,7 @@ export default {
     Pane,
     TimelinePlayer,
     AccessController,
+    FilterIndicator,
     Chats,
     Splitpanes,
     Pane,
@@ -738,6 +714,40 @@ export default {
             )
           )
             continue;
+        }
+
+        if (this.$root.settings.media_timeline_interval_filter.start) {
+          // if filter has start, then remove all medias previous from date_timeline from timeline
+          const date_timeline_timestamp = +this.$moment(
+            media.date_timeline,
+            "YYYY-MM-DD HH:mm:ss"
+          );
+
+          let media_duration_ts = media.duration
+            ? media.duration * 1000
+            : false;
+
+          if (media_duration_ts) debugger;
+
+          if (
+            date_timeline_timestamp <
+              this.$root.settings.media_timeline_interval_filter.start &&
+            (!media_duration_ts ||
+              date_timeline_timestamp + media_duration_ts <
+                this.$root.settings.media_timeline_interval_filter.start)
+          )
+            continue;
+
+          if (this.$root.settings.media_timeline_interval_filter.end) {
+            if (
+              date_timeline_timestamp >
+                this.$root.settings.media_timeline_interval_filter.end &&
+              (!media_duration_ts ||
+                date_timeline_timestamp + media_duration_ts >
+                  this.$root.settings.media_timeline_interval_filter.end)
+            )
+              continue;
+          }
         }
 
         // if media is missing the
@@ -1463,8 +1473,8 @@ export default {
     },
     setTimestampFilter({ start, end }) {
       console.log("METHODS • TimeLineView: setTimestampFilter");
-      this.$root.settings.media_timeline_interval_filter.start = start;
-      if (end) this.$root.settings.media_timeline_interval_filter.end = end;
+      this.$root.settings.media_timeline_interval_filter.start = +start;
+      if (end) this.$root.settings.media_timeline_interval_filter.end = +end;
     },
   },
 };
@@ -1897,23 +1907,32 @@ export default {
 .m_floater {
   position: absolute;
   top: auto;
-  bottom: 40px;
+  top: 0;
+  bottom: 0px;
   width: 100%;
   z-index: 150;
   // font-size: 0.85em;
   line-height: 1.25;
   text-align: center;
+  padding: 0 ~"calc(var(--spacing) / 2)";
+  padding-bottom: 40px;
 
   pointer-events: none;
 
   --label-background: var(--c-noir);
 
-  body.has_systembar & {
-    // top: 35px;
-  }
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  align-content: flex-end;
 
   &.is--current_day {
     --label-background: var(--c-rouge);
+  }
+
+  > * {
+    flex: 1 1 100px;
   }
 
   @media screen and (max-width: 50rem) {
@@ -1922,10 +1941,10 @@ export default {
     font-size: 0.7em;
   }
 
-  > * {
-    display: block;
-    margin: 5px auto;
-    // max-width: auto;
+  ._bubbleIndicator {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
 
     > * {
       position: relative;
@@ -1936,6 +1955,7 @@ export default {
       pointer-events: auto;
       border-radius: 20px;
       padding: 0 20px;
+      margin-bottom: ~"calc(var(--spacing) / 4)";
 
       align-items: center;
       align-content: center;
@@ -1959,8 +1979,9 @@ export default {
     color: var(--c-rouge);
 
     border: 1px solid currentColor;
-    background-color: white;
-    background-color: var(--timeline-bg);
+    background-color: rgba(255, 255, 255, 0.8);
+    // background-color: var(--timeline-bg);
+
     border-radius: 20px;
     min-height: 40px;
 

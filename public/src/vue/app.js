@@ -415,6 +415,38 @@ let vm = new Vue({
     }
   },
   methods: {
+    humanTime: function ({ timestamp, duration }) {
+      function dateString(date) {
+        const _date = new Date(date);
+
+        let day =
+          new Date().toLocaleDateString() === _date.toLocaleDateString()
+            ? "aujourd’hui"
+            : _date.toLocaleDateString();
+
+        return (
+          day +
+          " — " +
+          _date.getHours() +
+          ":" +
+          (_date.getMinutes() < 10 ? "0" : "") +
+          _date.getMinutes() +
+          "." +
+          (_date.getSeconds() < 10 ? "0" : "") +
+          _date.getSeconds()
+        );
+      }
+
+      let date_string = "";
+
+      date_string += dateString(+timestamp);
+      if (duration) {
+        date_string += " → " + dateString(timestamp + duration);
+      }
+
+      return date_string;
+    },
+
     createFolder: function (fdata) {
       return new Promise((resolve, reject) => {
         if (window.state.dev_mode === "debug") {

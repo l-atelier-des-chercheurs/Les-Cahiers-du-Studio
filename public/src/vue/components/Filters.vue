@@ -20,7 +20,7 @@
             :key="term"
             class="tag"
             :class="{
-              'is--active': term === selected_keyword,
+              'is--active': term === $root.settings.media_keyword_filter,
             }"
             @click="toggleKeyword(term)"
           >
@@ -45,7 +45,7 @@
             :key="author_slug"
             class="tag"
             :class="{
-              'is--active': author_slug === selected_author,
+              'is--active': author_slug === $root.settings.media_author_filter,
               'is--loggedInAuthor':
                 $root.current_author &&
                 $root.current_author.slugFolderName === author_slug,
@@ -72,28 +72,12 @@ export default {
     AuthorsInput,
   },
   data() {
-    return {
-      selected_keyword: false,
-      selected_author: false,
-    };
+    return {};
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {
-    selected_keyword: {
-      handler() {
-        this.$root.settings.media_keyword_filter = this.selected_keyword;
-      },
-      immediate: true,
-    },
-    selected_author: {
-      handler() {
-        this.$root.settings.media_author_filter = this.selected_author;
-      },
-      immediate: true,
-    },
-  },
+  watch: {},
   computed: {
     all_keywords() {
       return this.getAllAndCount({
@@ -112,10 +96,12 @@ export default {
   },
   methods: {
     toggleKeyword(kw) {
-      this.selected_keyword = this.selected_keyword === kw ? false : kw;
+      this.$root.settings.media_keyword_filter =
+        this.$root.settings.media_keyword_filter === kw ? false : kw;
     },
     toggleAuthor(a) {
-      this.selected_author = this.selected_author === a ? false : a;
+      this.$root.settings.media_author_filter =
+        this.$root.settings.media_author_filter === a ? false : a;
     },
     getAllAndCount({ medias, type, prop_name }) {
       const kw_sorted = Object.values(medias).reduce((acc, m) => {
@@ -158,7 +144,7 @@ export default {
 
   height: 100%;
   overflow: auto;
-  background-color: var(--c-noir);
+  background-color: var(--c-noir_light);
   color: white;
   // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
 

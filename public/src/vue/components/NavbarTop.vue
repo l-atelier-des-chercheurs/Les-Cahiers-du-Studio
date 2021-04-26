@@ -24,7 +24,12 @@
                   <polyline
                     class="st0"
                     points="8.6,15.8 1.4,8.3 8.6,0.7 	"
-                    style="fill:none;stroke:#FFFFFF;stroke-miterlimit:10; stroke-width: 1;"
+                    style="
+                      fill: none;
+                      stroke: #ffffff;
+                      stroke-miterlimit: 10;
+                      stroke-width: 1;
+                    "
                   />
                 </g>
               </svg>
@@ -43,7 +48,7 @@
                 width="40.5px"
                 height="26.1px"
                 viewBox="0 0 40.5 26.1"
-                style="enable-background:new 0 0 40.5 26.1;"
+                style="enable-background: new 0 0 40.5 26.1"
                 xml:space="preserve"
               >
                 <g>
@@ -53,7 +58,7 @@
   c-1.3,0-2.4,0.5-5,1.9L15,4.3l1.1,2.3L23.1,3c-4,5.7-5.5,10.4-5.5,14.3c0,3.2,1.2,8.8,5.8,8.8c8.4,0,17.1-12.1,17.1-21.3
   c0-3.3-1.5-4.8-3.6-4.8c-2,0-3.5,1.5-3.5,3.5C33.4,5.8,35.2,7.1,37.2,7.1 M0,21.4c0,2.8,2,4.7,4.6,4.7c2.6,0,4.8-1.9,4.8-4.7
   c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4"
-                    style="fill:#FFFFFF"
+                    style="fill: #ffffff"
                   />
                 </g>
               </svg>
@@ -70,7 +75,7 @@
                 width="40.5px"
                 height="26.1px"
                 viewBox="0 0 40.5 26.1"
-                style="enable-background:new 0 0 40.5 26.1;"
+                style="enable-background: new 0 0 40.5 26.1"
                 xml:space="preserve"
               >
                 <path
@@ -79,7 +84,7 @@
 c-1.3,0-2.4,0.5-5,1.9L15,4.3l1.1,2.3L23.1,3c-4,5.7-5.5,10.4-5.5,14.3c0,3.2,1.2,8.8,5.8,8.8c8.4,0,17.1-12.1,17.1-21.3
 c0-3.3-1.5-4.8-3.6-4.8c-2,0-3.5,1.5-3.5,3.5C33.4,5.8,35.2,7.1,37.2,7.1 M0,21.4c0,2.8,2,4.7,4.6,4.7c2.6,0,4.8-1.9,4.8-4.7
 c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4"
-                  style="fill:#FFFFFF"
+                  style="fill: #ffffff"
                 />
               </svg>
             </div>
@@ -89,10 +94,7 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4"
             <i>Les Cahiers du Studio</i>
           </a>-->
 
-          <div
-            class="breadcrumb--item padding-small"
-            v-if="typeof folder !== 'undefined'"
-          >
+          <div class="breadcrumb--item padding-small" v-if="folder">
             {{ folder.name }}
           </div>
         </div>
@@ -113,7 +115,7 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4"
             width="20px"
             height="20px"
             viewBox="0 0 90 90"
-            style="enable-background:new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90"
             xml:space="preserve"
           >
             <rect class="st0" width="108.2" height="8" />
@@ -126,7 +128,7 @@ c0-2.7-2.1-4.7-4.8-4.7C2,16.6,0,18.7,0,21.4"
           class="visibleDay padding-none"
           v-if="
             typeof visibleDay !== 'undefined' &&
-              (!menu_is_enabled || (menu_is_enabled && show_menu))
+            (!menu_is_enabled || (menu_is_enabled && show_menu))
           "
         >
           <button class="bg-transparent" @click.prevent="goToPrevDay()">
@@ -171,10 +173,10 @@ export default {
     folder: Object,
     slugFolderName: String,
     visibleDay: Number,
-    timelineViewport_scale: Number
+    timelineViewport_scale: Number,
   },
   components: {
-    Authors
+    Authors,
   },
   data() {
     return {
@@ -182,29 +184,29 @@ export default {
       scaleBtns: [
         {
           name: this.$t("scale_items.second"),
-          scale: 1
+          scale: 1,
         },
         {
           name: this.$t("scale_items.minute"),
-          scale: 8
+          scale: 8,
         },
         {
           name: this.$t("scale_items.hour"),
-          scale: 20
+          scale: 20,
         },
         {
           name: this.$t("scale_items.half_day"),
-          scale: 50
+          scale: 50,
         },
         {
           name: this.$t("scale_items.day"),
-          scale: 100
-        }
-      ]
+          scale: 100,
+        },
+      ],
     };
   },
   computed: {
-    getVisibleDay: function() {
+    getVisibleDay: function () {
       return `${this.$moment(this.visibleDay).format("dddd LL")}`;
     },
     menu_is_enabled() {
@@ -214,25 +216,25 @@ export default {
       return this.folder.hasOwnProperty("authors") && this.folder.authors !== ""
         ? this.folder.authors
         : [];
-    }
+    },
   },
   methods: {
-    updateScale: function(val) {
+    updateScale: function (val) {
       this.$eventHub.$emit("updateScale", val);
     },
-    goToPrevDay: function() {
+    goToPrevDay: function () {
       this.$eventHub.$emit("goToPrevDay");
     },
-    goToNextDay: function() {
+    goToNextDay: function () {
       this.$eventHub.$emit("goToNextDay");
     },
-    showZoomZone: function(val) {
+    showZoomZone: function (val) {
       this.$eventHub.$emit("timeline.showZoomZone", val);
     },
-    hideZoomZone: function() {
+    hideZoomZone: function () {
       this.$eventHub.$emit("timeline.hideZoomZone");
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped lang=""></style>
