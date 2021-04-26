@@ -65,7 +65,7 @@
           (_connection_state) => (connection_state = _connection_state)
         "
         ref="textField"
-        :read_only="read_only || can_edit_folder"
+        :read_only="read_only || !can_edit_folder"
       />
 
       <!-- <div>
@@ -87,10 +87,7 @@ export default {
     slugFolderName: String,
     media: Object,
     can_edit_folder: Boolean,
-    read_only: {
-      type: Boolean,
-      default: true,
-    },
+    read_only: Boolean,
   },
   components: {
     CollaborativeEditor,

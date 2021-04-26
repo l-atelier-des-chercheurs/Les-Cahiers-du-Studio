@@ -251,9 +251,11 @@ export default {
         this.enable_collaboration &&
         !this.read_only
       ) {
+        console.log(`CollaborativeEditor / initWebsocketMode`);
         this.initWebsocketMode();
         this.editor.focus();
       } else {
+        console.log(`CollaborativeEditor / read-only`);
         let content = this.value;
         if (this.$root.state.mode === "export_web") {
           var el = document.createElement("html");

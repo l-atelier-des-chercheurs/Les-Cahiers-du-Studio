@@ -70,6 +70,13 @@ class TimestampBlot extends BlockEmbed {
   constructor(node) {
     super(node);
 
+    const timestamp = node.dataset.timestamp;
+
+    console.log(`TimestampBlot constructor`);
+
+    let content_button = node.querySelector("._edit_timestamp");
+    content_button.innerText = humanTime({ timestamp });
+
     let removeButton;
     removeButton = window.document.createElement("button");
     removeButton.innerHTML = "×";

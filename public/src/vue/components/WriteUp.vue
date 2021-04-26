@@ -102,6 +102,7 @@ export default {
     slugFolderName: String,
     medias: Object,
     can_edit_folder: Boolean,
+    read_only: Boolean,
   },
   components: {
     WriteUpEditor,
