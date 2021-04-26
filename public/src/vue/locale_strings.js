@@ -46,7 +46,8 @@ module.exports = (function () {
       link_to_open_in_a_new_tab:
         "URL de la page à ouvrir dans un nouvel onglet",
 
-      timestamp: "EXPÉRIMENTAL : Pastilles d’horodatage",
+      timestamp:
+        "EXPÉRIMENTAL : pastilles d’horodatage en appuyant sur entrée à la dernière ligne",
       active: "Actif",
       timestamp_instructions:
         "La création de pastilles d’horodatage se fait en plaçant son curseur à la dernière ligne et en ajoutant un retour à la ligne avec ENTRÉE. Pour ne pas créer de pastilles en dernière ligne utilisez SHIFT+ENTRÉE.",

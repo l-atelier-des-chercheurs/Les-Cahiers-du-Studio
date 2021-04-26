@@ -184,7 +184,22 @@ export default {
           ["italic", "underline", "link", "blockquote"],
           [{ list: "ordered" }, { list: "bullet" }],
           ["clean"],
+          ["add-timestamp"],
         ],
+        handlers: {
+          "add-timestamp": function (value) {
+            const range =
+              this.quill.selection.lastRange.index ||
+              this.quill.getLength() - 1;
+            const timestamp = +new Date();
+            this.quill.insertEmbed(
+              range,
+              "timestamp",
+              { timestamp },
+              Quill.sources.USER
+            );
+          },
+        },
       },
 
       socket: null,
@@ -323,8 +338,7 @@ export default {
 
       this.editor.on("selection-change", (range, oldRange, source) => {
         // console.log("selection changed");
-        if (range === null && oldRange !== null) this.is_focused = false;
-        else if (range !== null && oldRange === null) this.is_focused = true;
+        this.is_focused = range !== null;
 
         // cursorsOne.moveCursor(1, range);
         if (!!range && range.length == 0) {
@@ -332,10 +346,11 @@ export default {
           this.updateCaretPosition();
         }
 
-        console.log(range.index);
-        console.log(this.editor.getLength());
-
-        if (range.index === this.editor.getLength() - 1 && range.length === 0) {
+        if (
+          range &&
+          range.index === this.editor.getLength() - 1 &&
+          range.length === 0
+        ) {
           this.is_on_last_line = true;
         } else {
           this.is_on_last_line = false;
@@ -765,8 +780,8 @@ html[lang="fr"] .ql-tooltip::before {
   --c-toolbar-warning-bg: var(--c-rouge);
   --c-toolbar-warning-c: white;
 
-  &.is--focussed {
-    background-color: blue;
+  &.is--focused {
+    // background-color: blue;
   }
 
   &.is--onlastline {
@@ -1352,5 +1367,16 @@ html[lang="fr"] .ql-tooltip::before {
 
 ._instructions {
   padding: calc(var(--spacing) / 2) var(--spacing);
+}
+
+.ql-toolbar .ql-add-timestamp.ql-add-timestamp {
+  background-color: var(--c-vert_vif);
+  width: auto;
+  font-size: 70%;
+
+  &::before {
+    content: "horodatage";
+    font-style: italic;
+  }
 }
 </style>
