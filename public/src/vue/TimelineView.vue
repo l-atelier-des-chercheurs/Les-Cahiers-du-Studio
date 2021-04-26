@@ -23,6 +23,7 @@
         class="default-theme"
         watch-slots
         @resize="panelResize"
+        @resized="panelResized"
       >
         <pane class="_leftSidebar" :size="panels_width.sidebar">
           <div class="_leftSidebar--content">
@@ -1251,7 +1252,17 @@ export default {
       this.panels_width.sidebar = $event[0].size;
       this.panels_width.timeline = $event[1].size;
     },
+    panelResized($event) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • App: splitpanes resized`);
 
+      this.panels_width.sidebar = $event[0].size;
+      this.panels_width.timeline = $event[1].size;
+
+      if (this.panels_width.sidebar > 0) {
+        this.openSidebar({});
+      }
+    },
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
       if (this.timeline_height !== window.innerHeight) {

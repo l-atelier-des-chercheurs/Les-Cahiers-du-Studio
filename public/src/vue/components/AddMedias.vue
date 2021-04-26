@@ -24,7 +24,6 @@
   </div>
 </template>
 <script>
-import debounce from "debounce";
 import Authors from "./subcomponents/Authors.vue";
 import ImportMedias from "./subcomponents/ImportMedias.vue";
 import CaptureMedias from "./subcomponents/CaptureMedias.vue";
@@ -54,12 +53,9 @@ export default {
   },
   mounted: function () {
     document.addEventListener("keyup", this.boitierPressed);
-    document.addEventListener("dragover", this.ondragover);
-    this.cancelDragOver = debounce(this.cancelDragOver, 300);
   },
   destroyed: function () {
     document.removeEventListener("keyup", this.boitierPressed);
-    document.removeEventListener("dragover", this.ondragover);
   },
   watch: {
     file: function () {},
