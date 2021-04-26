@@ -353,10 +353,7 @@
                   type="button"
                   class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
                   v-html="'x'"
-                  @click="
-                    setSort(sort.available[0]);
-                    setFilter('');
-                  "
+                  @click="setSort(sort.available[0])"
                 />
                 <small>
                   <div class>
@@ -586,7 +583,6 @@ export default {
     this.$eventHub.$on("scrollToDate", this.scrollToDate);
     this.$eventHub.$on("timeline.openMediaModal", this.openMediaModal);
     this.$eventHub.$on("setSort", this.setSort);
-    this.$eventHub.$on("setFilter", this.setFilter);
     this.$eventHub.$on("setTimestampFilter", this.setTimestampFilter);
     this.$eventHub.$on("timeline.scrollToToday", this.scrollToToday);
     this.$eventHub.$on("timeline.scrollToEnd", this.scrollToEnd);
@@ -625,7 +621,6 @@ export default {
     this.$eventHub.$off("scrollToDate", this.scrollToDate);
     this.$eventHub.$off("timeline.openMediaModal", this.openMediaModal);
     this.$eventHub.$off("setSort");
-    this.$eventHub.$off("setFilter");
     this.$eventHub.$off("setTimestampFilter");
     this.$eventHub.$off("timeline.scrollToToday", this.scrollToToday);
     this.$eventHub.$off("timeline.scrollToEnd", this.scrollToEnd);
@@ -1465,10 +1460,6 @@ export default {
     setSort(newSort) {
       console.log("METHODS • TimeLineView: setSort");
       this.sort.current = newSort;
-    },
-    setFilter(newFilter) {
-      console.log("METHODS • TimeLineView: setFilter");
-      this.filter = newFilter;
     },
     setTimestampFilter({ start, end }) {
       console.log("METHODS • TimeLineView: setTimestampFilter");

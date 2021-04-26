@@ -13,19 +13,20 @@
                 v-for="option in sort.available"
                 :value="option"
                 :key="option.name"
-                >{{ option.name }}</option
               >
+                {{ option.name }}
+              </option>
             </select>
           </th>
           <th v-if="display === 'table'"></th>
         </tr>
-        <tr>
+        <!-- <tr>
           <th class="font-small padding-medium">{{ $t("filter") }}</th>
           <th>
             <input type="text" v-model="currentFilter" />
           </th>
           <th v-if="display === 'table'"></th>
-        </tr>
+        </tr> -->
       </thead>
       <tbody>
         <tr
@@ -95,7 +96,6 @@ export default {
   },
   props: {
     display: String,
-    filter: String,
     sort: Object,
     slugFolderName: String,
     sortedMedias: Array,
@@ -105,7 +105,6 @@ export default {
   data() {
     return {
       currentSort: this.sort.current,
-      currentFilter: this.filter,
     };
   },
   mounted: function () {},
@@ -114,14 +113,8 @@ export default {
     currentSort: function () {
       this.$eventHub.$emit("setSort", this.currentSort);
     },
-    currentFilter: function () {
-      this.$eventHub.$emit("setFilter", this.currentFilter);
-    },
     "sort.current": function () {
       this.currentSort = this.sort.current;
-    },
-    filter: function () {
-      this.currentFilter = this.filter;
     },
   },
   methods: {

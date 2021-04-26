@@ -251,7 +251,6 @@
       <div slot="body" class="margin-sides-negative-medium">
         <Tableau
           :display="'table'"
-          :filter="filter"
           :sort="sort"
           :sortedMedias="sortedMedias"
           :slugFolderName="slugFolderName"
@@ -263,7 +262,6 @@
 
     <MediasList
       v-if="showMediasListModal"
-      :filter="filter"
       :sort="sort"
       :sortedMedias="sortedMedias"
       :slugFolderName="slugFolderName"
@@ -317,7 +315,6 @@ export default {
     timeline_end: Number,
     visible_day: Number,
     sort: Object,
-    filter: String,
     can_edit_folder: Boolean,
     introduction_media: Object,
     read_only: Boolean,
