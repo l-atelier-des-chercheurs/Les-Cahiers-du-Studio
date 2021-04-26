@@ -45,12 +45,12 @@
             :key="author_slug"
             class="tag"
             :class="{
-              'is--unselectable': author_slug !== selected_author,
               'is--active': author_slug === selected_author,
               'is--loggedInAuthor':
                 $root.current_author &&
                 $root.current_author.slugFolderName === author_slug,
             }"
+            :style="{ '--author-color': $root.getAuthor(author_slug).color }"
             @click="toggleAuthor(author_slug)"
           >
             {{ $root.getAuthor(author_slug).name }}

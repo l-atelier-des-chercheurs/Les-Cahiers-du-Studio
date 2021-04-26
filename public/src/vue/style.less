@@ -631,14 +631,14 @@ video {
   position: relative;
   .margin-bottom-verysmall;
   margin-bottom: 0;
-  .font-verysmall;
+  .font-small;
+
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
   text-transform: initial;
 
   font-family: "Fira Mono";
-  font-weight: 00;
 
   > .input {
     border: none !important;
@@ -699,7 +699,7 @@ video {
     position: relative;
     padding: 0 !important;
     background-color: transparent;
-    .font-medium;
+
     margin-right: @t-skipline / 4 !important;
     margin-bottom: @t-skipline / 4 !important;
 
@@ -772,7 +772,6 @@ video {
     margin-bottom: @t-skipline / 4 !important;
 
     &.is--active {
-      font-weight: 700;
       &::before {
         color: black;
         // background-color: black !important;
@@ -1323,7 +1322,7 @@ video {
 
     &.is--active {
       background-color: @c-blanc;
-      background-color: var(--author_color);
+      background-color: var(--author-color);
     }
 
     &:disabled {

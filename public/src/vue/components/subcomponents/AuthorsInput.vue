@@ -16,7 +16,7 @@
       }"
       :disabled="read_only"
       @click="toggleAuthorName(author_slug)"
-      :style="`--author_color: ${
+      :style="`--author-color: ${
         $root.getAuthor(author_slug).color
           ? $root.getAuthor(author_slug).color
           : 'white'
