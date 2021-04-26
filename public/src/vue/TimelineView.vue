@@ -1511,7 +1511,7 @@ export default {
   // min-width: 100vw;
 
   margin: 0px 0px;
-  padding: 16px 45vw 16px 15vw;
+  padding: 16px 15vw 16px 15vw;
   // border-right: 1px solid #000;
 }
 
