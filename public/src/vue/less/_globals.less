@@ -59,7 +59,8 @@ button,
     // padding: 0;
     &::after {
       content: "←";
-      transform: scale(1.5);
+      transform: scale(2);
+
       transform-origin: center;
       display: inline-block;
       margin-left: 0em;
@@ -75,9 +76,9 @@ button,
     }
 
     &.is--active {
-      color: var(--c-rouge);
       &::after {
-        transform: rotate(-90deg) scale(1.5);
+        color: var(--c-rouge);
+        transform: rotate(-90deg) scale(2);
       }
 
       &:hover {
