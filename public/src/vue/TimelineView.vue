@@ -587,6 +587,7 @@ export default {
     this.$eventHub.$on("timeline.openMediaModal", this.openMediaModal);
     this.$eventHub.$on("setSort", this.setSort);
     this.$eventHub.$on("setFilter", this.setFilter);
+    this.$eventHub.$on("setTimestampFilter", this.setTimestampFilter);
     this.$eventHub.$on("timeline.scrollToToday", this.scrollToToday);
     this.$eventHub.$on("timeline.scrollToEnd", this.scrollToEnd);
     this.$eventHub.$on("showEditFolderModal", this.startEditModal);
@@ -625,6 +626,7 @@ export default {
     this.$eventHub.$off("timeline.openMediaModal", this.openMediaModal);
     this.$eventHub.$off("setSort");
     this.$eventHub.$off("setFilter");
+    this.$eventHub.$off("setTimestampFilter");
     this.$eventHub.$off("timeline.scrollToToday", this.scrollToToday);
     this.$eventHub.$off("timeline.scrollToEnd", this.scrollToEnd);
     this.$eventHub.$off("showEditFolderModal", this.startEditModal);
@@ -635,6 +637,11 @@ export default {
     );
 
     window.removeEventListener("resize", this.onResize);
+
+    this.$root.settings.media_author_filter = false;
+    this.$root.settings.media_keyword_filter = false;
+    this.$root.settings.media_timeline_interval_filter.start = false;
+    this.$root.settings.media_timeline_interval_filter.end = false;
 
     this.$root.settings.has_sidebar_opened = false;
   },
@@ -1462,6 +1469,11 @@ export default {
     setFilter(newFilter) {
       console.log("METHODS • TimeLineView: setFilter");
       this.filter = newFilter;
+    },
+    setTimestampFilter({ start, end }) {
+      console.log("METHODS • TimeLineView: setTimestampFilter");
+      this.$root.settings.media_timeline_interval_filter.start = start;
+      if (end) this.$root.settings.media_timeline_interval_filter.end = end;
     },
   },
 };

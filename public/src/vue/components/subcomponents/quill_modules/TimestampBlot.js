@@ -49,21 +49,6 @@ class TimestampBlot extends BlockEmbed {
     node.setAttribute("contenteditable", false);
     node.dataset.timestamp = timestamp;
 
-    let content_button = window.document.createElement("button");
-
-    content_button.setAttribute("type", "button");
-    content_button.innerText = humanTime({ timestamp });
-    content_button.classList.add("_edit_timestamp");
-
-    // content_button.addEventListener("click", ($event) => {
-    //   const input = window.document.createElement("input");
-    //   input.setAttribute("type", "text");
-    //   input.value = timestamp;
-    //   node.appendChild(input);
-    // });
-
-    node.appendChild(content_button);
-
     return node;
   }
 
@@ -71,18 +56,32 @@ class TimestampBlot extends BlockEmbed {
     super(node);
 
     const timestamp = node.dataset.timestamp;
+    node.innerHTML = "";
 
     console.log(`TimestampBlot constructor`);
 
-    let content_button = node.querySelector("._edit_timestamp");
+    let content_button = window.document.createElement("button");
+    content_button.setAttribute("type", "button");
     content_button.innerText = humanTime({ timestamp });
+    content_button.classList.add("_edit_timestamp");
 
-    let removeButton;
-    removeButton = window.document.createElement("button");
-    removeButton.innerHTML = "×";
-    removeButton.setAttribute("type", "button");
-    removeButton.classList.add("_button_removeTimestamp");
-    removeButton.addEventListener("click", () => {
+    content_button.addEventListener("click", ($event) => {
+      const quill = Quill.find(node.parentElement.parentElement);
+      quill.options._vm.setTimestampFilter({ node: node });
+
+      // const input = window.document.createElement("input");
+      // input.setAttribute("type", "text");
+      // input.value = timestamp;
+      // node.appendChild(input);
+    });
+    node.appendChild(content_button);
+
+    let remove_button;
+    remove_button = window.document.createElement("button");
+    remove_button.innerHTML = "×";
+    remove_button.setAttribute("type", "button");
+    remove_button.classList.add("_button_removeTimestamp", "_onlyForEditors");
+    remove_button.addEventListener("click", () => {
       const quill = Quill.find(node.parentElement.parentElement);
       quill.enable(true);
       node.style.animation = "scale-out 0.5s cubic-bezier(0.19, 1, 0.22, 1)";
@@ -92,7 +91,7 @@ class TimestampBlot extends BlockEmbed {
         // supprimer du bloc proprement
       });
     });
-    node.appendChild(removeButton);
+    node.appendChild(remove_button);
   }
 
   static value(node) {

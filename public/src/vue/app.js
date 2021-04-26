@@ -204,6 +204,10 @@ let vm = new Vue({
 
       media_keyword_filter: false,
       media_author_filter: false,
+      media_timeline_interval_filter: {
+        start: false,
+        end: false,
+      },
 
       folder_filter: {
         name: "",

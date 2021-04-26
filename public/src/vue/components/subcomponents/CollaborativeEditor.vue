@@ -480,6 +480,33 @@ export default {
         this.$forceUpdate();
       });
     },
+    setTimestampFilter({ node }) {
+      // first we have to find the timestamp in the editor
+
+      // then find the next one if it exists
+      let next = node.nextSibling;
+      while (next !== null && !next.classList.contains("ql-timestamp")) {
+        next = next.nextSibling;
+      }
+
+      console.log(
+        `CollaborativeEditor / setTimestampFilter with start = ${
+          node.dataset.timestamp
+        } and end = ${
+          next && next.dataset && next.dataset.timestamp
+            ? next.dataset.timestamp
+            : "none"
+        }`
+      );
+
+      const filters = {
+        start: node.dataset.timestamp,
+      };
+      if (next && next.dataset && next.dataset.timestamp)
+        filters.end = next.dataset.timestamp;
+
+      this.$eventHub.$emit("setTimestampFilter", filters);
+    },
     updateCaretPosition() {
       // console.log(`CollaborativeEditor • METHODS: updateCaretPosition`);
       var selection = this.editor.getSelection(true);
@@ -817,6 +844,11 @@ html[lang="fr"] .ql-tooltip::before {
       }
     }
     // border-left: 2px solid rgba(255, 0, 0, 0.5);
+  }
+  &.is--disabled {
+    ._onlyForEditors {
+      display: none;
+    }
   }
 
   &.is--readonly {
