@@ -155,6 +155,7 @@
 </template>
 <script>
 import UploadFileModal from "../modals/UploadFileModal.vue";
+import debounce from "debounce";
 
 export default {
   props: {
@@ -236,8 +237,13 @@ export default {
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    document.addEventListener("dragover", this.ondragover);
+    this.cancelDragOver = debounce(this.cancelDragOver, 300);
+  },
+  beforeDestroy() {
+    document.removeEventListener("dragover", this.ondragover);
+  },
   watch: {},
   computed: {},
   methods: {
