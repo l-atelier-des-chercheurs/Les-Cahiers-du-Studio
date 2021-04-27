@@ -176,7 +176,7 @@ export default {
 
       this.show_createwriteup_section = false;
 
-      this.$eventHub.$on("socketio.media_created_or_updated", (m) =>
+      this.$eventHub.$once("socketio.media_created_or_updated", (m) =>
         this.openWriteupMedia(m.metaFileName)
       );
       this.$root.createMedia({

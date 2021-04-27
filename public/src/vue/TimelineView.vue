@@ -671,22 +671,38 @@ export default {
         ? this.folder.authors
         : [];
     },
+    timeline_medias() {
+      return Object.values(this.medias).filter((media) => {
+        return (
+          media.hasOwnProperty("type") &&
+          media.type !== "writeup" &&
+          media.type !== "introduction"
+        );
+      });
+    },
     sortedMedias() {
       console.log("COMPUTED • TimeLineView: sortedMedias");
-      var sortable = [];
       let current_sort = !!this.sort.current.type
         ? this.sort.current
         : this.sort.available[0];
 
-      for (let slugMediaName in this.medias) {
-        let mediaDataToOrderBy;
-        const media = this.medias[slugMediaName];
+      var t0 = performance.now();
 
-        if (
-          media.hasOwnProperty("type") &&
-          (media.type === "writeup" || media.type === "introduction")
-        ) {
-          continue;
+      const sortable = this.timeline_medias.reduce((acc, media) => {
+        let mediaDataToOrderBy;
+
+        // if media is missing the
+        if (!media.hasOwnProperty(current_sort.field)) {
+          // legacy to account for medias without date_timeline but with date_created or created
+          if (current_sort.field === "date_timeline") {
+            if (media.hasOwnProperty("date_created")) {
+              media.date_timeline = media.date_created;
+            } else if (media.hasOwnProperty("created")) {
+              media.date_timeline = media.created;
+            }
+          } else {
+            return acc;
+          }
         }
 
         if (this.$root.settings.media_keyword_filter) {
@@ -700,7 +716,7 @@ export default {
               )
             )
           )
-            continue;
+            return acc;
         }
         if (this.$root.settings.media_author_filter) {
           if (
@@ -714,7 +730,7 @@ export default {
               )
             )
           )
-            continue;
+            return acc;
         }
 
         if (this.$root.settings.media_timeline_interval_filter.start) {
@@ -737,7 +753,7 @@ export default {
               date_timeline_timestamp + media_duration_ts <
                 this.$root.settings.media_timeline_interval_filter.start)
           )
-            continue;
+            return acc;
 
           if (this.$root.settings.media_timeline_interval_filter.end) {
             if (
@@ -747,21 +763,7 @@ export default {
                 date_timeline_timestamp + media_duration_ts >
                   this.$root.settings.media_timeline_interval_filter.end)
             )
-              continue;
-          }
-        }
-
-        // if media is missing the
-        if (!media.hasOwnProperty(current_sort.field)) {
-          // legacy to account for medias without date_timeline but with date_created or created
-          if (current_sort.field === "date_timeline") {
-            if (media.hasOwnProperty("date_created")) {
-              this.medias[slugMediaName].date_timeline = media.date_created;
-            } else if (media.hasOwnProperty("created")) {
-              this.medias[slugMediaName].date_timeline = media.created;
-            }
-          } else {
-            continue;
+              return acc;
           }
         }
 
@@ -787,11 +789,13 @@ export default {
           );
         }
 
-        sortable.push({
-          slugMediaName,
+        acc.push({
+          slugMediaName: media.metaFileName,
           mediaDataToOrderBy,
         });
-      }
+        return acc;
+      }, []);
+
       let sortedSortable = sortable.sort((a, b) => {
         if (a.mediaDataToOrderBy < b.mediaDataToOrderBy) {
           return -1;
@@ -844,6 +848,14 @@ export default {
 
         return result;
       }, []);
+
+      var t1 = performance.now();
+      console.log(
+        "COMPUTED • TimeLineView: sortedMedias took " +
+          (t1 - t0) +
+          " milliseconds."
+      );
+
       return sortedMedias;
     },
     groupedMedias() {

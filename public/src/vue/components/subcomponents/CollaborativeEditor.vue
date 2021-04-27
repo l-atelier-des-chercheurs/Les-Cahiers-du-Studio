@@ -545,7 +545,7 @@ export default {
       if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
       this.debounce_textUpdate = setTimeout(() => {
         console.log(
-          `CollaborativeEditor • updateTextMedia: saving new snapshop`
+          `CollaborativeEditor • updateTextMedia: saving new snapshot`
         );
 
         this.broadcastMediasPresentInWriteup();

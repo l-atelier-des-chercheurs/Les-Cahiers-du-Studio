@@ -1674,7 +1674,8 @@ export default {
         (event.target.tagName.toLowerCase() === "input" &&
           (!event.target.dataset ||
             event.target.dataset.use !== "onionskin")) ||
-        event.target.tagName.toLowerCase() === "textarea"
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor")
       ) {
         return false;
       }
