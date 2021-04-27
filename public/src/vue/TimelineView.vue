@@ -1486,6 +1486,7 @@ export default {
       console.log("METHODS • TimeLineView: setTimestampFilter");
       this.$root.settings.media_timeline_interval_filter.start = +start;
       if (end) this.$root.settings.media_timeline_interval_filter.end = +end;
+      else this.$root.settings.media_timeline_interval_filter.end = false;
     },
   },
 };
