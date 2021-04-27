@@ -138,12 +138,12 @@ export default {
   // flex: 0 0 420px;
 
   height: 100%;
-  background-color: var(--color-noir);
+  background-color: var(--c-noir);
   color: white;
   // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
 
   // background-color: white;
-  // border: 4px solid var(--color-noir);
+  // border: 4px solid var(--c-noir);
   // margin: 2em;
   // padding: 1em;
   padding-top: calc(var(--spacing) / 2);
@@ -156,7 +156,7 @@ export default {
 
   button,
   label {
-    color: var(--color-noir);
+    color: var(--c-noir);
   }
 }
 

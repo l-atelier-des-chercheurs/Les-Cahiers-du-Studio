@@ -18,8 +18,14 @@
     <!-- <pre>{{ groupedMedias }}</pre> -->
 
     <div class="m_navtimeline_wrapper--timeline_wrapper">
-      <splitpanes style="" class="default-theme">
-        <pane size="35" class="_leftSidebar">
+      <splitpanes
+        style=""
+        class="default-theme"
+        watch-slots
+        @resize="panelResize"
+        @resized="panelResized"
+      >
+        <pane class="_leftSidebar" :size="panels_width.sidebar">
           <div class="_leftSidebar--content">
             <transition name="chatopen" :duration="350" mode="out-in">
               <!-- <Informations
@@ -46,7 +52,6 @@
                 :sortedMedias="sortedMedias"
                 :date_interval="date_interval"
                 :sort="sort"
-                :filter="filter"
                 :read_only="read_only"
                 :can_edit_folder="can_edit_folder"
               />
@@ -58,6 +63,7 @@
                 :slugFolderName="slugFolderName"
                 :medias="medias"
                 :read_only="read_only"
+                :can_edit_folder="can_edit_folder"
               />
               <Filters
                 v-else-if="
@@ -88,7 +94,7 @@
                 }"
                 v-for="tab in tabs"
                 :key="tab.key"
-                @click.stop.prevent="toggleSidebar(tab.key)"
+                @click.stop.prevent="toggleSidebar({ type: tab.key })"
               >
                 <span v-html="$t(tab.key)" />
               </button>
@@ -110,56 +116,64 @@
           </div>
         </pane>
 
-        <pane min-size="20">
+        <pane min-size="20" :size="panels_width.timeline">
           <div>
-            <template v-if="$root.state.mode !== 'export_web'">
+            <div
+              class="m_topnavlabel"
+              @mouseover="collapse_foldername = false"
+              @mouseleave="collapse_foldername = true"
+            >
               <button
                 type="button"
-                class="folder_backbutton"
-                @click="$root.closeFolder()"
-                @mouseover="collapse_foldername = false"
-                @mouseleave="collapse_foldername = true"
-                :class="{
-                  'is--collapsed': collapse_foldername,
-                  'is--movedToRight': $root.settings.has_sidebar_opened,
+                @click="toggleSidebar()"
+                :content="$t('close_sidebar')"
+                v-tippy="{
+                  placement: 'bottom',
+                  delay: [600, 0],
                 }"
+              >
+                <span class="icon">
+                  <template v-if="$root.settings.has_sidebar_opened">
+                    ×
+                  </template>
+                  <template v-else>
+                    <svg class="svg-icon" viewBox="0 0 20 20">
+                      <path
+                        fill="currentColor"
+                        d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314
+								c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743
+								s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314
+								c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"
+                      ></path>
+                    </svg>
+                  </template>
+                </span>
+              </button>
+              <button
+                type="button"
+                v-if="$root.state.mode !== 'export_web'"
+                @click="$root.closeFolder()"
                 :content="$t('back_to_home')"
                 v-tippy="{
                   placement: 'bottom',
                   delay: [600, 0],
                 }"
               >
-                <span class="icon">×</span>
-                <span class="project_name">{{ folder.name }}</span>
+                <span class="icon">←</span>
               </button>
-            </template>
-            <template v-else>
-              <div class="folder_backbutton">
-                <span
-                  class="margin-sides-small padding-verysmall text-centered"
-                  >{{ folder.name }}</span
-                >
-              </div>
-            </template>
+              <span class="project_name">{{ folder.name }}</span>
+            </div>
           </div>
-
-          <AddMedias
-            v-if="$root.state.mode !== 'export_web'"
-            :slugFolderName="slugFolderName"
-            :folder="folder"
-            :can_edit_folder="can_edit_folder"
-            :read_only="!$root.state.connected"
-            :rightmostMedia="rightmostMedia"
-          />
 
           <div
             class="m_floater"
             @wheel="onMousewheel"
             :class="{ 'is--current_day': visible_day_is_today }"
           >
+            <!-- <div></div> -->
             <div v-if="$root.state.mode !== 'export_web'">
-              <span>
-                <transition name="fade" :duration="450">
+              <div class="_bubbleIndicator">
+                <div>
                   <button
                     type="button"
                     v-if="visible_day_is_before_or_after === 'after'"
@@ -168,11 +182,13 @@
                   >
                     ←&nbsp;{{ $t("today") }}
                   </button>
-                </transition>
-                <transition name="fade" mode="out-in" :duration="150">
-                  <span :key="visible_day_human">{{ visible_day_human }}</span>
-                </transition>
-                <transition name="fade" :duration="450">
+                  <span>
+                    <transition name="fade" mode="out-in" :duration="150">
+                      <span :key="visible_day_human">{{
+                        visible_day_human
+                      }}</span>
+                    </transition>
+                  </span>
                   <button
                     type="button"
                     class="_scrolltonow _scrolltonow_after"
@@ -181,29 +197,42 @@
                   >
                     {{ $t("today") }}&nbsp;→
                   </button>
-                </transition>
-              </span>
-            </div>
-            <TimelinePlayer />
+                </div>
 
-            <div v-if="!can_edit_folder">
-              <button
+                <TimelinePlayer />
+
+                <!-- <div v-if="!can_edit_folder">
+                  <button
                 type="button"
-                @click="toggleSidebar('informations')"
+                @click="toggleSidebar({ type: 'informations' })"
                 :class="{ 'is--active': show_access_controller }"
               >
-                <!-- @click="show_access_controller = !show_access_controller" -->
                 {{ $t("edit_timeline") }}
               </button>
-              <!-- <div v-if="show_access_controller">
+              <div v-if="show_access_controller">
                 <AccessController
                   :folder="folder"
                   :context="'full'"
                   :type="'folders'"
                   @closeFolder="$root.closeFolder()"
                 />
-              </div>-->
+              </div>
+                </div> -->
+                <FilterIndicator
+                  :medias="medias"
+                  :sortedMedias="sortedMedias"
+                />
+              </div>
             </div>
+
+            <AddMedias
+              v-if="$root.state.mode !== 'export_web'"
+              :slugFolderName="slugFolderName"
+              :folder="folder"
+              :can_edit_folder="can_edit_folder"
+              :read_only="!$root.state.connected"
+              :rightmostMedia="rightmostMedia"
+            />
           </div>
 
           <div
@@ -214,7 +243,6 @@
             @mouseup.self="onMouseUp"
             @scroll="onTimelineScroll"
           >
-            <!-- v-dragscroll -->
             <div class="m_timeline--container">
               <div class="m_timeline--container--dates" ref="timeline_dates">
                 <div
@@ -291,11 +319,11 @@
                                   )
                                 "
                                 :style="`
-                              --color-author: ${segment.color};
+                              --c-author: ${segment.color};
                               --label-color: ${
-                                segment.color === 'var(--color-noir)'
-                                  ? 'var(--color-blanc)'
-                                  : 'var(--color-noir)'
+                                segment.color === 'var(--c-noir)'
+                                  ? 'var(--c-blanc)'
+                                  : 'var(--c-noir)'
                               };
                               `"
                                 :data-has_author="!!segment.marker_author"
@@ -319,42 +347,6 @@
                     </template>
                   </template>
                 </div>
-              </div>
-            </div>
-
-            <div
-              v-if="sort.current.field !== 'date_timeline'"
-              class="m_filterIndicator"
-            >
-              <div
-                class="flex-wrap flex-vertically-centered flex-horizontally-start"
-              >
-                <button
-                  type="button"
-                  class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
-                  v-html="'x'"
-                  @click="
-                    setSort(sort.available[0]);
-                    setFilter('');
-                  "
-                />
-                <small>
-                  <div class>
-                    <span v-html="$t('active_filter:')" />
-                    {{ " " }}
-                    <span v-html="sort.current.name" />
-                  </div>
-                  <div class>
-                    <span v-html="$t('medias_shown:')" />
-                    <span
-                      v-html="
-                        this.sortedMedias.length +
-                        '/' +
-                        Object.keys(this.medias).length
-                      "
-                    />
-                  </div>
-                </small>
               </div>
             </div>
           </div>
@@ -398,6 +390,7 @@ import Filters from "./components/Filters.vue";
 
 import TimelinePlayer from "./components/subcomponents/TimelinePlayer.vue";
 import AccessController from "./components/subcomponents/AccessController.vue";
+import FilterIndicator from "./components/subcomponents/FilterIndicator.vue";
 import Chats from "./components/chat/Chats.vue";
 
 import debounce from "debounce";
@@ -422,16 +415,21 @@ export default {
     Pane,
     TimelinePlayer,
     AccessController,
+    FilterIndicator,
     Chats,
     Splitpanes,
     Pane,
   },
   data() {
     return {
+      panels_width: {
+        sidebar: 35,
+        timeline: 65,
+      },
+
       translation: 0,
       // translation but refreshed at specific interval
       debounce_translation: 0,
-      // -
       debounce_translation_delay: 100,
       debounce_translation_fct: undefined,
       current_scroll_event: undefined,
@@ -446,16 +444,6 @@ export default {
 
       convert_empty_days_to_periods: true,
       show_access_controller: false,
-
-      minPercent: 0,
-      split: "vertical",
-      is_dragged: false,
-      drag_offset: 0,
-      hasMoved: false,
-      height: null,
-      percent: 0,
-      type: "width",
-      resizeType: "left",
 
       make_mediasblock_with: "markers",
 
@@ -572,7 +560,7 @@ export default {
     this.$eventHub.$on("scrollToDate", this.scrollToDate);
     this.$eventHub.$on("timeline.openMediaModal", this.openMediaModal);
     this.$eventHub.$on("setSort", this.setSort);
-    this.$eventHub.$on("setFilter", this.setFilter);
+    this.$eventHub.$on("setTimestampFilter", this.setTimestampFilter);
     this.$eventHub.$on("timeline.scrollToToday", this.scrollToToday);
     this.$eventHub.$on("timeline.scrollToEnd", this.scrollToEnd);
     this.$eventHub.$on("showEditFolderModal", this.startEditModal);
@@ -595,8 +583,6 @@ export default {
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);
 
-    // if (this.$root.state.mode === "export_web") {
-    this.percent = 35;
     this.$root.settings.has_sidebar_opened = true;
     this.$root.settings.sidebar_type = "informations";
     // }
@@ -612,7 +598,7 @@ export default {
     this.$eventHub.$off("scrollToDate", this.scrollToDate);
     this.$eventHub.$off("timeline.openMediaModal", this.openMediaModal);
     this.$eventHub.$off("setSort");
-    this.$eventHub.$off("setFilter");
+    this.$eventHub.$off("setTimestampFilter");
     this.$eventHub.$off("timeline.scrollToToday", this.scrollToToday);
     this.$eventHub.$off("timeline.scrollToEnd", this.scrollToEnd);
     this.$eventHub.$off("showEditFolderModal", this.startEditModal);
@@ -623,6 +609,11 @@ export default {
     );
 
     window.removeEventListener("resize", this.onResize);
+
+    this.$root.settings.media_author_filter = false;
+    this.$root.settings.media_keyword_filter = false;
+    this.$root.settings.media_timeline_interval_filter.start = false;
+    this.$root.settings.media_timeline_interval_filter.end = false;
 
     this.$root.settings.has_sidebar_opened = false;
   },
@@ -637,13 +628,13 @@ export default {
         }, this.debounce_translation_delay);
       }
     },
-    "$root.settings.sidebar_type": function () {
-      if (this.$root.settings.sidebar_type === "") this.percent = 0;
-      else this.percent = 35;
-    },
-    percent: function () {
-      if (this.$root.settings.windowWidth < 600) {
-        if (this.percent > 0) this.percent = 90;
+
+    "panels_width.sidebar": function () {
+      if (
+        this.panels_width.sidebar > 0 &&
+        this.$root.settings.sidebar_type === ""
+      ) {
+        this.$root.settings.sidebar_type = "informations";
       }
     },
   },
@@ -724,6 +715,40 @@ export default {
             )
           )
             continue;
+        }
+
+        if (this.$root.settings.media_timeline_interval_filter.start) {
+          // if filter has start, then remove all medias previous from date_timeline from timeline
+          const date_timeline_timestamp = +this.$moment(
+            media.date_timeline,
+            "YYYY-MM-DD HH:mm:ss"
+          );
+
+          let media_duration_ts = media.duration
+            ? media.duration * 1000
+            : false;
+
+          if (media_duration_ts) debugger;
+
+          if (
+            date_timeline_timestamp <
+              this.$root.settings.media_timeline_interval_filter.start &&
+            (!media_duration_ts ||
+              date_timeline_timestamp + media_duration_ts <
+                this.$root.settings.media_timeline_interval_filter.start)
+          )
+            continue;
+
+          if (this.$root.settings.media_timeline_interval_filter.end) {
+            if (
+              date_timeline_timestamp >
+                this.$root.settings.media_timeline_interval_filter.end &&
+              (!media_duration_ts ||
+                date_timeline_timestamp + media_duration_ts >
+                  this.$root.settings.media_timeline_interval_filter.end)
+            )
+              continue;
+          }
         }
 
         // if media is missing the
@@ -911,7 +936,7 @@ export default {
                   this.folder
                 )
                   ? this.$root.mediaColorFromFirstAuthor(media, this.folder)
-                  : "var(--color-noir)";
+                  : "var(--c-noir)";
                 const marker_author = this.$root.mediaFirstAuthor(
                   media,
                   this.folder
@@ -1190,9 +1215,53 @@ export default {
       const el = this.$refs.timeline;
       setTimeout(() => (this.translation = el.scrollLeft), 300);
     },
+    toggleSidebar({ type } = {}) {
+      console.log(`METHODS • TimeLineView: toggleSidebar / ${type}`);
+      if (
+        this.$root.settings.has_sidebar_opened &&
+        (!type || type === this.$root.settings.sidebar_type)
+      )
+        this.closeSidebar();
+      else this.openSidebar({ type });
+    },
+
+    openSidebar({ type = "informations" }) {
+      console.log(`METHODS • TimeLineView: openSidebar`);
+      this.$root.settings.has_sidebar_opened = true;
+      this.$root.settings.sidebar_type = type;
+      if (this.panels_width.sidebar === 0) {
+        this.panels_width.sidebar = 30;
+        this.panels_width.timeline = 100;
+      }
+    },
+    closeSidebar() {
+      console.log(`METHODS • TimeLineView: closeSidebar`);
+      this.$root.settings.has_sidebar_opened = false;
+      this.$root.settings.sidebar_type = "";
+      this.panels_width.sidebar = 0;
+      this.panels_width.timeline = 100;
+    },
     onResize() {
       console.log(`METHODS • TimeLineView: onResize`);
       this.setTimelineHeight();
+    },
+    panelResize($event) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • App: splitpanes resize`);
+
+      this.panels_width.sidebar = $event[0].size;
+      this.panels_width.timeline = $event[1].size;
+    },
+    panelResized($event) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • App: splitpanes resized`);
+
+      this.panels_width.sidebar = $event[0].size;
+      this.panels_width.timeline = $event[1].size;
+
+      if (this.panels_width.sidebar > 0) {
+        this.openSidebar({});
+      }
     },
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
@@ -1321,16 +1390,6 @@ export default {
       }
     },
 
-    toggleSidebar(type) {
-      console.log(`METHODS • TimeLineView: toggleSidebar / ${type}`);
-      if (this.$root.settings.sidebar_type === type) {
-        this.$root.settings.has_sidebar_opened = false;
-        this.$root.settings.sidebar_type = "";
-      } else {
-        this.$root.settings.has_sidebar_opened = true;
-        this.$root.settings.sidebar_type = type;
-      }
-    },
     scrollToDate(timestamp) {
       console.log(
         `METHODS • TimeLineView: scrollToDate / timestamp: ${timestamp}`
@@ -1384,7 +1443,7 @@ export default {
       }
 
       // xPos_new -= 50;
-      xPos_new -= this.$refs.timeline.offsetWidth / 2;
+      xPos_new -= this.$refs.timeline.offsetWidth * 0.25;
 
       this.current_scroll_event = this.$scrollTo(
         ".m_timeline--container",
@@ -1423,89 +1482,11 @@ export default {
       console.log("METHODS • TimeLineView: setSort");
       this.sort.current = newSort;
     },
-    setFilter(newFilter) {
-      console.log("METHODS • TimeLineView: setFilter");
-      this.filter = newFilter;
+    setTimestampFilter({ start, end }) {
+      console.log("METHODS • TimeLineView: setTimestampFilter");
+      this.$root.settings.media_timeline_interval_filter.start = +start;
+      if (end) this.$root.settings.media_timeline_interval_filter.end = +end;
     },
-
-    // dragPubliPanel(event, type) {
-    //   if (this.$root.state.dev_mode === "debug") {
-    //     console.log(
-    //       `METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`
-    //     );
-    //   }
-
-    //   this.drag_offset = -event.target.offsetWidth + event.offsetX;
-    //   if (!this.drag_offset) {
-    //     this.drag_offset = 0;
-    //   }
-
-    //   if (type === "mouse") {
-    //     window.addEventListener("mousemove", this.dragMove);
-    //     window.addEventListener("mouseup", this.dragUp);
-    //   } else if (type === "touch") {
-    //     window.addEventListener("touchmove", this.dragMove);
-    //     window.addEventListener("touchend", this.dragUp);
-    //   }
-    // },
-    // dragMove(event) {
-    //   console.log("METHODS • App: dragMove");
-
-    //   if (!this.is_dragged) {
-    //     this.is_dragged = true;
-    //   } else {
-    //     let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
-    //     pageX = pageX - this.drag_offset;
-
-    //     const percent =
-    //       Math.floor((pageX / this.$root.settings.windowWidth) * 10000) / 100;
-
-    //     if (percent > this.minPercent && percent < 100 - this.minPercent) {
-    //       this.percent = percent;
-    //     }
-
-    //     this.$emit("resize");
-    //     this.hasMoved = true;
-    //   }
-    // },
-    // dragUp(event) {
-    //   if (this.$root.state.dev_mode === "debug") {
-    //     console.log(
-    //       `METHODS • App: dragUp with is_dragged = ${this.is_dragged}`
-    //     );
-    //   }
-    //   window.removeEventListener("mousemove", this.dragMove);
-    //   window.removeEventListener("mouseup", this.dragUp);
-    //   window.removeEventListener("touchmove", this.dragMove);
-    //   window.removeEventListener("touchend", this.dragUp);
-
-    //   if (this.is_dragged) {
-    //     this.is_dragged = false;
-
-    //     if (this.percent >= 70) {
-    //       this.percent = 70;
-    //       // this.$root.closePubliPanel();
-    //       // return;
-    //     }
-
-    //     // if(this.$root.settings.show_publi_panel === false) {
-    //     //   this.$root.openPubliPanel();
-    //     // }
-    //     if (this.percent <= 10) {
-    //       this.percent = 0;
-    //     }
-    //   } else {
-    //     // if(!this.$root.settings.show_publi_panel) {
-    //     //   this.percent = 50;
-    //     //   this.$root.openPubliPanel();
-    //     // } else {
-    //     //   this.percent = 100;
-    //     //   this.$root.closePubliPanel();
-    //     // }
-    //   }
-
-    //   return false;
-    // },
   },
 };
 </script>
@@ -1529,7 +1510,7 @@ export default {
 
   // TODO
   // pour un futur mode nuit
-  // --color-author: #000;
+  // --c-author: #000;
   // --label-color: white;
 
   // --timeline-bg: #F1F2F0;
@@ -1551,7 +1532,7 @@ export default {
   // min-width: 100vw;
 
   margin: 0px 0px;
-  padding: 16px 45vw 16px 15vw;
+  padding: 16px 15vw 16px 15vw;
   // border-right: 1px solid #000;
 }
 
@@ -1562,7 +1543,7 @@ export default {
   display: flex;
   // align-items: center;
   margin: 0;
-  // background-color: var(--color-author);
+  // background-color: var(--c-author);
 
   // border: 2px solid white;
 
@@ -1586,15 +1567,15 @@ export default {
   }
 
   &.is--folded {
-    --rule-color: var(--color-noir);
+    --rule-color: var(--c-noir);
     .m_timeline--container--dates--day--daylabel--container {
       > button {
-        border: 1px solid var(--color-noir);
+        border: 1px solid var(--c-noir);
       }
       ._unfold_button {
         span {
           color: white;
-          background-color: var(--color-noir);
+          background-color: var(--c-noir);
         }
       }
     }
@@ -1602,10 +1583,10 @@ export default {
 
   &.is--current_day {
     .m_timeline--container--dates--day--daylabel {
-      // --label-background: var(--color-rouge_vif);
+      // --label-background: var(--c-rouge);
       --label-color: white;
-      --label-color: var(--color-rouge_vif);
-      // --rule-color: var(--color-rouge_vif);
+      --label-color: var(--c-rouge);
+      // --rule-color: var(--c-rouge);
     }
   }
 
@@ -1643,7 +1624,7 @@ export default {
         white-space: nowrap;
 
         &:hover:not([disabled]) {
-          background-color: var(--color-noir);
+          background-color: var(--c-noir);
           color: white;
         }
         &[disabled] {
@@ -1655,7 +1636,7 @@ export default {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background-color: var(--color-noir);
+          background-color: var(--c-noir);
           border-radius: 50%;
           color: white;
           font-size: 0.7em;
@@ -1683,7 +1664,7 @@ export default {
           text-align: center;
           width: 100%;
           margin: 0 auto;
-          margin-top: 2px;
+          margin-top: 1px;
           font-size: 0.7em;
 
           span {
@@ -1834,9 +1815,9 @@ export default {
           border-radius: 0;
 
           display: inline;
-          background-color: var(--color-noir);
+          background-color: var(--c-noir);
           color: white;
-          // background-color: var(--color-author);
+          // background-color: var(--c-author);
           // color: var(--label-color);
           box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
           padding: 4px 8px;
@@ -1851,7 +1832,7 @@ export default {
         }
         &[data-has_author="true"] span::before {
           content: "• ";
-          color: var(--color-author);
+          color: var(--c-author);
           position: relative;
         }
       }
@@ -1869,13 +1850,13 @@ export default {
   }
 }
 
-.folder_backbutton {
+.m_topnavlabel {
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 0px;
   // left: ~"calc(100% + 40px)";
   z-index: 950;
-  border-radius: 22px;
+  // border-radius: 22px;
 
   padding: 0;
 
@@ -1884,16 +1865,12 @@ export default {
   align-items: center;
   justify-content: flex-start;
 
-  border: 2px solid var(--color-noir);
+  border: 2px solid var(--c-noir);
   color: white;
-  background-color: var(--color-noir);
+  background-color: var(--c-noir);
 
   body.has_systembar & {
     top: 20px;
-  }
-
-  &.is--movedToRight {
-    // left: var(--sidebar-width);
   }
 
   .icon {
@@ -1906,9 +1883,18 @@ export default {
 
     color: white;
     // border: 2px solid white;
-    background-color: var(--color-noir);
+    background-color: var(--c-noir);
 
     font-size: 1.5em;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  button {
+    padding: 0;
   }
 
   .project_name {
@@ -1927,32 +1913,37 @@ export default {
       max-width: 0px;
     }
   }
-
-  &.is--moved_to_right {
-    // left: 340px;
-  }
 }
 
 .m_floater {
   position: absolute;
   top: auto;
-  bottom: 40px;
+  top: 0;
+  bottom: 0px;
   width: 100%;
   z-index: 150;
   // font-size: 0.85em;
   line-height: 1.25;
   text-align: center;
+  padding: 0 ~"calc(var(--spacing) / 2)";
+  padding-bottom: 40px;
 
   pointer-events: none;
 
-  --label-background: var(--color-noir);
+  --label-background: var(--c-noir);
 
-  body.has_systembar & {
-    // top: 35px;
-  }
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  align-content: flex-end;
 
   &.is--current_day {
-    --label-background: var(--color-rouge_vif);
+    --label-background: var(--c-rouge);
+  }
+
+  > * {
+    flex: 1 1 100px;
   }
 
   @media screen and (max-width: 50rem) {
@@ -1961,10 +1952,10 @@ export default {
     font-size: 0.7em;
   }
 
-  > * {
-    display: block;
-    margin: 5px auto;
-    // max-width: auto;
+  ._bubbleIndicator {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
 
     > * {
       position: relative;
@@ -1975,6 +1966,7 @@ export default {
       pointer-events: auto;
       border-radius: 20px;
       padding: 0 20px;
+      margin-bottom: ~"calc(var(--spacing) / 4)";
 
       align-items: center;
       align-content: center;
@@ -1995,11 +1987,12 @@ export default {
   ._scrolltonow {
     position: absolute;
     z-index: -1;
-    color: var(--color-rouge_vif);
+    color: var(--c-rouge);
 
     border: 1px solid currentColor;
-    background-color: white;
-    background-color: var(--timeline-bg);
+    background-color: rgba(255, 255, 255, 0.8);
+    // background-color: var(--timeline-bg);
+
     border-radius: 20px;
     min-height: 40px;
 

@@ -204,6 +204,10 @@ let vm = new Vue({
 
       media_keyword_filter: false,
       media_author_filter: false,
+      media_timeline_interval_filter: {
+        start: false,
+        end: false,
+      },
 
       folder_filter: {
         name: "",
@@ -411,6 +415,38 @@ let vm = new Vue({
     }
   },
   methods: {
+    humanTime: function ({ timestamp, duration }) {
+      function dateString(date) {
+        const _date = new Date(date);
+
+        let day =
+          new Date().toLocaleDateString() === _date.toLocaleDateString()
+            ? "aujourd’hui"
+            : _date.toLocaleDateString();
+
+        return (
+          day +
+          " — " +
+          _date.getHours() +
+          ":" +
+          (_date.getMinutes() < 10 ? "0" : "") +
+          _date.getMinutes() +
+          "." +
+          (_date.getSeconds() < 10 ? "0" : "") +
+          _date.getSeconds()
+        );
+      }
+
+      let date_string = "";
+
+      date_string += dateString(+timestamp);
+      if (duration) {
+        date_string += " → " + dateString(timestamp + duration);
+      }
+
+      return date_string;
+    },
+
     createFolder: function (fdata) {
       return new Promise((resolve, reject) => {
         if (window.state.dev_mode === "debug") {
@@ -654,10 +690,6 @@ let vm = new Vue({
         console.log(`ROOT EVENT: closeChat`);
 
       this.settings.current_chat_slug = false;
-    },
-    closeSidebar() {
-      this.settings.has_sidebar_opened = false;
-      this.settings.sidebar_type = "";
     },
     setAuthor: function (author_slug) {
       if (this.settings.current_author_slug === author_slug) return;

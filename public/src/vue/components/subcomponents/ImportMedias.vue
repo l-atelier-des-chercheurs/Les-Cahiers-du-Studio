@@ -5,8 +5,10 @@
     :class="{ 'is--showing_options': show_addmedia_options }"
     v-if="can_edit_folder"
   >
-    <div v-if="show_addmedia_options" class="_modalOverlay" 
-      @click="show_addmedia_options = false;"
+    <div
+      v-if="show_addmedia_options"
+      class="_modalOverlay"
+      @click="show_addmedia_options = false"
     />
 
     <div class="m_importMedias--options">
@@ -153,6 +155,7 @@
 </template>
 <script>
 import UploadFileModal from "../modals/UploadFileModal.vue";
+import debounce from "debounce";
 
 export default {
   props: {
@@ -234,8 +237,13 @@ export default {
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    document.addEventListener("dragover", this.ondragover);
+    this.cancelDragOver = debounce(this.cancelDragOver, 300);
+  },
+  beforeDestroy() {
+    document.removeEventListener("dragover", this.ondragover);
+  },
   watch: {},
   computed: {},
   methods: {
@@ -375,8 +383,8 @@ export default {
 .m_importMedias {
   pointer-events: none;
   margin: 0 var(--spacing-verysmall);
-  // --color-author: white;
-  // --color-author: var(--color-noir);
+  // --c-author: white;
+  // --c-author: var(--c-noir);
 
   .m_importMedias--options {
     flex: 1 1 auto;
@@ -395,8 +403,8 @@ export default {
       cursor: pointer;
       opacity: 0;
       transform: translateY(5px) scale(0.8);
-      background-color: var(--color-author);
-      color: var(--color-text_on_author_color);
+      background-color: var(--c-author);
+      color: var(--c-text_on_author_color);
       transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
       label {
@@ -437,8 +445,8 @@ export default {
     margin-bottom: 22px;
     text-transform: initial;
     pointer-events: auto;
-    background-color: var(--color-author);
-    color: var(--color-text_on_author_color);
+    background-color: var(--c-author);
+    color: var(--c-text_on_author_color);
 
     svg {
       width: 24px;
@@ -466,7 +474,7 @@ export default {
   height: 64px;
   padding: 0 ~"calc(var(--spacing)/4)";
   margin: 0 auto !important;
-  background-color: var(--color-author);
+  background-color: var(--c-author);
 }
 
 button,
@@ -476,7 +484,7 @@ button,
   // margin: .3em;
 
   &:active {
-    background-color: var(--color-vert_vif);
+    background-color: var(--c-vert_vif);
   }
 
   label {
@@ -515,9 +523,9 @@ button,
   line-height: 1;
 
   border-radius: 3px;
-  background-color: var(--color-author);
-  color: var(--color-text_on_author_color);
-  // color: --color-noir;
+  background-color: var(--c-author);
+  color: var(--c-text_on_author_color);
+  // color: --c-noir;
 
   // background-color: white;
   // color: black;

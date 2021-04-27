@@ -110,7 +110,7 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    background: var(--color-noir);
+    background: var(--c-noir);
     color: white;
     // padding: 5px;
     border-radius: 2px;

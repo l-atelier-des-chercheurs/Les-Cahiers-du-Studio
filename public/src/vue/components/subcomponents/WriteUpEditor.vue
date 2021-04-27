@@ -1,16 +1,16 @@
 <template>
   <div class="m_writeupeditor">
-    <small class="padding-sides-verysmall">
+    <small class="padding-sides-small" v-if="can_edit_folder">
       {{ $t("last_saved_on") }}&nbsp;{{
         $root.formatDateToPrecise(media.date_modified)
       }}
     </small>
     <div class="bg-blanc c-noir">
-      <div class="m_writeupeditor--topbar padding-small">
+      <div
+        class="m_writeupeditor--topbar padding-sides-small padding-vert-small"
+      >
         <template v-if="!show_rename_field">
-          <span class="m_writeupeditor--topbar--title padding-verysmall">{{
-            media.name
-          }}</span>
+          <span class="m_writeupeditor--topbar--title">{{ media.name }}</span>
         </template>
         <template v-else>
           <span class="padding-verysmall">
@@ -32,25 +32,27 @@
             </div>
           </span>
         </template>
-        <span
-          class="m_writeupeditor--topbar--buttons"
-          v-if="!show_rename_field"
-        >
-          <button
-            type="button"
-            class="button-verysmall border-circled button-thin padding-verysmall margin-none bg-transparent"
-            @click="show_rename_field = !show_rename_field"
+        <template v-if="can_edit_folder">
+          <span
+            class="m_writeupeditor--topbar--buttons"
+            v-if="!show_rename_field"
           >
-            {{ $t("rename") }}
-          </button>
-          <button
-            type="button"
-            class="button-verysmall border-circled button-thin padding-verysmall margin-none bg-transparent"
-            @click="removeWriteupMedia"
-          >
-            {{ $t("remove") }}
-          </button>
-        </span>
+            <button
+              type="button"
+              class="button-verysmall border-circled button-thin padding-verysmall margin-none bg-transparent"
+              @click="show_rename_field = !show_rename_field"
+            >
+              {{ $t("rename") }}
+            </button>
+            <button
+              type="button"
+              class="button-verysmall border-circled button-thin padding-verysmall margin-none bg-transparent"
+              @click="removeWriteupMedia"
+            >
+              {{ $t("remove") }}
+            </button>
+          </span>
+        </template>
       </div>
 
       <CollaborativeEditor
@@ -63,8 +65,9 @@
           (_connection_state) => (connection_state = _connection_state)
         "
         ref="textField"
-        :read_only="read_only"
+        :read_only="read_only || !can_edit_folder"
       />
+
       <!-- <div>
       <button
         type="button"
@@ -83,10 +86,8 @@ export default {
   props: {
     slugFolderName: String,
     media: Object,
-    read_only: {
-      type: Boolean,
-      default: true,
-    },
+    can_edit_folder: Boolean,
+    read_only: Boolean,
   },
   components: {
     CollaborativeEditor,
@@ -104,9 +105,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
 
-  watch: {
-    content: function () {},
-  },
+  watch: {},
   computed: {
     hasAnyChangesBeenMadeToContent() {
       if (this.media.content.length !== this.content.length) {
@@ -166,7 +165,11 @@ export default {
   },
 };
 </script>
-<style>
+<style lang="scss">
+.m_writeupeditor {
+  margin-bottom: calc(var(--spacing) * 2);
+}
+
 .m_writeupeditor .ql-toolbar {
   border: none;
 }

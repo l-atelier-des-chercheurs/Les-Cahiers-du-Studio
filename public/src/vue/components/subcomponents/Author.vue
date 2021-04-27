@@ -631,8 +631,8 @@ export default {
   }
 
   &.is--selected {
-    color: var(--color-bleu_vif);
-    background-color: var(--color-bleu);
+    color: var(--c-bleu_vif);
+    background-color: var(--c-bleu);
     hr {
       border-color: currentColor;
     }
@@ -665,7 +665,7 @@ export default {
   }
 
   .m_author--connected {
-    background-color: var(--color-bleu);
+    background-color: var(--c-bleu);
     border-radius: 4px;
     padding: calc(var(--spacing) / 4);
 
@@ -697,7 +697,7 @@ export default {
 
   hr {
     margin: 0;
-    border-color: var(--color-bleu_vif);
+    border-color: var(--c-bleu_vif);
   }
 
   button {

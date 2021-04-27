@@ -46,6 +46,12 @@ module.exports = (function () {
       link_to_open_in_a_new_tab:
         "URL de la page à ouvrir dans un nouvel onglet",
 
+      timestamp:
+        "EXPÉRIMENTAL : pastilles d’horodatage en appuyant sur entrée à la dernière ligne",
+      active: "Actif",
+      timestamp_instructions:
+        "La création de pastilles d’horodatage se fait en plaçant son curseur à la dernière ligne et en ajoutant un retour à la ligne avec ENTRÉE. Pour ne pas créer de pastilles en dernière ligne utilisez SHIFT+ENTRÉE.",
+
       name: "Nom",
       custom: "Personnalisée",
       created_date: "Date de création",
@@ -75,7 +81,7 @@ module.exports = (function () {
       logout: "Se déconnecter",
       send: "Envoyer",
       action: "Action",
-      "active_filter:": "Filtre actif&nbsp;:",
+      "active_filter:": "Filtre(s) actif(s)&nbsp;:",
       "medias_shown:": "Médias affichés&nbsp;:",
       "file:": "Fichier&nbsp;:",
       change_color: "Modifier la couleur",
@@ -100,6 +106,7 @@ module.exports = (function () {
       untitled_document: "Document sans-titre",
       back_to_list: "Retour à la liste",
       back_to_home: "Retourner à l’accueil",
+      close_sidebar: "Fermer la barre latérale",
 
       journal: "Journal",
       chats: "Discussions",
@@ -126,6 +133,7 @@ module.exports = (function () {
       set_as_end: "placer la fin",
       replace: "Remplacer",
       test: "Tester",
+      interval: "Interval",
 
       revert_to_original: "Revenir à l’original",
 
@@ -337,7 +345,7 @@ module.exports = (function () {
       admin: "Administrator",
       contributor: "Contributor",
       participant: "Participant",
-      presentation: "Présentation",
+      presentation: "Presentation",
 
       create_introduction: "Create introduction text",
       forget_password_and_close: "Forget password and close",
@@ -393,6 +401,7 @@ module.exports = (function () {
       untitled_document: "Untitled document",
       back_to_list: "Back to list",
       back_to_home: "Back to home",
+      close_sidebar: "Close sidebar",
       journal: "Journal",
       chats: "Chats",
       no_message_yet: "No message to display yet…",

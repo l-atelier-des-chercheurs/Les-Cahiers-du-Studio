@@ -59,7 +59,8 @@ button,
     // padding: 0;
     &::after {
       content: "←";
-      transform: scale(1.5);
+      transform: scale(2);
+
       transform-origin: center;
       display: inline-block;
       margin-left: 0em;
@@ -70,14 +71,14 @@ button,
       background-color: transparent;
 
       &::after {
-        color: var(--color-rouge_vif);
+        color: var(--c-rouge);
       }
     }
 
     &.is--active {
-      color: var(--color-rouge_vif);
       &::after {
-        transform: rotate(-90deg) scale(1.5);
+        color: var(--c-rouge);
+        transform: rotate(-90deg) scale(2);
       }
 
       &:hover {
@@ -88,11 +89,11 @@ button,
     &.bg-rouge {
       &:hover {
         &::after {
-          color: var(--color-noir);
+          color: var(--c-noir);
         }
       }
       &.is--active {
-        color: var(--color-noir);
+        color: var(--c-noir);
       }
     }
   }
@@ -800,7 +801,7 @@ th {
   }
 }
 
-svg.inline-svg {
+.inline-svg {
   display: inline-block;
   width: 1em;
   height: 1em;

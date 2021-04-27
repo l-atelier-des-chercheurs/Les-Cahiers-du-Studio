@@ -6,7 +6,7 @@
         v-for="tag in tags"
         :key="tag.text"
         @click="removeTag(tag.text)"
-        class="can_be_removed"
+        class="can_be_removed is--active"
         :class="['tagcolorid_' + (parseInt(tag.text, 36) % 2)]"
       >
         {{ tag.text }}

@@ -6,6 +6,9 @@
       'is--receptiveToDrop': !!$root.settings.media_being_dragged,
       'is--dragover': is_being_dragover,
       'is--disabled': editor_not_enabled,
+      'is--readonly': read_only,
+      'is--onlastline':
+        is_on_last_line && !editor_not_enabled && insert_timestamp_on_enter,
     }"
     autofocus="autofocus"
     @dragover="ondragover($event)"
@@ -14,6 +17,38 @@
     <!-- connection_state : {{ connection_state }}
     <br />-->
     <div ref="editor" class="mediaWriteupContent" />
+
+    <div class="_instructions" v-if="!read_only">
+      <div>
+        <label for="enable_timestamp_on_enter">
+          <input
+            type="checkbox"
+            id="enable_timestamp_on_enter"
+            v-model="insert_timestamp_on_enter"
+          />
+          {{ $t("timestamp") }}
+        </label>
+      </div>
+
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_timestamp_instructions }"
+          @click.stop="
+            show_timestamp_instructions = !show_timestamp_instructions
+          "
+        >
+          {{ $t("informations") }}
+        </button>
+      </label>
+
+      <div v-if="show_timestamp_instructions">
+        <small>
+          {{ $t("timestamp_instructions") }}
+        </small>
+      </div>
+    </div>
     <!-- <div class="_customCaret" :style="_customCaret_style" /> -->
   </div>
 </template>
@@ -21,12 +56,15 @@
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import ShareDB from "sharedb/lib/client";
 import Quill from "quill";
+// import Delta from "quill-delta";
 import QuillCursors from "quill-cursors";
 import debounce from "debounce";
 
 import MediaBlot from "./quill_modules/MediaBlot";
 import CardEditableModule from "./quill_modules/CardEditableModule";
+import TimestampBlot from "./quill_modules/TimestampBlot.js";
 
+Quill.register("formats/timestamp", TimestampBlot);
 Quill.register("formats/media", MediaBlot);
 Quill.register("modules/cardEditable", CardEditableModule);
 
@@ -44,6 +82,29 @@ var quill_kb_bindings = {
 
   // There is no default binding named 'custom'
   // so this will be added without overwriting anything
+  enter: {
+    key: 13,
+    handler: function (range, context) {
+      console.log(`range.index = ${range.index}`);
+      console.log(`this.quill.getLength() = ${this.quill.getLength()}`);
+
+      if (!this.quill.options._vm.insert_timestamp_on_enter) return true;
+      if (range.index !== this.quill.getLength() - 1 || range.length !== 0)
+        return true;
+
+      const timestamp = +new Date();
+      this.quill.insertEmbed(
+        this.quill.getLength() - 1,
+        "timestamp",
+        { timestamp },
+        Quill.sources.USER
+      );
+
+      this.quill.setSelection(this.quill.getLength(), 0, "user");
+
+      return false;
+    },
+  },
   backspace: {
     key: 8,
     handler: function (range, context) {
@@ -90,6 +151,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    read_only: Boolean,
   },
   components: {},
   data() {
@@ -104,6 +166,10 @@ export default {
       is_focused: false,
       is_being_dragover: false,
       is_being_dragover_on_blot: false,
+      is_on_last_line: false,
+
+      show_timestamp_instructions: false,
+      insert_timestamp_on_enter: false,
 
       debounce_textUpdate: undefined,
       caret_position: {
@@ -118,7 +184,22 @@ export default {
           ["italic", "underline", "link", "blockquote"],
           [{ list: "ordered" }, { list: "bullet" }],
           ["clean"],
+          ["add-timestamp"],
         ],
+        handlers: {
+          "add-timestamp": function (value) {
+            const range =
+              this.quill.selection.lastRange.index ||
+              this.quill.getLength() - 1;
+            const timestamp = +new Date();
+            this.quill.insertEmbed(
+              range,
+              "timestamp",
+              { timestamp },
+              Quill.sources.USER
+            );
+          },
+        },
       },
 
       socket: null,
@@ -153,6 +234,7 @@ export default {
         },
       },
       bounds: this.$refs.editor,
+      _vm: this,
 
       theme: "snow",
       formats: [
@@ -163,11 +245,11 @@ export default {
         "list",
         "media",
         "blockquote",
+        "timestamp",
+        "quote",
       ],
       placeholder: "…",
     });
-
-    this.$refs.editor.dataset.quill = this.editor;
 
     this.$root.settings.has_writeup_opended = this.media.metaFileName;
 
@@ -175,18 +257,20 @@ export default {
 
     this.setSpellCheck();
 
-    if (this.$root.preview_mode) {
-      this.editor.disable();
-    }
-
     const cursorsOne = this.editor.getModule("cursors");
     cursorsOne.createCursor(1, "User 1", "#0a997f");
 
     this.$nextTick(() => {
-      if (this.$root.state.mode === "live" && this.enable_collaboration) {
+      if (
+        this.$root.state.mode === "live" &&
+        this.enable_collaboration &&
+        !this.read_only
+      ) {
+        console.log(`CollaborativeEditor / initWebsocketMode`);
         this.initWebsocketMode();
         this.editor.focus();
       } else {
+        console.log(`CollaborativeEditor / read-only`);
         let content = this.value;
         if (this.$root.state.mode === "export_web") {
           var el = document.createElement("html");
@@ -196,7 +280,9 @@ export default {
           });
           content = el.innerHTML;
         }
+
         this.editor.root.innerHTML = content;
+        this.editor.disable();
       }
 
       this.editor.on("text-change", (delta, oldDelta, source) => {
@@ -204,7 +290,6 @@ export default {
           "input",
           this.editor.getText() ? this.editor.root.innerHTML : ""
         );
-
         // this.$nextTick(() => {
         //   this.updateFocusedLines();
         // });
@@ -212,15 +297,63 @@ export default {
         // cursorsOne.moveCursor(1, range);
       });
 
+      this.editor.on("text-change", (delta, oldDelta, source) => {
+        // check if new line at the end of doc,
+        // if so, add timestamp to beginning of line
+        console.log(
+          `CollaborativeEditor / text-change with ${JSON.stringify(delta)}`
+        );
+
+        // if (
+        //   source === "user" &&
+        //   delta.ops &&
+        //   delta.ops.some((op) => op.insert === "\n") &&
+        //   !delta.ops.some(
+        //     (op) =>
+        //       op.hasOwnProperty("attributes") &&
+        //       op.attributes.hasOwnProperty("timestamp")
+        //   )
+        // ) {
+
+        //   const timestamp = +new Date();
+
+        //   this.$nextTick(() => {
+        //     console.log(
+        //       `CollaborativeEditor / text-change will insert timestamp`
+        //     );
+        //     this.editor.insertEmbed(
+        //       this.editor.getLength() - 1,
+        //       "timestamp",
+        //       { timestamp },
+        //       Quill.sources.USER
+        //     );
+        //     this.$nextTick(() => {
+        //       this.$nextTick(() => {
+        //         this.editor.setSelection(this.editor.getLength(), 0, "user");
+        //       });
+        //     });
+        //   });
+        // }
+      });
+
       this.editor.on("selection-change", (range, oldRange, source) => {
-        console.log("selection changed");
-        if (range === null && oldRange !== null) this.is_focused = false;
-        else if (range !== null && oldRange === null) this.is_focused = true;
+        // console.log("selection changed");
+        this.is_focused = range !== null;
 
         // cursorsOne.moveCursor(1, range);
         if (!!range && range.length == 0) {
-          console.log("User cursor is on", range.index);
+          // console.log("User cursor is on", range.index);
           this.updateCaretPosition();
+        }
+
+        if (
+          range &&
+          range.index === this.editor.getLength() - 1 &&
+          range.length === 0
+        ) {
+          this.is_on_last_line = true;
+        } else {
+          this.is_on_last_line = false;
         }
 
         // this.updateFocusedLines();
@@ -237,25 +370,19 @@ export default {
     this.$root.settings.medias_present_in_writeup = [];
   },
   watch: {
-    "$root.preview_mode": function () {
-      // if (this.$root.preview_mode) {
-      //   this.editor.disable();
-      // } else {
-      //   this.editor.enable();
-      // }
-    },
     spellcheck: function () {
       this.setSpellCheck();
     },
     value: function () {
       this.broadcastMediasPresentInWriteup();
     },
-    editor_not_enabled: function () {
-      if (this.editor_not_enabled) {
-        this.editor.disable();
-      } else {
-        this.editor.enable();
-      }
+    editor_not_enabled: {
+      handler() {
+        if (!this.editor) return;
+        if (this.editor_not_enabled) this.editor.disable();
+        else this.editor.enable();
+      },
+      immediate: true,
     },
   },
   computed: {
@@ -265,7 +392,10 @@ export default {
       };
     },
     editor_not_enabled() {
-      return this.enable_collaboration && this.connection_state !== "connected";
+      return (
+        this.read_only ||
+        (this.enable_collaboration && this.connection_state !== "connected")
+      );
     },
   },
   methods: {
@@ -325,13 +455,13 @@ export default {
         );
 
         this.editor.on("text-change", (delta, oldDelta, source) => {
-          if (source == "user") {
+          if (source === "user") {
             console.log(`ON • CollaborativeEditor: text-change by user`);
             doc.submitOp(delta, { source: this.editor_id });
 
             this.updateTextMedia();
           } else {
-            console.log(`ON • CollaborativeEditor: text-change by API`);
+            console.log(`ON • CollaborativeEditor: text-change by ${source}`);
           }
         });
 
@@ -350,8 +480,35 @@ export default {
         this.$forceUpdate();
       });
     },
+    setTimestampFilter({ node }) {
+      // first we have to find the timestamp in the editor
+
+      // then find the next one if it exists
+      let next = node.nextSibling;
+      while (next !== null && !next.classList.contains("ql-timestamp")) {
+        next = next.nextSibling;
+      }
+
+      console.log(
+        `CollaborativeEditor / setTimestampFilter with start = ${
+          node.dataset.timestamp
+        } and end = ${
+          next && next.dataset && next.dataset.timestamp
+            ? next.dataset.timestamp
+            : "none"
+        }`
+      );
+
+      const filters = {
+        start: node.dataset.timestamp,
+      };
+      if (next && next.dataset && next.dataset.timestamp)
+        filters.end = next.dataset.timestamp;
+
+      this.$eventHub.$emit("setTimestampFilter", filters);
+    },
     updateCaretPosition() {
-      console.log(`CollaborativeEditor • METHODS: updateCaretPosition`);
+      // console.log(`CollaborativeEditor • METHODS: updateCaretPosition`);
       var selection = this.editor.getSelection(true);
       const caretPos = this.editor.getBounds(selection);
       this.caret_position = { top: caretPos.top, left: caretPos.left };
@@ -404,7 +561,7 @@ export default {
       }, 1000);
     },
     broadcastMediasPresentInWriteup() {
-      console.log(`CollaborativeEditor • broadcastMediasPresentInWriteup`);
+      // console.log(`CollaborativeEditor • broadcastMediasPresentInWriteup`);
 
       // var t0 = performance.now();
 
@@ -647,14 +804,26 @@ html[lang="fr"] .ql-tooltip::before {
   --size-column-width: 800px;
   --spacing: 0.8rem;
 
-  --c-toolbar-warning-bg: var(--color-rouge_vif);
+  --c-toolbar-warning-bg: var(--c-rouge);
   --c-toolbar-warning-c: white;
 
-  &.is--focussed {
-    background-color: blue;
+  &.is--focused {
+    // background-color: blue;
   }
 
-  &.is--disabled {
+  &.is--onlastline {
+    .ql-editor {
+      > *:last-child {
+        &::after {
+          content: "•";
+          color: var(--c-vert_vif);
+          // border-bottom: 2px solid var(--c-vert_vif);
+        }
+      }
+    }
+  }
+
+  &.is--disabled:not(.is--readonly) {
     cursor: not-allowed;
     .ql-toolbar {
       background-color: var(--c-toolbar-warning-bg);
@@ -675,6 +844,17 @@ html[lang="fr"] .ql-tooltip::before {
       }
     }
     // border-left: 2px solid rgba(255, 0, 0, 0.5);
+  }
+  &.is--disabled {
+    ._onlyForEditors {
+      display: none;
+    }
+  }
+
+  &.is--readonly {
+    .ql-toolbar {
+      display: none;
+    }
   }
 
   &.is--receptiveToDrop {
@@ -748,7 +928,7 @@ html[lang="fr"] .ql-tooltip::before {
 
     &[contenteditable="false"] {
       > *:not(.is--focused) {
-        opacity: 0.5;
+        // opacity: 0.5;
         cursor: default;
       }
     }
@@ -1104,7 +1284,7 @@ html[lang="fr"] .ql-tooltip::before {
         color: transparent;
         color: hsl(210, 11%, 78%);
 
-        transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 
         content: counter(listCounter);
         // font-size: 0.8rem;
@@ -1128,14 +1308,14 @@ html[lang="fr"] .ql-tooltip::before {
         width: 100%;
         height: 0;
         margin: 0;
-        background-color: var(--color-rouge_vif);
+        background-color: var(--c-rouge);
       }
 
       &.is--dragover {
         &::after {
           margin: var(--spacing) 0;
           height: 4px;
-          transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
         }
       }
     }
@@ -1146,7 +1326,7 @@ html[lang="fr"] .ql-tooltip::before {
     top: calc(var(--spacing) / 2);
     // top: 0;
     right: calc(var(--spacing) / -2);
-    background: var(--color-noir);
+    background: var(--c-noir);
     color: white;
     text-decoration: none;
     line-height: 0;
@@ -1160,6 +1340,75 @@ html[lang="fr"] .ql-tooltip::before {
     text-align: center;
 
     // border-bottom-left-radius: 2px;
+  }
+}
+
+.ql-timestamp.ql-timestamp {
+  display: block;
+  font-size: 0.6em;
+  // margin-left: -28px;
+  // text-align: center;
+  margin-top: calc(var(--spacing) / 2);
+  counter-increment: none;
+
+  // --c-bg: var(--c-blanc);
+
+  // line count
+  &::before {
+    display: none;
+  }
+
+  button {
+    line-height: 1;
+    border-radius: 0;
+    min-height: 0;
+    padding: 4px 6px 3px;
+    margin-left: -6px;
+    margin-right: 1px;
+    // padding: 0;
+    // margin-right: 6px;
+    // background-color: var(--c-vert_vif);
+    color: var(--c-vert_vif);
+    // background-color: var(--c-noir);
+    // color: var(--c-noir);
+    background-color: var(--c-vert_vif);
+    color: var(--c-noir);
+
+    transition: none;
+
+    &:hover {
+      color: var(--c-vert_vif);
+      background-color: var(--c-noir);
+    }
+  }
+
+  > ._edit_timestamp {
+    font-style: italic;
+    // box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.2);
+    font-size: inherit;
+
+    white-space: pre-line;
+    -webkit-box-decoration-break: clone;
+  }
+
+  ._button_removeTimestamp {
+    margin: 0;
+    font-size: inherit;
+  }
+}
+
+._instructions {
+  padding: calc(var(--spacing) / 2) var(--spacing);
+}
+
+.ql-toolbar .ql-add-timestamp.ql-add-timestamp {
+  background-color: var(--c-vert_vif);
+  width: auto;
+  font-size: 70%;
+
+  &::before {
+    content: "horodatage";
+    font-style: italic;
   }
 }
 </style>

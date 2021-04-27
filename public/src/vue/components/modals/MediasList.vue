@@ -7,14 +7,12 @@
     <template slot="preview">
       <Tableau
         :display="'mediasList'"
-        :filter="filter"
         :sort="sort"
         :sortedMedias="sortedMedias"
         :timeline_start="timeline_start"
         :timeline_end="timeline_end"
         :slugFolderName="slugFolderName"
         @setSort="$emit('setSort')"
-        @setFilter="$emit('setFilter')"
       >
       </Tableau>
     </template>
@@ -25,7 +23,6 @@ import Tableau from "../sidebar/Tableau.vue";
 
 export default {
   props: {
-    filter: String,
     sort: Object,
     sortedMedias: Array,
     timeline_start: Number,

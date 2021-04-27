@@ -886,8 +886,8 @@ export default {
   data() {
     return {
       show_date: true,
-      show_keywords: false,
-      show_authors: false,
+      show_keywords: this.media.keywords || false,
+      show_authors: this.media.authors || false,
       show_tile_options: false,
 
       mediadata: {
