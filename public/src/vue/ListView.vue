@@ -234,7 +234,13 @@
             <div>{{ $t("folder_name_to_find") }}</div>
 
             <div class="input-group">
-              <input type="text" class v-model="debounce_search_folder_name" />
+              <input
+                type="text"
+                class
+                v-model="debounce_search_folder_name"
+                autofocus
+                ref="searchTimelineField"
+              />
               <span
                 class="input-addon"
                 v-if="debounce_search_folder_name.length > 0"
@@ -358,6 +364,17 @@ export default {
       this.debounce_search_folder_name_function = setTimeout(() => {
         this.$root.settings.folder_filter.name = this.debounce_search_folder_name;
       }, 340);
+    },
+    show_search() {
+      if (this.show_search) {
+        this.$nextTick(() => {
+          if (this.$refs.searchTimelineField) {
+            debugger;
+            document.activeElement.blur();
+            this.$refs.searchTimelineField.focus();
+          }
+        });
+      }
     },
   },
   computed: {
