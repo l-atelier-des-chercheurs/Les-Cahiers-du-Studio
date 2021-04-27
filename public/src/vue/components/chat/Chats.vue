@@ -1,19 +1,20 @@
 <template>
   <div class="m_chatsview">
+    <SidebarSection :open_by_default="true" :can_collapse="false">
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t("chats") }}
+        </h3>
+      </div>
+    </SidebarSection>
     <section class="padding-medium">
-      <header class="margin-vert-small">
-        <div class="flex-vertically-centered">
-          <h3 class="margin-none text-cap with-bullet">{{ $t("chats") }}</h3>
-        </div>
-      </header>
-
       <div class="m_chatsview--topbar">
         <div class="m_actionbar">
           <div class="m_actionbar--buttonBar"></div>
           <div class="m_actionbar--text">{{ $t("channels_instructions") }}</div>
         </div>
 
-        <button
+        <!-- <button
           class="button-round _closeChatButton padding-verysmall"
           @click="$root.closeChatPane()"
         >
@@ -26,7 +27,7 @@
             <line x1="13.33" y1="13.33" x2="34.67" y2="34.67" />
             <line x1="13.33" y1="34.67" x2="34.67" y2="13.33" />
           </svg>
-        </button>
+        </button> -->
       </div>
 
       <div class="m_channels">
@@ -86,6 +87,7 @@
   </div>
 </template>
 <script>
+import SidebarSection from "../sidebar/SidebarSection.vue";
 import CreateChat from "../modals/CreateChat.vue";
 import ChatRow from "./ChatRow.vue";
 import Chat from "./Chat.vue";
@@ -95,6 +97,7 @@ export default {
     read_only: Boolean,
   },
   components: {
+    SidebarSection,
     CreateChat,
     ChatRow,
     Chat,
@@ -146,8 +149,11 @@ export default {
   // border: 4px solid var(--c-noir);
   // margin: 2em;
   // padding: 1em;
-  padding-top: calc(var(--spacing) / 2);
-  padding-bottom: calc(var(--spacing) / 2);
+  // padding-top: calc(var(--spacing) / 2);
+  // padding-bottom: calc(var(--spacing) / 2);
+  body.has_systembar & {
+    padding-top: calc(var(--spacing) / 2);
+  }
 
   // border-radius: 8px;
 

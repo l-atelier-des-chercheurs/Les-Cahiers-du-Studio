@@ -899,8 +899,10 @@ video {
   .bg-noir_light;
   .c-blanc;
 
-  > *:first-child {
-    padding-top: ~"calc(var(--spacing) / 1)";
+  // > *:first-child {
+  // }
+  body.has_systembar & {
+    padding-top: ~"calc(var(--spacing) / 2)";
   }
 
   table {

@@ -1,12 +1,15 @@
 <template>
-  <div class="m_filtersview">
-    <section class="bg-noir_light c-blanc padding-medium">
-      <header class="margin-vert-small">
-        <div class="flex-vertically-centered">
-          <h3 class="margin-none text-cap with-bullet">{{ $t("filters") }}</h3>
-        </div>
-      </header>
-      <div class="margin-vert-small">
+  <div class="m_filtersview bg-noir_light c-blanc">
+    <SidebarSection :open_by_default="true" :can_collapse="false">
+      <div slot="header">
+        <h3 class="margin-none text-cap with-bullet">
+          {{ $t("filters") }}
+        </h3>
+      </div>
+    </SidebarSection>
+
+    <section class="padding-medium">
+      <div class="margin-bottom-small">
         <div>
           {{ $t("keywords") }}
         </div>
@@ -29,7 +32,7 @@
           </button>
         </div>
       </div>
-      <div class="margin-vert-small">
+      <div class="margin-bottom-small">
         <div>
           {{ $t("author") }}
         </div>
@@ -62,6 +65,7 @@
   </div>
 </template>
 <script>
+import SidebarSection from "../components/sidebar/SidebarSection.vue";
 import AuthorsInput from "./subcomponents/AuthorsInput.vue";
 
 export default {
@@ -69,6 +73,7 @@ export default {
     medias: Array,
   },
   components: {
+    SidebarSection,
     AuthorsInput,
   },
   data() {
@@ -159,6 +164,10 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
+
+  body.has_systembar & {
+    padding-top: calc(var(--spacing) / 2);
+  }
 
   button,
   label {
