@@ -317,16 +317,16 @@ let vm = new Vue({
 
       if (!this.$root.state.is_electron) {
         this.$eventHub.$on("socketio.connect", () => {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .success(this.$t('notifications["connected_to_lescahiers"]'));
+          //   this.$alertify
+          //     .closeLogOnClick(true)
+          //     .delay(4000)
+          //     .success(this.$t('notifications["connected_to_lescahiers"]'));
         });
         this.$eventHub.$on("socketio.reconnect", () => {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .success(this.$t('notifications["connected_to_lescahiers"]'));
+          //   this.$alertify
+          //     .closeLogOnClick(true)
+          //     .delay(4000)
+          //     .success(this.$t('notifications["connected_to_lescahiers"]'));
         });
       }
 
@@ -338,10 +338,11 @@ let vm = new Vue({
         this.$socketio.listFolders({ type: "chats" });
 
         this.$eventHub.$once("socketio.folders.folders_listed", () => {
-          if (this.store.folders.hasOwnProperty("champ-du-signe")) {
-            this.openFolder("champ-du-signe");
-            this.access = true;
-          } else this.access = true;
+          if (this.store.folders.hasOwnProperty("puces-typo")) {
+            if (this.store.request.slugFolderName === "les-puces-typo-11")
+              this.openFolder("les-puces-typo-11");
+          }
+          this.access = true;
         });
 
         if (this.current_project) {

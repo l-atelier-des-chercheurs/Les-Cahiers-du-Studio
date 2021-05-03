@@ -13,7 +13,7 @@
     <template v-if="$root.showAuthorsListModal">
       <SimpleAuthorLogin
         v-if="
-          (!$root.current_author || $root.current_author.role === 'participant')
+          !$root.current_author || $root.current_author.role === 'participant'
         "
         :prevent_close="
           $root.state.local_options.force_login && !$root.current_author
@@ -32,12 +32,15 @@
     </template>
 
     <template v-if="view === 'ListView'">
-      <ListView
+      <div class="_affiche">
+        <img src="./affiche_puces_typo.jpeg" />
+      </div>
+      <!-- <ListView
         v-if="view === 'ListView'"
         :presentationMD="$root.store.presentationMD"
         :read_only="!$root.state.connected"
         :folders="$root.store.folders"
-      />
+      /> -->
     </template>
     <template v-else-if="view === 'TimelineView' && $root.current_folder">
       <TimelineView
@@ -89,3 +92,18 @@ export default {
 </script>
 
 <style lang="less" src="style.less"></style>
+<style lang="scss" scoped>
+._affiche {
+  background-color: black;
+  padding: 1vmin;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+</style>
