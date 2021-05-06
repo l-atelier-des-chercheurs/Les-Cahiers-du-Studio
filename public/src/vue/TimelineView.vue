@@ -179,7 +179,7 @@
               <div class="m_authorSelector--content">
                 <label>Intervenant</label>
                 <br />
-                <transition name="slideupfrombottomright" mode="out-in">
+                <transition name="fade_fast" mode="out-in">
                   <div
                     class="margin-bottom-small"
                     :key="$root.settings.media_author_filter"
@@ -1297,9 +1297,16 @@ export default {
       this.setTimelineHeight();
     },
     setAuthorRandom() {
-      let new_author = this.authors_not_yet_picked[
-        Math.floor(Math.random() * this.authors_not_yet_picked.length)
-      ];
+      let new_author;
+      if (this.authors_not_yet_picked.length > 0) {
+        new_author = this.authors_not_yet_picked[
+          Math.floor(Math.random() * this.authors_not_yet_picked.length)
+        ];
+      } else {
+        new_author = this.folder_authors[
+          Math.floor(Math.random() * this.folder_authors.length)
+        ].slugFolderName;
+      }
 
       this.$root.settings.media_author_filter = new_author;
     },
@@ -2047,7 +2054,7 @@ export default {
 .m_authorSelector {
   position: absolute;
   top: auto;
-  top: 10px;
+  bottom: 40px;
   width: 100%;
   z-index: 150;
   // font-size: 0.85em;
