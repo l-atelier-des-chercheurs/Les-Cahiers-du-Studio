@@ -161,7 +161,11 @@
           :split="split"
         >
           <AddMedias
-            v-if="$root.state.mode !== 'export_web'"
+            v-if="
+              $root.state.mode !== 'export_web' &&
+              $root.current_author.slugFolderName ===
+                $root.settings.media_author_filter
+            "
             :slugFolderName="slugFolderName"
             :folder="folder"
             :current_author="$root.current_author"
@@ -170,57 +174,71 @@
             :rightmostMedia="rightmostMedia"
           />
 
-          <div
-            class="m_floater"
-            @wheel="onMousewheel"
-            :class="{ 'is--current_day': visible_day_is_today }"
-          >
-            <div>
-              <span>
-                <transition name="fade" :duration="450">
-                  <button
-                    type="button"
-                    v-if="visible_day_is_before_or_after === 'after'"
-                    class="_scrolltonow _scrolltonow_before"
-                    @click="scrollToToday()"
+          <div class="m_authorSelector" @wheel="onMousewheel">
+            <transition name="slideupfrombottomright" mode="out-in">
+              <div class="m_authorSelector--content">
+                <label>Intervenant</label>
+                <br />
+                <transition name="slideupfrombottomright" mode="out-in">
+                  <div
+                    class="margin-bottom-small"
+                    :key="$root.settings.media_author_filter"
                   >
-                    ←&nbsp;{{ $t("today") }}
-                  </button>
+                    <button
+                      class="m_authorSelector--rnd"
+                      type="button"
+                      @click="setAuthorRandom()"
+                      v-if="authors_not_yet_picked.length > 0"
+                    >
+                      afficher au hasard
+                    </button>
+                    <small v-else>
+                      <i>Vous avez vu les pages de tous les intervenants </i>
+                    </small>
+                  </div>
                 </transition>
-                <transition name="fade" mode="out-in" :duration="150">
-                  <span :key="visible_day_human">{{ visible_day_human }}</span>
-                </transition>
-                <transition name="fade" :duration="450">
-                  <button
-                    type="button"
-                    class="_scrolltonow _scrolltonow_after"
-                    v-if="visible_day_is_before_or_after === 'before'"
-                    @click="scrollToToday()"
-                  >
-                    {{ $t("today") }}&nbsp;→
-                  </button>
-                </transition>
-              </span>
-            </div>
-            <TimelinePlayer />
 
-            <div v-if="!can_edit_folder">
-              <!-- <button
-                type="button"
-                @click="toggleSidebar('informations')"
-                :class="{ 'is--active': show_access_controller }"
-              >
-                {{ $t("edit_timeline") }}
-              </button> -->
-              <!-- <div v-if="show_access_controller">
-                <AccessController
-                  :folder="folder"
-                  :context="'full'"
-                  :type="'folders'"
-                  @closeFolder="$root.closeFolder()"
-                />
-              </div>-->
-            </div>
+                <div class="m_authorSelector--select">
+                  <select v-model="$root.settings.media_author_filter" class="">
+                    <option
+                      v-for="author in folder_authors"
+                      :value="author.slugFolderName"
+                      :key="author.slugFolderName"
+                    >
+                      {{ $root.getAuthor(author.slugFolderName).name }}
+                      <template
+                        v-if="
+                          !authors_not_yet_picked.includes(
+                            author.slugFolderName
+                          ) &&
+                          author.slugFolderName !==
+                            $root.settings.media_author_filter
+                        "
+                      >
+                        &nbsp;✓
+                      </template>
+                    </option>
+                  </select>
+                </div>
+
+                <div
+                  class="_progressBar"
+                  :style="`--progress-percent2: ${
+                    (folder_authors.length - authors_not_yet_picked.length) /
+                    folder_authors.length
+                  }`"
+                >
+                  <div class="_progressBar--bar"></div>
+                  <div>
+                    {{ folder_authors.length - authors_not_yet_picked.length }}
+                    /
+                    {{ folder_authors.length }}
+                  </div>
+                </div>
+              </div>
+            </transition>
+
+            <!-- <TimelinePlayer /> -->
           </div>
 
           <div
@@ -233,6 +251,25 @@
           >
             <!-- v-dragscroll -->
             <div class="m_timeline--container">
+              <div class="m_timeline--container--dates" ref="timeline_dates">
+                <div class="m_timeline--container--dates--day">
+                  <div class="m_timeline--container--dates--day--mediasblock">
+                    <transition name="fade" mode="out-in" :duration="400">
+                      <MediasBlock
+                        v-if="author_medias.length > 0"
+                        :key="$root.settings.media_author_filter"
+                        :medias="author_medias"
+                        :folder="folder"
+                        :slugFolderName="slugFolderName"
+                        :can_edit="can_edit_folder"
+                        :timeline_height="timeline_height"
+                      />
+                    </transition>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="m_timeline--container">
               <div class="m_timeline--container--dates" ref="timeline_dates">
                 <div
                   v-for="day in date_interval"
@@ -337,7 +374,7 @@
                   </template>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <div
               v-if="sort.current.field !== 'date_timeline'"
@@ -460,7 +497,7 @@ export default {
       show_media_modal_for: false,
       show_edit_folder_modal: false,
       is_showing_addmedia_options: false,
-
+      authors_not_yet_picked: [],
       convert_empty_days_to_periods: true,
       show_access_controller: false,
 
@@ -483,9 +520,9 @@ export default {
         // {
         //   key: "options",
         // },
-        {
-          key: "filters",
-        },
+        // {
+        //   key: "filters",
+        // },
         // {
         //   key: "chats",
         // },
@@ -567,6 +604,20 @@ export default {
   },
   mounted() {
     console.log("MOUNTED • TimeLineView");
+
+    let set_author;
+    if (this.$root.current_author) {
+      set_author = this.$root.current_author;
+    } else {
+      set_author = this.folder_authors[
+        Math.floor(Math.random() * this.folder_authors.length)
+      ];
+    }
+    this.$root.settings.media_author_filter = set_author.slugFolderName;
+
+    this.authors_not_yet_picked = this.folder_authors.map(
+      (a) => a.slugFolderName
+    );
 
     if (this.$root.state.mode !== "export_web") {
       this.$socketio.listMedias({
@@ -662,6 +713,18 @@ export default {
       if (this.$root.settings.sidebar_type === "") this.percent = 0;
       else this.percent = 35;
     },
+    "$root.settings.media_author_filter": function () {
+      if (
+        this.$root.settings.media_author_filter &&
+        this.authors_not_yet_picked.includes(
+          this.$root.settings.media_author_filter
+        )
+      ) {
+        this.authors_not_yet_picked = this.authors_not_yet_picked.filter(
+          (a) => a !== this.$root.settings.media_author_filter
+        );
+      }
+    },
     percent: function () {
       if (this.$root.settings.windowWidth < 600) {
         if (this.percent > 0) this.percent = 90;
@@ -669,6 +732,12 @@ export default {
     },
   },
   computed: {
+    folder_authors() {
+      return Array.isArray(this.folder.authors) ? this.folder.authors : [];
+    },
+    author_medias() {
+      return this.sortedMedias;
+    },
     number_of_writeups() {
       if (typeof this.medias === "object")
         return Object.values(this.medias).filter(
@@ -1212,6 +1281,13 @@ export default {
       console.log(`METHODS • TimeLineView: onResize`);
       this.setTimelineHeight();
     },
+    setAuthorRandom() {
+      let new_author = this.authors_not_yet_picked[
+        Math.floor(Math.random() * this.authors_not_yet_picked.length)
+      ];
+
+      this.$root.settings.media_author_filter = new_author;
+    },
     setTimelineHeight() {
       console.log(`METHODS • TimeLineView: setTimelineHeight`);
       if (this.timeline_height !== window.innerHeight) {
@@ -1576,7 +1652,7 @@ export default {
   // min-width: 100vw;
 
   margin: 0px 0px;
-  padding: 16px 45vw 16px 15vw;
+  padding: 16px 25vw 16px 5vw;
   // border-right: 1px solid #000;
 }
 
@@ -1953,7 +2029,7 @@ export default {
   }
 }
 
-.m_floater {
+.m_authorSelector {
   position: absolute;
   top: auto;
   bottom: 40px;
@@ -1961,8 +2037,81 @@ export default {
   z-index: 150;
   // font-size: 0.85em;
   line-height: 1.25;
-  text-align: center;
 
+  @media screen and (max-width: 50rem) {
+    top: auto !important;
+    bottom: 20px;
+    font-size: 0.7em;
+  }
+
+  .m_authorSelector--content {
+    position: relative;
+    width: 100%;
+    max-width: 260px;
+    margin: 0 15px;
+
+    // border-radius: 5px;
+    padding: 5px 10px 10px;
+
+    background-color: var(--color-noir);
+    color: white;
+
+    > label {
+      margin-top: 0;
+    }
+  }
+
+  .m_authorSelector--select {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    width: 100%;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    color: #8a60fa;
+    background: #fafafa;
+    cursor: pointer;
+    font-weight: 700;
+
+    > select {
+      padding: 0.5rem 1rem;
+      border-radius: 0;
+      border: 0.15em solid currentColor;
+      outline: none;
+      height: auto;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+
+      background-image: none;
+    }
+
+    &::after {
+      content: "↓";
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0rem;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      // font-size: 2em;
+      padding: 0 10px;
+      z-index: 10;
+      font-weight: 700;
+      color: currentColor;
+      pointer-events: none;
+    }
+  }
+
+  .m_authorSelector--rnd {
+    // background-color: var(--color-noir);
+    background-color: white;
+    color: #8a60fa;
+  }
+}
+
+.m_floater {
   pointer-events: none;
 
   --label-background: var(--color-noir);
@@ -2066,5 +2215,23 @@ export default {
 .m_floater .m_accessController {
   margin-top: var(--spacing-verysmall);
   margin-bottom: var(--spacing-verysmall);
+}
+
+._progressBar {
+  // position: absolute;
+  // top: 0%;
+  // left: 0;
+  text-align: center;
+  font-size: 60%;
+
+  ._progressBar--bar {
+    height: 5px;
+    width: 100%;
+    transform: scale(var(--progress-percent2), 1);
+    transform-origin: left center;
+    background-color: #8a60fa;
+
+    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+  }
 }
 </style>

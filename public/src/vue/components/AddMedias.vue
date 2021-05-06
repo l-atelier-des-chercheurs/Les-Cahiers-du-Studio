@@ -85,7 +85,7 @@
           </svg>
         </button>
 
-        <button
+        <!-- <button
           key="add_marker"
           type="button"
           class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
@@ -93,7 +93,6 @@
           :disabled="read_only"
         >
           <span class="text_label show_on_hover">{{ $t("marker") }}</span>
-
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
             <path
               d="M20,11.59A8.41,8.41,0,1,1,11.59,20,8.42,8.42,0,0,1,20,11.59m0-1A9.41,9.41,0,1,0,29.41,20,9.41,9.41,0,0,0,20,10.59Z"
@@ -101,7 +100,7 @@
             />
             <circle cx="20" cy="20" r="4.74" style="fill: currentColor" />
           </svg>
-        </button>
+        </button> -->
 
         <button
           key="add_embed"
@@ -111,6 +110,28 @@
           :disabled="read_only"
         >
           <span class="text_label show_on_hover">{{ $t("embed") }}</span>
+          <svg
+            xmlns:x="http://ns.adobe.com/Extensibility/1.0/"
+            xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/"
+            xmlns:graph="http://ns.adobe.com/Graphs/1.0/"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            version="1.1"
+            x="0px"
+            y="0px"
+            viewBox="0 0 100 100"
+            enable-background="new 0 0 100 100"
+            xml:space="preserve"
+            style="padding: 8px"
+          >
+            <path
+              d="M27.291,69.424L6.739,49.609L27.291,29.71l5.303,5.627l-15.09,14.354l15.09,14.185L27.291,69.424z"
+            />
+            <path d="M43.842,86.216h-6.776l17.993-71.437h6.7L43.842,86.216z" />
+            <path
+              d="M72.955,69.424l-5.384-5.711L82.66,49.447L67.571,35.175l5.384-5.465l20.47,19.82L72.955,69.424z"
+            />
+          </svg>
         </button>
 
         <template>
@@ -218,53 +239,53 @@ export default {
       show_drop_container: false,
 
       input_file_fields: [
-        {
-          key: "audio",
-          label: "Audio",
-          accept: "audio/*",
-          capture: true,
-          svg: `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-            <line x1="5.83" y1="21.69" x2="5.83" y2="18.31" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="8.41" y1="16.52" x2="8.41" y2="23.48" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="10.99" y1="17.83" x2="10.99" y2="22.17" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="13.56" y1="24.94" x2="13.56" y2="15.06" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="16.14" y1="22.53" x2="16.14" y2="17.47" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="18.71" y1="16.9" x2="18.71" y2="23.1" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="21.29" y1="18.06" x2="21.29" y2="21.94" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="23.86" y1="22.67" x2="23.86" y2="17.33" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="26.44" y1="26.02" x2="26.44" y2="13.98" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="29.01" y1="22.73" x2="29.01" y2="17.27" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="31.59" y1="23.73" x2="31.59" y2="16.27" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            <line x1="34.17" y1="21.43" x2="34.17" y2="18.57" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
-            </svg>
-          `,
-        },
-        {
-          key: "file",
-          label: "Fichier",
-          accept: "",
-          capture: false,
-          svg: `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-              <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: currentColor"/>
-              <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
-            </svg>
-          `,
-        },
-        {
-          key: "video",
-          label: "Vidéo",
-          accept: "video/*",
-          capture: true,
-          svg: `
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px"
-              height="40px" viewBox="0 0 40 40" style="enable-background:new 0 0 40 40;" xml:space="preserve">
-              <rect style="fill:none;stroke:currentColor" x="12.3" y="11" transform="matrix(-1.836970e-16 1 -1 -1.836970e-16 40 3.552714e-15)" style="fill:none;stroke:currentColor" width="15.3" height="18"/>
-              <polygon  style="fill:none;stroke:currentColor" style="fill:none;stroke:currentColor" points="23.8,20 17.4,23.6 17.4,16.4 "/>
-            </svg>
-          `,
-        },
+        // {
+        //   key: "audio",
+        //   label: "Audio",
+        //   accept: "audio/*",
+        //   capture: true,
+        //   svg: `
+        //     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+        //     <line x1="5.83" y1="21.69" x2="5.83" y2="18.31" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="8.41" y1="16.52" x2="8.41" y2="23.48" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="10.99" y1="17.83" x2="10.99" y2="22.17" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="13.56" y1="24.94" x2="13.56" y2="15.06" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="16.14" y1="22.53" x2="16.14" y2="17.47" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="18.71" y1="16.9" x2="18.71" y2="23.1" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="21.29" y1="18.06" x2="21.29" y2="21.94" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="23.86" y1="22.67" x2="23.86" y2="17.33" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="26.44" y1="26.02" x2="26.44" y2="13.98" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="29.01" y1="22.73" x2="29.01" y2="17.27" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="31.59" y1="23.73" x2="31.59" y2="16.27" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     <line x1="34.17" y1="21.43" x2="34.17" y2="18.57" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round"/>
+        //     </svg>
+        //   `,
+        // },
+        // {
+        //   key: "file",
+        //   label: "Fichier",
+        //   accept: "",
+        //   capture: false,
+        //   svg: `
+        //     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+        //       <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: currentColor"/>
+        //       <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
+        //     </svg>
+        //   `,
+        // },
+        // {
+        //   key: "video",
+        //   label: "Vidéo",
+        //   accept: "video/*",
+        //   capture: true,
+        //   svg: `
+        //     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px"
+        //       height="40px" viewBox="0 0 40 40" style="enable-background:new 0 0 40 40;" xml:space="preserve">
+        //       <rect style="fill:none;stroke:currentColor" x="12.3" y="11" transform="matrix(-1.836970e-16 1 -1 -1.836970e-16 40 3.552714e-15)" style="fill:none;stroke:currentColor" width="15.3" height="18"/>
+        //       <polygon  style="fill:none;stroke:currentColor" style="fill:none;stroke:currentColor" points="23.8,20 17.4,23.6 17.4,16.4 "/>
+        //     </svg>
+        //   `,
+        // },
         {
           key: "image",
           label: "Image",
