@@ -3,7 +3,6 @@
     @close="$emit('close')"
     v-on:submit.prevent="newAuthor"
     :read_only="read_only"
-    :style="`background-color: ${authordata.color}`"
   >
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
@@ -132,6 +131,7 @@
         class="buttonLink"
         style="flex-grow: 0"
         @click="$emit('close')"
+        v-if="mode !== 'simple_login'"
       >
         {{ $t("cancel") }}
       </button>
@@ -180,7 +180,7 @@ export default {
         password: "",
         role: "contributor",
         nfc_tag: "",
-        color: "",
+        color: "#976ED8",
       },
       preview: undefined,
       login_after_creation: true,

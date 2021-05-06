@@ -15,7 +15,6 @@
         'is--selected': is_logged_in_as_author,
         'is--editMode': edit_author_mode,
       }"
-      :style="`background-color: ${author.color}`"
     >
       <button
         v-if="
@@ -101,6 +100,10 @@
             <i>{{ $t(author.role) }} </i>
           </label>
         </div>
+
+        <div
+          :style="`width: 2em; height: 2em; background-color: ${author.color}; margin: 0 auto; border-radius: 50%;`"
+        />
 
         <br />
 

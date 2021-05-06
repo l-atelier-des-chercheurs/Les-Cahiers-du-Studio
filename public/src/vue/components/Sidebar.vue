@@ -1,7 +1,7 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-    <div class="margin-sides-small">
-      <select class="_langSelector" v-model="currentLang" v-if="false">
+    <div class="margin-sides-small" v-if="$root.current_author_is_admin">
+      <select class="_langSelector" v-model="currentLang">
         <option
           v-for="(name, code) in $root.lang.available"
           :value="code"
@@ -21,7 +21,10 @@
       </div>
 
       <div slot="body">
-        <div class="margin-bottom-small border-circled" v-if="false">
+        <div
+          class="margin-bottom-small border-circled"
+          v-if="$root.current_author_is_admin"
+        >
           <div class="m_folder" v-if="!show_informations">
             <h2
               data-v-2dc30bca=""
@@ -70,12 +73,12 @@
         <!-- </div> -->
         <!-- <div slot="body"> -->
         <div class="_introduction">
-          <template v-if="!introduction_media">
+          <template v-if="!introduction_media && $root.current_author_is_admin">
             <button type="button" @click="createIntroduction">
               {{ $t("create_introduction") }}
             </button>
           </template>
-          <template v-else>
+          <template v-else-if="$root.current_author_is_admin">
             <template v-if="!edit_introduction">
               <div
                 class="mediaWriteupContent"

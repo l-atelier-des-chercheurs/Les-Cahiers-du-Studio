@@ -4,7 +4,6 @@
     @close="$emit('close')"
     v-on:submit.prevent="editAuthor"
     :read_only="read_only"
-    :style="`background-color: ${authordata.color}`"
   >
     <!-- Human name -->
     <div class="margin-bottom-small">
