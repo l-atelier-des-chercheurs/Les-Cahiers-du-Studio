@@ -101,7 +101,7 @@
         >
         <span
           class="packery-item-content--meta--comments"
-          v-if="media.enable_chat_link !== false"
+          v-if="media.enable_chat_link !== false && false"
           @click.stop="openChat"
           :class="{
             'is--active':

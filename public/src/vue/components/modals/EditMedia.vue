@@ -209,7 +209,7 @@
         </label>
         <div v-if="show_tile_options">
           <!-- Enable chat -->
-          <div class="margin-bottom-small">
+          <!-- <div class="margin-bottom-small">
             <span class="switch switch-xs">
               <input
                 type="checkbox"
@@ -222,7 +222,7 @@
                 {{ $t("show_chat_bubble") }}
               </label>
             </span>
-          </div>
+          </div> -->
 
           <div class="margin-bottom-small">
             <label>

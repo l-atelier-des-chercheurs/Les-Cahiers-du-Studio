@@ -486,9 +486,9 @@ export default {
         {
           key: "filters",
         },
-        {
-          key: "chats",
-        },
+        // {
+        //   key: "chats",
+        // },
         // {
         //   key: "journal",
         // },
