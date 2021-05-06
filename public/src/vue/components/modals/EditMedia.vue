@@ -40,7 +40,7 @@
         ></textarea>
       </div>
 
-      <div class="margin-bottom-small">
+      <div v-if="false" class="margin-bottom-small">
         <label>
           <button
             type="button"
@@ -136,9 +136,10 @@
 
       <div
         v-if="
-          (typeof mediadata.keywords === 'object' &&
+          false &&
+          ((typeof mediadata.keywords === 'object' &&
             !!mediadata.keywords.length > 0) ||
-          can_edit
+            can_edit)
         "
         class="margin-bottom-small"
       >
@@ -162,7 +163,10 @@
       </div>
 
       <!-- Author(s) -->
-      <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
+      <div
+        v-if="(!read_only || !!mediadata.authors) && false"
+        class="margin-bottom-small"
+      >
         <label>
           <button
             type="button"
@@ -198,16 +202,11 @@
 
       <div class="margin-bottom-small" v-if="can_edit">
         <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_tile_options }"
-            @click="show_tile_options = !show_tile_options"
-          >
+          <button type="button" class="button-nostyle text-uc">
             {{ $t("tile_options") }}
           </button>
         </label>
-        <div v-if="show_tile_options">
+        <div>
           <!-- Enable chat -->
           <!-- <div class="margin-bottom-small">
             <span class="switch switch-xs">

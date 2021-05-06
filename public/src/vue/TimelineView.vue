@@ -161,15 +161,15 @@
           :split="split"
         >
           <AddMedias
-            v-if="
-              $root.state.mode !== 'export_web' &&
-              $root.current_author.slugFolderName ===
-                $root.settings.media_author_filter
-            "
+            v-if="$root.state.mode !== 'export_web'"
             :slugFolderName="slugFolderName"
             :folder="folder"
             :current_author="$root.current_author"
-            :can_edit_folder="can_edit_folder"
+            :can_edit_folder="
+              can_edit_folder &&
+              $root.current_author.slugFolderName ===
+                $root.settings.media_author_filter
+            "
             :read_only="!$root.state.connected"
             :rightmostMedia="rightmostMedia"
           />
@@ -188,13 +188,9 @@
                       class="m_authorSelector--rnd"
                       type="button"
                       @click="setAuthorRandom()"
-                      v-if="authors_not_yet_picked.length > 0"
                     >
                       afficher au hasard
                     </button>
-                    <small v-else>
-                      <i>Vous avez vu les pages de tous les intervenants </i>
-                    </small>
                   </div>
                 </transition>
 
@@ -230,9 +226,18 @@
                 >
                   <div class="_progressBar--bar"></div>
                   <div>
-                    {{ folder_authors.length - authors_not_yet_picked.length }}
-                    /
-                    {{ folder_authors.length }}
+                    <small>
+                      <template v-if="authors_not_yet_picked.length === 0">
+                        <i>Vous avez vu les pages de tous les intervenants </i>
+                      </template>
+                      <template v-else>
+                        {{
+                          folder_authors.length - authors_not_yet_picked.length
+                        }}
+                        /
+                        {{ folder_authors.length }}
+                      </template>
+                    </small>
                   </div>
                 </div>
               </div>
@@ -261,7 +266,11 @@
                         :medias="author_medias"
                         :folder="folder"
                         :slugFolderName="slugFolderName"
-                        :can_edit="can_edit_folder"
+                        :can_edit="
+                          can_edit_folder &&
+                          $root.current_author.slugFolderName ===
+                            $root.settings.media_author_filter
+                        "
                         :timeline_height="timeline_height"
                       />
                     </transition>
@@ -423,7 +432,11 @@
       :media="medias[show_media_modal_for]"
       :folder="folder"
       @close="show_media_modal_for = false"
-      :read_only="!$root.state.connected"
+      :read_only="
+        !$root.state.connected ||
+        $root.current_author.slugFolderName !==
+          $root.settings.media_author_filter
+      "
       :can_edit="can_edit_folder"
       :allAuthors="Array.isArray(folder.authors) ? folder.authors : []"
     />
@@ -606,13 +619,10 @@ export default {
     console.log("MOUNTED • TimeLineView");
 
     let set_author;
-    if (this.$root.current_author) {
-      set_author = this.$root.current_author;
-    } else {
-      set_author = this.folder_authors[
-        Math.floor(Math.random() * this.folder_authors.length)
-      ];
-    }
+    set_author = this.folder_authors[
+      Math.floor(Math.random() * this.folder_authors.length)
+    ];
+
     this.$root.settings.media_author_filter = set_author.slugFolderName;
 
     this.authors_not_yet_picked = this.folder_authors.map(
@@ -712,6 +722,11 @@ export default {
     "$root.settings.sidebar_type": function () {
       if (this.$root.settings.sidebar_type === "") this.percent = 0;
       else this.percent = 35;
+    },
+    "$root.current_author": function () {
+      if (this.$root.current_author) {
+        this.$root.settings.media_author_filter = this.$root.current_author.slugFolderName;
+      }
     },
     "$root.settings.media_author_filter": function () {
       if (
@@ -2222,7 +2237,7 @@ export default {
   // top: 0%;
   // left: 0;
   text-align: center;
-  font-size: 60%;
+  font-size: 65%;
 
   ._progressBar--bar {
     height: 5px;

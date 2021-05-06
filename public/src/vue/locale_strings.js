@@ -33,7 +33,7 @@ module.exports = (function () {
       tile_options: "Options de la tuile",
       show_chat_bubble: "Afficher la bulle de chat",
       action_on_tile_click_for_visitors:
-        "Action lorsqu’un visiteur non-contributeur clique sur la tuile dans la timeline",
+        "Action lorsqu’un visiteur clique sur la tuile",
       open_modal: "Ouvrir cette fenêtre",
       open_external_link: "Ouvrir un lien externe vers…",
       do_nothing: "Ne rien faire",
