@@ -187,7 +187,7 @@
       </div>
 
       <!-- Public or private -->
-      <div v-if="!read_only && can_edit" class="margin-bottom-small">
+      <div v-if="!read_only && can_edit && false" class="margin-bottom-small">
         <span class="switch switch-xs">
           <input
             type="checkbox"

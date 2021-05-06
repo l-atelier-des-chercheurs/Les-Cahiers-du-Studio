@@ -1,7 +1,5 @@
 <template>
-  <section
-    class="border border-bottom-dashed padding-vert-small padding-sides-medium"
-  >
+  <section class="border padding-vert-small padding-sides-medium">
     <header class="_sidebarSectionHeader">
       <slot name="header"></slot>
       <button

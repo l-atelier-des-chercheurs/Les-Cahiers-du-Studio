@@ -78,7 +78,7 @@
               {{ $t("create_introduction") }}
             </button>
           </template>
-          <template v-else-if="$root.current_author_is_admin">
+          <template v-else>
             <template v-if="!edit_introduction">
               <div
                 class="mediaWriteupContent"
@@ -100,7 +100,7 @@
               />
             </template>
 
-            <div class="_editButton">
+            <div class="_editButton" v-if="$root.current_author_is_admin">
               <button
                 type="button"
                 class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
@@ -201,7 +201,13 @@
       @close="showKeyboardShortcutsList = false"
     ></KeyboardShortcuts> -->
 
-    <SidebarSection v-if="$root.state.mode !== 'export_web' && can_edit_folder">
+    <SidebarSection
+      v-if="
+        $root.state.mode !== 'export_web' &&
+        can_edit_folder &&
+        $root.current_author_is_admin
+      "
+    >
       <div slot="header" class="flex-vertically-centered">
         <h3 class="margin-none text-cap with-bullet">
           {{ $t("export_folder") }}
