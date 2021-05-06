@@ -2059,6 +2059,7 @@ export default {
   z-index: 150;
   // font-size: 0.85em;
   line-height: 1.25;
+  pointer-events: none;
 
   @media screen and (max-width: 50rem) {
     top: auto !important;
@@ -2071,6 +2072,7 @@ export default {
     width: 100%;
     max-width: 260px;
     margin: 0 15px;
+    pointer-events: auto;
 
     // border-radius: 5px;
     padding: 5px 10px 10px;
