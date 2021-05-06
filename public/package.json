@@ -44,7 +44,7 @@
     "socket.io": "^2.3.0",
     "store": "^2.0.12",
     "ua-parser-js": "^0.7.20",
-    "underscore": "^1.9.1",
+    "underscore": "^1.12.1",
     "vue": "^2.6.10",
     "vue-dragscroll": "^1.10.2",
     "vue-i18n": "^8.15.0",
