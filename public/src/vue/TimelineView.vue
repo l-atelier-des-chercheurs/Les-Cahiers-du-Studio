@@ -2047,7 +2047,7 @@ export default {
 .m_authorSelector {
   position: absolute;
   top: auto;
-  bottom: 40px;
+  top: 10px;
   width: 100%;
   z-index: 150;
   // font-size: 0.85em;
