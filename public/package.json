@@ -43,7 +43,7 @@
     "slugg": "^1.2.1",
     "socket.io": "^2.3.0",
     "store": "^2.0.12",
-    "ua-parser-js": "^0.7.20",
+    "ua-parser-js": "^0.7.24",
     "underscore": "^1.9.1",
     "vue": "^2.6.10",
     "vue-dragscroll": "^1.10.2",
