@@ -1,6 +1,6 @@
 <template>
   <div class="m_sidebar" ref="sidebar">
-    <div class="margin-sides-small" v-if="$root.current_author_is_admin">
+    <!-- <div class="margin-sides-small" v-if="$root.current_author_is_admin">
       <select class="_langSelector" v-model="currentLang">
         <option
           v-for="(name, code) in $root.lang.available"
@@ -10,7 +10,7 @@
           {{ name }}
         </option>
       </select>
-    </div>
+    </div> -->
 
     <SidebarSection :open_by_default="true" :can_collapse="false">
       <!-- <div class="border border-bottom-dashed padding-medium"> -->
@@ -78,7 +78,7 @@
               {{ $t("create_introduction") }}
             </button>
           </template>
-          <template v-else>
+          <template v-else-if="introduction_media">
             <template v-if="!edit_introduction">
               <div
                 class="mediaWriteupContent"
@@ -267,7 +267,7 @@
       @close="showMediasListModal = false"
     /> -->
 
-    <div class="c-gris font-small margin-medium">
+    <div class="font-verysmall margin-medium">
       <p>
         <em>Les Cahiers du Studio</em>
         version {{ $root.state.appVersion }}
