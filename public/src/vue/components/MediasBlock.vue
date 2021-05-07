@@ -122,13 +122,13 @@ export default {
   --grid-color-vertical: transparent;
 
   // background-image: repeating-linear-gradient(-90deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep)),repeating-linear-gradient(180deg,transparent,transparent var(--gridstep_before),var(--grid-color) var(--gridstep_before),var(--grid-color) var(--gridstep));
-  background-image: repeating-linear-gradient(
-    180deg,
-    transparent,
-    transparent var(--gridstep_before),
-    var(--grid-color-horizontal) var(--gridstep_before),
-    var(--grid-color-horizontal) var(--gridstep)
-  );
+  // background-image: repeating-linear-gradient(
+  //   180deg,
+  //   transparent,
+  //   transparent var(--gridstep_before),
+  //   var(--grid-color-horizontal) var(--gridstep_before),
+  //   var(--grid-color-horizontal) var(--gridstep)
+  // );
   background-repeat: no-repeat;
   background-size: 100% 100%;
 
