@@ -205,7 +205,7 @@ export default {
     },
     show_sidebar: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     can_minimize: {
       type: Boolean,
