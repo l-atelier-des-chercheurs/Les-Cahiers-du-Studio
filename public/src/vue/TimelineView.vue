@@ -2092,7 +2092,7 @@ export default {
     width: 100%;
     font-size: 1.2rem;
     line-height: 1.2;
-    color: #8a60fa;
+    color: #8c1ee5;
     background: #fafafa;
     cursor: pointer;
     font-weight: 700;
@@ -2131,7 +2131,7 @@ export default {
   .m_authorSelector--rnd {
     // background-color: var(--color-noir);
     background-color: white;
-    color: #8a60fa;
+    color: #8c1ee5;
   }
 }
 
@@ -2253,7 +2253,7 @@ export default {
     width: 100%;
     transform: scale(var(--progress-percent2), 1);
     transform-origin: left center;
-    background-color: #8a60fa;
+    background-color: #8c1ee5;
 
     transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
   }

@@ -13,15 +13,12 @@
       <div
         class="m_modal--container"
         :class="[{ is_invisible: !showModal }, { is_minimized: is_minimized }]"
-        :style="
-          !!backgroundColor ? `--background-color: ${backgroundColor}` : ''
-        "
         @keyup.ctrl.enter="$emit('submit')"
       >
         <div class="m_modal--container--content" ref="modalContent">
-          <div v-if="!!this.$slots['preview']" class="m_modal--preview">
+          <div v-if="!!$slots['preview']" class="m_modal--preview">
             <!-- if there is no sidebar, output header here -->
-            <template v-if="!this.$slots['sidebar']">
+            <template v-if="!$slots['sidebar']">
               <div class="m_modal--header">
                 <h3 class="margin-none">
                   <slot name="header"> default header </slot>
@@ -48,9 +45,9 @@
             </button>
 
             <template
-              v-if="!!this.$slots['sidebar'] && show_sidebar && !is_minimized"
+              v-if="!!$slots['sidebar'] && show_sidebar && !is_minimized"
             >
-              <div class="m_modal--header">
+              <div class="m_modal--header" v-if="!!$slots['header']">
                 <h3 class="margin-none">
                   <slot name="header"> default header </slot>
                 </h3>
@@ -208,7 +205,7 @@ export default {
     },
     show_sidebar: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     can_minimize: {
       type: Boolean,

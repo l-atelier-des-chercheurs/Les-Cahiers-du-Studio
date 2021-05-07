@@ -155,7 +155,7 @@ let vm = new Vue({
     media_modal: {
       open: false,
       minimized: false,
-      show_sidebar: true,
+      show_sidebar: false,
     },
 
     showAuthorsListModal: false,

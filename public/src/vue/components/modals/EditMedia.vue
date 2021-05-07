@@ -15,11 +15,11 @@
     :can_minimize="false"
     :arrow_navigation="true"
   >
-    <template slot="header">
+    <!-- <template slot="header">
       <span class="text-cap">{{ $t("edit_the_media") }}</span>
       <br />
       <i>{{ media.media_filename }}</i>
-    </template>
+    </template> -->
 
     <template slot="sidebar">
       <!-- Caption -->
