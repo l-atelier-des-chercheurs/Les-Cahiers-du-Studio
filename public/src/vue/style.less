@@ -63,7 +63,7 @@ body {
 }
 
 body {
-  font-family: "GRACE beta", monospace;
+  font-family: "GRACEbeta", monospace;
   font-weight: 400;
   margin: 0;
 
@@ -136,7 +136,7 @@ video {
       text-decoration: none;
       text-align: center;
       text-transform: uppercase;
-      font-weight: 500 !important;
+      // font-weight: 500 !important;
       letter-spacing: 0.06em;
       flex-shrink: 0;
       margin: 0;
@@ -750,7 +750,7 @@ video {
     margin-bottom: @t-skipline / 4 !important;
 
     &.is--active {
-      font-weight: 700;
+      // font-weight: 700;
       &::before {
         color: black;
         // background-color: black !important;
@@ -827,6 +827,11 @@ video {
 
   background-color: @c-bg_sidebar;
   color: #8c1ee5;
+  background-image: url("/images/site.png");
+  background-size: contain;
+  background-position: center top;
+  background-repeat: repeat-y;
+
   // border-right: 1px solid var(--color-noir);
 
   z-index: 1500;
@@ -1473,6 +1478,10 @@ video {
 .ql-container,
 .ql-toolbar.ql-snow {
   font-family: inherit;
+}
+
+.ql-toolbar {
+  background: white;
 }
 
 .quillWrapper .ql-snow.ql-toolbar {

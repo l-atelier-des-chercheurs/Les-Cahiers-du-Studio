@@ -133,12 +133,8 @@
     </div>-->
 
     <!-- Color -->
-    <div class="margin-bottom-small">
+    <!-- <div class="margin-bottom-small">
       <label>{{ $t("color") }}</label>
-      <!-- <div class="_color_items" v-if="!!authordata.color">
-        <label>Actuelle</label>
-        <div :key="authordata.color" :style="`background-color: ${authordata.color}`" />
-      </div> -->
       <div class="_color_items">
         <div
           v-for="color in sortedRandomColorArray"
@@ -159,7 +155,7 @@
           <label for="colorPicker">{{ $t("custom") }}</label>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <button type="button" class="button-small" @click="$emit('close')">
       {{ $t("cancel") }}

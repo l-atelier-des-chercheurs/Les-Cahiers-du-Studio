@@ -59,7 +59,7 @@
     </div>
 
     <!-- Color -->
-    <div class="margin-bottom-small">
+    <!-- <div class="margin-bottom-small">
       <label>{{ $t("color") }}</label>
       <div class="_color_items">
         <div
@@ -81,7 +81,7 @@
           <label for="colorPicker">{{ $t("custom") }}</label>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Preview -->
     <!-- <div class="margin-bottom-small" v-if="mode !== 'simple_login'">

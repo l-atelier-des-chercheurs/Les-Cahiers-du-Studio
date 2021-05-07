@@ -177,8 +177,7 @@
           <div class="m_authorSelector" @wheel="onMousewheel">
             <transition name="slideupfrombottomright" mode="out-in">
               <div class="m_authorSelector--content">
-                <label>Intervenant</label>
-                <br />
+                <div>exposant•es</div>
                 <transition name="fade_fast" mode="out-in">
                   <div
                     class="margin-bottom-small"
@@ -228,7 +227,7 @@
                   <div>
                     <small>
                       <template v-if="authors_not_yet_picked.length === 0">
-                        <i>Vous avez vu les pages de tous les intervenants </i>
+                        Vous avez vu les pages de tous les intervenants
                       </template>
                       <template v-else>
                         {{
@@ -1008,12 +1007,7 @@ export default {
               // avancer dans l’array, en ajoutant dans un accumulator
               if (media.type === "marker") {
                 const label = !!media.content ? media.content : "";
-                const color = this.$root.mediaColorFromFirstAuthor(
-                  media,
-                  this.folder
-                )
-                  ? this.$root.mediaColorFromFirstAuthor(media, this.folder)
-                  : "var(--color-noir)";
+                const color = "#fff";
                 const marker_author = this.$root.mediaFirstAuthor(
                   media,
                   this.folder
@@ -1303,9 +1297,13 @@ export default {
           Math.floor(Math.random() * this.authors_not_yet_picked.length)
         ];
       } else {
-        new_author = this.folder_authors[
-          Math.floor(Math.random() * this.folder_authors.length)
-        ].slugFolderName;
+        const authors_not_current = this.folder_authors.filter(
+          (a) => a.slugFolderName !== this.$root.settings.media_author_filter
+        );
+        new_author =
+          authors_not_current[
+            Math.floor(Math.random() * authors_not_current.length)
+          ].slugFolderName;
       }
 
       this.$root.settings.media_author_filter = new_author;
@@ -2060,11 +2058,12 @@ export default {
   // font-size: 0.85em;
   line-height: 1.25;
   pointer-events: none;
+  font-size: 1.1em;
 
   @media screen and (max-width: 50rem) {
     top: auto !important;
     bottom: 20px;
-    font-size: 0.7em;
+    // font-size: 0.7em;
   }
 
   .m_authorSelector--content {
@@ -2074,14 +2073,22 @@ export default {
     margin: 0 15px;
     pointer-events: auto;
 
+    font-weight: normal;
     // border-radius: 5px;
-    padding: 5px 10px 10px;
+    padding: 5px 12px 12px;
 
     background-color: var(--color-noir);
     color: white;
 
-    > label {
+    > * {
+      line-height: 1;
       margin-top: 0;
+      margin-bottom: 5px;
+
+      &:first-child {
+        margin-top: 5px;
+        margin-bottom: 15px;
+      }
     }
   }
 
@@ -2092,15 +2099,17 @@ export default {
     width: 100%;
     font-size: 1.2rem;
     line-height: 1.2;
-    color: #8c1ee5;
+    color: var(--color-noir);
     background: #fafafa;
     cursor: pointer;
-    font-weight: 700;
+    // font-weight: 700;
 
     > select {
-      padding: 0.5rem 1rem;
+      font-family: "GRACEbeta", monospace;
+      padding: 0.5rem 0.5rem;
       border-radius: 0;
-      border: 0.15em solid currentColor;
+      border: none;
+      // border: 0.15em solid currentColor;
       outline: none;
       height: auto;
       -webkit-appearance: none;
@@ -2108,10 +2117,13 @@ export default {
       appearance: none;
 
       background-image: none;
+
+      option {
+      }
     }
 
     &::after {
-      content: "↓";
+      content: "▼";
       display: block;
       position: absolute;
       top: 0;
@@ -2122,7 +2134,7 @@ export default {
       // font-size: 2em;
       padding: 0 10px;
       z-index: 10;
-      font-weight: 700;
+      // font-weight: 700;
       color: currentColor;
       pointer-events: none;
     }
@@ -2131,7 +2143,10 @@ export default {
   .m_authorSelector--rnd {
     // background-color: var(--color-noir);
     background-color: white;
-    color: #8c1ee5;
+    padding: 0.5em 1.5em;
+    margin-bottom: 8px;
+    border-radius: 0.9em;
+    color: var(--color-noir);
   }
 }
 
@@ -2251,9 +2266,10 @@ export default {
   ._progressBar--bar {
     height: 5px;
     width: 100%;
+    margin-top: 2px;
     transform: scale(var(--progress-percent2), 1);
     transform-origin: left center;
-    background-color: #8c1ee5;
+    background-color: white;
 
     transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
   }

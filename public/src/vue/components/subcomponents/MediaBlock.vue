@@ -34,7 +34,7 @@
         ref="MediaContent"
       />
 
-      <div class="author_indicator" v-if="mediaColorFromFirstAuthor" />
+      <!-- <div class="author_indicator" v-if="mediaColorFromFirstAuthor" /> -->
 
       <div class="draggabilly_handle" @click="clickOnMedia" />
       <!-- v-if="media.type !== 'embed'" -->
@@ -353,9 +353,9 @@ export default {
     itemStylesWithSize() {
       return Object.assign(
         {
-          "--author-color": this.mediaColorFromFirstAuthor
-            ? this.mediaColorFromFirstAuthor
-            : "#fff",
+          // "--author-color": this.mediaColorFromFirstAuthor
+          //   ? this.mediaColorFromFirstAuthor
+          //   : "#fff",
         },
         this.itemSize
       );
@@ -887,7 +887,7 @@ export default {
   color: white;
   font-size: 0.8em;
   line-height: 1;
-  font-weight: bold;
+  // font-weight: bold;
 
   button {
     background-color: #333;
