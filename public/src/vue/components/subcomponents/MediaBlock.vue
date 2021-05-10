@@ -642,7 +642,7 @@ export default {
       box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.35);
 
       &:empty {
-        display: none;
+        visibility: hidden;
       }
 
       // transition: all 0.4s ease;
