@@ -267,8 +267,9 @@
                         :slugFolderName="slugFolderName"
                         :can_edit="
                           can_edit_folder &&
-                          $root.current_author.slugFolderName ===
-                            $root.settings.media_author_filter
+                          ($root.current_author.slugFolderName ===
+                            $root.settings.media_author_filter ||
+                            $root.current_author_is_admin)
                         "
                         :timeline_height="timeline_height"
                       />
