@@ -269,10 +269,11 @@ let vm = new Vue({
         1000
       );
 
-      if (this.store.request.slugFolderName && false) {
+      if (this.store.request.slugFolderName) {
         this.settings.current_slugFolderName = this.store.request.slugFolderName;
         this.$eventHub.$once("socketio.folders.folders_listed", () => {
           this.openFolder(this.store.request.slugFolderName);
+          this.access = true;
         });
         // requesting edit of a media
         if (this.store.request.metaFileName) {
@@ -285,6 +286,8 @@ let vm = new Vue({
             });
           });
         }
+      } else {
+        this.access = true;
       }
     }
 
@@ -341,8 +344,8 @@ let vm = new Vue({
           if (this.store.folders.hasOwnProperty("les-puces-typo-11")) {
             if (this.store.request.slugFolderName === "les-puces-typo-11")
               setTimeout(() => {
-                this.openFolder("les-puces-typo-11");
-                this.access = true;
+                // this.openFolder("les-puces-typo-11");
+                // this.access = true;
               }, 10);
           }
         });

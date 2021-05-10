@@ -303,12 +303,12 @@ export default {
     };
   },
   mounted: function () {
-    document.addEventListener("keyup", this.boitierPressed);
+    // document.addEventListener("keyup", this.boitierPressed);
     document.addEventListener("dragover", this.ondragover);
     this.cancelDragOver = debounce(this.cancelDragOver, 300);
   },
   destroyed: function () {
-    document.removeEventListener("keyup", this.boitierPressed);
+    // document.removeEventListener("keyup", this.boitierPressed);
     document.removeEventListener("dragover", this.ondragover);
   },
   watch: {
@@ -347,6 +347,7 @@ export default {
         props["--color-author"] = "#fff";
         props["--color-text_on_author_color"] = "var(--color-noir)";
       } else {
+        props["--color-author"] = "var(--color-noir)";
         props["--color-text_on_author_color"] = "#fff";
       }
       return props;
@@ -739,7 +740,7 @@ button,
     padding: 0.5em 1.5em;
     margin-bottom: 8px;
     border-radius: 0.9em;
-    color: var(--color-noir);
+    // color: var(--color-noir);
   }
 }
 
