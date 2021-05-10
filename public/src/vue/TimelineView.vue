@@ -617,12 +617,13 @@ export default {
   mounted() {
     console.log("MOUNTED • TimeLineView");
 
-    let set_author;
-    set_author = this.folder_authors[
-      Math.floor(Math.random() * this.folder_authors.length)
-    ];
-
-    this.$root.settings.media_author_filter = set_author.slugFolderName;
+    if (this.$root.current_author) {
+      this.$root.settings.media_author_filter = this.$root.current_author.slugFolderName;
+    } else {
+      this.$root.settings.media_author_filter = this.folder_authors[
+        Math.floor(Math.random() * this.folder_authors.length)
+      ].slugFolderName;
+    }
 
     this.authors_not_yet_picked = this.folder_authors.map(
       (a) => a.slugFolderName

@@ -344,7 +344,7 @@ export default {
         this.$root.current_author &&
         this.$root.current_author.hasOwnProperty("color")
       ) {
-        props["--color-author"] = this.$root.current_author.color;
+        props["--color-author"] = "#fff";
         props["--color-text_on_author_color"] = "var(--color-noir)";
       } else {
         props["--color-text_on_author_color"] = "#fff";
@@ -526,7 +526,7 @@ export default {
 button,
 .button {
   position: relative;
-  box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.15);
+  box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.35);
   // margin: .3em;
 
   &:active {

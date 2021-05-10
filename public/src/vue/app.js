@@ -269,7 +269,7 @@ let vm = new Vue({
         1000
       );
 
-      if (this.store.request.slugFolderName) {
+      if (this.store.request.slugFolderName && false) {
         this.settings.current_slugFolderName = this.store.request.slugFolderName;
         this.$eventHub.$once("socketio.folders.folders_listed", () => {
           this.openFolder(this.store.request.slugFolderName);
@@ -335,14 +335,16 @@ let vm = new Vue({
       this.$eventHub.$once("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "folders" });
         this.$socketio.listFolders({ type: "authors" });
-        this.$socketio.listFolders({ type: "chats" });
+        // this.$socketio.listFolders({ type: "chats" });
 
         this.$eventHub.$once("socketio.folders.folders_listed", () => {
-          if (this.store.folders.hasOwnProperty("puces-typo")) {
+          if (this.store.folders.hasOwnProperty("les-puces-typo-11")) {
             if (this.store.request.slugFolderName === "les-puces-typo-11")
-              this.openFolder("les-puces-typo-11");
+              setTimeout(() => {
+                this.openFolder("les-puces-typo-11");
+                this.access = true;
+              }, 10);
           }
-          this.access = true;
         });
 
         if (this.current_project) {

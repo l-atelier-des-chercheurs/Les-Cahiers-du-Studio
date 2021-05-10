@@ -574,7 +574,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: white;
-  background-color: var(--author-color);
+  // background-color: var(--author-color);
 
   border-radius: 4px;
   border: 0px solid black;
@@ -643,8 +643,8 @@ export default {
     justify-content: space-between;
 
     > span {
-      background-color: rgba(255, 255, 255, 0.4);
-      background-color: var(--author-color);
+      // background-color: rgba(255, 255, 255, 0.4);
+      // background-color: var(--author-color);
       background-color: white;
       max-width: 100%;
       max-height: 100%;

@@ -101,9 +101,9 @@
           </label>
         </div>
 
-        <div
+        <!-- <div
           :style="`width: 2em; height: 2em; background-color: ${author.color}; margin: 0 auto; border-radius: 50%;`"
-        />
+        /> -->
 
         <br />
 
