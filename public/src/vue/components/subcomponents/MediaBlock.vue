@@ -178,7 +178,7 @@ export default {
         pheight: 0,
       },
 
-      media_ordre: this.media.ordre ? this.media.ordre : 0,
+      media_ordre: this.media.ordre ? Number.parseFloat(this.media.ordre) : 0,
 
       is_resized: false,
 

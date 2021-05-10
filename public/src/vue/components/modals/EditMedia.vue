@@ -916,7 +916,7 @@ export default {
         action_on_tile_click: this.media.action_on_tile_click
           ? this.media.action_on_tile_click
           : "",
-        ordre: this.media.ordre ? this.media.ordre : "",
+        ordre: this.media.ordre ? Number.parseFloat(this.media.ordre) : "",
         url_to_open_in_new_tab: this.media.url_to_open_in_new_tab
           ? this.media.url_to_open_in_new_tab
           : "",

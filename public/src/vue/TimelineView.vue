@@ -868,7 +868,7 @@ export default {
         //   );
         // }
 
-        mediaDataToOrderBy = !!media.ordre ? media.ordre : 0;
+        mediaDataToOrderBy = !!media.ordre ? Number.parseFloat(media.ordre) : 0;
 
         sortable.push({
           slugMediaName,
