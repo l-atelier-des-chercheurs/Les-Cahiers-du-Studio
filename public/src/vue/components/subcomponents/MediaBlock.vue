@@ -88,6 +88,7 @@
 
       <div class="packery-item-content--meta">
         <span
+          v-if="!!media.caption"
           @mouseenter="is_captionHovered = true"
           @mouseleave="is_captionHovered = false"
           @click="clickOnMedia"
@@ -95,10 +96,8 @@
           :class="{ 'is--expanded': is_captionHovered }"
           :style="`-webkit-line-clamp: ${mediaSize.height <= 2 ? 1 : ''}`"
         >
-          <template v-if="!!media.caption">
-            {{ media.caption }}
-          </template></span
-        >
+          {{ media.caption }}
+        </span>
         <span
           class="packery-item-content--meta--comments"
           v-if="media.enable_chat_link !== false && false"
@@ -646,6 +645,7 @@ export default {
     > span {
       background-color: rgba(255, 255, 255, 0.4);
       background-color: var(--author-color);
+      background-color: white;
       max-width: 100%;
       max-height: 100%;
       pointer-events: auto;

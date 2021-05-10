@@ -526,7 +526,7 @@ export default {
 button,
 .button {
   position: relative;
-  box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.35);
+  box-shadow: -0.1em 0.2em 1em rgba(0, 0, 0, 0.15);
   // margin: .3em;
 
   &:active {
@@ -734,6 +734,12 @@ button,
     pointer-events: auto;
     background-color: var(--color-author);
     color: var(--color-text_on_author_color);
+
+    line-height: 1.15;
+    padding: 0.5em 1.5em;
+    margin-bottom: 8px;
+    border-radius: 0.9em;
+    color: var(--color-noir);
   }
 }
 

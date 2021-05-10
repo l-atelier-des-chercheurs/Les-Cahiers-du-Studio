@@ -2146,6 +2146,7 @@ export default {
     padding: 0.5em 1.5em;
     margin-bottom: 8px;
     border-radius: 0.9em;
+    width: 100%;
     color: var(--color-noir);
   }
 }
