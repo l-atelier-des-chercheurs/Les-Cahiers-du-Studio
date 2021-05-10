@@ -830,8 +830,11 @@ video {
   background-image: url("/images/site.png");
   background-size: 100% 100%;
   background-position: center top;
-  // background-repeat: repeat-y;
 
+  min-height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
   // border-right: 1px solid var(--color-noir);
 
   z-index: 1500;

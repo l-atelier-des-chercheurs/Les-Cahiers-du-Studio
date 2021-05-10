@@ -267,11 +267,11 @@
       @close="showMediasListModal = false"
     /> -->
 
-    <div class="font-verysmall margin-medium">
-      <p>
+    <div class="font-verysmall margin-medium margin-bottom-none">
+      <!-- <p>
         <em>Les Cahiers du Studio</em>
         version {{ $root.state.appVersion }}
-      </p>
+      </p> -->
       <p v-html="$t('credits')"></p>
     </div>
   </div>
