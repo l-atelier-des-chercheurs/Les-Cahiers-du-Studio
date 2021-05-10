@@ -34,6 +34,8 @@ module.exports = (function () {
       show_chat_bubble: "Afficher la bulle de chat",
       action_on_tile_click_for_visitors:
         "Action lorsqu’un visiteur clique sur la tuile",
+      ordre:
+        "Ordre de placement (la valeur la plus petite sera en haut à gauche)",
       open_modal: "Ouvrir cette fenêtre",
       open_external_link: "Ouvrir un lien externe vers…",
       do_nothing: "Ne rien faire",

@@ -105,6 +105,9 @@
             "default": "current",
             "read_only": true
           },
+          "ordre": {
+            "type": "number"
+          },
           "date_upload": {
             "type": "date",
             "default": "current",

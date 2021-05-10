@@ -845,33 +845,36 @@ export default {
           }
         }
 
-        if (current_sort.type === "date") {
-          const _date = this.$moment(
-            media[current_sort.field],
-            "YYYY-MM-DD HH:mm:ss"
-          );
-          if (_date.isValid()) {
-            mediaDataToOrderBy = +_date;
-          } else {
-            mediaDataToOrderBy = false;
-          }
-        } else if (current_sort.type === "alph") {
-          mediaDataToOrderBy = media[current_sort.field].toLowerCase();
-        } else if (current_sort.type === "array") {
-          let media_prop = media[current_sort.field];
-          if (typeof media_prop === "string") {
-            media_prop = [{ [current_sort.field_name]: media_prop }];
-          }
-          mediaDataToOrderBy = media_prop.map(
-            (a) => a[current_sort.field_name]
-          );
-        }
+        // if (current_sort.type === "date") {
+        //   const _date = this.$moment(
+        //     media[current_sort.field],
+        //     "YYYY-MM-DD HH:mm:ss"
+        //   );
+        //   if (_date.isValid()) {
+        //     mediaDataToOrderBy = +_date;
+        //   } else {
+        //     mediaDataToOrderBy = false;
+        //   }
+        // } else if (current_sort.type === "alph") {
+        //   mediaDataToOrderBy = media[current_sort.field].toLowerCase();
+        // } else if (current_sort.type === "array") {
+        //   let media_prop = media[current_sort.field];
+        //   if (typeof media_prop === "string") {
+        //     media_prop = [{ [current_sort.field_name]: media_prop }];
+        //   }
+        //   mediaDataToOrderBy = media_prop.map(
+        //     (a) => a[current_sort.field_name]
+        //   );
+        // }
+
+        mediaDataToOrderBy = !!media.ordre ? media.ordre : 0;
 
         sortable.push({
           slugMediaName,
           mediaDataToOrderBy,
         });
       }
+
       let sortedSortable = sortable.sort((a, b) => {
         if (a.mediaDataToOrderBy < b.mediaDataToOrderBy) {
           return -1;
@@ -883,9 +886,9 @@ export default {
         return 0;
       });
 
-      if (current_sort.order === "descending") {
-        sortedSortable.reverse();
-      }
+      // if (current_sort.order === "descending") {
+      sortedSortable.reverse();
+      // }
 
       // array order is garanteed while objects properties aren’t,
       // that’s why we use an array here

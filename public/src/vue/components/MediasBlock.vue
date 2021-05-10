@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :key="medias.map((m) => m.slugMediaName).join('|')">
     <div
       v-packery="grid_options"
       class="packery-container"
@@ -88,7 +88,7 @@ export default {
     triggerPackeryLayout() {
       console.log("Triggered packery layout");
       this.$forceUpdate();
-      // packeryEvents.$emit('layout', this.$refs.packery);
+      // packeryEvents.$emit("layout", this.$refs.packery);
     },
     showGrid() {
       this.show_grid = true;

@@ -222,6 +222,12 @@
               </label>
             </span>
           </div> -->
+          <div class="margin-bottom-small">
+            <label>
+              {{ $t("ordre") }}
+            </label>
+            <input type="number" step="1" v-model="mediadata.ordre" />
+          </div>
 
           <div class="margin-bottom-small">
             <label>
@@ -910,6 +916,7 @@ export default {
         action_on_tile_click: this.media.action_on_tile_click
           ? this.media.action_on_tile_click
           : "",
+        ordre: this.media.ordre ? this.media.ordre : "",
         url_to_open_in_new_tab: this.media.url_to_open_in_new_tab
           ? this.media.url_to_open_in_new_tab
           : "",
