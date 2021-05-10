@@ -2053,7 +2053,8 @@ export default {
 .m_authorSelector {
   position: absolute;
   top: auto;
-  bottom: 40px;
+  top: 0px;
+  right: 0px;
   width: 100%;
   z-index: 150;
   // font-size: 0.85em;
@@ -2071,7 +2072,7 @@ export default {
     position: relative;
     width: 100%;
     max-width: 260px;
-    margin: 0 15px;
+    margin: 0 0 0 auto;
     pointer-events: auto;
 
     font-weight: normal;
