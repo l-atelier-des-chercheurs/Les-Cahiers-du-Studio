@@ -78,9 +78,6 @@ export default {
   },
   computed: {
     base_edge() {
-      if (this.medias.length > 5) {
-        return 2;
-      }
       return 3;
     },
   },

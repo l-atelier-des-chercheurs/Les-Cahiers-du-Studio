@@ -201,7 +201,7 @@ export default {
       this.mediaSize.width = 1 + this.base_edge;
       this.mediaSize.height = 1;
     } else {
-      this.mediaSize.width = Math.round(Math.random() * 2 + this.base_edge);
+      this.mediaSize.width = Math.round(this.base_edge);
       if (
         this.media.hasOwnProperty("ratio") &&
         typeof this.media.ratio === "number"
@@ -210,7 +210,7 @@ export default {
           this.mediaSize.width * this.media.ratio
         );
       } else {
-        this.mediaSize.height = Math.round(Math.random() * 2 + this.base_edge);
+        this.mediaSize.height = Math.round(this.base_edge);
       }
     }
 
