@@ -10,6 +10,17 @@
     white-space: pre-wrap;
     // .padding-small;
 
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(transparent, #fff);
+      height: 2em;
+      z-index: 2;
+    }
+
     &[data-context="preview"] > * > * > *:first-child {
       margin-top: 0;
     }
