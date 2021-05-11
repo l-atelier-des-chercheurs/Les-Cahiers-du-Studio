@@ -43,7 +43,13 @@
         <button
           key="add_text"
           type="button"
-          class="button button-round button-round-small margin-bottom-small padding-none bg-noir c-blanc"
+          class="
+            button button-round button-round-small
+            margin-bottom-small
+            padding-none
+            bg-noir
+            c-blanc
+          "
           @click="createTextMedia"
           :disabled="read_only"
         >
@@ -105,7 +111,13 @@
         <button
           key="add_embed"
           type="button"
-          class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
+          class="
+            button button-round button-round-small
+            margin-bottom-small
+            bg-noir
+            c-blanc
+            padding-none
+          "
           @click="createEmbedMedia"
           :disabled="read_only"
         >
@@ -137,7 +149,13 @@
         <template>
           <div
             :key="`add_${field.key}`"
-            class="button button-round button-round-small margin-bottom-small bg-noir c-blanc padding-none"
+            class="
+              button button-round button-round-small
+              margin-bottom-small
+              bg-noir
+              c-blanc
+              padding-none
+            "
             v-for="field in input_file_fields"
             :disabled="read_only"
           >
@@ -161,7 +179,16 @@
 
       <button
         type="button"
-        class="menu_encart--button button button-round margin-bottom-small padding-none bg-noir c-blanc button_addMedia m_addMedias--buttons--openHideButton"
+        class="
+          menu_encart--button
+          button button-round
+          margin-bottom-small
+          padding-none
+          bg-noir
+          c-blanc
+          button_addMedia
+          m_addMedias--buttons--openHideButton
+        "
         :class="{
           'is--shown': show_addmedia_options,
           'is--dragover': show_drop_container,
@@ -261,18 +288,18 @@ export default {
         //     </svg>
         //   `,
         // },
-        // {
-        //   key: "file",
-        //   label: "Fichier",
-        //   accept: "",
-        //   capture: false,
-        //   svg: `
-        //     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-        //       <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: currentColor"/>
-        //       <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
-        //     </svg>
-        //   `,
-        // },
+        {
+          key: "pdf",
+          label: "PDF",
+          accept: "application/pdf",
+          capture: false,
+          svg: `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+              <path d="M20.89,12v4.63a1,1,0,0,0,1,1h4.63V28h-13V12h7.4m1-1H12.5V29h15V16.62H21.88V11Z" style="fill: currentColor"/>
+              <line x1="27" y1="17.12" x2="21.38" y2="11.5" style="fill: none;stroke: currentColor;stroke-linecap: round;stroke-linejoin: round;stroke-width: 0.9900837817656861px"/>
+            </svg>
+          `,
+        },
         // {
         //   key: "video",
         //   label: "Vidéo",

@@ -159,7 +159,21 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
-      <div v-if="context !== 'edit' && context !== 'full'" class>
+      <template v-if="context === 'preview'">
+        <img
+          v-if="linkToComplexMediaThumb({ type: 'page', option: 0 })"
+          :srcset="linkToComplexMediaThumb({ type: 'page', option: 0 })"
+          :sizes="imageSizesAttr"
+          :src="linkToComplexMediaThumb({ type: 'page', option: 0 })"
+          draggable="false"
+        />
+        <pre v-else
+          >{{ media.media_filename }}
+        </pre>
+
+        <!-- // TODO : set STL/3d picto -->
+      </template>
+      <div v-else-if="context !== 'edit' && context !== 'full'">
         <pre
           >{{ media.media_filename }}
         </pre>
@@ -457,12 +471,14 @@ export default {
       });
     },
     getTweetIdFromURL(url) {
-      let tweetRegex = /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(es)?\/([0-9]{19})/;
+      let tweetRegex =
+        /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(es)?\/([0-9]{19})/;
       return url.match(tweetRegex)[3];
     },
     getYoutubeIDFromURL(url) {
       function getId(url) {
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const regExp =
+          /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
         const match = url.match(regExp);
 
         return match && match[2].length === 11 ? match[2] : null;
@@ -482,6 +498,40 @@ export default {
     videoTimeUpdated(event) {
       console.log("videoTimeUpdated");
       this.$emit("videoTimeUpdated", event.detail.plyr.media.currentTime);
+    },
+
+    linkToComplexMediaThumb: function ({ type, option, option_fallback }) {
+      if (
+        !this.media["thumbs"] ||
+        (typeof this.media.thumbs === "object" &&
+          this.media.thumbs.length === 0)
+      ) {
+        return this.mediaURL;
+      }
+
+      let firstThumbs = this.media.thumbs.find(
+        (t) => !!t && t[type] === option
+      );
+
+      if (!firstThumbs || firstThumbs.length === 0) {
+        firstThumbs = this.media.thumbs.find(
+          (t) => !!t && t[type] === option_fallback
+        );
+        if (!firstThumbs || firstThumbs.length === 0) return;
+      }
+
+      const small_thumb = firstThumbs.thumbsData.find(
+        (m) => m && m.size === this.thumbRes
+      );
+      if (!small_thumb) return this.mediaURL;
+
+      let pathToSmallestThumb = small_thumb.path;
+
+      let url =
+        this.$root.state.mode === "export_publication"
+          ? "./" + pathToSmallestThumb
+          : "/" + pathToSmallestThumb;
+      return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
   },
 };
