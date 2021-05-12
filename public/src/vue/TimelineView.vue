@@ -3,7 +3,10 @@
     <transition name="fade" :duration="400">
       <div
         v-if="is_loading"
-        class="loader_folder flex-wrap flex-vertically-centered flex-horizontally-centered"
+        class="
+          loader_folder
+          flex-wrap flex-vertically-centered flex-horizontally-centered
+        "
       >
         <span class="animated flash">{{ $t("loading") }}</span>
       </div>
@@ -390,11 +393,20 @@
               class="m_filterIndicator"
             >
               <div
-                class="flex-wrap flex-vertically-centered flex-horizontally-start"
+                class="
+                  flex-wrap flex-vertically-centered flex-horizontally-start
+                "
               >
                 <button
                   type="button"
-                  class="button-small flex-nogrow bg-transparent border-circled padding-verysmall margin-right-small"
+                  class="
+                    button-small
+                    flex-nogrow
+                    bg-transparent
+                    border-circled
+                    padding-verysmall
+                    margin-right-small
+                  "
                   v-html="'x'"
                   @click="
                     setSort(sort.available[0]);
@@ -618,12 +630,22 @@ export default {
   mounted() {
     console.log("MOUNTED • TimeLineView");
 
-    if (this.$root.current_author) {
-      this.$root.settings.media_author_filter = this.$root.current_author.slugFolderName;
+    if (
+      window.location.hash &&
+      this.folder_authors.find(
+        (a) => a.slugFolderName === window.location.hash.substring(1)
+      )
+    ) {
+      this.$root.settings.media_author_filter =
+        window.location.hash.substring(1);
+    } else if (this.$root.current_author) {
+      this.$root.settings.media_author_filter =
+        this.$root.current_author.slugFolderName;
     } else {
-      this.$root.settings.media_author_filter = this.folder_authors[
-        Math.floor(Math.random() * this.folder_authors.length)
-      ].slugFolderName;
+      this.$root.settings.media_author_filter =
+        this.folder_authors[
+          Math.floor(Math.random() * this.folder_authors.length)
+        ].slugFolderName;
     }
 
     this.authors_not_yet_picked = this.folder_authors.map(
@@ -726,7 +748,8 @@ export default {
     },
     "$root.current_author": function () {
       if (this.$root.current_author) {
-        this.$root.settings.media_author_filter = this.$root.current_author.slugFolderName;
+        this.$root.settings.media_author_filter =
+          this.$root.current_author.slugFolderName;
       }
     },
     "$root.settings.media_author_filter": function () {
@@ -740,6 +763,11 @@ export default {
           (a) => a !== this.$root.settings.media_author_filter
         );
       }
+
+      // uses the URL class
+      window.location.hash = this.$root.settings.media_author_filter;
+
+      // window.location.search = urlParams;
     },
     percent: function () {
       if (this.$root.settings.windowWidth < 600) {
@@ -1298,9 +1326,10 @@ export default {
     setAuthorRandom() {
       let new_author;
       if (this.authors_not_yet_picked.length > 0) {
-        new_author = this.authors_not_yet_picked[
-          Math.floor(Math.random() * this.authors_not_yet_picked.length)
-        ];
+        new_author =
+          this.authors_not_yet_picked[
+            Math.floor(Math.random() * this.authors_not_yet_picked.length)
+          ];
       } else {
         const authors_not_current = this.folder_authors.filter(
           (a) => a.slugFolderName !== this.$root.settings.media_author_filter
@@ -1468,9 +1497,8 @@ export default {
         `METHODS • TimeLineView: scrollToMedia / slugMediaName: ${slugMediaName}`
       );
 
-      const $medias = this.$refs.timeline.getElementsByClassName(
-        "mediaContainer"
-      );
+      const $medias =
+        this.$refs.timeline.getElementsByClassName("mediaContainer");
 
       if ($medias.length === 0) return false;
 
