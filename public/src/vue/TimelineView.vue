@@ -776,9 +776,6 @@ export default {
     },
   },
   computed: {
-    folder_authors() {
-      return Array.isArray(this.folder.authors) ? this.folder.authors : [];
-    },
     author_medias() {
       return this.sortedMedias;
     },
@@ -811,7 +808,9 @@ export default {
     },
     folder_authors() {
       return this.folder.hasOwnProperty("authors") && this.folder.authors !== ""
-        ? this.folder.authors
+        ? this.folder.authors.sort((a, b) =>
+            a.slugFolderName.localeCompare(b.slugFolderName)
+          )
         : [];
     },
     sortedMedias() {
