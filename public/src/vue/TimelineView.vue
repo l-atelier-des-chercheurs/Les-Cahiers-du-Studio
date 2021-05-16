@@ -633,7 +633,12 @@ export default {
     ) {
       this.$root.settings.media_author_filter =
         window.location.hash.substring(1);
-    } else if (this.$root.current_author) {
+    } else if (
+      this.$root.current_author &&
+      this.folder_authors.find(
+        (a) => a.slugFolderName === this.$root.current_author.slugFolderName
+      )
+    ) {
       this.$root.settings.media_author_filter =
         this.$root.current_author.slugFolderName;
     } else {
@@ -742,7 +747,12 @@ export default {
       else this.percent = 35;
     },
     "$root.current_author": function () {
-      if (this.$root.current_author) {
+      if (
+        this.$root.current_author &&
+        this.folder_authors.find(
+          (a) => a.slugFolderName === this.$root.current_author.slugFolderName
+        )
+      ) {
         this.$root.settings.media_author_filter =
           this.$root.current_author.slugFolderName;
       }
