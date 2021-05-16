@@ -12,4 +12,5 @@ npm-debug.log
 *.njsproj
 *.sln
 changelog.csv
+access.csv
 dist

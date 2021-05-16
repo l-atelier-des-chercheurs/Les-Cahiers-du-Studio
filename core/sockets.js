@@ -3,7 +3,8 @@ const dev = require("./dev-log"),
   auth = require("./auth"),
   exporter = require("./exporter"),
   file = require("./file"),
-  changelog = require("./changelog");
+  changelog = require("./changelog"),
+  access = require("./access");
 
 const bcrypt = require("bcryptjs");
 
@@ -50,6 +51,21 @@ module.exports = (function () {
       }
     }).on("connection", function (socket) {
       dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
+
+      const ip =
+        socket.handshake && socket.handshake.address
+          ? socket.handshake.address
+          : "";
+      const user_agent =
+        socket.handshake &&
+        socket.handshake.headers &&
+        socket.handshake.headers["user-agent"]
+          ? socket.handshake.headers["user-agent"]
+          : "";
+      access.append({
+        ip,
+        user_agent,
+      });
       socket._data = {};
 
       var onevent = socket.onevent;
