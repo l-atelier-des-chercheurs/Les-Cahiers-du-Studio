@@ -18,6 +18,13 @@
         <input type="text" v-model="folderdata.name" required />
       </div>
 
+      <div class="margin-bottom-small">
+        <input type="checkbox" id="is_open" v-model="folderdata.is_open" />
+        <label for="enable_password"
+          >Affiché sur pucestypo.campusfonderiedelimage.org</label
+        >
+      </div>
+
       <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>
@@ -72,6 +79,7 @@ export default {
       show_authors: !!this.folder.authors,
       folderdata: {
         name: this.folder.name,
+        is_open: this.folder.is_open ? this.folder.is_open : false,
         start: this.$moment(this.folder.start).isValid()
           ? this.folder.start
           : "",

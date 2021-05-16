@@ -288,16 +288,19 @@ let vm = new Vue({
           });
         }
       } else {
-        if (this.state.is_open) {
-          this.$eventHub.$once("socketio.folders.folders_listed", () => {
-            if (this.store.folders.hasOwnProperty("les-puces-typo-11")) {
-              setTimeout(() => {
-                this.openFolder("les-puces-typo-11");
-                this.access = true;
-              }, 10);
-            }
-          });
-        } else this.access = true;
+        this.$eventHub.$once("socketio.folders.folders_listed", () => {
+          if (
+            this.store.folders.hasOwnProperty("les-puces-typo-11") &&
+            this.store.folders["les-puces-typo-11"].is_open === true
+          ) {
+            setTimeout(() => {
+              this.openFolder("les-puces-typo-11");
+              this.access = true;
+            }, 10);
+          } else {
+            this.access = true;
+          }
+        });
       }
     }
 

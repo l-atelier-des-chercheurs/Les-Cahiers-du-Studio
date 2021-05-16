@@ -69,6 +69,11 @@
         "password": {
           "type": "string"
         },
+
+        "is_open": {
+          "type": "boolean",
+          "default": false
+        },
         "authors": {
           "type": "array"
         },
