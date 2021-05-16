@@ -41,6 +41,7 @@ module.exports = function (app, io, m) {
       pageData.protocol = req.protocol;
       pageData.structure = settings.structure;
       pageData.isDebug = dev.isDebug();
+      pageData.isOpen = +new Date() >= 1621231200000;
 
       pageData.mode = "live";
 

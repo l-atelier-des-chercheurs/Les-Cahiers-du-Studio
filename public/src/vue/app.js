@@ -288,7 +288,16 @@ let vm = new Vue({
           });
         }
       } else {
-        this.access = true;
+        if (this.state.is_open) {
+          this.$eventHub.$once("socketio.folders.folders_listed", () => {
+            if (this.store.folders.hasOwnProperty("les-puces-typo-11")) {
+              setTimeout(() => {
+                this.openFolder("les-puces-typo-11");
+                this.access = true;
+              }, 10);
+            }
+          });
+        } else this.access = true;
       }
     }
 
@@ -341,16 +350,6 @@ let vm = new Vue({
         this.$socketio.listFolders({ type: "authors" });
         // this.$socketio.listFolders({ type: "chats" });
 
-        this.$eventHub.$once("socketio.folders.folders_listed", () => {
-          if (this.store.folders.hasOwnProperty("les-puces-typo-11")) {
-            if (this.store.request.slugFolderName === "les-puces-typo-11")
-              setTimeout(() => {
-                // this.openFolder("les-puces-typo-11");
-                // this.access = true;
-              }, 10);
-          }
-        });
-
         if (this.current_project) {
           this.$socketio.listMedias({
             type: "folders",
@@ -374,13 +373,13 @@ let vm = new Vue({
 
             if (author) {
               this.setAuthor(first_author_slug);
-              this.$alertify
-                .closeLogOnClick(true)
-                .delay(4000)
-                .success(
-                  this.$t("notifications.connecting_using_saved_account") +
-                    author.name
-                );
+              // this.$alertify
+              //   .closeLogOnClick(true)
+              //   .delay(4000)
+              //   .success(
+              //     this.$t("notifications.connecting_using_saved_account") +
+              //       author.name
+              //   );
             }
           });
         }

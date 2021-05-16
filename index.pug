@@ -62,7 +62,8 @@ html
         is_electron: !!(navigator.userAgent.toLowerCase().indexOf(' electron/') > -1),
         is_darwin: !!(navigator.userAgent.toLowerCase().indexOf(' electron/') > -1 && ['Macintosh', 'MacIntel'].includes(window.navigator.platform)),
         clients: [],
-        list_authorized_folders: []
+        list_authorized_folders: [],
+        is_open: !{isOpen},
       };
 
 
