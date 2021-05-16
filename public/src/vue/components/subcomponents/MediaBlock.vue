@@ -522,6 +522,9 @@ export default {
   // cursor: -webkit-grabbing;
   // cursor: -moz-grabbing;
 }
+.plyr--full-ui input[type="range"] {
+  color: var(--color-violet);
+}
 .packery-item {
   /* padding: 1rem; */
   /* border: 0.2rem dashed #f4be41; */
@@ -784,9 +787,14 @@ export default {
           }
 
           .plyr__time {
-            background-color: rgba(255, 255, 255, 0.45);
+            // background-color: rgba(255, 255, 255, 0.45);
             border-radius: 2px;
             padding: 0 0.2em;
+            color: #00dcaa;
+            // outline: 2px var(--color-violet);
+            // -webkit-text-stroke: 1px var(--color-violet);
+            // text-stroke: 1px var(--color-violet);
+            text-shadow: 2px 2px 2px var(--color-violet);
           }
 
           .plyr__control {
