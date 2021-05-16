@@ -58,11 +58,7 @@ module.exports = (function () {
       dev.logfunction(
         `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType}, type: ${type}, subtype: ${subtype}`
       );
-      if (
-        !["image", "video", "audio", "stl", "document", "link"].includes(
-          mediaType
-        )
-      ) {
+      if (!["image", "video", "audio", "stl", "link"].includes(mediaType)) {
         dev.logverbose(
           `THUMBS — makeMediaThumbs — media is not of type image or video`
         );
@@ -276,60 +272,58 @@ module.exports = (function () {
               makeThumbs.push(makeSTLScreenshot);
             });
           } else if (mediaType === "document") {
-            let screenshotsPages = [0];
-            screenshotsPages.forEach((page) => {
-              let makePDFScreenshot = new Promise((resolve, reject) => {
-                _makePDFScreenshot({
-                  slugFolderName,
-                  thumbFolderPath,
-                  filename,
-                  page,
-                })
-                  .then(({ screenshotPath, screenshotName }) => {
-                    // make screenshot, then make thumbs out of each screenshot and push this to thumbs
-                    // naming :
-                    // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
-                    // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
-
-                    let makeThumbsFromScreenshot = [];
-
-                    thumbResolutions.forEach((thumbRes) => {
-                      let makeThumbFromScreenshot = new Promise(
-                        (resolve, reject) => {
-                          _makeImageThumb(
-                            api.getFolderPath(screenshotPath),
-                            thumbFolderPath,
-                            screenshotName,
-                            thumbRes
-                          )
-                            .then((thumbPath) => {
-                              let thumbMeta = {
-                                path: thumbPath,
-                                size: thumbRes,
-                              };
-                              resolve(thumbMeta);
-                            })
-                            .catch((err) => {
-                              dev.error(
-                                `makeMediaThumbs / Failed to make pdf thumbs with error ${err}`
-                              );
-                              resolve();
-                            });
-                        }
-                      );
-                      makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
-                    });
-                    Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
-                      resolve({ page, thumbsData });
-                    });
-                  })
-                  .catch((err) => {
-                    dev.error(`Couldn’t make pdf screenshots.`);
-                    resolve();
-                  });
-              });
-              makeThumbs.push(makePDFScreenshot);
-            });
+            // let screenshotsPages = [0];
+            // screenshotsPages.forEach((page) => {
+            //   let makePDFScreenshot = new Promise((resolve, reject) => {
+            //     _makePDFScreenshot({
+            //       slugFolderName,
+            //       thumbFolderPath,
+            //       filename,
+            //       page,
+            //     })
+            //       .then(({ screenshotPath, screenshotName }) => {
+            //         // make screenshot, then make thumbs out of each screenshot and push this to thumbs
+            //         // naming :
+            //         // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
+            //         // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
+            //         let makeThumbsFromScreenshot = [];
+            //         thumbResolutions.forEach((thumbRes) => {
+            //           let makeThumbFromScreenshot = new Promise(
+            //             (resolve, reject) => {
+            //               _makeImageThumb(
+            //                 api.getFolderPath(screenshotPath),
+            //                 thumbFolderPath,
+            //                 screenshotName,
+            //                 thumbRes
+            //               )
+            //                 .then((thumbPath) => {
+            //                   let thumbMeta = {
+            //                     path: thumbPath,
+            //                     size: thumbRes,
+            //                   };
+            //                   resolve(thumbMeta);
+            //                 })
+            //                 .catch((err) => {
+            //                   dev.error(
+            //                     `makeMediaThumbs / Failed to make pdf thumbs with error ${err}`
+            //                   );
+            //                   resolve();
+            //                 });
+            //             }
+            //           );
+            //           makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
+            //         });
+            //         Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
+            //           resolve({ page, thumbsData });
+            //         });
+            //       })
+            //       .catch((err) => {
+            //         dev.error(`Couldn’t make pdf screenshots.`);
+            //         resolve();
+            //       });
+            //   });
+            //   makeThumbs.push(makePDFScreenshot);
+            // });
           } else if (mediaType === "link") {
             // if link, we’ll get og: title, og: image and og: description from source page
             // create a .txt file and a thumb for the og: image
