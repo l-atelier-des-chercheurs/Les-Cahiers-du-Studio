@@ -178,72 +178,67 @@
           />
 
           <div class="m_authorSelector" @wheel="onMousewheel">
-            <transition name="slideupfrombottomright" mode="out-in">
-              <div class="m_authorSelector--content">
-                <div>exposant•es</div>
-                <transition name="fade_fast" mode="out-in">
-                  <div
-                    class="margin-bottom-small"
-                    :key="$root.settings.media_author_filter"
+            <!-- <transition name="slideupfrombottomright" mode="out-in"> -->
+            <div class="m_authorSelector--content">
+              <!-- <div>exposant•es π</div> -->
+              <div class="m_authorSelector--select">
+                <select v-model="$root.settings.media_author_filter" class="">
+                  <option
+                    v-for="author in folder_authors"
+                    :value="author.slugFolderName"
+                    :key="author.slugFolderName"
                   >
-                    <button
-                      class="m_authorSelector--rnd"
-                      type="button"
-                      @click="setAuthorRandom()"
+                    {{ $root.getAuthor(author.slugFolderName).name }}
+                    <template
+                      v-if="
+                        !authors_not_yet_picked.includes(
+                          author.slugFolderName
+                        ) &&
+                        author.slugFolderName !==
+                          $root.settings.media_author_filter
+                      "
                     >
-                      afficher au hasard
-                    </button>
-                  </div>
-                </transition>
-
-                <div class="m_authorSelector--select">
-                  <select v-model="$root.settings.media_author_filter" class="">
-                    <option
-                      v-for="author in folder_authors"
-                      :value="author.slugFolderName"
-                      :key="author.slugFolderName"
-                    >
-                      {{ $root.getAuthor(author.slugFolderName).name }}
-                      <template
-                        v-if="
-                          !authors_not_yet_picked.includes(
-                            author.slugFolderName
-                          ) &&
-                          author.slugFolderName !==
-                            $root.settings.media_author_filter
-                        "
-                      >
-                        &nbsp;✓
-                      </template>
-                    </option>
-                  </select>
-                </div>
-
-                <div
-                  class="_progressBar"
-                  :style="`--progress-percent2: ${
-                    (folder_authors.length - authors_not_yet_picked.length) /
-                    folder_authors.length
-                  }`"
-                >
-                  <div class="_progressBar--bar"></div>
-                  <div>
-                    <small>
-                      <template v-if="authors_not_yet_picked.length === 0">
-                        Vous avez vu les pages de tous les intervenants
-                      </template>
-                      <template v-else>
-                        {{
-                          folder_authors.length - authors_not_yet_picked.length
-                        }}
-                        /
-                        {{ folder_authors.length }}
-                      </template>
-                    </small>
-                  </div>
-                </div>
+                      &nbsp;✓
+                    </template>
+                  </option>
+                </select>
               </div>
-            </transition>
+
+              <transition name="fade_fast" mode="out-in">
+                <div :key="$root.settings.media_author_filter">
+                  <button
+                    class="m_authorSelector--rnd"
+                    type="button"
+                    @click="setAuthorRandom()"
+                  >
+                    π
+                  </button>
+                </div>
+              </transition>
+            </div>
+
+            <div
+              class="_progressBar"
+              :style="`--progress-percent2: ${
+                (folder_authors.length - authors_not_yet_picked.length) /
+                folder_authors.length
+              }`"
+            >
+              <div class="_progressBar--text">
+                <small>
+                  <!-- <template v-if="authors_not_yet_picked.length === 0">
+                    Vous avez vu les pages de tous les intervenants
+                  </template>
+                  <template v-else> -->
+                  {{ folder_authors.length - authors_not_yet_picked.length }}
+                  /
+                  {{ folder_authors.length }}
+                  <!-- </template> -->
+                </small>
+              </div>
+              <div class="_progressBar--bar"></div>
+            </div>
+            <!-- </transition> -->
 
             <!-- <TimelinePlayer /> -->
           </div>
@@ -2083,8 +2078,8 @@ export default {
 
 .m_authorSelector {
   position: absolute;
-  top: auto;
-  top: 0px;
+
+  bottom: 20px;
   right: 0px;
   width: 100%;
   z-index: 150;
@@ -2101,28 +2096,23 @@ export default {
 
   .m_authorSelector--content {
     position: relative;
-    width: 100%;
-    max-width: 260px;
-    margin: 0 0 0 auto;
+    width: 80%;
+    max-width: 360px;
+    margin: 0 auto;
     pointer-events: auto;
 
     font-weight: normal;
-    // border-radius: 5px;
-    padding: 5px 12px 12px;
 
-    background-color: var(--color-noir);
-    color: white;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
 
-    > * {
-      line-height: 1;
-      margin-top: 0;
-      margin-bottom: 5px;
+    margin-bottom: 11px;
 
-      &:first-child {
-        margin-top: 5px;
-        margin-bottom: 15px;
-      }
-    }
+    // background-color: var(--color-noir);
+    color: var(--color-violet);
+    font-size: 1.2rem;
+    line-height: 1.2;
   }
 
   .m_authorSelector--select {
@@ -2130,17 +2120,17 @@ export default {
     display: inline-block;
     margin: 0;
     width: 100%;
-    font-size: 1.2rem;
-    line-height: 1.2;
-    color: var(--color-noir);
-    background: #fafafa;
+    line-height: inherit;
+    font-size: inherit;
+    margin-right: 0.5rem;
+
     cursor: pointer;
     // font-weight: 700;
 
     > select {
       font-family: "GRACEbeta", monospace;
-      padding: 0.5rem 0.5rem;
-      border-radius: 0;
+      padding: 0.5rem 1rem;
+
       border: none;
       // border: 0.15em solid currentColor;
       outline: none;
@@ -2149,10 +2139,10 @@ export default {
       -moz-appearance: none;
       appearance: none;
 
-      background-image: none;
+      background-color: #00dcaa;
+      border-radius: 1em;
 
-      option {
-      }
+      background-image: none;
     }
 
     &::after {
@@ -2165,7 +2155,9 @@ export default {
       display: flex;
       align-items: center;
       // font-size: 2em;
-      padding: 0 10px;
+
+      font-size: 0.9em;
+      padding: 0 1rem;
       z-index: 10;
       // font-weight: 700;
       color: currentColor;
@@ -2174,13 +2166,26 @@ export default {
   }
 
   .m_authorSelector--rnd {
-    // background-color: var(--color-noir);
-    background-color: white;
-    padding: 0.5em 1.5em;
-    margin-bottom: 8px;
-    border-radius: 0.9em;
-    width: 100%;
-    color: var(--color-noir);
+    // background-color: white;
+    padding: 0.5rem 1rem;
+    line-height: inherit;
+    font-size: inherit;
+
+    border-radius: 1em;
+    background-color: #00dcaa;
+    color: var(--color-violet);
+    width: 2em;
+    height: 2em;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover,
+    &:focus {
+      color: #00dcaa;
+      background-color: var(--color-violet);
+    }
   }
 }
 
@@ -2291,19 +2296,23 @@ export default {
 }
 
 ._progressBar {
-  // position: absolute;
-  // top: 0%;
-  // left: 0;
-  text-align: center;
-  font-size: 65%;
+  position: relative;
+  color: var(--color-violet);
+
+  ._progressBar--text {
+    position: absolute;
+    bottom: 100%;
+    padding: 0.25em 0.5em;
+    font-size: 1.2rem;
+  }
 
   ._progressBar--bar {
-    height: 5px;
+    height: 4px;
     width: 100%;
     margin-top: 2px;
     transform: scale(var(--progress-percent2), 1);
     transform-origin: left center;
-    background-color: white;
+    background-color: currentColor;
 
     transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
   }
