@@ -28,7 +28,14 @@
           <div class="m_folder" v-if="!show_informations">
             <h2
               data-v-2dc30bca=""
-              class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large"
+              class="
+                m_folder--title
+                margin-none
+                padding-medium
+                bg-noir
+                c-blanc
+                font-large
+              "
             >
               {{ folder.name }}
             </h2>
@@ -103,7 +110,13 @@
             <div class="_editButton" v-if="$root.current_author_is_admin">
               <button
                 type="button"
-                class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
+                class="
+                  button-verysmall
+                  border-circled
+                  button-thin button-wide
+                  padding-verysmall
+                  margin-none
+                "
                 @click="edit_introduction = !edit_introduction"
                 v-html="
                   !edit_introduction
@@ -213,7 +226,13 @@
           {{ $t("export_folder") }}
           <button
             type="button"
-            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
+            class="
+              button-verysmall
+              border-circled
+              button-thin button-wide
+              padding-verysmall
+              margin-none
+            "
             @click="showExportTimelineModal = true"
             :disabled="read_only"
           >
@@ -267,12 +286,25 @@
       @close="showMediasListModal = false"
     /> -->
 
-    <div class="font-verysmall margin-medium margin-bottom-none">
+    <div class="font-verysmall margin-medium margin-bottom-small">
       <!-- <p>
         <em>Les Cahiers du Studio</em>
         version {{ $root.state.appVersion }}
       </p> -->
-      <p v-html="$t('credits')"></p>
+      <p class="margin-vert-verysmall" v-html="$t('credits')" />
+      <p
+        class="margin-vert-verysmall"
+        v-if="!$root.current_author && $root.state.mode !== 'export_web'"
+      >
+        Si vous êtes exposants et que vous souhaitez modifier votre contenu,
+        <button
+          type="button"
+          class="button-nostyle text-underline2"
+          @click="$root.showAuthorsListModal = true"
+        >
+          identifiez vous ici.
+        </button>
+      </p>
     </div>
   </div>
 </template>

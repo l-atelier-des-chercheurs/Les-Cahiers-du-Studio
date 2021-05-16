@@ -164,7 +164,7 @@
           :split="split"
         >
           <AddMedias
-            v-if="$root.state.mode !== 'export_web'"
+            v-if="$root.state.mode !== 'export_web' && $root.current_author"
             :slugFolderName="slugFolderName"
             :folder="folder"
             :current_author="$root.current_author"
