@@ -51,17 +51,31 @@ module.exports = (function () {
       }
     }).on("connection", function (socket) {
       dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
+      dev.log(
+        `Clients connected currently : ${
+          Object.keys(io.sockets.connected).length
+        }`
+      );
 
-      const ip =
-        socket.handshake && socket.handshake.address
-          ? socket.handshake.address
-          : "";
-      const user_agent =
+      let ip = "";
+      if (socket.handshake) {
+        if (socket.handshake.headers && socket.handshake.headers["x-real-ip"]) {
+          // need to add the following to nginx .conf
+          // proxy_set_header X-Real-IP $remote_addr;
+          ip = socket.handshake.headers["x-real-ip"];
+        } else if (socket.handshake.address) {
+          ip = socket.handshake.address;
+        }
+      }
+
+      let user_agent = "";
+      if (
         socket.handshake &&
         socket.handshake.headers &&
         socket.handshake.headers["user-agent"]
-          ? socket.handshake.headers["user-agent"]
-          : "";
+      )
+        user_agent = socket.handshake.headers["user-agent"];
+
       access.append({
         ip,
         user_agent,
@@ -1149,6 +1163,12 @@ module.exports = (function () {
 
   function onClientDisconnect(socket) {
     sendClients();
+
+    dev.log(
+      `Clients connected currently : ${
+        Object.keys(io.sockets.connected).length
+      }`
+    );
   }
 
   async function onLoadJournal(socket) {
