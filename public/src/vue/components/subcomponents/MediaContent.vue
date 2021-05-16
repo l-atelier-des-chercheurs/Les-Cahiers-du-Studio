@@ -159,7 +159,7 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
-      <template v-if="context === 'preview'">
+      <!-- <template v-if="context === 'preview'">
         <img
           v-if="linkToComplexMediaThumb({ type: 'page', option: 0 })"
           :srcset="linkToComplexMediaThumb({ type: 'page', option: 0 })"
@@ -170,10 +170,8 @@
         <pre v-else
           >{{ media.media_filename }}
         </pre>
-
-        <!-- // TODO : set STL/3d picto -->
-      </template>
-      <div v-else-if="context !== 'edit' && context !== 'full'">
+      </template> -->
+      <div v-if="context !== 'edit' && context !== 'full'">
         <pre
           >{{ media.media_filename }}
         </pre>
