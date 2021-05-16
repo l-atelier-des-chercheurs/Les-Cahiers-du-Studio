@@ -270,7 +270,8 @@ let vm = new Vue({
       );
 
       if (this.store.request.slugFolderName) {
-        this.settings.current_slugFolderName = this.store.request.slugFolderName;
+        this.settings.current_slugFolderName =
+          this.store.request.slugFolderName;
         this.$eventHub.$once("socketio.folders.folders_listed", () => {
           this.openFolder(this.store.request.slugFolderName);
           this.access = true;
@@ -308,12 +309,12 @@ let vm = new Vue({
       }
     });
 
-    window.onpopstate = (event) => {
-      console.log(
-        `ROOT EVENT: popstate with event.state.slugFolderName = ${event.state.slugFolderName}`
-      );
-      this.settings.current_slugFolderName = event.state.slugFolderName;
-    };
+    // window.onpopstate = (event) => {
+    //   console.log(
+    //     `ROOT EVENT: popstate with event.state.slugFolderName = ${event.state.slugFolderName}`
+    //   );
+    //   this.settings.current_slugFolderName = event.state.slugFolderName;
+    // };
 
     if (this.state.mode === "live") {
       console.log("ROOT EVENT: created / now connecting with socketio");
@@ -503,8 +504,8 @@ let vm = new Vue({
       const total_number_of_messages_in_chat = chat.number_of_medias;
 
       // find media with meta
-      const last_messages_read_in_channels = this.current_author
-        .last_messages_read_in_channels;
+      const last_messages_read_in_channels =
+        this.current_author.last_messages_read_in_channels;
 
       if (last_messages_read_in_channels) {
         const existing_info = last_messages_read_in_channels.find(
