@@ -414,7 +414,8 @@ module.exports = (function () {
 
     const slugFolderName = Object.keys(folders_and_medias)[0];
 
-    if(!(await canSeeFolder(
+    if (
+      !(await canSeeFolder(
         socket,
         folders_and_medias[slugFolderName],
         type
@@ -449,32 +450,32 @@ module.exports = (function () {
       meta.password = "has_pass";
     }
 
-    const field_to_act_on = Object.entries(fields).find(([key, f]) =>
+    const fields_to_act_on = Object.entries(fields).filter(([key, f]) =>
       f.hasOwnProperty("show_only_to")
     );
-    if (!field_to_act_on) return meta;
+    if (!fields_to_act_on) return meta;
 
-    const field_name = field_to_act_on[0];
-    const field_props = field_to_act_on[1];
+    fields_to_act_on.map((field_to_act_on) => {
+      const field_name = field_to_act_on[0];
+      const field_props = field_to_act_on[1];
 
-    // check if author is one of field_to_act_on.show_only_to
-    if (field_props.show_only_to.includes("self")) {
-      // check is socket is amongst the authors of this content
-      if (isSocketAuthorizedForFolders({ socket, type, slugFolderName })) {
-        return meta;
+      // remove prop if
+
+      if (
+        // if author and author is auth
+        (field_props.show_only_to.includes("self") &&
+          isSocketAuthorizedForFolders({ socket, type, slugFolderName })) ||
+        //if is admin and admin are auth
+        (field_props.show_only_to.includes("admin") && socket_is_admin)
+      ) {
+        // else
+      } else {
+        // remove field
+        if (meta.hasOwnProperty(field_name) && !!meta[field_name])
+          delete meta[field_name];
       }
-    }
+    });
 
-    if (field_props.show_only_to.includes("admin")) {
-      // check is socket is amongst the authors of this content
-      if (socket_is_admin) {
-        return meta;
-      }
-    }
-
-    // hide field
-    if (meta.hasOwnProperty(field_name) && !!meta[field_name])
-      delete meta[field_name];
     return meta;
   }
 
@@ -540,15 +541,22 @@ module.exports = (function () {
       return true;
     }
 
-    if (!!pwd && String(pwd) === String(global.session_password)) {
+    if (!pwd) {
+      // no session password
+      dev.logverbose(`Session password is set but no password were submitted`);
+      return false;
+    }
+
+    if (String(pwd) === String(global.session_password)) {
       // has session password, is good
       dev.logverbose(`Has session password, is valid`);
       return true;
-    } else {
-      // has session password, is wrong
-      dev.logverbose(`Expected pwd: ${global.session_password}`);
-      dev.logverbose(`Submitted pwd: ${pwd}`);
     }
+
+    // has session password, is wrong
+    dev.logverbose(`Submitted session pwd not valid.`);
+    dev.logverbose(`Expected pwd: ${global.session_password}`);
+    dev.logverbose(`Submitted pwd: ${pwd}`);
     return false;
   }
 
@@ -608,7 +616,12 @@ module.exports = (function () {
     let is_admin = false;
 
     // get all session authors
-    const all_authors_informations = await file.getFolder({ type: "authors" });
+    const all_authors_informations = await file
+      .getFolder({ type: "authors" })
+      .catch((err) => {
+        // error : no authors to check
+        return false;
+      });
     const admins_slugs = Object.values(all_authors_informations).reduce(
       (acc, a) => {
         if (a.role === "admin") acc.push(a.slugFolderName);

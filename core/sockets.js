@@ -3,7 +3,8 @@ const dev = require("./dev-log"),
   auth = require("./auth"),
   exporter = require("./exporter"),
   file = require("./file"),
-  changelog = require("./changelog");
+  changelog = require("./changelog"),
+  access = require("./access");
 
 const bcrypt = require("bcryptjs");
 
@@ -50,6 +51,35 @@ module.exports = (function () {
       }
     }).on("connection", function (socket) {
       dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
+      dev.log(
+        `Clients connected currently : ${
+          Object.keys(io.sockets.connected).length
+        }`
+      );
+
+      let ip = "";
+      if (socket.handshake) {
+        if (socket.handshake.headers && socket.handshake.headers["x-real-ip"]) {
+          // need to add the following to nginx .conf
+          // proxy_set_header X-Real-IP $remote_addr;
+          ip = socket.handshake.headers["x-real-ip"];
+        } else if (socket.handshake.address) {
+          ip = socket.handshake.address;
+        }
+      }
+
+      let user_agent = "";
+      if (
+        socket.handshake &&
+        socket.handshake.headers &&
+        socket.handshake.headers["user-agent"]
+      )
+        user_agent = socket.handshake.headers["user-agent"];
+
+      access.append({
+        ip,
+        user_agent,
+      });
       socket._data = {};
 
       var onevent = socket.onevent;
@@ -88,9 +118,10 @@ module.exports = (function () {
       socket.on("copyFolder", (d) => onCopyFolder(socket, d));
 
       socket.on("updateNetworkInfos", (d) => onUpdateNetworkInfos(socket, d));
-      // socket.on("updateClientInfo", (d) => onUpdateClientInfo(socket, d));
-      // socket.on("listClientsInfo", (d) => onListClientsInfo(socket, d));
-      // socket.on("disconnect", (d) => onClientDisconnect(socket));
+      socket.on("updateClientInfo", (d) => onUpdateClientInfo(socket, d));
+      socket.on("listClientsInfo", (d) => onListClientsInfo(socket, d));
+
+      socket.on("disconnect", (d) => onClientDisconnect(socket));
 
       socket.on("loadJournal", (d) => onLoadJournal(socket));
       socket.on("emptyJournal", (d) => onEmptyJournal(socket));
@@ -954,11 +985,16 @@ module.exports = (function () {
     await sendFolders({ type, slugFolderName: new_slugFolderName, id });
   }
 
-  function onUpdateNetworkInfos() {
+  function onUpdateNetworkInfos(socket) {
     dev.logfunction(`EVENT - onUpdateNetworkInfos`);
     api.getNetworkInfos().then(
       (localNetworkInfos) => {
-        api.sendEventWithContent("newNetworkInfos", localNetworkInfos, io);
+        api.sendEventWithContent(
+          "newNetworkInfos",
+          localNetworkInfos,
+          io,
+          socket
+        );
       },
       function (err, p) {
         dev.error(`Err while getting local IP: ${err}`);
@@ -1127,6 +1163,12 @@ module.exports = (function () {
 
   function onClientDisconnect(socket) {
     sendClients();
+
+    dev.log(
+      `Clients connected currently : ${
+        Object.keys(io.sockets.connected).length
+      }`
+    );
   }
 
   async function onLoadJournal(socket) {
