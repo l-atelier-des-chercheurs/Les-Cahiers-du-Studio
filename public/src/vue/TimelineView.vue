@@ -2150,6 +2150,7 @@ export default {
       appearance: none;
 
       background-color: #00dcaa;
+      color: #fff;
       border-radius: 1em;
 
       background-image: none;
@@ -2182,8 +2183,9 @@ export default {
     font-size: inherit;
 
     border-radius: 1em;
-    background-color: #00dcaa;
-    color: var(--color-violet);
+
+    background-color: #8c1ee5;
+    color: #fff;
     width: 2em;
     height: 2em;
 
