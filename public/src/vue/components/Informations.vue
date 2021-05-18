@@ -115,21 +115,9 @@
           <p class="f-compagnie">
             Michela Deni (PROJEKT)<br />
             Ruedi Baur (Integral designers)<br />
-            Cécile Duval-Zack (AIA LifeDesigners)<br />
+            Cécile Mailles (AIA LifeDesigners)<br />
             Pierre Cloarec (ENSCI)<br />
             Sophie Larger et Vincent Lacoste
-          </p>
-
-          <h3>
-            <span>Territoires </span>
-          </h3>
-
-          <p class="f-compagnie">
-            Ludovic Duhem (ESAD Valenciennes)<br />
-            Malte Martin (agrafmobile)<br />
-            Émeline Lavocat (27e Région)<br />
-            Yann Aucompte et Matthieu Marchal<br />
-            Fanny Ehl - Doctorante à l’université Lyon 2 en géographie
           </p>
 
           <h3>
@@ -167,6 +155,17 @@
           </p>
 
           <h3>
+            <span>Territoires </span>
+          </h3>
+
+          <p class="f-compagnie">
+            Ludovic Duhem (ESAD Valenciennes)<br />
+            Malte Martin (agrafmobile)<br />
+            Yann Aucompte et Matthieu Marchal<br />
+            Fanny Ehl - Doctorante à l’université Lyon 2 en géographie
+          </p>
+
+          <h3>
             <span
               >Communs
 
@@ -186,10 +185,9 @@
           <p class="f-compagnie">
             Jérôme Delormas (ISDAT Toulouse) <br />
             Eddy Terki et Alice Cornu (Plateforme social design) <br />
-            Juliette Chevalier (chargée mission design et mode Ministère de la
+            Aude Vuillier (chargée mission design et mode Ministère de la
             culture)<br />
             Pauline Gourlet et Sylvia Fredriksson (Design commun)<br />
-            Lyne EA (HEAR)<br />
             Silvia Dore et Romain Diant (AFD)
           </p>
         </div>
@@ -368,11 +366,8 @@
           <small>
             <template v-if="$root.lang.current === 'fr'">
               Besoin d’aide, des questions ? Envoyez un email à
-              <a
-                href="mailto:r.diant@alliance-francaise-des-designers.org"
-                target="_blank"
-              >
-                r.diant@alliance-francaise-des-designers.org
+              <a href="mailto:r.diant@afd.eu.com" target="_blank">
+                r.diant@afd.eu.com
               </a>
               ou
               <a href="mailto:s.dore@afd.eu.com" target="_blank">
@@ -381,11 +376,8 @@
             </template>
             <template v-else>
               Need help, questions? Send an email to
-              <a
-                href="mailto:r.diant@alliance-francaise-des-designers.org"
-                target="_blank"
-              >
-                r.diant@alliance-francaise-des-designers.org
+              <a href="mailto:r.diant@afd.eu.com" target="_blank">
+                r.diant@afd.eu.com
               </a>
               or
               <a href="mailto:s.dore@afd.eu.com" target="_blank">
@@ -699,7 +691,7 @@ h3 {
       }
     }
   }
-  &:nth-of-type(2) {
+  &:nth-of-type(3) {
     span {
       transform: rotate(5deg);
       margin-left: -8px;
@@ -717,7 +709,7 @@ h3 {
       }
     }
   }
-  &:nth-of-type(3) {
+  &:nth-of-type(2) {
     span {
       margin-left: -12px;
       transform: rotate(-13.5deg);
