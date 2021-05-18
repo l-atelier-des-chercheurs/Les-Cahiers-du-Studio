@@ -270,8 +270,10 @@ let vm = new Vue({
       );
 
       if (this.store.request.slugFolderName) {
-        this.settings.current_slugFolderName = this.store.request.slugFolderName;
-        this.settings.is_loading_medias_for_folder = this.store.request.slugFolderName;
+        this.settings.current_slugFolderName =
+          this.store.request.slugFolderName;
+        this.settings.is_loading_medias_for_folder =
+          this.store.request.slugFolderName;
         this.$eventHub.$once("socketio.folders.folders_listed", () => {
           this.openFolder(this.store.request.slugFolderName);
           this.show_app = true;
@@ -498,8 +500,8 @@ let vm = new Vue({
       const total_number_of_messages_in_chat = chat.number_of_medias;
 
       // find media with meta
-      const last_messages_read_in_channels = this.current_author
-        .last_messages_read_in_channels;
+      const last_messages_read_in_channels =
+        this.current_author.last_messages_read_in_channels;
 
       if (last_messages_read_in_channels) {
         const existing_info = last_messages_read_in_channels.find(
@@ -743,11 +745,11 @@ let vm = new Vue({
         });
       });
 
-      history.pushState(
-        { slugFolderName },
-        this.store.folders[slugFolderName].name,
-        "/" + slugFolderName
-      );
+      // history.pushState(
+      //   { slugFolderName },
+      //   this.store.folders[slugFolderName].name,
+      //   "/" + slugFolderName
+      // );
 
       this.$eventHub.$once("socketio.folders.medias_listed", () => {
         this.settings.is_loading_medias_for_folder = false;
@@ -758,7 +760,7 @@ let vm = new Vue({
         console.log("ROOT EVENT: closeFolder");
       }
       this.settings.current_slugFolderName = "";
-      history.pushState({ slugFolderName: "" }, "", "/");
+      // history.pushState({ slugFolderName: "" }, "", "/");
     },
     updateFolderScale: function (slugFolderName, timelineViewport_scale) {
       if (window.state.dev_mode === "debug") {
