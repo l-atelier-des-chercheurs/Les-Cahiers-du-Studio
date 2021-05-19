@@ -147,8 +147,6 @@
 
           <p class="f-compagnie">
             Florian Dach et Dimitri Zephir (dach&zephir / Éloj Kréyol) <br />
-            et Sophie Krier (Field Essays/Plateforme “art, design et société”
-            EnsadLab)<br />
             Christophe Tincelin et Nicolas Chauveau (Entreautre)<br />
             Flora Koel et Alexandre Echasseriau<br />
             Miren Lasnier (ENSCI)
@@ -161,7 +159,7 @@
           <p class="f-compagnie">
             Ludovic Duhem (ESAD Valenciennes)<br />
             Malte Martin (agrafmobile)<br />
-            Yann Aucompte et Matthieu Marchal<br />
+            Yann Aucompte<br />
             Fanny Ehl - Doctorante à l’université Lyon 2 en géographie
           </p>
 
