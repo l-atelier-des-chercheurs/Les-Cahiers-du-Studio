@@ -2149,7 +2149,7 @@ export default {
       -moz-appearance: none;
       appearance: none;
 
-      background-color: #00dcaa;
+      background-color: #8c1ee5;
       color: #fff;
       border-radius: 1em;
 
@@ -2171,7 +2171,7 @@ export default {
       padding: 0 1rem;
       z-index: 10;
       // font-weight: 700;
-      color: currentColor;
+      color: white;
       pointer-events: none;
     }
   }
