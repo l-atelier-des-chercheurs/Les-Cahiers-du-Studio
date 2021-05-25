@@ -111,7 +111,9 @@
               </svg>
             </span>
           </h3>
-
+          <p>
+            <strong>Jeudi 3 juin</strong>
+          </p>
           <p class="f-compagnie">
             Michela Deni (PROJEKT)<br />
             Ruedi Baur (Integral designers)<br />
@@ -145,6 +147,10 @@
             </span>
           </h3>
 
+          <p class="margin-bottom-none">
+            <strong>Jeudi 10 juin</strong>
+          </p>
+
           <p class="f-compagnie">
             Florian Dach et Dimitri Zephir (dach&zephir / Éloj Kréyol) <br />
             Christophe Tincelin et Nicolas Chauveau (Entreautre)<br />
@@ -155,6 +161,10 @@
           <h3>
             <span>Territoires </span>
           </h3>
+
+          <p class="margin-bottom-none">
+            <strong>Jeudi 17 juin</strong>
+          </p>
 
           <p class="f-compagnie">
             Ludovic Duhem (ESAD Valenciennes)<br />
@@ -179,6 +189,10 @@
               </svg>
             </span>
           </h3>
+
+          <p class="margin-bottom-none">
+            <strong>Jeudi 24 juin</strong>
+          </p>
 
           <p class="f-compagnie">
             Jérôme Delormas (ISDAT Toulouse) <br />
@@ -512,6 +526,9 @@ export default {
   h2 + p {
     margin-top: 0;
   }
+  h3 + p {
+    margin-top: 0;
+  }
 }
 
 .m_informations--presentation {
@@ -526,6 +543,13 @@ export default {
 .m_informations--presentation--text {
   // text-align: center;
   margin-left: 1em;
+
+  p {
+    margin: 1rem 0;
+  }
+  h3 {
+    // margin-top: 1.5rem;
+  }
 }
 
 h1 {
