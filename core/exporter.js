@@ -146,9 +146,8 @@ module.exports = (function () {
                                   );
                                 }
 
-                                const fullPathToThumb = api.getFolderPath(
-                                  thumb_path
-                                );
+                                const fullPathToThumb =
+                                  api.getFolderPath(thumb_path);
                                 const fullPathToThumb_cache = path.join(
                                   cachePath,
                                   thumb_path
@@ -166,7 +165,7 @@ module.exports = (function () {
                                   });
                               })
                             );
-                          } else if (t.hasOwnProperty("thumbsData")) {
+                          } else if (t && t.hasOwnProperty("thumbsData")) {
                             t.thumbsData.map((t) => {
                               tasks.push(
                                 new Promise((resolve, reject) => {
@@ -178,9 +177,8 @@ module.exports = (function () {
                                     );
                                   }
 
-                                  const fullPathToThumb = api.getFolderPath(
-                                    thumb_path
-                                  );
+                                  const fullPathToThumb =
+                                    api.getFolderPath(thumb_path);
                                   const fullPathToThumb_cache = path.join(
                                     cachePath,
                                     thumb_path
@@ -699,7 +697,8 @@ module.exports = (function () {
                       medias_list: list_of_linked_medias,
                     })
                     .then((folders_and_medias) => {
-                      _page_informations.folderAndMediaData = folders_and_medias;
+                      _page_informations.folderAndMediaData =
+                        folders_and_medias;
                       resolve(_page_informations);
                     });
                 });
