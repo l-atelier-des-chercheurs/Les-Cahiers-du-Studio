@@ -7,10 +7,13 @@ html
     title #{pageTitle}
     
 
+
     - if(mode !== 'export_web')
+      link(rel="icon" type="image/svg+xml" href="/images/favicon.svg")
       style.
         @import "/fonts/fonts.css";
     - else
+      link(rel="icon" type="image/svg+xml" href="./_images/favicon.svg")
       style.
         @import "./_fonts/fonts.css";
 
