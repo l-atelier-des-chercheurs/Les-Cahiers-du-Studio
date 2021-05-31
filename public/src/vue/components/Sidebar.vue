@@ -25,7 +25,14 @@
           <div class="m_folder" v-if="!show_informations">
             <h2
               data-v-2dc30bca=""
-              class="m_folder--title margin-none padding-medium bg-noir c-blanc font-large"
+              class="
+                m_folder--title
+                margin-none
+                padding-medium
+                bg-noir
+                c-blanc
+                font-large
+              "
             >
               {{ folder.name }}
             </h2>
@@ -70,7 +77,7 @@
         <!-- </div> -->
         <!-- <div slot="body"> -->
         <div class="_introduction">
-          <template v-if="!introduction_media">
+          <template v-if="!introduction_media && can_edit_folder">
             <button type="button" @click="createIntroduction">
               {{ $t("create_introduction") }}
             </button>
@@ -97,10 +104,16 @@
               />
             </template>
 
-            <div class="_editButton">
+            <div class="_editButton" v-if="can_edit_folder">
               <button
                 type="button"
-                class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
+                class="
+                  button-verysmall
+                  border-circled
+                  button-thin button-wide
+                  padding-verysmall
+                  margin-none
+                "
                 @click="edit_introduction = !edit_introduction"
                 v-html="
                   !edit_introduction
@@ -204,7 +217,13 @@
           {{ $t("export_folder") }}
           <button
             type="button"
-            class="button-verysmall border-circled button-thin button-wide padding-verysmall margin-none"
+            class="
+              button-verysmall
+              border-circled
+              button-thin button-wide
+              padding-verysmall
+              margin-none
+            "
             @click="showExportTimelineModal = true"
             :disabled="read_only"
           >
