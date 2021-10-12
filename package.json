@@ -82,7 +82,7 @@
     "ws": "^7.2.1"
   },
   "devDependencies": {
-    "electron": "^2.0.18",
+    "electron": "^11.5.0",
     "electron-builder": "^20.43.0",
     "electron-rebuild": "^1.8.5",
     "node-gyp": "^4.0.0"
