@@ -105,7 +105,7 @@ module.exports = (function () {
                         const media_filename = mediaMeta.media_filename;
 
                         tasks.push(
-                          new Promise((resolve, reject) => {
+                          new Promise((resolve) => {
                             const fullPathToMedia = path.join(
                               fullSlugFolderPath,
                               media_filename
@@ -133,7 +133,9 @@ module.exports = (function () {
                         typeof mediaMeta.thumbs !== "undefined"
                       ) {
                         mediaMeta.thumbs.map((t) => {
-                          if (t && t.hasOwnProperty("path")) {
+                          if (!t) return;
+
+                          if (t.hasOwnProperty("path")) {
                             tasks.push(
                               new Promise((resolve, reject) => {
                                 let thumb_path = t.path;
@@ -144,9 +146,8 @@ module.exports = (function () {
                                   );
                                 }
 
-                                const fullPathToThumb = api.getFolderPath(
-                                  thumb_path
-                                );
+                                const fullPathToThumb =
+                                  api.getFolderPath(thumb_path);
                                 const fullPathToThumb_cache = path.join(
                                   cachePath,
                                   thumb_path
@@ -176,9 +177,8 @@ module.exports = (function () {
                                     );
                                   }
 
-                                  const fullPathToThumb = api.getFolderPath(
-                                    thumb_path
-                                  );
+                                  const fullPathToThumb =
+                                    api.getFolderPath(thumb_path);
                                   const fullPathToThumb_cache = path.join(
                                     cachePath,
                                     thumb_path
@@ -697,7 +697,8 @@ module.exports = (function () {
                       medias_list: list_of_linked_medias,
                     })
                     .then((folders_and_medias) => {
-                      _page_informations.folderAndMediaData = folders_and_medias;
+                      _page_informations.folderAndMediaData =
+                        folders_and_medias;
                       resolve(_page_informations);
                     });
                 });
