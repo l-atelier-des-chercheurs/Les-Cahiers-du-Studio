@@ -13,3 +13,4 @@ npm-debug.log
 *.sln
 changelog.csv
 dist
+access.csv
