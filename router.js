@@ -379,7 +379,9 @@ module.exports = function (app, io, m) {
   }
 
   async function getChatsAndMediasAttachedToFolder({ slugFolderName }) {
-    const all_chats = await file.getFolder({ type: "chats", slugFolderName });
+    const all_chats = await file.getFolder({ type: "chats" }).catch((err) => {
+      return {};
+    });
     if (!all_chats || typeof all_chats !== "object") return {};
 
     const chats_attached_to_folder = Object.values(all_chats).filter(
