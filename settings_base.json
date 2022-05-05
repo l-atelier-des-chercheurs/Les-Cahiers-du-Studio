@@ -9,11 +9,6 @@
 
   "contentDirname": "user",
   "cacheDirname": "les-cahiers_cache",
-  "metaFileext": ".txt",
-  "thumbExt": ".jpeg",
-  "thumbFormat": "jpeg",
-  "folderMetaFilename": "meta",
-  "folderPreviewFilename": "meta_preview",
 
   "privateKeyPath": "",
   "certificatePath": "",
