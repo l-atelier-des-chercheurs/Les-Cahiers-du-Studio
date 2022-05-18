@@ -68,7 +68,7 @@
     "node-fetch": "^2.6.7",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
-    "platform-folders": "^0.5.4",
+    "platform-folders": "^0.6.0",
     "portscanner": "^2.2.0",
     "pug": "^3.0.2",
     "quill-render": "^1.0.5",
@@ -94,6 +94,6 @@
     "node-gyp": "^9.0.0"
   },
   "optionalDependencies": {
-    "pdf-extractor": "^2.0.0"    
+    "pdf-extractor": "^2.0.0"
   }
 }
