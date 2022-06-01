@@ -5,7 +5,8 @@ const path = require("path"),
   slugg = require("slugg"),
   os = require("os"),
   writeFileAtomic = require("write-file-atomic"),
-  pathToFfmpeg = require("ffmpeg-static"),
+  ffmpegPath = require("ffmpeg-static"),
+  { path: ffprobePath } = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   pad = require("pad-left");
 
@@ -13,11 +14,22 @@ const sharp = require("sharp");
 
 const dev = require("./dev-log");
 
-ffmpeg.setFfmpegPath(pathToFfmpeg);
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
     getFolderPath: (slugFolderName = "") => getFolderPath(slugFolderName),
+    getFullPath: ({ type, slugFolderName = "", file_name = "" }) => {
+      if (!global.settings.structure.hasOwnProperty(type))
+        throw `Missing type ${type} in global.settings.json`;
+
+      const base_path = path.join(
+        global.pathToUserContent,
+        global.settings.structure[type].path
+      );
+      return path.join(base_path, slugFolderName, file_name);
+    },
     findFirstFilenameNotTaken: (thisPath, fileName) =>
       findFirstFilenameNotTaken(thisPath, fileName),
     getCurrentDate: (format = global.settings.metaDateFormat) =>
@@ -29,8 +41,6 @@ module.exports = (function () {
       parseDate(date, format),
     storeData: (mpath, d, e) => storeData(mpath, d, e),
     parseData: (d) => parseData(d),
-    eventAndContent: (sendEvent, objectJson) =>
-      eventAndContent(sendEvent, objectJson),
     sendEventWithContent: (sendEvent, objectContent, io, socket) =>
       sendEventWithContent(sendEvent, objectContent, io, socket),
     getNetworkInfos: () => getNetworkInfos(),
@@ -45,12 +55,8 @@ module.exports = (function () {
     makeStopmotionFromImageSequence: (d) => makeStopmotionFromImageSequence(d),
   };
 
-  function _getUserPath() {
-    return global.pathToUserContent;
-  }
-
   function getFolderPath(slugFolderName = "") {
-    return path.join(_getUserPath(), slugFolderName);
+    return path.join(global.pathToUserContent, slugFolderName);
   }
 
   function getCurrentDate(f) {
@@ -92,7 +98,7 @@ module.exports = (function () {
       fileNameWithoutExtension = slug(fileNameWithoutExtension);
 
       let newFileName = `${fileNameWithoutExtension}${fileExtension}`;
-      let newMetaFileName = `${newFileName}${global.settings.metaFileext}`;
+      let newMetaFileName = `${newFileName}.txt`;
       let newPathToFile = path.join(thisPath, newFileName);
       let newPathToMeta = path.join(thisPath, newMetaFileName);
       let index = 0;
@@ -109,7 +115,7 @@ module.exports = (function () {
           );
           index++;
           newFileName = `${fileNameWithoutExtension}-${index}${fileExtension}`;
-          newMetaFileName = `${newFileName}${global.settings.metaFileext}`;
+          newMetaFileName = `${newFileName}.txt`;
           newPathToFile = path.join(thisPath, newFileName);
           newPathToMeta = path.join(thisPath, newMetaFileName);
         }
@@ -117,7 +123,7 @@ module.exports = (function () {
         // no file of this name has been found
       }
       dev.logverbose(`3. this filename is not taken : ${newFileName}`);
-      resolve(newFileName);
+      return resolve(newFileName);
     });
   }
 
@@ -143,52 +149,30 @@ module.exports = (function () {
     });
   }
 
-  function eventAndContent(sendEvent, objectJson) {
-    var eventContentJSON = {
-      socketevent: sendEvent,
-      content: objectJson,
-    };
-    return eventContentJSON;
-  }
-
   function sendEventWithContent(sendEvent, objectContent, io, socket) {
-    let eventAndContentJson = eventAndContent(sendEvent, objectContent);
-    let eventAndContentJson_string = JSON.stringify(
-      eventAndContentJson.socketevent,
-      null,
-      4
-    );
-    if (socket) {
+    let eventAndContentJson = {
+      socketevent: sendEvent,
+      content: objectContent,
+    };
+
+    dev.logpackets({
+      str: `sendEventWithContent ${
+        socket && socket.id ? `for user ` + socket.id : "for all users"
+      } with type ${eventAndContentJson.socketevent}`,
+      obj: eventAndContentJson.content,
+    });
+
+    if (socket)
       // content sent only to one user
-      dev.logpackets(
-        `sendEventWithContent for user ${socket.id} = ${eventAndContentJson_string}`
-      );
       socket.emit(
         eventAndContentJson["socketevent"],
         eventAndContentJson["content"]
       );
-    } else {
-      // content broadcasted to all connected users
-      dev.logpackets(
-        `sendEventWithContent for all users = ${eventAndContentJson_string}`
-      );
+    else
       io.sockets.emit(
         eventAndContentJson["socketevent"],
         eventAndContentJson["content"]
       );
-    }
-    // dev.logpackets(
-    //   `sendEventWithContent — sending packet with content = ${JSON.stringify(
-    //     eventAndContentJson['content'],
-    //     null,
-    //     4
-    //   )}`
-    // );
-    dev.logpackets(
-      `eventAndContentJson — sending packet with string length = ${
-        JSON.stringify(eventAndContentJson["content"]).length
-      }`
-    );
   }
 
   // from http://stackoverflow.com/a/8440736

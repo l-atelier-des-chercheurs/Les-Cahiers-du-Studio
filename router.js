@@ -119,8 +119,13 @@ module.exports = function (app, io, m) {
       .then((chatsdata) => {
         pageData.chatsAndMediaData = chatsdata;
       })
-      .then(() => file.getFolder({ type: "authors" }))
+      .then(() =>
+        file.getFolders({ type: "authors" }).catch((err) => {
+          return {};
+        })
+      )
       .then((authorsData) => {
+        debugger;
         Object.keys(authorsData).map((author_slug) => {
           if (authorsData[author_slug].hasOwnProperty("password"))
             delete authorsData[author_slug].password;
@@ -379,7 +384,9 @@ module.exports = function (app, io, m) {
   }
 
   async function getChatsAndMediasAttachedToFolder({ slugFolderName }) {
-    const all_chats = await file.getFolder({ type: "chats", slugFolderName });
+    const all_chats = await file.getFolders({ type: "chats" }).catch((err) => {
+      return {};
+    });
     if (!all_chats || typeof all_chats !== "object") return {};
 
     const chats_attached_to_folder = Object.values(all_chats).filter(

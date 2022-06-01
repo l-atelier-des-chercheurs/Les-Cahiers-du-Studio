@@ -88,12 +88,9 @@ module.exports = (function () {
 
         acc.push(async () => {
           // get all folders slugs and passwords
-          const foldersData = await file.getFolder({ type }).catch((err) => {
-            dev.error(`Failed to get folder data: ${err}`);
-            return [];
-          });
-
-          if (!foldersData) return [];
+          const foldersData = await file
+            .getFolders({ type })
+            .catch((err) => []);
 
           dev.logverbose(
             `AUTH — setAuthenticate : got folder data, now checking against user_folder_passwords[${type}]`
@@ -450,32 +447,32 @@ module.exports = (function () {
       meta.password = "has_pass";
     }
 
-    const fields_to_act_on = Object.entries(fields).filter(([key, f]) =>
+    const field_to_act_on = Object.entries(fields).find(([key, f]) =>
       f.hasOwnProperty("show_only_to")
     );
-    if (!fields_to_act_on) return meta;
+    if (!field_to_act_on) return meta;
 
-    fields_to_act_on.map((field_to_act_on) => {
-      const field_name = field_to_act_on[0];
-      const field_props = field_to_act_on[1];
+    const field_name = field_to_act_on[0];
+    const field_props = field_to_act_on[1];
 
-      // remove prop if
-
-      if (
-        // if author and author is auth
-        (field_props.show_only_to.includes("self") &&
-          isSocketAuthorizedForFolders({ socket, type, slugFolderName })) ||
-        //if is admin and admin are auth
-        (field_props.show_only_to.includes("admin") && socket_is_admin)
-      ) {
-        // else
-      } else {
-        // remove field
-        if (meta.hasOwnProperty(field_name) && !!meta[field_name])
-          delete meta[field_name];
+    // check if author is one of field_to_act_on.show_only_to
+    if (field_props.show_only_to.includes("self")) {
+      // check is socket is amongst the authors of this content
+      if (isSocketAuthorizedForFolders({ socket, type, slugFolderName })) {
+        return meta;
       }
-    });
+    }
 
+    if (field_props.show_only_to.includes("admin")) {
+      // check is socket is amongst the authors of this content
+      if (socket_is_admin) {
+        return meta;
+      }
+    }
+
+    // hide field
+    if (meta.hasOwnProperty(field_name) && !!meta[field_name])
+      delete meta[field_name];
     return meta;
   }
 
@@ -617,11 +614,12 @@ module.exports = (function () {
 
     // get all session authors
     const all_authors_informations = await file
-      .getFolder({ type: "authors" })
+      .getFolders({ type: "authors" })
       .catch((err) => {
-        // error : no authors to check
-        return false;
+        dev.logverbose(`AUTH — isSocketLoggedInAsAdmin: ${is_admin}`);
+        return is_admin;
       });
+
     const admins_slugs = Object.values(all_authors_informations).reduce(
       (acc, a) => {
         if (a.role === "admin") acc.push(a.slugFolderName);

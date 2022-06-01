@@ -1,10 +1,15 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  pathToFfmpeg = require("ffmpeg-static"),
+  ffmpegPath = require("ffmpeg-static"),
+  { path: ffprobePath } = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
   sharp = require("sharp"),
-  cheerio = require("cheerio");
+  cheerio = require("cheerio"),
+  fetch = require("node-fetch"),
+  https = require("https");
+
+const PdfExtractor = require("pdf-extractor").PdfExtractor;
 
 sharp.cache(false);
 
@@ -14,7 +19,8 @@ const puppeteer = require("puppeteer");
 const dev = require("./dev-log"),
   api = require("./api");
 
-ffmpeg.setFfmpegPath(pathToFfmpeg);
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
@@ -284,6 +290,7 @@ module.exports = (function () {
                   thumbFolderPath,
                   filename,
                   page,
+                  mediaPath,
                 })
                   .then(({ screenshotPath, screenshotName }) => {
                     // make screenshot, then make thumbs out of each screenshot and push this to thumbs
@@ -324,7 +331,7 @@ module.exports = (function () {
                     });
                   })
                   .catch((err) => {
-                    dev.error(`Couldn’t make pdf screenshots.`);
+                    dev.error(`Couldn’t make pdf screenshots : ${err}`);
                     resolve();
                   });
               });
@@ -340,12 +347,13 @@ module.exports = (function () {
                 filename,
                 mediaData,
               })
-                .then(({ title, description, image }) => {
+                .then(({ title, description, image, local_image }) => {
                   return resolve({
                     siteData: {
                       title,
                       description,
                       image,
+                      local_image,
                     },
                   });
                 })
@@ -725,7 +733,7 @@ module.exports = (function () {
         `Looking/Making an image thumb for ${mediaPath} and resolution = ${thumbRes}`
       );
 
-      let thumbName = `${filename}.${thumbRes}${global.settings.thumbExt}`;
+      let thumbName = `${filename}.${thumbRes}.jpeg`;
       let thumbPath = path.join(thumbFolderPath, thumbName);
       let fullThumbPath = api.getFolderPath(thumbPath);
 
@@ -758,7 +766,7 @@ module.exports = (function () {
             })
             .flatten({ background: "white" })
             .withMetadata()
-            .toFormat(global.settings.thumbFormat, {
+            .toFormat("jpeg", {
               quality: global.settings.mediaThumbQuality,
             })
             .toFile(fullThumbPath)
@@ -907,17 +915,21 @@ module.exports = (function () {
                 height: 1800,
               },
             ],
-          }).then(function (thumbnails) {
-            // thumbnails is an array (in matching order to your requests) of Canvas objects
-            // you can write them to disk, return them to web users, etc
-            // see node-canvas documentation at https://github.com/Automattic/node-canvas
-            thumbnails[0].toBuffer(function (err, buf) {
-              if (err) return reject();
+          })
+            .then(function (thumbnails) {
+              // thumbnails is an array (in matching order to your requests) of Canvas objects
+              // you can write them to disk, return them to web users, etc
+              // see node-canvas documentation at https://github.com/Automattic/node-canvas
+              thumbnails[0].toBuffer(function (err, buf) {
+                if (err) return reject();
 
-              fs.writeFileSync(fullScreenshotPath, buf);
-              return resolve({ screenshotPath, screenshotName });
+                fs.writeFileSync(fullScreenshotPath, buf);
+                return resolve({ screenshotPath, screenshotName });
+              });
+            })
+            .catch(function (err) {
+              return reject(err);
             });
-          });
         } else {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`
@@ -928,130 +940,205 @@ module.exports = (function () {
     });
   }
 
-  function _makePDFScreenshot({
-    slugFolderName,
+  async function _makePDFScreenshot({
     thumbFolderPath,
     filename,
     page,
+    mediaPath,
   }) {
-    return new Promise(function (resolve, reject) {
-      dev.logfunction(
-        `THUMBS — _makePDFScreenshot: ${slugFolderName}/${filename}`
-      );
+    dev.logfunction(`THUMBS — _makePDFScreenshot: ${mediaPath}`);
 
-      // todo : use page to get screenshots of each page
-      let screenshotName = `${filename}.${page}.png`;
-      let screenshotPath = path.join(thumbFolderPath, screenshotName);
-      let fullScreenshotPath = api.getFolderPath(screenshotPath);
+    // todo : use page to get screenshots of each page
+    let screenshotName = `${filename}.${page}.png`;
+    let screenshotPath = path.join(thumbFolderPath, screenshotName);
+    let fullScreenshotPath = api.getFolderPath(screenshotPath);
 
-      // check first if it exists, resolve if it does
-      fs.pathExists(fullScreenshotPath).then((exists) => {
-        if (!exists) {
-          const url = `${global.appInfos.homeURL}/${slugFolderName}/${filename}`;
+    // check first if it exists, resolve if it does
+    if (await fs.pathExists(fullScreenshotPath)) {
+      dev.logverbose(`Screenshots already exist`);
+      return { screenshotPath, screenshotName };
+    }
 
-          screenshotWebsite({
-            url,
-          })
-            .then((image) => {
-              fs.writeFile(fullScreenshotPath, image.toPNG(1.0), (error) => {
-                if (error) throw error;
-                dev.logverbose(
-                  `THUMBS — _makePDFScreenshot : created image at ${fullScreenshotPath}`
-                );
-                return resolve({ screenshotPath, screenshotName });
-              });
-            })
-            .catch((err) => {
-              dev.error(
-                `THUMBS — _makePDFScreenshot / Failed to make stl thumbs with error ${err}`
-              );
-              return reject();
-            });
-        } else {
-          dev.logverbose(
-            `Screenshots already exist at path ${fullScreenshotPath}`
-          );
-          return resolve({ screenshotPath, screenshotName });
+    const _pdf_folder = path.join(
+      api.getFolderPath(thumbFolderPath),
+      `${filename}-${page}`
+    );
+    await fs.ensureDir(_pdf_folder);
+
+    pdfExtractor = new PdfExtractor(_pdf_folder, {
+      viewportScale: (width, height) => {
+        //dynamic zoom based on rendering a page to a fixed page size
+        if (width > height) {
+          //landscape: 1100px wide
+          return 1100 / width;
         }
-      });
+        //portrait: 800px wide
+        return 800 / width;
+      },
+      pageRange: [page + 1, page + 1],
     });
+
+    await pdfExtractor.parse(mediaPath).catch((err) => {
+      dev.error(
+        `THUMBS — _makePDFScreenshot / Failed to make pdf thumbs with error ${err}`
+      );
+      throw err;
+    });
+
+    dev.logverbose(`THUMBS — _makePDFScreenshot: extracted page ${page}`);
+
+    // rename and move page-1.png
+    const src = path.join(_pdf_folder, "page-1.png");
+    await fs.move(src, fullScreenshotPath);
+    await fs.remove(_pdf_folder);
+
+    return { screenshotPath, screenshotName };
+
+    // const url = `${global.appInfos.homeURL}/${slugFolderName}/${filename}`;
+    // const padding = 6;
+    // const top_toolbar_height = 54;
+    // screenshotWebsite({
+    //   url,
+    //   width: 2100 / 3 + padding,
+    //   height: 2970 / 3 + top_toolbar_height,
+    //   rect: {
+    //     x: padding,
+    //     y: top_toolbar_height + padding,
+    //     width: 2100 / 3 - padding * 2,
+    //     height: 2970 / 3 - padding * 2 - 2,
+    //   },
+    // })
+    //   .then((image) => {
+    //     fs.writeFile(fullScreenshotPath, image.toPNG(1.0), (error) => {
+    //       if (error) throw error;
+    //       dev.logverbose(
+    //         `THUMBS — _makePDFScreenshot : created image at ${fullScreenshotPath}`
+    //       );
+    //       return resolve({ screenshotPath, screenshotName });
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     dev.error(
+    //       `THUMBS — _makePDFScreenshot / Failed to make stl thumbs with error ${err}`
+    //     );
+    //     return reject();
+    //   });
   }
 
-  function _getLinkOpenGraph({
+  async function _getLinkOpenGraph({
     slugFolderName,
     thumbFolderPath,
     filename,
     mediaData,
   }) {
-    return new Promise(function (resolve, reject) {
-      dev.logfunction(
-        `THUMBS — _getLinkOpenGraph: ${slugFolderName}/${filename}`
+    dev.logfunction(
+      `THUMBS — _getLinkOpenGraph: ${slugFolderName}/${filename}`
+    );
+
+    let url = mediaData.content;
+    if (!url) {
+      dev.error(`THUMBS — _getLinkOpenGraph / no URL`);
+      throw `no url`;
+    }
+
+    function addhttp(url) {
+      if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
+      return url;
+    }
+    url = addhttp(url);
+
+    let meta_cache_filename = `${api.slug(url)}.sitemeta.json`;
+    let meta_cache_path = path.join(thumbFolderPath, meta_cache_filename);
+    let meta_cache_fullpath = api.getFolderPath(meta_cache_path);
+
+    if (await fs.pathExists(meta_cache_fullpath)) {
+      dev.logverbose(
+        `Site metadata already exist at path ${meta_cache_fullpath}`
       );
 
-      let url = mediaData.content;
-      if (!url) {
-        dev.error(`THUMBS — _getLinkOpenGraph / no URL`);
-        return reject(`no url`);
+      try {
+        const results = await fs.readFileSync(
+          meta_cache_fullpath,
+          global.settings.textEncoding
+        );
+        return JSON.parse(results);
+      } catch (err) {
+        dev.error(`Err while reading stored opengraph meta: ${err}`);
+        return {};
       }
+    }
 
-      function addhttp(url) {
-        if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
-        return url;
-      }
-      url = addhttp(url);
+    let results = {};
 
-      let meta_cache_filename = `${api.slug(url)}.sitemeta.json`;
-      let meta_cache_path = path.join(thumbFolderPath, meta_cache_filename);
-      let meta_cache_fullpath = api.getFolderPath(meta_cache_path);
-
-      fs.pathExists(meta_cache_fullpath).then((exists) => {
-        if (!exists) {
-          _getPageMetadata({ url })
-            .then((_metadata) => {
-              let results = {};
-              if (_metadata.hasOwnProperty("title"))
-                results.title = _metadata.title;
-              if (_metadata.hasOwnProperty("description"))
-                results.description = _metadata.description;
-              if (_metadata.hasOwnProperty("image"))
-                results.image = _metadata.image;
-
-              fs.writeFile(
-                meta_cache_fullpath,
-                JSON.stringify(results),
-                (error) => {
-                  if (error) return reject(error);
-                  dev.logverbose(
-                    `THUMBS — _getLinkOpenGraph : stored meta at ${meta_cache_fullpath}`
-                  );
-                  return resolve(results);
-                }
-              );
-            })
-            .catch((err) => {
-              return reject(err);
-            });
-        } else {
-          dev.logverbose(
-            `Site metadata already exist at path ${meta_cache_fullpath}`
-          );
-
-          fs.readFile(
-            meta_cache_fullpath,
-            global.settings.textEncoding,
-            (err, results) => {
-              return resolve(JSON.parse(results));
-            }
-          );
-        }
-      });
-      // if image
+    const _metadata = await _getPageMetadata({ url }).catch((err) => {
+      dev.error(`THUMBS — _getLinkOpenGraph / failed loading meta ${err}`);
     });
+
+    if (_metadata && _metadata.hasOwnProperty("title"))
+      results.title = _metadata.title;
+    if (_metadata && _metadata.hasOwnProperty("description"))
+      results.description = _metadata.description;
+
+    if (_metadata && _metadata.hasOwnProperty("image")) {
+      let image_url;
+      if (typeof _metadata.image === "string") image_url = _metadata.image;
+      else if (
+        typeof _metadata.image === "object" &&
+        _metadata.image.hasOwnProperty("name")
+      )
+        image_url = _metadata.image.name;
+
+      if (image_url) results.image = image_url;
+    }
+
+    if (!results.image) {
+      function endsWithAny(suffixes, string) {
+        return suffixes.some(function (suffix) {
+          return string.endsWith(suffix);
+        });
+      }
+
+      if (endsWithAny([".jpg", ".jpeg", ".png", ".gif"], url))
+        results.image = url;
+    }
+
+    if (results.image) {
+      try {
+        results.local_image = await _fetchImage({
+          thumbFolderPath,
+          site_url: url,
+          image_url: results.image,
+        });
+      } catch (err) {
+        dev.error(
+          `Couldn’t download site image ${url} to ${thumbFolderPath} : ${err}`
+        );
+      }
+    }
+
+    try {
+      await fs.writeFileSync(meta_cache_fullpath, JSON.stringify(results));
+      dev.logverbose(
+        `THUMBS — _getLinkOpenGraph : stored meta ${JSON.stringify(
+          results
+        )} at ${meta_cache_fullpath}`
+      );
+      return results;
+    } catch (err) {
+      dev.error(
+        `THUMBS — _getLinkOpenGraph : failed storing meta at ${meta_cache_fullpath} : ${err}`
+      );
+      throw err;
+    }
   }
 
   function _getPageMetadata({ url }) {
     return new Promise((resolve, reject) => {
+      dev.logfunction(`THUMBS — _getPageMetadata : ${url}`);
       let browser;
+
+      if (url.includes("vimeo.com"))
+        url += "?access_token=7607d980b70782d069e7141c4e7c436a";
 
       puppeteer
         .launch({
@@ -1059,11 +1146,11 @@ module.exports = (function () {
           ignoreHTTPSErrors: true,
           args: ["--no-sandbox", "--font-render-hinting=none"],
         })
-        .then((_browser) => {
+        .then(async (_browser) => {
           browser = _browser;
-          return browser.newPage();
-        })
-        .then(async (page) => {
+
+          const page = await browser.newPage();
+          await page.setUserAgent("facebookexternalhit/1.1");
           page.setViewport({
             width: 1800,
             height: 1800,
@@ -1072,25 +1159,35 @@ module.exports = (function () {
 
           dev.logverbose(`THUMBS — _getPageMetadata : loading URL ${url}`);
 
+          let page_timeout = setTimeout(() => {
+            dev.error(`THUMBS — _getPageMetadata : page timeout for ${url}`);
+            clearTimeout(page_timeout);
+            browser.close();
+            return reject();
+          }, 10_000);
+
           page
             .goto(url, {
               waitUntil: "domcontentloaded",
             })
             .then(async () => {
+              dev.logverbose(
+                `THUMBS — _getPageMetadata : finished loading page ${url}`
+              );
+
               let html = await page.evaluate(
                 () => document.documentElement.innerHTML
               );
-              browser.close();
 
-              dev.logverbose(
-                `THUMBS — _getPageMetadata : finished loading page`
-              );
+              clearTimeout(page_timeout);
+              browser.close();
 
               // console.log(html); // will be your innherhtml
               const parsed_meta = _parseHTMLMetaTags({ html });
               return resolve(parsed_meta);
             })
             .catch((err) => {
+              clearTimeout(page_timeout);
               browser.close();
               dev.error(
                 `THUMBS — _getPageMetadata / Failed to load link page with error ${err.message}`
@@ -1103,46 +1200,87 @@ module.exports = (function () {
 
   function _parseHTMLMetaTags({ html }) {
     var $ = cheerio.load(html);
+    var page_meta = {};
 
-    var meta = $("meta");
-    var keys = Object.keys(meta);
+    dev.logverbose(
+      `THUMBS — _parseHTMLMetaTags : using cheerio to parse HTML tags`
+    );
 
-    var result = {};
+    if ($('meta[property="og:title"]').attr("content")) {
+      page_meta.title = $('meta[property="og:title"]').attr("content");
+    } else if ($("title").text()) {
+      page_meta.title = $("title").text();
+    }
 
-    keys.forEach(function (key) {
-      if (
-        meta[key].attribs &&
-        meta[key].attribs.property &&
-        meta[key].attribs.property.indexOf("og") == 0
-      ) {
-        var og = meta[key].attribs.property.split(":");
+    if ($('meta[property="og:description"]').attr("content")) {
+      page_meta.description = $('meta[property="og:description"]').attr(
+        "content"
+      );
+    } else if ($('meta[name="description"]').attr("content")) {
+      page_meta.description = $('meta[name="description"]').attr("content");
+    }
 
-        if (og.length > 2) {
-          if (result[og[1]]) {
-            if (
-              typeof result[og[1]] == "string" ||
-              result[og[1]] instanceof String
-            ) {
-              var set = {};
-              set["name"] = result[og[1]];
-              set[og[2]] = meta[key].attribs.content;
-              result[og[1]] = set;
-            } else {
-              ex_set = result[og[1]];
-              ex_set[og[2]] = meta[key].attribs.content;
-              result[og[1]] = ex_set;
-            }
-          } else {
-            var set = {};
-            set[og[2]] = meta[key].attribs.content;
-            result[og[1]] = set;
-          }
-        } else {
-          result[og[1]] = meta[key].attribs.content;
-        }
-      }
-    });
-    return result;
+    if ($('meta[property="og:image"]').attr("content")) {
+      page_meta.image = $('meta[property="og:image"]').attr("content");
+    } else if ($('meta[name="og:image"]').attr("content")) {
+      page_meta.image = $('meta[name="og:image"]').attr("content");
+    } else if ($('link[rel="shortcut icon"]').attr("href")) {
+      page_meta.image = $('link[rel="shortcut icon"][type="image/png"]').attr(
+        "href"
+      );
+    }
+    // see https://gist.github.com/waltir/82c94c834de630f9030f95f1d8ba81cf#file-cheerio_meta-js
+    //   let post = {
+    //     title: $('h1').text(),
+    //     canonical: $('link[rel="canonical"]').attr('href'),
+    //     description: $('meta[name="description"]').attr('content'),
+    //     // Get OG Values
+    //     og_title: $('meta[property="og:title"]').attr('content'),
+    //     og_url: $('meta[property="og:url"]').attr('content'),
+    //     og_img: $('meta[property="og:image"]').attr('content'),
+    //     og_type: $('meta[property="og:type"]').attr('content'),
+    //     // Get Twitter Values
+    //     twitter_site: $('meta[name="twitter:site"]').attr('content'),
+    //     twitter_domain: $('meta[name="twitter:domain"]').attr('content'),
+    //     twitter_img_src: $('meta[name="twitter:image:src"]').attr('content'),
+    //     // Get Facebook Values
+    //     fb_appid: $('meta[property="fb:app_id"]').attr('content'),
+    //     fb_pages: $('meta[property="fb:pages"]').attr('content'),
+    // }
+    // keys.forEach(function (key) {
+    //   if (
+    //     meta[key].attribs &&
+    //     meta[key].attribs.property &&
+    //     meta[key].attribs.property.indexOf("og") == 0
+    //   ) {
+    //     var og = meta[key].attribs.property.split(":");
+
+    //     if (og.length > 2) {
+    //       if (result[og[1]]) {
+    //         if (
+    //           typeof result[og[1]] == "string" ||
+    //           result[og[1]] instanceof String
+    //         ) {
+    //           var set = {};
+    //           set["name"] = result[og[1]];
+    //           set[og[2]] = meta[key].attribs.content;
+    //           result[og[1]] = set;
+    //         } else {
+    //           ex_set = result[og[1]];
+    //           ex_set[og[2]] = meta[key].attribs.content;
+    //           result[og[1]] = ex_set;
+    //         }
+    //       } else {
+    //         var set = {};
+    //         set[og[2]] = meta[key].attribs.content;
+    //         result[og[1]] = set;
+    //       }
+    //     } else {
+    //       result[og[1]] = meta[key].attribs.content;
+    //     }
+    //   }
+    // });
+    return page_meta;
   }
 
   function _makeLinkThumb({
@@ -1198,67 +1336,77 @@ module.exports = (function () {
     });
   }
 
-  function screenshotWebsite({ url }) {
-    return new Promise(function (resolve, reject) {
-      dev.logfunction(`THUMBS — screenshotWebsite url ${url}`);
+  async function screenshotWebsite({ url, width = 1800, height = 1800, rect }) {
+    width = Math.round(width);
+    height = Math.round(height);
 
-      /* puppeteer version: can’t work for now because of missing extensions */
-      let browser;
+    dev.logfunction(
+      `THUMBS — screenshotWebsite url ${url} width ${width} height ${height} rect ${JSON.stringify(
+        rect
+      )}`
+    );
 
-      puppeteer
-        .launch({
-          headless: true,
-          ignoreHTTPSErrors: true,
-          args: ["--no-sandbox", "--font-render-hinting=none"],
-        })
-        .then((_browser) => {
-          browser = _browser;
-          return browser.newPage();
-        })
-        .then(async (page) => {
-          page.setViewport({
-            width: 1800,
-            height: 1800,
-            deviceScaleFactor: 2,
-          });
+    let browser;
 
-          dev.logverbose(`THUMBS — screenshotWebsite : loading URL ${url}`);
+    try {
+      browser = await puppeteer.launch({
+        headless: true,
+        ignoreHTTPSErrors: true,
+        args: ["--no-sandbox", "--font-render-hinting=none"],
+      });
 
-          function delay(duration) {
-            return new Promise((resolve) => {
-              setTimeout(() => resolve(), duration);
-            });
-          }
+      dev.logverbose(
+        `THUMBS — screenshotWebsite : puppeteer browser launched, making new page`
+      );
 
-          page
-            .goto(url, {
-              waitUntil: "domcontentloaded",
-            })
-            .then(() => delay(1500))
-            .then(async () => {
-              const image = await page.screenshot({
-                type: "png",
-                clip: {
-                  x: 0,
-                  y: 0,
-                  width: 1800,
-                  height: 1800,
-                },
-              });
+      const page = await browser.newPage();
+      page.setViewport({
+        width,
+        height,
+        deviceScaleFactor: 1,
+      });
 
-              dev.logverbose(`THUMBS — screenshotWebsite : created image`);
-              browser.close();
-              return resolve(image);
-            })
-            .catch((err) => {
-              browser.close();
-              dev.error(
-                `THUMBS — screenshotWebsite : failed to make STL screenshot = ${err}`
-              );
-              return reject();
-            });
+      dev.logverbose(`THUMBS — screenshotWebsite : loading URL ${url}`);
+
+      await page.goto(
+        url,
+        // "https://gist.github.com/rcarmo/cf698b52832d0ec356c147cf9c9ad898",
+        {
+          waitUntil: "domcontentloaded",
+        }
+      );
+
+      dev.logverbose(`THUMBS — screenshotWebsite : page created`);
+
+      function sleep(ms) {
+        return new Promise((resolve) => {
+          setTimeout(resolve, ms);
         });
-    });
+      }
+      await sleep(1000);
+
+      const clip = rect ? rect : {};
+
+      const image = await page
+        .screenshot({
+          type: "png",
+          clip,
+        })
+        .catch((err) => {
+          throw err;
+        });
+
+      dev.logverbose(`THUMBS — screenshotWebsite : created image`);
+
+      browser.close();
+      return image;
+    } catch (err) {
+      if (browser) browser.close();
+      dev.error(
+        `THUMBS — screenshotWebsite : failed to make screenshot = ${err}`
+      );
+      throw err;
+    }
   }
 
   function getEXIFDataForVideoAndAudio(mediaPath) {
@@ -1273,6 +1421,43 @@ module.exports = (function () {
         }
       });
     });
+  }
+
+  async function _fetchImage({ thumbFolderPath, site_url, image_url }) {
+    dev.logfunction(`THUMBS — _fetchImage: ${thumbFolderPath} to ${image_url}`);
+
+    const url = new URL(image_url, site_url).href;
+
+    const image_ext = url.split(".").pop();
+    const image_filename = "preview." + image_ext;
+
+    let siteimage_cache_filename = api.slug(url) + "." + image_filename;
+    let siteimage_cache_path = path.join(
+      thumbFolderPath,
+      siteimage_cache_filename
+    );
+    let siteimage_cache_fullpath = api.getFolderPath(siteimage_cache_path);
+
+    let headers = {};
+    if (url.includes("https://"))
+      headers.agent = new https.Agent({
+        rejectUnauthorized: false,
+      });
+
+    try {
+      const fimg = await fetch(url, headers);
+      const fimgb = await fimg.buffer();
+      await _createOrGetImageThumb({
+        mediaPath: fimgb,
+        fullThumbPath: siteimage_cache_fullpath,
+        thumbRes: 1400,
+      });
+      dev.logverbose(`THUMBS — _fetchImage: image fetched`);
+      return siteimage_cache_path;
+    } catch (err) {
+      dev.error(`THUMBS — _fetchImage: ${err}`);
+      throw err;
+    }
   }
 
   return API;
