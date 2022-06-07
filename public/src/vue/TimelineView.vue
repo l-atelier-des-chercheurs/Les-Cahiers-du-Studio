@@ -545,9 +545,9 @@ export default {
         slugFolderName: this.slugFolderName,
       });
       this.$eventHub.$once("socketio.folders.medias_listed", () => {
-        setTimeout(() => {
+        this.$nextTick(() => {
           this.is_loading = false;
-        }, 500);
+        });
       });
     } else {
       this.is_loading = false;
@@ -867,6 +867,9 @@ export default {
         }
 
         const dateMoment = this.$moment(date_to_reference_to);
+
+        if (dateMoment.isBefore("2000-01-01")) return "2000-01-01";
+        if (dateMoment.isAfter("2030-01-01")) return "2030-01-01";
         return dateMoment.format("YYYY-MM-DD");
       });
       mediaGroup = this.$_.toPairs(mediaGroup);
@@ -992,14 +995,17 @@ export default {
             m.date_timeline,
             "YYYY-MM-DD HH:mm:ss"
           );
-          if (media_date < temp_start) {
-            temp_start = media_date;
-          }
-          if (media_date > temp_end) {
-            temp_end = media_date;
-          }
+
+          if (media_date < temp_start) temp_start = media_date;
+          if (media_date > temp_end) temp_end = media_date;
         }
       });
+
+      const min_start = +this.$moment("2000-01-01");
+      if (temp_start < min_start) temp_start = min_start;
+
+      const max_end = +this.$moment("2030-01-01");
+      if (temp_end > max_end) temp_end = max_end;
 
       return {
         start: temp_start,
@@ -1405,9 +1411,8 @@ export default {
         `METHODS • TimeLineView: scrollToMedia / slugMediaName: ${slugMediaName}`
       );
 
-      const $medias = this.$refs.timeline.getElementsByClassName(
-        "mediaContainer"
-      );
+      const $medias =
+        this.$refs.timeline.getElementsByClassName("mediaContainer");
 
       if ($medias.length === 0) return false;
 
