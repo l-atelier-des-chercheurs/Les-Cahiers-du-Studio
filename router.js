@@ -348,7 +348,7 @@ module.exports = function (app, io, m) {
         });
         res.end(JSON.stringify(msg));
       })
-      .catch(({ err }) => {
+      .catch((err) => {
         sockets.notify({
           socketid: req.query.socketid,
           localized_string: `action_not_allowed`,
