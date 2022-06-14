@@ -1,5 +1,6 @@
 const formidable = require("formidable"),
-  path = require("path");
+  path = require("path"),
+  { IncomingForm } = require("formidable");
 
 const api = require("./api"),
   file = require("./file"),
@@ -14,19 +15,20 @@ module.exports = (function () {
           `IMPORTER — handleForm : type = ${type}, slugFolderName = ${slugFolderName}`
         );
 
-        // create an incoming form object
-        var form = new formidable.IncomingForm();
-
-        // specify that we want to allow the user to upload multiple files in a single request
-        form.multiples = false;
-        form.maxFileSize = global.settings.maxFileSizeForUpload * 1024 * 1024;
-        let socketid = "";
-
         // store all uploads in the folder directory
         let slugFolderPath = api.getFolderPath(
           path.join(global.settings.structure[type].path, slugFolderName)
         );
-        form.uploadDir = slugFolderPath;
+
+        // create an incoming form object
+        const form = new IncomingForm({
+          uploadDir: slugFolderPath,
+          multiples: false,
+          maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
+        });
+
+        // specify that we want to allow the user to upload multiple files in a single request
+        let socketid = "";
 
         let allFilesMeta = [];
 
