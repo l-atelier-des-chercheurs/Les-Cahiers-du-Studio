@@ -160,9 +160,7 @@
 
     <template v-else-if="media.type === 'document'">
       <div v-if="context !== 'edit' && context !== 'full'" class>
-        <pre
-          >{{ media.media_filename }}
-        </pre>
+        <img :src="linkToPageThumb" loading="lazy" draggable="false" />
       </div>
       <iframe v-else :src="mediaURL" />
     </template>
@@ -421,6 +419,31 @@ export default {
       }
       return content;
     },
+    linkToPageThumb() {
+      if (
+        !this.media["thumbs"] ||
+        (typeof this.media.thumbs === "object" &&
+          this.media.thumbs.length === 0)
+      ) {
+        return this.mediaURL;
+      }
+
+      let timeMarkThumbs = this.media.thumbs.filter((t) => !!t && t.page === 0);
+
+      if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
+        return this.mediaURL;
+      }
+
+      let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(
+        (m) => m.size === this.thumbRes
+      )[0].path;
+
+      let url =
+        this.$root.state.mode === "export_publication"
+          ? "./" + pathToSmallestThumb
+          : "/" + pathToSmallestThumb;
+      return pathToSmallestThumb !== undefined ? url : this.mediaURL;
+    },
   },
   methods: {
     playing(event) {
@@ -451,12 +474,14 @@ export default {
       });
     },
     getTweetIdFromURL(url) {
-      let tweetRegex = /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(es)?\/([0-9]{19})/;
+      let tweetRegex =
+        /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(es)?\/([0-9]{19})/;
       return url.match(tweetRegex)[3];
     },
     getYoutubeIDFromURL(url) {
       function getId(url) {
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const regExp =
+          /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
         const match = url.match(regExp);
 
         return match && match[2].length === 11 ? match[2] : null;
