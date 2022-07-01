@@ -982,15 +982,21 @@ module.exports = (function () {
       dev.error(
         `THUMBS — _makePDFScreenshot / Failed to make pdf thumbs with error ${err}`
       );
-      throw err;
+      // don't throw just yet: some pdf throw error but actually work – better a truncated PDF preview than no preview
+      // throw err;
     });
 
     dev.logverbose(`THUMBS — _makePDFScreenshot: extracted page ${page}`);
 
     // rename and move page-1.png
-    const src = path.join(_pdf_folder, "page-1.png");
-    await fs.move(src, fullScreenshotPath);
-    await fs.remove(_pdf_folder);
+    try {
+      const src = path.join(_pdf_folder, "page-1.png");
+      await fs.move(src, fullScreenshotPath);
+      await fs.remove(_pdf_folder);
+    } catch (err) {
+      await fs.remove(_pdf_folder);
+      throw err;
+    }
 
     return { screenshotPath, screenshotName };
 
