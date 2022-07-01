@@ -122,7 +122,7 @@
     <template v-else-if="media.type === 'embed'">
       <div v-if="embedURL" class>
         <vue-plyr
-          v-if="embedURL.type !== 'tweet'"
+          v-if="embedURL.type === 'youtube' || embedURL.type === 'vimeo'"
           :key="embedURL.type + '/' + embedURL.src"
           :options="plyr_options"
           :emit="['playing', 'pause', 'ended']"
@@ -136,19 +136,21 @@
             :data-plyr-embed-id="embedURL.src"
           ></div>
         </vue-plyr>
-
         <Tweet
-          v-else
+          v-else-if="embedURL.type === 'tweet'"
           :id="embedURL.id"
           :options="{ cards: 'hidden', theme: 'light' }"
         />
+        <div v-else>
+          <iframe :src="embedURL" style="width: 100%; height: 100%" />
+        </div>
       </div>
       <div v-if="context === 'edit'">
         <label>URL</label>
         <input
           type="url"
           class="border-none bg-transparent"
-          placeholder="URL"
+          :placeholder="$t('url_to_page')"
           name="url"
           :value="value"
           @input="$emit('input', $event.target.value)"
