@@ -45,6 +45,7 @@ module.exports = (function () {
       do_nothing: "Ne rien faire",
       link_to_open_in_a_new_tab:
         "URL de la page à ouvrir dans un nouvel onglet",
+      url_to_page: "URL vers la page web",
 
       timestamp:
         "EXPÉRIMENTAL : pastilles d’horodatage en appuyant sur entrée à la dernière ligne",
