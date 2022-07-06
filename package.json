@@ -58,7 +58,7 @@
     "glob": "^7.1.6",
     "gulp-util": "^3.0.8",
     "memory-cache": "^0.2.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "node-localstorage": "^2.1.5",
     "node-stl-to-thumbnail": "github:louis-ev/node-stl-to-thumbnail#develop",
     "pad-left": "^2.1.0",
