@@ -242,7 +242,7 @@ module.exports = (function () {
     copyFolder: ({
       type,
       slugFolderName: old_slugFolderName,
-      new_slugFolderName,
+      new_folder_name,
     }) => {
       return new Promise(function (resolve, reject) {
         dev.logfunction(`COMMON — copyFolder`);
@@ -252,10 +252,8 @@ module.exports = (function () {
         }
 
         _getFolderSlugs({ type }).then((folders) => {
-          let new_slugFolderName = api.slug(new_slugFolderName);
-          if (new_slugFolderName === "") {
-            new_slugFolderName = "untitled";
-          }
+          let new_slugFolderName = api.slug(new_folder_name);
+          if (new_slugFolderName === "") new_slugFolderName = "untitled";
 
           if (folders.length > 0) {
             let index = 0;
@@ -287,7 +285,7 @@ module.exports = (function () {
                     slugFolderName: new_slugFolderName,
                     foldersData: foldersData[new_slugFolderName],
                     newFoldersData: {
-                      name: new_slugFolderName,
+                      name: new_folder_name,
                     },
                   }).then(() => {
                     return resolve(new_slugFolderName);
@@ -1199,7 +1197,8 @@ module.exports = (function () {
               global.settings.structure[type].medias.fields.hasOwnProperty(
                 "media_filename"
               ) &&
-              media_data.hasOwnProperty("media_filename")
+              media_data.hasOwnProperty("media_filename") &&
+              media_data.media_filename
             ) {
               let copy_media = new Promise((resolve, reject) => {
                 // copier le media_filename dans le nouveau dossier avec le premier nom disponible

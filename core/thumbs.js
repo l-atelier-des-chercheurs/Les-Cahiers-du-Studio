@@ -10,7 +10,6 @@ const path = require("path"),
   https = require("https");
 
 const { BrowserWindow } = require("electron");
-const PdfExtractor = require("pdf-extractor").PdfExtractor;
 
 sharp.cache(false);
 
@@ -957,6 +956,14 @@ module.exports = (function () {
     );
     await fs.ensureDir(_pdf_folder);
 
+    let PdfExtractor;
+    try {
+      PdfExtractor = require("pdf-extractor").PdfExtractor;
+    } catch (err) {
+      dev.error(`THUMBS — _makePDFScreenshot / No pdfextractor found ${err}`);
+      throw err;
+    }
+
     pdfExtractor = new PdfExtractor(_pdf_folder, {
       viewportScale: (width, height) => {
         //dynamic zoom based on rendering a page to a fixed page size
@@ -974,21 +981,15 @@ module.exports = (function () {
       dev.error(
         `THUMBS — _makePDFScreenshot / Failed to make pdf thumbs with error ${err}`
       );
-      // don't throw just yet: some pdf throw error but actually work – better a truncated PDF preview than no preview
-      // throw err;
+      throw err;
     });
 
     dev.logverbose(`THUMBS — _makePDFScreenshot: extracted page ${page}`);
 
     // rename and move page-1.png
-    try {
-      const src = path.join(_pdf_folder, "page-1.png");
-      await fs.move(src, fullScreenshotPath);
-      await fs.remove(_pdf_folder);
-    } catch (err) {
-      await fs.remove(_pdf_folder);
-      throw err;
-    }
+    const src = path.join(_pdf_folder, "page-1.png");
+    await fs.move(src, fullScreenshotPath);
+    await fs.remove(_pdf_folder);
 
     return { screenshotPath, screenshotName };
 
