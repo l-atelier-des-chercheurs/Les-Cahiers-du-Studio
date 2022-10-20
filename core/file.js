@@ -869,6 +869,7 @@ module.exports = (function () {
                 (meta.type === "text" ||
                   meta.type === "marker" ||
                   meta.type === "planning" ||
+                  meta.type === "writeup" ||
                   meta.type === "composition" ||
                   meta.type === "embed" ||
                   meta.type === "link" ||
@@ -1079,6 +1080,7 @@ module.exports = (function () {
           additionalMeta.type === "text" ||
           additionalMeta.type === "marker" ||
           additionalMeta.type === "planning" ||
+          additionalMeta.type === "writeup" ||
           additionalMeta.type === "composition" ||
           additionalMeta.type === "embed" ||
           additionalMeta.type === "link" ||
@@ -1414,6 +1416,7 @@ module.exports = (function () {
               (mediaData.type === "text" ||
                 mediaData.type === "marker" ||
                 mediaData.type === "planning" ||
+                mediaData.type === "writeup" ||
                 mediaData.type === "composition" ||
                 mediaData.type === "embed" ||
                 mediaData.type === "link" ||

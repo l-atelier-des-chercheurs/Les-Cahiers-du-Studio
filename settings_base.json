@@ -1,11 +1,12 @@
 {
-  "protocol": "http",
+  "protocol": "https",
   "host": "localhost",
   "desired_port": 8080,
   "redirect_port": "",
   "userDirPath": "documents",
   "userDirname": "les-cahiers",
   "cache_content": true,
+  "removePermanently": false,
 
   "contentDirname": "user",
   "cacheDirname": "les-cahiers_cache",
