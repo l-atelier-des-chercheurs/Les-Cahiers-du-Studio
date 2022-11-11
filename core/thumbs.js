@@ -9,8 +9,6 @@ const path = require("path"),
   fetch = require("node-fetch"),
   https = require("https");
 
-const PdfExtractor = require("pdf-extractor").PdfExtractor;
-
 sharp.cache(false);
 
 const StlThumbnailer = require("node-stl-to-thumbnail");
