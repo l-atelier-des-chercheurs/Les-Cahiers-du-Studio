@@ -1,19 +1,19 @@
 {
-  "name": "dodoc",
-  "productName": "do•doc",
-  "version": "9.3.5-dev",
-  "description": "do•doc is a documentation tool for creativity.",
+  "name": "les-cahiers-du-studio",
+  "productName": "Les Cahiers du Studio",
+  "version": "2.5.5-dev",
+  "description": "A time-based documentation tool to collaboratively keep notes and capture media from live experiences.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
-  "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
+  "homepage": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio",
   "license": "AGPL-3.0-only",
   "main": "index.js",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/l-atelier-des-chercheurs/dodoc.git"
+    "url": "git://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio"
   },
   "bugs": {
-    "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
+    "url": "https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio/issues"
   },
   "scripts": {
     "start": "electron .",
