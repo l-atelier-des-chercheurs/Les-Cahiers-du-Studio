@@ -1411,4 +1411,8 @@ html[lang="fr"] .ql-tooltip::before {
     font-style: italic;
   }
 }
+
+body[data-mode="export_web"] .ql-toolbar {
+  display: none;
+}
 </style>

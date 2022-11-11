@@ -553,9 +553,6 @@ export default {
       this.is_loading = false;
     }
 
-    // this.$root.settings.sidebar_type = "informations";
-    // this.$root.settings.has_sidebar_opened = true;
-
     this.$eventHub.$on("scrollToMedia", this.scrollToMedia);
     this.$eventHub.$on("scrollToDate", this.scrollToDate);
     this.$eventHub.$on("timeline.openMediaModal", this.openMediaModal);
@@ -583,9 +580,9 @@ export default {
     this.onResize = debounce(this.onResize, 300);
     window.addEventListener("resize", this.onResize);
 
-    this.$root.settings.has_sidebar_opened = true;
-    this.$root.settings.sidebar_type = "informations";
-    // }
+    if (this.$root.state.mode === "export_web")
+      this.openSidebar({ type: "journal" });
+    else this.openSidebar({ type: "informations" });
 
     setTimeout(() => {
       this.collapse_foldername = true;
@@ -628,15 +625,6 @@ export default {
         }, this.debounce_translation_delay);
       }
     },
-
-    // "panels_width.sidebar": function () {
-    //   if (
-    //     this.panels_width.sidebar > 0 &&
-    //     this.$root.settings.sidebar_type === ""
-    //   ) {
-    //     this.$root.settings.sidebar_type = "informations";
-    //   }
-    // },
   },
   computed: {
     number_of_writeups() {

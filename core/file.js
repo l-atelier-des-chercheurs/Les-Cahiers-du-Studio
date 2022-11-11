@@ -242,7 +242,7 @@ module.exports = (function () {
     copyFolder: ({
       type,
       slugFolderName: old_slugFolderName,
-      new_slugFolderName,
+      new_folder_name,
     }) => {
       return new Promise(function (resolve, reject) {
         dev.logfunction(`COMMON — copyFolder`);
@@ -252,10 +252,8 @@ module.exports = (function () {
         }
 
         _getFolderSlugs({ type }).then((folders) => {
-          let new_slugFolderName = api.slug(new_slugFolderName);
-          if (new_slugFolderName === "") {
-            new_slugFolderName = "untitled";
-          }
+          let new_slugFolderName = api.slug(new_folder_name);
+          if (new_slugFolderName === "") new_slugFolderName = "untitled";
 
           if (folders.length > 0) {
             let index = 0;
@@ -287,7 +285,7 @@ module.exports = (function () {
                     slugFolderName: new_slugFolderName,
                     foldersData: foldersData[new_slugFolderName],
                     newFoldersData: {
-                      name: new_slugFolderName,
+                      name: new_folder_name,
                     },
                   }).then(() => {
                     return resolve(new_slugFolderName);
@@ -871,6 +869,7 @@ module.exports = (function () {
                 (meta.type === "text" ||
                   meta.type === "marker" ||
                   meta.type === "planning" ||
+                  meta.type === "writeup" ||
                   meta.type === "composition" ||
                   meta.type === "embed" ||
                   meta.type === "link" ||
@@ -1081,6 +1080,7 @@ module.exports = (function () {
           additionalMeta.type === "text" ||
           additionalMeta.type === "marker" ||
           additionalMeta.type === "planning" ||
+          additionalMeta.type === "writeup" ||
           additionalMeta.type === "composition" ||
           additionalMeta.type === "embed" ||
           additionalMeta.type === "link" ||
@@ -1199,7 +1199,8 @@ module.exports = (function () {
               global.settings.structure[type].medias.fields.hasOwnProperty(
                 "media_filename"
               ) &&
-              media_data.hasOwnProperty("media_filename")
+              media_data.hasOwnProperty("media_filename") &&
+              media_data.media_filename
             ) {
               let copy_media = new Promise((resolve, reject) => {
                 // copier le media_filename dans le nouveau dossier avec le premier nom disponible
@@ -1415,6 +1416,7 @@ module.exports = (function () {
               (mediaData.type === "text" ||
                 mediaData.type === "marker" ||
                 mediaData.type === "planning" ||
+                mediaData.type === "writeup" ||
                 mediaData.type === "composition" ||
                 mediaData.type === "embed" ||
                 mediaData.type === "link" ||
