@@ -41,7 +41,7 @@
     "sharedb": "^1.0.0-beta.26",
     "shoelace-css": "^1.0.0-beta9",
     "slugg": "^1.2.1",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.5.0",
     "store": "^2.0.12",
     "ua-parser-js": "^0.7.20",
     "underscore": "^1.9.1",
