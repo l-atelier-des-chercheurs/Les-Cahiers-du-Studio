@@ -16,10 +16,11 @@ module.exports = (function () {
 
     // list all of type (projects, publications, etc.)
     if (!global.settings.api.enabled) {
+      dev.logverbose("REMOTE_API — _initRemoteApi : is DISABLED");
       return false;
     }
 
-    dev.logverbose("REMOTE_API — _initRemoteApi : is enabled");
+    dev.logverbose("REMOTE_API — _initRemoteApi : is ENABLED");
 
     //https://github.com/expressjs/cors#enabling-cors-pre-flight
     app.options("/api/:type/:slug?", cors());
