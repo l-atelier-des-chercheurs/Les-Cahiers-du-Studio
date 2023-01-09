@@ -11,7 +11,8 @@ const settings = global.settings,
   file = require("./core/file"),
   exporter = require("./core/exporter"),
   importer = require("./core/importer"),
-  auth = require("./core/auth");
+  auth = require("./core/auth"),
+  remote_api = require("./core/remote_api");
 
 module.exports = function (app, io, m) {
   /**
@@ -22,6 +23,8 @@ module.exports = function (app, io, m) {
   app.get("/:slugFolderName/media/:metaFileName", loadFolderOrMedia);
   app.get("/export/:type/:slugFolderName", exportFolderWithMedias);
   app.post("/_file-upload/:type/:slugFolderName", postFile);
+
+  remote_api.init(app);
 
   /**
    * routing functions
