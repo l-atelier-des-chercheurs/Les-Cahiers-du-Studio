@@ -61,6 +61,23 @@
           </button>
         </div>
       </div>
+      <div class="margin-bottom-small">
+        <div>
+          {{ $t("public") }}
+        </div>
+
+        <span class="switch switch-xs">
+          <input
+            type="checkbox"
+            class=""
+            id="publicswitch_filter"
+            v-model="$root.settings.media_public_filter"
+          />
+          <label for="publicswitch_filter" style="color: currentColor">{{
+            $t("show_only_public")
+          }}</label>
+        </span>
+      </div>
     </section>
   </div>
 </template>

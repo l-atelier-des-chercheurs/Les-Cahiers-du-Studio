@@ -13,7 +13,7 @@
     <template v-if="$root.showAuthorsListModal">
       <SimpleAuthorLogin
         v-if="
-          (!$root.current_author || $root.current_author.role === 'participant')
+          !$root.current_author || $root.current_author.role === 'participant'
         "
         :prevent_close="
           $root.state.local_options.force_login && !$root.current_author

@@ -363,7 +363,7 @@
       @close="show_media_modal_for = false"
       :read_only="!$root.state.connected"
       :can_edit="can_edit_folder"
-      :allAuthors="Array.isArray(folder.authors) ? folder.authors : []"
+      :folderAuthors="Array.isArray(folder.authors) ? folder.authors : []"
     />
     <EditFolder
       v-if="show_edit_folder_modal"
@@ -608,6 +608,7 @@ export default {
     window.removeEventListener("resize", this.onResize);
 
     this.$root.settings.media_author_filter = false;
+    this.$root.settings.media_public_filter = false;
     this.$root.settings.media_keyword_filter = false;
     this.$root.settings.media_timeline_interval_filter.start = false;
     this.$root.settings.media_timeline_interval_filter.end = false;
@@ -703,6 +704,9 @@ export default {
             )
           )
             continue;
+        }
+        if (this.$root.settings.media_public_filter === true) {
+          if (media.public !== true) continue;
         }
 
         if (this.$root.settings.media_timeline_interval_filter.start) {
