@@ -176,6 +176,7 @@
         <template v-if="show_authors">
           <AuthorsInput
             :currentAuthors.sync="mediadata.authors"
+            :folderAuthors="folderAuthors"
             :read_only="read_only || !can_edit"
           />
           <small v-html="$t(author_instructions)" />
@@ -875,6 +876,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    folderAuthors: Array,
   },
   components: {
     DateTime,

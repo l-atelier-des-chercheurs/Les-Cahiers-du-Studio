@@ -363,7 +363,7 @@
       @close="show_media_modal_for = false"
       :read_only="!$root.state.connected"
       :can_edit="can_edit_folder"
-      :allAuthors="Array.isArray(folder.authors) ? folder.authors : []"
+      :folderAuthors="Array.isArray(folder.authors) ? folder.authors : []"
     />
     <EditFolder
       v-if="show_edit_folder_modal"
