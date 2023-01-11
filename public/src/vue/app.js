@@ -208,6 +208,7 @@ let vm = new Vue({
         start: false,
         end: false,
       },
+      media_public_filter: false,
 
       folder_filter: {
         name: "",

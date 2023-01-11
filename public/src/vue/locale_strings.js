@@ -180,6 +180,8 @@ module.exports = (function () {
       sort_by: "Organiser par",
       in_the_order: "Dans l’ordre",
       public: "Public",
+      show_only_public: "Afficher uniquement les médias publics",
+
       content: "Contenu",
       writeup: "Compte-rendu",
       add_author: "Ajouter un auteur",
