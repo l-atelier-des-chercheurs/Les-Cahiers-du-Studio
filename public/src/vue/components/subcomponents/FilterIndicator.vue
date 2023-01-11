@@ -36,6 +36,9 @@
             </template>
           </button>
         </template>
+        <template v-if="$root.settings.media_public_filter">
+          {{ $t("show_only_public") }}
+        </template>
       </div>
       <div class>
         <span v-html="$t('medias_shown:')" />
@@ -65,27 +68,19 @@ export default {
       return (
         this.$root.settings.media_keyword_filter ||
         this.$root.settings.media_author_filter ||
-        this.$root.settings.media_timeline_interval_filter.start
+        this.$root.settings.media_timeline_interval_filter.start ||
+        this.$root.settings.media_public_filter
       );
-    },
-    filters() {
-      let filters = [];
-      if (this.$root.settings.media_keyword_filter)
-        filters.push(this.$root.settings.media_keyword_filter);
-      if (this.$root.settings.media_author_filter)
-        filters.push(this.$root.settings.media_author_filter);
-      if (this.$root.settings.media_timeline_interval_filter.start) {
-        let str = this.$root.settings.media_timeline_interval_filter.start;
-        if (this.$root.settings.media_keyword_filter.end)
-          str += " — " + this.$root.settings.media_timeline_interval_filter.end;
-        filters.push(str);
-      }
-      return filters;
     },
   },
   methods: {
     disableAllFilters() {
-      this.$root.settings.media_keyword_filter = this.$root.settings.media_author_filter = this.$root.settings.media_timeline_interval_filter.start = this.$root.settings.media_timeline_interval_filter.end = false;
+      this.$root.settings.media_keyword_filter =
+        this.$root.settings.media_author_filter =
+        this.$root.settings.media_timeline_interval_filter.start =
+        this.$root.settings.media_timeline_interval_filter.end =
+          false;
+      this.$root.settings.media_public_filter = false;
     },
   },
 };
