@@ -77,6 +77,8 @@ module.exports = (function () {
 
       download: "Télécharger",
       caption: "Légende",
+      connect_to_les_cahiers: "Se connecter à Les Cahiers du Studio",
+      remember_password_on_this_device: "Sauvegarder pour cet appareil",
       date: "Date",
       and: "Et",
       logout: "Se déconnecter",
@@ -305,7 +307,6 @@ module.exports = (function () {
         file_upload_not_allowed:
           "Votre navigateur web ne prend pas en charge l’envoi de fichiers.",
         creating_video: "En cours de création de la vidéo…",
-
         connection_active: "La connexion au serveur est active.",
         connection_lost: "La connexion au serveur a été perdue.",
         contents_wont_be_editable:

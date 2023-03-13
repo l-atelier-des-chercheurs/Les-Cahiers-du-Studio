@@ -10,6 +10,12 @@
       {{ $t("notifications.contents_wont_be_editable") }}
     </div>
 
+    <SessionPassword
+      v-if="$root.showSessionPasswordModal"
+      @close="$root.showSessionPasswordModal = false"
+      :read_only="!$root.state.connected"
+    />
+
     <template v-if="$root.showAuthorsListModal">
       <SimpleAuthorLogin
         v-if="
@@ -55,6 +61,8 @@
 <script>
 import SystemBar from "./SystemBar.vue";
 import ListView from "./ListView.vue";
+import SessionPassword from "./components/modals/SessionPassword.vue";
+
 // import FolderView from "./FolderView.vue";
 import TimelineView from "./TimelineView.vue";
 import BottomFooter from "./components/BottomFooter.vue";
@@ -66,6 +74,7 @@ export default {
   components: {
     SystemBar,
     ListView,
+    SessionPassword,
     // FolderView,
     TimelineView,
     BottomFooter,
