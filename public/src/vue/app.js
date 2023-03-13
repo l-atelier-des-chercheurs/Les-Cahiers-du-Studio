@@ -161,6 +161,7 @@ let vm = new Vue({
       show_sidebar: true,
     },
 
+    showSessionPasswordModal: false,
     showAuthorsListModal: false,
 
     settings: {
@@ -373,7 +374,35 @@ let vm = new Vue({
         });
       }
 
-      this.$socketio.connect();
+      if (this.state.local_options.session_password === "has_pass") {
+        var session_storage_pwd =
+          this.$auth.getSessionPasswordFromLocalStorage();
+        if (session_storage_pwd) {
+          this.$socketio.connect(session_storage_pwd);
+
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(this.$t("notifications.using_saved_password"));
+
+          this.$eventHub.$once("socketio.socketerror", () => {
+            this.showSessionPasswordModal = true;
+          });
+        } else {
+          this.showSessionPasswordModal = true;
+        }
+
+        this.$eventHub.$on("socketio.socketerror", () => {
+          // if error, attempt to reconnect
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t('notifications["wrong_password"]'));
+          this.showSessionPasswordModal = true;
+        });
+      } else {
+        this.$socketio.connect();
+      }
 
       this.$eventHub.$once("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "folders" });
