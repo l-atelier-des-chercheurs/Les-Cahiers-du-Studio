@@ -15,43 +15,44 @@
       @close="$root.showSessionPasswordModal = false"
       :read_only="!$root.state.connected"
     />
+    <template v-else>
+      <template v-if="$root.showAuthorsListModal">
+        <SimpleAuthorLogin
+          v-if="
+            !$root.current_author || $root.current_author.role === 'participant'
+          "
+          :prevent_close="
+            $root.state.local_options.force_login && !$root.current_author
+          "
+          @close="$root.showAuthorsListModal = false"
+        />
 
-    <template v-if="$root.showAuthorsListModal">
-      <SimpleAuthorLogin
-        v-if="
-          !$root.current_author || $root.current_author.role === 'participant'
-        "
-        :prevent_close="
-          $root.state.local_options.force_login && !$root.current_author
-        "
-        @close="$root.showAuthorsListModal = false"
-      />
+        <AuthorsList
+          v-else
+          :authors="$root.store.authors"
+          :prevent_close="
+            $root.state.local_options.force_login && !$root.current_author
+          "
+          @close="$root.showAuthorsListModal = false"
+        />
+      </template>
 
-      <AuthorsList
-        v-else
-        :authors="$root.store.authors"
-        :prevent_close="
-          $root.state.local_options.force_login && !$root.current_author
-        "
-        @close="$root.showAuthorsListModal = false"
-      />
-    </template>
-
-    <template v-if="view === 'ListView'">
-      <ListView
-        v-if="view === 'ListView'"
-        :presentationMD="$root.store.presentationMD"
-        :read_only="!$root.state.connected"
-        :folders="$root.store.folders"
-      />
-    </template>
-    <template v-else-if="view === 'TimelineView' && $root.current_folder">
-      <TimelineView
-        :slugFolderName="$root.current_folder.slugFolderName"
-        :folder="$root.current_folder"
-        :medias="$root.current_folder.medias"
-        :read_only="!$root.state.connected"
-      />
+      <template v-if="view === 'ListView'">
+        <ListView
+          v-if="view === 'ListView'"
+          :presentationMD="$root.store.presentationMD"
+          :read_only="!$root.state.connected"
+          :folders="$root.store.folders"
+        />
+      </template>
+      <template v-else-if="view === 'TimelineView' && $root.current_folder">
+        <TimelineView
+          :slugFolderName="$root.current_folder.slugFolderName"
+          :folder="$root.current_folder"
+          :medias="$root.current_folder.medias"
+          :read_only="!$root.state.connected"
+        />
+      </template>
     </template>
 
     <portal-target name="modal_container" />

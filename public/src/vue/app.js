@@ -161,7 +161,7 @@ let vm = new Vue({
       show_sidebar: true,
     },
 
-    showSessionPasswordModal: false,
+    showSessionPasswordModal: true,
     showAuthorsListModal: false,
 
     settings: {
