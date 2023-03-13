@@ -404,7 +404,7 @@ let vm = new Vue({
         this.$socketio.connect();
       }
 
-      this.$eventHub.$once("socketio.authentificated", () => {
+      this.$eventHub.$on("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "folders" });
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "chats" });

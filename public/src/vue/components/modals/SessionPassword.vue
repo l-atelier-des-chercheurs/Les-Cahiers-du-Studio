@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       pwd: "",
-      remember_password_on_this_device: false,
+      remember_password_on_this_device: true,
     };
   },
 
