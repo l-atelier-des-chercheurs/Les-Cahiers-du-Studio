@@ -49,11 +49,11 @@ module.exports = (function () {
               api
                 .storeData(indexCacheFilepath, html, "create")
                 .then(function (meta) {
-                  resolve();
+                  return resolve();
                 })
                 .catch((err) => {
                   dev.error(`Failed to store HTML for export.`);
-                  reject(err);
+                  return reject(err);
                 });
             });
             tasks.push(storeHTMLInIndexFile);

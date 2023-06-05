@@ -176,10 +176,12 @@ function readsession_metaFile() {
 function _parseSessionMeta(session_meta) {
   const { session_password, new_account_default_role } = session_meta;
 
-  if (session_password) {
+  if (!!session_password) {
     const pass = session_password.trim();
     dev.log("Found session password in meta.txt set to", pass);
     global.session_password = auth.hashCode(pass);
+  } else {
+    dev.log("No session password in meta.txt");
   }
 
   if (new_account_default_role) {
