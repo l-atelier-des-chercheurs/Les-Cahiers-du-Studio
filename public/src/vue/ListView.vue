@@ -362,7 +362,8 @@ export default {
       if (this.debounce_search_folder_name_function)
         clearTimeout(this.debounce_search_folder_name_function);
       this.debounce_search_folder_name_function = setTimeout(() => {
-        this.$root.settings.folder_filter.name = this.debounce_search_folder_name;
+        this.$root.settings.folder_filter.name =
+          this.debounce_search_folder_name;
       }, 340);
     },
     show_search() {
@@ -401,6 +402,7 @@ export default {
 
         if (this.$root.settings.folder_filter.name !== "") {
           if (
+            !folder.name ||
             !folder.name
               .toLowerCase()
               .includes(this.$root.settings.folder_filter.name.toLowerCase())
