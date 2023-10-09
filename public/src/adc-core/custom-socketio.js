@@ -280,9 +280,8 @@ module.exports = (function () {
             //   k !== "medias" ? delete window.store[type][slugFolderName][k] : ""
             // );
 
-            const is_new_folder = !window.store[type].hasOwnProperty(
-              slugFolderName
-            );
+            const is_new_folder =
+              !window.store[type].hasOwnProperty(slugFolderName);
 
             if (is_new_folder) {
               window.store[type] = Object.assign(
