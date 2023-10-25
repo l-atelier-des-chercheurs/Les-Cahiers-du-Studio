@@ -51,7 +51,11 @@
             </select>
           </div>
 
-          <VueMarkdown :html="true" :source="presentationText" />
+          <VueMarkdown
+            class="_presentationText"
+            :html="true"
+            :source="presentationText"
+          />
 
           <div class="border border-top-dashed">
             <p class="margin-vert-medium" v-html="$t('more_information')"></p>
@@ -487,5 +491,12 @@ export default {
   width: 100%;
   text-align: center;
   max-width: 66ch;
+}
+</style>
+<style lang="scss">
+._presentationText {
+  img {
+    width: revert-layer !important;
+  }
 }
 </style>
