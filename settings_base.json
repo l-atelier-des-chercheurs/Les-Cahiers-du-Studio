@@ -18,6 +18,7 @@
   "textEncoding": "UTF-8",
   "thumbFolderName": "_thumbs",
   "deletedFolderName": "_bin",
+  "pageTitle": "Les Cahiers du Studio",
 
   "ffmpeg_options": {
     "priority": 0,
