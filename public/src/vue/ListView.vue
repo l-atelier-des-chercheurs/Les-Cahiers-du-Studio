@@ -30,9 +30,7 @@
 
           <div>
             ›
-            <i>Les Cahiers du Studio</i>
-            <br />
-            <small>v{{ $root.state.appVersion }}</small>
+            <i>{{ $root.store.pageTitle }}</i>
           </div>
         </div>
         <div
@@ -320,7 +318,12 @@
         </transition-group>
       </div>
     </section>
-    <footer class="_credits" v-html="$t('credits')" />
+    <footer class="_credits">
+      <div>
+        <em>Les Cahiers du Studio</em> version {{ $root.state.appVersion }}
+      </div>
+      <div v-html="$t('credits')" />
+    </footer>
   </main>
 </template>
 <script>
