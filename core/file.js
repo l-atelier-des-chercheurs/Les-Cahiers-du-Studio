@@ -874,7 +874,8 @@ module.exports = (function () {
                   meta.type === "writeup" ||
                   meta.type === "embed" ||
                   meta.type === "link" ||
-                  meta.type === "code") &&
+                  meta.type === "code" ||
+                  meta.type === "introduction") &&
                 data.hasOwnProperty("content")
               ) {
                 dev.logverbose(`Is text and need to update content.`);
@@ -1085,7 +1086,8 @@ module.exports = (function () {
           additionalMeta.type === "writeup" ||
           additionalMeta.type === "embed" ||
           additionalMeta.type === "link" ||
-          additionalMeta.type === "code"
+          additionalMeta.type === "code" ||
+          additionalMeta.type === "introduction"
         ) {
           tasks.push(
             new Promise((resolve, reject) => {
@@ -1421,7 +1423,8 @@ module.exports = (function () {
                 mediaData.type === "writeup" ||
                 mediaData.type === "embed" ||
                 mediaData.type === "link" ||
-                mediaData.type === "code") &&
+                mediaData.type === "code" ||
+                mediaData.type === "introduction") &&
               mediaData.hasOwnProperty("media_filename")
             ) {
               // get text content
