@@ -1,0 +1,16 @@
+{
+  "public_url": "",
+  "desired_port": 8080,
+  "contentPath": "les-cahiers-du-studio",
+
+  "mailer": {
+    "host": "",
+    "port": 587,
+    "secure": false,
+    "auth": {
+      "user": "",
+      "pass": ""
+    },
+    "from": ""
+  }
+}

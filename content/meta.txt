@@ -1,0 +1,5 @@
+"$content_app" = "cahiers"
+"$content_version" = "3"
+"$admins" = [ "authors/admin" ]
+"$contributors" = "everyone"
+enable_chats = true

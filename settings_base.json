@@ -1,0 +1,216 @@
+{
+  "public_url": "",
+  "protocol": "https",
+  "host": "localhost",
+  "desired_port": 8080,
+  "redirect_port": "",
+  "cache_content": true,
+  "bonjour_domain": false,
+  "versioning": true,
+  "tokenIsValidForXDays": 30,
+  "contentPath": "les-cahiers-du-studio",
+  "privateKeyPath": "",
+  "certificatePath": "",
+  "passphrase": "",
+  "lruCacheMax": 50000,
+  "lruCacheMaxSize": 25000000,
+  "lruFoldersCacheMax": 5000,
+  "lruFoldersCacheMaxSize": 5000000,
+  "deletedFolderName": "_bin",
+  "ffmpeg_options": {
+    "priority": 0,
+    "timeout": 600
+  },
+  "mediaThumbQuality": 90,
+  "stadia_maps_api_key": "",
+  "allowed_iframe_origins": [],
+  "mailer": {
+    "host": "",
+    "port": "",
+    "secure": false,
+    "auth": {
+      "user": "",
+      "pass": ""
+    },
+    "from": ""
+  },
+  "schema": {
+    "$cover": {
+      "width": 2000,
+      "height": 2000,
+      "thumbs": {
+        "resolutions": [50, 320, 640, 2000]
+      }
+    },
+    "fields": {
+      "name_of_instance": {
+        "type": "string"
+      },
+      "presentation_of_instance": {
+        "type": "string"
+      },
+      "contactmail_of_instance": {
+        "type": "string"
+      },
+      "general_password": {
+        "type": "string"
+      },
+      "signup_password": {
+        "type": "string"
+      },
+      "enable_indexing": {
+        "type": "boolean"
+      },
+      "remove_permanently": {
+        "type": "boolean"
+      },
+      "upload_max_file_size_in_mo": {
+        "type": "number"
+      },
+      "require_signup_to_contribute": {
+        "type": "boolean"
+      },
+      "require_mail_to_signup": {
+        "type": "boolean"
+      },
+      "enable_chats": {
+        "type": "boolean"
+      },
+      "hero_background_color": {
+        "type": "string"
+      },
+      "text_background_color": {
+        "type": "string"
+      },
+      "text_image_layout": {
+        "type": "string"
+      },
+      "favicon_image_name": {
+        "type": "string"
+      },
+      "topbar_image_name": {
+        "type": "string"
+      },
+      "hero_image_name": {
+        "type": "string"
+      },
+      "users_must_accept_terms_to_signup": {
+        "type": "boolean"
+      },
+      "terms_in_footer": {
+        "type": "boolean"
+      },
+      "confidentiality_in_footer": {
+        "type": "boolean"
+      }
+    },
+    "$files": {
+      "thumbs": {
+        "resolutions": [50, 180, 320, 640, 2000]
+      }
+    },
+    "$folders": {
+      "cahiers": {
+        "$can_be_created_by": "logged-in",
+        "$cover": {
+          "width": 2000,
+          "height": 2000,
+          "thumbs": {
+            "resolutions": [50, 320, 640, 2000]
+          }
+        },
+        "fields": {
+          "title": {
+            "type": "string",
+            "unique": true
+          },
+          "description": {
+            "type": "string"
+          },
+          "start": {
+            "type": "date"
+          },
+          "end": {
+            "type": "date"
+          }
+        },
+        "$files": {
+          "thumbs": {
+            "resolutions": [50, 220, 440, 1600]
+          },
+          "fields": {
+            "date_timeline": {
+              "type": "date"
+            },
+            "caption": {
+              "type": "string"
+            },
+            "keywords": {
+              "type": "array"
+            },
+            "color": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "authors": {
+        "$can_be_created_by": "everyone",
+        "$cover": {
+          "width": 2000,
+          "height": 2000,
+          "thumbs": {
+            "resolutions": [50, 320, 640, 2000]
+          }
+        },
+        "fields": {
+          "email": {
+            "type": "string",
+            "required": false,
+            "unique": true
+          },
+          "name": {
+            "type": "string",
+            "required": true,
+            "unique": true
+          },
+          "presentation": {
+            "type": "string"
+          },
+          "group": {
+            "type": "array"
+          }
+        },
+        "$files": {
+          "fields": {
+            "chat_read_indexes": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "chats": {
+        "$can_be_created_by": "logged-in",
+        "fields": {
+          "title": {
+            "type": "string",
+            "unique": true
+          },
+          "last_message_date": {
+            "type": "string"
+          },
+          "last_message_count": {
+            "type": "number"
+          }
+        },
+        "$files": {
+          "fields": {
+            "content": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
