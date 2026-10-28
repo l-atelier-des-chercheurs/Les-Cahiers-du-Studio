@@ -20,14 +20,14 @@
     "debug": "node . --inspect=5858 -- --debug",
     "debug-verbose": "node . --inspect=5858 -- --debug --verbose",
     "debug-lr": "node . --inspect=5858 -- --debug --livereload",
-    "postinstall": "node scripts/cleanup-ffprobe.js",
+    "debug-presence": "node . --inspect=5858 -- --debug --fake-presence",
     "setup-https": "node scripts/setup-https-certs.js"
   },
   "engines": {
-    "node": "^24.22.0",
+    "node": "^24.22.1",
     "npm": "*"
   },
   "dependencies": {
-    "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.1.0"
+    "adc-core": "github:l-atelier-des-chercheurs/adc-core#semver:^0.2.2"
   }
 }
