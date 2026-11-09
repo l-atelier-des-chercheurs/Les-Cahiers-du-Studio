@@ -1,0 +1,13 @@
+$c-bg: #f6f4ef;
+$c-text: #1d1c1a;
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  color: $c-text;
+  background: $c-bg;
+}

@@ -1,0 +1,41 @@
+import { fileURLToPath, URL } from "node:url";
+
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import vueDevTools from "vite-plugin-vue-devtools";
+import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
+import mkcert from "vite-plugin-mkcert";
+
+// adc-core's index.pug loads, from _client/ :
+// - build.js, an ES module, for the app
+// - bundle.js, a single script, inlined in standalone HTML exports
+// and, with `npm run debug-lr`, https://localhost:5173/src/main.js
+// It has no <link> for CSS: styles are injected by the JS.
+export default defineConfig({
+  plugins: [vue(), vueDevTools(), cssInjectedByJsPlugin(), mkcert()],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
+  server: {
+    port: 5173,
+    strictPort: true,
+    host: true,
+    cors: { origin: "*" },
+  },
+  build: {
+    modulePreload: false,
+    outDir: "dist",
+    assetsDir: "assets",
+    emptyOutDir: true,
+    rollupOptions: {
+      input: "./src/main.js",
+      output: [
+        // an IIFE can't be split: keep components statically imported
+        { format: "iife", entryFileNames: "bundle.js" },
+        { format: "es", entryFileNames: "build.js" },
+      ],
+    },
+  },
+});
