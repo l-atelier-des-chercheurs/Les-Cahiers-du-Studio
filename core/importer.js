@@ -14,19 +14,20 @@ module.exports = (function () {
           `IMPORTER — handleForm : type = ${type}, slugFolderName = ${slugFolderName}`
         );
 
-        // create an incoming form object
-        var form = new formidable.IncomingForm();
-
-        // specify that we want to allow the user to upload multiple files in a single request
-        form.multiples = false;
-        form.maxFileSize = global.settings.maxFileSizeForUpload * 1024 * 1024;
-        let socketid = "";
-
         // store all uploads in the folder directory
         let slugFolderPath = api.getFolderPath(
           path.join(global.settings.structure[type].path, slugFolderName)
         );
-        form.uploadDir = slugFolderPath;
+
+        // create an incoming form object
+        // since formidable 2, options are only read from the constructor:
+        // setting form.maxFileSize afterwards is ignored (limit stays at 200 MB)
+        var form = new formidable.IncomingForm({
+          multiples: false,
+          maxFileSize: global.settings.maxFileSizeForUpload * 1024 * 1024,
+          uploadDir: slugFolderPath,
+        });
+        let socketid = "";
 
         let allFilesMeta = [];
 
