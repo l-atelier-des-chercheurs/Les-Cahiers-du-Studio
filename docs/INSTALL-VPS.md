@@ -2,7 +2,7 @@
 
 Ce tutoriel installe l'application sur un serveur dédié (VPS), avec Node.js et pm2, derrière nginx et un certificat HTTPS gratuit. Il reprend le [tutoriel d'installation de do•doc](https://forum.latelier-des-chercheurs.fr/t/installer-do-doc-en-ligne/210), adapté à cette application : les deux reposent sur le même serveur, adc-core.
 
-*Dernière mise à jour : 17/11/2026, branche `v3`, adc-core 0.2.5.*
+*Dernière mise à jour : 17/11/2026, branche `v3`, adc-core 0.2.6.*
 
 > **⚠️ Configurer et maintenir un serveur demande de l'aisance avec le terminal.** Si vous n'avez jamais administré de serveur, familiarisez-vous d'abord avec ces manipulations.
 
