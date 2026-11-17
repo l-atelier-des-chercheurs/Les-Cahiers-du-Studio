@@ -29,5 +29,13 @@
   },
   "dependencies": {
     "adc-core": "github:l-atelier-des-chercheurs/adc-core#semver:^0.2.5"
+  },
+  "allowScripts": {
+    "ffmpeg-static": true,
+    "@derhuerst/ffprobe-static": true,
+    "sharp": true,
+    "puppeteer": true,
+    "fast-folder-size": true,
+    "bufferutil": true
   }
 }
