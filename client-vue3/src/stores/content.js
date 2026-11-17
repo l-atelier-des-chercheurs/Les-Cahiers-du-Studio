@@ -85,6 +85,10 @@ export const useContentStore = defineStore("content", {
     // a type of folders, e.g. "cahiers"
     async openFolders(path_to_type) {
       joinRoom(path_to_type);
+      return this.loadFolders(path_to_type);
+    },
+    // fetch again what the server lists, e.g. after logging in
+    async loadFolders(path_to_type) {
       const folders = await api.getFolders(path_to_type);
       for (const folder of folders) {
         // keep the $files of folders that were opened

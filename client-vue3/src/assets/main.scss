@@ -1,5 +1,23 @@
-$c-bg: #f6f4ef;
-$c-text: #1d1c1a;
+// a sober base, to refine later
+
+:root {
+  --c-bg: #f6f4ef;
+  --c-surface: #fffefb;
+  --c-text: #1d1c1a;
+  --c-muted: #6b6862;
+  --c-border: #e2ded5;
+  --c-accent: #1d1c1a;
+  --c-on-accent: #fffefb;
+  --c-error: #c23a2b;
+  --c-ok: #3a8a4f;
+  --radius: 0.5rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -8,6 +26,97 @@ body {
     -apple-system,
     "Segoe UI",
     sans-serif;
-  color: $c-text;
-  background: $c-bg;
+  color: var(--c-text);
+  background: var(--c-bg);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* BUTTONS */
+
+.button {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--c-text);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.button--primary {
+  border-color: var(--c-accent);
+  background: var(--c-accent);
+  color: var(--c-on-accent);
+}
+
+/* FORMS */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+
+  input,
+  select,
+  textarea {
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    background: var(--c-bg);
+
+    &:focus-visible {
+      outline: 2px solid var(--c-accent);
+      outline-offset: 1px;
+    }
+  }
+}
+
+.form__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.form__check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.form__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--c-muted);
+}
+
+.form__error {
+  margin: 0;
+  color: var(--c-error);
+}
+
+.form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
 }

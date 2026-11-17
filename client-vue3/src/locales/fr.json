@@ -1,0 +1,27 @@
+{
+  "online": "en ligne",
+  "offline": "hors ligne",
+  "login": "Se connecter",
+  "logout": "Se déconnecter",
+  "logged_in_as": "Connecté en tant que {name}",
+  "author": "Auteur",
+  "choose_author": "Choisir un auteur",
+  "password": "Mot de passe",
+  "wrong_password": "Mot de passe incorrect.",
+  "cancel": "Annuler",
+  "close": "Fermer",
+  "create": "Créer",
+  "loading": "Chargement…",
+  "error_with_code": "Erreur : {code}",
+
+  "cahiers": "Cahiers",
+  "no_cahiers": "Aucun cahier pour l’instant.",
+  "create_cahier": "Créer un cahier",
+  "login_to_create": "Connectez-vous pour créer un cahier.",
+  "title": "Titre",
+  "title_taken": "Un cahier porte déjà ce titre.",
+  "private": "Privé",
+  "private_instructions": "Seuls ses contributeurs pourront voir ce cahier.",
+  "public_instructions": "Tous les visiteurs pourront voir ce cahier. Seuls ses contributeurs pourront le modifier.",
+  "created_on": "Créé le {date}"
+}

@@ -28,6 +28,6 @@
     "npm": "*"
   },
   "dependencies": {
-    "adc-core": "github:l-atelier-des-chercheurs/adc-core#semver:^0.2.2"
+    "adc-core": "github:l-atelier-des-chercheurs/adc-core#semver:^0.2.5"
   }
 }

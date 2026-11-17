@@ -26,7 +26,7 @@ Tant que cette boucle n'est pas solide, tout le reste attend.
 - **Éditeur de texte** : Markdown brut, c'est-à-dire un textarea avec un rendu Markdown.
 - **Repère** : un média sans fichier, avec seulement un `.meta.txt` et `$type: "marker"`.
 - **Embed** : comme dans dodoc, un fichier `.txt` qui contient l'URL, avec `$type: "url"`. adc-core génère la vignette à partir de l'image `og:image` de la page. Ne pas mettre de champ `url` dans le meta : à l'import, adc-core le prend pour un fichier à télécharger.
-- **`date_timeline`** : un champ `string` qui contient une date ISO 8601 complète. Le type `date` d'adc-core ne garde que le jour.
+- **`date_timeline`** : type `datetime` (adc-core 0.2.5), stocké comme `$date_created` (`2026-11-17T13:32:05.250Z`, en UTC). Le type `date` ne garde que le jour. Le client envoie une date ISO ou un horodatage en millisecondes.
 - **Vue Tableau** : elle fera partie de la v3. Ses champs sont réservés dès maintenant dans le schéma des médias, même sans interface.
 - **Droits d'écriture** : les contributeurs du cahier, via `$admins` / `$contributors` d'adc-core.
 - **Droits de lecture** : chaque cahier est public ou privé, et privé veut dire réservé à ses contributeurs.
@@ -42,26 +42,29 @@ Tant que cette boucle n'est pas solide, tout le reste attend.
 Les VPS installés maintenant ne doivent pas demander de migration v3 → v3'.
 
 - [x] Cahiers : `title`, `description`, `start` et `end` (type `date`, facultatifs). La visibilité passe par le `$status` d'adc-core (`public` ou `private`), donc aucun champ à ajouter.
-- [x] Médias : `date_timeline` (string ISO), `caption`, `keywords`, `color`. Les auteurs passent par `$authors`, géré par adc-core.
+- [x] Médias : `date_timeline` (`datetime`), `caption`, `keywords`, `color`. Les auteurs passent par `$authors`, géré par adc-core.
 - [x] Vue Tableau : champs réservés `tableau_x`, `tableau_y`, `tableau_w`, `tableau_h` (type `number`)
 - [x] Médias sans fichier : rien à ajouter au schéma (voir Décisions)
 - [ ] Le client doit toujours envoyer `$status` explicitement. adc-core met `private` par défaut, aussi bien sur les dossiers que sur les fichiers.
 - [ ] Décider des autres champs v2 à reprendre ou à abandonner : `action_on_tile_click`, `url_to_open_in_new_tab`, `collapsed`
 
-### Problèmes d'adc-core à régler (version 0.2.2)
+### Problèmes d'adc-core
 
-- [ ] **Droits trop larges** (corrigé dans `~/Documents/REPO/adc-core`, pas encore publié. Il faut tester, publier une version et mettre à jour la dépendance de Cahiers) : avec `$can_be_created_by: "logged-in"`, `_canContributeToFolder` laisse passer tout auteur connecté sur les routes des fichiers *dans* un cahier. `makePathFromReq` remplit aussi `path_to_type` pour ces routes. N'importe quel auteur connecté peut donc envoyer, modifier et supprimer des médias dans tous les cahiers, et lire les cahiers privés. Dans dodoc, `authors` (`everyone`) et `chats` (`logged-in`) sont concernés de la même façon.
+- [x] **Droits trop larges** (corrigé en 0.2.3) : avec `$can_be_created_by: "logged-in"`, `_canContributeToFolder` laisse passer tout auteur connecté sur les routes des fichiers *dans* un cahier. `makePathFromReq` remplit aussi `path_to_type` pour ces routes. N'importe quel auteur connecté peut donc envoyer, modifier et supprimer des médias dans tous les cahiers, et lire les cahiers privés. Dans dodoc, `authors` (`everyone`) et `chats` (`logged-in`) sont concernés de la même façon.
 - [ ] **Liste qui laisse voir les cahiers privés** : `GET /_api2/cahiers` renvoie tous les cahiers, privés compris (titre, description, couverture). Voir le `// todo` dans `_getFolders`. Ouvrir un cahier privé, lui, est bien protégé par `_restrictIfPrivate`.
-- [ ] (plus tard) Un type de champ `datetime` dans adc-core
+- [x] **Type `datetime`** (ajouté en 0.2.5) : stocké comme `$date_created`, en UTC avec les millisecondes. Cahiers dépend maintenant d'adc-core `^0.2.5`.
 
 ## 1. Cahiers
 
-- [ ] Page d'accueil : liste des cahiers (titre, dates, couverture)
-- [ ] Bouton « Créer un cahier » et fenêtre de création (titre, description, début et fin facultatifs, public ou privé)
+- [x] Page d'accueil : liste des cahiers, mise à jour par la room `cahiers`. Les cahiers privés ne sont montrés qu'à leurs contributeurs.
+- [ ] Afficher les dates et la couverture dans la liste
+- [x] Bouton « Créer un cahier » et fenêtre de création (titre, case Privé)
+- [ ] Ajouter à la création : description, début et fin facultatifs
 - [ ] Modifier et supprimer un cahier
 - [ ] Gérer les contributeurs d'un cahier
 - [ ] Ouvrir un cahier (route `/cahiers/:slug`)
-- [ ] Connexion / création d'auteur, au minimum ce qu'il faut pour `$can_be_created_by: "logged-in"`
+- [x] Connexion minimale : choix d'un auteur et mot de passe
+- [ ] Création d'auteur, et saisie du mot de passe général quand l'instance en a un
 
 ## 2. Bouton + et import
 

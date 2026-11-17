@@ -140,7 +140,7 @@
           },
           "fields": {
             "date_timeline": {
-              "type": "string"
+              "type": "datetime"
             },
             "caption": {
               "type": "string"

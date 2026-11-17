@@ -1,69 +1,110 @@
 <template>
-  <main class="hello">
-    <h1>Hello {{ app_infos.product_name }}</h1>
-    <p>
-      v{{ app_infos.version }}
-      <template v-if="app_infos.is_electron">· Electron</template>
-      <template v-if="app_infos.page_is_standalone_html">· standalone</template>
-      · {{ is_connected ? "en ligne" : "hors ligne" }}
-    </p>
-    <p v-if="is_logged_in">Connecté en tant que {{ author_slug }}</p>
-    <p v-else>Pas connecté</p>
+  <div class="app">
+    <header class="topbar">
+      <h1 class="topbar__name">
+        {{ app_infos.instance_meta?.name || app_infos.product_name }}
+      </h1>
+      <span
+        class="topbar__status"
+        :class="{ 'is--online': is_connected }"
+        :title="is_connected ? $t('online') : $t('offline')"
+      />
+      <div class="topbar__session">
+        <template v-if="is_logged_in">
+          <span class="topbar__author">
+            {{ $t("logged_in_as", { name: author_slug }) }}
+          </span>
+          <button type="button" class="button" @click="logout">
+            {{ $t("logout") }}
+          </button>
+        </template>
+        <button
+          v-else
+          type="button"
+          class="button"
+          @click="show_login_modal = true"
+        >
+          {{ $t("login") }}
+        </button>
+      </div>
+    </header>
 
-    <h2>Cahiers</h2>
-    <p v-if="error" class="error">{{ error }}</p>
-    <p v-else-if="!cahiers">Chargement…</p>
-    <p v-else-if="cahiers.length === 0">Aucun cahier pour l’instant.</p>
-    <ul v-else>
-      <li v-for="cahier in cahiers" :key="cahier.$path">
-        {{ cahier.title || cahier.$path }}
-      </li>
-    </ul>
-  </main>
+    <main class="app__main">
+      <HomeView />
+    </main>
+
+    <LoginModal v-if="show_login_modal" @close="show_login_modal = false" />
+  </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "pinia";
 import { useSessionStore } from "@/stores/session";
 import { useContentStore } from "@/stores/content";
+import HomeView from "@/views/HomeView.vue";
+import LoginModal from "@/components/LoginModal.vue";
 
 export default {
+  components: { HomeView, LoginModal },
   data() {
     return {
       // set by adc-core's index.pug
       app_infos: window.app_infos,
-      error: "",
+      show_login_modal: false,
     };
   },
   computed: {
     ...mapState(useSessionStore, ["is_logged_in", "author_slug"]),
-    ...mapState(useContentStore, ["is_connected", "getFolders"]),
-    cahiers() {
-      return this.getFolders("cahiers");
-    },
-  },
-  created() {
-    this.openFolders("cahiers").catch((err) => (this.error = err.message));
-  },
-  beforeUnmount() {
-    this.closeFolders("cahiers");
+    ...mapState(useContentStore, ["is_connected"]),
   },
   methods: {
-    ...mapActions(useContentStore, ["openFolders", "closeFolders"]),
+    ...mapActions(useSessionStore, ["logout"]),
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.hello {
-  padding: 2rem;
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.75rem clamp(1rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--c-border);
+  background: var(--c-surface);
+}
 
-  h1 {
-    margin-top: 0;
+.topbar__name {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.topbar__status {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--c-error);
+
+  &.is--online {
+    background: var(--c-ok);
   }
 }
 
-.error {
-  color: #c23a2b;
+.topbar__session {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.topbar__author {
+  font-size: 0.9rem;
+  color: var(--c-muted);
+}
+
+.app__main {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 4vw, 2rem);
 }
 </style>

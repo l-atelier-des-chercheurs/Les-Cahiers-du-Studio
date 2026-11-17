@@ -2,6 +2,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
+import { i18n } from "./i18n";
 import { connect } from "./adc/socket";
 import { useSessionStore } from "./stores/session";
 import { useContentStore } from "./stores/content";
@@ -9,6 +10,7 @@ import "./assets/main.scss";
 
 const app = createApp(App);
 app.use(createPinia());
+app.use(i18n);
 
 useContentStore().init();
 
