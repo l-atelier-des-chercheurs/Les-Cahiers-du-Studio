@@ -7,6 +7,8 @@
     <HomeView @login="show_login_modal = true" />
 
     <LoginModal v-if="show_login_modal" @close="show_login_modal = false" />
+
+    <NoticeModal v-if="show_notice" @close="show_notice = false" />
   </div>
 </template>
 
@@ -15,12 +17,15 @@ import { mapState } from "pinia";
 import { useContentStore } from "@/stores/content";
 import HomeView from "@/views/HomeView.vue";
 import LoginModal from "@/components/LoginModal.vue";
+import NoticeModal from "@/components/NoticeModal.vue";
 
 export default {
-  components: { HomeView, LoginModal },
+  components: { HomeView, LoginModal, NoticeModal },
   data() {
     return {
       show_login_modal: false,
+      // the app is not open yet: say so on every visit
+      show_notice: true,
       was_connected: false,
     };
   },

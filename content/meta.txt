@@ -1,4 +1,4 @@
-"$content_app" = "cahiers"
+"$content_app" = "archives-vivantes"
 "$content_version" = "3"
 "$admins" = [ "authors/admin" ]
 "$contributors" = "everyone"

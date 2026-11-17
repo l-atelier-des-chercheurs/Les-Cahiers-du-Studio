@@ -6,6 +6,12 @@
   "documentation": "documentation",
   "contact": "contactez",
 
+  "notice_title": "En préparation",
+  "notice_in_preparation": "Cette application est en cours de préparation et sera bientôt disponible.",
+  "notice_contact": "Pour plus d’informations, {contact_us} : {email}",
+  "contact_us": "contactez-nous",
+  "understood": "Compris",
+
   "login": "Se connecter",
   "logout": "se déconnecter",
   "connected_as": "Connecté avec le compte :",
