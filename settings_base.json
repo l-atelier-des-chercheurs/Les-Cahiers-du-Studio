@@ -140,7 +140,7 @@
           },
           "fields": {
             "date_timeline": {
-              "type": "date"
+              "type": "string"
             },
             "caption": {
               "type": "string"
@@ -150,6 +150,18 @@
             },
             "color": {
               "type": "string"
+            },
+            "tableau_x": {
+              "type": "number"
+            },
+            "tableau_y": {
+              "type": "number"
+            },
+            "tableau_w": {
+              "type": "number"
+            },
+            "tableau_h": {
+              "type": "number"
             }
           }
         }
