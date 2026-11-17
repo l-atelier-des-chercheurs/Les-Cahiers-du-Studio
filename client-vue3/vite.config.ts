@@ -21,11 +21,18 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    // the page comes from adc-core (https://localhost:8080): asset URLs
+    // (fonts…) must point to this server, not to the page's origin
+    origin: "https://localhost:5173",
     host: true,
     cors: { origin: "*" },
   },
   build: {
     modulePreload: false,
+    // inline the fonts (STVitry, ~16 kB each): the client is served from
+    // /_client and copied next to standalone HTML exports, so no asset URL
+    // would work in both
+    assetsInlineLimit: 20 * 1024,
     outDir: "dist",
     assetsDir: "assets",
     emptyOutDir: true,

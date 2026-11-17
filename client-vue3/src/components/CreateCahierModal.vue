@@ -1,42 +1,41 @@
 <template>
-  <BaseModal @close="$emit('close')">
-    <template #title>{{ $t("create_cahier") }}</template>
+  <BaseModal
+    :disabled="!title || is_creating"
+    @close="$emit('close')"
+    @submit="create"
+  >
+    <template #header>{{ $t("create_cahier") }}</template>
 
-    <form class="form" @submit.prevent="create">
-      <label class="form__field">
-        <span class="form__label">{{ $t("title") }}</span>
-        <input
-          v-model.trim="title"
-          type="text"
-          required
-          maxlength="200"
-          autofocus
-        />
-      </label>
+    <div class="m_modal--field">
+      <label for="cahier_title">{{ $t("title") }}</label>
+      <input
+        id="cahier_title"
+        v-model.trim="title"
+        type="text"
+        required
+        maxlength="200"
+        autofocus
+      />
+    </div>
 
-      <label class="form__check">
-        <input v-model="is_private" type="checkbox" />
-        <span>{{ $t("private") }}</span>
-      </label>
-      <p class="form__hint">
-        {{ is_private ? $t("private_instructions") : $t("public_instructions") }}
-      </p>
-
-      <p v-if="error" class="form__error">{{ error }}</p>
-
-      <div class="form__actions">
-        <button type="button" class="button" @click="$emit('close')">
-          {{ $t("cancel") }}
-        </button>
-        <button
-          type="submit"
-          class="button button--primary"
-          :disabled="!title || is_creating"
-        >
-          {{ $t("create") }}
-        </button>
+    <div class="m_modal--field">
+      <label>{{ $t("manage_access") }}</label>
+      <div class="m_modal--box">
+        <label class="m_modal--check">
+          <input v-model="is_private" type="checkbox" />
+          {{ $t("private") }}
+        </label>
+        <small>
+          {{
+            is_private ? $t("private_instructions") : $t("public_instructions")
+          }}
+        </small>
       </div>
-    </form>
+    </div>
+
+    <p v-if="error" class="m_modal--field form-error">{{ error }}</p>
+
+    <template #submit_button>{{ $t("create") }}</template>
   </BaseModal>
 </template>
 
@@ -63,6 +62,7 @@ export default {
   methods: {
     ...mapActions(useContentStore, ["createFolder"]),
     async create() {
+      if (!this.title || this.is_creating) return;
       this.is_creating = true;
       this.error = "";
       try {

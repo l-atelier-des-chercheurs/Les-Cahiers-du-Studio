@@ -1,16 +1,47 @@
-// a sober base, to refine later
+// Close to the v2 interface (develop-node: public/src/vue/style.less,
+// less/_variables.less, less/_globals.less, less/_modal.less):
+// STVitry, black and white, spacing in multiples of 1.5rem
+
+@font-face {
+  font-family: "STVitry";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/STVitry-Regular-web.woff2") format("woff2");
+}
+@font-face {
+  font-family: "STVitry";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/STVitry-Italic-web.woff2") format("woff2");
+}
 
 :root {
-  --c-bg: #f6f4ef;
-  --c-surface: #fffefb;
-  --c-text: #1d1c1a;
-  --c-muted: #6b6862;
-  --c-border: #e2ded5;
-  --c-accent: #1d1c1a;
-  --c-on-accent: #fffefb;
-  --c-error: #c23a2b;
-  --c-ok: #3a8a4f;
-  --radius: 0.5rem;
+  --c-noir: #222;
+  --c-noir_light: #4d4d4d;
+  --c-gris_fonce: #565658;
+  --c-gris: #89898c;
+  --c-gris_clair: #c6c6c6;
+  --c-gris_tresclair: #f2f2f2;
+  --c-blanc: #fff;
+  --c-vert_vif: #22b573;
+  --c-rouge: #ff3b4c;
+  --c-bg: #f8f8f8;
+
+  // v2's @t-skipline, and its fractions
+  --skipline: 1.5rem;
+  --spacing-medium: var(--skipline);
+  --spacing-small: calc(var(--skipline) / 2);
+  --spacing-verysmall: calc(var(--skipline) / 4);
+
+  --radius-button: 6px;
+  --radius-input: 0.25rem;
+  --limited-width: 1300px;
+
+  --font-size-large: 1.1rem;
+  --font-size-small: 0.9rem;
+  --font-size-verysmall: 0.7rem;
 }
 
 *,
@@ -19,104 +50,278 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family:
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    sans-serif;
-  color: var(--c-text);
-  background: var(--c-bg);
+::selection {
+  background: rgb(151 151 151 / 25%);
 }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
-  color: inherit;
+body {
+  margin: 0;
+  font-family: "STVitry", monospace;
+  font-weight: 400;
+  font-size: 1em;
+  line-height: 1.35;
+  color: black;
+  background-color: var(--c-bg);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 400;
+  font-size: 1em;
+}
+
+hr {
+  margin: var(--skipline) 0;
+  border: none;
+  border-top: 1px solid black;
+}
+
+:focus {
+  outline-color: rgb(161 161 161 / 30%);
+}
+
+/* TEXT */
+
+.text-cap {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.font-large {
+  font-size: var(--font-size-large);
+}
+.font-small {
+  font-size: var(--font-size-small);
+  line-height: 1.25;
+}
+.font-verysmall {
+  font-size: var(--font-size-verysmall);
+}
+
+.border-bottom-dashed {
+  border-bottom: 1px solid;
+  border-image: repeating-linear-gradient(
+      to right,
+      currentColor,
+      currentColor 1ch,
+      transparent 1ch,
+      transparent calc(1ch + 2px)
+    )
+    1;
+  border-image-repeat: round;
+}
+
+.limited-width {
+  max-width: var(--limited-width);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* BUTTONS */
 
+button,
 .button {
-  padding: 0.45rem 0.9rem;
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius);
-  background: var(--c-surface);
+  display: inline-block;
+  margin: 0;
+  padding: 0 var(--spacing-small);
+  border: none;
+  border-radius: var(--radius-button);
+  background-color: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
   cursor: pointer;
-
-  &:hover:not(:disabled) {
-    border-color: var(--c-text);
-  }
+  transition:
+    color 0.25s ease-out,
+    opacity 0.5s;
 
   &:disabled {
-    opacity: 0.5;
-    cursor: default;
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--c-gris);
   }
 }
 
-.button--primary {
-  border-color: var(--c-accent);
-  background: var(--c-accent);
-  color: var(--c-on-accent);
-}
+// round buttons: a 48px circled icon, and a caption under it
+.button-round {
+  border-radius: 50%;
 
-/* FORMS */
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-.form__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-
-  input,
-  select,
-  textarea {
-    padding: 0.5rem 0.6rem;
-    border: 1px solid var(--c-border);
-    border-radius: var(--radius);
-    background: var(--c-bg);
-
-    &:focus-visible {
-      outline: 2px solid var(--c-accent);
-      outline-offset: 1px;
-    }
+  svg {
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin: auto;
+  }
+  > span {
+    display: block;
+    margin-top: var(--spacing-small);
   }
 }
 
-.form__label {
-  font-size: 0.85rem;
-  font-weight: 600;
+/* FORMS (v2 used shoelace's forms.css) */
+
+label {
+  display: inline-block;
+  margin-bottom: 0.25rem;
+  font-size: var(--font-size-small);
+  line-height: 1.25;
 }
 
-.form__check {
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+input[type="number"],
+input[type="url"],
+select,
+textarea {
+  display: block;
+  width: 100%;
+  height: 2rem;
+  margin: 0;
+  padding: 0 0.5rem;
+  border: 1px solid var(--c-gris_fonce);
+  border-radius: var(--radius-input);
+  background-color: white;
+  font: inherit;
+  line-height: 2rem;
+  color: black;
+  appearance: none;
+  transition:
+    0.1s border-color,
+    0.1s background-color;
+
+  &:focus {
+    outline: none;
+    border-color: #666;
+  }
+}
+
+select {
+  padding-right: 1.5rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 0.9rem) 50%,
+    calc(100% - 0.6rem) 50%;
+  background-size: 0.3rem 0.3rem;
+  background-repeat: no-repeat;
+}
+
+textarea {
+  height: auto;
+  padding: var(--spacing-small);
+  line-height: inherit;
+}
+
+input[type="checkbox"] {
+  margin: 0 0.4rem 0 0;
+}
+
+// a red dot in the corner of required fields
+input:required {
+  background-image: radial-gradient(var(--c-rouge) 18%, transparent 25%);
+  background-position: top right;
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+}
+
+small {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: var(--font-size-small);
+  line-height: 1.25;
+  color: var(--c-gris_fonce);
+}
+
+.form-error {
+  margin: 0 0 var(--spacing-small);
+  color: var(--c-rouge);
+  font-size: var(--font-size-small);
+}
+
+/* MODAL FIELDS (components/BaseModal.vue) */
+
+.m_modal--field {
+  margin: var(--spacing-small);
+
+  > label {
+    font-size: 1em;
+  }
+
+  small {
+    color: var(--c-gris_clair);
+  }
+
+  &.form-error {
+    color: #ff7e8a;
+  }
+}
+
+// fields grouped in a black box, under their label
+.m_modal--box {
+  padding: var(--spacing-small);
+  border-radius: 4px;
+  background-color: var(--c-noir);
+}
+
+.m_modal--check {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  margin: 0;
+  font-size: 1em;
   cursor: pointer;
 }
 
-.form__hint {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--c-muted);
+/* LINKS AND TEXTS */
+
+// a button that reads as an underlined word, like v2's "Connecté avec le
+// compte : <u>Louis</u>"
+.textLink {
+  display: inline;
+  padding: 0;
+  border-radius: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+
+  &:hover {
+    text-decoration-thickness: 2px;
+  }
 }
 
-.form__error {
-  margin: 0;
-  color: var(--c-error);
+.text-formatting {
+  h2 {
+    margin: var(--spacing-small) 0;
+    font-style: italic;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+  p {
+    margin: var(--spacing-medium) 0;
+  }
 }
 
-.form__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 0.25rem;
+.border-top-dashed {
+  border-top: 1px solid;
+  border-image: repeating-linear-gradient(
+      to right,
+      currentColor,
+      currentColor 1ch,
+      transparent 1ch,
+      transparent calc(1ch + 2px)
+    )
+    1;
+  border-image-repeat: round;
 }

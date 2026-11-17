@@ -1,12 +1,18 @@
 <template>
-  <BaseModal @close="$emit('close')">
-    <template #title>{{ $t("login") }}</template>
+  <BaseModal
+    :disabled="!path_to_author || !password || is_submitting"
+    @close="$emit('close')"
+    @submit="submit"
+  >
+    <template #header>{{ $t("login") }}</template>
 
-    <p v-if="!authors && !error" class="form__hint">{{ $t("loading") }}</p>
-    <form v-else-if="authors" class="form" @submit.prevent="submit">
-      <label class="form__field">
-        <span class="form__label">{{ $t("author") }}</span>
-        <select v-model="path_to_author" required>
+    <p v-if="!authors && !error" class="m_modal--field font-small">
+      {{ $t("loading") }}
+    </p>
+    <template v-else-if="authors">
+      <div class="m_modal--field">
+        <label for="login_author">{{ $t("author") }}</label>
+        <select id="login_author" v-model="path_to_author" required>
           <option value="" disabled>{{ $t("choose_author") }}</option>
           <option
             v-for="author in authors"
@@ -16,34 +22,23 @@
             {{ author.name || author.$path.split("/").pop() }}
           </option>
         </select>
-      </label>
+      </div>
 
-      <label class="form__field">
-        <span class="form__label">{{ $t("password") }}</span>
+      <div class="m_modal--field">
+        <label for="login_password">{{ $t("password") }}</label>
         <input
+          id="login_password"
           v-model="password"
           type="password"
           autocomplete="current-password"
           required
         />
-      </label>
-
-      <p v-if="error" class="form__error">{{ error }}</p>
-
-      <div class="form__actions">
-        <button type="button" class="button" @click="$emit('close')">
-          {{ $t("cancel") }}
-        </button>
-        <button
-          type="submit"
-          class="button button--primary"
-          :disabled="!path_to_author || !password || is_submitting"
-        >
-          {{ $t("login") }}
-        </button>
       </div>
-    </form>
-    <p v-if="error && !authors" class="form__error">{{ error }}</p>
+    </template>
+
+    <p v-if="error" class="m_modal--field form-error">{{ error }}</p>
+
+    <template #submit_button>{{ $t("login") }}</template>
   </BaseModal>
 </template>
 
@@ -72,12 +67,15 @@ export default {
         String(a.name ?? a.$path).localeCompare(String(b.name ?? b.$path))
       );
     } catch (err) {
-      this.error = this.$t("error_with_code", { code: err.code || err.message });
+      this.error = this.$t("error_with_code", {
+        code: err.code || err.message,
+      });
     }
   },
   methods: {
     ...mapActions(useSessionStore, ["login"]),
     async submit() {
+      if (!this.path_to_author || !this.password || this.is_submitting) return;
       this.is_submitting = true;
       this.error = "";
       try {
