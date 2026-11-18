@@ -356,7 +356,7 @@ export default {
   // room for the + button, after the last day
   &::after {
     content: "";
-    flex: 0 0 calc(64px + 4vw + var(--spacing-small));
+    flex: 0 0 calc(64px + 14vw + var(--spacing-small));
   }
 }
 
