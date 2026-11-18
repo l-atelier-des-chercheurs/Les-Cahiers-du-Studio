@@ -90,8 +90,12 @@
               </span>
             </div>
 
-            <ul
+            <!-- the medias glide to their new place when the grid changes
+            (Vue measures them before and after, CSS moves them) -->
+            <TransitionGroup
               v-if="segment.medias.length"
+              tag="ul"
+              name="m_tl-tile"
               class="m_tl--medias"
               :style="gridOf(segment.medias)"
             >
@@ -118,7 +122,7 @@
                   />
                 </template>
               </li>
-            </ul>
+            </TransitionGroup>
           </div>
         </div>
       </section>
@@ -750,6 +754,26 @@ export default {
   > :first-child {
     flex: 1 1 auto;
     --tile-ratio: auto;
+  }
+}
+
+// slight movements: medias moving aside, new ones fading in
+.m_tl-tile-move {
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.m_tl-tile-enter-active {
+  transition:
+    opacity 0.3s,
+    transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.m_tl-tile-enter-from {
+  opacity: 0;
+  transform: scale(0.96);
+}
+@media (prefers-reduced-motion: reduce) {
+  .m_tl-tile-move,
+  .m_tl-tile-enter-active {
+    transition: none;
   }
 }
 
