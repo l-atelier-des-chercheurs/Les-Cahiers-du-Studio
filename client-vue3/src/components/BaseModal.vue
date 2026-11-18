@@ -146,12 +146,14 @@ export default {
   width: 100%;
   padding: var(--spacing-small);
   border-radius: 0;
+  // dark text: white on this green is too faint (2.6:1, here 6:1)
   background-color: var(--c-vert_vif);
-  color: white;
+  color: var(--c-noir);
 
   &:disabled {
     opacity: 1;
     background-color: var(--c-gris);
+    color: white;
   }
 
   svg {

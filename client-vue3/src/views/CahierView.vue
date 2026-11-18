@@ -15,8 +15,27 @@
           class="button m_cahier--view"
           :class="{ 'is--active': view === option.key }"
           :aria-current="view === option.key ? 'page' : undefined"
+          :aria-label="$t(option.label)"
+          :title="$t(option.label)"
         >
-          {{ $t(option.label) }}
+          <!-- two days, each a rule with its medias beside it -->
+          <svg
+            v-if="option.key === 'timeline'"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
+            <line x1="2.5" y1="2" x2="2.5" y2="18" />
+            <rect x="4.5" y="3.5" width="4" height="5" />
+            <rect x="4.5" y="10.5" width="4" height="5" />
+            <line x1="11.5" y1="2" x2="11.5" y2="18" />
+            <rect x="13.5" y="3.5" width="4" height="5" />
+          </svg>
+          <svg v-else viewBox="0 0 20 20" aria-hidden="true">
+            <rect x="3" y="3" width="6" height="6" />
+            <rect x="11" y="3" width="6" height="6" />
+            <rect x="3" y="11" width="6" height="6" />
+            <rect x="11" y="11" width="6" height="6" />
+          </svg>
         </RouterLink>
       </nav>
     </header>
@@ -168,9 +187,19 @@ export default {
 }
 
 .m_cahier--view {
-  padding: 0.1rem var(--spacing-small);
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 0.4rem;
   border: 1px solid var(--c-gris_fonce);
-  font-size: var(--font-size-small);
+
+  svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.2;
+  }
 
   &:hover {
     border-color: var(--c-gris_clair);
@@ -187,7 +216,7 @@ export default {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-small);
-  padding: var(--spacing-small) var(--spacing-medium);
+  padding: var(--spacing-verysmall) var(--spacing-small);
   background-color: var(--c-noir);
   color: white;
 }

@@ -622,15 +622,17 @@ export default {
   &:hover {
     border-color: var(--c-gris_clair);
   }
+  // dark text: white on this green is too faint
   &.is--active {
     border-color: var(--c-vert_vif);
     background-color: var(--c-vert_vif);
+    color: var(--c-noir);
   }
   &.is--danger {
     border-color: var(--c-rouge);
   }
 
-  .font-verysmall {
+  &:not(.is--active) .font-verysmall {
     opacity: 0.8;
   }
 }

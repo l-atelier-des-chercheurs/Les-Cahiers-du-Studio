@@ -49,3 +49,15 @@ export function formatTime(date) {
   if (isNaN(d)) return "";
   return d.toLocaleTimeString(i18n.global.locale.value, { timeStyle: "short" });
 }
+
+// an author's colour, from their name ("authors/louis" → "louis"): always
+// the same for a name, light as v2's (randomcolor, luminosity "light")
+export function authorColor(path_to_author) {
+  const name = String(path_to_author || "")
+    .split("/")
+    .pop();
+  if (!name) return undefined;
+  let hash = 0;
+  for (const char of name) hash = (hash * 31 + char.codePointAt(0)) >>> 0;
+  return `hsl(${hash % 360} 75% 68%)`;
+}

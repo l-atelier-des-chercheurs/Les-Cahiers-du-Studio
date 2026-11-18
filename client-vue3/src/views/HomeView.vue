@@ -180,8 +180,6 @@
       </p>
     </section>
 
-    <AppFooter />
-
     <CreateCahierModal
       v-if="show_create_modal"
       @close="show_create_modal = false"
@@ -197,7 +195,6 @@ import { canSeeFolder, isInstanceAdmin } from "@/adc/rights";
 import { i18n } from "@/i18n";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
-import AppFooter from "@/components/AppFooter.vue";
 import CreateCahierModal from "@/components/CreateCahierModal.vue";
 
 // "Élise" and "elise" match
@@ -208,7 +205,7 @@ const normalize = (text) =>
     .toLowerCase();
 
 export default {
-  components: { AppFooter, CreateCahierModal },
+  components: { CreateCahierModal },
   emits: ["login"],
   data() {
     return {

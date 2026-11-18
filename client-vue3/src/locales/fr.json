@@ -27,7 +27,6 @@
   "create": "Créer",
   "open": "Ouvrir",
   "back": "Retour",
-  "typeface": "Typographie",
   "loading": "Chargement…",
   "error_with_code": "Erreur : {code}",
 
@@ -84,6 +83,10 @@
   "timeline": "Timeline",
   "grid": "Grille",
   "empty_days": "{count} jours sans média",
+  "days_count": "{n} jour | {n} jours",
+  "weeks_later": "{n} semaine plus tard… | {n} semaines plus tard…",
+  "months_later": "{n} mois plus tard…",
+  "years_later": "{n} an plus tard… | {n} ans plus tard…",
   "no_media": "aucun média",
   "fold": "Replier",
   "unfold": "Déplier",

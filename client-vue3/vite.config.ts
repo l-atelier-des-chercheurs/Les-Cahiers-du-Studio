@@ -29,7 +29,7 @@ export default defineConfig({
   },
   build: {
     modulePreload: false,
-    // inline the fonts (STVitry, ~16 kB each, Victor Mono up to ~21 kB):
+    // inline the fonts (STVitry, ~16 kB each):
     // the client is served from /_client and copied next to standalone HTML
     // exports, so no asset URL would work in both
     assetsInlineLimit: 24 * 1024,

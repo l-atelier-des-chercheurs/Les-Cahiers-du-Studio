@@ -362,6 +362,7 @@ export default {
 
   &:active {
     background-color: var(--c-vert_vif);
+    color: var(--c-noir);
   }
 }
 

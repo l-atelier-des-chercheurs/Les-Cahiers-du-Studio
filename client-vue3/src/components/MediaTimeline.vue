@@ -11,7 +11,7 @@
       <div
         v-if="column.kind === 'empty'"
         class="m_tl--emptyDays"
-        :title="column.title"
+        :title="$t('days_count', column.count + 1)"
       >
         <span
           v-for="index in Math.min(column.count, MAX_WAVES)"
@@ -20,7 +20,7 @@
           aria-hidden="true"
         />
         <span v-if="column.count > MAX_WAVES" class="m_tl--emptyLabel">
-          {{ $t("empty_days", { count: column.count }) }}
+          {{ laterLabel(column.count) }}
         </span>
         <span v-else class="visually-hidden">{{ column.title }}</span>
       </div>
@@ -105,12 +105,12 @@ import MediaTile from "./MediaTile.vue";
 // empty days in a row: one half circle each, up to this many, then the
 // count is written next to them
 const MAX_WAVES = 7;
-// tiles and the space between them, in rem. The staff lines behind the
-// medias fall on the tiles' edges: 5 lines per tile
-const TILE_W = 10;
-const TILE_H = 12.25;
+// square tiles and the space between them, in rem. The staff lines behind
+// the medias fall on the tiles' edges: 4 lines per tile, 40px apart as in v2
+const TILE_W = 9.75;
+const TILE_H = 9.75;
 const GAP = 0.25;
-const LINES_PER_TILE = 5;
+const LINES_PER_TILE = 4;
 
 export default {
   components: { MediaTile },
@@ -134,6 +134,8 @@ export default {
       folded_days: this.readFoldedDays(),
       // how many tiles fit in a column, from the timeline's height
       rows: 1,
+      // the height of a day's parts, in rem
+      segment_height: 0,
     };
   },
   computed: {
@@ -258,11 +260,17 @@ export default {
     // Rows and columns are counted here, not left to the grid (auto-fill
     // rows, auto-flow column): its width would be reckoned before its
     // height, as if every tile sat on one row, leaving a wide empty space
+    // Centered in the day's height, but on the staff lines: the space
+    // above is rounded down to a whole number of lines
     gridOf(count) {
       const rows = Math.min(this.rows, count);
+      const step = (TILE_H + GAP) / LINES_PER_TILE;
+      const block = rows * (TILE_H + GAP) - GAP;
+      const centered = Math.max(0, (this.segment_height - block) / 2);
       return {
         gridTemplateRows: `repeat(${rows}, var(--tile-h))`,
         gridTemplateColumns: `repeat(${Math.ceil(count / rows)}, var(--tile-w))`,
+        paddingTop: `${Math.floor(centered / step) * step}rem`,
       };
     },
     // the height of a day's parts, the same for every day
@@ -276,6 +284,7 @@ export default {
         (segment.clientHeight + GAP * rem) / ((TILE_H + GAP) * rem)
       );
       this.rows = Math.max(1, rows);
+      this.segment_height = segment.clientHeight / rem;
     },
     storageKey() {
       return `cahiers.folded_days.${this.path_to_folder}`;
@@ -286,6 +295,17 @@ export default {
       return Object.fromEntries(
         (Array.isArray(days) ? days : []).map((day) => [day, true])
       );
+    },
+    // after more than MAX_WAVES empty days, as in v2: "2 semaines plus
+    // tard…", "3 mois plus tard…", "2 ans plus tard…". From the last day
+    // with medias to the next one: one more than the empty days
+    laterLabel(empty_days) {
+      const days = empty_days + 1;
+      if (days / 7 < 4.5)
+        return this.$t("weeks_later", Math.max(1, Math.round(days / 7)));
+      if (days < 365)
+        return this.$t("months_later", Math.max(1, Math.round(days / 30.44)));
+      return this.$t("years_later", Math.max(1, Math.round(days / 365.25)));
     },
     toggleDay(key) {
       if (this.folded_days[key]) delete this.folded_days[key];
@@ -531,9 +551,9 @@ export default {
     display: flex;
     min-height: 0;
 
+    // the tile fills its cell
     > * {
       flex: 1 1 auto;
-      // the preview takes the height left by the legend
       --tile-ratio: auto;
     }
   }

@@ -9,7 +9,6 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Avertissement à l'ouverture** : à chaque visite, une fenêtre « En préparation » indique que l'application est en cours de préparation. Elle donne une adresse de contact et se ferme avec « Compris ».
 - **Connexion perdue** : si le serveur ne répond plus, un bandeau rouge en haut de l'écran indique que les contenus ne sont pas modifiables. Le bouton **+** est alors désactivé.
 - **Temps réel** : ce que les autres ajoutent, modifient ou suppriment (cahiers, médias, dates) apparaît sans recharger la page.
-- **Typographie** (essai) : en bas de la page d'accueil, un lien passe de STVitry à Victor Mono et inversement. Le choix est gardé dans le navigateur.
 
 ## Comptes et droits
 
@@ -38,7 +37,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 ## Page d'un cahier
 
 - **Adresse** : le cahier est à la racine du site, par exemple `https://…/rencontres`.
-- **En-tête** : retour à l'accueil, titre du cahier, choix de l'affichage « Timeline » ou « Grille ».
+- **En-tête** : retour à l'accueil, titre du cahier, choix de l'affichage, Timeline ou Grille, par deux pictogrammes (leur nom s'affiche au survol).
 - Le choix d'affichage fait partie de l'adresse. La grille est à `?vue=grille`, ce qui permet de partager un lien vers l'une ou l'autre vue.
 
 ### Timeline (affichage par défaut)
@@ -49,7 +48,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Chaque jour** commence par sa date écrite verticalement sur un filet gris. Une pastille noire donne le nombre de médias du jour.
 - **Médias** : placés en colonnes, de haut en bas puis de gauche à droite, sur des lignes de portée grises. Le nombre de médias par colonne s'adapte à la hauteur de la fenêtre.
 - **Repères** : ils découpent la journée en parties. Chacun est une étiquette verticale avec son heure et sa légende, dans sa couleur s'il en a une.
-- **Jours vides** : une vague grise, un demi-cercle par jour vide. Au-delà de 7 jours, la vague s'arrête à 7 et le texte « N jours sans média » s'affiche à côté. Au survol, les dates concernées s'affichent.
+- **Jours vides** : une vague grise, un demi-cercle par jour vide. Au-delà de 7 jours, la vague s'arrête à 7 et l'écart est écrit à côté : « 2 semaines plus tard… », « 3 mois plus tard… », « 2 ans plus tard… ». Au survol, le nombre de jours écoulés jusqu'au jour suivant (« 11 jours »).
 - **Replier un jour** : un clic sur la date du jour cache ses médias.
   - Le jour replié devient une étiquette entourée de noir, sur un filet noir, avec un onglet « Déplier ».
   - Un nouveau clic le déplie.
@@ -70,7 +69,8 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Texte** : le début du texte, qui s'estompe en bas (« Texte vide » s'il n'y a rien).
 - **Repère** : un rond (dans la grille ; dans la timeline, voir plus haut).
 - **Autre fichier** : son extension.
-- **Sous la vignette** : l'heure, le type, et la légende s'il y en a une (pour un lien, le nom du site).
+- **En haut à gauche** : une pastille de la couleur de l'auteur, puis la légende s'il y en a une (pour un lien, le nom du site). La couleur vient du nom de l'auteur : chaque auteur a toujours la même.
+- **Au survol** : une ombre, et une bulle avec l'heure, le type, l'auteur et la légende.
 
 ## Ajouter des médias : le bouton +
 

@@ -1,50 +1,54 @@
 <template>
-  <!-- one media, as a square preview and a legend under it: in the grid
-  and on the timeline -->
+  <!-- one media, in the grid and on the timeline. As v2's MediaBlock.vue:
+  the media fills the tile, with a dot in the colour of its author and its
+  caption over the top left corner -->
   <div
     class="m_tile"
     :class="[`is--${type}`, { 'is--highlighted': highlighted }]"
     :data-path="media.$path"
+    :title="summary"
   >
-    <div class="m_tile--preview">
-      <template v-if="type === 'text'">
-        <p v-if="excerpt" class="m_tile--text">{{ excerpt }}</p>
-        <p v-else class="m_tile--placeholder">{{ $t("empty_text") }}</p>
-      </template>
+    <template v-if="type === 'text'">
+      <p v-if="excerpt" class="m_tile--text">{{ excerpt }}</p>
+      <p v-else class="m_tile--placeholder">{{ $t("empty_text") }}</p>
+    </template>
 
-      <svg
-        v-else-if="type === 'marker'"
-        class="m_tile--marker"
-        viewBox="0 0 40 40"
+    <svg
+      v-else-if="type === 'marker'"
+      class="m_tile--marker"
+      viewBox="0 0 40 40"
+      aria-hidden="true"
+    >
+      <circle cx="20" cy="20" r="8.9" />
+      <circle class="_fill" cx="20" cy="20" r="4.7" />
+    </svg>
+
+    <img
+      v-else-if="thumb"
+      :src="thumb"
+      alt=""
+      loading="lazy"
+      decoding="async"
+    />
+
+    <span v-else class="m_tile--placeholder text-cap">{{ extension }}</span>
+
+    <svg
+      v-if="type === 'video'"
+      class="m_tile--play"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <polygon points="8 5 19 12 8 19" />
+    </svg>
+
+    <div v-if="author_color || legend" class="m_tile--top">
+      <span
+        v-if="author_color"
+        class="m_tile--author"
+        :style="{ '--author-color': author_color }"
         aria-hidden="true"
-      >
-        <circle cx="20" cy="20" r="8.9" />
-        <circle class="_fill" cx="20" cy="20" r="4.7" />
-      </svg>
-
-      <img
-        v-else-if="thumb"
-        :src="thumb"
-        alt=""
-        loading="lazy"
-        decoding="async"
       />
-
-      <span v-else class="m_tile--placeholder text-cap">{{ extension }}</span>
-
-      <svg
-        v-if="type === 'video'"
-        class="m_tile--play"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
-        <polygon points="8 5 19 12 8 19" />
-      </svg>
-    </div>
-
-    <div class="m_tile--legend">
-      <time :datetime="date">{{ time }}</time>
-      <span class="m_tile--type">{{ $t(`type_${type}`) }}</span>
       <span v-if="legend" class="m_tile--caption">{{ legend }}</span>
     </div>
   </div>
@@ -52,7 +56,7 @@
 
 <script>
 import { thumbURL } from "@/adc/api";
-import { dateOf, formatTime } from "@/medias";
+import { authorColor, dateOf, formatTime } from "@/medias";
 
 // one of the cahiers' thumb resolutions (settings_base.json): about 2× the
 // tiles' width, for sharp thumbs on dense screens
@@ -68,11 +72,13 @@ export default {
     type() {
       return this.media.$type || "other";
     },
-    date() {
-      return dateOf(this.media);
+    // the first author: who contributed it
+    author() {
+      const authors = this.media.$authors;
+      return Array.isArray(authors) ? authors[0] : undefined;
     },
-    time() {
-      return formatTime(this.date);
+    author_color() {
+      return authorColor(this.author);
     },
     thumb() {
       return thumbURL(this.media, THUMB_RESOLUTION);
@@ -100,6 +106,17 @@ export default {
       }
       return "";
     },
+    // on hover: what the tile no longer writes out
+    summary() {
+      return [
+        formatTime(dateOf(this.media)),
+        this.$t(`type_${this.type}`),
+        this.author?.split("/").pop(),
+        this.legend,
+      ]
+        .filter(Boolean)
+        .join(" · ");
+    },
     extension() {
       const name = this.media.$media_filename || "";
       return name.includes(".") ? name.split(".").pop() : "?";
@@ -110,62 +127,61 @@ export default {
 
 <style lang="scss" scoped>
 .m_tile {
+  position: relative;
   display: flex;
-  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
   min-width: 0;
+  aspect-ratio: var(--tile-ratio, 1);
   border-radius: 4px;
   background-color: white;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
   overflow: hidden;
-  transition: box-shadow 0.4s;
+  transition: box-shadow 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &:hover {
+    z-index: 1;
+    box-shadow:
+      0 2px 10px rgb(0 0 0 / 19%),
+      0 6px 26px rgb(0 0 0 / 3%);
+  }
 
   &.is--highlighted {
     box-shadow: 0 0 0 3px var(--c-vert_vif);
   }
-}
 
-.m_tile--preview {
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: var(--tile-ratio, 1);
-  background-color: var(--c-gris_tresclair);
-  overflow: hidden;
-
-  img {
+  > img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  // waveforms and pages: whole, on white
-  .is--audio & img,
-  .is--pdf & img {
+  // waveforms and pages: whole
+  &.is--audio > img,
+  &.is--pdf > img {
     object-fit: contain;
   }
-  .is--audio & {
+  &.is--audio {
     padding: var(--spacing-small);
   }
-  .is--marker &,
-  .is--text & {
-    background-color: white;
+  &.is--pdf,
+  &.is--other {
+    background-color: var(--c-gris_tresclair);
   }
 }
 
 .m_tile--text {
-  align-self: flex-start;
-  height: 100%;
+  align-self: stretch;
+  width: 100%;
   margin: 0;
-  padding: var(--spacing-small);
+  // below the caption
+  padding: calc(var(--spacing-small) + 0.9rem) var(--spacing-small)
+    var(--spacing-small);
   font-size: var(--font-size-small);
   line-height: 1.35;
   white-space: pre-line;
   overflow-wrap: anywhere;
   overflow: hidden;
-  // fades out at the bottom of the square
+  // fades out at the bottom of the tile
   mask-image: linear-gradient(to bottom, black 70%, transparent);
 }
 
@@ -197,32 +213,40 @@ export default {
   fill: white;
 }
 
-.m_tile--legend {
-  flex: 0 0 auto;
+// over the top left corner: the author's dot, then the caption
+.m_tile--top {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0 var(--spacing-verysmall);
-  padding: var(--spacing-verysmall) var(--spacing-small);
-  font-size: var(--font-size-small);
-  line-height: 1.3;
-
-  time {
-    font-variant-numeric: tabular-nums;
-  }
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
 }
 
-.m_tile--type {
-  margin-left: auto;
-  color: var(--c-gris);
-  font-size: var(--font-size-verysmall);
+.m_tile--author {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--author-color);
+  // visible on light and dark images
+  box-shadow:
+    0 0 0 1.5px white,
+    0 1px 3px rgb(0 0 0 / 35%);
 }
 
 .m_tile--caption {
-  flex: 1 0 100%;
+  min-width: 0;
+  padding: 2px 4px;
+  border-radius: 2px;
+  background-color: white;
+  box-shadow: -0.1em 0.2em 1em rgb(0 0 0 / 35%);
+  font-size: var(--font-size-verysmall);
+  line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--c-gris_fonce);
 }
 </style>
