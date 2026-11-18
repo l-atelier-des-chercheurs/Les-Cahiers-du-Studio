@@ -21,6 +21,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Créer des cahiers** : réservé aux administrateurs de l'instance.
 - **Modifier un cahier, y ajouter des médias** : réservé à ses administrateurs et à ses contributeurs. La personne qui crée un cahier en devient administratrice.
 - **Cahier public** : visible par tous les visiteurs, connectés ou non.
+- **Cahier ouvert à tous** (case « Contributions ouvertes à tous » à la création) : tout visiteur peut ajouter des médias, sans compte. Le cahier est alors public, et marqué « ouvert à tous » dans la liste.
 - **Cahier privé** : visible seulement par ses contributeurs. Il n'apparaît pas dans la liste pour les autres. Il s'ouvre dès qu'un contributeur se connecte.
 
 ## Page d'accueil
@@ -93,6 +94,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
   - nom du fichier ;
   - adresse, pour un lien ;
   - légende (« Étiquette » pour un repère) ;
+  - nom de la personne qui a contribué sans compte (`$credits`) ;
   - date sur la timeline, avec des raccourcis : « Capturé/créé le » (ou « Date du fichier »), « Date de l'import », « Maintenant » ;
   - mots-clés, avec des suggestions tirées des mots-clés déjà utilisés dans le cahier (Entrée ou virgule pour ajouter) ;
   - couleur, parmi 8 couleurs claires (la couleur d'un repère colore son étiquette dans la timeline) ;
@@ -126,6 +128,8 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Envoi** : les fichiers partent un par un, automatiquement.
   - Chaque fichier affiche un aperçu, son nom, son poids, son état (en attente, envoi en %, importé, échec) et une barre de progression.
   - L'en-tête compte les fichiers importés (« 3 / 7 »).
+- **Votre nom (facultatif)**, en haut de la fenêtre : enregistré avec chaque fichier (`$credits`), et retenu par le navigateur pour les contributions suivantes (textes, repères et liens compris). Donné après coup, il s'applique aussi aux fichiers déjà envoyés.
+- **Légende** sous chaque fichier : envoyée avec lui, ou enregistrée dès qu'on quitte le champ s'il est déjà envoyé.
 - **En cas d'échec** : bouton « Réessayer ». Si le fichier est trop lourd, la taille maximale est indiquée.
 - **Métadonnées** : une fois le fichier envoyé, le bouton « Métadonnées » affiche ce que le serveur a lu dans le fichier :
   - type, dimensions, durée, poids ;

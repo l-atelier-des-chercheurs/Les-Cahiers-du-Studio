@@ -126,6 +126,7 @@ export default {
         formatTime(dateOf(this.media)),
         this.$t(`type_${this.type}`),
         this.author?.split("/").pop(),
+        this.media.$credits,
         this.legend,
       ]
         .filter(Boolean)

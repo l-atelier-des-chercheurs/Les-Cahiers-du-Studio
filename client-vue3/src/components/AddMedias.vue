@@ -79,6 +79,7 @@
 
 <script>
 import { mapActions, mapState } from "pinia";
+import { creditsMeta } from "@/contributor";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
 import EmbedModal from "./EmbedModal.vue";
@@ -187,12 +188,14 @@ export default {
     ...mapActions(useContentStore, ["createFile", "uploadFile"]),
 
     // meta of every new media: visible right away (adc-core makes it
-    // private otherwise), placed on the timeline now, by its author
+    // private otherwise), placed on the timeline now, by its author, with
+    // the name given without an account (contributor.js)
     newMediaMeta() {
       return {
         $status: "public",
         $authors: this.token_path ? [this.token_path] : [],
         date_timeline: new Date().toISOString(),
+        ...creditsMeta(),
       };
     },
     async create(makeMedia) {

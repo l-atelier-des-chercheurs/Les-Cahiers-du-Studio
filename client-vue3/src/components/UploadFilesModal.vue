@@ -8,6 +8,20 @@
       <span class="m_upload--count">{{ count_done }} / {{ items.length }}</span>
     </template>
 
+    <!-- the name, given without an account: saved with every file, and
+    remembered by this browser (contributor.js) -->
+    <div class="m_modal--field">
+      <label for="upload_name">{{ $t("your_name") }}</label>
+      <input
+        id="upload_name"
+        v-model="name"
+        type="text"
+        autocomplete="name"
+        @change="applyName"
+      />
+      <small>{{ $t("your_name_instructions") }}</small>
+    </div>
+
     <ul class="m_upload--list">
       <li
         v-for="item in items"
@@ -66,6 +80,19 @@
         <p v-if="item.error" class="form-error m_upload--error">
           {{ item.error }}
         </p>
+
+        <div class="m_upload--caption">
+          <label :for="`upload_caption_${item.id}`" class="font-small">
+            {{ $t("caption") }}
+          </label>
+          <textarea
+            :id="`upload_caption_${item.id}`"
+            v-model="item.caption"
+            rows="2"
+            :placeholder="$t('caption_placeholder')"
+            @change="applyCaption(item)"
+          />
+        </div>
 
         <template v-if="item.status === 'done'">
           <dl
@@ -155,6 +182,7 @@ import { i18n } from "@/i18n";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
 import { useUnseenStore } from "@/stores/unseen";
+import { contributor_name, creditsMeta } from "@/contributor";
 import BaseModal from "./BaseModal.vue";
 
 // previews read from the disk: only light images, to spare phones' memory
@@ -185,6 +213,9 @@ export default {
         meta: undefined,
         preview_url: undefined,
         is_saving: false,
+        // typed here, sent with the file, or saved once it is sent
+        caption: "",
+        sent_caption: "",
         // the date field, behind « Date personnalisée »
         show_custom: false,
         // what adc-core read from the file, folded behind « Métadonnées »
@@ -196,6 +227,15 @@ export default {
     };
   },
   computed: {
+    // the shared, remembered name (contributor.js)
+    name: {
+      get() {
+        return contributor_name.value;
+      },
+      set(value) {
+        contributor_name.value = value;
+      },
+    },
     ...mapState(useSessionStore, ["token_path"]),
     ...mapState(useContentStore, ["getFolder"]),
     is_busy() {
@@ -254,6 +294,8 @@ export default {
             // modification date, which adc-core falls back on
             date_timeline: new Date(item.file.lastModified).toISOString(),
             $client_file_last_modified: item.file.lastModified,
+            ...creditsMeta(),
+            ...(item.caption.trim() && { caption: item.caption.trim() }),
           },
           (ratio) => (item.progress = ratio),
           this.abort_controller.signal
@@ -261,6 +303,9 @@ export default {
         item.meta = uploaded_meta;
         item.progress = 1;
         item.status = "done";
+        item.sent_caption = uploaded_meta.caption || "";
+        // typed while the file was on its way
+        await this.applyCaption(item);
         // outlined in the cahier until seen
         this.addUnseen(uploaded_meta.$path);
         // by default, the capture date
@@ -277,6 +322,29 @@ export default {
         item.progress = 0;
         item.error = this.errorMessage(err);
       }
+    },
+    // the caption of a file already sent; the others take it when sent
+    async applyCaption(item) {
+      const caption = item.caption.trim();
+      if (item.status !== "done" || caption === item.sent_caption) return;
+      try {
+        await this.updateFile(item.meta.$path, { caption });
+        item.sent_caption = caption;
+      } catch (err) {
+        item.error = this.errorMessage(err);
+      }
+    },
+    // a name given once some files are sent: on them too
+    async applyName() {
+      const $credits = this.name.trim();
+      for (const item of this.items)
+        if (item.status === "done" && (item.meta.$credits || "") !== $credits)
+          try {
+            await this.updateFile(item.meta.$path, { $credits });
+            item.meta = { ...item.meta, $credits };
+          } catch (err) {
+            item.error = this.errorMessage(err);
+          }
     },
     retry(item) {
       item.status = "pending";
@@ -566,6 +634,14 @@ export default {
 .m_upload--infosButton {
   flex: 0 0 auto;
   align-items: center;
+}
+
+.m_upload--caption {
+  margin-top: var(--spacing-small);
+
+  label {
+    color: var(--c-gris_clair);
+  }
 }
 
 .m_upload--error {

@@ -62,6 +62,7 @@ Les VPS installés maintenant ne doivent pas demander de migration v3 → v3'.
 - [x] Bouton « Créer un cahier » et fenêtre de création (titre, case Privé)
 - [ ] Ajouter à la création : description, début et fin facultatifs
 - [ ] Modifier et supprimer un cahier
+- [x] Cahier ouvert à tous (`$contributors: "everyone"`), à la création : contributions sans compte, avec un nom facultatif (`$credits`) retenu par le navigateur
 - [ ] Gérer les contributeurs d'un cahier
 - [x] Ouvrir un cahier (à la racine : `/<slug>`, comme en v2)
 - [x] Connexion minimale : choix d'un auteur et mot de passe

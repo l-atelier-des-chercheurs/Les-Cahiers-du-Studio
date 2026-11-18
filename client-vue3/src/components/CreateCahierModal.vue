@@ -22,7 +22,7 @@
       <label>{{ $t("manage_access") }}</label>
       <div class="m_modal--box">
         <label class="m_modal--check">
-          <input v-model="is_private" type="checkbox" />
+          <input v-model="is_private" type="checkbox" :disabled="is_open" />
           {{ $t("private") }}
         </label>
         <small>
@@ -30,6 +30,16 @@
             is_private ? $t("private_instructions") : $t("public_instructions")
           }}
         </small>
+      </div>
+    </div>
+
+    <div class="m_modal--field">
+      <div class="m_modal--box">
+        <label class="m_modal--check">
+          <input v-model="is_open" type="checkbox" />
+          {{ $t("open_contributions") }}
+        </label>
+        <small>{{ $t("open_contributions_instructions") }}</small>
       </div>
     </div>
 
@@ -53,6 +63,8 @@ export default {
     return {
       title: "",
       is_private: false,
+      // anyone can add medias, without an account: a public cahier
+      is_open: false,
       is_creating: false,
       error: "",
     };
@@ -74,9 +86,9 @@ export default {
           title: this.title,
           requested_slug: this.title,
           // adc-core makes folders private when $status is missing
-          $status: this.is_private ? "private" : "public",
+          $status: this.is_private && !this.is_open ? "private" : "public",
           $admins: [this.token_path],
-          $contributors: [],
+          $contributors: this.is_open ? "everyone" : [],
         });
         this.$emit("created", path_to_folder);
       } catch (err) {

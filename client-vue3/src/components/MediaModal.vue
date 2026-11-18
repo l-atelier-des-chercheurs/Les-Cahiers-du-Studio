@@ -148,6 +148,18 @@
       <p v-else class="m_media--value">{{ form.caption }}</p>
     </div>
 
+    <!-- the name given without an account ($credits) -->
+    <div v-if="can_edit || form.credits" class="m_modal--field">
+      <label for="media_credits">{{ $t("credits") }}</label>
+      <input
+        v-if="can_edit"
+        id="media_credits"
+        v-model="form.credits"
+        type="text"
+      />
+      <p v-else class="m_media--value">{{ form.credits }}</p>
+    </div>
+
     <div class="m_modal--field">
       <label for="media_date">{{ $t("date_on_timeline") }}</label>
       <template v-if="can_edit">
@@ -482,6 +494,7 @@ export default {
         color: media.color || "",
         authors: Array.isArray(media.$authors) ? [...media.$authors] : [],
         content: typeof media.$content === "string" ? media.$content : "",
+        credits: media.$credits || "",
       };
     },
     // only what changed
@@ -496,6 +509,8 @@ export default {
       if (!same(this.form.keywords, before.keywords))
         changes.keywords = this.form.keywords;
       if (this.form.color !== before.color) changes.color = this.form.color;
+      if (this.form.credits.trim() !== before.credits)
+        changes.$credits = this.form.credits.trim();
       if (!same(this.form.authors, before.authors))
         changes.$authors = this.form.authors;
       if (

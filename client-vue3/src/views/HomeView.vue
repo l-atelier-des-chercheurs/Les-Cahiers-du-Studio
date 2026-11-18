@@ -143,6 +143,9 @@
             <div v-if="cahier.$status === 'private'" class="m_metaField">
               <mark>{{ $t("private").toLowerCase() }}</mark>
             </div>
+            <div v-if="cahier.$contributors === 'everyone'" class="m_metaField">
+              <mark>{{ $t("open_to_everyone") }}</mark>
+            </div>
             <div v-if="cahier.$date_created" class="m_metaField">
               <i>{{ $t("created_date") }}</i>
               <div>{{ formatDate(cahier.$date_created) }}</div>

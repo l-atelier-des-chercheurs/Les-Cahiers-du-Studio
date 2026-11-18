@@ -43,6 +43,13 @@
   "private": "Privé",
   "private_instructions": "Seuls ses contributeurs pourront voir ce cahier.",
   "public_instructions": "Tous les visiteurs pourront voir ce cahier. Seuls ses contributeurs pourront le modifier.",
+  "open_contributions": "Contributions ouvertes à tous",
+  "open_contributions_instructions": "Tout visiteur pourra ajouter des médias, sans compte. Le cahier est alors public.",
+  "open_to_everyone": "ouvert à tous",
+  "your_name": "Votre nom (facultatif)",
+  "your_name_instructions": "Il apparaîtra avec vos contributions. Ce navigateur s’en souviendra pour les suivantes.",
+  "caption_placeholder": "L’atelier, le projet ou le moment concerné…",
+  "credits": "Ajouté par",
   "created_date": "Date de création",
   "last_modified": "Dernière modification",
 
