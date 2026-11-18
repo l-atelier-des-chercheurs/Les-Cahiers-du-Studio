@@ -9,7 +9,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Avertissement à l'ouverture** : à chaque visite, une fenêtre « En préparation » indique que l'application est en cours de préparation. Elle donne une adresse de contact et se ferme avec « Compris ».
 - **Message « Prototype en cours de développement »** : sur fond jaune, au milieu de la barre du haut d'un cahier et en haut de la page d'accueil. Un clic rouvre la fenêtre « En préparation », avec l'adresse de contact.
 - **Notifications** : de courts messages en bas à gauche (une erreur en rouge), qui disparaissent seuls après quelques secondes ou se ferment avec ×.
-- **Connexion perdue** : si le serveur ne répond plus, un bandeau rouge en haut de l'écran indique que les contenus ne sont pas modifiables. Le bouton **+** est alors désactivé.
+- **Indicateur de connexion**, en haut à droite (barre d'un cahier, en-tête de l'accueil) : « En direct » avec un point vert qui pulse doucement ; pendant un enregistrement (média, légende, import, suppression…), un petit cercle qui tourne et « Enregistrement… » ; puis « Enregistré » ✓ pendant 2 secondes, ou « Échec de l'enregistrement » en rouge. Si le serveur ne répond plus : « Hors ligne : modifications impossibles » en rouge (à la place de la barre rouge de la v2), et le bouton + est désactivé.
 - **Temps réel** : ce que les autres ajoutent, modifient ou suppriment (cahiers, médias, dates) apparaît sans recharger la page.
 
 - **Page `/_ui`** (pour l'équipe, non liée depuis l'application) : tous les styles et composants sur une page, pour vérifier l'effet d'un changement de CSS global. Couleurs, espacements, texte, Markdown, boutons, tous les types de champs (sur la page et dans une fenêtre), vignettes de médias d'exemple, et une fenêtre de média en lecture seule.
@@ -42,7 +42,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 ## Page d'un cahier
 
 - **Adresse** : le cahier est à la racine du site, par exemple `https://…/rencontres`.
-- **En-tête** : retour à l'accueil, titre du cahier, choix de l'affichage, Timeline ou Grille, par deux pictogrammes (leur nom s'affiche au survol).
+- **En-tête** : retour à l'accueil, titre du cahier et, juste après, le choix de l'affichage, Timeline ou Grille, par deux pictogrammes (leur nom s'affiche au survol) ; au milieu, le message « Prototype » ; à droite, l'indicateur de connexion.
 - Le choix d'affichage fait partie de l'adresse. La grille est à `?vue=grille`, ce qui permet de partager un lien vers l'une ou l'autre vue.
 
 ### Timeline (affichage par défaut)

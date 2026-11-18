@@ -2,8 +2,9 @@
   <!-- v2's ListView.vue and Folder.vue -->
   <main class="m_home">
     <header class="m_home--header">
-      <div class="m_home--prototype">
+      <div class="m_home--topbar">
         <PrototypeBadge @notice="$emit('notice')" />
+        <LiveStatus class="m_home--live" />
       </div>
       <div class="m_home--header--content limited-width">
         <div class="m_home--header--title">
@@ -202,6 +203,7 @@ import { i18n } from "@/i18n";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
 import CreateCahierModal from "@/components/CreateCahierModal.vue";
+import LiveStatus from "@/components/LiveStatus.vue";
 import PrototypeBadge from "@/components/PrototypeBadge.vue";
 
 // "Élise" and "elise" match
@@ -212,7 +214,7 @@ const normalize = (text) =>
     .toLowerCase();
 
 export default {
-  components: { CreateCahierModal, PrototypeBadge },
+  components: { CreateCahierModal, LiveStatus, PrototypeBadge },
   emits: ["login", "notice"],
   data() {
     return {
@@ -372,11 +374,21 @@ export default {
   color: white;
 }
 
-// the prototype's message, centred above the title
-.m_home--prototype {
-  display: flex;
-  justify-content: center;
+// the prototype's message centred above the title, the live status on
+// the right
+.m_home--topbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
   padding: 0 var(--spacing-small);
+
+  > :first-child {
+    grid-column: 2;
+  }
+}
+
+.m_home--live {
+  justify-self: end;
 }
 
 .m_home--header--content {

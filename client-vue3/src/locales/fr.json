@@ -1,5 +1,10 @@
 {
-  "connection_lost": "Connexion au serveur perdue. Les contenus ne sont pas modifiables.",
+  "live_connecting": "Connexion…",
+  "live_live": "En direct",
+  "live_saving": "Enregistrement…",
+  "live_saved": "Enregistré",
+  "live_failed": "Échec de l’enregistrement",
+  "live_offline": "Hors ligne : modifications impossibles",
   "tagline": "Capturer, annoter et publier des médias pendant les temps de création — nouvelle version en cours de développement.",
   "more_infos": "Plus d’informations",
   "less_infos": "Moins d’informations",

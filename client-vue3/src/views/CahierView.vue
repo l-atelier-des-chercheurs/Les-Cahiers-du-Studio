@@ -6,42 +6,44 @@
           ← {{ $t("back") }}
         </RouterLink>
         <h1 class="m_cahier--title">{{ title }}</h1>
+        <!-- how this cahier is shown: next to its title -->
+        <nav class="m_cahier--views" :aria-label="$t('display')">
+          <RouterLink
+            v-for="option in view_options"
+            :key="option.key"
+            :to="{ query: option.query }"
+            replace
+            class="button m_cahier--view"
+            :class="{ 'is--active': view === option.key }"
+            :aria-current="view === option.key ? 'page' : undefined"
+            :aria-label="$t(option.label)"
+            :title="$t(option.label)"
+          >
+            <!-- two days, each a rule with its medias beside it -->
+            <svg
+              v-if="option.key === 'timeline'"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+            >
+              <line x1="2.5" y1="2" x2="2.5" y2="18" />
+              <rect x="4.5" y="3.5" width="4" height="5" />
+              <rect x="4.5" y="10.5" width="4" height="5" />
+              <line x1="11.5" y1="2" x2="11.5" y2="18" />
+              <rect x="13.5" y="3.5" width="4" height="5" />
+            </svg>
+            <svg v-else viewBox="0 0 20 20" aria-hidden="true">
+              <rect x="3" y="3" width="6" height="6" />
+              <rect x="11" y="3" width="6" height="6" />
+              <rect x="3" y="11" width="6" height="6" />
+              <rect x="11" y="11" width="6" height="6" />
+            </svg>
+          </RouterLink>
+        </nav>
       </div>
 
       <PrototypeBadge class="m_cahier--prototype" @notice="$emit('notice')" />
 
-      <nav class="m_cahier--views" :aria-label="$t('display')">
-        <RouterLink
-          v-for="option in view_options"
-          :key="option.key"
-          :to="{ query: option.query }"
-          replace
-          class="button m_cahier--view"
-          :class="{ 'is--active': view === option.key }"
-          :aria-current="view === option.key ? 'page' : undefined"
-          :aria-label="$t(option.label)"
-          :title="$t(option.label)"
-        >
-          <!-- two days, each a rule with its medias beside it -->
-          <svg
-            v-if="option.key === 'timeline'"
-            viewBox="0 0 20 20"
-            aria-hidden="true"
-          >
-            <line x1="2.5" y1="2" x2="2.5" y2="18" />
-            <rect x="4.5" y="3.5" width="4" height="5" />
-            <rect x="4.5" y="10.5" width="4" height="5" />
-            <line x1="11.5" y1="2" x2="11.5" y2="18" />
-            <rect x="13.5" y="3.5" width="4" height="5" />
-          </svg>
-          <svg v-else viewBox="0 0 20 20" aria-hidden="true">
-            <rect x="3" y="3" width="6" height="6" />
-            <rect x="11" y="3" width="6" height="6" />
-            <rect x="3" y="11" width="6" height="6" />
-            <rect x="11" y="11" width="6" height="6" />
-          </svg>
-        </RouterLink>
-      </nav>
+      <LiveStatus class="m_cahier--live" />
     </header>
 
     <div class="m_cahier--content">
@@ -106,6 +108,7 @@ import { canContributeToFolder } from "@/adc/rights";
 import { sortByDate } from "@/medias";
 import { useUnseenStore } from "@/stores/unseen";
 import AddMedias from "@/components/AddMedias.vue";
+import LiveStatus from "@/components/LiveStatus.vue";
 import PrototypeBadge from "@/components/PrototypeBadge.vue";
 import MediaGrid from "@/components/MediaGrid.vue";
 import MediaTimeline from "@/components/MediaTimeline.vue";
@@ -115,6 +118,7 @@ export default {
   emits: ["notice"],
   components: {
     AddMedias,
+    LiveStatus,
     PrototypeBadge,
     MediaGrid,
     // loaded on demand, with its Markdown libraries (marked, DOMPurify),
@@ -279,8 +283,12 @@ export default {
 }
 
 .m_cahier--views {
+  flex: 0 0 auto;
   display: flex;
   gap: var(--spacing-verysmall);
+}
+
+.m_cahier--live {
   justify-self: end;
 }
 
@@ -320,8 +328,8 @@ export default {
   }
 }
 
-// back and title on the left, the prototype's message in the middle, the
-// views on the right; on narrow screens, the message on a line of its own
+// back, title and views on the left, the prototype's message in the
+// middle, the live status on the right; on narrow screens, the message on a line of its own
 .m_cahier--header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);

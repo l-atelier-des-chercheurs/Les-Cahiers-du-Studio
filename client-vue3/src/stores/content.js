@@ -24,6 +24,12 @@ export const useContentStore = defineStore("content", {
     // folders of each type that was opened: { cahiers: ["cahiers/mon-cahier"] }
     lists: {},
     is_connected: false,
+    // the socket connected once: losing it now is worth saying
+    has_connected: false,
+    // writes on their way to the server, and how the last one ended:
+    // { ok: true | false, at: timestamp }, for the live indicator
+    saving: 0,
+    last_save: null,
   }),
 
   getters: {
@@ -39,7 +45,10 @@ export const useContentStore = defineStore("content", {
   actions: {
     // once, before the app starts
     init() {
-      onConnectionChange((is_connected) => (this.is_connected = is_connected));
+      onConnectionChange((is_connected) => {
+        this.is_connected = is_connected;
+        if (is_connected) this.has_connected = true;
+      });
 
       onEvent("folderCreated", ({ path_to_type, path_to_folder, meta }) => {
         this.folders[path_to_folder] = meta;
@@ -109,41 +118,61 @@ export const useContentStore = defineStore("content", {
 
     /* CHANGES: the store is updated by the server's events */
 
+    // every write goes through here: counted while on its way, and its
+    // outcome kept (LiveStatus.vue shows them). A cancelled upload is
+    // neither saved nor failed.
+    async _track(promise) {
+      this.saving++;
+      try {
+        const result = await promise;
+        this.last_save = { ok: true, at: Date.now() };
+        return result;
+      } catch (err) {
+        if (err?.code !== "upload_aborted")
+          this.last_save = { ok: false, at: Date.now() };
+        throw err;
+      } finally {
+        this.saving--;
+      }
+    },
+
     // returns the path of the new folder
     createFolder(path_to_type, data) {
-      return api.createFolder(path_to_type, data);
+      return this._track(api.createFolder(path_to_type, data));
     },
     updateFolder(path_to_folder, data) {
-      return api.updateFolder(path_to_folder, data);
+      return this._track(api.updateFolder(path_to_folder, data));
     },
     removeFolder(path_to_folder) {
-      return api.removeFolder(path_to_folder);
+      return this._track(api.removeFolder(path_to_folder));
     },
     uploadFile(path_to_folder, file, additional_meta, onProgress, signal) {
-      return api.uploadFile(
-        path_to_folder,
-        file,
-        file.name,
-        additional_meta,
-        onProgress,
-        signal
+      return this._track(
+        api.uploadFile(
+          path_to_folder,
+          file,
+          file.name,
+          additional_meta,
+          onProgress,
+          signal
+        )
       );
     },
     // without media: markers
     createFile(path_to_folder, meta) {
-      return api.createFile(path_to_folder, meta);
+      return this._track(api.createFile(path_to_folder, meta));
     },
     // the server's answer is applied right away, as its fileUpdated event
     // will be (the same changes, twice is harmless): the store is right even
     // if the event is lost (connection dropped)
     async updateFile(path_to_meta, data) {
-      const result = await api.updateFile(path_to_meta, data);
+      const result = await this._track(api.updateFile(path_to_meta, data));
       const path_to_folder = parentOf(path_to_meta);
       this._updateFileMeta(path_to_folder, path_to_meta, result?.changed_data);
       return result;
     },
     removeFile(path_to_meta) {
-      return api.removeFile(path_to_meta);
+      return this._track(api.removeFile(path_to_meta));
     },
 
     _updateFileMeta(path_to_folder, path_to_meta, changed_data) {
