@@ -37,6 +37,7 @@
   "create_cahier": "Créer un cahier",
   "title": "Titre",
   "title_taken": "Un cahier porte déjà ce titre.",
+  "title_reserved": "Ce titre est réservé, choisissez-en un autre.",
   "manage_access": "Gérer l’accès au contenu",
   "private": "Privé",
   "private_instructions": "Seuls ses contributeurs pourront voir ce cahier.",

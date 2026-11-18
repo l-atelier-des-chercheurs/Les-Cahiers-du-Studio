@@ -19,7 +19,7 @@ import { useSessionStore } from "@/stores/session";
 
 export default {
   props: {
-    // from the route: /cahiers/:slug
+    // from the route: /:slug
     slug: { type: String, required: true },
   },
   data() {

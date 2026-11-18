@@ -43,6 +43,7 @@
 import { mapActions, mapState } from "pinia";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
+import { isReservedTitle } from "@/slugs";
 import BaseModal from "./BaseModal.vue";
 
 export default {
@@ -63,8 +64,10 @@ export default {
     ...mapActions(useContentStore, ["createFolder"]),
     async create() {
       if (!this.title || this.is_creating) return;
-      this.is_creating = true;
       this.error = "";
+      if (isReservedTitle(this.title))
+        return (this.error = this.$t("title_reserved"));
+      this.is_creating = true;
       try {
         // the list gets the new cahier from the server's folderCreated event
         const path_to_folder = await this.createFolder("cahiers", {
