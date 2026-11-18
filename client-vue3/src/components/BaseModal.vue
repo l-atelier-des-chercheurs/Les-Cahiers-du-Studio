@@ -97,7 +97,7 @@ export default {
   margin: 0;
   padding: var(--spacing-medium) var(--spacing-small);
   border: none;
-  background: rgb(0 0 0 / 87%);
+  background: rgb(0 0 0 / 77%);
   color: white;
 
   // the veil is the dialog itself
@@ -109,6 +109,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    animation: m_modal-veil 0.8s ease-out;
   }
 
   @media screen and (max-width: 50rem) {
@@ -120,7 +121,25 @@ export default {
   }
 }
 
+// on opening: the veil fades in, the panel rises a little
+@keyframes m_modal-veil {
+  from {
+    background-color: transparent;
+  }
+}
+@keyframes m_modal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
 .m_modal--container {
+  animation: m_modal-rise 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
   width: 100%;
   max-width: 400px;
   margin: auto;
