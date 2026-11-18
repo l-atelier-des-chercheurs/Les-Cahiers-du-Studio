@@ -101,7 +101,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Télécharger** le fichier, **Supprimer** le média (avec une confirmation dans la fenêtre).
 - **Enregistrer et fermer** : enregistre les modifications. Si on ferme ou change de média sans enregistrer, la fenêtre propose d'enregistrer, de ne pas enregistrer ou d'annuler.
 - **Repère** : une fenêtre compacte, sans aperçu, avec seulement son étiquette, sa date (raccourcis « Date de création » et « Maintenant »), « Ajouté par », ses auteurs et « Supprimer ».
-- Ouvrir un média le compte comme vu (il perd son contour vert).
+- Ouvrir un média lui retire son contour vert de nouveau média.
 - Un texte créé avec le bouton + ouvre directement sa fenêtre, pour l'écrire.
 
 ## Ajouter des médias : le bouton +
@@ -115,11 +115,9 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Glisser-déposer** : quand on fait glisser des fichiers sur la page, le bouton + s'agrandit (« Déposez vos fichiers ici »).
 - Le menu se ferme avec Échap ou un clic ailleurs.
 - **Après création** : un texte, un repère ou un lien apparaît aussitôt, et l'affichage défile jusqu'à lui.
-- **Nouveaux médias en évidence** : tout média ajouté depuis ce navigateur (texte, repère, lien, fichier importé) est entouré de vert tant qu'il n'a pas été vu.
-  - Il compte comme vu quand on le survole ou le touche, ou après 2 secondes à l'écran. Pendant ces 2 secondes, le contour s'efface progressivement ; s'il quitte l'écran avant, le contour revient.
-  - Le décompte attend tant que l'onglet est en arrière-plan ou qu'une fenêtre est ouverte par-dessus.
-  - Un jour replié qui contient des médias pas encore vus a un anneau vert autour de son nombre de médias.
-  - La liste des médias pas encore vus est gardée dans le navigateur, pour chaque cahier.
+- **Nouveaux médias en évidence** : tout média ajouté depuis ce navigateur (texte, repère, lien, fichier importé) est entouré de vert jusqu'à ce qu'on l'ouvre.
+  - Un jour replié qui contient des médias pas encore ouverts a un anneau vert autour de son nombre de médias.
+  - La liste est gardée dans le navigateur, pour chaque cahier.
 - **Auteur** : chaque média ajouté est attribué à la personne connectée. Il est visible tout de suite par les visiteurs du cahier.
 
 ## Fenêtre d'import des fichiers

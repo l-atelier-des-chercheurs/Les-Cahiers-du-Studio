@@ -4,7 +4,6 @@
   caption over the top left corner -->
   <div
     class="m_tile"
-    v-seen="media.$path"
     :class="[`is--${type}`, { 'is--unseen': is_unseen }]"
     :data-path="media.$path"
     :title="summary"
@@ -63,7 +62,6 @@
 import { thumbURL } from "@/adc/api";
 import { mapState } from "pinia";
 import { authorColor, dateOf, formatTime } from "@/medias";
-import { vSeen } from "@/seen";
 import { useUnseenStore } from "@/stores/unseen";
 
 // one of the cahiers' thumb resolutions (settings_base.json): about 2× the
@@ -71,7 +69,6 @@ import { useUnseenStore } from "@/stores/unseen";
 const THUMB_RESOLUTION = 440;
 
 export default {
-  directives: { seen: vSeen },
   props: {
     media: { type: Object, required: true },
   },
@@ -166,16 +163,9 @@ export default {
       0 6px 26px rgb(0 0 0 / 3%);
   }
 
-  // not seen yet: a green outline, fading out over the 2 seconds it takes
-  // to count as seen on screen (seen.js), back at once if it leaves
+  // not seen yet: a green outline, until the media is opened
   &.is--unseen {
     box-shadow: 0 0 0 3px var(--c-vert_vif);
-    transition: box-shadow 0.3s;
-
-    &.is--seeing {
-      box-shadow: 0 0 0 3px transparent;
-      transition: box-shadow 2s linear;
-    }
   }
 
   > img {

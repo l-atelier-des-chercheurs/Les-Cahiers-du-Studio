@@ -70,7 +70,6 @@
             colour), the time, its label -->
             <div v-if="segment.marker" class="m_tl--marker">
               <div
-                v-seen="segment.marker.$path"
                 class="m_tl--markerLabel"
                 :class="{ 'is--unseen': isUnseen(segment.marker.$path) }"
                 :data-path="segment.marker.$path"
@@ -152,7 +151,6 @@ import { mapActions, mapState } from "pinia";
 import { readJSON, writeJSON } from "@/adc/storage";
 import { useContentStore } from "@/stores/content";
 import { useNotificationsStore } from "@/stores/notifications";
-import { vSeen } from "@/seen";
 import { useUnseenStore } from "@/stores/unseen";
 import MediaTile from "./MediaTile.vue";
 
@@ -171,7 +169,6 @@ const MAX_W = 16;
 
 export default {
   components: { MediaTile },
-  directives: { seen: vSeen },
   // open: a media's window, with its path
   emits: ["open"],
   props: {
@@ -731,16 +728,6 @@ export default {
   // not seen yet: as the tiles (MediaTile.vue)
   &.is--unseen {
     box-shadow: 0 0 0 3px var(--c-vert_vif);
-    transition:
-      transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1),
-      box-shadow 0.3s;
-
-    &.is--seeing {
-      box-shadow: 0 0 0 3px transparent;
-      transition:
-        transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1),
-        box-shadow 2s linear;
-    }
   }
 }
 

@@ -95,13 +95,25 @@ Reprendre le bouton + de la v2 (`ImportMedias.vue`) : un bouton rond qui déplie
 - [x] Vignettes avec `thumbURL()`, rendu adapté à chaque type (image, vidéo, audio, texte, repère, embed, fichier)
 - [x] Mise à jour en temps réel par socket (ajout, modification, suppression), sans recharger la page
 - [x] Faire défiler jusqu'à un média qu'on vient d'ajouter (Texte, Repère, Lien, et fichiers importés à la fermeture de la fenêtre d'import)
-- [x] Médias ajoutés depuis ce navigateur entourés de vert jusqu'à ce qu'ils soient vus (survol, toucher, ou 2 s à l'écran)
+- [x] Médias ajoutés depuis ce navigateur entourés de vert jusqu'à ce qu'on les ouvre
 - [x] Cliquer sur un média (ou un repère) ouvre sa fenêtre
 
 - [ ] **Déplacer un média par glisser-déposer** : le déplacer change sa `date_timeline` (pas d'ordre manuel séparé ; le placement libre relève de la vue Tableau, `tableau_x` / `tableau_y`).
   - Étape 1, souris : seuil de quelques pixels pour ne pas gêner le clic, copie semi-transparente de la tuile, ligne d'insertion, les voisins s'écartent (animation existante). Lâché entre deux médias : date entre les leurs ; sur le libellé d'un autre jour : même heure, ce jour-là. Défilement automatique de la timeline près des bords. Enregistrement optimiste, annulé avec notification en cas d'échec (comme la taille).
   - Étape 2, tactile : appui long pour commencer, sans gêner le défilement.
   - À tester sur un vrai cahier : avec des tailles mêlées, le remplissage des trous (dense) peut rendre l'ordre affiché différent de l'ordre des dates, et la ligne d'insertion sauter.
+
+- [ ] **Nouveautés des autres** : le contour vert signale les contributions des autres que l'on n'a pas encore vues (plus les siennes). Après la conférence, pas avant.
+  - Point de départ : est nouveau ce qui a été ajouté depuis la première visite du cahier ; tout ce qui existait avant compte comme vu, sinon un cahier de 300 médias serait entièrement entouré.
+  - Ses propres contributions ne sont jamais nouvelles (son compte dans `$authors`, ou ajoutées depuis ce navigateur). Le défilement jusqu'à elles après un ajout reste.
+  - Un média devient vu quand on l'ouvre dans sa fenêtre, ou par le compteur (ci-dessous).
+  - « Tout marquer comme vu », pour le cahier ou pour un jour (à côté de son libellé), pour ne pas laisser s'accumuler les contours.
+  - Compteur « 12 nouveaux » dans la barre du haut. Un clic va au nouveau média ajouté le moins récemment, le compte comme vu (sans avoir à l'ouvrir), et le compteur passe à « 11 nouveaux » ; un nouveau clic va au suivant, et ainsi de suite.
+  - Sans compte : dans le navigateur, comme aujourd'hui. Avec un compte : dans un champ de l'auteur, pour le retrouver sur tous ses appareils ; ce que le navigateur avait vu est fusionné à la connexion.
+  - Format, par cahier : la date de la première visite (ou du dernier « Tout marquer comme vu »), et la liste des médias ouverts depuis. Plus petit qu'une liste de tout ce qui a été vu.
+  - À vérifier dans adc-core avant de stocker dans le compte : les champs d'un auteur sont-ils lisibles par les autres ? Si oui, il faut un champ visible par son seul propriétaire (sinon la liste montre ce que chacun a ouvert, et quand).
+  - Nouveau champ d'auteur ajouté au schéma (sans migration). Deux appareils à la fois : fusionner avec la dernière version du serveur avant d'enregistrer.
+  - Ordre : point de départ et exclusion de ses propres contributions (navigateur seul), puis « Tout marquer comme vu » et le compteur, puis le stockage dans le compte.
 
 ## 4. Fenêtre d'édition d'un média
 
