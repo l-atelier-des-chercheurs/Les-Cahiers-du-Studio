@@ -53,9 +53,9 @@
         :files="cahier.$files"
         :start="cahier.start"
         :end="cahier.end"
-        :highlighted="last_created"
+        :scroll_to="scroll_to"
       />
-      <MediaGrid v-else :files="cahier.$files" :highlighted="last_created" />
+      <MediaGrid v-else :files="cahier.$files" :scroll_to="scroll_to" />
     </div>
 
     <AddMedias
@@ -69,7 +69,7 @@
       v-if="selected_files.length"
       :path_to_folder="path_to_folder"
       :files="selected_files"
-      @close="selected_files = []"
+      @close="onUploadClosed"
     />
   </main>
 </template>
@@ -79,6 +79,8 @@ import { mapActions, mapState } from "pinia";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
 import { canContributeToFolder } from "@/adc/rights";
+import { sortByDate } from "@/medias";
+import { useUnseenStore } from "@/stores/unseen";
 import AddMedias from "@/components/AddMedias.vue";
 import MediaGrid from "@/components/MediaGrid.vue";
 import MediaTimeline from "@/components/MediaTimeline.vue";
@@ -95,8 +97,8 @@ export default {
       error: "",
       // chosen or dropped on the + button, sent by UploadFilesModal
       selected_files: [],
-      // a media added with the + button, outlined in the grid for a while
-      last_created: "",
+      // a media just added, scrolled to once it shows up
+      scroll_to: "",
     };
   },
   computed: {
@@ -140,21 +142,44 @@ export default {
     this.open();
   },
   beforeUnmount() {
-    clearTimeout(this.highlight_timeout);
+    clearTimeout(this.scroll_timeout);
     this.closeFolder(this.path_to_folder);
   },
   methods: {
     ...mapActions(useContentStore, ["openFolder", "closeFolder"]),
+    ...mapActions(useUnseenStore, { loadUnseen: "load", addUnseen: "add" }),
+    // a text, repère or link, from the + button
     // TODO open the media's edit modal for a new text
     onMediaCreated(path_to_meta) {
-      this.last_created = path_to_meta;
-      clearTimeout(this.highlight_timeout);
-      this.highlight_timeout = setTimeout(() => (this.last_created = ""), 4000);
+      this.addUnseen(path_to_meta);
+      this.scrollTo(path_to_meta);
+    },
+    // the files sent (UploadFilesModal marks them unseen): scroll to the
+    // earliest on the timeline
+    onUploadClosed(paths_to_meta = []) {
+      this.selected_files = [];
+      const sent = new Set(paths_to_meta);
+      const medias = sortByDate(
+        (this.cahier?.$files || []).filter((f) => sent.has(f.$path))
+      );
+      const first = medias[0]?.$path || paths_to_meta[0];
+      if (first) this.scrollTo(first);
+    },
+    // for a few seconds: the media may only show up with the server's event
+    scrollTo(path_to_meta) {
+      this.scroll_to = path_to_meta;
+      clearTimeout(this.scroll_timeout);
+      this.scroll_timeout = setTimeout(() => (this.scroll_to = ""), 4000);
     },
     async open() {
       this.error = "";
       try {
-        await this.openFolder(this.path_to_folder);
+        const cahier = await this.openFolder(this.path_to_folder);
+        // the medias added from this browser and not seen yet
+        this.loadUnseen(
+          this.path_to_folder,
+          (cahier.$files || []).map((f) => f.$path)
+        );
       } catch (err) {
         this.error = this.$t("error_with_code", {
           code: err.code || err.message,

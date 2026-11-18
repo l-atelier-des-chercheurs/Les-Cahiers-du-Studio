@@ -12,10 +12,7 @@
 
       <ul class="m_grid--list">
         <li v-for="media in day.medias" :key="media.$path">
-          <MediaTile
-            :media="media"
-            :highlighted="media.$path === highlighted"
-          />
+          <MediaTile :media="media" />
         </li>
       </ul>
     </section>
@@ -31,8 +28,8 @@ export default {
   props: {
     // the cahier's $files
     files: { type: Array, required: true },
-    // a media just added: scrolled to and outlined once it shows up
-    highlighted: { type: String, default: "" },
+    // a media just added: scrolled to once it shows up
+    scroll_to: { type: String, default: "" },
   },
   computed: {
     // [{ key, label, medias }], oldest first, as on the timeline
@@ -53,15 +50,15 @@ export default {
   watch: {
     // the media comes with the room's fileCreated event, after its creation
     // was answered: wait for its tile
-    highlighted: "scrollToHighlighted",
-    files: "scrollToHighlighted",
+    scroll_to: "scrollToMedia",
+    files: "scrollToMedia",
   },
   methods: {
-    async scrollToHighlighted() {
-      if (!this.highlighted) return;
+    async scrollToMedia() {
+      if (!this.scroll_to) return;
       await this.$nextTick();
       this.$el
-        .querySelector(`[data-path="${CSS.escape(this.highlighted)}"]`)
+        .querySelector(`[data-path="${CSS.escape(this.scroll_to)}"]`)
         ?.scrollIntoView({ behavior: "smooth", block: "center" });
     },
   },

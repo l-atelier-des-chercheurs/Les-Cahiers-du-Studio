@@ -82,7 +82,12 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
   - **Image**, **Vidéo**, **Audio**, **Fichier** : ouvrent le sélecteur de fichiers, avec plusieurs fichiers possibles. Sur téléphone, le sélecteur propose aussi l'appareil photo ou le micro.
 - **Glisser-déposer** : quand on fait glisser des fichiers sur la page, le bouton + s'agrandit (« Déposez vos fichiers ici »).
 - Le menu se ferme avec Échap ou un clic ailleurs.
-- **Après création** : un texte, un repère ou un lien apparaît aussitôt, et l'affichage défile jusqu'à lui. Il est entouré de vert pendant quelques secondes.
+- **Après création** : un texte, un repère ou un lien apparaît aussitôt, et l'affichage défile jusqu'à lui.
+- **Nouveaux médias en évidence** : tout média ajouté depuis ce navigateur (texte, repère, lien, fichier importé) est entouré de vert tant qu'il n'a pas été vu.
+  - Il compte comme vu quand on le survole ou le touche, ou après 2 secondes à l'écran. Pendant ces 2 secondes, le contour s'efface progressivement ; s'il quitte l'écran avant, le contour revient.
+  - Le décompte attend tant que l'onglet est en arrière-plan ou qu'une fenêtre est ouverte par-dessus.
+  - Un jour replié qui contient des médias pas encore vus a un anneau vert autour de son nombre de médias.
+  - La liste des médias pas encore vus est gardée dans le navigateur, pour chaque cahier.
 - **Auteur** : chaque média ajouté est attribué à la personne connectée. Il est visible tout de suite par les visiteurs du cahier.
 
 ## Fenêtre d'import des fichiers
@@ -103,7 +108,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
   - **Date de l'import**.
   - **Date personnalisée** : ouvre un champ date et heure.
   - Le choix est enregistré tout de suite, et la timeline se met à jour.
-- **Terminer** : ferme la fenêtre une fois tous les envois finis.
+- **Terminer** : ferme la fenêtre une fois tous les envois finis. L'affichage défile jusqu'au plus ancien des médias importés (et déplie son jour s'il était replié).
 - **Fermer pendant un envoi** : la fenêtre demande de « Continuer l'import » ou d'« Arrêter les envois ».
 
 ## Pas encore fait
@@ -114,6 +119,6 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - Gérer les contributeurs d'un cahier.
 - Créer un compte. Saisir le mot de passe général de l'instance.
 - Afficher les dates et la couverture des cahiers dans la liste d'accueil.
-- Dans la timeline : graduations des heures, repère « maintenant », défilement jusqu'aux fichiers importés.
+- Dans la timeline : graduations des heures, repère « maintenant ».
 - Refus d'un type de fichier dans la fenêtre d'import.
 - Hors périmètre pour l'instant : chats, stop motion, capture caméra et micro intégrée, journal, écriture collaborative, vue Tableau, export PDF ou vidéo, filtres, calendrier, raccourcis clavier, migration des contenus v2.

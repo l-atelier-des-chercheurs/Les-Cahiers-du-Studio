@@ -4,7 +4,8 @@
   caption over the top left corner -->
   <div
     class="m_tile"
-    :class="[`is--${type}`, { 'is--highlighted': highlighted }]"
+    v-seen="media.$path"
+    :class="[`is--${type}`, { 'is--unseen': is_unseen }]"
     :data-path="media.$path"
     :title="summary"
   >
@@ -56,19 +57,26 @@
 
 <script>
 import { thumbURL } from "@/adc/api";
+import { mapState } from "pinia";
 import { authorColor, dateOf, formatTime } from "@/medias";
+import { vSeen } from "@/seen";
+import { useUnseenStore } from "@/stores/unseen";
 
 // one of the cahiers' thumb resolutions (settings_base.json): about 2× the
 // tiles' width, for sharp thumbs on dense screens
 const THUMB_RESOLUTION = 440;
 
 export default {
+  directives: { seen: vSeen },
   props: {
     media: { type: Object, required: true },
-    // a media just added: outlined
-    highlighted: { type: Boolean, default: false },
   },
   computed: {
+    ...mapState(useUnseenStore, ["isUnseen"]),
+    // added from this browser and not seen yet: outlined
+    is_unseen() {
+      return this.isUnseen(this.media.$path);
+    },
     type() {
       return this.media.$type || "other";
     },
@@ -145,8 +153,16 @@ export default {
       0 6px 26px rgb(0 0 0 / 3%);
   }
 
-  &.is--highlighted {
+  // not seen yet: a green outline, fading out over the 2 seconds it takes
+  // to count as seen on screen (seen.js), back at once if it leaves
+  &.is--unseen {
     box-shadow: 0 0 0 3px var(--c-vert_vif);
+    transition: box-shadow 0.3s;
+
+    &.is--seeing {
+      box-shadow: 0 0 0 3px transparent;
+      transition: box-shadow 2s linear;
+    }
   }
 
   > img {

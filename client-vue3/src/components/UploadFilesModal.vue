@@ -154,6 +154,7 @@ import { thumbURL } from "@/adc/api";
 import { i18n } from "@/i18n";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
+import { useUnseenStore } from "@/stores/unseen";
 import BaseModal from "./BaseModal.vue";
 
 // previews read from the disk: only light images, to spare phones' memory
@@ -223,6 +224,7 @@ export default {
   },
   methods: {
     ...mapActions(useContentStore, ["uploadFile", "updateFile"]),
+    ...mapActions(useUnseenStore, { addUnseen: "add" }),
 
     /* UPLOAD, ONE FILE AFTER THE OTHER */
 
@@ -259,6 +261,8 @@ export default {
         item.meta = uploaded_meta;
         item.progress = 1;
         item.status = "done";
+        // outlined in the cahier until seen
+        this.addUnseen(uploaded_meta.$path);
         // by default, the capture date
         if (
           !this.isSameDate(
@@ -462,8 +466,14 @@ export default {
       if (this.is_busy) this.confirm_close = true;
       else this.close();
     },
+    // with the files sent, for the cahier to scroll to them
     close() {
-      this.$emit("close");
+      this.$emit(
+        "close",
+        this.items
+          .filter((item) => item.status === "done")
+          .map((item) => item.meta.$path)
+      );
     },
   },
 };

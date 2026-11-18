@@ -36,7 +36,15 @@
           >
             <span class="m_tl--dayLabel--text">
               {{ column.label }}
-              <span class="m_tl--dayLabel--count">{{ column.count }}</span>
+              <span
+                class="m_tl--dayLabel--count"
+                :class="{
+                  'has--unseen':
+                    folded_days[column.key] && dayHasUnseen(column),
+                }"
+              >
+                {{ column.count }}
+              </span>
             </span>
             <span class="m_tl--dayLabel--tab">
               {{ $t(folded_days[column.key] ? "unfold" : "fold") }}
@@ -52,10 +60,9 @@
           >
             <div
               v-if="segment.marker"
+              v-seen="segment.marker.$path"
               class="m_tl--marker"
-              :class="{
-                'is--highlighted': segment.marker.$path === highlighted,
-              }"
+              :class="{ 'is--unseen': isUnseen(segment.marker.$path) }"
               :style="
                 segment.marker.color && {
                   '--marker-color': segment.marker.color,
@@ -77,10 +84,7 @@
               :style="gridOf(segment.medias.length)"
             >
               <li v-for="media in segment.medias" :key="media.$path">
-                <MediaTile
-                  :media="media"
-                  :highlighted="media.$path === highlighted"
-                />
+                <MediaTile :media="media" />
               </li>
             </ul>
           </div>
@@ -99,7 +103,10 @@ import {
   sortByDate,
   timeOf,
 } from "@/medias";
+import { mapState } from "pinia";
 import { readJSON, writeJSON } from "@/adc/storage";
+import { vSeen } from "@/seen";
+import { useUnseenStore } from "@/stores/unseen";
 import MediaTile from "./MediaTile.vue";
 
 // empty days in a row: one half circle each, up to this many, then the
@@ -114,6 +121,7 @@ const LINES_PER_TILE = 4;
 
 export default {
   components: { MediaTile },
+  directives: { seen: vSeen },
   props: {
     // the cahier, e.g. "cahiers/mon-cahier": its folded days are kept
     path_to_folder: { type: String, required: true },
@@ -123,8 +131,8 @@ export default {
     // them, and every media even outside them
     start: { type: String, default: "" },
     end: { type: String, default: "" },
-    // a media just added: scrolled to and outlined once it shows up
-    highlighted: { type: String, default: "" },
+    // a media just added: scrolled to once it shows up
+    scroll_to: { type: String, default: "" },
   },
   data() {
     return {
@@ -139,6 +147,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(useUnseenStore, ["isUnseen"]),
     sizes() {
       return {
         "--tile-w": `${TILE_W}rem`,
@@ -213,13 +222,13 @@ export default {
   watch: {
     // the media comes with the room's fileCreated event, after its creation
     // was answered: wait for its tile
-    highlighted: "scrollToHighlighted",
+    scroll_to: "scrollToMedia",
     // another cahier, in the same timeline
     path_to_folder() {
       this.folded_days = this.readFoldedDays();
     },
     files() {
-      this.scrollToHighlighted();
+      this.scrollToMedia();
       // the first day may only just have appeared
       this.$nextTick(this.measureRows);
     },
@@ -307,6 +316,14 @@ export default {
         return this.$t("months_later", Math.max(1, Math.round(days / 30.44)));
       return this.$t("years_later", Math.max(1, Math.round(days / 365.25)));
     },
+    // a folded day holding medias not seen yet: its count is outlined
+    dayHasUnseen(column) {
+      return column.segments.some(
+        (segment) =>
+          this.isUnseen(segment.marker?.$path) ||
+          segment.medias.some((media) => this.isUnseen(media.$path))
+      );
+    },
     toggleDay(key) {
       if (this.folded_days[key]) delete this.folded_days[key];
       else this.folded_days[key] = true;
@@ -324,11 +341,16 @@ export default {
       this.$refs.scroller.scrollLeft += delta;
       event.preventDefault();
     },
-    async scrollToHighlighted() {
-      if (!this.highlighted) return;
+    async scrollToMedia() {
+      if (!this.scroll_to) return;
+      // its day may be folded
+      const day = dayKey(
+        dateOf(this.files.find((f) => f.$path === this.scroll_to) || {})
+      );
+      if (this.folded_days[day]) this.toggleDay(day);
       await this.$nextTick();
       this.$el
-        .querySelector(`[data-path="${CSS.escape(this.highlighted)}"]`)
+        .querySelector(`[data-path="${CSS.escape(this.scroll_to)}"]`)
         ?.scrollIntoView({
           behavior: "smooth",
           inline: "center",
@@ -482,6 +504,13 @@ export default {
   // upright, in the label turned upside down
   writing-mode: horizontal-tb;
   transform: rotate(180deg);
+
+  // a folded day holding medias not seen yet
+  &.has--unseen {
+    box-shadow:
+      0 0 0 2px var(--c-bg),
+      0 0 0 4px var(--c-vert_vif);
+  }
 }
 
 // the medias of a day, on staff lines
@@ -530,8 +559,15 @@ export default {
     white-space: nowrap;
   }
 
-  &.is--highlighted {
+  // not seen yet: as the tiles (MediaTile.vue)
+  &.is--unseen {
     box-shadow: 0 0 0 3px var(--c-vert_vif);
+    transition: box-shadow 0.3s;
+
+    &.is--seeing {
+      box-shadow: 0 0 0 3px transparent;
+      transition: box-shadow 2s linear;
+    }
   }
 }
 

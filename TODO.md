@@ -92,7 +92,8 @@ Reprendre le bouton + de la v2 (`ImportMedias.vue`) : un bouton rond qui déplie
 - [ ] Graduations des jours (fait) et des heures, et repère « maintenant »
 - [x] Vignettes avec `thumbURL()`, rendu adapté à chaque type (image, vidéo, audio, texte, repère, embed, fichier)
 - [x] Mise à jour en temps réel par socket (ajout, modification, suppression), sans recharger la page
-- [ ] Faire défiler jusqu'à un média qu'on vient d'ajouter (fait pour Texte, Repère et Lien ; pas encore pour les fichiers importés)
+- [x] Faire défiler jusqu'à un média qu'on vient d'ajouter (Texte, Repère, Lien, et fichiers importés à la fermeture de la fenêtre d'import)
+- [x] Médias ajoutés depuis ce navigateur entourés de vert jusqu'à ce qu'ils soient vus (survol, toucher, ou 2 s à l'écran)
 - [ ] Cliquer sur un média ouvre la fenêtre d'édition
 
 ## 4. Fenêtre d'édition d'un média
