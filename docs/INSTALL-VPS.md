@@ -84,19 +84,10 @@ nvm install
 nvm use
 ```
 
-Installez les dépendances du serveur (2 à 5 minutes) :
+Installez les dépendances du serveur (2 à 5 minutes). L'interface est incluse toute prête dans le dépôt (`client-vue3/dist`) : rien à compiler.
 
 ```bash
 npm install
-```
-
-**Compilez l'interface.** Elle n'est pas incluse toute prête dans le dépôt. `npm ci` installe exactement les versions du dépôt, sans modifier ses fichiers, ce qui évite des conflits lors des mises à jour :
-
-```bash
-cd client-vue3
-npm ci
-npm run build
-cd ..
 ```
 
 ## 4. Les réglages
@@ -227,9 +218,15 @@ git pull
 nvm install
 nvm use
 npm install
-cd client-vue3 && npm ci && npm run build && cd ..
 pm2 start npm --name "archives-vivantes" -- run start
 pm2 save
+```
+
+**Première mise à jour après le 18 novembre 2026** : l'interface compilée est désormais dans le dépôt. Si `git pull` refuse avec `untracked working tree files would be overwritten` et cite des fichiers de `client-vue3/dist`, supprimez l'ancienne compilation, puis relancez `git pull` :
+
+```bash
+rm -rf client-vue3/dist
+git pull
 ```
 
 Si `git pull` refuse avec `Your local changes to the following files would be overwritten`, et que seul `package-lock.json` est en cause, revenez à l'état du dépôt avec `git reset --hard`, puis relancez `git pull`. Votre `settings.json` n'est pas suivi par git : il n'est jamais touché.

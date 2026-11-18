@@ -1,2 +1,2 @@
 node_modules
-dist
+# dist is committed: built by `npm version` (preversion, package.json)

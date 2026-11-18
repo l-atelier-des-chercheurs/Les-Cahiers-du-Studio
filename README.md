@@ -21,7 +21,7 @@ npm start
 ├── index.js              appelle require("adc-core").start({...})
 ├── settings_base.json    réglages et schéma (cahiers, authors, chats)
 ├── content/              contenu par défaut, copié à la création d'un dossier de contenu
-├── client-vue3/          client Vue 3 (prototype à venir), build → client-vue3/dist
+├── client-vue3/          client Vue 3, build → client-vue3/dist (compilé et versionné par `npm version`)
 └── scripts/              nettoyage de ffprobe, certificats HTTPS de développement
 ```
 
