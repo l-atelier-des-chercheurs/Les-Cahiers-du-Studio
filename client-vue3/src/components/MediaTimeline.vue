@@ -520,6 +520,10 @@ export default {
   --rule-color: rgb(210 210 210);
   --staff-color: rgb(232 232 232);
 
+  // everything positioned inside stays inside, clipped by its scrolling:
+  // without it, the empty days' hidden text (.visually-hidden) was placed
+  // in the page, made it wider, and the page scrolled sideways
+  position: relative;
   display: flex;
   height: 100%;
   padding: var(--spacing-small) 0 var(--spacing-small) 5vw;
@@ -904,6 +908,7 @@ export default {
 
 // empty days: a grey wave, one half circle a day, up then down
 .m_tl--emptyDays {
+  position: relative;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
