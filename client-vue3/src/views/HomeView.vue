@@ -18,22 +18,50 @@
         </div>
 
         <div class="m_home--header--presentation text-formatting">
-          <h2>{{ $t("presentation") }}</h2>
-          <p v-for="(paragraph, i) in presentation" :key="i">
-            {{ paragraph }}
+          <p class="m_home--tagline">
+            {{ $t("tagline") }}
+            <button
+              type="button"
+              class="textLink"
+              :aria-expanded="show_more_infos"
+              @click="show_more_infos = !show_more_infos"
+            >
+              {{ show_more_infos ? $t("less_infos") : $t("more_infos") }}
+            </button>
           </p>
-          <div class="border-top-dashed">
-            <i18n-t keypath="more_information" tag="p" scope="global">
-              <template #documentation>
-                <a :href="documentation_url" target="_blank" rel="noopener">{{
-                  $t("documentation")
-                }}</a>
-              </template>
-              <template #contact>
-                <a :href="contact_url">{{ $t("contact") }}</a>
-              </template>
-            </i18n-t>
-          </div>
+          <template v-if="show_more_infos">
+            <p v-for="(paragraph, i) in presentation" :key="i">
+              {{ paragraph }}
+            </p>
+            <div class="m_home--newVersion border-top-dashed">
+              <p>{{ $t("new_version_notice") }}</p>
+              <p>{{ $t("new_version_partners") }}</p>
+              <ul>
+                <li v-for="partner in partners" :key="partner.name">
+                  <a
+                    v-if="partner.url"
+                    :href="partner.url"
+                    target="_blank"
+                    rel="noopener"
+                    >{{ partner.name }}</a
+                  >
+                  <template v-else>{{ partner.name }}</template>
+                </li>
+              </ul>
+            </div>
+            <div class="border-top-dashed">
+              <i18n-t keypath="more_information" tag="p" scope="global">
+                <template #documentation>
+                  <a :href="documentation_url" target="_blank" rel="noopener">{{
+                    $t("documentation")
+                  }}</a>
+                </template>
+                <template #contact>
+                  <a :href="contact_url">{{ $t("contact") }}</a>
+                </template>
+              </i18n-t>
+            </div>
+          </template>
         </div>
       </div>
     </header>
@@ -86,7 +114,7 @@
 
       <TransitionGroup v-else tag="div" name="list" class="m_home--folders">
         <button
-          v-if="!search"
+          v-if="!search && can_create_cahier"
           key="create"
           type="button"
           class="m_home--folders--card m_home--folders--card_createButton"
@@ -123,8 +151,13 @@
           </div>
           <hr />
           <div class="m_folder--buttons">
-            <!-- TODO open the cahier, once it has a page -->
-            <button type="button" class="button-round" disabled>
+            <RouterLink
+              :to="{
+                name: 'cahier',
+                params: { slug: cahier.$path.split('/').pop() },
+              }"
+              class="button button-round"
+            >
               <svg viewBox="0 0 46.99 46.99" aria-hidden="true">
                 <circle class="_bg" cx="23.5" cy="23.5" r="23" />
                 <polyline
@@ -134,7 +167,7 @@
                 <line x1="33.05" y1="13.89" x2="22.1" y2="24.83" />
               </svg>
               <span class="text-cap font-verysmall">{{ $t("open") }}</span>
-            </button>
+            </RouterLink>
           </div>
         </article>
       </TransitionGroup>
@@ -150,7 +183,7 @@
     <CreateCahierModal
       v-if="show_create_modal"
       @close="show_create_modal = false"
-      @created="show_create_modal = false"
+      @created="openCahier"
     />
   </main>
 </template>
@@ -158,7 +191,7 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import * as api from "@/adc/api";
-import { canSeeFolder } from "@/adc/rights";
+import { canSeeFolder, isInstanceAdmin } from "@/adc/rights";
 import { i18n } from "@/i18n";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
@@ -182,12 +215,27 @@ export default {
         "https://latelier-des-chercheurs.fr/docs/manuel-les-cahiers-du-studio",
       contact_url:
         "mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio",
+      // partners of the v3, shown on every instance
+      partners: [
+        { name: "la Métropole de Lyon", url: "https://www.grandlyon.com" },
+        {
+          name: "le FDVA innovation du Département",
+          url: "https://www.associations.gouv.fr/fdva.html",
+        },
+        { name: "le CDN de Tours", url: "https://cdntours.fr" },
+        {
+          name: "la Manufacture à Lausanne",
+          url: "https://www.manufacture.ch",
+        },
+      ],
       error: "",
       show_create_modal: false,
       // to open the create modal once logged in
       create_after_login: false,
       author_name: "",
       show_search: false,
+      // presentation, partners and links, folded by default
+      show_more_infos: false,
       search: "",
     };
   },
@@ -208,6 +256,11 @@ export default {
         .split(/\n\s*\n/)
         .map((paragraph) => paragraph.trim())
         .filter(Boolean);
+    },
+    // only instance admins create cahiers ($admins "everyone" lets anyone,
+    // logging in first)
+    can_create_cahier() {
+      return isInstanceAdmin(this.token_path);
     },
     // kept up to date by the "cahiers" room (stores/content.js)
     cahiers() {
@@ -276,6 +329,14 @@ export default {
       this.create_after_login = true;
       this.$emit("login");
     },
+    // e.g. "cahiers/mon-cahier", once created
+    openCahier(path_to_folder) {
+      this.show_create_modal = false;
+      this.$router.push({
+        name: "cahier",
+        params: { slug: path_to_folder.split("/").pop() },
+      });
+    },
     toggleSearch() {
       this.show_search = !this.show_search;
       if (this.show_search) this.$nextTick(() => this.$refs.search?.focus());
@@ -333,6 +394,11 @@ export default {
   a {
     color: inherit;
   }
+}
+
+.m_home--newVersion ul {
+  margin: 0;
+  padding-left: 1.2em;
 }
 
 @media screen and (max-width: 50rem) {

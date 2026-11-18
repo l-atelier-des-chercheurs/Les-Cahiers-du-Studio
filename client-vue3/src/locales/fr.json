@@ -1,7 +1,11 @@
 {
   "connection_lost": "Connexion au serveur perdue. Les contenus ne sont pas modifiables.",
-  "presentation": "Présentation",
+  "tagline": "Capturer, annoter et publier des médias pendant les temps de création — nouvelle version en cours de développement.",
+  "more_infos": "Plus d’informations",
+  "less_infos": "Moins d’informations",
   "default_presentation": "Les Cahiers du Studio est une application de capture, d’annotation et de publication de médias (photos, textes, vidéos, sons) conçue en particulier pour les temps de résidence dans un lieu de création théâtrale, le studio-théâtre de Vitry.",
+  "new_version_notice": "Vous découvrez une nouvelle version des Cahiers du Studio, en cours de création : certaines fonctionnalités sont encore en chantier.",
+  "new_version_partners": "Cette nouvelle version est développée avec le soutien de :",
   "more_information": "Pour plus d’information, consultez la {documentation} ou {contact} les auteurs de ce logiciel.",
   "documentation": "documentation",
   "contact": "contactez",
@@ -22,6 +26,7 @@
   "close": "Fermer",
   "create": "Créer",
   "open": "Ouvrir",
+  "back": "Retour",
   "loading": "Chargement…",
   "error_with_code": "Erreur : {code}",
 

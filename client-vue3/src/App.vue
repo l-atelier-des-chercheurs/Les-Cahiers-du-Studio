@@ -4,7 +4,9 @@
       {{ $t("connection_lost") }}
     </div>
 
-    <HomeView @login="show_login_modal = true" />
+    <RouterView v-slot="{ Component }">
+      <component :is="Component" @login="show_login_modal = true" />
+    </RouterView>
 
     <LoginModal v-if="show_login_modal" @close="show_login_modal = false" />
 
@@ -15,12 +17,11 @@
 <script>
 import { mapState } from "pinia";
 import { useContentStore } from "@/stores/content";
-import HomeView from "@/views/HomeView.vue";
 import LoginModal from "@/components/LoginModal.vue";
 import NoticeModal from "@/components/NoticeModal.vue";
 
 export default {
-  components: { HomeView, LoginModal, NoticeModal },
+  components: { LoginModal, NoticeModal },
   data() {
     return {
       show_login_modal: false,
