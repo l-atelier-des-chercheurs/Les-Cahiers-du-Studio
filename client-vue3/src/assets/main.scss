@@ -17,6 +17,25 @@
   src: url("./fonts/STVitry-Italic-web.woff2") format("woff2");
 }
 
+// on trial (AppFooter.vue). Latin only (French included), inlined as
+// STVitry is (vite.config.ts, assetsInlineLimit)
+@font-face {
+  font-family: "Victor Mono";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("../../node_modules/@fontsource/victor-mono/files/victor-mono-latin-300-normal.woff2")
+    format("woff2");
+}
+@font-face {
+  font-family: "Victor Mono";
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url("../../node_modules/@fontsource/victor-mono/files/victor-mono-latin-300-italic.woff2")
+    format("woff2");
+}
+
 :root {
   --c-noir: #222;
   --c-noir_light: #4d4d4d;
@@ -42,6 +61,14 @@
   --font-size-large: 1.1rem;
   --font-size-small: 0.9rem;
   --font-size-verysmall: 0.7rem;
+
+  --font-main: "STVitry", monospace;
+}
+
+// on trial, from the footer (AppFooter.vue): Victor Mono Light, whose
+// handwritten italic is close to STVitry's. Only loaded when chosen.
+:root[data-font="victor"] {
+  --font-main: "Victor Mono", "STVitry", monospace;
 }
 
 *,
@@ -56,7 +83,7 @@
 
 body {
   margin: 0;
-  font-family: "STVitry", monospace;
+  font-family: var(--font-main);
   font-weight: 400;
   font-size: 1em;
   line-height: 1.35;

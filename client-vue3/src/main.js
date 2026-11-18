@@ -7,7 +7,11 @@ import { router } from "./router";
 import { connect } from "./adc/socket";
 import { useSessionStore } from "./stores/session";
 import { useContentStore } from "./stores/content";
+import { getFont, setFont } from "./font";
 import "./assets/main.scss";
+
+// the typeface on trial, if chosen, on every page
+setFont(getFont());
 
 const app = createApp(App);
 app.use(createPinia());
