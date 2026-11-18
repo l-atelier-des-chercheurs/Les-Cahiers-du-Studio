@@ -292,28 +292,6 @@
       </button>
     </div>
 
-    <div v-if="pending_action" class="m_modal--field m_media--confirm">
-      <p>{{ $t("unsaved_changes") }}</p>
-      <button
-        type="button"
-        class="m_media--choice"
-        @click="pending_action = ''"
-      >
-        {{ $t("cancel") }}
-      </button>
-      <button type="button" class="m_media--choice" @click="discard">
-        {{ $t("dont_save") }}
-      </button>
-      <button
-        type="button"
-        class="m_media--choice is--active"
-        :disabled="is_saving"
-        @click="save(pending_action)"
-      >
-        {{ $t("save") }}
-      </button>
-    </div>
-
     <!-- what adc-core read from the file, folded -->
     <details v-if="meta_rows.length" class="m_modal--field m_media--meta">
       <summary>{{ $t("metadata") }}</summary>
@@ -330,6 +308,24 @@
     <template v-if="can_edit" #submit_button>
       {{ $t("save_and_close") }}
     </template>
+  </BaseModal>
+
+  <!-- closing or changing media with unsaved changes: a window on top -->
+  <BaseModal
+    v-if="pending_action"
+    :disabled="is_saving"
+    @close="pending_action = ''"
+    @submit="save(pending_action)"
+  >
+    <template #header>{{ $t("unsaved_changes_title") }}</template>
+    <p class="m_modal--field">{{ $t("unsaved_changes") }}</p>
+    <p v-if="error" class="m_modal--field form-error">{{ error }}</p>
+    <div class="m_modal--field">
+      <button type="button" class="textLink" @click="discard">
+        {{ $t("dont_save") }}
+      </button>
+    </div>
+    <template #submit_button>{{ $t("save") }}</template>
   </BaseModal>
 </template>
 
