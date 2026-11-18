@@ -19,39 +19,55 @@
     @cancel.prevent="$emit('close')"
     @click="onClick"
   >
-    <form
-      class="m_modal--container"
-      :class="{ 'has--preview': !!$slots.preview }"
-      @submit.prevent="$emit('submit')"
+    <!-- the panel, and under it the "nav" slot (the media window's ←
+    and →). Given a slide_key, a new key slides the panel out and back in,
+    from the side of slide_direction -->
+    <div
+      ref="stack"
+      class="m_modal--stack"
+      :class="{ 'has--nav': !!$slots.nav }"
     >
-      <div v-if="$slots.preview" class="m_modal--preview">
-        <slot name="preview" />
-      </div>
-
-      <div class="m_modal--sidebar">
-        <header class="m_modal--header">
-          <h3 class="text-cap"><slot name="header" /></h3>
-        </header>
-
-        <div class="m_modal--fields">
-          <slot />
-        </div>
-
-        <button
-          v-if="$slots.submit_button"
-          type="submit"
-          class="m_modal--save"
-          :disabled="disabled"
+      <Transition :name="`m_modal-slide-${slide_direction}`" mode="out-in">
+        <form
+          :key="slide_key"
+          class="m_modal--container"
+          :class="{ 'has--preview': !!$slots.preview }"
+          @submit.prevent="$emit('submit')"
         >
-          <svg viewBox="0 0 48 48" aria-hidden="true">
-            <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" />
-          </svg>
-          <span class="text-cap font-verysmall">
-            <slot name="submit_button" />
-          </span>
-        </button>
+          <div v-if="$slots.preview" class="m_modal--preview">
+            <slot name="preview" />
+          </div>
+
+          <div class="m_modal--sidebar">
+            <header class="m_modal--header">
+              <h3 class="text-cap"><slot name="header" /></h3>
+            </header>
+
+            <div class="m_modal--fields">
+              <slot />
+            </div>
+
+            <button
+              v-if="$slots.submit_button"
+              type="submit"
+              class="m_modal--save"
+              :disabled="disabled"
+            >
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" />
+              </svg>
+              <span class="text-cap font-verysmall">
+                <slot name="submit_button" />
+              </span>
+            </button>
+          </div>
+        </form>
+      </Transition>
+
+      <div v-if="$slots.nav" class="m_modal--nav">
+        <slot name="nav" />
       </div>
-    </form>
+    </div>
 
     <button
       type="button"
@@ -74,15 +90,47 @@ export default {
     disabled: { type: Boolean, default: false },
     // a larger panel, for lists (the import modal)
     wide: { type: Boolean, default: false },
+    // changing it slides the panel (the media window, to another media)
+    slide_key: { type: String, default: "" },
+    // "next": the new panel comes from the right; "prev": from the left
+    slide_direction: { type: String, default: "next" },
   },
   emits: ["close", "submit"],
   mounted() {
     this.$refs.dialog.showModal();
   },
+  // Closing: the window is removed at once by whoever opened it. A copy
+  // stays just long enough to fade out (.is--closing), inert, with what
+  // was typed in its fields.
+  beforeUnmount() {
+    const dialog = this.$refs.dialog;
+    if (
+      !dialog ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      return;
+    const ghost = dialog.cloneNode(true);
+    const fields = "input, textarea, select";
+    const values = [...dialog.querySelectorAll(fields)].map((f) => f.value);
+    ghost
+      .querySelectorAll(fields)
+      .forEach((field, i) => (field.value = values[i] ?? field.value));
+    ghost.inert = true;
+    ghost.classList.add("is--closing");
+    document.body.appendChild(ghost);
+    const remove = () => ghost.remove();
+    ghost.addEventListener("animationend", remove, { once: true });
+    setTimeout(remove, 400);
+  },
   methods: {
-    // the dialog fills the window: a click outside the panel targets it
+    // the dialog fills the window: a click outside the panel targets it,
+    // or the stack around the panel and its nav
     onClick(event) {
-      if (event.target === this.$refs.dialog) this.$emit("close");
+      if (
+        event.target === this.$refs.dialog ||
+        event.target === this.$refs.stack
+      )
+        this.$emit("close");
     },
   },
 };
@@ -137,12 +185,94 @@ export default {
   }
 }
 
-.m_modal--container {
+// the copy left when closing (beforeUnmount): fades out, the panel sinks a
+// little
+.m_modal.is--closing {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  // placed as when open ([open], kept by the copy)
+  animation: m_modal-veil-out 0.18s ease-in forwards;
+
+  .m_modal--stack {
+    animation: m_modal-sink 0.18s ease-in forwards;
+  }
+}
+@keyframes m_modal-veil-out {
+  to {
+    background-color: transparent;
+  }
+}
+@keyframes m_modal-sink {
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+// the panel and its nav: rises once, when opened (the panel itself is
+// replaced when it slides)
+.m_modal--stack {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  gap: var(--spacing-small);
+  width: 100%;
+  margin: auto;
   animation: m_modal-rise 0.35s cubic-bezier(0.19, 1, 0.22, 1);
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
+}
+
+// under the panel, centred; fixed at the bottom of small screens, where
+// the panel fills them
+.m_modal--nav {
+  flex: 0 0 auto;
+
+  @media screen and (max-width: 50rem) {
+    position: fixed;
+    bottom: max(var(--spacing-small), env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    z-index: 1;
+    transform: translateX(-50%);
+  }
+}
+
+// to another media: out to one side, in from the other
+.m_modal-slide-next-enter-active,
+.m_modal-slide-prev-enter-active {
+  transition:
+    transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+    opacity 0.2s;
+}
+.m_modal-slide-next-leave-active,
+.m_modal-slide-prev-leave-active {
+  transition:
+    transform 0.15s ease-in,
+    opacity 0.15s ease-in;
+}
+.m_modal-slide-next-enter-from,
+.m_modal-slide-prev-leave-to {
+  opacity: 0;
+  transform: translateX(40px);
+}
+.m_modal-slide-next-leave-to,
+.m_modal-slide-prev-enter-from {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .m_modal-slide-next-enter-active,
+  .m_modal-slide-prev-enter-active,
+  .m_modal-slide-next-leave-active,
+  .m_modal-slide-prev-leave-active {
+    transition: none;
+  }
+}
+
+.m_modal--container {
   width: 100%;
   max-width: 400px;
   margin: auto;
@@ -160,6 +290,11 @@ export default {
     max-width: 1400px;
     height: calc(100dvh - 2 * var(--spacing-medium));
     background-color: black;
+
+    // room for the nav under it
+    .has--nav > & {
+      height: calc(100dvh - 2 * var(--spacing-medium) - 3rem);
+    }
 
     @media screen and (max-width: 50rem) {
       grid-template-columns: minmax(0, 1fr);

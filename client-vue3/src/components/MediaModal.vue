@@ -4,6 +4,8 @@
   to the previous or next media on the timeline. Read only for those who
   can't edit the cahier. -->
   <BaseModal
+    :slide_key="media.$path"
+    :slide_direction="direction"
     :disabled="!is_dirty || is_saving"
     @close="request('close')"
     @submit="save('close')"
@@ -98,30 +100,6 @@
           <span class="text-cap">{{ extension }}</span>
           <span>{{ media.$media_filename }}</span>
         </div>
-
-        <!-- ← and →, together, floating at the bottom of the media -->
-        <nav
-          v-if="has_prev || has_next"
-          class="m_media--nav"
-          :aria-label="$t('navigation')"
-        >
-          <button
-            type="button"
-            :disabled="!has_prev"
-            :aria-label="$t('previous_media')"
-            @click="request('prev')"
-          >
-            ←
-          </button>
-          <button
-            type="button"
-            :disabled="!has_next"
-            :aria-label="$t('next_media')"
-            @click="request('next')"
-          >
-            →
-          </button>
-        </nav>
       </div>
     </template>
 
@@ -339,6 +317,28 @@
 
     <p v-if="error" class="m_modal--field form-error">{{ error }}</p>
 
+    <!-- ← and →, together, floating under the window -->
+    <template v-if="has_prev || has_next" #nav>
+      <nav class="m_media--nav" :aria-label="$t('navigation')">
+        <button
+          type="button"
+          :disabled="!has_prev"
+          :aria-label="$t('previous_media')"
+          @click="request('prev')"
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          :disabled="!has_next"
+          :aria-label="$t('next_media')"
+          @click="request('next')"
+        >
+          →
+        </button>
+      </nav>
+    </template>
+
     <template v-if="can_edit" #submit_button>
       {{ $t("save_and_close") }}
     </template>
@@ -398,6 +398,8 @@ export default {
       confirm_remove: false,
       // close, prev or next, waiting for unsaved changes
       pending_action: "",
+      // the last move, for the slide: prev or next
+      direction: "next",
       // the instance's authors, to add some
       authors: [],
     };
@@ -592,18 +594,23 @@ export default {
         }
       }
       this.pending_action = "";
-      this.$emit(then);
+      this.go(then);
     },
     // close, prev or next: first ask about unsaved changes
     request(action) {
       if (this.can_edit && this.is_dirty) this.pending_action = action;
-      else this.$emit(action);
+      else this.go(action);
+    },
+    // close, prev or next; prev and next set the slide's direction
+    go(action) {
+      if (action === "prev" || action === "next") this.direction = action;
+      this.$emit(action);
     },
     discard() {
       const action = this.pending_action;
       this.form = this.formFrom(this.media);
       this.pending_action = "";
-      this.$emit(action);
+      this.go(action);
     },
     async remove() {
       this.is_saving = true;
@@ -869,18 +876,13 @@ export default {
   overflow-y: auto;
 }
 
-// ← and → in a pill, floating at the bottom centre of the media
+// ← and → in a pill, under the window (BaseModal's nav slot)
 .m_media--nav {
-  position: absolute;
-  bottom: var(--spacing-small);
-  left: 50%;
-  z-index: 1;
   display: flex;
   padding: 3px;
   border-radius: 999px;
   background-color: rgb(0 0 0 / 60%);
   box-shadow: 0 2px 10px rgb(0 0 0 / 25%);
-  transform: translateX(-50%);
   backdrop-filter: blur(4px);
 
   button {
