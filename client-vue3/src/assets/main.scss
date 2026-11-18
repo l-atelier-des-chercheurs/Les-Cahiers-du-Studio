@@ -315,6 +315,46 @@ small {
   }
 }
 
+// a text media's Markdown, as HTML (markdown.js): in the media's window,
+// and on /_ui
+.markdown {
+  line-height: 1.5;
+
+  > :first-child {
+    margin-top: 0;
+  }
+  h1,
+  h2,
+  h3 {
+    margin: var(--spacing-medium) 0 var(--spacing-small);
+    font-weight: normal;
+  }
+  h1 {
+    font-size: 1.5em;
+  }
+  h2 {
+    font-size: 1.25em;
+  }
+  p,
+  ul,
+  ol,
+  blockquote {
+    margin: 0 0 var(--spacing-small);
+  }
+  blockquote {
+    padding-left: var(--spacing-small);
+    border-left: 2px solid var(--c-gris_clair);
+    color: var(--c-gris_fonce);
+  }
+  a {
+    color: inherit;
+    text-underline-offset: 0.15em;
+  }
+  img {
+    max-width: 100%;
+  }
+}
+
 .border-top-dashed {
   border-top: 1px solid;
   border-image: repeating-linear-gradient(

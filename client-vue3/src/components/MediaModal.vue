@@ -64,7 +64,7 @@
             :placeholder="$t('text_placeholder')"
           />
           <!-- sanitised HTML (markdown.js) -->
-          <div class="m_media--rendered" v-html="rendered_text" />
+          <div class="m_media--rendered markdown" v-html="rendered_text" />
         </div>
 
         <div v-else-if="type === 'marker'" class="m_media--marker">
@@ -772,47 +772,13 @@ export default {
   resize: none;
 }
 
+// the text itself: .markdown (assets/main.scss)
 .m_media--rendered {
   min-height: 0;
   padding: var(--spacing-medium);
   background-color: white;
   color: black;
-  line-height: 1.5;
   overflow-y: auto;
-
-  > :deep(:first-child) {
-    margin-top: 0;
-  }
-  :deep(h1),
-  :deep(h2),
-  :deep(h3) {
-    margin: var(--spacing-medium) 0 var(--spacing-small);
-    font-weight: normal;
-  }
-  :deep(h1) {
-    font-size: 1.5em;
-  }
-  :deep(h2) {
-    font-size: 1.25em;
-  }
-  :deep(p),
-  :deep(ul),
-  :deep(ol),
-  :deep(blockquote) {
-    margin: 0 0 var(--spacing-small);
-  }
-  :deep(blockquote) {
-    padding-left: var(--spacing-small);
-    border-left: 2px solid var(--c-gris_clair);
-    color: var(--c-gris_fonce);
-  }
-  :deep(a) {
-    color: inherit;
-    text-underline-offset: 0.15em;
-  }
-  :deep(img) {
-    max-width: 100%;
-  }
 }
 
 // ← and → over the edges of the preview

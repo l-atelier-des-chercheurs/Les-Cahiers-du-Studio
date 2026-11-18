@@ -10,6 +10,8 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Connexion perdue** : si le serveur ne répond plus, un bandeau rouge en haut de l'écran indique que les contenus ne sont pas modifiables. Le bouton **+** est alors désactivé.
 - **Temps réel** : ce que les autres ajoutent, modifient ou suppriment (cahiers, médias, dates) apparaît sans recharger la page.
 
+- **Page `/_ui`** (pour l'équipe, non liée depuis l'application) : tous les styles et composants sur une page, pour vérifier l'effet d'un changement de CSS global. Couleurs, espacements, texte, Markdown, boutons, tous les types de champs (sur la page et dans une fenêtre), vignettes de médias d'exemple, et une fenêtre de média en lecture seule.
+
 ## Comptes et droits
 
 - **Se connecter** : choisir son nom dans la liste des auteurs, puis saisir son mot de passe. La connexion est gardée entre deux visites (30 jours par défaut).
