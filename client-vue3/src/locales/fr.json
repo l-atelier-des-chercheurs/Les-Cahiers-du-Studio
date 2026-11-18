@@ -10,6 +10,7 @@
   "documentation": "documentation",
   "contact": "contactez",
 
+  "prototype_notice": "Prototype en cours de développement",
   "notice_title": "En préparation",
   "notice_in_preparation": "Cette application est en cours de préparation et sera bientôt disponible.",
   "notice_contact": "Pour plus d’informations, {contact_us} : {email}",

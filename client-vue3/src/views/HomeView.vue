@@ -2,6 +2,9 @@
   <!-- v2's ListView.vue and Folder.vue -->
   <main class="m_home">
     <header class="m_home--header">
+      <div class="m_home--prototype">
+        <PrototypeBadge @notice="$emit('notice')" />
+      </div>
       <div class="m_home--header--content limited-width">
         <div class="m_home--header--title">
           <svg class="stvlogo" viewBox="0 0 40.5 26.1" aria-hidden="true">
@@ -196,6 +199,7 @@ import { i18n } from "@/i18n";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
 import CreateCahierModal from "@/components/CreateCahierModal.vue";
+import PrototypeBadge from "@/components/PrototypeBadge.vue";
 
 // "Élise" and "elise" match
 const normalize = (text) =>
@@ -205,8 +209,8 @@ const normalize = (text) =>
     .toLowerCase();
 
 export default {
-  components: { CreateCahierModal },
-  emits: ["login"],
+  components: { CreateCahierModal, PrototypeBadge },
+  emits: ["login", "notice"],
   data() {
     return {
       // set by adc-core's index.pug
@@ -363,6 +367,13 @@ export default {
   padding: var(--spacing-medium) 0;
   background-color: var(--c-noir);
   color: white;
+}
+
+// the prototype's message, centred above the title
+.m_home--prototype {
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--spacing-small);
 }
 
 .m_home--header--content {

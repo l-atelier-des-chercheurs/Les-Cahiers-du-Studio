@@ -7,6 +7,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 
 - Application en français. Tous les textes passent par la traduction, pour pouvoir ajouter d'autres langues plus tard.
 - **Avertissement à l'ouverture** : à chaque visite, une fenêtre « En préparation » indique que l'application est en cours de préparation. Elle donne une adresse de contact et se ferme avec « Compris ».
+- **Message « Prototype en cours de développement »** : sur fond jaune, au milieu de la barre du haut d'un cahier et en haut de la page d'accueil. Un clic rouvre la fenêtre « En préparation », avec l'adresse de contact.
 - **Connexion perdue** : si le serveur ne répond plus, un bandeau rouge en haut de l'écran indique que les contenus ne sont pas modifiables. Le bouton **+** est alors désactivé.
 - **Temps réel** : ce que les autres ajoutent, modifient ou suppriment (cahiers, médias, dates) apparaît sans recharger la page.
 

@@ -5,7 +5,11 @@
     </div>
 
     <RouterView v-slot="{ Component }">
-      <component :is="Component" @login="show_login_modal = true" />
+      <component
+        :is="Component"
+        @login="show_login_modal = true"
+        @notice="show_notice = true"
+      />
     </RouterView>
 
     <LoginModal v-if="show_login_modal" @close="show_login_modal = false" />

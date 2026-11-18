@@ -1,10 +1,14 @@
 <template>
   <main class="m_cahier">
     <header class="m_cahier--header">
-      <RouterLink :to="{ name: 'home' }" class="button m_cahier--back">
-        ← {{ $t("back") }}
-      </RouterLink>
-      <h1 class="m_cahier--title">{{ title }}</h1>
+      <div class="m_cahier--start">
+        <RouterLink :to="{ name: 'home' }" class="button m_cahier--back">
+          ← {{ $t("back") }}
+        </RouterLink>
+        <h1 class="m_cahier--title">{{ title }}</h1>
+      </div>
+
+      <PrototypeBadge class="m_cahier--prototype" @notice="$emit('notice')" />
 
       <nav class="m_cahier--views" :aria-label="$t('display')">
         <RouterLink
@@ -101,13 +105,16 @@ import { canContributeToFolder } from "@/adc/rights";
 import { sortByDate } from "@/medias";
 import { useUnseenStore } from "@/stores/unseen";
 import AddMedias from "@/components/AddMedias.vue";
+import PrototypeBadge from "@/components/PrototypeBadge.vue";
 import MediaGrid from "@/components/MediaGrid.vue";
 import MediaTimeline from "@/components/MediaTimeline.vue";
 import UploadFilesModal from "@/components/UploadFilesModal.vue";
 
 export default {
+  emits: ["notice"],
   components: {
     AddMedias,
+    PrototypeBadge,
     MediaGrid,
     // loaded on demand, with its Markdown libraries (marked, DOMPurify),
     // when a media is first opened
@@ -263,10 +270,28 @@ export default {
   min-height: 0;
 }
 
+.m_cahier--start {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  min-width: 0;
+}
+
 .m_cahier--views {
   display: flex;
   gap: var(--spacing-verysmall);
-  margin-left: auto;
+  justify-self: end;
+}
+
+@media screen and (max-width: 40rem) {
+  .m_cahier--header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .m_cahier--prototype {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
 }
 
 .m_cahier--view {
@@ -294,9 +319,11 @@ export default {
   }
 }
 
+// back and title on the left, the prototype's message in the middle, the
+// views on the right; on narrow screens, the message on a line of its own
 .m_cahier--header {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: var(--spacing-small);
   padding: var(--spacing-verysmall) var(--spacing-small);
@@ -320,6 +347,10 @@ export default {
   font-size: inherit;
   font-weight: normal;
   letter-spacing: 0.05em;
+  // long titles end with … rather than push the message
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .m_cahier--message {
