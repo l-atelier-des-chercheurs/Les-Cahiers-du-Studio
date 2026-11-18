@@ -99,7 +99,10 @@
                 v-for="media in segment.medias"
                 :key="media.$path"
                 class="m_tl--item"
-                :class="{ 'is--resizing': resizing?.path === media.$path }"
+                :class="{
+                  'is--resizing': resizing?.path === media.$path,
+                  'is--failed': failed_sizes[media.$path],
+                }"
                 :style="spanOf(media)"
               >
                 <MediaTile :media="media" @open="$emit('open', $event)" />
@@ -135,6 +138,7 @@ import {
 import { mapActions, mapState } from "pinia";
 import { readJSON, writeJSON } from "@/adc/storage";
 import { useContentStore } from "@/stores/content";
+import { useNotificationsStore } from "@/stores/notifications";
 import { vSeen } from "@/seen";
 import { useUnseenStore } from "@/stores/unseen";
 import MediaTile from "./MediaTile.vue";
@@ -181,8 +185,11 @@ export default {
       rows: 1,
       // the media being resized: { path, w, h }
       resizing: null,
-      // sizes sent, until the server's fileUpdated event: { path: { w, h } }
+      // sizes sent, until the server answers: { path: { w, h, id } }
       pending_sizes: {},
+      // medias whose new size the server refused: shaken, outlined in red
+      // for a moment ({ path: true })
+      failed_sizes: {},
       // the height of a day's parts, in rem
       segment_height: 0,
     };
@@ -268,12 +275,6 @@ export default {
       this.folded_days = this.readFoldedDays();
     },
     files() {
-      // sizes sent and now saved
-      for (const media of this.files) {
-        const pending = this.pending_sizes[media.$path];
-        if (pending && media.w === pending.w && media.h === pending.h)
-          delete this.pending_sizes[media.$path];
-      }
       this.scrollToMedia();
       // the first day may only just have appeared
       this.$nextTick(this.measureRows);
@@ -293,6 +294,7 @@ export default {
   },
   methods: {
     ...mapActions(useContentStore, ["updateFile"]),
+    ...mapActions(useNotificationsStore, ["notify"]),
     dateOf,
     formatTime,
     // a date field ("2026-11-17") at local midnight
@@ -389,14 +391,30 @@ export default {
       handle.addEventListener("pointerup", end);
       handle.addEventListener("pointercancel", end);
     },
+    // Optimistic: the new size shows at once, until the server answers.
+    // Then the tile follows the store, which holds what the server answered
+    // (updateFile): the saved size, or, if refused, the size it had. Only
+    // the latest resize of a media clears its pending size.
     async saveSize(path, w, h) {
-      this.pending_sizes[path] = { w, h };
+      const id = (this.pending_sizes[path]?.id || 0) + 1;
+      this.pending_sizes[path] = { w, h, id };
       try {
         await this.updateFile(path, { w, h });
       } catch (err) {
-        console.error(err);
-        delete this.pending_sizes[path];
+        this.sizeFailed(path, err);
+      } finally {
+        if (this.pending_sizes[path]?.id === id)
+          delete this.pending_sizes[path];
       }
+    },
+    // a notification, and the tile shakes back to its size
+    sizeFailed(path, err) {
+      this.notify(
+        this.$t("size_not_saved", { code: err.code || err.message }),
+        { type: "error" }
+      );
+      this.failed_sizes[path] = true;
+      setTimeout(() => delete this.failed_sizes[path], 1200);
     },
     // the height of a day's parts, the same for every day
     measureRows() {
@@ -718,6 +736,16 @@ export default {
   min-width: 0;
   min-height: 0;
 
+  // its new size was refused: a red outline, and a short shake back
+  &.is--failed > :first-child {
+    box-shadow: 0 0 0 3px var(--c-rouge);
+    animation: m_tl-shake 0.4s ease-in-out;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
   // the tile fills its squares
   > :first-child {
     flex: 1 1 auto;
@@ -725,19 +753,49 @@ export default {
   }
 }
 
-// v2's handles, on hover: the right edge, the bottom edge, the corner
+@keyframes m_tl-shake {
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+// v2's handles (MediaBlock.vue), on hover: small white pills inside the
+// tile, along the right edge, the bottom edge and in the corner, each in a
+// wider invisible area, easier to grab
 .m_tl--handle {
+  --pill-long: 15px;
+  --pill-short: 5px;
+
   position: absolute;
   z-index: 2;
-  border: 2px solid white;
-  border-radius: 999px;
-  background-color: var(--c-noir);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
   // hidden handles let the pointer through: no resizing on touch screens
   opacity: 0;
   pointer-events: none;
   touch-action: none;
   transition: opacity 0.15s;
+
+  &::after {
+    content: "";
+    width: var(--pill-short);
+    height: var(--pill-short);
+    border-radius: var(--pill-short);
+    background-color: white;
+    box-shadow: 0 0 4px rgb(0 0 0 / 83%);
+    transition: background-color 0.15s;
+  }
+  &:hover::after {
+    background-color: #aaa;
+  }
 
   .m_tl--item:hover &,
   .m_tl--item.is--resizing & {
@@ -747,25 +805,27 @@ export default {
 
   &.is--right {
     top: 50%;
-    right: -5px;
-    width: 10px;
-    height: 2.5rem;
+    right: 0;
     transform: translateY(-50%);
     cursor: ew-resize;
+
+    &::after {
+      height: var(--pill-long);
+    }
   }
   &.is--bottom {
-    bottom: -5px;
+    bottom: 0;
     left: 50%;
-    width: 2.5rem;
-    height: 10px;
     transform: translateX(-50%);
     cursor: ns-resize;
+
+    &::after {
+      width: var(--pill-long);
+    }
   }
   &.is--corner {
-    right: -6px;
-    bottom: -6px;
-    width: 14px;
-    height: 14px;
+    right: 0;
+    bottom: 0;
     cursor: nwse-resize;
   }
 }

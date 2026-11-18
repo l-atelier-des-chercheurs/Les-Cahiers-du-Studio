@@ -15,17 +15,20 @@
     <LoginModal v-if="show_login_modal" @close="show_login_modal = false" />
 
     <NoticeModal v-if="show_notice" @close="show_notice = false" />
+
+    <AppNotifications />
   </div>
 </template>
 
 <script>
 import { mapState } from "pinia";
 import { useContentStore } from "@/stores/content";
+import AppNotifications from "@/components/AppNotifications.vue";
 import LoginModal from "@/components/LoginModal.vue";
 import NoticeModal from "@/components/NoticeModal.vue";
 
 export default {
-  components: { LoginModal, NoticeModal },
+  components: { AppNotifications, LoginModal, NoticeModal },
   data() {
     return {
       show_login_modal: false,

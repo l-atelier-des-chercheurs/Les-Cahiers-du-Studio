@@ -10,8 +10,9 @@ import { joinRoom, leaveRoom, onConnectionChange, onEvent } from "@/adc/socket";
 // Opening loads the content and listens to its changes. Closing stops
 // listening: the content stays in the store, and is reloaded on next opening.
 //
-// Changes (create, update, remove) don't touch the store: the server
-// broadcasts them to everyone, this browser included.
+// Changes (create, update, remove) come back through the server, which
+// broadcasts them to everyone, this browser included. Only a file's update
+// is also applied from the server's answer (updateFile).
 
 const parentOf = (path) => path.split("/").slice(0, -1).join("/");
 
@@ -63,14 +64,8 @@ export const useContentStore = defineStore("content", {
         if (files && !files.some((f) => f.$path === meta.$path))
           files.push(meta);
       });
-      onEvent(
-        "fileUpdated",
-        ({ path_to_folder, path_to_meta, changed_data }) => {
-          const file = this.folders[path_to_folder]?.$files?.find(
-            (f) => f.$path === path_to_meta
-          );
-          if (file) Object.assign(file, changed_data);
-        }
+      onEvent("fileUpdated", ({ path_to_folder, path_to_meta, changed_data }) =>
+        this._updateFileMeta(path_to_folder, path_to_meta, changed_data)
       );
       onEvent("fileRemoved", ({ path_to_folder, path_to_meta }) =>
         this._removeFiles(path_to_folder, [path_to_meta])
@@ -138,13 +133,25 @@ export const useContentStore = defineStore("content", {
     createFile(path_to_folder, meta) {
       return api.createFile(path_to_folder, meta);
     },
-    updateFile(path_to_meta, data) {
-      return api.updateFile(path_to_meta, data);
+    // the server's answer is applied right away, as its fileUpdated event
+    // will be (the same changes, twice is harmless): the store is right even
+    // if the event is lost (connection dropped)
+    async updateFile(path_to_meta, data) {
+      const result = await api.updateFile(path_to_meta, data);
+      const path_to_folder = parentOf(path_to_meta);
+      this._updateFileMeta(path_to_folder, path_to_meta, result?.changed_data);
+      return result;
     },
     removeFile(path_to_meta) {
       return api.removeFile(path_to_meta);
     },
 
+    _updateFileMeta(path_to_folder, path_to_meta, changed_data) {
+      const file = this.folders[path_to_folder]?.$files?.find(
+        (f) => f.$path === path_to_meta
+      );
+      if (file && changed_data) Object.assign(file, changed_data);
+    },
     _removeFiles(path_to_folder, paths_to_meta) {
       const folder = this.folders[path_to_folder];
       if (folder?.$files)

@@ -107,6 +107,7 @@
   "dont_save": "Ne pas enregistrer",
   "save": "Enregistrer",
   "save_and_close": "Enregistrer et fermer",
+  "size_not_saved": "La nouvelle taille n’a pas pu être enregistrée ({code}) : le média reprend sa taille.",
   "days_count": "{n} jour | {n} jours",
   "weeks_later": "{n} semaine plus tard… | {n} semaines plus tard…",
   "months_later": "{n} mois plus tard…",

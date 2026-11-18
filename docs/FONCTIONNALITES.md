@@ -8,6 +8,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - Application en français. Tous les textes passent par la traduction, pour pouvoir ajouter d'autres langues plus tard.
 - **Avertissement à l'ouverture** : à chaque visite, une fenêtre « En préparation » indique que l'application est en cours de préparation. Elle donne une adresse de contact et se ferme avec « Compris ».
 - **Message « Prototype en cours de développement »** : sur fond jaune, au milieu de la barre du haut d'un cahier et en haut de la page d'accueil. Un clic rouvre la fenêtre « En préparation », avec l'adresse de contact.
+- **Notifications** : de courts messages en bas à gauche (une erreur en rouge), qui disparaissent seuls après quelques secondes ou se ferment avec ×.
 - **Connexion perdue** : si le serveur ne répond plus, un bandeau rouge en haut de l'écran indique que les contenus ne sont pas modifiables. Le bouton **+** est alors désactivé.
 - **Temps réel** : ce que les autres ajoutent, modifient ou suppriment (cahiers, médias, dates) apparaît sans recharger la page.
 
@@ -50,7 +51,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Étendue** : du premier au dernier média. Si le cahier a des dates de début et de fin, la timeline les couvre aussi.
 - **Chaque jour** commence par sa date écrite verticalement sur un filet gris. Une pastille noire donne le nombre de médias du jour.
 - **Médias** : placés en colonnes, de haut en bas puis de gauche à droite, sur des lignes de portée grises. Le nombre de médias par colonne s'adapte à la hauteur de la fenêtre.
-- **Taille des médias** : chaque média occupe un nombre entier de cases de la grille (une case par ligne de portée, 4 × 4 par défaut). Au survol, des poignées sur le bord droit, le bord bas et le coin permettent de l'agrandir ou de le réduire, case par case (de 2 à 16 cases de large, jusqu'à la hauteur de la timeline). Pendant le redimensionnement, les cases apparaissent. La taille est enregistrée au relâchement, pour tous. Réservé aux contributeurs, à la souris (pas sur écran tactile).
+- **Taille des médias** : chaque média occupe un nombre entier de cases de la grille (une case par ligne de portée, 4 × 4 par défaut). Au survol, des poignées sur le bord droit, le bord bas et le coin permettent de l'agrandir ou de le réduire, case par case (de 2 à 16 cases de large, jusqu'à la hauteur de la timeline). Pendant le redimensionnement, les cases apparaissent. La taille est enregistrée au relâchement, pour tous. Si le serveur la refuse, le média reprend sa taille en tremblant, entouré de rouge un instant, et une notification le signale. Réservé aux contributeurs, à la souris (pas sur écran tactile).
 - **Repères** : ils découpent la journée en parties. Chacun est une étiquette verticale avec son heure et sa légende, dans sa couleur s'il en a une.
 - **Jours vides** : une vague grise, un demi-cercle par jour vide. Au-delà de 7 jours, la vague s'arrête à 7 et l'écart est écrit à côté : « 2 semaines plus tard… », « 3 mois plus tard… », « 2 ans plus tard… ». Au survol, le nombre de jours écoulés jusqu'au jour suivant (« 11 jours »).
 - **Replier un jour** : un clic sur la date du jour cache ses médias.
