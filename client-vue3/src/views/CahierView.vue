@@ -5,16 +5,38 @@
         ← {{ $t("back") }}
       </RouterLink>
       <h1 class="m_cahier--title">{{ title }}</h1>
+
+      <nav class="m_cahier--views" :aria-label="$t('display')">
+        <RouterLink
+          v-for="option in view_options"
+          :key="option.key"
+          :to="{ query: option.query }"
+          replace
+          class="button m_cahier--view"
+          :class="{ 'is--active': view === option.key }"
+          :aria-current="view === option.key ? 'page' : undefined"
+        >
+          {{ $t(option.label) }}
+        </RouterLink>
+      </nav>
     </header>
 
-    <p v-if="error" class="form-error m_cahier--message">{{ error }}</p>
-    <p v-else-if="!cahier" class="m_cahier--message">{{ $t("loading") }}</p>
+    <div class="m_cahier--content">
+      <p v-if="error" class="form-error m_cahier--message">{{ error }}</p>
+      <!-- $files: once the cahier itself is opened, not only listed -->
+      <p v-else-if="!cahier?.$files" class="m_cahier--message">
+        {{ $t("loading") }}
+      </p>
 
-    <MediaGrid
-      v-else
-      :files="cahier.$files || []"
-      :highlighted="last_created"
-    />
+      <MediaTimeline
+        v-else-if="view === 'timeline'"
+        :files="cahier.$files"
+        :start="cahier.start"
+        :end="cahier.end"
+        :highlighted="last_created"
+      />
+      <MediaGrid v-else :files="cahier.$files" :highlighted="last_created" />
+    </div>
 
     <AddMedias
       v-if="cahier && can_contribute"
@@ -39,10 +61,11 @@ import { useSessionStore } from "@/stores/session";
 import { canContributeToFolder } from "@/adc/rights";
 import AddMedias from "@/components/AddMedias.vue";
 import MediaGrid from "@/components/MediaGrid.vue";
+import MediaTimeline from "@/components/MediaTimeline.vue";
 import UploadFilesModal from "@/components/UploadFilesModal.vue";
 
 export default {
-  components: { AddMedias, MediaGrid, UploadFilesModal },
+  components: { AddMedias, MediaGrid, MediaTimeline, UploadFilesModal },
   props: {
     // from the route: /:slug
     slug: { type: String, required: true },
@@ -68,6 +91,16 @@ export default {
     },
     can_contribute() {
       return canContributeToFolder(this.cahier, this.token_path);
+    },
+    // the timeline by default, the grid at ?vue=grille
+    view() {
+      return this.$route.query.vue === "grille" ? "grid" : "timeline";
+    },
+    view_options() {
+      return [
+        { key: "timeline", label: "timeline", query: {} },
+        { key: "grid", label: "grid", query: { vue: "grille" } },
+      ];
     },
     title() {
       return this.cahier?.title || this.slug;
@@ -113,6 +146,41 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// the header, and the view filling the rest of the window: the timeline
+// scrolls sideways, the grid downwards
+.m_cahier {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.m_cahier--content {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.m_cahier--views {
+  display: flex;
+  gap: var(--spacing-verysmall);
+  margin-left: auto;
+}
+
+.m_cahier--view {
+  padding: 0.1rem var(--spacing-small);
+  border: 1px solid var(--c-gris_fonce);
+  font-size: var(--font-size-small);
+
+  &:hover {
+    border-color: var(--c-gris_clair);
+  }
+  &.is--active {
+    border-color: white;
+    background-color: white;
+    color: var(--c-noir);
+  }
+}
+
 .m_cahier--header {
   display: flex;
   flex-wrap: wrap;

@@ -85,12 +85,14 @@ Reprendre le bouton + de la v2 (`ImportMedias.vue`) : un bouton rond qui déplie
 
 ## 3. Timeline
 
-- [x] Vue grille de tous les médias (`MediaGrid.vue`), dans l'ordre de `date_timeline` et groupés par jour, en attendant la timeline
-- [ ] Afficher les médias du cahier triés par `date_timeline`, entre `start` et `end`, ou du premier au dernier média si ces dates sont absentes
-- [ ] Graduations des jours et des heures, et repère « maintenant »
-- [ ] Vignettes avec `thumbURL()`, rendu adapté à chaque type (image, vidéo, audio, texte, repère, embed, fichier)
-- [ ] Mise à jour en temps réel par socket (ajout, modification, suppression), sans recharger la page
-- [ ] Faire défiler jusqu'à un média qu'on vient d'ajouter
+- [x] Deux vues, au choix dans l'en-tête du cahier : Timeline (par défaut) et Grille (`?vue=grille`)
+- [x] Timeline (`MediaTimeline.vue`, d'après `TimelineView.vue` v2) : jours de gauche à droite, médias en colonnes, repères qui découpent la journée, jours vides regroupés à partir de 3
+- [x] Grille (`MediaGrid.vue`) : médias dans l'ordre de `date_timeline`, groupés par jour
+- [x] Afficher les médias du cahier triés par `date_timeline`, entre `start` et `end`, ou du premier au dernier média si ces dates sont absentes
+- [ ] Graduations des jours (fait) et des heures, et repère « maintenant »
+- [x] Vignettes avec `thumbURL()`, rendu adapté à chaque type (image, vidéo, audio, texte, repère, embed, fichier)
+- [x] Mise à jour en temps réel par socket (ajout, modification, suppression), sans recharger la page
+- [ ] Faire défiler jusqu'à un média qu'on vient d'ajouter (fait pour Texte, Repère et Lien ; pas encore pour les fichiers importés)
 - [ ] Cliquer sur un média ouvre la fenêtre d'édition
 
 ## 4. Fenêtre d'édition d'un média
