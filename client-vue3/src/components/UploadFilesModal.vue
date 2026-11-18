@@ -658,6 +658,10 @@ export default {
   font-size: var(--font-size-small);
   color-scheme: dark;
 
+  // on the dark window: a light border once focused
+  &:focus {
+    border-color: var(--c-gris_clair);
+  }
   &.is--active {
     border-color: var(--c-vert_vif);
   }

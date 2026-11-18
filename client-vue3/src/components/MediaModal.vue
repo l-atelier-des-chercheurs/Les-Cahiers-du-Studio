@@ -823,6 +823,11 @@ export default {
   color-scheme: dark;
   background-color: transparent;
   color: white;
+
+  // on the dark column: a light border once focused
+  &:focus {
+    border-color: var(--c-gris_clair);
+  }
 }
 
 .m_media--choices,

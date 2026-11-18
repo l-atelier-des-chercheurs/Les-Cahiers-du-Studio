@@ -384,6 +384,7 @@ export default {
         "--c-gris_tresclair",
         "--c-blanc",
         "--c-bg",
+        "--c-border",
         "--c-vert_vif",
         "--c-rouge",
       ],
