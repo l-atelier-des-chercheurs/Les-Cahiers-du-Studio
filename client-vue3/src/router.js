@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import CahierView from "@/views/CahierView.vue";
-import UiView from "@/views/UiView.vue";
 
 // adc-core answers every unknown URL with index.pug (api2.js loadIndex),
 // whose <base href="/"> keeps the assets loading from any depth.
@@ -14,8 +13,13 @@ export const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: "/", name: "home", component: HomeView },
-    // every style and shared component, to check the app's consistency
-    { path: "/_ui", name: "ui", component: UiView },
+    // every style and shared component, to check the app's consistency.
+    // Loaded on demand: visitors never open it
+    {
+      path: "/_ui",
+      name: "ui",
+      component: () => import("@/views/UiView.vue"),
+    },
     // the cahier at "cahiers/<slug>"
     {
       path: "/:slug",

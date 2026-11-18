@@ -39,7 +39,9 @@ export default defineConfig({
     rollupOptions: {
       input: "./src/main.js",
       output: [
-        // an IIFE can't be split: keep components statically imported
+        // build.js is split: what is imported with import() (the /_ui page,
+        // the media's window) goes to assets/ and loads on demand.
+        // bundle.js is an IIFE: Vite puts everything back into it
         { format: "iife", entryFileNames: "bundle.js" },
         { format: "es", entryFileNames: "build.js" },
       ],

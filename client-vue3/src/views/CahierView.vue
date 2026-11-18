@@ -93,6 +93,7 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from "vue";
 import { mapActions, mapState } from "pinia";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
@@ -100,7 +101,6 @@ import { canContributeToFolder } from "@/adc/rights";
 import { sortByDate } from "@/medias";
 import { useUnseenStore } from "@/stores/unseen";
 import AddMedias from "@/components/AddMedias.vue";
-import MediaModal from "@/components/MediaModal.vue";
 import MediaGrid from "@/components/MediaGrid.vue";
 import MediaTimeline from "@/components/MediaTimeline.vue";
 import UploadFilesModal from "@/components/UploadFilesModal.vue";
@@ -109,7 +109,11 @@ export default {
   components: {
     AddMedias,
     MediaGrid,
-    MediaModal,
+    // loaded on demand, with its Markdown libraries (marked, DOMPurify),
+    // when a media is first opened
+    MediaModal: defineAsyncComponent(
+      () => import("@/components/MediaModal.vue")
+    ),
     MediaTimeline,
     UploadFilesModal,
   },
