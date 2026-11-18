@@ -27,13 +27,24 @@
 
       <section v-else class="m_tl--day" :aria-label="column.label">
         <h2 class="m_tl--dayLabel">
-          <span class="m_tl--dayLabel--text">
-            {{ column.label }}
-            <span class="m_tl--dayLabel--count">{{ column.count }}</span>
-          </span>
+          <button
+            type="button"
+            class="m_tl--dayToggle"
+            :class="{ 'is--folded': folded_days[column.key] }"
+            :aria-expanded="!folded_days[column.key]"
+            @click="toggleDay(column.key)"
+          >
+            <span class="m_tl--dayLabel--text">
+              {{ column.label }}
+              <span class="m_tl--dayLabel--count">{{ column.count }}</span>
+            </span>
+            <span class="m_tl--dayLabel--tab">
+              {{ $t(folded_days[column.key] ? "unfold" : "fold") }}
+            </span>
+          </button>
         </h2>
 
-        <div class="m_tl--segments">
+        <div v-if="!folded_days[column.key]" class="m_tl--segments">
           <div
             v-for="(segment, index) in column.segments"
             :key="segment.marker?.$path || index"
@@ -115,6 +126,8 @@ export default {
   data() {
     return {
       MAX_WAVES,
+      // days shown as their label only: { "2026-11-18": true }
+      folded_days: {},
       // how many tiles fit in a column, from the timeline's height
       rows: 1,
     };
@@ -256,6 +269,12 @@ export default {
       );
       this.rows = Math.max(1, rows);
     },
+    toggleDay(key) {
+      if (this.folded_days[key]) delete this.folded_days[key];
+      else this.folded_days[key] = true;
+      // the unfolded day may be the first with medias
+      this.$nextTick(this.measureRows);
+    },
     // the mouse wheel scrolls along the timeline
     onWheel(event) {
       if (event.ctrlKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY))
@@ -313,8 +332,9 @@ export default {
   margin: 0 20px 0 10px;
 }
 
-// the date, written from bottom to top on a rule the height of the day,
-// with the number of medias in a black dot
+// the date, written from bottom to top on a grey rule the height of the
+// day, with the number of medias in a black dot. A click folds the day to
+// this label (a pill on a black rule), or unfolds it.
 .m_tl--dayLabel {
   position: relative;
   flex: 0 0 auto;
@@ -333,21 +353,78 @@ export default {
     left: 50%;
     border-left: 1px solid var(--rule-color);
   }
+
+  // folded: a black rule, and room for the « Déplier » tab
+  &:has(.is--folded) {
+    margin-right: 2.75rem;
+
+    &::before {
+      border-left-color: var(--c-noir);
+    }
+  }
+}
+
+.m_tl--dayToggle {
+  position: relative;
+  display: block;
+  padding: 0;
+  border-radius: 999px;
+
+  &:focus-visible {
+    outline-offset: 2px;
+  }
 }
 
 .m_tl--dayLabel--text {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.5em;
-  padding: 8px 2px;
+  gap: 0.75em;
+  padding: 12px 6px;
+  // light while unfolded, as a pill once folded
+  border: 1px solid transparent;
+  border-radius: 999px;
   background-color: var(--c-bg);
   white-space: nowrap;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 
-  &::first-letter {
-    text-transform: uppercase;
+  .is--folded & {
+    border-color: var(--c-noir);
+  }
+  .is--folded:hover & {
+    background-color: white;
+  }
+}
+
+// on the right of the pill: always on folded days, on hover on the others
+.m_tl--dayLabel--tab {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  padding: 10px 5px;
+  // the right corners, once turned upside down
+  border-radius: 8px 0 0 8px;
+  background-color: var(--c-noir);
+  color: white;
+  font-size: var(--font-size-small);
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%) rotate(180deg);
+  opacity: 0;
+  transition: opacity 0.15s;
+
+  .m_tl--dayToggle:hover &,
+  .m_tl--dayToggle:focus-visible &,
+  .is--folded & {
+    opacity: 1;
+  }
+
+  @media (hover: none) {
+    opacity: 1;
   }
 }
 
