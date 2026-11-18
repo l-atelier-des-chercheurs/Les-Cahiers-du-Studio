@@ -99,6 +99,7 @@ import {
   sortByDate,
   timeOf,
 } from "@/medias";
+import { readJSON, writeJSON } from "@/adc/storage";
 import MediaTile from "./MediaTile.vue";
 
 // empty days in a row: one half circle each, up to this many, then the
@@ -114,6 +115,8 @@ const LINES_PER_TILE = 5;
 export default {
   components: { MediaTile },
   props: {
+    // the cahier, e.g. "cahiers/mon-cahier": its folded days are kept
+    path_to_folder: { type: String, required: true },
     // the cahier's $files
     files: { type: Array, required: true },
     // the cahier's bounds, optional ("2026-11-17"): the timeline covers
@@ -126,8 +129,9 @@ export default {
   data() {
     return {
       MAX_WAVES,
-      // days shown as their label only: { "2026-11-18": true }
-      folded_days: {},
+      // days shown as their label only: { "2026-11-18": true }, kept in
+      // this browser for each cahier
+      folded_days: this.readFoldedDays(),
       // how many tiles fit in a column, from the timeline's height
       rows: 1,
     };
@@ -208,6 +212,10 @@ export default {
     // the media comes with the room's fileCreated event, after its creation
     // was answered: wait for its tile
     highlighted: "scrollToHighlighted",
+    // another cahier, in the same timeline
+    path_to_folder() {
+      this.folded_days = this.readFoldedDays();
+    },
     files() {
       this.scrollToHighlighted();
       // the first day may only just have appeared
@@ -269,9 +277,21 @@ export default {
       );
       this.rows = Math.max(1, rows);
     },
+    storageKey() {
+      return `cahiers.folded_days.${this.path_to_folder}`;
+    },
+    // stored as a list: ["2026-11-18"]
+    readFoldedDays() {
+      const days = readJSON(this.storageKey());
+      return Object.fromEntries(
+        (Array.isArray(days) ? days : []).map((day) => [day, true])
+      );
+    },
     toggleDay(key) {
       if (this.folded_days[key]) delete this.folded_days[key];
       else this.folded_days[key] = true;
+      const days = Object.keys(this.folded_days);
+      writeJSON(this.storageKey(), days.length ? days : undefined);
       // the unfolded day may be the first with medias
       this.$nextTick(this.measureRows);
     },

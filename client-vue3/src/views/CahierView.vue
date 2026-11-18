@@ -30,6 +30,7 @@
 
       <MediaTimeline
         v-else-if="view === 'timeline'"
+        :path_to_folder="path_to_folder"
         :files="cahier.$files"
         :start="cahier.start"
         :end="cahier.end"
