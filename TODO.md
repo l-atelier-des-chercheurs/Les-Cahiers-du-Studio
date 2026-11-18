@@ -46,7 +46,7 @@ Les VPS installés maintenant ne doivent pas demander de migration v3 → v3'.
 - [x] Taille d'un média : `w` et `h` (type `number`), en cases de la grille, comme en v2. Redimensionnée dans la timeline, partagée par les vues à venir (Tableau comprise)
 - [x] Vue Tableau : champs réservés `tableau_x`, `tableau_y` (type `number`) pour la position
 - [x] Médias sans fichier : rien à ajouter au schéma (voir Décisions)
-- [ ] Le client doit toujours envoyer `$status` explicitement. adc-core met `private` par défaut, aussi bien sur les dossiers que sur les fichiers.
+- [x] Le client doit toujours envoyer `$status` explicitement. adc-core met `private` par défaut, aussi bien sur les dossiers que sur les fichiers. (Cahiers, fichiers importés, textes, repères, liens : vérifié.)
 - [ ] Décider des autres champs v2 à reprendre ou à abandonner : `action_on_tile_click`, `url_to_open_in_new_tab`, `collapsed`
 
 ### Problèmes d'adc-core
@@ -63,7 +63,7 @@ Les VPS installés maintenant ne doivent pas demander de migration v3 → v3'.
 - [ ] Ajouter à la création : description, début et fin facultatifs
 - [ ] Modifier et supprimer un cahier
 - [ ] Gérer les contributeurs d'un cahier
-- [ ] Ouvrir un cahier (route `/cahiers/:slug`)
+- [x] Ouvrir un cahier (à la racine : `/<slug>`, comme en v2)
 - [x] Connexion minimale : choix d'un auteur et mot de passe
 - [ ] Création d'auteur, et saisie du mot de passe général quand l'instance en a un
 
@@ -71,7 +71,7 @@ Les VPS installés maintenant ne doivent pas demander de migration v3 → v3'.
 
 Reprendre le bouton + de la v2 (`ImportMedias.vue`) : un bouton rond qui déplie ses options.
 
-- [ ] Option **Texte** : crée directement un média texte (fait) et ouvre la fenêtre d'édition
+- [x] Option **Texte** : crée directement un média texte et ouvre sa fenêtre
 - [x] Option **Repère** : crée un média vide daté à maintenant
 - [x] Option **Embed** : URL externe, saisie dans une petite fenêtre
 - [x] Options **Image / Vidéo / Audio / Fichier** : sélecteur de fichiers (`accept` adapté, sélection multiple). Pas de `capture` : sur téléphone, il ouvrirait seulement l'appareil photo, sans proposer les fichiers existants.
@@ -97,6 +97,11 @@ Reprendre le bouton + de la v2 (`ImportMedias.vue`) : un bouton rond qui déplie
 - [x] Médias ajoutés depuis ce navigateur entourés de vert jusqu'à ce qu'ils soient vus (survol, toucher, ou 2 s à l'écran)
 - [x] Cliquer sur un média (ou un repère) ouvre sa fenêtre
 
+- [ ] **Déplacer un média par glisser-déposer** : le déplacer change sa `date_timeline` (pas d'ordre manuel séparé ; le placement libre relève de la vue Tableau, `tableau_x` / `tableau_y`).
+  - Étape 1, souris : seuil de quelques pixels pour ne pas gêner le clic, copie semi-transparente de la tuile, ligne d'insertion, les voisins s'écartent (animation existante). Lâché entre deux médias : date entre les leurs ; sur le libellé d'un autre jour : même heure, ce jour-là. Défilement automatique de la timeline près des bords. Enregistrement optimiste, annulé avec notification en cas d'échec (comme la taille).
+  - Étape 2, tactile : appui long pour commencer, sans gêner le défilement.
+  - À tester sur un vrai cahier : avec des tailles mêlées, le remplissage des trous (dense) peut rendre l'ordre affiché différent de l'ordre des dates, et la ligne d'insertion sauter.
+
 ## 4. Fenêtre d'édition d'un média
 
 Reprendre `EditMedia.vue`, réduit à (`MediaModal.vue`) :
@@ -115,8 +120,8 @@ Reprendre `EditMedia.vue`, réduit à (`MediaModal.vue`) :
 
 ## 5. Mise en ligne
 
-- [ ] `npm run build` dans `client-vue3/` produit `dist/`, servi par adc-core
-- [ ] Procédure d'installation sur un VPS (Node, `settings.json`, contentPath, HTTPS / reverse proxy)
+- [x] `npm run build` dans `client-vue3/` produit `dist/`, servi par adc-core. Compilé et versionné par `npm version` (preversion), comme dodoc
+- [x] Procédure d'installation sur un VPS (Node, `settings.json`, contentPath, HTTPS / reverse proxy) : `docs/INSTALL-VPS.md`
 - [ ] Tester sur un VPS réel avec quelques utilisateurs
 
 ## Questions ouvertes
