@@ -84,6 +84,7 @@
   "timeline": "Timeline",
   "grid": "Grille",
   "empty_days": "{count} jours sans média",
+  "no_media": "aucun média",
   "no_medias": "Aucun média pour l’instant. Ajoutez-en avec le bouton +.",
   "empty_text": "Texte vide",
   "no_date": "Sans date",

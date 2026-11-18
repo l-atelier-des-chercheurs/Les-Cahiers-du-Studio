@@ -1,26 +1,35 @@
 <template>
   <!-- v2's TimelineView.vue: days side by side from left to right, each
-  day's medias in columns, from top to bottom. Repères split a day into
-  parts, with their time and caption as a vertical label. Runs of empty
-  days shrink to one gap. Kept up to date by the cahier's room. -->
-  <div ref="scroller" class="m_tl" @wheel="onWheel">
+  with its date written vertically on a rule, then its medias in columns
+  from top to bottom, on staff lines. Repères split a day into parts.
+  Empty days are a grey wave, one half circle a day. Kept up to date by
+  the cahier's room. -->
+  <div ref="scroller" class="m_tl" :style="sizes" @wheel="onWheel">
     <p v-if="!columns.length" class="m_tl--empty">{{ $t("no_medias") }}</p>
 
     <template v-for="column in columns" :key="column.key">
-      <div v-if="column.kind === 'gap'" class="m_tl--gap">
-        <span>{{ $t("empty_days", { count: column.count }) }}</span>
+      <div
+        v-if="column.kind === 'empty'"
+        class="m_tl--emptyDays"
+        :title="column.title"
+      >
+        <span
+          v-for="index in Math.min(column.count, MAX_WAVES)"
+          :key="index"
+          class="m_tl--wave"
+          aria-hidden="true"
+        />
+        <span v-if="column.count > MAX_WAVES" class="m_tl--emptyLabel">
+          {{ $t("empty_days", { count: column.count }) }}
+        </span>
+        <span v-else class="visually-hidden">{{ column.title }}</span>
       </div>
 
-      <section
-        v-else
-        class="m_tl--day"
-        :class="{ 'is--empty': !column.count }"
-        :aria-label="column.label"
-      >
+      <section v-else class="m_tl--day" :aria-label="column.label">
         <h2 class="m_tl--dayLabel">
-          <span>{{ column.label }}</span>
-          <span v-if="column.count" class="font-verysmall">
-            {{ column.count }}
+          <span class="m_tl--dayLabel--text">
+            {{ column.label }}
+            <span class="m_tl--dayLabel--count">{{ column.count }}</span>
           </span>
         </h2>
 
@@ -51,7 +60,11 @@
               </span>
             </div>
 
-            <ul v-if="segment.medias.length" class="m_tl--medias">
+            <ul
+              v-if="segment.medias.length"
+              class="m_tl--medias"
+              :style="gridOf(segment.medias.length)"
+            >
               <li v-for="media in segment.medias" :key="media.$path">
                 <MediaTile
                   :media="media"
@@ -77,8 +90,15 @@ import {
 } from "@/medias";
 import MediaTile from "./MediaTile.vue";
 
-// from this many empty days in a row, they become one gap
-const MIN_EMPTY_DAYS_FOR_GAP = 3;
+// empty days in a row: one half circle each, up to this many, then the
+// count is written next to them
+const MAX_WAVES = 7;
+// tiles and the space between them, in rem. The staff lines behind the
+// medias fall on the tiles' edges: 5 lines per tile
+const TILE_W = 10;
+const TILE_H = 12.25;
+const GAP = 0.25;
+const LINES_PER_TILE = 5;
 
 export default {
   components: { MediaTile },
@@ -92,7 +112,22 @@ export default {
     // a media just added: scrolled to and outlined once it shows up
     highlighted: { type: String, default: "" },
   },
+  data() {
+    return {
+      MAX_WAVES,
+      // how many tiles fit in a column, from the timeline's height
+      rows: 1,
+    };
+  },
   computed: {
+    sizes() {
+      return {
+        "--tile-w": `${TILE_W}rem`,
+        "--tile-h": `${TILE_H}rem`,
+        "--gap": `${GAP}rem`,
+        "--staff-step": `${(TILE_H + GAP) / LINES_PER_TILE}rem`,
+      };
+    },
     // medias by day: { "2026-11-18": [media…] }
     medias_by_day() {
       const by_day = {};
@@ -103,7 +138,8 @@ export default {
       }
       return by_day;
     },
-    // every day from the first to the last, as days and gaps
+    // every day from the first to the last: days with medias, and runs of
+    // empty days
     columns() {
       const dated = this.files.map(timeOf).filter((t) => !isNaN(t));
       const bounds = [this.start, this.end]
@@ -115,13 +151,20 @@ export default {
       const columns = [];
       let empty_run = [];
       const flushEmptyRun = () => {
-        if (empty_run.length >= MIN_EMPTY_DAYS_FOR_GAP)
-          columns.push({
-            kind: "gap",
-            key: `gap-${empty_run[0].key}`,
-            count: empty_run.length,
-          });
-        else columns.push(...empty_run);
+        if (!empty_run.length) return;
+        const first = empty_run[0];
+        const last = empty_run.at(-1);
+        columns.push({
+          kind: "empty",
+          key: `empty-${first.key}`,
+          count: empty_run.length,
+          title:
+            first === last
+              ? `${first.label} : ${this.$t("no_media")}`
+              : `${first.label} → ${last.label} : ${this.$t("empty_days", {
+                  count: empty_run.length,
+                })}`,
+        });
         empty_run = [];
       };
 
@@ -131,17 +174,17 @@ export default {
       while (day <= last) {
         const key = dayKey(day);
         const medias = this.medias_by_day[key] || [];
-        const column = {
-          kind: "day",
-          key,
-          label: formatDay(day),
-          count: medias.length,
-          segments: this.segmentsOf(medias),
-        };
+        const label = formatDay(day);
         if (medias.length) {
           flushEmptyRun();
-          columns.push(column);
-        } else empty_run.push(column);
+          columns.push({
+            kind: "day",
+            key,
+            label,
+            count: medias.length,
+            segments: this.segmentsOf(medias),
+          });
+        } else empty_run.push({ key, label });
         day.setDate(day.getDate() + 1);
       }
       flushEmptyRun();
@@ -152,13 +195,23 @@ export default {
     // the media comes with the room's fileCreated event, after its creation
     // was answered: wait for its tile
     highlighted: "scrollToHighlighted",
-    files: "scrollToHighlighted",
+    files() {
+      this.scrollToHighlighted();
+      // the first day may only just have appeared
+      this.$nextTick(this.measureRows);
+    },
   },
   async mounted() {
+    this.resize_observer = new ResizeObserver(() => this.measureRows());
+    this.resize_observer.observe(this.$refs.scroller);
+    this.measureRows();
     // the latest medias first, as in v2
     await this.$nextTick();
     const scroller = this.$refs.scroller;
     scroller.scrollLeft = scroller.scrollWidth;
+  },
+  beforeUnmount() {
+    this.resize_observer.disconnect();
   },
   methods: {
     dateOf,
@@ -179,6 +232,29 @@ export default {
       }
       if (!segments[0].medias.length) segments.shift();
       return segments;
+    },
+    // a part's tiles fill a column from top to bottom, then the next one.
+    // Rows and columns are counted here, not left to the grid (auto-fill
+    // rows, auto-flow column): its width would be reckoned before its
+    // height, as if every tile sat on one row, leaving a wide empty space
+    gridOf(count) {
+      const rows = Math.min(this.rows, count);
+      return {
+        gridTemplateRows: `repeat(${rows}, var(--tile-h))`,
+        gridTemplateColumns: `repeat(${Math.ceil(count / rows)}, var(--tile-w))`,
+      };
+    },
+    // the height of a day's parts, the same for every day
+    measureRows() {
+      const segment = this.$el.querySelector?.(".m_tl--segment");
+      if (!segment) return;
+      const rem = parseFloat(
+        getComputedStyle(document.documentElement).fontSize
+      );
+      const rows = Math.floor(
+        (segment.clientHeight + GAP * rem) / ((TILE_H + GAP) * rem)
+      );
+      this.rows = Math.max(1, rows);
     },
     // the mouse wheel scrolls along the timeline
     onWheel(event) {
@@ -205,21 +281,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// v2's colours: grey rules on the page's light grey
 .m_tl {
-  --tile-w: 10rem;
-  --tile-h: 13rem;
-  --gap: var(--spacing-verysmall);
+  --rule-color: rgb(210 210 210);
+  --staff-color: rgb(232 232 232);
 
   display: flex;
   height: 100%;
+  padding: var(--spacing-small) 0 var(--spacing-small) 5vw;
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-x: contain;
+  user-select: none;
 
   // room for the + button, after the last day
   &::after {
     content: "";
-    flex: 0 0 calc(64px + 8vw);
+    flex: 0 0 calc(64px + 4vw + var(--spacing-small));
   }
 }
 
@@ -231,54 +309,74 @@ export default {
 .m_tl--day {
   flex: 0 0 auto;
   display: flex;
-  flex-flow: column nowrap;
   height: 100%;
-  min-width: 14rem;
-  border-left: 1px solid var(--c-gris_clair);
+  margin: 0 20px 0 10px;
+}
 
-  // a day without media: a thin column, its date written vertically
-  &.is--empty {
-    min-width: 0;
-    width: 2rem;
+// the date, written from bottom to top on a rule the height of the day,
+// with the number of medias in a black dot
+.m_tl--dayLabel {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  margin-right: 30px;
+  font-size: inherit;
 
-    .m_tl--dayLabel {
-      flex: 1 1 auto;
-      writing-mode: vertical-rl;
-      padding: var(--spacing-small) 0;
-      color: var(--c-gris);
-    }
-    .m_tl--segments {
-      display: none;
-    }
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    border-left: 1px solid var(--rule-color);
   }
 }
 
-// stays visible while the day scrolls by
-.m_tl--dayLabel {
-  position: sticky;
-  left: 0;
-  align-self: flex-start;
+.m_tl--dayLabel--text {
+  position: relative;
   display: flex;
-  align-items: baseline;
-  gap: var(--spacing-small);
-  padding: var(--spacing-small);
-  font-style: italic;
+  align-items: center;
+  gap: 0.5em;
+  padding: 8px 2px;
+  background-color: var(--c-bg);
   white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
 
-  > :first-child::first-letter {
+  &::first-letter {
     text-transform: uppercase;
   }
-  .font-verysmall {
-    color: var(--c-gris);
-    font-style: normal;
-  }
 }
 
+.m_tl--dayLabel--count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  background-color: var(--c-noir);
+  color: white;
+  font-size: 0.7em;
+  font-weight: bold;
+  // upright, in the label turned upside down
+  writing-mode: horizontal-tb;
+  transform: rotate(180deg);
+}
+
+// the medias of a day, on staff lines
 .m_tl--segments {
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 0 0 auto;
   display: flex;
-  padding: 0 var(--gap) var(--spacing-small);
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--staff-color) 0 1px,
+    transparent 1px var(--staff-step)
+  );
 }
 
 .m_tl--segment {
@@ -322,10 +420,10 @@ export default {
 
 // filled from top to bottom, then left to right
 .m_tl--medias {
+  // rows and columns: gridOf()
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(auto-fill, var(--tile-h));
-  grid-auto-columns: var(--tile-w);
+  align-content: start;
   gap: var(--gap);
   height: 100%;
   margin: 0;
@@ -344,18 +442,44 @@ export default {
   }
 }
 
-// several empty days, as one column
-.m_tl--gap {
+// empty days: a grey wave, one half circle a day, up then down
+.m_tl--emptyDays {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  border-left: 1px dashed var(--c-gris_clair);
+  height: 100%;
+  padding: 0 4px;
+}
+
+.m_tl--wave {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border: 1px solid transparent;
+  border-top-color: var(--rule-color);
+  border-left-color: var(--rule-color);
+  border-radius: 50%;
+  transform: rotate(45deg);
+
+  &:nth-child(2n) {
+    transform: rotate(225deg);
+  }
+}
+
+.m_tl--emptyLabel {
+  padding: 0 var(--spacing-small);
   color: var(--c-gris);
   font-size: var(--font-size-small);
   font-style: italic;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 </style>
