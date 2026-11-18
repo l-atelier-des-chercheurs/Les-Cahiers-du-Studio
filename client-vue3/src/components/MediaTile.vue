@@ -254,15 +254,16 @@ export default {
 }
 
 .m_tile--author {
+  --w: 6px;
   flex: 0 0 auto;
-  width: 10px;
-  height: 10px;
+  width: var(--w);
+  height: var(--w);
   border-radius: 50%;
   background-color: var(--author-color);
   // visible on light and dark images
-  box-shadow:
-    0 0 0 1.5px white,
-    0 1px 3px rgb(0 0 0 / 35%);
+  // box-shadow:
+  //   0 0 0 0px white,
+  //   0 1px 3px rgb(0 0 0 / 35%);
 }
 
 .m_tile--caption {
