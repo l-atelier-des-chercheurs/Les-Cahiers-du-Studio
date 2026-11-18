@@ -217,6 +217,11 @@ export default {
         "mailto:info@latelier-des-chercheurs.fr?subject=Les Cahiers du Studio",
       // partners of the v3, shown on every instance
       partners: [
+        { name: "Fabien Pinaroli et l’association Ainsi Parlait" },
+        {
+          name: "la Fédération APCP",
+          url: "https://www.federation-apcp.org/",
+        },
         { name: "la Métropole de Lyon", url: "https://www.grandlyon.com" },
         {
           name: "le FDVA innovation du Département",
@@ -397,7 +402,7 @@ export default {
 }
 
 .m_home--newVersion ul {
-  margin: 0;
+  margin: 0 0 1em;
   padding-left: 1.2em;
 }
 
