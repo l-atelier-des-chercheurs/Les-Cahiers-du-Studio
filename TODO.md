@@ -111,7 +111,7 @@ Reprendre `EditMedia.vue`, réduit à (`MediaModal.vue`) :
 - [x] `date_timeline` : date et heure, avec raccourcis (capture, import, maintenant)
 - [x] `caption` (« Étiquette » pour un repère)
 - [x] `keywords`, avec suggestions tirées du cahier
-- [x] `color` (8 couleurs claires ; colore les repères de la timeline)
+- [ ] `color` : champ retiré de la fenêtre pour l'instant (les couleurs déjà enregistrées colorent toujours les repères de la timeline)
 - [x] Auteurs
 - [x] Supprimer le média (avec confirmation intégrée à la page)
 - [x] Télécharger, médias précédent / suivant (flèches et clavier), avertissement si modifications non enregistrées

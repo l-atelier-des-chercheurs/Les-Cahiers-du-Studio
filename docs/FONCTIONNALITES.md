@@ -91,14 +91,13 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
   - **autre fichier** : son nom et son extension.
 - **Flèches ← et →** (sur les bords du média, ou au clavier) : média précédent ou suivant, dans l'ordre de la timeline.
 - **À droite, ses informations** (modifiables par les contributeurs du cahier, en lecture seule pour les autres) :
-  - nom du fichier ;
   - adresse, pour un lien ;
   - légende (« Étiquette » pour un repère) ;
   - nom de la personne qui a contribué sans compte (`$credits`) ;
   - date sur la timeline, avec des raccourcis : « Capturé/créé le » (ou « Date du fichier »), « Date de l'import », « Maintenant » ;
   - mots-clés, avec des suggestions tirées des mots-clés déjà utilisés dans le cahier (Entrée ou virgule pour ajouter) ;
-  - couleur, parmi 8 couleurs claires (la couleur d'un repère colore son étiquette dans la timeline) ;
   - auteurs, avec leur pastille de couleur.
+- **Métadonnées**, tout en bas, repliées par défaut : type, nom du fichier, dimensions, durée, poids, lieu, date de capture (ou du fichier), date d'import, dernière modification.
 - **Télécharger** le fichier, **Supprimer** le média (avec une confirmation dans la fenêtre).
 - **Enregistrer et fermer** : enregistre les modifications. Si on ferme ou change de média sans enregistrer, la fenêtre propose d'enregistrer, de ne pas enregistrer ou d'annuler.
 - Ouvrir un média le compte comme vu (il perd son contour vert).
@@ -129,13 +128,8 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
   - Chaque fichier affiche un aperçu, son nom, son poids, son état (en attente, envoi en %, importé, échec) et une barre de progression.
   - L'en-tête compte les fichiers importés (« 3 / 7 »).
 - **Votre nom (facultatif)**, en haut de la fenêtre : enregistré avec chaque fichier (`$credits`), et retenu par le navigateur pour les contributions suivantes (textes, repères et liens compris). Donné après coup, il s'applique aussi aux fichiers déjà envoyés.
-- **Légende** sous chaque fichier : envoyée avec lui, ou enregistrée dès qu'on quitte le champ s'il est déjà envoyé.
+- **Ajouter une légende** : un bouton à droite de chaque fichier déplie le champ en dessous, pendant ou après l'envoi. La légende part avec le fichier, ou est enregistrée dès qu'on quitte le champ s'il est déjà envoyé. Une fois écrite, le champ reste ouvert.
 - **En cas d'échec** : bouton « Réessayer ». Si le fichier est trop lourd, la taille maximale est indiquée.
-- **Métadonnées** : une fois le fichier envoyé, le bouton « Métadonnées » affiche ce que le serveur a lu dans le fichier :
-  - type, dimensions, durée, poids ;
-  - lieu (coordonnées GPS) ;
-  - date de capture ou du fichier, date d'import ;
-  - auteurs.
 - **Date sur la timeline**, à choisir pour chaque fichier :
   - **Capturé/créé le** (« Date du fichier » pour les documents) : choisi par défaut. C'est la date de prise de vue ou d'enregistrement quand le fichier la contient, sinon sa date de modification.
   - **Date de modification** : proposée quand elle diffère de la date de capture.

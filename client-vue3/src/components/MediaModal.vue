@@ -119,10 +119,6 @@
       </div>
     </template>
 
-    <p v-if="media.$media_filename" class="m_modal--field m_media--filename">
-      {{ media.$media_filename }}
-    </p>
-
     <!-- link: its address -->
     <div v-if="type === 'url'" class="m_modal--field">
       <label for="media_url">{{ $t("url") }}</label>
@@ -218,25 +214,6 @@
           </option>
         </datalist>
       </template>
-    </div>
-
-    <div v-if="can_edit || form.color" class="m_modal--field">
-      <label>{{ $t("color") }}</label>
-      <div class="m_media--colors" role="radiogroup" :aria-label="$t('color')">
-        <button
-          v-for="color in can_edit ? ['', ...COLORS] : [form.color]"
-          :key="color || 'none'"
-          type="button"
-          role="radio"
-          class="m_media--color"
-          :class="{ 'is--active': form.color === color, 'is--none': !color }"
-          :style="color && { '--swatch': color }"
-          :aria-checked="form.color === color"
-          :aria-label="color || $t('no_color')"
-          :disabled="!can_edit"
-          @click="form.color = color"
-        />
-      </div>
     </div>
 
     <div class="m_modal--field">
@@ -337,6 +314,17 @@
       </button>
     </div>
 
+    <!-- what adc-core read from the file, folded -->
+    <details v-if="meta_rows.length" class="m_modal--field m_media--meta">
+      <summary>{{ $t("metadata") }}</summary>
+      <dl>
+        <template v-for="row in meta_rows" :key="row.key">
+          <dt>{{ $t(row.key) }}</dt>
+          <dd>{{ row.value }}</dd>
+        </template>
+      </dl>
+    </details>
+
     <p v-if="error" class="m_modal--field form-error">{{ error }}</p>
 
     <template v-if="can_edit" #submit_button>
@@ -355,17 +343,6 @@ import { useContentStore } from "@/stores/content";
 import { useUnseenStore } from "@/stores/unseen";
 import BaseModal from "./BaseModal.vue";
 
-// a media's colour (repères on the timeline): light, as the authors'
-const COLORS = [
-  "#ff8a80",
-  "#ffc46b",
-  "#f2e36b",
-  "#a5d86a",
-  "#7fdbda",
-  "#8ab6f9",
-  "#c3a6ff",
-  "#ffa8d9",
-];
 // dates closer than this are the same (seconds are not shown)
 const SAME_DATE_MS = 60 * 1000;
 
@@ -383,7 +360,6 @@ export default {
   emits: ["close", "prev", "next"],
   data() {
     return {
-      COLORS,
       form: this.formFrom(this.media),
       new_keyword: "",
       is_zoomed: false,
@@ -449,6 +425,42 @@ export default {
       ];
       return options.filter((option) => option.date);
     },
+    // what adc-core read from the file
+    meta_rows() {
+      const media = this.media;
+      const infos = media.$infos || {};
+      const location = media.$location;
+      return [
+        { key: "type", value: this.$t(`type_${this.type}`) },
+        { key: "file_name", value: media.$media_filename },
+        {
+          key: "dimensions",
+          value:
+            infos.width &&
+            infos.height &&
+            `${infos.width} × ${infos.height} px`,
+        },
+        {
+          key: "duration",
+          value: infos.duration && this.formatDuration(infos.duration),
+        },
+        { key: "weight", value: infos.size && this.formatBytes(infos.size) },
+        {
+          key: "location",
+          value:
+            location?.latitude &&
+            `${(+location.latitude).toFixed(5)}, ${(+location.longitude).toFixed(5)}`,
+        },
+        {
+          key: ["image", "video", "audio"].includes(this.type)
+            ? "captured_on"
+            : "date_of_file",
+          value: this.formatDate(media.$date_created),
+        },
+        { key: "imported_on", value: this.formatDate(media.$date_uploaded) },
+        { key: "last_modified", value: this.formatDate(media.$date_modified) },
+      ].filter((row) => row.value);
+    },
     keyword_suggestions() {
       return this.all_keywords.filter((k) => !this.form.keywords.includes(k));
     },
@@ -491,7 +503,6 @@ export default {
         keywords: Array.isArray(media.keywords)
           ? media.keywords.map(String)
           : [],
-        color: media.color || "",
         authors: Array.isArray(media.$authors) ? [...media.$authors] : [],
         content: typeof media.$content === "string" ? media.$content : "",
         credits: media.$credits || "",
@@ -508,7 +519,6 @@ export default {
         changes.date_timeline = this.form.date;
       if (!same(this.form.keywords, before.keywords))
         changes.keywords = this.form.keywords;
-      if (this.form.color !== before.color) changes.color = this.form.color;
       if (this.form.credits.trim() !== before.credits)
         changes.$credits = this.form.credits.trim();
       if (!same(this.form.authors, before.authors))
@@ -624,6 +634,25 @@ export default {
         dateStyle: "medium",
         timeStyle: "short",
       });
+    },
+    formatDuration(seconds) {
+      const total = Math.round(+seconds);
+      const h = Math.floor(total / 3600);
+      const m = Math.floor((total % 3600) / 60);
+      const pad = (n) => String(n).padStart(2, "0");
+      return h
+        ? `${h}:${pad(m)}:${pad(total % 60)}`
+        : `${m}:${pad(total % 60)}`;
+    },
+    formatBytes(bytes) {
+      const units = ["bytes", "kb", "mb", "gb"];
+      const i = Math.min(
+        Math.floor(Math.log(bytes) / Math.log(1024)),
+        units.length - 1
+      );
+      return `${(bytes / 1024 ** i).toLocaleString(i18n.global.locale.value, {
+        maximumFractionDigits: i ? 1 : 0,
+      })} ${this.$t(units[i])}`;
     },
     // datetime-local wants the local time, without zone
     toInputValue(date) {
@@ -821,11 +850,32 @@ export default {
   }
 }
 
-.m_media--filename {
-  margin-top: 0;
-  color: var(--c-gris_clair);
+// at the bottom, folded
+.m_media--meta {
   font-size: var(--font-size-small);
-  overflow-wrap: anywhere;
+
+  summary {
+    color: var(--c-gris_clair);
+    cursor: pointer;
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.15rem var(--spacing-small);
+    margin: var(--spacing-verysmall) 0 0;
+  }
+  dt {
+    color: var(--c-gris_clair);
+  }
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
 }
 
 .m_media--value {
@@ -935,39 +985,5 @@ export default {
   background-color: var(--author-color);
   box-shadow: 0 0 0 1.5px white;
   vertical-align: 1px;
-}
-
-.m_media--colors {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.m_media--color {
-  width: 1.75rem;
-  height: 1.75rem;
-  padding: 0;
-  border: 2px solid transparent;
-  border-radius: 50%;
-  background-color: var(--swatch);
-
-  &.is--none {
-    background:
-      linear-gradient(
-        to top right,
-        transparent calc(50% - 1px),
-        var(--c-rouge) calc(50% - 1px) calc(50% + 1px),
-        transparent calc(50% + 1px)
-      ),
-      white;
-  }
-  &.is--active {
-    border-color: white;
-    box-shadow: 0 0 0 2px var(--c-vert_vif);
-  }
-  &:disabled {
-    opacity: 1;
-    cursor: default;
-  }
 }
 </style>

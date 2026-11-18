@@ -65,15 +65,15 @@
           </button>
 
           <button
-            v-if="item.status === 'done'"
+            v-if="item.status !== 'failed'"
             type="button"
-            class="m_upload--choice m_upload--infosButton"
-            :class="{ 'is--active': item.show_infos }"
-            :aria-expanded="item.show_infos"
-            :aria-controls="`upload_infos_${item.id}`"
-            @click="item.show_infos = !item.show_infos"
+            class="m_upload--choice m_upload--captionButton"
+            :class="{ 'is--active': showsCaption(item) }"
+            :aria-expanded="showsCaption(item)"
+            :aria-controls="`upload_caption_${item.id}`"
+            @click="toggleCaption(item)"
           >
-            {{ $t("metadata") }}
+            {{ $t(item.caption.trim() ? "caption" : "add_caption") }}
           </button>
         </div>
 
@@ -81,31 +81,19 @@
           {{ item.error }}
         </p>
 
-        <div class="m_upload--caption">
-          <label :for="`upload_caption_${item.id}`" class="font-small">
-            {{ $t("caption") }}
-          </label>
+        <!-- unfolded by « Ajouter une légende », open once written -->
+        <div v-if="showsCaption(item)" class="m_upload--caption">
           <textarea
             :id="`upload_caption_${item.id}`"
             v-model="item.caption"
             rows="2"
+            :aria-label="$t('caption')"
             :placeholder="$t('caption_placeholder')"
             @change="applyCaption(item)"
           />
         </div>
 
         <template v-if="item.status === 'done'">
-          <dl
-            v-if="item.show_infos"
-            :id="`upload_infos_${item.id}`"
-            class="m_upload--meta"
-          >
-            <template v-for="row in metaRows(item)" :key="row.key">
-              <dt>{{ $t(row.key) }}</dt>
-              <dd>{{ row.value }}</dd>
-            </template>
-          </dl>
-
           <div class="m_upload--date">
             <div class="font-small">{{ $t("date_on_timeline") }}</div>
             <div class="m_upload--choices">
@@ -215,11 +203,11 @@ export default {
         is_saving: false,
         // typed here, sent with the file, or saved once it is sent
         caption: "",
+        // the caption field, unfolded
+        show_caption: false,
         sent_caption: "",
         // the date field, behind « Date personnalisée »
         show_custom: false,
-        // what adc-core read from the file, folded behind « Métadonnées »
-        show_infos: false,
         date_error: "",
       })),
       is_running: false,
@@ -322,6 +310,17 @@ export default {
         item.progress = 0;
         item.error = this.errorMessage(err);
       }
+    },
+    showsCaption(item) {
+      return item.show_caption || !!item.caption.trim();
+    },
+    toggleCaption(item) {
+      const open = !this.showsCaption(item);
+      item.show_caption = open;
+      if (open)
+        this.$nextTick(() =>
+          document.getElementById(`upload_caption_${item.id}`)?.focus()
+        );
     },
     // the caption of a file already sent; the others take it when sent
     async applyCaption(item) {
@@ -451,60 +450,12 @@ export default {
     extensionOf(file) {
       return file.name.includes(".") ? file.name.split(".").pop() : "?";
     },
-    // what adc-core read from the file
-    metaRows(item) {
-      const meta = this.liveMeta(item);
-      const infos = meta.$infos || {};
-      const rows = [
-        { key: "type", value: meta.$type && this.$t(`type_${meta.$type}`) },
-        {
-          key: "dimensions",
-          value:
-            infos.width &&
-            infos.height &&
-            `${infos.width} × ${infos.height} px`,
-        },
-        {
-          key: "duration",
-          value: infos.duration && this.formatDuration(infos.duration),
-        },
-        {
-          key: "weight",
-          value: this.formatBytes(infos.size ?? item.file.size),
-        },
-        {
-          key: "location",
-          value:
-            meta.$location?.latitude &&
-            `${(+meta.$location.latitude).toFixed(5)}, ${(+meta.$location.longitude).toFixed(5)}`,
-        },
-        {
-          key: this.fileDateLabel(item),
-          value: this.formatDate(meta.$date_created),
-        },
-        { key: "imported_on", value: this.formatDate(meta.$date_uploaded) },
-        {
-          key: "authors",
-          value: Array.isArray(meta.$authors)
-            ? meta.$authors.map((path) => path.split("/").pop()).join(", ")
-            : "",
-        },
-      ];
-      return rows.filter((row) => row.value);
-    },
     formatDate(date) {
       if (!date) return "";
       return new Date(date).toLocaleString(i18n.global.locale.value, {
         dateStyle: "medium",
         timeStyle: "short",
       });
-    },
-    formatDuration(seconds) {
-      const s = Math.round(+seconds);
-      const h = Math.floor(s / 3600);
-      const m = Math.floor((s % 3600) / 60);
-      const pad = (n) => String(n).padStart(2, "0");
-      return h ? `${h}:${pad(m)}:${pad(s % 60)}` : `${m}:${pad(s % 60)}`;
     },
     formatBytes(bytes) {
       if (!bytes) return `0 ${this.$t("bytes")}`;
@@ -630,38 +581,18 @@ export default {
   }
 }
 
-// at the far right, centered on the preview like the rest of the row
-.m_upload--infosButton {
+// next to the file's name, at the right
+.m_upload--captionButton {
   flex: 0 0 auto;
   align-items: center;
 }
 
 .m_upload--caption {
   margin-top: var(--spacing-small);
-
-  label {
-    color: var(--c-gris_clair);
-  }
 }
 
 .m_upload--error {
   margin: var(--spacing-verysmall) 0 0;
-}
-
-.m_upload--meta {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0.15rem var(--spacing-small);
-  margin: var(--spacing-small) 0 0;
-  font-size: var(--font-size-small);
-
-  dt {
-    color: var(--c-gris_clair);
-  }
-  dd {
-    margin: 0;
-    overflow-wrap: anywhere;
-  }
 }
 
 .m_upload--date {
