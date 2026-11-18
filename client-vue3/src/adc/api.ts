@@ -203,6 +203,28 @@ export function mediaURL(meta: FileMeta) {
 // thumbs live in thumbs/<folder path>/, named in $thumbs:
 // { <resolution>: name } for images, { <suffix>: { <resolution>: name } }
 // for media with several previews (videos…), where we take the first one
+// Every thumb of a media, for an <img srcset>: "url 220w, url 440w…".
+// adc-core fits them in a square (sharp, fit: "inside"): the resolution is
+// the longest side, so a portrait thumb is narrower. aspect: width / height
+export function thumbSrcset(meta: FileMeta, aspect = 1) {
+  const thumbs = meta.$thumbs as
+    Record<string, string | Record<string, string>> | undefined;
+  if (!thumbs || typeof thumbs !== "object") return "";
+  const first = Object.values(thumbs)[0];
+  const set = (typeof first === "string" ? thumbs : first) as Record<
+    string,
+    string
+  >;
+  return Object.entries(set)
+    .filter(([res, name]) => +res > 0 && typeof name === "string")
+    .sort(([a], [b]) => +a - +b)
+    .map(([res, name]) => {
+      const width = aspect >= 1 ? +res : Math.round(+res * aspect);
+      return `${contentURL(`thumbs/${folderOf(meta)}/${name}`)} ${width}w`;
+    })
+    .join(", ");
+}
+
 export function thumbURL(meta: FileMeta, resolution: number) {
   const thumbs = meta.$thumbs as
     Record<string, string | Record<string, string>> | undefined;

@@ -34,6 +34,8 @@
     <img
       v-else-if="thumb"
       :src="thumb"
+      :srcset="srcset || undefined"
+      :sizes="sizes || undefined"
       alt=""
       loading="lazy"
       decoding="async"
@@ -64,7 +66,7 @@
 
 <script>
 import { ref } from "vue";
-import { thumbURL } from "@/adc/api";
+import { thumbSrcset, thumbURL } from "@/adc/api";
 import { mapState } from "pinia";
 import { authorColor, dateOf, formatTime } from "@/medias";
 import { useUnseenStore } from "@/stores/unseen";
@@ -72,6 +74,22 @@ import { useUnseenStore } from "@/stores/unseen";
 // one of the cahiers' thumb resolutions (settings_base.json): about 2× the
 // tiles' width, for sharp thumbs on dense screens
 const THUMB_RESOLUTION = 440;
+
+// Every tile's size, measured by one shared observer: the image's sizes
+// follow it, for the browser to pick a sharp enough thumb (srcset)
+const tile_sizes = new WeakMap();
+let resize_observer;
+function observeSize(el, callback) {
+  resize_observer ||= new ResizeObserver((entries) => {
+    for (const entry of entries) tile_sizes.get(entry.target)?.(entry);
+  });
+  tile_sizes.set(el, callback);
+  resize_observer.observe(el);
+}
+function unobserveSize(el) {
+  tile_sizes.delete(el);
+  resize_observer?.unobserve(el);
+}
 
 // The Markdown renderer (marked, DOMPurify) loads on the first text shown,
 // apart from the page's main script, once for every tile
@@ -106,8 +124,28 @@ export default {
     author_color() {
       return authorColor(this.author);
     },
+    // the default thumb, until the tile is measured
     thumb() {
       return thumbURL(this.media, THUMB_RESOLUTION);
+    },
+    // width / height of the image, read by adc-core
+    aspect() {
+      const { width, height } = this.media.$infos || {};
+      return width > 0 && height > 0 ? width / height : 1;
+    },
+    srcset() {
+      return this.tile_width ? thumbSrcset(this.media, this.aspect) : "";
+    },
+    // the width the image is drawn at: wider than the tile when cropped to
+    // fill it (cover), narrower when shown whole (waveforms, pages)
+    sizes() {
+      if (!this.tile_width) return "";
+      const fitted = this.tile_height * this.aspect;
+      const contained = ["audio", "pdf"].includes(this.type);
+      const width = contained
+        ? Math.min(this.tile_width, fitted)
+        : Math.max(this.tile_width, fitted);
+      return `${Math.ceil(width)}px`;
     },
     // a text media's content, whole
     text() {
@@ -149,8 +187,24 @@ export default {
       return name.includes(".") ? name.split(".").pop() : "?";
     },
   },
+  data() {
+    return {
+      // the tile's size on screen, in CSS pixels
+      tile_width: 0,
+      tile_height: 0,
+    };
+  },
   created() {
     if (this.type === "text") loadMarkdown();
+  },
+  mounted() {
+    observeSize(this.$el, ({ contentRect }) => {
+      this.tile_width = Math.round(contentRect.width);
+      this.tile_height = Math.round(contentRect.height);
+    });
+  },
+  beforeUnmount() {
+    unobserveSize(this.$el);
   },
   methods: {
     // a link in a text opens itself, not the media's window
