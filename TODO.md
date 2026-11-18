@@ -32,7 +32,7 @@ Tant que cette boucle n'est pas solide, tout le reste attend.
 - **Droits de lecture** : chaque cahier est public ou privé, et privé veut dire réservé à ses contributeurs.
 - **Statut d'un média** : visible tout de suite après l'import, comme en v2. Cela veut dire qu'on ne garde pas le `$status: "private"` qu'adc-core met par défaut.
 - **Bornes de la timeline** : `start` et `end` sont facultatifs. Sans eux, la timeline va du premier au dernier média.
-- **`date_timeline` à l'import** : la fenêtre d'import propose de choisir entre la date de l'import et la date du fichier (EXIF, sinon date de modification).
+- **`date_timeline` à l'import** : par défaut la date de capture (EXIF, sinon date de modification). Pour chaque fichier, la fenêtre d'import propose aussi la date de modification, la date de l'import ou une date personnalisée.
 - **Options du +** : Texte, Repère, Embed/lien, Image, Vidéo, Audio, Fichier, et le glisser-déposer.
 - **Apparence** : une nouvelle base sobre et neutre, à affiner plus tard. On ne reprend pas le style v2.
 - **Langue** : français seulement, mais tous les textes passent par vue-i18n dès le départ.
@@ -70,20 +70,22 @@ Les VPS installés maintenant ne doivent pas demander de migration v3 → v3'.
 
 Reprendre le bouton + de la v2 (`ImportMedias.vue`) : un bouton rond qui déplie ses options.
 
-- [ ] Option **Texte** : crée directement un média texte et ouvre la fenêtre d'édition
-- [ ] Option **Repère** : crée un média vide daté à maintenant
-- [ ] Option **Embed** : URL externe
-- [ ] Options **Image / Vidéo / Audio / Fichier** : sélecteur de fichiers (`accept` et `capture` adaptés, sélection multiple)
-- [ ] Glisser-déposer des fichiers sur le bouton +
-- [ ] Fenêtre d'import (reprendre `UploadFileModal.vue`) :
-  - [ ] Liste des fichiers sélectionnés, avec aperçu
-  - [ ] Progression de l'envoi pour chaque fichier
-  - [ ] Bouton « Importer tous les fichiers »
-  - [ ] Gestion des erreurs (taille maximale, type refusé)
-- [ ] Choix de `date_timeline` dans la fenêtre d'import : date de l'import ou date du fichier (EXIF, sinon date de modification)
+- [ ] Option **Texte** : crée directement un média texte (fait) et ouvre la fenêtre d'édition
+- [x] Option **Repère** : crée un média vide daté à maintenant
+- [x] Option **Embed** : URL externe, saisie dans une petite fenêtre
+- [x] Options **Image / Vidéo / Audio / Fichier** : sélecteur de fichiers (`accept` adapté, sélection multiple). Pas de `capture` : sur téléphone, il ouvrirait seulement l'appareil photo, sans proposer les fichiers existants.
+- [x] Glisser-déposer des fichiers sur le bouton +
+- [x] Fenêtre d'import (`UploadFilesModal.vue`, d'après `UploadFile.vue` v2) :
+  - [x] Liste des fichiers sélectionnés, avec aperçu
+  - [x] Progression de l'envoi pour chaque fichier, envois un par un
+  - [x] Métadonnées lues par adc-core affichées dès l'envoi (type, dimensions, durée, poids, lieu, dates, auteurs)
+  - [x] Envoi automatique de tous les fichiers à l'ouverture (comme en v2), « Réessayer » en cas d'échec
+  - [ ] Gestion des erreurs (taille maximale : fait ; type refusé)
+- [x] Choix de `date_timeline` dans la fenêtre d'import : par défaut la date de capture (EXIF, sinon date de modification), sinon date de modification, date de l'import ou date personnalisée, fichier par fichier
 
 ## 3. Timeline
 
+- [x] Vue grille de tous les médias (`MediaGrid.vue`), dans l'ordre de `date_timeline` et groupés par jour, en attendant la timeline
 - [ ] Afficher les médias du cahier triés par `date_timeline`, entre `start` et `end`, ou du premier au dernier média si ces dates sont absentes
 - [ ] Graduations des jours et des heures, et repère « maintenant »
 - [ ] Vignettes avec `thumbURL()`, rendu adapté à chaque type (image, vidéo, audio, texte, repère, embed, fichier)

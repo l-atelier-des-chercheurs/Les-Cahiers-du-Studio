@@ -11,6 +11,7 @@
   <dialog
     ref="dialog"
     class="m_modal"
+    :class="{ 'is--wide': wide }"
     @cancel.prevent="$emit('close')"
     @click="onClick"
   >
@@ -57,6 +58,8 @@ export default {
   props: {
     // disables the submit button
     disabled: { type: Boolean, default: false },
+    // a larger panel, for lists (the import modal)
+    wide: { type: Boolean, default: false },
   },
   emits: ["close", "submit"],
   mounted() {
@@ -108,6 +111,10 @@ export default {
   max-width: 400px;
   margin: auto;
   background-color: var(--c-noir_light);
+
+  .is--wide & {
+    max-width: 800px;
+  }
 }
 
 .m_modal--header {

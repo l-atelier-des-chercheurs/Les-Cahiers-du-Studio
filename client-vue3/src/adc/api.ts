@@ -126,13 +126,16 @@ export async function uploadFile(
   file: Blob,
   filename: string,
   additional_meta: Record<string, unknown> = {},
-  onProgress?: (ratio: number) => void
+  onProgress?: (ratio: number) => void,
+  // aborting rejects with the code "upload_aborted"
+  signal?: AbortSignal
 ): Promise<UploadResult> {
   const form = new FormData();
   form.append("additional_meta", JSON.stringify(additional_meta));
   form.append("file", file, filename);
 
-  if (!onProgress) return request("POST", `${path_to_folder}/_upload`, form);
+  if (!onProgress && !signal)
+    return request("POST", `${path_to_folder}/_upload`, form);
 
   // fetch can't report upload progress
   return new Promise((resolve, reject) => {
@@ -140,7 +143,7 @@ export async function uploadFile(
     xhr.open("POST", `/_api2/${path_to_folder}/_upload`);
     xhr.setRequestHeader("Authorization", authorizationHeader());
     xhr.upload.onprogress = (e) =>
-      e.lengthComputable && onProgress(e.loaded / e.total);
+      e.lengthComputable && onProgress?.(e.loaded / e.total);
     xhr.onload = () => {
       let data: unknown;
       try {
@@ -152,8 +155,21 @@ export async function uploadFile(
       else reject(toApiError(xhr.status, xhr.statusText, data));
     };
     xhr.onerror = () => reject(new ApiError(0, "network_error"));
+    xhr.onabort = () => reject(new ApiError(0, "upload_aborted"));
+    if (signal?.aborted) return reject(new ApiError(0, "upload_aborted"));
+    signal?.addEventListener("abort", () => xhr.abort(), { once: true });
     xhr.send(form);
   });
+}
+
+// a file without media, only its .meta.txt (adc-core's meta-only import:
+// a JSON body instead of a form). Never pass a `url` field: adc-core
+// would download it.
+export function createFile(
+  path_to_folder: Path,
+  meta: Record<string, unknown>
+): Promise<UploadResult> {
+  return request("POST", `${path_to_folder}/_upload`, meta);
 }
 
 export function updateFile(path_to_meta: Path, data: Record<string, unknown>) {

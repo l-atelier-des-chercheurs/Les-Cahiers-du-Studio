@@ -124,14 +124,19 @@ export const useContentStore = defineStore("content", {
     removeFolder(path_to_folder) {
       return api.removeFolder(path_to_folder);
     },
-    uploadFile(path_to_folder, file, additional_meta, onProgress) {
+    uploadFile(path_to_folder, file, additional_meta, onProgress, signal) {
       return api.uploadFile(
         path_to_folder,
         file,
         file.name,
         additional_meta,
-        onProgress
+        onProgress,
+        signal
       );
+    },
+    // without media: markers
+    createFile(path_to_folder, meta) {
+      return api.createFile(path_to_folder, meta);
     },
     updateFile(path_to_meta, data) {
       return api.updateFile(path_to_meta, data);
