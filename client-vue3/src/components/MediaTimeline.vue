@@ -485,6 +485,10 @@ export default {
     onWheel(event) {
       if (event.ctrlKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY))
         return;
+      // over a text longer than its tile: only the text scrolls, never the
+      // timeline, even at its top or bottom
+      const text = event.target.closest?.(".m_tile--text");
+      if (text && text.scrollHeight > text.clientHeight + 1) return;
       // deltaMode 1: in lines
       const delta = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY;
       this.$refs.scroller.scrollLeft += delta;

@@ -72,7 +72,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Image, PDF, lien** : la vignette (pour un lien, l'image d'aperçu de la page).
 - **Vidéo** : la première image, avec un symbole de lecture.
 - **Son** : la forme d'onde.
-- **Texte** : le début du texte, qui s'estompe en bas (« Texte vide » s'il n'y a rien).
+- **Texte** : le texte entier, mis en forme (titres, gras, italique, listes, liens). S'il est plus long que la vignette, il défile à l'intérieur : la molette ne fait alors défiler que le texte, jamais la timeline. Un lien dans le texte s'ouvre dans un nouvel onglet, sans ouvrir la fenêtre du média.
 - **Repère** : un rond (dans la grille ; dans la timeline, voir plus haut).
 - **Autre fichier** : son extension.
 - **En haut à gauche** : une pastille de la couleur de l'auteur, puis la légende s'il y en a une (pour un lien, le nom du site). La couleur vient du nom de l'auteur : chaque auteur a toujours la même.

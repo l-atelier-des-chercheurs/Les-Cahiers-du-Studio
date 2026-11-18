@@ -9,11 +9,15 @@
     :title="summary"
     role="button"
     tabindex="0"
-    @click="$emit('open', media.$path)"
+    @click="onClick"
     @keydown.enter.space.prevent="$emit('open', media.$path)"
   >
+    <!-- the whole text, formatted (Markdown), scrolling in the tile when
+    longer; as plain text the instant the Markdown renderer loads -->
     <template v-if="type === 'text'">
-      <p v-if="excerpt" class="m_tile--text">{{ excerpt }}</p>
+      <!-- sanitised HTML (markdown.js) -->
+      <div v-if="text_html" class="m_tile--text markdown" v-html="text_html" />
+      <p v-else-if="text" class="m_tile--text is--plain">{{ text }}</p>
       <p v-else class="m_tile--placeholder">{{ $t("empty_text") }}</p>
     </template>
 
@@ -59,6 +63,7 @@
 </template>
 
 <script>
+import { ref } from "vue";
 import { thumbURL } from "@/adc/api";
 import { mapState } from "pinia";
 import { authorColor, dateOf, formatTime } from "@/medias";
@@ -67,6 +72,16 @@ import { useUnseenStore } from "@/stores/unseen";
 // one of the cahiers' thumb resolutions (settings_base.json): about 2× the
 // tiles' width, for sharp thumbs on dense screens
 const THUMB_RESOLUTION = 440;
+
+// The Markdown renderer (marked, DOMPurify) loads on the first text shown,
+// apart from the page's main script, once for every tile
+const renderMarkdown = ref(null);
+let markdown_loading;
+function loadMarkdown() {
+  markdown_loading ||= import("@/markdown").then(
+    (module) => (renderMarkdown.value = module.renderMarkdown)
+  );
+}
 
 export default {
   props: {
@@ -94,15 +109,15 @@ export default {
     thumb() {
       return thumbURL(this.media, THUMB_RESOLUTION);
     },
-    // a few lines of a text, without its Markdown signs
-    excerpt() {
+    // a text media's content, whole
+    text() {
       const content = this.media.$content;
-      if (typeof content !== "string") return "";
-      return content
-        .replace(/[#>*_`~[\]]/g, "")
-        .replace(/\(https?:[^)]*\)/g, "")
-        .trim()
-        .slice(0, 400);
+      return typeof content === "string" ? content.trim() : "";
+    },
+    text_html() {
+      return this.text && renderMarkdown.value
+        ? renderMarkdown.value(this.text)
+        : "";
     },
     // the caption, or for links the site's name
     legend() {
@@ -132,6 +147,16 @@ export default {
     extension() {
       const name = this.media.$media_filename || "";
       return name.includes(".") ? name.split(".").pop() : "?";
+    },
+  },
+  created() {
+    if (this.type === "text") loadMarkdown();
+  },
+  methods: {
+    // a link in a text opens itself, not the media's window
+    onClick(event) {
+      if (event.target.closest?.("a")) return;
+      this.$emit("open", this.media.$path);
     },
   },
 };
@@ -188,6 +213,7 @@ export default {
   }
 }
 
+// the whole text: scrolls in the tile when longer than it
 .m_tile--text {
   align-self: stretch;
   width: 100%;
@@ -197,11 +223,12 @@ export default {
     var(--spacing-small);
   font-size: var(--font-size-small);
   line-height: 1.35;
-  white-space: pre-line;
   overflow-wrap: anywhere;
-  overflow: hidden;
-  // fades out at the bottom of the tile
-  mask-image: linear-gradient(to bottom, black 70%, transparent);
+  overflow-y: auto;
+
+  &.is--plain {
+    white-space: pre-line;
+  }
 }
 
 .m_tile--placeholder {
