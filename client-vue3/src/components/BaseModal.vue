@@ -7,7 +7,11 @@
     <div class="m_modal--field"><label>…</label><input /></div>
   or, grouped in a black box,
     <div class="m_modal--field"><label>…</label><div class="m_modal--box">…</div></div>
-  (styles in assets/main.scss) -->
+  (styles in assets/main.scss).
+  With a "preview" slot, the panel fills the window: the header, fields
+  and button in a column on the left, easier to read, the preview on the
+  right (v2's typeOfModal "LargeAndNoScroll", for medias). On narrow
+  screens, the preview on top -->
   <dialog
     ref="dialog"
     class="m_modal"
@@ -15,28 +19,38 @@
     @cancel.prevent="$emit('close')"
     @click="onClick"
   >
-    <form class="m_modal--container" @submit.prevent="$emit('submit')">
-      <header class="m_modal--header">
-        <h3 class="text-cap"><slot name="header" /></h3>
-      </header>
-
-      <div class="m_modal--fields">
-        <slot />
+    <form
+      class="m_modal--container"
+      :class="{ 'has--preview': !!$slots.preview }"
+      @submit.prevent="$emit('submit')"
+    >
+      <div v-if="$slots.preview" class="m_modal--preview">
+        <slot name="preview" />
       </div>
 
-      <button
-        v-if="$slots.submit_button"
-        type="submit"
-        class="m_modal--save"
-        :disabled="disabled"
-      >
-        <svg viewBox="0 0 48 48" aria-hidden="true">
-          <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" />
-        </svg>
-        <span class="text-cap font-verysmall">
-          <slot name="submit_button" />
-        </span>
-      </button>
+      <div class="m_modal--sidebar">
+        <header class="m_modal--header">
+          <h3 class="text-cap"><slot name="header" /></h3>
+        </header>
+
+        <div class="m_modal--fields">
+          <slot />
+        </div>
+
+        <button
+          v-if="$slots.submit_button"
+          type="submit"
+          class="m_modal--save"
+          :disabled="disabled"
+        >
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" />
+          </svg>
+          <span class="text-cap font-verysmall">
+            <slot name="submit_button" />
+          </span>
+        </button>
+      </div>
     </form>
 
     <button
@@ -114,6 +128,44 @@ export default {
 
   .is--wide & {
     max-width: 800px;
+  }
+
+  // the preview, and a column on its right
+  &.has--preview {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    grid-template-areas: "sidebar preview";
+    max-width: 1400px;
+    height: calc(100dvh - 2 * var(--spacing-medium));
+    background-color: black;
+
+    @media screen and (max-width: 50rem) {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(0, 45%) minmax(0, 1fr);
+      grid-template-areas: "preview" "sidebar";
+      height: 100dvh;
+    }
+  }
+}
+
+.m_modal--preview {
+  grid-area: preview;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.m_modal--sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 0;
+  background-color: var(--c-noir_light);
+
+  .has--preview & .m_modal--fields {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
   }
 }
 

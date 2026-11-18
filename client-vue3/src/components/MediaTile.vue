@@ -8,6 +8,10 @@
     :class="[`is--${type}`, { 'is--unseen': is_unseen }]"
     :data-path="media.$path"
     :title="summary"
+    role="button"
+    tabindex="0"
+    @click="$emit('open', media.$path)"
+    @keydown.enter.space.prevent="$emit('open', media.$path)"
   >
     <template v-if="type === 'text'">
       <p v-if="excerpt" class="m_tile--text">{{ excerpt }}</p>
@@ -71,6 +75,8 @@ export default {
   props: {
     media: { type: Object, required: true },
   },
+  // open: the media's window, with its path
+  emits: ["open"],
   computed: {
     ...mapState(useUnseenStore, ["isUnseen"]),
     // added from this browser and not seen yet: outlined
@@ -144,7 +150,13 @@ export default {
   border-radius: 4px;
   background-color: white;
   overflow: hidden;
+  cursor: pointer;
   transition: box-shadow 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &:focus-visible {
+    outline: 2px solid var(--c-noir);
+    outline-offset: 2px;
+  }
 
   &:hover {
     z-index: 1;

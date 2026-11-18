@@ -131,7 +131,8 @@ export default {
     path_to_folder: { type: String, required: true },
   },
   // files: File[] chosen or dropped, for the import modal
-  // created: path to the meta of a media created here (text, marker, embed)
+  // created: path to the meta of a media created here (text, marker, embed),
+  // and its type
   emits: ["files", "created"],
   data() {
     return {
@@ -199,9 +200,13 @@ export default {
       this.is_creating = true;
       this.showError("");
       try {
-        const { meta_filename } = await makeMedia();
+        const { meta_filename, uploaded_meta } = await makeMedia();
         this.is_open = false;
-        this.$emit("created", `${this.path_to_folder}/${meta_filename}`);
+        this.$emit(
+          "created",
+          `${this.path_to_folder}/${meta_filename}`,
+          uploaded_meta?.$type
+        );
         return true;
       } catch (err) {
         this.showError(

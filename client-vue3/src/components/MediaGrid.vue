@@ -12,7 +12,7 @@
 
       <ul class="m_grid--list">
         <li v-for="media in day.medias" :key="media.$path">
-          <MediaTile :media="media" />
+          <MediaTile :media="media" @open="$emit('open', $event)" />
         </li>
       </ul>
     </section>
@@ -25,6 +25,8 @@ import MediaTile from "./MediaTile.vue";
 
 export default {
   components: { MediaTile },
+  // open: a media's window, with its path
+  emits: ["open"],
   props: {
     // the cahier's $files
     files: { type: Array, required: true },

@@ -66,9 +66,15 @@
               :style="
                 segment.marker.color && {
                   '--marker-color': segment.marker.color,
+                  // the colours are light (MediaModal.vue)
+                  '--marker-text': 'var(--c-noir)',
                 }
               "
               :data-path="segment.marker.$path"
+              role="button"
+              tabindex="0"
+              @click="$emit('open', segment.marker.$path)"
+              @keydown.enter.space.prevent="$emit('open', segment.marker.$path)"
             >
               <time :datetime="dateOf(segment.marker)">
                 {{ formatTime(dateOf(segment.marker)) }}
@@ -84,7 +90,7 @@
               :style="gridOf(segment.medias.length)"
             >
               <li v-for="media in segment.medias" :key="media.$path">
-                <MediaTile :media="media" />
+                <MediaTile :media="media" @open="$emit('open', $event)" />
               </li>
             </ul>
           </div>
@@ -122,6 +128,8 @@ const LINES_PER_TILE = 4;
 export default {
   components: { MediaTile },
   directives: { seen: vSeen },
+  // open: a media's window, with its path
+  emits: ["open"],
   props: {
     // the cahier, e.g. "cahiers/mon-cahier": its folded days are kept
     path_to_folder: { type: String, required: true },
@@ -418,7 +426,7 @@ export default {
 
   // folded: a black rule, and room for the « Déplier » tab
   &:has(.is--folded) {
-    margin-right: 2.75rem;
+    margin-right: 2rem;
 
     &::before {
       border-left-color: var(--c-noir);
@@ -462,31 +470,30 @@ export default {
   }
 }
 
-// on the right of the pill: always on folded days, on hover on the others
+// on the right of the pill, discreet: "Déplier" on folded days, "Replier"
+// on hover only (not shown on touch screens: found by tapping the date)
 .m_tl--dayLabel--tab {
   position: absolute;
   top: 50%;
   left: 100%;
-  padding: 10px 5px;
-  // the right corners, once turned upside down
-  border-radius: 8px 0 0 8px;
-  background-color: var(--c-noir);
-  color: white;
-  font-size: var(--font-size-small);
+  padding: 6px 3px;
+  color: var(--c-gris);
+  font-size: var(--font-size-verysmall);
   white-space: nowrap;
   writing-mode: vertical-rl;
   transform: translateY(-50%) rotate(180deg);
   opacity: 0;
-  transition: opacity 0.15s;
+  transition:
+    opacity 0.15s,
+    color 0.15s;
 
   .m_tl--dayToggle:hover &,
   .m_tl--dayToggle:focus-visible &,
   .is--folded & {
     opacity: 1;
   }
-
-  @media (hover: none) {
-    opacity: 1;
+  .m_tl--dayToggle:hover & {
+    color: var(--c-noir);
   }
 }
 
@@ -543,7 +550,8 @@ export default {
   padding: var(--spacing-small) 0.35rem;
   border-radius: 4px;
   background-color: var(--marker-color);
-  color: white;
+  color: var(--marker-text, white);
+  cursor: pointer;
   font-size: var(--font-size-small);
   writing-mode: vertical-rl;
   transform: rotate(180deg);

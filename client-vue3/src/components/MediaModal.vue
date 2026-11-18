@@ -1,0 +1,987 @@
+<template>
+  <!-- v2's EditMedia.vue: the media large on the left, its fields on the
+  right, "save and close" under them. The arrows (and the keyboard's) go
+  to the previous or next media on the timeline. Read only for those who
+  can't edit the cahier. -->
+  <BaseModal
+    :disabled="!is_dirty || is_saving"
+    @close="request('close')"
+    @submit="save('close')"
+  >
+    <template #header>
+      <span
+        v-if="author_color"
+        class="m_media--authorDot"
+        :style="{ '--author-color': author_color }"
+        aria-hidden="true"
+      />
+      {{ $t(`type_${type}`) }}
+    </template>
+
+    <template #preview>
+      <div
+        class="m_media--preview"
+        :class="[`is--${type}`, { 'is--zoomed': is_zoomed }]"
+      >
+        <!-- image: a large thumb, the original once zoomed -->
+        <button
+          v-if="type === 'image'"
+          type="button"
+          class="m_media--zoom"
+          :aria-label="$t(is_zoomed ? 'zoom_out' : 'zoom_in')"
+          @click="is_zoomed = !is_zoomed"
+        >
+          <img :src="is_zoomed ? media_url : large_thumb || media_url" alt="" />
+        </button>
+
+        <video
+          v-else-if="type === 'video'"
+          :key="media.$path"
+          :src="media_url"
+          :poster="large_thumb"
+          controls
+          preload="metadata"
+        />
+
+        <div v-else-if="type === 'audio'" class="m_media--audio">
+          <img v-if="large_thumb" :src="large_thumb" alt="" />
+          <audio
+            :key="media.$path"
+            :src="media_url"
+            controls
+            preload="metadata"
+          />
+        </div>
+
+        <!-- text: Markdown, written on the left, as read on the right -->
+        <div v-else-if="type === 'text'" class="m_media--text">
+          <textarea
+            v-if="can_edit"
+            id="media_content"
+            v-model="form.content"
+            class="m_media--textInput"
+            :aria-label="$t('text')"
+            :placeholder="$t('text_placeholder')"
+          />
+          <!-- sanitised HTML (markdown.js) -->
+          <div class="m_media--rendered" v-html="rendered_text" />
+        </div>
+
+        <div v-else-if="type === 'marker'" class="m_media--marker">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="20" r="8.9" />
+            <circle class="_fill" cx="20" cy="20" r="4.7" />
+          </svg>
+          <p v-if="form.caption">{{ form.caption }}</p>
+        </div>
+
+        <div v-else-if="type === 'url'" class="m_media--url">
+          <img v-if="large_thumb" :src="large_thumb" alt="" />
+          <a
+            v-if="safe_url"
+            :href="safe_url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ $t("open_link") }} ↗
+          </a>
+        </div>
+
+        <iframe
+          v-else-if="type === 'pdf'"
+          :src="media_url"
+          :title="media.$media_filename"
+        />
+
+        <div v-else class="m_media--other">
+          <span class="text-cap">{{ extension }}</span>
+          <span>{{ media.$media_filename }}</span>
+        </div>
+
+        <button
+          v-if="has_prev"
+          type="button"
+          class="m_media--nav is--prev"
+          :aria-label="$t('previous_media')"
+          @click="request('prev')"
+        >
+          ←
+        </button>
+        <button
+          v-if="has_next"
+          type="button"
+          class="m_media--nav is--next"
+          :aria-label="$t('next_media')"
+          @click="request('next')"
+        >
+          →
+        </button>
+      </div>
+    </template>
+
+    <p v-if="media.$media_filename" class="m_modal--field m_media--filename">
+      {{ media.$media_filename }}
+    </p>
+
+    <!-- link: its address -->
+    <div v-if="type === 'url'" class="m_modal--field">
+      <label for="media_url">{{ $t("url") }}</label>
+      <input
+        v-if="can_edit"
+        id="media_url"
+        v-model.trim="form.content"
+        type="url"
+      />
+      <p v-else class="m_media--value">{{ form.content }}</p>
+    </div>
+
+    <div v-if="can_edit || form.caption" class="m_modal--field">
+      <label for="media_caption">
+        {{ $t(type === "marker" ? "label" : "caption") }}
+      </label>
+      <textarea
+        v-if="can_edit"
+        id="media_caption"
+        v-model="form.caption"
+        rows="2"
+      />
+      <p v-else class="m_media--value">{{ form.caption }}</p>
+    </div>
+
+    <div class="m_modal--field">
+      <label for="media_date">{{ $t("date_on_timeline") }}</label>
+      <template v-if="can_edit">
+        <input
+          id="media_date"
+          type="datetime-local"
+          class="m_media--date"
+          :value="toInputValue(form.date)"
+          @change="onDateInput"
+        />
+        <div class="m_media--choices">
+          <button
+            v-for="option in date_options"
+            :key="option.key"
+            type="button"
+            class="m_media--choice"
+            :class="{ 'is--active': isSameDate(form.date, option.date) }"
+            @click="form.date = option.date"
+          >
+            {{ $t(option.label) }}
+            <span class="font-verysmall">{{ formatDate(option.date) }}</span>
+          </button>
+        </div>
+      </template>
+      <p v-else class="m_media--value">{{ formatDate(form.date) }}</p>
+    </div>
+
+    <div v-if="can_edit || form.keywords.length" class="m_modal--field">
+      <label for="media_keyword">{{ $t("keywords") }}</label>
+      <ul v-if="form.keywords.length" class="m_media--chips">
+        <li v-for="keyword in form.keywords" :key="keyword">
+          {{ keyword }}
+          <button
+            v-if="can_edit"
+            type="button"
+            :aria-label="$t('remove_item', { item: keyword })"
+            @click="removeKeyword(keyword)"
+          >
+            ×
+          </button>
+        </li>
+      </ul>
+      <template v-if="can_edit">
+        <input
+          id="media_keyword"
+          v-model="new_keyword"
+          type="text"
+          list="media_keywords_list"
+          :placeholder="$t('add_keyword')"
+          @keydown="onKeywordKey"
+          @change="addKeyword"
+        />
+        <datalist id="media_keywords_list">
+          <option v-for="keyword in keyword_suggestions" :key="keyword">
+            {{ keyword }}
+          </option>
+        </datalist>
+      </template>
+    </div>
+
+    <div v-if="can_edit || form.color" class="m_modal--field">
+      <label>{{ $t("color") }}</label>
+      <div class="m_media--colors" role="radiogroup" :aria-label="$t('color')">
+        <button
+          v-for="color in can_edit ? ['', ...COLORS] : [form.color]"
+          :key="color || 'none'"
+          type="button"
+          role="radio"
+          class="m_media--color"
+          :class="{ 'is--active': form.color === color, 'is--none': !color }"
+          :style="color && { '--swatch': color }"
+          :aria-checked="form.color === color"
+          :aria-label="color || $t('no_color')"
+          :disabled="!can_edit"
+          @click="form.color = color"
+        />
+      </div>
+    </div>
+
+    <div class="m_modal--field">
+      <label for="media_author">{{ $t("authors") }}</label>
+      <ul v-if="form.authors.length" class="m_media--chips">
+        <li v-for="path in form.authors" :key="path">
+          <span
+            class="m_media--authorDot"
+            :style="{ '--author-color': authorColor(path) }"
+            aria-hidden="true"
+          />
+          {{ authorName(path) }}
+          <button
+            v-if="can_edit"
+            type="button"
+            :aria-label="$t('remove_item', { item: authorName(path) })"
+            @click="form.authors = form.authors.filter((a) => a !== path)"
+          >
+            ×
+          </button>
+        </li>
+      </ul>
+      <p v-else-if="!can_edit" class="m_media--value">—</p>
+      <select
+        v-if="can_edit && other_authors.length"
+        id="media_author"
+        value=""
+        @change="addAuthor"
+      >
+        <option value="" disabled>{{ $t("add_author") }}</option>
+        <option
+          v-for="author in other_authors"
+          :key="author.$path"
+          :value="author.$path"
+        >
+          {{ author.name || author.$path.split("/").pop() }}
+        </option>
+      </select>
+    </div>
+
+    <div class="m_modal--field m_media--actions">
+      <a
+        v-if="media_url"
+        class="m_media--choice"
+        :href="media_url"
+        :download="media.$media_filename"
+      >
+        {{ $t("download") }}
+      </a>
+      <button
+        v-if="can_edit && !confirm_remove"
+        type="button"
+        class="m_media--choice is--danger"
+        @click="confirm_remove = true"
+      >
+        {{ $t("remove") }}
+      </button>
+    </div>
+
+    <div v-if="confirm_remove" class="m_modal--field m_media--confirm">
+      <p>{{ $t("sure_to_remove_media") }}</p>
+      <button
+        type="button"
+        class="m_media--choice"
+        @click="confirm_remove = false"
+      >
+        {{ $t("cancel") }}
+      </button>
+      <button
+        type="button"
+        class="m_media--choice is--danger is--active"
+        :disabled="is_saving"
+        @click="remove"
+      >
+        {{ $t("remove") }}
+      </button>
+    </div>
+
+    <div v-if="pending_action" class="m_modal--field m_media--confirm">
+      <p>{{ $t("unsaved_changes") }}</p>
+      <button
+        type="button"
+        class="m_media--choice"
+        @click="pending_action = ''"
+      >
+        {{ $t("cancel") }}
+      </button>
+      <button type="button" class="m_media--choice" @click="discard">
+        {{ $t("dont_save") }}
+      </button>
+      <button
+        type="button"
+        class="m_media--choice is--active"
+        :disabled="is_saving"
+        @click="save(pending_action)"
+      >
+        {{ $t("save") }}
+      </button>
+    </div>
+
+    <p v-if="error" class="m_modal--field form-error">{{ error }}</p>
+
+    <template v-if="can_edit" #submit_button>
+      {{ $t("save_and_close") }}
+    </template>
+  </BaseModal>
+</template>
+
+<script>
+import { mapActions } from "pinia";
+import * as api from "@/adc/api";
+import { i18n } from "@/i18n";
+import { renderMarkdown } from "@/markdown";
+import { authorColor } from "@/medias";
+import { useContentStore } from "@/stores/content";
+import { useUnseenStore } from "@/stores/unseen";
+import BaseModal from "./BaseModal.vue";
+
+// a media's colour (repères on the timeline): light, as the authors'
+const COLORS = [
+  "#ff8a80",
+  "#ffc46b",
+  "#f2e36b",
+  "#a5d86a",
+  "#7fdbda",
+  "#8ab6f9",
+  "#c3a6ff",
+  "#ffa8d9",
+];
+// dates closer than this are the same (seconds are not shown)
+const SAME_DATE_MS = 60 * 1000;
+
+export default {
+  components: { BaseModal },
+  props: {
+    media: { type: Object, required: true },
+    // contributors and admins of the cahier
+    can_edit: { type: Boolean, default: false },
+    has_prev: { type: Boolean, default: false },
+    has_next: { type: Boolean, default: false },
+    // every keyword of the cahier, suggested
+    all_keywords: { type: Array, default: () => [] },
+  },
+  emits: ["close", "prev", "next"],
+  data() {
+    return {
+      COLORS,
+      form: this.formFrom(this.media),
+      new_keyword: "",
+      is_zoomed: false,
+      is_saving: false,
+      error: "",
+      confirm_remove: false,
+      // close, prev or next, waiting for unsaved changes
+      pending_action: "",
+      // the instance's authors, to add some
+      authors: [],
+    };
+  },
+  computed: {
+    type() {
+      return this.media.$type || "other";
+    },
+    media_url() {
+      return api.mediaURL(this.media);
+    },
+    large_thumb() {
+      return api.thumbURL(this.media, 1600);
+    },
+    rendered_text() {
+      return renderMarkdown(this.form.content);
+    },
+    // only http(s) links are opened
+    safe_url() {
+      try {
+        const url = new URL(String(this.form.content).trim());
+        return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+      } catch {
+        return "";
+      }
+    },
+    extension() {
+      const name = this.media.$media_filename || "";
+      return name.includes(".") ? name.split(".").pop() : "?";
+    },
+    author_color() {
+      return authorColor(this.form.authors[0]);
+    },
+    // unsaved changes
+    is_dirty() {
+      return (
+        JSON.stringify(this.form) !== JSON.stringify(this.formFrom(this.media))
+      );
+    },
+    date_options() {
+      const options = [
+        {
+          key: "file",
+          label: ["image", "video", "audio"].includes(this.type)
+            ? "captured_on"
+            : "date_of_file",
+          date: this.media.$date_created,
+        },
+        {
+          key: "import",
+          label: "date_of_import",
+          date: this.media.$date_uploaded,
+        },
+        { key: "now", label: "now", date: new Date().toISOString() },
+      ];
+      return options.filter((option) => option.date);
+    },
+    keyword_suggestions() {
+      return this.all_keywords.filter((k) => !this.form.keywords.includes(k));
+    },
+    other_authors() {
+      return this.authors.filter((a) => !this.form.authors.includes(a.$path));
+    },
+  },
+  watch: {
+    // the previous or next media
+    "media.$path"() {
+      this.form = this.formFrom(this.media);
+      this.new_keyword = "";
+      this.is_zoomed = false;
+      this.error = "";
+      this.confirm_remove = false;
+      this.pending_action = "";
+      this.markSeen(this.media.$path);
+    },
+  },
+  created() {
+    this.markSeen(this.media.$path);
+    if (this.can_edit) this.loadAuthors();
+  },
+  mounted() {
+    window.addEventListener("keydown", this.onKeydown);
+  },
+  beforeUnmount() {
+    window.removeEventListener("keydown", this.onKeydown);
+  },
+  methods: {
+    ...mapActions(useContentStore, ["updateFile", "removeFile"]),
+    ...mapActions(useUnseenStore, ["markSeen"]),
+    authorColor,
+
+    // what the fields edit, from the media
+    formFrom(media) {
+      return {
+        caption: media.caption || "",
+        date: media.date_timeline || media.$date_created || "",
+        keywords: Array.isArray(media.keywords)
+          ? media.keywords.map(String)
+          : [],
+        color: media.color || "",
+        authors: Array.isArray(media.$authors) ? [...media.$authors] : [],
+        content: typeof media.$content === "string" ? media.$content : "",
+      };
+    },
+    // only what changed
+    changes() {
+      const before = this.formFrom(this.media);
+      const changes = {};
+      const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+      if (this.form.caption !== before.caption)
+        changes.caption = this.form.caption;
+      if (this.form.date && this.form.date !== before.date)
+        changes.date_timeline = this.form.date;
+      if (!same(this.form.keywords, before.keywords))
+        changes.keywords = this.form.keywords;
+      if (this.form.color !== before.color) changes.color = this.form.color;
+      if (!same(this.form.authors, before.authors))
+        changes.$authors = this.form.authors;
+      if (
+        ["text", "url"].includes(this.type) &&
+        this.form.content !== before.content
+      )
+        changes.$content = this.form.content;
+      return changes;
+    },
+    async save(then) {
+      if (this.is_saving) return;
+      const changes = this.changes();
+      if (Object.keys(changes).length) {
+        this.is_saving = true;
+        this.error = "";
+        try {
+          await this.updateFile(this.media.$path, changes);
+        } catch (err) {
+          this.error = this.$t("error_with_code", {
+            code: err.code || err.message,
+          });
+          return;
+        } finally {
+          this.is_saving = false;
+        }
+      }
+      this.pending_action = "";
+      this.$emit(then);
+    },
+    // close, prev or next: first ask about unsaved changes
+    request(action) {
+      if (this.can_edit && this.is_dirty) this.pending_action = action;
+      else this.$emit(action);
+    },
+    discard() {
+      const action = this.pending_action;
+      this.form = this.formFrom(this.media);
+      this.pending_action = "";
+      this.$emit(action);
+    },
+    async remove() {
+      this.is_saving = true;
+      this.error = "";
+      try {
+        await this.removeFile(this.media.$path);
+        this.$emit("close");
+      } catch (err) {
+        this.error = this.$t("error_with_code", {
+          code: err.code || err.message,
+        });
+      } finally {
+        this.is_saving = false;
+      }
+    },
+
+    /* KEYWORDS AND AUTHORS */
+
+    addKeyword() {
+      const keyword = this.new_keyword.replace(/,/g, "").trim();
+      this.new_keyword = "";
+      if (keyword && !this.form.keywords.includes(keyword))
+        this.form.keywords.push(keyword);
+    },
+    removeKeyword(keyword) {
+      this.form.keywords = this.form.keywords.filter((k) => k !== keyword);
+    },
+    // Enter or a comma adds the keyword, Backspace in the empty field
+    // removes the last one
+    onKeywordKey(event) {
+      if (event.key === "Enter" || event.key === ",") {
+        event.preventDefault();
+        this.addKeyword();
+      } else if (
+        event.key === "Backspace" &&
+        !this.new_keyword &&
+        this.form.keywords.length
+      )
+        this.form.keywords.pop();
+    },
+    async loadAuthors() {
+      try {
+        this.authors = await api.getFolders("authors");
+      } catch {
+        // the field only lists the media's authors
+      }
+    },
+    authorName(path) {
+      const author = this.authors.find((a) => a.$path === path);
+      return author?.name || path.split("/").pop();
+    },
+    addAuthor(event) {
+      const path = event.target.value;
+      if (path && !this.form.authors.includes(path))
+        this.form.authors.push(path);
+      event.target.value = "";
+    },
+
+    /* DATE */
+
+    isSameDate(a, b) {
+      return !!a && !!b && Math.abs(new Date(a) - new Date(b)) < SAME_DATE_MS;
+    },
+    onDateInput(event) {
+      const date = new Date(event.target.value);
+      if (event.target.value && !isNaN(date))
+        this.form.date = date.toISOString();
+    },
+    formatDate(date) {
+      if (!date) return "";
+      return new Date(date).toLocaleString(i18n.global.locale.value, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      });
+    },
+    // datetime-local wants the local time, without zone
+    toInputValue(date) {
+      const d = new Date(date);
+      if (!date || isNaN(d)) return "";
+      return new Date(d - d.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16);
+    },
+
+    // ← and →, out of the fields
+    onKeydown(event) {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey) return;
+      const target = event.target;
+      if (
+        target.closest?.("input, textarea, select, [contenteditable]") ||
+        this.pending_action ||
+        this.confirm_remove
+      )
+        return;
+      if (event.key === "ArrowLeft" && this.has_prev) this.request("prev");
+      else if (event.key === "ArrowRight" && this.has_next)
+        this.request("next");
+      else return;
+      event.preventDefault();
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.m_media--preview {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  > video,
+  > iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: black;
+  }
+  > iframe {
+    background-color: white;
+  }
+
+  &.is--zoomed {
+    overflow: auto;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}
+
+// the whole image, or at its own size once zoomed
+.m_media--zoom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
+  cursor: zoom-in;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .is--zoomed & {
+    width: auto;
+    height: auto;
+    cursor: zoom-out;
+
+    img {
+      max-width: none;
+      max-height: none;
+    }
+  }
+}
+
+.m_media--audio,
+.m_media--url,
+.m_media--marker,
+.m_media--other {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-medium);
+  width: 100%;
+  height: 100%;
+  padding: var(--spacing-medium);
+  color: white;
+
+  img {
+    max-width: 100%;
+    min-height: 0;
+    object-fit: contain;
+  }
+}
+
+.m_media--audio {
+  background-color: white;
+
+  audio {
+    width: 100%;
+  }
+}
+
+.m_media--url a {
+  color: white;
+  text-underline-offset: 0.15em;
+}
+
+.m_media--marker {
+  svg {
+    width: 6rem;
+    height: 6rem;
+    fill: none;
+    stroke: white;
+  }
+  ._fill {
+    fill: white;
+    stroke: none;
+  }
+  p {
+    margin: 0;
+    font-size: var(--font-size-large);
+    text-align: center;
+  }
+}
+
+.m_media--other {
+  background-color: var(--c-gris_tresclair);
+  color: var(--c-noir);
+}
+
+// written on the left, as read on the right
+.m_media--text {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  gap: 1px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--c-gris_clair);
+}
+
+.m_media--textInput {
+  height: 100%;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+  padding: var(--spacing-medium);
+  line-height: 1.5;
+  resize: none;
+}
+
+.m_media--rendered {
+  min-height: 0;
+  padding: var(--spacing-medium);
+  background-color: white;
+  color: black;
+  line-height: 1.5;
+  overflow-y: auto;
+
+  > :deep(:first-child) {
+    margin-top: 0;
+  }
+  :deep(h1),
+  :deep(h2),
+  :deep(h3) {
+    margin: var(--spacing-medium) 0 var(--spacing-small);
+    font-weight: normal;
+  }
+  :deep(h1) {
+    font-size: 1.5em;
+  }
+  :deep(h2) {
+    font-size: 1.25em;
+  }
+  :deep(p),
+  :deep(ul),
+  :deep(ol),
+  :deep(blockquote) {
+    margin: 0 0 var(--spacing-small);
+  }
+  :deep(blockquote) {
+    padding-left: var(--spacing-small);
+    border-left: 2px solid var(--c-gris_clair);
+    color: var(--c-gris_fonce);
+  }
+  :deep(a) {
+    color: inherit;
+    text-underline-offset: 0.15em;
+  }
+  :deep(img) {
+    max-width: 100%;
+  }
+}
+
+// ← and → over the edges of the preview
+.m_media--nav {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border-radius: 50%;
+  background-color: rgb(0 0 0 / 55%);
+  color: white;
+  font-size: 1.25rem;
+  transform: translateY(-50%);
+
+  &:hover {
+    background-color: rgb(0 0 0 / 80%);
+  }
+  &.is--prev {
+    left: var(--spacing-small);
+  }
+  &.is--next {
+    right: var(--spacing-small);
+  }
+}
+
+.m_media--filename {
+  margin-top: 0;
+  color: var(--c-gris_clair);
+  font-size: var(--font-size-small);
+  overflow-wrap: anywhere;
+}
+
+.m_media--value {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.m_media--date {
+  color-scheme: dark;
+  background-color: transparent;
+  color: white;
+}
+
+.m_media--choices,
+.m_media--actions,
+.m_media--confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-verysmall);
+}
+.m_media--choices {
+  margin-top: var(--spacing-verysmall);
+}
+.m_media--confirm p {
+  flex: 1 0 100%;
+  margin: 0;
+}
+
+// a pill, as in the import window
+.m_media--choice {
+  display: inline-flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--c-gris_fonce);
+  border-radius: var(--radius-button);
+  font-size: var(--font-size-small);
+  line-height: 1.25;
+  color: white;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--c-gris_clair);
+  }
+  // dark text: white on this green is too faint
+  &.is--active {
+    border-color: var(--c-vert_vif);
+    background-color: var(--c-vert_vif);
+    color: var(--c-noir);
+  }
+  &.is--danger {
+    border-color: var(--c-rouge);
+  }
+  &.is--danger.is--active {
+    background-color: var(--c-rouge);
+    color: white;
+  }
+  &:not(.is--active) .font-verysmall {
+    opacity: 0.8;
+  }
+}
+
+.m_media--chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-verysmall);
+  margin: 0 0 var(--spacing-verysmall);
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.25rem 0.15rem 0.6rem;
+    border-radius: 999px;
+    background-color: var(--c-noir);
+    font-size: var(--font-size-small);
+  }
+  button {
+    padding: 0 0.35rem;
+    border-radius: 50%;
+    line-height: 1.2;
+    color: var(--c-gris_clair);
+
+    &:hover {
+      color: white;
+    }
+  }
+}
+
+.m_media--authorDot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--author-color);
+  box-shadow: 0 0 0 1.5px white;
+  vertical-align: 1px;
+}
+
+.m_media--colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.m_media--color {
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background-color: var(--swatch);
+
+  &.is--none {
+    background:
+      linear-gradient(
+        to top right,
+        transparent calc(50% - 1px),
+        var(--c-rouge) calc(50% - 1px) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      ),
+      white;
+  }
+  &.is--active {
+    border-color: white;
+    box-shadow: 0 0 0 2px var(--c-vert_vif);
+  }
+  &:disabled {
+    opacity: 1;
+    cursor: default;
+  }
+}
+</style>

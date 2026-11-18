@@ -50,9 +50,9 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Repères** : ils découpent la journée en parties. Chacun est une étiquette verticale avec son heure et sa légende, dans sa couleur s'il en a une.
 - **Jours vides** : une vague grise, un demi-cercle par jour vide. Au-delà de 7 jours, la vague s'arrête à 7 et l'écart est écrit à côté : « 2 semaines plus tard… », « 3 mois plus tard… », « 2 ans plus tard… ». Au survol, le nombre de jours écoulés jusqu'au jour suivant (« 11 jours »).
 - **Replier un jour** : un clic sur la date du jour cache ses médias.
-  - Le jour replié devient une étiquette entourée de noir, sur un filet noir, avec un onglet « Déplier ».
+  - Le jour replié devient une étiquette entourée de noir, sur un filet noir, avec la mention « Déplier » en petit et en gris.
   - Un nouveau clic le déplie.
-  - Sur un jour déplié, l'onglet « Replier » apparaît au survol.
+  - Sur un jour déplié, « Replier » apparaît au survol (pas sur écran tactile : il suffit de toucher la date).
   - Les jours repliés sont gardés dans le navigateur, pour chaque cahier : ils restent repliés à la visite suivante.
 
 ### Grille
@@ -72,11 +72,36 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **En haut à gauche** : une pastille de la couleur de l'auteur, puis la légende s'il y en a une (pour un lien, le nom du site). La couleur vient du nom de l'auteur : chaque auteur a toujours la même.
 - **Au survol** : une ombre, et une bulle avec l'heure, le type, l'auteur et la légende.
 
+## Fenêtre d'un média
+
+- S'ouvre en cliquant sur un média, dans la timeline ou la grille, ou sur un repère de la timeline. Au clavier : Tab jusqu'au média, puis Entrée.
+- **À gauche, le média en grand** :
+  - **image** : entière ; un clic l'affiche à sa taille réelle (on peut alors la faire défiler), un autre clic la réduit ;
+  - **vidéo, son** : lecteur, avec la forme d'onde pour un son ;
+  - **texte** : écrit en Markdown à gauche, rendu à droite (titres, gras, italique, listes, liens) ;
+  - **lien** : l'image d'aperçu de la page, et « Ouvrir le lien » dans un nouvel onglet ;
+  - **PDF** : affiché dans la fenêtre ;
+  - **repère** : son rond et son étiquette ;
+  - **autre fichier** : son nom et son extension.
+- **Flèches ← et →** (sur les bords du média, ou au clavier) : média précédent ou suivant, dans l'ordre de la timeline.
+- **À droite, ses informations** (modifiables par les contributeurs du cahier, en lecture seule pour les autres) :
+  - nom du fichier ;
+  - adresse, pour un lien ;
+  - légende (« Étiquette » pour un repère) ;
+  - date sur la timeline, avec des raccourcis : « Capturé/créé le » (ou « Date du fichier »), « Date de l'import », « Maintenant » ;
+  - mots-clés, avec des suggestions tirées des mots-clés déjà utilisés dans le cahier (Entrée ou virgule pour ajouter) ;
+  - couleur, parmi 8 couleurs claires (la couleur d'un repère colore son étiquette dans la timeline) ;
+  - auteurs, avec leur pastille de couleur.
+- **Télécharger** le fichier, **Supprimer** le média (avec une confirmation dans la fenêtre).
+- **Enregistrer et fermer** : enregistre les modifications. Si on ferme ou change de média sans enregistrer, la fenêtre propose d'enregistrer, de ne pas enregistrer ou d'annuler.
+- Ouvrir un média le compte comme vu (il perd son contour vert).
+- Un texte créé avec le bouton + ouvre directement sa fenêtre, pour l'écrire.
+
 ## Ajouter des médias : le bouton +
 
 - Un bouton rond **+** en bas à droite. Il n'apparaît que pour les contributeurs du cahier.
 - Il déplie 7 options, dont le nom s'affiche au survol (toujours visible sur écran tactile) :
-  - **Texte** : crée un texte vide.
+  - **Texte** : crée un texte vide et ouvre sa fenêtre pour l'écrire.
   - **Repère** : crée un repère daté de maintenant.
   - **Lien** : demande une adresse web. Le lien est ajouté au cahier avec l'image d'aperçu de la page.
   - **Image**, **Vidéo**, **Audio**, **Fichier** : ouvrent le sélecteur de fichiers, avec plusieurs fichiers possibles. Sur téléphone, le sélecteur propose aussi l'appareil photo ou le micro.
@@ -113,8 +138,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 
 ## Pas encore fait
 
-- Fenêtre d'édition d'un média : légende, mots-clés, couleur, auteurs, date, suppression. Cliquer sur une vignette ne fait encore rien.
-- Après la création d'un texte, ouvrir directement son éditeur.
+- Fenêtre d'un média : changer l'adresse d'un lien ne met pas encore son aperçu à jour.
 - Modifier ou supprimer un cahier. Description, début et fin à la création.
 - Gérer les contributeurs d'un cahier.
 - Créer un compte. Saisir le mot de passe général de l'instance.

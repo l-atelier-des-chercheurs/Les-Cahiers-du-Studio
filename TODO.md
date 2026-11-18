@@ -94,19 +94,22 @@ Reprendre le bouton + de la v2 (`ImportMedias.vue`) : un bouton rond qui déplie
 - [x] Mise à jour en temps réel par socket (ajout, modification, suppression), sans recharger la page
 - [x] Faire défiler jusqu'à un média qu'on vient d'ajouter (Texte, Repère, Lien, et fichiers importés à la fermeture de la fenêtre d'import)
 - [x] Médias ajoutés depuis ce navigateur entourés de vert jusqu'à ce qu'ils soient vus (survol, toucher, ou 2 s à l'écran)
-- [ ] Cliquer sur un média ouvre la fenêtre d'édition
+- [x] Cliquer sur un média (ou un repère) ouvre sa fenêtre
 
 ## 4. Fenêtre d'édition d'un média
 
-Reprendre `EditMedia.vue`, réduit à :
+Reprendre `EditMedia.vue`, réduit à (`MediaModal.vue`) :
 
-- [ ] Aperçu du média : image zoomable, lecteur vidéo ou audio, éditeur Markdown pour les textes, URL pour les embeds
-- [ ] `date_timeline` : date et heure
-- [ ] `caption`
-- [ ] `keywords`
-- [ ] `color`
-- [ ] Auteurs
-- [ ] Supprimer le média (avec confirmation intégrée à la page)
+- [x] Aperçu du média : image zoomable, lecteur vidéo ou audio, éditeur Markdown pour les textes (avec rendu, HTML nettoyé), URL pour les embeds, PDF intégré
+- [x] `date_timeline` : date et heure, avec raccourcis (capture, import, maintenant)
+- [x] `caption` (« Étiquette » pour un repère)
+- [x] `keywords`, avec suggestions tirées du cahier
+- [x] `color` (8 couleurs claires ; colore les repères de la timeline)
+- [x] Auteurs
+- [x] Supprimer le média (avec confirmation intégrée à la page)
+- [x] Télécharger, médias précédent / suivant (flèches et clavier), avertissement si modifications non enregistrées
+- [x] Un texte créé avec le + ouvre directement sa fenêtre
+- [ ] Changer l'URL d'un lien ne régénère pas encore son aperçu (route `_regenerateThumbs` d'adc-core)
 - [ ] À voir plus tard : `public`, options de tuile (`action_on_tile_click`, lien externe), découpe et optimisation vidéo
 
 ## 5. Mise en ligne

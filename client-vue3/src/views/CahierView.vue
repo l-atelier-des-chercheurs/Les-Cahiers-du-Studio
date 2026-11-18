@@ -54,8 +54,14 @@
         :start="cahier.start"
         :end="cahier.end"
         :scroll_to="scroll_to"
+        @open="open_media = $event"
       />
-      <MediaGrid v-else :files="cahier.$files" :scroll_to="scroll_to" />
+      <MediaGrid
+        v-else
+        :files="cahier.$files"
+        :scroll_to="scroll_to"
+        @open="open_media = $event"
+      />
     </div>
 
     <AddMedias
@@ -63,6 +69,18 @@
       :path_to_folder="path_to_folder"
       @files="selected_files = $event"
       @created="onMediaCreated"
+    />
+
+    <MediaModal
+      v-if="open_media_meta"
+      :media="open_media_meta"
+      :can_edit="can_contribute"
+      :has_prev="open_media_index > 0"
+      :has_next="open_media_index < sorted_medias.length - 1"
+      :all_keywords="all_keywords"
+      @close="open_media = ''"
+      @prev="openSibling(-1)"
+      @next="openSibling(1)"
     />
 
     <UploadFilesModal
@@ -82,12 +100,19 @@ import { canContributeToFolder } from "@/adc/rights";
 import { sortByDate } from "@/medias";
 import { useUnseenStore } from "@/stores/unseen";
 import AddMedias from "@/components/AddMedias.vue";
+import MediaModal from "@/components/MediaModal.vue";
 import MediaGrid from "@/components/MediaGrid.vue";
 import MediaTimeline from "@/components/MediaTimeline.vue";
 import UploadFilesModal from "@/components/UploadFilesModal.vue";
 
 export default {
-  components: { AddMedias, MediaGrid, MediaTimeline, UploadFilesModal },
+  components: {
+    AddMedias,
+    MediaGrid,
+    MediaModal,
+    MediaTimeline,
+    UploadFilesModal,
+  },
   props: {
     // from the route: /:slug
     slug: { type: String, required: true },
@@ -99,6 +124,8 @@ export default {
       selected_files: [],
       // a media just added, scrolled to once it shows up
       scroll_to: "",
+      // the media whose window is open
+      open_media: "",
     };
   },
   computed: {
@@ -110,6 +137,25 @@ export default {
     // kept up to date by the cahier's room (stores/content.js)
     cahier() {
       return this.getFolder(this.path_to_folder);
+    },
+    // in timeline order, for the window's ← and →
+    sorted_medias() {
+      return sortByDate(this.cahier?.$files || []);
+    },
+    open_media_index() {
+      return this.sorted_medias.findIndex((m) => m.$path === this.open_media);
+    },
+    // undefined until the media shows up (a text just created), or once it
+    // is removed: the window closes
+    open_media_meta() {
+      return this.sorted_medias[this.open_media_index];
+    },
+    all_keywords() {
+      const keywords = new Set();
+      for (const media of this.cahier?.$files || [])
+        if (Array.isArray(media.keywords))
+          media.keywords.forEach((k) => keywords.add(String(k)));
+      return [...keywords].sort((a, b) => a.localeCompare(b));
     },
     can_contribute() {
       return canContributeToFolder(this.cahier, this.token_path);
@@ -148,11 +194,19 @@ export default {
   methods: {
     ...mapActions(useContentStore, ["openFolder", "closeFolder"]),
     ...mapActions(useUnseenStore, { loadUnseen: "load", addUnseen: "add" }),
-    // a text, repère or link, from the + button
-    // TODO open the media's edit modal for a new text
-    onMediaCreated(path_to_meta) {
+    // a text, repère or link, from the + button. A text opens, to be
+    // written (its window shows once the server announces it)
+    onMediaCreated(path_to_meta, type) {
       this.addUnseen(path_to_meta);
       this.scrollTo(path_to_meta);
+      if (type === "text") this.open_media = path_to_meta;
+    },
+    openSibling(offset) {
+      const media = this.sorted_medias[this.open_media_index + offset];
+      if (media) {
+        this.open_media = media.$path;
+        this.scrollTo(media.$path);
+      }
     },
     // the files sent (UploadFilesModal marks them unseen): scroll to the
     // earliest on the timeline
