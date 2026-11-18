@@ -4,7 +4,13 @@
   from top to bottom, on staff lines. Repères split a day into parts.
   Empty days are a grey wave, one half circle a day. Kept up to date by
   the cahier's room. -->
-  <div ref="scroller" class="m_tl" :style="sizes" @wheel="onWheel">
+  <div
+    ref="scroller"
+    class="m_tl"
+    :class="{ 'is--resizing': !!resizing }"
+    :style="sizes"
+    @wheel="onWheel"
+  >
     <p v-if="!columns.length" class="m_tl--empty">{{ $t("no_medias") }}</p>
 
     <template v-for="column in columns" :key="column.key">
@@ -87,10 +93,27 @@
             <ul
               v-if="segment.medias.length"
               class="m_tl--medias"
-              :style="gridOf(segment.medias.length)"
+              :style="gridOf(segment.medias)"
             >
-              <li v-for="media in segment.medias" :key="media.$path">
+              <li
+                v-for="media in segment.medias"
+                :key="media.$path"
+                class="m_tl--item"
+                :class="{ 'is--resizing': resizing?.path === media.$path }"
+                :style="spanOf(media)"
+              >
                 <MediaTile :media="media" @open="$emit('open', $event)" />
+                <!-- v2's handles: right, bottom, corner -->
+                <template v-if="can_edit">
+                  <span
+                    v-for="edge in ['right', 'bottom', 'corner']"
+                    :key="edge"
+                    class="m_tl--handle"
+                    :class="`is--${edge}`"
+                    aria-hidden="true"
+                    @pointerdown.stop.prevent="startResize($event, media, edge)"
+                  />
+                </template>
               </li>
             </ul>
           </div>
@@ -109,8 +132,9 @@ import {
   sortByDate,
   timeOf,
 } from "@/medias";
-import { mapState } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { readJSON, writeJSON } from "@/adc/storage";
+import { useContentStore } from "@/stores/content";
 import { vSeen } from "@/seen";
 import { useUnseenStore } from "@/stores/unseen";
 import MediaTile from "./MediaTile.vue";
@@ -118,12 +142,15 @@ import MediaTile from "./MediaTile.vue";
 // empty days in a row: one half circle each, up to this many, then the
 // count is written next to them
 const MAX_WAVES = 7;
-// square tiles and the space between them, in rem. The staff lines behind
-// the medias fall on the tiles' edges: 4 lines per tile, 40px apart as in v2
-const TILE_W = 9.75;
-const TILE_H = 9.75;
+// The medias sit on a grid of squares, one per staff line step (40px, as in
+// v2): a square and the space after it, in rem. A media takes w × h
+// squares (its "w" and "h", 4 × 4 by default), resized with its handles.
+const UNIT = 2.25;
 const GAP = 0.25;
-const LINES_PER_TILE = 4;
+const STEP = UNIT + GAP;
+const DEFAULT_SIZE = 4;
+const MIN_SIZE = 2;
+const MAX_W = 16;
 
 export default {
   components: { MediaTile },
@@ -141,6 +168,8 @@ export default {
     end: { type: String, default: "" },
     // a media just added: scrolled to once it shows up
     scroll_to: { type: String, default: "" },
+    // contributors: medias can be resized
+    can_edit: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -148,8 +177,12 @@ export default {
       // days shown as their label only: { "2026-11-18": true }, kept in
       // this browser for each cahier
       folded_days: this.readFoldedDays(),
-      // how many tiles fit in a column, from the timeline's height
+      // how many squares fit in a column, from the timeline's height
       rows: 1,
+      // the media being resized: { path, w, h }
+      resizing: null,
+      // sizes sent, until the server's fileUpdated event: { path: { w, h } }
+      pending_sizes: {},
       // the height of a day's parts, in rem
       segment_height: 0,
     };
@@ -158,10 +191,9 @@ export default {
     ...mapState(useUnseenStore, ["isUnseen"]),
     sizes() {
       return {
-        "--tile-w": `${TILE_W}rem`,
-        "--tile-h": `${TILE_H}rem`,
+        "--unit": `${UNIT}rem`,
         "--gap": `${GAP}rem`,
-        "--staff-step": `${(TILE_H + GAP) / LINES_PER_TILE}rem`,
+        "--staff-step": `${STEP}rem`,
       };
     },
     // medias by day: { "2026-11-18": [media…] }
@@ -236,6 +268,12 @@ export default {
       this.folded_days = this.readFoldedDays();
     },
     files() {
+      // sizes sent and now saved
+      for (const media of this.files) {
+        const pending = this.pending_sizes[media.$path];
+        if (pending && media.w === pending.w && media.h === pending.h)
+          delete this.pending_sizes[media.$path];
+      }
       this.scrollToMedia();
       // the first day may only just have appeared
       this.$nextTick(this.measureRows);
@@ -254,6 +292,7 @@ export default {
     this.resize_observer.disconnect();
   },
   methods: {
+    ...mapActions(useContentStore, ["updateFile"]),
     dateOf,
     formatTime,
     // a date field ("2026-11-17") at local midnight
@@ -273,22 +312,91 @@ export default {
       if (!segments[0].medias.length) segments.shift();
       return segments;
     },
-    // a part's tiles fill a column from top to bottom, then the next one.
-    // Rows and columns are counted here, not left to the grid (auto-fill
-    // rows, auto-flow column): its width would be reckoned before its
-    // height, as if every tile sat on one row, leaving a wide empty space
-    // Centered in the day's height, but on the staff lines: the space
-    // above is rounded down to a whole number of lines
-    gridOf(count) {
-      const rows = Math.min(this.rows, count);
-      const step = (TILE_H + GAP) / LINES_PER_TILE;
-      const block = rows * (TILE_H + GAP) - GAP;
+    // A part's medias fill a column from top to bottom, then the next one,
+    // filling the gaps (dense). The rows are counted here, not left to the
+    // grid (auto-fill): its width would be reckoned before its height,
+    // leaving a wide empty space. Centered in the day's height, but on the
+    // staff lines: the space above is a whole number of lines
+    gridOf(medias) {
+      const needed = medias.reduce((sum, media) => sum + this.spanH(media), 0);
+      const rows = Math.max(1, Math.min(this.rows, needed));
+      const block = rows * STEP - GAP;
       const centered = Math.max(0, (this.segment_height - block) / 2);
       return {
-        gridTemplateRows: `repeat(${rows}, var(--tile-h))`,
-        gridTemplateColumns: `repeat(${Math.ceil(count / rows)}, var(--tile-w))`,
-        paddingTop: `${Math.floor(centered / step) * step}rem`,
+        gridTemplateRows: `repeat(${rows}, var(--unit))`,
+        paddingTop: `${Math.floor(centered / STEP) * STEP}rem`,
       };
+    },
+    // w × h squares: while resized, then as sent, then as saved
+    sizeOf(media) {
+      if (this.resizing?.path === media.$path) return this.resizing;
+      const pending = this.pending_sizes[media.$path];
+      if (pending) return pending;
+      const valid = (n) =>
+        Number.isInteger(n) && n >= MIN_SIZE ? n : DEFAULT_SIZE;
+      return { w: valid(media.w), h: valid(media.h) };
+    },
+    // never taller than the timeline
+    spanH(media) {
+      return Math.min(this.sizeOf(media).h, this.rows);
+    },
+    spanOf(media) {
+      return {
+        gridColumn: `span ${this.sizeOf(media).w}`,
+        gridRow: `span ${this.spanH(media)}`,
+      };
+    },
+    // dragging a handle: the size follows by whole squares, and is saved
+    // when let go
+    startResize(event, media, edge) {
+      const handle = event.currentTarget;
+      handle.setPointerCapture(event.pointerId);
+      const rem = parseFloat(
+        getComputedStyle(document.documentElement).fontSize
+      );
+      const step = STEP * rem;
+      const start = {
+        x: event.clientX,
+        y: event.clientY,
+        ...this.sizeOf(media),
+      };
+      start.h = Math.min(start.h, this.rows);
+      this.resizing = { path: media.$path, w: start.w, h: start.h };
+      const clamp = (n, max) => Math.max(MIN_SIZE, Math.min(max, n));
+
+      const move = (e) => {
+        if (edge !== "bottom")
+          this.resizing.w = clamp(
+            start.w + Math.round((e.clientX - start.x) / step),
+            MAX_W
+          );
+        if (edge !== "right")
+          this.resizing.h = clamp(
+            start.h + Math.round((e.clientY - start.y) / step),
+            Math.max(MIN_SIZE, this.rows)
+          );
+      };
+      const end = () => {
+        handle.removeEventListener("pointermove", move);
+        handle.removeEventListener("pointerup", end);
+        handle.removeEventListener("pointercancel", end);
+        const { w, h } = this.resizing;
+        this.resizing = null;
+        if (w === start.w && h === start.h) return;
+        this.saveSize(media.$path, w, h);
+      };
+      handle.addEventListener("pointermove", move);
+      handle.addEventListener("pointerup", end);
+      handle.addEventListener("pointercancel", end);
+    },
+    async saveSize(path, w, h) {
+      this.pending_sizes[path] = { w, h };
+      try {
+        await this.updateFile(path, { w, h });
+      } catch (err) {
+        console.error(err);
+        delete this.pending_sizes[path];
+      }
     },
     // the height of a day's parts, the same for every day
     measureRows() {
@@ -298,7 +406,7 @@ export default {
         getComputedStyle(document.documentElement).fontSize
       );
       const rows = Math.floor(
-        (segment.clientHeight + GAP * rem) / ((TILE_H + GAP) * rem)
+        (segment.clientHeight + GAP * rem) / (STEP * rem)
       );
       this.rows = Math.max(1, rows);
       this.segment_height = segment.clientHeight / rem;
@@ -579,11 +687,12 @@ export default {
   }
 }
 
-// filled from top to bottom, then left to right
+// filled from top to bottom, then left to right, on squares
 .m_tl--medias {
-  // rows and columns: gridOf()
+  // rows: gridOf(); each media's span: spanOf()
   display: grid;
-  grid-auto-flow: column;
+  grid-auto-flow: column dense;
+  grid-auto-columns: var(--unit);
   align-content: start;
   gap: var(--gap);
   height: 100%;
@@ -591,15 +700,73 @@ export default {
   padding: 0 var(--gap);
   list-style: none;
 
-  > li {
-    display: flex;
-    min-height: 0;
+  // while resizing, the squares show: vertical lines too
+  .is--resizing & {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--staff-color) 0 1px,
+      transparent 1px var(--staff-step)
+    );
+    background-origin: content-box;
+    background-clip: content-box;
+  }
+}
 
-    // the tile fills its cell
-    > * {
-      flex: 1 1 auto;
-      --tile-ratio: auto;
-    }
+.m_tl--item {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+
+  // the tile fills its squares
+  > :first-child {
+    flex: 1 1 auto;
+    --tile-ratio: auto;
+  }
+}
+
+// v2's handles, on hover: the right edge, the bottom edge, the corner
+.m_tl--handle {
+  position: absolute;
+  z-index: 2;
+  border: 2px solid white;
+  border-radius: 999px;
+  background-color: var(--c-noir);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  // hidden handles let the pointer through: no resizing on touch screens
+  opacity: 0;
+  pointer-events: none;
+  touch-action: none;
+  transition: opacity 0.15s;
+
+  .m_tl--item:hover &,
+  .m_tl--item.is--resizing & {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &.is--right {
+    top: 50%;
+    right: -5px;
+    width: 10px;
+    height: 2.5rem;
+    transform: translateY(-50%);
+    cursor: ew-resize;
+  }
+  &.is--bottom {
+    bottom: -5px;
+    left: 50%;
+    width: 2.5rem;
+    height: 10px;
+    transform: translateX(-50%);
+    cursor: ns-resize;
+  }
+  &.is--corner {
+    right: -6px;
+    bottom: -6px;
+    width: 14px;
+    height: 14px;
+    cursor: nwse-resize;
   }
 }
 

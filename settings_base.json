@@ -151,16 +151,16 @@
             "color": {
               "type": "string"
             },
+            "w": {
+              "type": "number"
+            },
+            "h": {
+              "type": "number"
+            },
             "tableau_x": {
               "type": "number"
             },
             "tableau_y": {
-              "type": "number"
-            },
-            "tableau_w": {
-              "type": "number"
-            },
-            "tableau_h": {
               "type": "number"
             }
           }

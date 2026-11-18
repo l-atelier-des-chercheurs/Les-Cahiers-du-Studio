@@ -58,6 +58,7 @@
         :start="cahier.start"
         :end="cahier.end"
         :scroll_to="scroll_to"
+        :can_edit="can_contribute"
         @open="open_media = $event"
       />
       <MediaGrid

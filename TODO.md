@@ -43,7 +43,8 @@ Les VPS installés maintenant ne doivent pas demander de migration v3 → v3'.
 
 - [x] Cahiers : `title`, `description`, `start` et `end` (type `date`, facultatifs). La visibilité passe par le `$status` d'adc-core (`public` ou `private`), donc aucun champ à ajouter.
 - [x] Médias : `date_timeline` (`datetime`), `caption`, `keywords`, `color`. Les auteurs passent par `$authors`, géré par adc-core.
-- [x] Vue Tableau : champs réservés `tableau_x`, `tableau_y`, `tableau_w`, `tableau_h` (type `number`)
+- [x] Taille d'un média : `w` et `h` (type `number`), en cases de la grille, comme en v2. Redimensionnée dans la timeline, partagée par les vues à venir (Tableau comprise)
+- [x] Vue Tableau : champs réservés `tableau_x`, `tableau_y` (type `number`) pour la position
 - [x] Médias sans fichier : rien à ajouter au schéma (voir Décisions)
 - [ ] Le client doit toujours envoyer `$status` explicitement. adc-core met `private` par défaut, aussi bien sur les dossiers que sur les fichiers.
 - [ ] Décider des autres champs v2 à reprendre ou à abandonner : `action_on_tile_click`, `url_to_open_in_new_tab`, `collapsed`
