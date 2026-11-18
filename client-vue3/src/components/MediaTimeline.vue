@@ -63,31 +63,39 @@
             v-for="(segment, index) in column.segments"
             :key="segment.marker?.$path || index"
             class="m_tl--segment"
+            :class="{ 'has--marker': !!segment.marker }"
           >
-            <div
-              v-if="segment.marker"
-              v-seen="segment.marker.$path"
-              class="m_tl--marker"
-              :class="{ 'is--unseen': isUnseen(segment.marker.$path) }"
-              :style="
-                segment.marker.color && {
-                  '--marker-color': segment.marker.color,
-                  // the colours are light (MediaModal.vue)
-                  '--marker-text': 'var(--c-noir)',
-                }
-              "
-              :data-path="segment.marker.$path"
-              role="button"
-              tabindex="0"
-              @click="$emit('open', segment.marker.$path)"
-              @keydown.enter.space.prevent="$emit('open', segment.marker.$path)"
-            >
-              <time :datetime="dateOf(segment.marker)">
-                {{ formatTime(dateOf(segment.marker)) }}
-              </time>
-              <span v-if="segment.marker.caption">
-                {{ segment.marker.caption }}
-              </span>
+            <!-- v2's repère: a black label, tilted, at mid-height, over the
+            start of its part of the day: who added it (a dot in their
+            colour), the time, its label -->
+            <div v-if="segment.marker" class="m_tl--marker">
+              <div
+                v-seen="segment.marker.$path"
+                class="m_tl--markerLabel"
+                :class="{ 'is--unseen': isUnseen(segment.marker.$path) }"
+                :data-path="segment.marker.$path"
+                role="button"
+                tabindex="0"
+                @click="$emit('open', segment.marker.$path)"
+                @keydown.enter.space.prevent="
+                  $emit('open', segment.marker.$path)
+                "
+              >
+                <span class="m_tl--markerTime">
+                  <span
+                    v-if="markerColor(segment.marker)"
+                    class="m_tl--markerDot"
+                    :style="{ '--author-color': markerColor(segment.marker) }"
+                    aria-hidden="true"
+                  />
+                  <time :datetime="dateOf(segment.marker)">
+                    {{ formatTime(dateOf(segment.marker)) }}
+                  </time>
+                </span>
+                <span v-if="segment.marker.caption" class="m_tl--markerCaption">
+                  {{ segment.marker.caption }}
+                </span>
+              </div>
             </div>
 
             <!-- the medias glide to their new place when the grid changes
@@ -132,6 +140,7 @@
 
 <script>
 import {
+  authorColor,
   dateOf,
   dayKey,
   formatDay,
@@ -454,6 +463,11 @@ export default {
         return this.$t("months_later", Math.max(1, Math.round(days / 30.44)));
       return this.$t("years_later", Math.max(1, Math.round(days / 365.25)));
     },
+    // the colour of who added a repère: their account, or the name they
+    // gave without one
+    markerColor(marker) {
+      return authorColor(marker.$authors?.[0] || marker.$credits);
+    },
     // a folded day holding medias not seen yet: its count is outlined
     dayHasUnseen(column) {
       return column.segments.some(
@@ -666,47 +680,90 @@ export default {
   flex: 0 0 auto;
   display: flex;
   height: 100%;
+
+  // room for the repère's label, even without medias after it
+  &.has--marker {
+    min-width: 11rem;
+  }
 }
 
-// a repère: a vertical label, from bottom to top
+// a repère, as in v2 (TimelineView.vue): a label tilted at mid-height, over
+// the medias that follow it. Its own width is taken back (negative margin),
+// but the part keeps room for it (.m_tl--segment.has--marker)
 .m_tl--marker {
-  --marker-color: var(--c-noir);
-
+  position: relative;
+  z-index: 1;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: var(--spacing-small);
-  margin: 0 var(--gap);
-  padding: var(--spacing-small) 0.35rem;
-  border-radius: 4px;
-  background-color: var(--marker-color);
-  color: var(--marker-text, white);
-  cursor: pointer;
-  font-size: var(--font-size-small);
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  overflow: hidden;
-  transition: box-shadow 0.4s;
+  width: 25ch;
+  height: 100%;
+  margin-right: -25ch;
+  pointer-events: none;
+}
 
-  time {
-    font-variant-numeric: tabular-nums;
+.m_tl--markerLabel {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  max-width: 100%;
+  padding: 4px 8px;
+  background-color: var(--c-noir);
+  color: white;
+  box-shadow: -0.1em 0.2em 1em rgb(0 0 0 / 20%);
+  line-height: 1.4;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: rotate(-15deg) translateX(-20px);
+  transform-origin: left center;
+  transition:
+    transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.4s;
+
+  &:hover {
+    transform: rotate(-15deg) translateX(-20px) scale(1.05);
   }
-  span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  &:focus-visible {
+    outline: 2px solid var(--c-gris);
+    outline-offset: 2px;
   }
 
   // not seen yet: as the tiles (MediaTile.vue)
   &.is--unseen {
     box-shadow: 0 0 0 3px var(--c-vert_vif);
-    transition: box-shadow 0.3s;
+    transition:
+      transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1),
+      box-shadow 0.3s;
 
     &.is--seeing {
       box-shadow: 0 0 0 3px transparent;
-      transition: box-shadow 2s linear;
+      transition:
+        transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1),
+        box-shadow 2s linear;
     }
   }
+}
+
+.m_tl--markerTime {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 1.1em;
+  font-variant-numeric: tabular-nums;
+}
+
+.m_tl--markerDot {
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background-color: var(--author-color);
+}
+
+.m_tl--markerCaption {
+  max-width: 22ch;
+  font-size: var(--font-size-small);
+  font-style: italic;
+  overflow-wrap: anywhere;
 }
 
 // filled from top to bottom, then left to right, on squares

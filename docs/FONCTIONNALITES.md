@@ -53,7 +53,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Chaque jour** commence par sa date écrite verticalement sur un filet gris. Une pastille noire donne le nombre de médias du jour.
 - **Médias** : placés en colonnes, de haut en bas puis de gauche à droite, sur des lignes de portée grises. Le nombre de médias par colonne s'adapte à la hauteur de la fenêtre.
 - **Taille des médias** : chaque média occupe un nombre entier de cases de la grille (une case par ligne de portée, 4 × 4 par défaut). Au survol, des poignées sur le bord droit, le bord bas et le coin permettent de l'agrandir ou de le réduire, case par case (de 2 à 16 cases de large, jusqu'à la hauteur de la timeline). Pendant le redimensionnement, les cases apparaissent. La taille est enregistrée au relâchement, pour tous. Si le serveur la refuse, le média reprend sa taille en tremblant, entouré de rouge un instant, et une notification le signale. Réservé aux contributeurs, à la souris (pas sur écran tactile).
-- **Repères** : ils découpent la journée en parties. Chacun est une étiquette verticale avec son heure et sa légende, dans sa couleur s'il en a une.
+- **Repères** : ils découpent la journée en parties. Comme en v2, chacun est une étiquette noire inclinée, à mi-hauteur, posée sur le début de sa partie : un point de la couleur de la personne qui l'a ajouté (son compte, ou le nom donné sans compte), l'heure, et son étiquette en dessous s'il en a une. Un clic l'ouvre.
 - **Jours vides** : une vague grise, un demi-cercle par jour vide. Au-delà de 7 jours, la vague s'arrête à 7 et l'écart est écrit à côté : « 2 semaines plus tard… », « 3 mois plus tard… », « 2 ans plus tard… ». Au survol, le nombre de jours écoulés jusqu'au jour suivant (« 11 jours »).
 - **Replier un jour** : un clic sur la date du jour cache ses médias.
   - Le jour replié devient une étiquette entourée de noir, sur un filet noir, avec la mention « Déplier » en petit et en gris.
@@ -100,6 +100,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Métadonnées**, tout en bas, repliées par défaut : type, nom du fichier, dimensions, durée, poids, lieu, date de capture (ou du fichier), date d'import, dernière modification.
 - **Télécharger** le fichier, **Supprimer** le média (avec une confirmation dans la fenêtre).
 - **Enregistrer et fermer** : enregistre les modifications. Si on ferme ou change de média sans enregistrer, la fenêtre propose d'enregistrer, de ne pas enregistrer ou d'annuler.
+- **Repère** : une fenêtre compacte, sans aperçu, avec seulement son étiquette, sa date (raccourcis « Date de création » et « Maintenant »), « Ajouté par », ses auteurs et « Supprimer ».
 - Ouvrir un média le compte comme vu (il perd son contour vert).
 - Un texte créé avec le bouton + ouvre directement sa fenêtre, pour l'écrire.
 
@@ -108,7 +109,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - Un bouton rond **+** en bas à droite. Il n'apparaît que pour les contributeurs du cahier.
 - Il déplie 7 options, dont le nom s'affiche au survol (toujours visible sur écran tactile) :
   - **Texte** : crée un texte vide et ouvre sa fenêtre pour l'écrire.
-  - **Repère** : crée un repère daté de maintenant.
+  - **Repère** : ouvre une petite fenêtre pour lui donner une étiquette (facultative), puis « Ajouter ». Le repère garde l'heure du clic sur le +. Fermer la fenêtre l'annule.
   - **Lien** : demande une adresse web. Le lien est ajouté au cahier avec l'image d'aperçu de la page.
   - **Image**, **Vidéo**, **Audio**, **Fichier** : ouvrent le sélecteur de fichiers, avec plusieurs fichiers possibles. Sur téléphone, le sélecteur propose aussi l'appareil photo ou le micro.
 - **Glisser-déposer** : quand on fait glisser des fichiers sur la page, le bouton + s'agrandit (« Déposez vos fichiers ici »).

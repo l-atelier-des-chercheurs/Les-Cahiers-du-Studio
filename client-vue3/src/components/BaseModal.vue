@@ -99,6 +99,9 @@ export default {
   border: none;
   background: rgb(0 0 0 / 77%);
   color: white;
+  // always clickable, even opened from a container that lets clicks
+  // through (the + button, AddMedias.vue)
+  pointer-events: auto;
 
   // the veil is the dialog itself
   &::backdrop {

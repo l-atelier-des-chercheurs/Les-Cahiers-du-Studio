@@ -67,6 +67,15 @@
       </svg>
     </button>
 
+    <MarkerModal
+      v-if="marker_date"
+      :date="marker_date"
+      :is_creating="is_creating"
+      :error="marker_error"
+      @close="marker_date = ''"
+      @submit="createMarker"
+    />
+
     <EmbedModal
       v-if="show_embed_modal"
       :is_creating="is_creating"
@@ -83,6 +92,7 @@ import { creditsMeta } from "@/contributor";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
 import EmbedModal from "./EmbedModal.vue";
+import MarkerModal from "./MarkerModal.vue";
 
 // Icons drawn on a 40×40 grid, stroked in currentColor (v2's, redrawn)
 const ICONS = {
@@ -126,7 +136,7 @@ const ICONS = {
 let instances = 0;
 
 export default {
-  components: { EmbedModal },
+  components: { EmbedModal, MarkerModal },
   props: {
     // the cahier, e.g. "cahiers/mon-cahier"
     path_to_folder: { type: String, required: true },
@@ -143,6 +153,9 @@ export default {
       is_creating: false,
       error: "",
       show_embed_modal: false,
+      // a repère asked for, at this date, waiting for its label
+      marker_date: "",
+      marker_error: "",
       embed_error: "",
     };
   },
@@ -158,7 +171,7 @@ export default {
     options() {
       return [
         { key: "text", label: "text", action: this.createText },
-        { key: "marker", label: "marker", action: this.createMarker },
+        { key: "marker", label: "marker", action: this.openMarkerModal },
         { key: "embed", label: "embed", action: this.openEmbedModal },
         { key: "image", label: "image", accept: "image/*" },
         { key: "video", label: "video", accept: "video/*" },
@@ -233,15 +246,29 @@ export default {
         )
       );
     },
-    // only a .meta.txt
-    createMarker() {
-      return this.create(() =>
+    // the time of the click: what the repère marks
+    openMarkerModal() {
+      this.marker_error = "";
+      this.marker_date = new Date().toISOString();
+      this.is_open = false;
+    },
+    // only a .meta.txt; the label is optional
+    async createMarker(label) {
+      this.marker_error = "";
+      const created = await this.create(() =>
         this.createFile(this.path_to_folder, {
           ...this.newMediaMeta(),
+          date_timeline: this.marker_date,
+          ...(label && { caption: label }),
           $type: "marker",
           requested_slug: "repere",
         })
       );
+      if (created) this.marker_date = "";
+      else {
+        this.marker_error = this.error;
+        this.showError("");
+      }
     },
     openEmbedModal() {
       this.embed_error = "";

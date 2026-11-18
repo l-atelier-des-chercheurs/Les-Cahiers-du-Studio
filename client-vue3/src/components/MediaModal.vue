@@ -18,7 +18,8 @@
       {{ $t(`type_${type}`) }}
     </template>
 
-    <template #preview>
+    <!-- a repère has nothing to show: a compact window, with its fields -->
+    <template v-if="!is_marker" #preview>
       <div
         class="m_media--preview"
         :class="[`is--${type}`, { 'is--zoomed': is_zoomed }]"
@@ -98,24 +99,29 @@
           <span>{{ media.$media_filename }}</span>
         </div>
 
-        <button
-          v-if="has_prev"
-          type="button"
-          class="m_media--nav is--prev"
-          :aria-label="$t('previous_media')"
-          @click="request('prev')"
+        <!-- ← and →, together, floating at the bottom of the media -->
+        <nav
+          v-if="has_prev || has_next"
+          class="m_media--nav"
+          :aria-label="$t('navigation')"
         >
-          ←
-        </button>
-        <button
-          v-if="has_next"
-          type="button"
-          class="m_media--nav is--next"
-          :aria-label="$t('next_media')"
-          @click="request('next')"
-        >
-          →
-        </button>
+          <button
+            type="button"
+            :disabled="!has_prev"
+            :aria-label="$t('previous_media')"
+            @click="request('prev')"
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            :disabled="!has_next"
+            :aria-label="$t('next_media')"
+            @click="request('next')"
+          >
+            →
+          </button>
+        </nav>
       </div>
     </template>
 
@@ -183,7 +189,10 @@
       <p v-else class="m_media--value">{{ formatDate(form.date) }}</p>
     </div>
 
-    <div v-if="can_edit || form.keywords.length" class="m_modal--field">
+    <div
+      v-if="!is_marker && (can_edit || form.keywords.length)"
+      class="m_modal--field"
+    >
       <label for="media_keyword">{{ $t("keywords") }}</label>
       <ul v-if="form.keywords.length" class="m_media--chips">
         <li v-for="keyword in form.keywords" :key="keyword">
@@ -254,22 +263,44 @@
       </select>
     </div>
 
+    <!-- v2's round buttons (EditMedia.vue), in a row of equal columns -->
     <div class="m_modal--field m_media--actions">
       <a
         v-if="media_url"
-        class="m_media--choice"
+        class="button button-round m_media--action"
         :href="media_url"
         :download="media.$media_filename"
       >
-        {{ $t("download") }}
+        <svg viewBox="0 0 49 49" aria-hidden="true">
+          <circle cx="24.5" cy="24.5" r="24" />
+          <polyline points="33.12 20.63 24.5 28.82 15.88 20.63" />
+          <line x1="24.5" y1="28.82" x2="24.5" y2="12.53" />
+          <line x1="13.26" y1="34.05" x2="35.74" y2="34.05" />
+        </svg>
+        <span class="text-cap font-verysmall">{{ $t("download") }}</span>
       </a>
       <button
-        v-if="can_edit && !confirm_remove"
+        v-if="can_edit"
         type="button"
-        class="m_media--choice is--danger"
-        @click="confirm_remove = true"
+        class="button-round m_media--action"
+        :class="{ 'is--active': confirm_remove }"
+        :aria-expanded="confirm_remove"
+        @click="confirm_remove = !confirm_remove"
       >
-        {{ $t("remove") }}
+        <svg viewBox="0 0 49 49" aria-hidden="true">
+          <circle cx="24.5" cy="24.5" r="24" />
+          <path
+            d="M16.79,35.19l-.72-16.86H33l-.72,16.86a1.42,1.42,0,0,1-1.46,1.31H18.25A1.42,1.42,0,0,1,16.79,35.19Z"
+          />
+          <path
+            d="M20.83,15.41v-2a.89.89,0,0,1,.92-.86h5.52a.89.89,0,0,1,.92.86v2Z"
+          />
+          <line x1="20.75" y1="34.18" x2="20.75" y2="21.01" />
+          <line x1="24.66" y1="34.18" x2="24.66" y2="21.01" />
+          <line x1="28.58" y1="34.18" x2="28.58" y2="21.01" />
+          <line x1="14" y1="15.41" x2="35" y2="15.41" />
+        </svg>
+        <span class="text-cap font-verysmall">{{ $t("remove") }}</span>
       </button>
     </div>
 
@@ -293,7 +324,10 @@
     </div>
 
     <!-- what adc-core read from the file, folded -->
-    <details v-if="meta_rows.length" class="m_modal--field m_media--meta">
+    <details
+      v-if="!is_marker && meta_rows.length"
+      class="m_modal--field m_media--meta"
+    >
       <summary>{{ $t("metadata") }}</summary>
       <dl>
         <template v-for="row in meta_rows" :key="row.key">
@@ -372,6 +406,10 @@ export default {
     type() {
       return this.media.$type || "other";
     },
+    // a repère: only its label, date, who added it, and removing it
+    is_marker() {
+      return this.type === "marker";
+    },
     media_url() {
       return api.mediaURL(this.media);
     },
@@ -404,6 +442,16 @@ export default {
       );
     },
     date_options() {
+      // a repère has no file: when it was made, or now
+      if (this.is_marker)
+        return [
+          {
+            key: "created",
+            label: "created_date",
+            date: this.media.$date_created,
+          },
+          { key: "now", label: "now", date: new Date().toISOString() },
+        ].filter((option) => option.date);
       const options = [
         {
           key: "file",
@@ -821,28 +869,35 @@ export default {
   overflow-y: auto;
 }
 
-// ← and → over the edges of the preview
+// ← and → in a pill, floating at the bottom centre of the media
 .m_media--nav {
   position: absolute;
-  top: 50%;
+  bottom: var(--spacing-small);
+  left: 50%;
   z-index: 1;
-  width: 2.75rem;
-  height: 2.75rem;
-  padding: 0;
-  border-radius: 50%;
-  background-color: rgb(0 0 0 / 55%);
-  color: white;
-  font-size: 1.25rem;
-  transform: translateY(-50%);
+  display: flex;
+  padding: 3px;
+  border-radius: 999px;
+  background-color: rgb(0 0 0 / 60%);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 25%);
+  transform: translateX(-50%);
+  backdrop-filter: blur(4px);
 
-  &:hover {
-    background-color: rgb(0 0 0 / 80%);
-  }
-  &.is--prev {
-    left: var(--spacing-small);
-  }
-  &.is--next {
-    right: var(--spacing-small);
+  button {
+    width: 2.5rem;
+    height: 2.25rem;
+    padding: 0;
+    border-radius: 999px;
+    color: white;
+    font-size: 1.15rem;
+    transition: background-color 0.15s;
+
+    &:hover:not(:disabled) {
+      background-color: rgb(255 255 255 / 15%);
+    }
+    &:disabled {
+      opacity: 0.3;
+    }
   }
 }
 
@@ -891,8 +946,32 @@ export default {
   }
 }
 
+// v2's row: equal columns, each a round button with its label under it
+.m_media--actions {
+  display: flex;
+  align-items: flex-start;
+}
+
+.m_media--action {
+  flex: 1 1 0;
+  padding: var(--spacing-verysmall);
+  border-radius: 0;
+  color: white;
+  text-decoration: none;
+
+  svg {
+    fill: none;
+    stroke: white;
+    stroke-miterlimit: 10;
+    transition: fill 0.15s;
+  }
+  &:hover svg,
+  &.is--active svg {
+    fill: var(--c-noir);
+  }
+}
+
 .m_media--choices,
-.m_media--actions,
 .m_media--confirm {
   display: flex;
   flex-wrap: wrap;
