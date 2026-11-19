@@ -185,6 +185,16 @@ export function regenerateThumbs(path_to_meta: Path) {
   return request("PATCH", `${path_to_meta}/_regenerateThumbs`);
 }
 
+// starts an export task converting a media (recipe "optimize_media"): its
+// progress and end come through the taskStatus / taskEnded events, in the
+// room "task_<task_id>"; the new media through fileCreated
+export function optimizeFile(
+  path_to_meta: Path,
+  instructions: Record<string, unknown>
+): Promise<{ task_id: string }> {
+  return request("POST", `${path_to_meta}/_optimize`, instructions);
+}
+
 /* MEDIA URLS: the content folder is served from / */
 
 function contentURL(path: Path) {

@@ -264,6 +264,31 @@
         </svg>
         <span class="text-cap font-verysmall">{{ $t("download") }}</span>
       </a>
+      <!-- not played by every browser: converted, in place of the original -->
+      <button
+        v-if="can_edit && can_convert"
+        type="button"
+        class="button-round m_media--action"
+        :class="{ 'is--busy': is_converting }"
+        :disabled="is_converting || !!converting_path || is_dirty"
+        :title="$t(is_dirty ? 'convert_save_first' : 'convert_instructions')"
+        @click="convert"
+      >
+        <svg viewBox="0 0 49 49" aria-hidden="true">
+          <circle cx="24.5" cy="24.5" r="24" />
+          <polyline points="29.5 14.5 34.5 19.5 29.5 24.5" />
+          <line x1="14.5" y1="19.5" x2="34.5" y2="19.5" />
+          <polyline points="19.5 24.5 14.5 29.5 19.5 34.5" />
+          <line x1="34.5" y1="29.5" x2="14.5" y2="29.5" />
+        </svg>
+        <span class="text-cap font-verysmall">
+          {{
+            is_converting
+              ? $t("converting", { progress: convert_progress })
+              : $t("convert")
+          }}
+        </span>
+      </button>
       <button
         v-if="can_edit && has_thumbs"
         type="button"
@@ -400,6 +425,57 @@ import TextEditor from "./TextEditor.vue";
 // dates closer than this are the same (seconds are not shown)
 const SAME_DATE_MS = 60 * 1000;
 
+// What every browser plays: the container, then the codecs ($infos, read
+// by adc-core; files probed before it kept codecs are judged by their
+// extension only)
+const WEB_VIDEO = {
+  exts: ["mp4", "m4v", "webm"],
+  video_codecs: ["h264", "vp8", "vp9", "av1"],
+  audio_codecs: ["aac", "mp3", "opus", "vorbis"],
+};
+const WEB_AUDIO = {
+  exts: ["mp3", "m4a", "aac", "ogg", "oga", "opus", "wav", "weba", "flac"],
+  audio_codecs: ["aac", "mp3", "opus", "vorbis", "flac"],
+};
+// what adc-core's optimizer converts (Exporter.js, _optimizeMedia)
+const CONVERTIBLE_VIDEO_EXTS = [
+  "flv",
+  "mov",
+  "avi",
+  "webm",
+  "mp4",
+  "mkv",
+  "wmv",
+  "qt",
+];
+const CONVERTIBLE_AUDIO_EXTS = [
+  "amr",
+  "wma",
+  "aif",
+  "flac",
+  "ac3",
+  "opus",
+  "m4r",
+  "m4a",
+  "alac",
+  "wav",
+  "ogg",
+  "mp3",
+  "aac",
+];
+
+function isWebPlayable({ type, ext, video_codec, audio_codec }) {
+  const audioOk = (codecs) =>
+    !audio_codec || codecs.includes(audio_codec) || audio_codec.startsWith("pcm_");
+  if (type === "video")
+    return (
+      WEB_VIDEO.exts.includes(ext) &&
+      (!video_codec || WEB_VIDEO.video_codecs.includes(video_codec)) &&
+      audioOk(WEB_VIDEO.audio_codecs)
+    );
+  return WEB_AUDIO.exts.includes(ext) && audioOk(WEB_AUDIO.audio_codecs);
+}
+
 export default {
   components: { BaseModal, TextEditor },
   props: {
@@ -411,7 +487,8 @@ export default {
     // every keyword of the cahier, suggested
     all_keywords: { type: Array, default: () => [] },
   },
-  emits: ["close", "prev", "next"],
+  // replaced: the path of the media that took this one's place (converted)
+  emits: ["close", "prev", "next", "replaced"],
   data() {
     return {
       form: this.formFrom(this.media),
@@ -421,6 +498,9 @@ export default {
       is_pdf_loaded: false,
       is_saving: false,
       is_regenerating: false,
+      // the media being converted for the web, and how far (0 to 100)
+      converting_path: "",
+      convert_progress: 0,
       error: "",
       confirm_remove: false,
       // close, prev or next, waiting for unsaved changes
@@ -464,6 +544,35 @@ export default {
     extension() {
       const name = this.media.$media_filename || "";
       return name.includes(".") ? name.split(".").pop() : "?";
+    },
+    // what it is converted to: "video" (MP4), "audio" (M4A), or "" when it
+    // can't be. adc-core types only .mp4 / .webm as videos and a few
+    // extensions as sounds: a .mov, .mkv, .amr… is "other", known here by
+    // its extension
+    convert_kind() {
+      const ext = this.extension.toLowerCase();
+      if (this.type === "video" || this.type === "audio") return this.type;
+      if (this.type !== "other") return "";
+      if (CONVERTIBLE_VIDEO_EXTS.includes(ext)) return "video";
+      if (CONVERTIBLE_AUDIO_EXTS.includes(ext)) return "audio";
+      return "";
+    },
+    // a video or sound some browsers can't play, that adc-core can convert
+    can_convert() {
+      const kind = this.convert_kind;
+      if (!kind) return false;
+      const ext = this.extension.toLowerCase();
+      const convertible =
+        CONVERTIBLE_VIDEO_EXTS.includes(ext) ||
+        (kind === "audio" && CONVERTIBLE_AUDIO_EXTS.includes(ext));
+      const { video_codec, audio_codec } = this.media.$infos || {};
+      return (
+        convertible &&
+        !isWebPlayable({ type: kind, ext, video_codec, audio_codec })
+      );
+    },
+    is_converting() {
+      return !!this.converting_path && this.converting_path === this.media.$path;
     },
     author_color() {
       return authorColor(this.form.authors[0]);
@@ -568,6 +677,7 @@ export default {
     window.addEventListener("keydown", this.onKeydown);
   },
   beforeUnmount() {
+    this.is_unmounted = true;
     window.removeEventListener("keydown", this.onKeydown);
   },
   methods: {
@@ -575,6 +685,7 @@ export default {
       "updateFile",
       "removeFile",
       "regenerateThumbs",
+      "convertFile",
     ]),
     ...mapActions(useUnseenStore, ["markSeen"]),
     authorColor,
@@ -677,6 +788,43 @@ export default {
         });
       } finally {
         this.is_regenerating = false;
+      }
+    },
+
+    // MP4 (H.264, AAC) or M4A (AAC), by adc-core: the new media takes this
+    // one's place (same caption, date, authors…), this one is removed. Goes
+    // on if the window is closed or another media shown meanwhile
+    async convert() {
+      if (this.converting_path || this.is_dirty) return;
+      const media = this.media;
+      const path_to_folder = media.$path.split("/").slice(0, -1).join("/");
+      const name = media.$media_filename;
+      this.converting_path = media.$path;
+      this.convert_progress = 0;
+      this.error = "";
+      try {
+        const new_meta = await this.convertFile(
+          media.$path,
+          {
+            recipe: "optimize_media",
+            base_media_path: `${path_to_folder}/${name}`,
+            suggested_file_name: name.replace(/\.[^.]+$/, ""),
+            // a sound in a video container: kept a sound (M4A)
+            ...(this.convert_kind === "audio" && { video_bitrate: "no_video" }),
+          },
+          (progress) => (this.convert_progress = progress)
+        );
+        // still shown: the window moves to the new media
+        if (!this.is_unmounted && this.media.$path === media.$path)
+          this.$emit("replaced", new_meta.$path);
+        await this.removeFile(media.$path);
+      } catch (err) {
+        if (this.converting_path === this.media.$path)
+          this.error = this.$t("error_with_code", {
+            code: err.code || err.message,
+          });
+      } finally {
+        this.converting_path = "";
       }
     },
 

@@ -238,6 +238,45 @@ export const useContentStore = defineStore("content", {
       return this._track(api.regenerateThumbs(path_to_meta));
     },
 
+    // A video or sound converted for the web by adc-core (its
+    // optimize_media task: MP4 or M4A): a new media next to it, with its
+    // caption, date, authors… Resolves with the new media's meta, added to
+    // the store at once (its fileCreated event comes after the task's end).
+    // onProgress: 0 to 100
+    convertFile(path_to_meta, instructions, onProgress) {
+      let task_id;
+      const offs = [];
+      const done = new Promise((resolve, reject) => {
+        offs.push(
+          onEvent("taskStatus", ({ task_id: id, progress }) => {
+            if (id === task_id) onProgress?.(progress);
+          }),
+          onEvent("taskEnded", ({ task_id: id, event, message }) => {
+            if (id !== task_id) return;
+            if (event === "completed" && message?.file) resolve(message.file);
+            else reject(new Error(message?.info || `task_${event}`));
+          })
+        );
+      });
+      const run = async () => {
+        try {
+          ({ task_id } = await api.optimizeFile(path_to_meta, instructions));
+          // the server waits a little before starting: time to join
+          joinRoom(`task_${task_id}`);
+          const meta = await done;
+          const path_to_folder = parentOf(meta.$path);
+          const files = this.folders[path_to_folder]?.$files;
+          if (files && !files.some((f) => f.$path === meta.$path))
+            files.push(meta);
+          return meta;
+        } finally {
+          offs.forEach((off) => off());
+          if (task_id) leaveRoom(`task_${task_id}`);
+        }
+      };
+      return this._track(run());
+    },
+
     _updateFileMeta(path_to_folder, path_to_meta, changed_data) {
       const file = this.folders[path_to_folder]?.$files?.find(
         (f) => f.$path === path_to_meta

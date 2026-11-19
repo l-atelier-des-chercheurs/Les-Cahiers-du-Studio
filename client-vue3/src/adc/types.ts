@@ -69,6 +69,15 @@ export type ServerEvents = {
   };
   fileRemoved: { path_to_folder: Path; path_to_meta: Path };
   filesRemoved: { path_to_folder: Path; paths_to_meta: Path[] };
+  // export tasks (adc-core's Exporter.js), in the room "task_<task_id>":
+  // progress from 0 to 100, then the end: the new file once completed, the
+  // reason (info) once failed
+  taskStatus: { task_id: string; progress: number };
+  taskEnded: {
+    task_id: string;
+    event: "completed" | "failed" | "aborted";
+    message?: { file?: FileMeta; info?: string };
+  };
 };
 
 // error bodies are { code, err_infos? }
