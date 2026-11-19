@@ -280,8 +280,7 @@ export default {
   width: 100%;
   margin: 0;
   // below the caption
-  padding: calc(var(--spacing-small) + 0.9rem) var(--spacing-small)
-    var(--spacing-small);
+  padding: calc(var(--spacing-small)) var(--spacing-small) var(--spacing-small);
   font-size: var(--font-size-small);
   line-height: 1.35;
   overflow-wrap: anywhere;

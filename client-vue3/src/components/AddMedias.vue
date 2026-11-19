@@ -85,6 +85,14 @@
       @submit="createMarker"
     />
 
+    <CaptureModal
+      v-if="show_capture_modal"
+      :is_creating="is_creating"
+      :error="capture_error"
+      @close="show_capture_modal = false"
+      @submit="createCapture"
+    />
+
     <EmbedModal
       v-if="show_embed_modal"
       :is_creating="is_creating"
@@ -100,6 +108,7 @@ import { mapActions, mapState } from "pinia";
 import { creditsMeta } from "@/contributor";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
+import CaptureModal from "./CaptureModal.vue";
 import EmbedModal from "./EmbedModal.vue";
 import MarkerModal from "./MarkerModal.vue";
 import TextModal from "./TextModal.vue";
@@ -119,6 +128,11 @@ const ICONS = {
   image: `<rect x="11.5" y="12.85" width="17" height="14.3" />
     <line x1="13.85" y1="14.99" x2="26.48" y2="25.12" />
     <line x1="13.85" y1="25.12" x2="26.48" y2="14.99" />`,
+  // a microphone: only sounds are captured for now
+  capture: `<rect x="16.5" y="10" width="7" height="13" rx="3.5" />
+    <path d="M13 20a7 7 0 0 0 14 0" />
+    <line x1="20" y1="27" x2="20" y2="30.5" />
+    <line x1="16" y1="30.5" x2="24" y2="30.5" />`,
   file: `<polyline points="21.5 11.5 13 11.5 13 28.5 27 28.5 27 17" />
     <polyline points="21.5 11.5 21.5 17 27 17 21.5 11.5" />`,
 };
@@ -126,7 +140,7 @@ const ICONS = {
 let instances = 0;
 
 export default {
-  components: { EmbedModal, MarkerModal, TextModal },
+  components: { CaptureModal, EmbedModal, MarkerModal, TextModal },
   props: {
     // the cahier, e.g. "cahiers/mon-cahier"
     path_to_folder: { type: String, required: true },
@@ -144,6 +158,8 @@ export default {
       error: "",
       show_embed_modal: false,
       show_text_modal: false,
+      show_capture_modal: false,
+      capture_error: "",
       // what was written, kept if the window is closed before adding it
       text_draft: "",
       text_error: "",
@@ -172,6 +188,7 @@ export default {
         { key: "text", label: "text", action: this.openTextModal },
         { key: "marker", label: "marker", action: this.openMarkerModal },
         { key: "embed", label: "embed", action: this.openEmbedModal },
+        { key: "capture", label: "capture", action: this.openCaptureModal },
         {
           key: "image",
           label: "photo_video",
@@ -304,6 +321,27 @@ export default {
       if (created) this.show_embed_modal = false;
       else {
         this.embed_error = this.error;
+        this.showError("");
+      }
+    },
+
+    // a sound captured in the browser (CaptureModal.vue)
+    openCaptureModal() {
+      this.capture_error = "";
+      this.show_capture_modal = true;
+      this.is_open = false;
+    },
+    async createCapture(file) {
+      this.capture_error = "";
+      const created = await this.create(() =>
+        this.uploadFile(this.path_to_folder, file, {
+          ...this.newMediaMeta(),
+          $type: "audio",
+        })
+      );
+      if (created) this.show_capture_modal = false;
+      else {
+        this.capture_error = this.error;
         this.showError("");
       }
     },
