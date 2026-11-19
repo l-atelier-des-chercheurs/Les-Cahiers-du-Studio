@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import * as api from "@/adc/api";
 import { joinRoom, leaveRoom, onConnectionChange, onEvent } from "@/adc/socket";
+import { i18n } from "@/i18n";
+import { useNotificationsStore } from "./notifications";
 
 // Content loaded from the server, kept up to date by its socket events.
 //
@@ -15,6 +17,22 @@ import { joinRoom, leaveRoom, onConnectionChange, onEvent } from "@/adc/socket";
 // is also applied from the server's answer (updateFile).
 
 const parentOf = (path) => path.split("/").slice(0, -1).join("/");
+
+// While a media is converted (convertFile): closing or reloading the tab
+// asks first, the browser's own question (the original is only replaced
+// by this tab, once the conversion ends)
+let conversions = 0;
+function onBeforeUnload(event) {
+  event.preventDefault();
+  event.returnValue = "";
+}
+function countConversion(delta) {
+  conversions += delta;
+  if (conversions === 1 && delta > 0)
+    window.addEventListener("beforeunload", onBeforeUnload);
+  if (conversions === 0)
+    window.removeEventListener("beforeunload", onBeforeUnload);
+}
 
 // what is open, to fetch again after a cut (refresh): { path: count }
 const opened_types = new Map();
@@ -242,14 +260,27 @@ export const useContentStore = defineStore("content", {
     // optimize_media task: MP4 or M4A): a new media next to it, with its
     // caption, date, authors… Resolves with the new media's meta, added to
     // the store at once (its fileCreated event comes after the task's end).
-    // onProgress: 0 to 100
+    // onProgress: 0 to 100. Meanwhile, a notification that can't be closed
+    // says so, and asks to keep the tab open
     convertFile(path_to_meta, instructions, onProgress) {
+      const notifications = useNotificationsStore();
+      const name = path_to_meta.split("/").pop().replace(/\.meta\.txt$/, "");
+      const message = (progress) =>
+        i18n.global.t("converting_notice", { name, progress });
+      const notification = notifications.notify(message(0), {
+        duration: 0,
+        closable: false,
+      });
+      countConversion(1);
+
       let task_id;
       const offs = [];
       const done = new Promise((resolve, reject) => {
         offs.push(
           onEvent("taskStatus", ({ task_id: id, progress }) => {
-            if (id === task_id) onProgress?.(progress);
+            if (id !== task_id) return;
+            notifications.update(notification, message(progress));
+            onProgress?.(progress);
           }),
           onEvent("taskEnded", ({ task_id: id, event, message }) => {
             if (id !== task_id) return;
@@ -269,9 +300,20 @@ export const useContentStore = defineStore("content", {
           if (files && !files.some((f) => f.$path === meta.$path))
             files.push(meta);
           return meta;
+        } catch (err) {
+          notifications.notify(
+            i18n.global.t("convert_failed", {
+              name,
+              code: err.code || err.message,
+            }),
+            { type: "error", duration: 0 }
+          );
+          throw err;
         } finally {
           offs.forEach((off) => off());
           if (task_id) leaveRoom(`task_${task_id}`);
+          notifications.dismiss(notification);
+          countConversion(-1);
         }
       };
       return this._track(run());

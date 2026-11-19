@@ -329,6 +329,16 @@
       </button>
     </div>
 
+    <!-- the app's notification is hidden under the window (a modal dialog
+    is drawn above everything): the same warning, here -->
+    <p
+      v-if="is_converting"
+      class="m_modal--field m_media--converting"
+      role="status"
+    >
+      {{ $t("converting_keep_open") }}
+    </p>
+
     <div v-if="confirm_remove" class="m_modal--field m_media--confirm">
       <p>{{ $t("sure_to_remove_media") }}</p>
       <button
@@ -1166,6 +1176,14 @@ export default {
 }
 
 // v2's row: equal columns, each a round button with its label under it
+.m_media--converting {
+  padding: var(--spacing-verysmall) var(--spacing-small);
+  border-radius: 4px;
+  background-color: var(--c-jaune);
+  color: var(--c-noir);
+  font-size: var(--font-size-small);
+}
+
 .m_media--actions {
   display: flex;
   align-items: flex-start;

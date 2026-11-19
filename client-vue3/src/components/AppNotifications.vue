@@ -11,6 +11,7 @@
     >
       <span>{{ notification.message }}</span>
       <button
+        v-if="notification.closable"
         type="button"
         :aria-label="$t('close')"
         @click="dismiss(notification.id)"
