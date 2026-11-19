@@ -119,26 +119,6 @@ const ICONS = {
   image: `<rect x="11.5" y="12.85" width="17" height="14.3" />
     <line x1="13.85" y1="14.99" x2="26.48" y2="25.12" />
     <line x1="13.85" y1="25.12" x2="26.48" y2="14.99" />`,
-  video: `<rect x="11" y="12.35" width="18" height="15.3" />
-    <polygon points="23.8 20 17.4 23.6 17.4 16.4" />`,
-  audio: [
-    [5.83, 1.7],
-    [8.41, 3.5],
-    [10.99, 2.2],
-    [13.56, 4.9],
-    [16.14, 2.5],
-    [18.71, 3.1],
-    [21.29, 1.9],
-    [23.86, 2.7],
-    [26.44, 6],
-    [29.01, 2.7],
-    [31.59, 3.7],
-    [34.17, 1.4],
-  ]
-    .map(
-      ([x, h]) => `<line x1="${x}" y1="${20 - h}" x2="${x}" y2="${20 + h}" />`
-    )
-    .join(""),
   file: `<polyline points="21.5 11.5 13 11.5 13 28.5 27 28.5 27 17" />
     <polyline points="21.5 11.5 21.5 17 27 17 21.5 11.5" />`,
 };
@@ -179,7 +159,12 @@ export default {
     disabled() {
       return !this.is_connected;
     },
-    // top to bottom. With `accept`: a file picker.
+    // top to bottom. With `accept`: a file picker. The media's type is found
+    // from the file, whichever picker it came from.
+    // - photo/video: on phones, the gallery and the camera (photo or video);
+    //   one picker, as `image/*` and `video/*` apart only hid each other
+    // - file: anything else, audio and PDFs included (`audio/*` offered no
+    //   recording on phones, only the Files app)
     // No `capture`: on phones it would open the camera only, without the
     // choice of an existing file.
     options() {
@@ -187,9 +172,11 @@ export default {
         { key: "text", label: "text", action: this.openTextModal },
         { key: "marker", label: "marker", action: this.openMarkerModal },
         { key: "embed", label: "embed", action: this.openEmbedModal },
-        { key: "image", label: "image", accept: "image/*" },
-        { key: "video", label: "video", accept: "video/*" },
-        { key: "audio", label: "audio", accept: "audio/*" },
+        {
+          key: "image",
+          label: "photo_video",
+          accept: "image/*,video/*",
+        },
         { key: "file", label: "file", accept: "" },
       ].map((option) => ({ ...option, icon: ICONS[option.key] }));
     },
