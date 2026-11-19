@@ -9,6 +9,20 @@ import { useSessionStore } from "./stores/session";
 import { useContentStore } from "./stores/content";
 import "./assets/main.scss";
 
+// After an update, the parts loaded on demand (the media window, Quill…)
+// have new file names and the old ones are gone: an open tab can't load
+// them. Reload it, at most once a minute (no loop if the server restarts)
+window.addEventListener("vite:preloadError", (event) => {
+  try {
+    if (Date.now() - (+sessionStorage.reloaded_at || 0) < 60000) return;
+    sessionStorage.reloaded_at = Date.now();
+  } catch {
+    // no sessionStorage: reload all the same
+  }
+  event.preventDefault();
+  window.location.reload();
+});
+
 const app = createApp(App);
 app.use(createPinia());
 app.use(i18n);
