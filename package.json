@@ -30,7 +30,7 @@
     "npm": "*"
   },
   "dependencies": {
-    "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.2.8"
+    "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.2.9"
   },
   "allowScripts": {
     "ffmpeg-static": true,
