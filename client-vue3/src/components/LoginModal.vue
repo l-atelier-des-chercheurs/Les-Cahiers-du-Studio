@@ -36,6 +36,11 @@
       </div>
     </template>
 
+    <!-- only the accounts that exist: none can be made from here -->
+    <p class="m_modal--field">
+      <small>{{ $t("no_account_creation") }}</small>
+    </p>
+
     <p v-if="error" class="m_modal--field form-error">{{ error }}</p>
 
     <template #submit_button>{{ $t("login") }}</template>

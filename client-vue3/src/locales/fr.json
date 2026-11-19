@@ -34,6 +34,7 @@
   "author": "Auteur",
   "choose_author": "Choisir un auteur",
   "password": "Mot de passe",
+  "no_account_creation": "Il n’est pas possible de créer un compte pour le moment : seuls les comptes déjà ouverts par l’équipe du projet peuvent se connecter.",
   "wrong_password": "Mot de passe erroné.",
   "close": "Fermer",
   "create": "Créer",
