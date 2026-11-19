@@ -679,6 +679,7 @@ export default {
     var(--staff-color) 0 1px,
     transparent 1px var(--staff-step)
   );
+  background-position-y: calc(var(--gap) / -2);
 }
 
 .m_tl--segment {
@@ -776,6 +777,7 @@ export default {
 
   // while resizing, the squares show: vertical lines too
   .is--resizing & {
+    // --staff-color: var(--rule-color);
     background-image: repeating-linear-gradient(
       to right,
       var(--staff-color) 0 1px,
