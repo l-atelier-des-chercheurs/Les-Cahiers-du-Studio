@@ -23,7 +23,7 @@ Tant que cette boucle n'est pas solide, tout le reste attend.
 ## Décisions (17/11/2026)
 
 - **Médias texte** : un vrai fichier `.md` avec son `.meta.txt`. adc-core lui donne `$type: "text"` et expose son contenu dans `$content`.
-- **Éditeur de texte** : Markdown brut, c'est-à-dire un textarea avec un rendu Markdown.
+- **Éditeur de texte** : un éditeur Quill basique, comme en v2, qui enregistre du HTML. Les textes en Markdown (premières alphas, fichiers importés) restent affichés comme Markdown.
 - **Repère** : un média sans fichier, avec seulement un `.meta.txt` et `$type: "marker"`.
 - **Embed** : comme dans dodoc, un fichier `.txt` qui contient l'URL, avec `$type: "url"`. adc-core génère la vignette à partir de l'image `og:image` de la page. Ne pas mettre de champ `url` dans le meta : à l'import, adc-core le prend pour un fichier à télécharger.
 - **`date_timeline`** : type `datetime` (adc-core 0.2.5), stocké comme `$date_created` (`2026-11-17T13:32:05.250Z`, en UTC). Le type `date` ne garde que le jour. Le client envoie une date ISO ou un horodatage en millisecondes.
@@ -119,7 +119,8 @@ Reprendre le bouton + de la v2 (`ImportMedias.vue`) : un bouton rond qui déplie
 
 Reprendre `EditMedia.vue`, réduit à (`MediaModal.vue`) :
 
-- [x] Aperçu du média : image zoomable, lecteur vidéo ou audio, éditeur Markdown pour les textes (avec rendu, HTML nettoyé), URL pour les embeds, PDF intégré
+- [x] Aperçu du média : image zoomable, lecteur vidéo ou audio, éditeur Quill pour les textes (HTML nettoyé à l'affichage), URL pour les embeds, PDF intégré
+- [ ] **Textes en `.html`** : le HTML de l'éditeur est enregistré dans un fichier `texte.md`, comme en v2. Il faudrait un vrai `.html`. Il faut d'abord qu'adc-core reconnaisse `.html` comme `$type: "text"` et en expose le contenu dans `$content` (la liste des extensions est dans `server/file.js`). Ensuite, voir s'il faut renommer les textes déjà créés, ou laisser `renderText()` reconnaître le HTML d'après le contenu.
 - [x] `date_timeline` : date et heure, avec raccourcis (capture, import, maintenant)
 - [x] `caption` (« Étiquette » pour un repère)
 - [x] `keywords`, avec suggestions tirées du cahier
