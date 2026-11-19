@@ -2,8 +2,17 @@
   <main class="m_cahier">
     <header class="m_cahier--header">
       <div class="m_cahier--start">
-        <RouterLink :to="{ name: 'home' }" class="button m_cahier--back">
-          ← {{ $t("back") }}
+        <!-- a circled arrow -->
+        <RouterLink
+          :to="{ name: 'home' }"
+          class="button m_cahier--back"
+          :aria-label="$t('back')"
+          :title="$t('back')"
+        >
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <polyline points="9,4 3,10 9,16" />
+            <line x1="3" y1="10" x2="17" y2="10" />
+          </svg>
         </RouterLink>
         <h1 class="m_cahier--title">{{ title }}</h1>
         <!-- how this cahier is shown: next to its title -->
@@ -43,7 +52,11 @@
 
       <PrototypeBadge class="m_cahier--prototype" @notice="$emit('notice')" />
 
-      <LiveStatus class="m_cahier--live" />
+      <LiveStatus
+        class="m_cahier--live"
+        :explanation="$t('live_explanation_cahier')"
+        :can_publish="can_contribute"
+      />
     </header>
 
     <div class="m_cahier--content">
@@ -292,17 +305,6 @@ export default {
   justify-self: end;
 }
 
-@media screen and (max-width: 40rem) {
-  .m_cahier--header {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-  .m_cahier--prototype {
-    grid-row: 2;
-    grid-column: 1 / -1;
-    justify-self: center;
-  }
-}
-
 .m_cahier--view {
   display: flex;
   align-items: center;
@@ -340,14 +342,43 @@ export default {
   color: white;
 }
 
+// after the rule above, so that it wins
+@media screen and (max-width: 40rem) {
+  .m_cahier--header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .m_cahier--prototype {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+}
+
 .m_cahier--back {
-  padding: 0 var(--spacing-small) 0 0;
-  font-size: var(--font-size-small);
-  opacity: 0.7;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--c-gris_fonce);
+  border-radius: 50%;
+
+  svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 
   &:hover,
   &:focus-visible {
-    opacity: 1;
+    border-color: var(--c-gris_clair);
   }
 }
 
@@ -356,10 +387,10 @@ export default {
   font-size: inherit;
   font-weight: normal;
   letter-spacing: 0.05em;
-  // long titles end with … rather than push the message
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  // long titles are shown whole, on several lines if needed
+  min-width: 0;
+  line-height: 1.25;
+  overflow-wrap: break-word;
 }
 
 .m_cahier--message {

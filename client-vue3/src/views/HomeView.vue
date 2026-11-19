@@ -4,7 +4,10 @@
     <header class="m_home--header">
       <div class="m_home--topbar">
         <PrototypeBadge @notice="$emit('notice')" />
-        <LiveStatus class="m_home--live" />
+        <LiveStatus
+          class="m_home--live"
+          :explanation="$t('live_explanation_home')"
+        />
       </div>
       <div class="m_home--header--content limited-width">
         <div class="m_home--header--title">

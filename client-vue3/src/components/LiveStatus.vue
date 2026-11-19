@@ -1,25 +1,49 @@
 <template>
   <!-- In the top bars: connected live, saving, saved or not, offline
   (instead of v2's red bar). Saves are counted by the content store
-  (stores/content.js, _track). Announced politely to screen readers. -->
-  <div class="m_live" :class="`is--${state}`" role="status" aria-live="polite">
-    <span
-      v-if="state === 'saving'"
-      class="m_live--spinner"
-      aria-hidden="true"
-    />
-    <span v-else-if="state === 'saved'" class="m_live--icon" aria-hidden="true">
-      ✓
-    </span>
-    <span
-      v-else-if="state === 'failed'"
-      class="m_live--icon"
-      aria-hidden="true"
+  (stores/content.js, _track). Announced politely to screen readers.
+  On narrow screens, only the dot (or icon); a click on it unfolds what it
+  means, at any width. -->
+  <div
+    class="m_live"
+    :class="`is--${state}`"
+    @keydown.esc="is_open = false"
+  >
+    <button
+      type="button"
+      class="m_live--button"
+      :aria-expanded="is_open"
+      :aria-controls="info_id"
+      @click="is_open = !is_open"
     >
-      ✕
-    </span>
-    <span v-else class="m_live--dot" aria-hidden="true" />
-    <span class="m_live--label">{{ $t(`live_${state}`) }}</span>
+      <span
+        v-if="state === 'saving'"
+        class="m_live--spinner"
+        aria-hidden="true"
+      />
+      <span
+        v-else-if="state === 'saved'"
+        class="m_live--icon"
+        aria-hidden="true"
+      >
+        ✓
+      </span>
+      <span
+        v-else-if="state === 'failed'"
+        class="m_live--icon"
+        aria-hidden="true"
+      >
+        ✕
+      </span>
+      <span v-else class="m_live--dot" aria-hidden="true" />
+      <span class="m_live--label" role="status" aria-live="polite">
+        {{ $t(`live_${state}`) }}
+      </span>
+    </button>
+    <div v-if="is_open" :id="info_id" class="m_live--info">
+      <p class="m_live--infoTitle">{{ $t(`live_${state}`) }}</p>
+      <p v-for="(line, index) in info_lines" :key="index">{{ line }}</p>
+    </div>
   </div>
 </template>
 
@@ -34,9 +58,19 @@ const MIN_SAVING_MS = 800;
 const SAVED_MS = 2000;
 const FAILED_MS = 5000;
 
+let instances = 0;
+
 export default {
+  props: {
+    // what updating live means here (the timeline, the list of cahiers)
+    explanation: { type: String, default: "" },
+    // the visitor can publish in what is shown
+    can_publish: { type: Boolean, default: false },
+  },
   data() {
     return {
+      is_open: false,
+      info_id: `m_live--info-${++instances}`,
       // the spinner is shown (since spin_started)
       spinning: false,
       spin_started: 0,
@@ -59,6 +93,17 @@ export default {
       if (this.shown_save) return this.shown_save.ok ? "saved" : "failed";
       return "live";
     },
+    // once connected (saving or saved included), what live means here
+    info_lines() {
+      if (this.state === "connecting" || this.state === "offline")
+        return [this.$t(`live_explanation_${this.state}`)];
+      const lines = [];
+      if (this.state === "failed")
+        lines.push(this.$t("live_explanation_failed"));
+      if (this.explanation) lines.push(this.explanation);
+      if (this.can_publish) lines.push(this.$t("live_can_publish"));
+      return lines;
+    },
   },
   watch: {
     saving(count) {
@@ -75,11 +120,20 @@ export default {
       }
     },
   },
+  mounted() {
+    document.addEventListener("pointerdown", this.onDocumentPointerDown);
+  },
   beforeUnmount() {
+    document.removeEventListener("pointerdown", this.onDocumentPointerDown);
     clearTimeout(this.spin_timeout);
     clearTimeout(this.result_timeout);
   },
   methods: {
+    // a click elsewhere folds the explanation
+    onDocumentPointerDown(event) {
+      if (this.is_open && !this.$el.contains(event.target))
+        this.is_open = false;
+    },
     // then the outcome of the last save, if it ended meanwhile
     stopSpinning() {
       if (this.saving > 0) return;
@@ -98,6 +152,10 @@ export default {
 
 <style lang="scss" scoped>
 .m_live {
+  position: relative;
+}
+
+.m_live--button {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -108,17 +166,66 @@ export default {
   line-height: 1.4;
   white-space: nowrap;
 
-  &.is--saved {
+  // a bigger target around the dot alone
+  @media screen and (max-width: 40rem) {
+    min-width: 30px;
+    min-height: 30px;
+    justify-content: center;
+  }
+
+  .is--saved & {
     color: var(--c-vert_vif);
   }
-  &.is--failed {
+  .is--failed & {
     color: #ff7e8a;
   }
   // v2's red bar, as a pill
-  &.is--offline {
+  .is--offline & {
     background-color: var(--c-rouge);
     color: white;
   }
+}
+
+// on narrow screens, the label is only read out
+.m_live--label {
+  @media screen and (max-width: 40rem) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+// under the pill, its right edge aligned with it
+.m_live--info {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 100;
+  width: max-content;
+  max-width: min(18rem, calc(100vw - 2rem));
+  padding: var(--spacing-small);
+  border-radius: var(--radius-button, 4px);
+  background-color: white;
+  color: var(--c-noir);
+  font-size: var(--font-size-small);
+  line-height: 1.4;
+  text-align: left;
+  white-space: normal;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+
+  p {
+    margin: 0;
+  }
+  p + p {
+    margin-top: 0.4rem;
+  }
+}
+
+.m_live--infoTitle {
+  font-weight: 600;
 }
 
 .m_live--dot {
