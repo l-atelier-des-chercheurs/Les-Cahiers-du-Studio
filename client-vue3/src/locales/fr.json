@@ -129,8 +129,6 @@
   "timeline": "Timeline",
   "grid": "Grille",
   "empty_days": "{count} jours sans média",
-  "zoom_in": "Agrandir l’image",
-  "zoom_out": "Réduire l’image",
   "text_placeholder": "Écrivez ici…",
   "open_link": "Ouvrir le lien",
   "load_pdf": "Charger le PDF",

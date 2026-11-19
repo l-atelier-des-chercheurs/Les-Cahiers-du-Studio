@@ -22,20 +22,11 @@
 
     <!-- a repère has nothing to show: a compact window, with its fields -->
     <template v-if="!is_marker" #preview>
-      <div
-        class="m_media--preview"
-        :class="[`is--${type}`, { 'is--zoomed': is_zoomed }]"
-      >
-        <!-- image: a large thumb, the original once zoomed -->
-        <button
-          v-if="type === 'image'"
-          type="button"
-          class="m_media--zoom"
-          :aria-label="$t(is_zoomed ? 'zoom_out' : 'zoom_in')"
-          @click="is_zoomed = !is_zoomed"
-        >
-          <img :src="is_zoomed ? media_url : large_thumb || media_url" alt="" />
-        </button>
+      <div class="m_media--preview" :class="`is--${type}`">
+        <!-- image: a large thumb, whole -->
+        <div v-if="type === 'image'" class="m_media--image">
+          <img :src="large_thumb || media_url" alt="" />
+        </div>
 
         <video
           v-else-if="type === 'video'"
@@ -503,7 +494,6 @@ export default {
     return {
       form: this.formFrom(this.media),
       new_keyword: "",
-      is_zoomed: false,
       // a pdf shows its thumb until its viewer is loaded
       is_pdf_loaded: false,
       is_saving: false,
@@ -669,7 +659,6 @@ export default {
     "media.$path"() {
       this.form = this.formFrom(this.media);
       this.new_keyword = "";
-      this.is_zoomed = false;
       this.is_pdf_loaded = false;
       this.error = "";
       this.confirm_remove = false;
@@ -955,40 +944,20 @@ export default {
   > iframe {
     background-color: white;
   }
-
-  &.is--zoomed {
-    overflow: auto;
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
 }
 
-// the whole image, or at its own size once zoomed
-.m_media--zoom {
+// the whole image
+.m_media--image {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
-  padding: 0;
-  border-radius: 0;
-  cursor: zoom-in;
 
   img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-  }
-
-  .is--zoomed & {
-    width: auto;
-    height: auto;
-    cursor: zoom-out;
-
-    img {
-      max-width: none;
-      max-height: none;
-    }
   }
 }
 
