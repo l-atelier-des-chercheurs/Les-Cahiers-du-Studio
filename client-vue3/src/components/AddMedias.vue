@@ -236,7 +236,7 @@ export default {
 
     /* TEXT, MARKER, EMBED */
 
-    // an empty .md file, then edited in the media's modal
+    // an empty .md file, then edited in the media’s modal (HTML, as in v2)
     createText() {
       return this.create(() =>
         this.uploadFile(

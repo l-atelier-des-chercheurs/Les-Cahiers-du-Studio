@@ -12,12 +12,12 @@
     @click="onClick"
     @keydown.enter.space.prevent="$emit('open', media.$path)"
   >
-    <!-- the whole text, formatted (Markdown), scrolling in the tile when
-    longer; as plain text the instant the Markdown renderer loads -->
+    <!-- the whole text, formatted (HTML or Markdown), scrolling in the tile
+    when longer; as plain text the instant the renderer loads -->
     <template v-if="type === 'text'">
       <!-- sanitised HTML (markdown.js) -->
       <div v-if="text_html" class="m_tile--text markdown" v-html="text_html" />
-      <p v-else-if="text" class="m_tile--text is--plain">{{ text }}</p>
+      <p v-else-if="text" class="m_tile--text is--plain">{{ plain_text }}</p>
       <p v-else class="m_tile--placeholder">{{ $t("empty_text") }}</p>
     </template>
 
@@ -91,13 +91,13 @@ function unobserveSize(el) {
   resize_observer?.unobserve(el);
 }
 
-// The Markdown renderer (marked, DOMPurify) loads on the first text shown,
+// The text renderer (marked, DOMPurify) loads on the first text shown,
 // apart from the page's main script, once for every tile
-const renderMarkdown = ref(null);
-let markdown_loading;
-function loadMarkdown() {
-  markdown_loading ||= import("@/markdown").then(
-    (module) => (renderMarkdown.value = module.renderMarkdown)
+const renderText = ref(null);
+let renderer_loading;
+function loadRenderer() {
+  renderer_loading ||= import("@/markdown").then(
+    (module) => (renderText.value = module.renderText)
   );
 }
 
@@ -153,9 +153,16 @@ export default {
       return typeof content === "string" ? content.trim() : "";
     },
     text_html() {
-      return this.text && renderMarkdown.value
-        ? renderMarkdown.value(this.text)
-        : "";
+      return this.text && renderText.value ? renderText.value(this.text) : "";
+    },
+    // until then: without the editor's tags (shown as text, not HTML)
+    plain_text() {
+      return this.text.startsWith("<")
+        ? this.text
+            .replace(/<\/(p|h\d|li|blockquote)>|<br\s*\/?>/gi, "\n")
+            .replace(/<[^>]*>/g, "")
+            .trim()
+        : this.text;
     },
     // the caption, or for links the site's name
     legend() {
@@ -195,7 +202,7 @@ export default {
     };
   },
   created() {
-    if (this.type === "text") loadMarkdown();
+    if (this.type === "text") loadRenderer();
   },
   mounted() {
     observeSize(this.$el, ({ contentRect }) => {

@@ -114,7 +114,7 @@
   "empty_days": "{count} jours sans média",
   "zoom_in": "Agrandir l’image",
   "zoom_out": "Réduire l’image",
-  "text_placeholder": "Écrivez ici, en Markdown : # titre, **gras**, *italique*, - liste…",
+  "text_placeholder": "Écrivez ici…",
   "open_link": "Ouvrir le lien",
   "navigation": "Navigation entre les médias",
   "previous_media": "Média précédent",

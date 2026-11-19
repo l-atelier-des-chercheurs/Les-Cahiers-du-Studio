@@ -16,3 +16,16 @@ DOMPurify.addHook("afterSanitizeAttributes", (node) => {
 export function renderMarkdown(text) {
   return DOMPurify.sanitize(marked.parse(String(text ?? "")));
 }
+
+// Texts are written as HTML by the editor (TextEditor.vue), as in v2;
+// the first ones, and imported .txt/.md files, are Markdown or plain text
+export function isHTML(text) {
+  return /^\s*<[a-z]/i.test(String(text ?? ""));
+}
+
+// a text media's content, HTML or Markdown, as sanitised HTML
+export function renderText(text) {
+  return isHTML(text)
+    ? DOMPurify.sanitize(String(text))
+    : renderMarkdown(text);
+}

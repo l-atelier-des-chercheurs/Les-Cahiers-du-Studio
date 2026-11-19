@@ -56,19 +56,19 @@
           />
         </div>
 
-        <!-- text: Markdown, written on the left, as read on the right -->
-        <div v-else-if="type === 'text'" class="m_media--text">
-          <textarea
-            v-if="can_edit"
-            id="media_content"
-            v-model="form.content"
-            class="m_media--textInput"
-            :aria-label="$t('text')"
-            :placeholder="$t('text_placeholder')"
-          />
-          <!-- sanitised HTML (markdown.js) -->
-          <div class="m_media--rendered markdown" v-html="rendered_text" />
-        </div>
+        <!-- text: edited as in v2 (Quill, saved as HTML), or read -->
+        <TextEditor
+          v-else-if="type === 'text' && can_edit"
+          v-model="form.content"
+          :aria-label="$t('text')"
+          :placeholder="$t('text_placeholder')"
+        />
+        <!-- sanitised HTML (markdown.js) -->
+        <div
+          v-else-if="type === 'text'"
+          class="m_media--rendered markdown"
+          v-html="rendered_text"
+        />
 
         <div v-else-if="type === 'marker'" class="m_media--marker">
           <svg viewBox="0 0 40 40" aria-hidden="true">
@@ -382,17 +382,18 @@
 import { mapActions } from "pinia";
 import * as api from "@/adc/api";
 import { i18n } from "@/i18n";
-import { renderMarkdown } from "@/markdown";
+import { renderText } from "@/markdown";
 import { authorColor } from "@/medias";
 import { useContentStore } from "@/stores/content";
 import { useUnseenStore } from "@/stores/unseen";
 import BaseModal from "./BaseModal.vue";
+import TextEditor from "./TextEditor.vue";
 
 // dates closer than this are the same (seconds are not shown)
 const SAME_DATE_MS = 60 * 1000;
 
 export default {
-  components: { BaseModal },
+  components: { BaseModal, TextEditor },
   props: {
     media: { type: Object, required: true },
     // contributors and admins of the cahier
@@ -439,7 +440,7 @@ export default {
       return ["image", "video", "audio", "pdf", "url"].includes(this.type);
     },
     rendered_text() {
-      return renderMarkdown(this.form.content);
+      return renderText(this.form.content);
     },
     // only http(s) links are opened
     safe_url() {
@@ -886,28 +887,14 @@ export default {
   color: var(--c-noir);
 }
 
-// written on the left, as read on the right
-.m_media--text {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
-  gap: 1px;
+.m_textEditor {
   width: 100%;
-  height: 100%;
-  background-color: var(--c-gris_clair);
-}
-
-.m_media--textInput {
-  height: 100%;
-  min-height: 0;
-  border: none;
-  border-radius: 0;
-  padding: var(--spacing-medium);
-  line-height: 1.5;
-  resize: none;
 }
 
 // the text itself: .markdown (assets/main.scss)
 .m_media--rendered {
+  width: 100%;
+  height: 100%;
   min-height: 0;
   padding: var(--spacing-medium);
   background-color: white;
