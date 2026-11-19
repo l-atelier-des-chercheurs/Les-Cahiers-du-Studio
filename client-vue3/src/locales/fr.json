@@ -21,9 +21,9 @@
   "documentation": "documentation",
   "contact": "contactez",
 
-  "prototype_notice": "Prototype en cours de développement",
+  "prototype_notice": "Prototype TAV",
   "notice_title": "En préparation",
-  "notice_in_preparation": "Cette application est en cours de préparation et sera bientôt disponible.",
+  "notice_in_preparation": "L’application Timeline Archive Vivante est en cours de création et sera bientôt disponible. Nous avons besoin de vos contributions, retrouvez-nous aux ateliers du vendredi matin et du dimanche matin !",
   "notice_contact": "Pour plus d’informations, {contact_us} : {email}",
   "contact_us": "contactez-nous",
   "understood": "Compris",

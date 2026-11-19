@@ -167,7 +167,7 @@ export default {
   white-space: nowrap;
 
   // a bigger target around the dot alone
-  @media screen and (max-width: 40rem) {
+  @media screen and (max-width: 60rem) {
     min-width: 30px;
     min-height: 30px;
     justify-content: center;
@@ -188,7 +188,7 @@ export default {
 
 // on narrow screens, the label is only read out
 .m_live--label {
-  @media screen and (max-width: 40rem) {
+  @media screen and (max-width: 60rem) {
     position: absolute;
     width: 1px;
     height: 1px;

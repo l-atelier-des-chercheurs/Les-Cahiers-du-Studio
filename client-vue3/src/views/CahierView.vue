@@ -329,7 +329,8 @@ export default {
 }
 
 // back, title and views on the left, the prototype's message in the
-// middle, the live status on the right; on narrow screens, the message on a line of its own
+// middle, the live status on the right; on narrow screens, one line still:
+// the title cut short, the message small, against the live status
 .m_cahier--header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -341,14 +342,22 @@ export default {
 }
 
 // after the rule above, so that it wins
-@media screen and (max-width: 40rem) {
+@media screen and (max-width: 60rem) {
   .m_cahier--header {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
   }
-  .m_cahier--prototype {
-    grid-row: 2;
-    grid-column: 1 / -1;
-    justify-self: center;
+  // more specific than PrototypeBadge's own rule
+  .m_cahier--header .m_cahier--prototype {
+    justify-self: end;
+    padding: 0.1rem 0.45rem;
+    font-size: var(--font-size-verysmall);
+  }
+  // as much room as there is, then an ellipsis
+  .m_cahier--title {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
