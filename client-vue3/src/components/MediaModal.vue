@@ -6,6 +6,9 @@
   <BaseModal
     :slide_key="media.$path"
     :slide_direction="direction"
+    :mobile_preview_height="
+      type === 'audio' ? `calc(2 * ${AUDIO_PLAYER_HEIGHT})` : ''
+    "
     :disabled="!is_dirty || is_saving"
     @close="request('close')"
     @submit="save('close')"
@@ -37,8 +40,12 @@
           preload="metadata"
         />
 
-        <div v-else-if="type === 'audio'" class="m_media--audio">
-          <img v-if="large_thumb" :src="large_thumb" alt="" />
+        <!-- a sound: its player only (its waveform thumb tells nothing) -->
+        <div
+          v-else-if="type === 'audio'"
+          class="m_media--audio"
+          :style="{ '--audio-height': AUDIO_PLAYER_HEIGHT }"
+        >
           <audio
             :key="media.$path"
             :src="media_url"
@@ -426,6 +433,10 @@ import TextEditor from "./TextEditor.vue";
 // dates closer than this are the same (seconds are not shown)
 const SAME_DATE_MS = 60 * 1000;
 
+// a sound's player, as tall as Chrome draws it; on phones, its preview is
+// twice as tall
+const AUDIO_PLAYER_HEIGHT = "54px";
+
 // What every browser plays: the container, then the codecs ($infos, read
 // by adc-core; files probed before it kept codecs are judged by their
 // extension only)
@@ -492,6 +503,7 @@ export default {
   emits: ["close", "prev", "next", "replaced"],
   data() {
     return {
+      AUDIO_PLAYER_HEIGHT,
       form: this.formFrom(this.media),
       new_keyword: "",
       // a pdf shows its thumb until its viewer is loaded
@@ -987,6 +999,7 @@ export default {
 
   audio {
     width: 100%;
+    height: var(--audio-height);
   }
 }
 

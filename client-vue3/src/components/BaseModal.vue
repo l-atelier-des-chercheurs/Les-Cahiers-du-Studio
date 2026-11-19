@@ -32,7 +32,15 @@
         <form
           :key="slide_key"
           class="m_modal--container"
-          :class="{ 'has--preview': !!$slots.preview }"
+          :class="{
+            'has--preview': !!$slots.preview,
+            'has--previewHeight': !!mobile_preview_height,
+          }"
+          :style="
+            mobile_preview_height && {
+              '--mobile-preview-height': mobile_preview_height,
+            }
+          "
           @submit.prevent="$emit('submit')"
         >
           <div v-if="$slots.preview" class="m_modal--preview">
@@ -110,6 +118,9 @@ export default {
     slide_key: { type: String, default: "" },
     // "next": the new panel comes from the right; "prev": from the left
     slide_direction: { type: String, default: "next" },
+    // on narrow screens, the preview's height (a CSS length) instead of
+    // 45% of the window: a sound's player needs little
+    mobile_preview_height: { type: String, default: "" },
   },
   emits: ["close", "submit"],
   mounted() {
@@ -325,6 +336,10 @@ export default {
       grid-template-rows: minmax(0, 45%) minmax(0, 1fr);
       grid-template-areas: "preview" "sidebar";
       height: 100dvh;
+
+      &.has--previewHeight {
+        grid-template-rows: var(--mobile-preview-height) minmax(0, 1fr);
+      }
     }
   }
 }
