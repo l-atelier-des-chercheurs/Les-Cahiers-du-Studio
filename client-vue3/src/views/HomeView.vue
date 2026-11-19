@@ -233,8 +233,7 @@ export default {
         },
         { name: "la Métropole de Lyon", url: "https://www.grandlyon.com" },
         {
-          name: "le FDVA innovation du Département",
-          url: "https://www.associations.gouv.fr/fdva.html",
+          name: "le FDVA innovation de la région",
         },
         { name: "le CDN de Tours", url: "https://cdntours.fr" },
         {
