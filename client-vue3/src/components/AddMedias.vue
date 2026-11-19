@@ -103,6 +103,7 @@
     <CaptureModal
       v-if="show_capture_modal"
       :is_creating="is_creating"
+      :upload_progress="capture_progress"
       :error="capture_error"
       @close="show_capture_modal = false"
       @submit="createCapture"
@@ -182,6 +183,8 @@ export default {
       show_text_modal: false,
       show_capture_modal: false,
       capture_error: "",
+      // 0 to 1 while the captured sound is sent, null otherwise
+      capture_progress: null,
       // what was written, kept if the window is closed before adding it
       text_draft: "",
       text_error: "",
@@ -355,12 +358,16 @@ export default {
     },
     async createCapture(file) {
       this.capture_error = "";
+      this.capture_progress = 0;
       const created = await this.create(() =>
-        this.uploadFile(this.path_to_folder, file, {
-          ...this.newMediaMeta(),
-          $type: "audio",
-        })
+        this.uploadFile(
+          this.path_to_folder,
+          file,
+          { ...this.newMediaMeta(), $type: "audio" },
+          (ratio) => (this.capture_progress = ratio)
+        )
       );
+      this.capture_progress = null;
       if (created) this.show_capture_modal = false;
       else {
         this.capture_error = this.error;

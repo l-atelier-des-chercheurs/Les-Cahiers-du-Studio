@@ -86,6 +86,7 @@
   "capture_start": "Commencer la capture",
   "capture_stop": "Arrêter la capture",
   "capture_again": "Capturer à nouveau",
+  "capture_saving": "Enregistrement…",
   "capture_max_duration": "1 minute au plus : la capture s’arrête d’elle-même.",
   "capture_waiting_microphone": "En attente du micro…",
   "capture_microphone_denied": "L’accès au micro a été refusé. Autorisez-le dans les réglages du navigateur, puis rouvrez cette fenêtre.",

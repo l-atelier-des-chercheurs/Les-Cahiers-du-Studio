@@ -20,7 +20,24 @@
 
         <template v-else-if="file">
           <audio :src="file_url" controls />
-          <button type="button" class="textLink" @click="retake">
+          <!-- once added: how much of it is sent, then saved by the server -->
+          <div
+            v-if="is_creating && upload_progress !== null"
+            class="m_capture--upload"
+            role="status"
+          >
+            <div class="m_capture--uploadBar" aria-hidden="true">
+              <span :style="{ transform: `scaleX(${upload_progress})` }" />
+            </div>
+            <p class="m_capture--message">{{ upload_label }}</p>
+          </div>
+          <button
+            v-else
+            type="button"
+            class="textLink"
+            :disabled="is_creating"
+            @click="retake"
+          >
             {{ $t("capture_again") }}
           </button>
         </template>
@@ -58,7 +75,9 @@
 
     <p v-if="error" class="m_modal--field form-error">{{ error }}</p>
 
-    <template #submit_button>{{ $t("add") }}</template>
+    <template #submit_button>
+      {{ is_creating && upload_label ? upload_label : $t("add") }}
+    </template>
   </BaseModal>
 </template>
 
@@ -92,6 +111,8 @@ export default {
   components: { BaseModal },
   props: {
     is_creating: { type: Boolean, default: false },
+    // 0 to 1 while the sound is sent, null otherwise
+    upload_progress: { type: Number, default: null },
     error: { type: String, default: "" },
   },
   emits: ["close", "submit"],
@@ -110,6 +131,12 @@ export default {
     };
   },
   computed: {
+    // "Envoi… 42 %", then, once all sent, the server saving it
+    upload_label() {
+      if (this.upload_progress === null) return "";
+      if (this.upload_progress >= 1) return this.$t("capture_saving");
+      return `${this.$t("sending")} ${Math.round(this.upload_progress * 100)} %`;
+    },
     // the last 10 seconds
     is_ending() {
       return this.is_recording && MAX_DURATION - this.elapsed <= 10 * 1000;
@@ -325,5 +352,30 @@ export default {
   margin: 0;
   color: var(--c-gris_clair);
   font-size: var(--font-size-small);
+}
+
+.m_capture--upload {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  gap: var(--spacing-verysmall);
+  width: 100%;
+}
+
+// as the import window's (UploadFilesModal.vue): a green line
+.m_capture--uploadBar {
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background-color: var(--c-noir_light);
+
+  > span {
+    display: block;
+    height: 100%;
+    background-color: var(--c-vert_vif);
+    transform-origin: left;
+    transition: transform 0.2s ease-out;
+  }
 }
 </style>
