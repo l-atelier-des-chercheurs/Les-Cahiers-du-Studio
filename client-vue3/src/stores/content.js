@@ -16,6 +16,20 @@ import { joinRoom, leaveRoom, onConnectionChange, onEvent } from "@/adc/socket";
 
 const parentOf = (path) => path.split("/").slice(0, -1).join("/");
 
+// what is open, to fetch again after a cut (refresh): { path: count }
+const opened_types = new Map();
+const opened_folders = new Map();
+function count(map, path, delta) {
+  const n = (map.get(path) ?? 0) + delta;
+  if (n > 0) map.set(path, n);
+  else map.delete(path);
+}
+let refreshing = null;
+
+// back to the tab after this long hidden: fetch again, even if the socket
+// still looks connected (it may not have noticed the cut yet)
+const HIDDEN_REFRESH_MS = 30 * 1000;
+
 export const useContentStore = defineStore("content", {
   state: () => ({
     // every folder loaded, by path: { "cahiers/mon-cahier": meta }
@@ -46,8 +60,17 @@ export const useContentStore = defineStore("content", {
     // once, before the app starts
     init() {
       onConnectionChange((is_connected) => {
+        // connected again after a cut: what happened meanwhile was missed
+        if (is_connected && this.has_connected) this.refresh();
         this.is_connected = is_connected;
         if (is_connected) this.has_connected = true;
+      });
+
+      let hidden_at = 0;
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) hidden_at = Date.now();
+        else if (hidden_at && Date.now() - hidden_at > HIDDEN_REFRESH_MS)
+          this.refresh();
       });
 
       onEvent("folderCreated", ({ path_to_type, path_to_folder, meta }) => {
@@ -89,6 +112,7 @@ export const useContentStore = defineStore("content", {
     // a type of folders, e.g. "cahiers"
     async openFolders(path_to_type) {
       joinRoom(path_to_type);
+      count(opened_types, path_to_type, 1);
       return this.loadFolders(path_to_type);
     },
     // fetch again what the server lists, e.g. after logging in
@@ -104,16 +128,44 @@ export const useContentStore = defineStore("content", {
     },
     closeFolders(path_to_type) {
       leaveRoom(path_to_type);
+      count(opened_types, path_to_type, -1);
     },
 
     // one folder and its files, e.g. "cahiers/mon-cahier"
     async openFolder(path_to_folder) {
       joinRoom(path_to_folder);
+      count(opened_folders, path_to_folder, 1);
       this.folders[path_to_folder] = await api.getFolder(path_to_folder);
       return this.folders[path_to_folder];
     },
     closeFolder(path_to_folder) {
       leaveRoom(path_to_folder);
+      count(opened_folders, path_to_folder, -1);
+    },
+
+    // Fetch again everything open: the server's events missed while the
+    // connection was cut (a phone asleep) are lost. The rooms are joined
+    // again first (adc/socket.ts), so nothing slips in between; an event
+    // also in what is fetched is harmless. One refresh at a time.
+    refresh() {
+      refreshing ||= (async () => {
+        try {
+          await Promise.all([
+            ...[...opened_types.keys()].map((path_to_type) =>
+              this.loadFolders(path_to_type)
+            ),
+            ...[...opened_folders.keys()].map(async (path_to_folder) => {
+              this.folders[path_to_folder] =
+                await api.getFolder(path_to_folder);
+            }),
+          ]);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          refreshing = null;
+        }
+      })();
+      return refreshing;
     },
 
     /* CHANGES: the store is updated by the server's events */
