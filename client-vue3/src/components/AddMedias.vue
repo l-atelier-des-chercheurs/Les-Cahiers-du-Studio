@@ -1,12 +1,32 @@
 <template>
   <!-- v2's AddMedias.vue: a round + button in the bottom right corner,
-  that unfolds the kinds of media above it. Files can also be dropped on it:
-  it grows as soon as files are dragged over the page. -->
+  that unfolds the kinds of media above it. Files dragged over the page
+  bring a veil with a large zone in its middle: dropped there, they are
+  added; dropped anywhere else, nothing happens. -->
   <div
     class="m_addMedias"
-    :class="{ 'is--open': is_open, 'is--dragover': is_dragover }"
+    :class="{ 'is--open': is_open }"
     @keydown.esc="is_open = false"
   >
+    <Transition name="m_drop">
+      <div
+        v-if="is_dragover"
+        class="m_addMedias--dropOverlay"
+        :class="{ 'is--over': is_over_zone }"
+      >
+        <div class="m_addMedias--dropZone" @drop.prevent="onDrop">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M0,10.5h10.5V0h2.9v10.5H24v2.9H13.5V24h-2.9V13.5H0V10.5z"
+            />
+          </svg>
+          <strong>
+            {{ $t(is_over_zone ? "drop_release" : "drop_files_here") }}
+          </strong>
+        </div>
+      </div>
+    </Transition>
+
     <ul :id="options_id" class="m_addMedias--options">
       <li
         v-for="(option, index) in options"
@@ -56,13 +76,8 @@
       :aria-label="$t('add_medias')"
       :disabled="disabled"
       @click="is_open = !is_open"
-      @dragover.prevent
-      @drop.prevent="onDrop"
     >
-      <span v-if="is_dragover" class="m_addMedias--dropLabel">
-        {{ $t("drop_files_here") }}
-      </span>
-      <svg v-else viewBox="0 0 24 24" aria-hidden="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M0,10.5h10.5V0h2.9v10.5H24v2.9H13.5V24h-2.9V13.5H0V10.5z" />
       </svg>
     </button>
@@ -159,6 +174,8 @@ export default {
       options_id: `add_medias_options_${++instances}`,
       is_open: false,
       is_dragover: false,
+      // the files are over the drop zone: let go, they are added
+      is_over_zone: false,
       is_creating: false,
       error: "",
       show_embed_modal: false,
@@ -359,8 +376,13 @@ export default {
       event.target.value = "";
     },
     onDrop(event) {
-      this.is_dragover = false;
+      this.endDrag();
       if (!this.disabled) this.emitFiles(event.dataTransfer?.files);
+    },
+    endDrag() {
+      clearTimeout(this.dragover_timeout);
+      this.is_dragover = false;
+      this.is_over_zone = false;
     },
     emitFiles(file_list) {
       const files = Array.from(file_list || []);
@@ -371,18 +393,24 @@ export default {
 
     /* DOCUMENT EVENTS */
 
-    // dragover fires continuously while dragging: the button stays big
-    // until it stops for a moment
+    // dragover fires continuously while dragging: the veil stays until it
+    // stops for a moment (dragged out of the window, Escape)
     onDocumentDragOver(event) {
       if (this.disabled || !event.dataTransfer?.types.includes("Files")) return;
-      // files dropped next to the button would be opened by the browser
+      // files dropped outside the zone would be opened by the browser
       event.preventDefault();
+      this.is_over_zone = !!event.target.closest?.(".m_addMedias--dropZone");
+      // the cursor says it too: a + over the zone, "not allowed" elsewhere
+      event.dataTransfer.dropEffect = this.is_over_zone ? "copy" : "none";
       this.is_dragover = true;
       clearTimeout(this.dragover_timeout);
-      this.dragover_timeout = setTimeout(() => (this.is_dragover = false), 300);
+      this.dragover_timeout = setTimeout(this.endDrag, 300);
     },
+    // outside the zone: nothing happens
     onDocumentDrop(event) {
-      if (event.dataTransfer?.types.includes("Files")) event.preventDefault();
+      if (!event.dataTransfer?.types.includes("Files")) return;
+      event.preventDefault();
+      this.endDrag();
     },
     onDocumentPointerDown(event) {
       if (this.is_open && !this.$el.contains(event.target))
@@ -548,11 +576,6 @@ export default {
     transform: rotate(225deg);
   }
 
-  .is--dragover & {
-    width: min(256px, 80vw);
-    height: min(256px, 80vw);
-  }
-
   &:disabled {
     background-color: var(--c-gris);
   }
@@ -562,9 +585,100 @@ export default {
   }
 }
 
-.m_addMedias--dropLabel {
+/* DROPPING FILES */
+
+// the whole window: dropped here, outside the zone, nothing happens
+.m_addMedias--dropOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-medium);
   padding: var(--spacing-medium);
-  pointer-events: none;
+  background-color: rgb(0 0 0 / 50%);
+  backdrop-filter: blur(3px);
+  pointer-events: auto;
+}
+
+// in the middle, large: dropped here, the files are added. Dashed and
+// breathing while waiting; green, solid and a little bigger once over it
+.m_addMedias--dropZone {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-medium);
+  width: min(36rem, 100%);
+  height: min(24rem, 60vh);
+  padding: var(--spacing-medium);
+  border: 3px dashed white;
+  border-radius: 12px;
+  background-color: rgb(255 255 255 / 8%);
+  color: white;
+  font-size: 1.25rem;
+  text-align: center;
+  animation: m_drop--breathe 1.6s ease-in-out infinite;
+  transition:
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    color 0.2s ease-out,
+    transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+
+  svg {
+    width: 3rem;
+    height: 3rem;
+    fill: currentColor;
+    transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .is--over & {
+    border-style: solid;
+    border-color: var(--c-noir);
+    background-color: var(--c-vert_vif);
+    color: var(--c-noir);
+    transform: scale(1.03);
+    animation: none;
+
+    svg {
+      transform: scale(1.25) rotate(90deg);
+    }
+  }
+}
+
+.m_addMedias--dropElsewhere {
+  margin: 0;
+  color: white;
+  font-size: var(--font-size-small);
+  opacity: 0.8;
+  transition: opacity 0.2s;
+
+  .is--over & {
+    opacity: 0.4;
+  }
+}
+
+@keyframes m_drop--breathe {
+  50% {
+    border-color: rgb(255 255 255 / 55%);
+  }
+}
+
+.m_drop-enter-active,
+.m_drop-leave-active {
+  transition: opacity 0.2s;
+}
+.m_drop-enter-from,
+.m_drop-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m_addMedias--dropZone {
+    animation: none;
+  }
 }
 
 .m_addMedias--error {
