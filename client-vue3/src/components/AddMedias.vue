@@ -120,8 +120,13 @@ const ICONS = {
     <line x1="15.5" y1="18.5" x2="24.5" y2="18.5" />
     <line x1="15.5" y1="22" x2="24.5" y2="22" />
     <line x1="15.5" y1="25.5" x2="22" y2="25.5" />`,
-  marker: `<circle cx="20" cy="20" r="8.9" />
-    <circle class="_fill" cx="20" cy="20" r="4.7" />`,
+  // the repère's label on the timeline (MediaTimeline.vue): tilted -15°,
+  // its time then its caption
+  marker: `<g transform="rotate(-15 20 20)">
+      <rect x="10.5" y="14" width="19" height="12" />
+      <line x1="14" y1="18" x2="22" y2="18" />
+      <line x1="14" y1="22" x2="19" y2="22" />
+    </g>`,
   embed: `<polyline points="27.5 21.5 27.5 28.5 11.5 28.5 11.5 12.5 18.5 12.5" />
     <polyline points="22 11.5 28.5 11.5 28.5 18" />
     <line x1="28.5" y1="11.5" x2="19" y2="21" />`,
