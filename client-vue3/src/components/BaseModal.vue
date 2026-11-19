@@ -2,7 +2,8 @@
   <!-- v2's BaseModal, typeOfModal "EditMeta" (less/_modal.less, and its
   overrides in style.less): a 400px panel on a black veil, a black header,
   dark grey fields and a wide green submit button.
-  A native modal dialog: focus trap and Escape come with it.
+  A native modal dialog: the focus trap comes with it. Escape closes the
+  window on top (open_modals, below).
   Fields go in the default slot, as
     <div class="m_modal--field"><label>…</label><input /></div>
   or, grouped in a black box,
@@ -84,6 +85,21 @@
 </template>
 
 <script>
+// The open windows, the last one on top. Escape closes only that one:
+// handled here rather than by the dialog's cancel event, which Chrome
+// skips on a second Escape without a click in between (the dialog then
+// closes by itself, still shown by Vue), and which lets Escape reach the
+// page under it (AddMedias' menu, the search)
+const open_modals = [];
+function onEscape(event) {
+  if (event.key !== "Escape" || event.isComposing) return;
+  const top = open_modals.at(-1);
+  if (!top) return;
+  event.preventDefault();
+  event.stopPropagation();
+  top.$emit("close");
+}
+
 export default {
   props: {
     // disables the submit button
@@ -98,11 +114,19 @@ export default {
   emits: ["close", "submit"],
   mounted() {
     this.$refs.dialog.showModal();
+    if (!open_modals.length)
+      window.addEventListener("keydown", onEscape, { capture: true });
+    open_modals.push(this);
   },
   // Closing: the window is removed at once by whoever opened it. A copy
   // stays just long enough to fade out (.is--closing), inert, with what
   // was typed in its fields.
   beforeUnmount() {
+    const index = open_modals.indexOf(this);
+    if (index !== -1) open_modals.splice(index, 1);
+    if (!open_modals.length)
+      window.removeEventListener("keydown", onEscape, { capture: true });
+
     const dialog = this.$refs.dialog;
     if (
       !dialog ||
