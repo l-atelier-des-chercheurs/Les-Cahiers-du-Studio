@@ -145,11 +145,20 @@
       </li>
     </ul>
 
-    <div v-if="confirm_close" class="m_modal--field m_upload--confirm">
-      <p>{{ $t("uploads_in_progress") }}</p>
+    <!-- closing while files are sent (the cross, Escape, a click beside the
+    window): asked first, and brought into view, under a long list too -->
+    <div
+      v-if="confirm_close"
+      ref="confirm"
+      class="m_modal--field m_upload--confirm"
+      role="alertdialog"
+      aria-labelledby="upload_confirm_text"
+    >
+      <p id="upload_confirm_text">{{ $t("uploads_in_progress") }}</p>
       <button
+        ref="continue_button"
         type="button"
-        class="m_upload--choice"
+        class="m_upload--choice is--active"
         @click="confirm_close = false"
       >
         {{ $t("continue_import") }}
@@ -164,6 +173,8 @@
 </template>
 
 <script>
+import { ref } from "vue";
+import { onBeforeRouteLeave } from "vue-router";
 import { mapActions, mapState } from "pinia";
 import { thumbURL } from "@/adc/api";
 import { i18n } from "@/i18n";
@@ -188,6 +199,16 @@ export default {
     files: { type: Array, required: true },
   },
   emits: ["close"],
+  // Leaving the cahier while files are sent (the browser's back button, a
+  // phone's back gesture) would stop them: asked first. is_sending follows
+  // is_busy (watch)
+  setup() {
+    const is_sending = ref(false);
+    onBeforeRouteLeave(
+      () => !is_sending.value || window.confirm(i18n.global.t("uploads_leave"))
+    );
+    return { is_sending };
+  },
   data() {
     return {
       items: this.files.map((file) => ({
@@ -235,6 +256,17 @@ export default {
       return this.items.filter((item) => item.status === "done").length;
     },
   },
+  watch: {
+    // closing or reloading the tab while files are sent: the browser asks
+    is_busy: {
+      immediate: true,
+      handler(busy) {
+        this.is_sending = busy;
+        if (busy) window.addEventListener("beforeunload", this.onBeforeUnload);
+        else window.removeEventListener("beforeunload", this.onBeforeUnload);
+      },
+    },
+  },
   created() {
     this.abort_controller = new AbortController();
     for (const item of this.items)
@@ -246,6 +278,7 @@ export default {
     this.run();
   },
   beforeUnmount() {
+    window.removeEventListener("beforeunload", this.onBeforeUnload);
     this.abort_controller.abort();
     for (const item of this.items)
       if (item.preview_url) URL.revokeObjectURL(item.preview_url);
@@ -481,9 +514,20 @@ export default {
 
     /* CLOSE */
 
-    requestClose() {
-      if (this.is_busy) this.confirm_close = true;
-      else this.close();
+    onBeforeUnload(event) {
+      event.preventDefault();
+      event.returnValue = "";
+    },
+
+    async requestClose() {
+      if (!this.is_busy) return this.close();
+      this.confirm_close = true;
+      await this.$nextTick();
+      this.$refs.confirm?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+      this.$refs.continue_button?.focus({ preventScroll: true });
     },
     // with the files sent, for the cahier to scroll to them
     close() {
@@ -674,15 +718,30 @@ export default {
   }
 }
 
+// yellow, as the conversion's warning (MediaModal.vue): hard to miss
 .m_upload--confirm {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-verysmall);
+  padding: var(--spacing-small);
+  border-radius: 4px;
+  background-color: var(--c-jaune);
+  color: var(--c-noir);
 
   p {
     flex: 1 0 100%;
     margin: 0;
+    font-weight: 600;
+  }
+
+  // readable on the yellow: solid green to go on, solid red to stop
+  .m_upload--choice.is--active {
+    border-color: var(--c-noir);
+  }
+  .m_upload--choice.is--danger {
+    background-color: var(--c-rouge);
+    color: white;
   }
 }
 </style>
