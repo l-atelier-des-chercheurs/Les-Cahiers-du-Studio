@@ -465,7 +465,7 @@ export default {
   min-width: 2rem;
   padding: 0;
   border-radius: 4px;
-  background-color: rgb(0 0 0 / 70%);
+  background-color: rgb(0 0 0 / 50%);
   color: white;
   transition: background-color 0.2s ease-out;
 
@@ -477,7 +477,7 @@ export default {
   }
 
   &:hover {
-    background-color: rgb(0 0 0 / 90%);
+    background-color: rgb(0 0 0 / 70%);
   }
   &:focus-visible {
     outline: 2px solid white;
