@@ -50,6 +50,15 @@ export function formatTime(date) {
   return d.toLocaleTimeString(i18n.global.locale.value, { timeStyle: "short" });
 }
 
+// a video's or sound's length, in seconds: "1:07", "1:02:05"
+export function formatDuration(seconds) {
+  const total = Math.round(+seconds);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const pad = (n) => String(n).padStart(2, "0");
+  return h ? `${h}:${pad(m)}:${pad(total % 60)}` : `${m}:${pad(total % 60)}`;
+}
+
 // an author's colour, from their name ("authors/louis" → "louis"): always
 // the same for a name, light as v2's (randomcolor, luminosity "light")
 export function authorColor(path_to_author) {

@@ -78,6 +78,8 @@
   "text": "Texte",
   "marker": "Repère",
   "embed": "Lien",
+  "play": "Lire",
+  "stop": "Arrêter",
   "capture": "Capturer",
   "capture_sound": "Capturer un son",
   "capture_start": "Commencer la capture",

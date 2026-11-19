@@ -4,7 +4,10 @@
   caption over the top left corner -->
   <div
     class="m_tile"
-    :class="[`is--${type}`, { 'is--unseen': is_unseen }]"
+    :class="[
+      `is--${type}`,
+      { 'is--unseen': is_unseen, 'is--playing': is_playing },
+    ]"
     :data-path="media.$path"
     :title="summary"
     role="button"
@@ -31,6 +34,35 @@
       <circle class="_fill" cx="20" cy="20" r="4.7" />
     </svg>
 
+    <!-- played in place: the video instead of its thumb -->
+    <video
+      v-else-if="is_playing && type === 'video'"
+      ref="player"
+      :src="media_url"
+      :poster="thumb"
+      playsinline
+      @timeupdate="onTimeUpdate"
+      @ended="stopPlaying"
+      @error="stopPlaying"
+    />
+
+    <!-- a sound: drawn bars, not its waveform thumb -->
+    <svg
+      v-else-if="type === 'audio'"
+      class="m_tile--sound"
+      viewBox="0 0 40 40"
+      aria-hidden="true"
+    >
+      <line
+        v-for="[x, h] in SOUND_BARS"
+        :key="x"
+        :x1="x"
+        :y1="20 - h"
+        :x2="x"
+        :y2="20 + h"
+      />
+    </svg>
+
     <img
       v-else-if="thumb"
       :src="thumb"
@@ -43,14 +75,38 @@
 
     <span v-else class="m_tile--placeholder text-cap">{{ extension }}</span>
 
-    <svg
-      v-if="type === 'video'"
-      class="m_tile--play"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
+    <!-- a sound played in place: its waveform stays shown -->
+    <audio
+      v-if="is_playing && type === 'audio'"
+      ref="player"
+      :src="media_url"
+      @timeupdate="onTimeUpdate"
+      @ended="stopPlaying"
+      @error="stopPlaying"
+    />
+
+    <!-- plays in the tile, or stops: the icon, then the duration (the
+    time left, while playing), one button. The rest of the tile still
+    opens the media -->
+    <button
+      v-if="can_play"
+      type="button"
+      class="m_tile--playButton"
+      :aria-label="$t(is_playing ? 'stop' : 'play')"
+      :title="$t(is_playing ? 'stop' : 'play')"
+      @click.stop="togglePlay"
+      @keydown.enter.space.stop
     >
-      <polygon points="8 5 19 12 8 19" />
-    </svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect v-if="is_playing" x="7" y="7" width="10" height="10" />
+        <polygon v-else points="8 5 19 12 8 19" />
+      </svg>
+      <span v-if="time_shown" class="m_tile--duration">{{ time_shown }}</span>
+    </button>
+
+    <div v-if="is_playing" class="m_tile--progress" aria-hidden="true">
+      <span :style="{ transform: `scaleX(${progress})` }" />
+    </div>
 
     <div v-if="author_color || legend" class="m_tile--top">
       <span
@@ -66,14 +122,32 @@
 
 <script>
 import { ref } from "vue";
-import { thumbSrcset, thumbURL } from "@/adc/api";
+import { mediaURL, thumbSrcset, thumbURL } from "@/adc/api";
 import { mapState } from "pinia";
-import { authorColor, dateOf, formatTime } from "@/medias";
+import { authorColor, dateOf, formatDuration, formatTime } from "@/medias";
+import { play, release } from "@/playback";
 import { useUnseenStore } from "@/stores/unseen";
 
 // one of the cahiers' thumb resolutions (settings_base.json): about 2× the
 // tiles' width, for sharp thumbs on dense screens
 const THUMB_RESOLUTION = 440;
+
+// a sound's tile: bars at x, of half height h, on a 40×40 grid (the + menu
+// drew its audio option so)
+const SOUND_BARS = [
+  [5.83, 1.7],
+  [8.41, 3.5],
+  [10.99, 2.2],
+  [13.56, 4.9],
+  [16.14, 2.5],
+  [18.71, 3.1],
+  [21.29, 1.9],
+  [23.86, 2.7],
+  [26.44, 6],
+  [29.01, 2.7],
+  [31.59, 3.7],
+  [34.17, 1.4],
+];
 
 // Every tile's size, measured by one shared observer: the image's sizes
 // follow it, for the browser to pick a sharp enough thumb (srcset)
@@ -141,7 +215,7 @@ export default {
     sizes() {
       if (!this.tile_width) return "";
       const fitted = this.tile_height * this.aspect;
-      const contained = ["audio", "pdf"].includes(this.type);
+      const contained = this.type === "pdf";
       const width = contained
         ? Math.min(this.tile_width, fitted)
         : Math.max(this.tile_width, fitted);
@@ -193,12 +267,38 @@ export default {
       const name = this.media.$media_filename || "";
       return name.includes(".") ? name.split(".").pop() : "?";
     },
+    media_url() {
+      return mediaURL(this.media);
+    },
+    // a video's or sound's length in seconds: the player's once playing,
+    // adc-core's until then
+    duration() {
+      const seconds = this.player_duration || +this.media.$infos?.duration;
+      return seconds > 0 ? seconds : 0;
+    },
+    // "1:07"; while playing, the time left
+    time_shown() {
+      if (!this.duration) return "";
+      if (!this.is_playing) return formatDuration(this.duration);
+      return formatDuration(Math.max(0, this.duration - this.current_time));
+    },
+    // videos and sounds play in the tile
+    can_play() {
+      return ["video", "audio"].includes(this.type) && !!this.media_url;
+    },
   },
   data() {
     return {
       // the tile's size on screen, in CSS pixels
       tile_width: 0,
       tile_height: 0,
+      SOUND_BARS,
+      is_playing: false,
+      // 0 to 1, while playing
+      progress: 0,
+      // seconds, while playing
+      current_time: 0,
+      player_duration: 0,
     };
   },
   created() {
@@ -212,8 +312,42 @@ export default {
   },
   beforeUnmount() {
     unobserveSize(this.$el);
+    // leaving the timeline or the grid: silence
+    this.stopPlaying();
   },
   methods: {
+    togglePlay() {
+      if (this.is_playing) this.stopPlaying();
+      else this.startPlaying();
+    },
+    // the player appears, then plays: from the start each time (a stop,
+    // not a pause). Whatever played elsewhere stops (playback.js)
+    async startPlaying() {
+      play(this.stopPlaying);
+      this.progress = 0;
+      this.is_playing = true;
+      await this.$nextTick();
+      try {
+        await this.$refs.player?.play();
+      } catch {
+        this.stopPlaying();
+      }
+    },
+    stopPlaying() {
+      this.$refs.player?.pause();
+      this.is_playing = false;
+      this.progress = 0;
+      this.current_time = 0;
+      release(this.stopPlaying);
+    },
+    onTimeUpdate(event) {
+      const { currentTime, duration } = event.target;
+      this.current_time = currentTime;
+      if (duration > 0 && Number.isFinite(duration)) {
+        this.player_duration = duration;
+        this.progress = currentTime / duration;
+      }
+    },
     // a link in a text opens itself, not the media's window
     onClick(event) {
       if (event.target.closest?.("a")) return;
@@ -254,20 +388,18 @@ export default {
     box-shadow: 0 0 0 3px var(--c-vert_vif);
   }
 
-  > img {
+  > img,
+  > video {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  // waveforms and pages: whole
-  &.is--audio > img,
+  // pages: whole
   &.is--pdf > img {
     object-fit: contain;
   }
-  &.is--audio {
-    padding: var(--spacing-small);
-  }
+  &.is--audio,
   &.is--pdf,
   &.is--other {
     background-color: var(--c-gris_tresclair);
@@ -309,14 +441,74 @@ export default {
   }
 }
 
-.m_tile--play {
+.m_tile--sound {
+  width: 60%;
+  height: 60%;
+  stroke: var(--c-noir);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+
+  .is--playing & {
+    stroke: var(--c-vert_vif);
+  }
+}
+
+// bottom left: plays in the tile, or stops; the duration on the right of
+// the icon, on the same background. Rounded as the tile
+.m_tile--playButton {
   position: absolute;
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0.5rem;
-  border-radius: 50%;
-  background-color: rgb(0 0 0 / 55%);
-  fill: white;
+  bottom: 6px;
+  left: 6px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  min-width: 2rem;
+  padding: 0;
+  border-radius: 4px;
+  background-color: rgb(0 0 0 / 70%);
+  color: white;
+  transition: background-color 0.2s ease-out;
+
+  svg {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.35rem;
+    fill: white;
+  }
+
+  &:hover {
+    background-color: rgb(0 0 0 / 90%);
+  }
+  &:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 1px;
+  }
+}
+
+// small, in the play button, on the right of its icon
+.m_tile--duration {
+  padding-right: 0.5rem;
+  font-size: var(--font-size-verysmall);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+// along the bottom edge, while playing
+.m_tile--progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: rgb(0 0 0 / 15%);
+  pointer-events: none;
+
+  > span {
+    display: block;
+    height: 100%;
+    background-color: var(--c-vert_vif);
+    transform-origin: left;
+  }
 }
 
 // over the top left corner: the author's dot, then the caption

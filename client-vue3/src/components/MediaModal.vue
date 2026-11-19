@@ -390,7 +390,8 @@ import { mapActions } from "pinia";
 import * as api from "@/adc/api";
 import { i18n } from "@/i18n";
 import { renderText } from "@/markdown";
-import { authorColor } from "@/medias";
+import { authorColor, formatDuration } from "@/medias";
+import { stopAll } from "@/playback";
 import { useContentStore } from "@/stores/content";
 import { useUnseenStore } from "@/stores/unseen";
 import BaseModal from "./BaseModal.vue";
@@ -518,7 +519,7 @@ export default {
         },
         {
           key: "duration",
-          value: infos.duration && this.formatDuration(infos.duration),
+          value: infos.duration && formatDuration(infos.duration),
         },
         { key: "weight", value: infos.size && this.formatBytes(infos.size) },
         {
@@ -562,6 +563,8 @@ export default {
     if (this.can_edit) this.loadAuthors();
   },
   mounted() {
+    // a video or sound playing in its tile stops
+    stopAll();
     window.addEventListener("keydown", this.onKeydown);
   },
   beforeUnmount() {
@@ -735,15 +738,6 @@ export default {
         dateStyle: "medium",
         timeStyle: "short",
       });
-    },
-    formatDuration(seconds) {
-      const total = Math.round(+seconds);
-      const h = Math.floor(total / 3600);
-      const m = Math.floor((total % 3600) / 60);
-      const pad = (n) => String(n).padStart(2, "0");
-      return h
-        ? `${h}:${pad(m)}:${pad(total % 60)}`
-        : `${m}:${pad(total % 60)}`;
     },
     formatBytes(bytes) {
       const units = ["bytes", "kb", "mb", "gb"];
