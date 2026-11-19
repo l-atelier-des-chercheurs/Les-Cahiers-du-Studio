@@ -1,12 +1,15 @@
 <template>
   <!-- v2's TextEditor.vue: a basic Quill editor, whose content is saved as
-  HTML. Quill and its styles load with the first text edited. -->
+  HTML. Quill loads with the first text edited; its styles are in the main
+  bundle (all CSS is injected by build.js: a CSS file loaded with import()
+  would be preloaded from /assets/, where there is none). -->
   <div class="m_textEditor">
     <div ref="editor" />
   </div>
 </template>
 
 <script>
+import "quill/dist/quill.snow.css";
 import { renderText } from "@/markdown";
 
 // v2's toolbar
@@ -39,10 +42,7 @@ export default {
     },
   },
   async mounted() {
-    const [{ default: Quill }] = await Promise.all([
-      import("quill"),
-      import("quill/dist/quill.snow.css"),
-    ]);
+    const { default: Quill } = await import("quill");
     if (!this.$refs.editor) return;
     this.quill = new Quill(this.$refs.editor, {
       theme: "snow",
