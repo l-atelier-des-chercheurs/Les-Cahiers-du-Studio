@@ -174,7 +174,7 @@ export default {
     open_media_index() {
       return this.sorted_medias.findIndex((m) => m.$path === this.open_media);
     },
-    // undefined until the media shows up (a text just created), or once it
+    // undefined until the media shows up, or once it
     // is removed: the window closes
     open_media_meta() {
       return this.sorted_medias[this.open_media_index];
@@ -223,12 +223,10 @@ export default {
   methods: {
     ...mapActions(useContentStore, ["openFolder", "closeFolder"]),
     ...mapActions(useUnseenStore, { loadUnseen: "load", addUnseen: "add" }),
-    // a text, repère or link, from the + button. A text opens, to be
-    // written (its window shows once the server announces it)
-    onMediaCreated(path_to_meta, type) {
+    // a text, repère or link, from the + button, already written
+    onMediaCreated(path_to_meta) {
       this.addUnseen(path_to_meta);
       this.scrollTo(path_to_meta);
-      if (type === "text") this.open_media = path_to_meta;
     },
     openSibling(offset) {
       const media = this.sorted_medias[this.open_media_index + offset];

@@ -67,6 +67,15 @@
       </svg>
     </button>
 
+    <TextModal
+      v-if="show_text_modal"
+      v-model="text_draft"
+      :is_creating="is_creating"
+      :error="text_error"
+      @close="show_text_modal = false"
+      @submit="createText"
+    />
+
     <MarkerModal
       v-if="marker_date"
       :date="marker_date"
@@ -93,6 +102,7 @@ import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
 import EmbedModal from "./EmbedModal.vue";
 import MarkerModal from "./MarkerModal.vue";
+import TextModal from "./TextModal.vue";
 
 // Icons drawn on a 40×40 grid, stroked in currentColor (v2's, redrawn)
 const ICONS = {
@@ -136,7 +146,7 @@ const ICONS = {
 let instances = 0;
 
 export default {
-  components: { EmbedModal, MarkerModal },
+  components: { EmbedModal, MarkerModal, TextModal },
   props: {
     // the cahier, e.g. "cahiers/mon-cahier"
     path_to_folder: { type: String, required: true },
@@ -153,6 +163,10 @@ export default {
       is_creating: false,
       error: "",
       show_embed_modal: false,
+      show_text_modal: false,
+      // what was written, kept if the window is closed before adding it
+      text_draft: "",
+      text_error: "",
       // a repère asked for, at this date, waiting for its label
       marker_date: "",
       marker_error: "",
@@ -170,7 +184,7 @@ export default {
     // choice of an existing file.
     options() {
       return [
-        { key: "text", label: "text", action: this.createText },
+        { key: "text", label: "text", action: this.openTextModal },
         { key: "marker", label: "marker", action: this.openMarkerModal },
         { key: "embed", label: "embed", action: this.openEmbedModal },
         { key: "image", label: "image", accept: "image/*" },
@@ -236,15 +250,29 @@ export default {
 
     /* TEXT, MARKER, EMBED */
 
-    // an empty .md file, then edited in the media’s modal (HTML, as in v2)
-    createText() {
-      return this.create(() =>
+    openTextModal() {
+      this.text_error = "";
+      this.show_text_modal = true;
+      this.is_open = false;
+    },
+    // a .md file holding HTML, as in v2 (TODO.md: a .html file); formatted
+    // later in the media's window
+    async createText(html) {
+      this.text_error = "";
+      const created = await this.create(() =>
         this.uploadFile(
           this.path_to_folder,
-          new File([""], "texte.md", { type: "text/markdown" }),
+          new File([html], "texte.md", { type: "text/markdown" }),
           this.newMediaMeta()
         )
       );
+      if (created) {
+        this.show_text_modal = false;
+        this.text_draft = "";
+      } else {
+        this.text_error = this.error;
+        this.showError("");
+      }
     },
     // the time of the click: what the repère marks
     openMarkerModal() {

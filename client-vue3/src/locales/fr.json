@@ -84,6 +84,8 @@
   "file": "Fichier",
   "drop_files_here": "Déposez vos fichiers ici",
   "add_marker": "Ajouter un repère",
+  "add_text": "Ajouter un texte",
+  "text_instructions": "La mise en forme (titres, italique, listes…) se fait ensuite, en ouvrant le texte.",
   "marker_placeholder": "Un moment, une étape…",
   "marker_instructions": "Facultatif. Le repère marque l’heure à laquelle vous l’avez demandé.",
   "add_embed": "Ajouter un lien",

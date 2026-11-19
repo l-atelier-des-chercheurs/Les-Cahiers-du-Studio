@@ -128,7 +128,7 @@ Reprendre `EditMedia.vue`, réduit à (`MediaModal.vue`) :
 - [x] Auteurs
 - [x] Supprimer le média (avec confirmation intégrée à la page)
 - [x] Télécharger, médias précédent / suivant (flèches et clavier), avertissement si modifications non enregistrées
-- [x] Un texte créé avec le + ouvre directement sa fenêtre
+- [x] Texte créé avec le + : une petite fenêtre avec un simple champ, comme le repère. La mise en forme se fait ensuite dans la fenêtre du média
 - [ ] Changer l'URL d'un lien ne régénère pas encore son aperçu (route `_regenerateThumbs` d'adc-core)
 - [ ] À voir plus tard : `public`, options de tuile (`action_on_tile_click`, lien externe), découpe et optimisation vidéo
 
