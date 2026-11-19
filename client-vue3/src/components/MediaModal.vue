@@ -90,11 +90,18 @@
           </a>
         </div>
 
+        <!-- pdf: its first page, the viewer only once asked for -->
         <iframe
-          v-else-if="type === 'pdf'"
+          v-else-if="type === 'pdf' && is_pdf_loaded"
           :src="media_url"
           :title="media.$media_filename"
         />
+        <div v-else-if="type === 'pdf'" class="m_media--pdf">
+          <img v-if="large_thumb" :src="large_thumb" alt="" />
+          <button type="button" class="button" @click="is_pdf_loaded = true">
+            {{ $t("load_pdf") }}
+          </button>
+        </div>
 
         <div v-else class="m_media--other">
           <span class="text-cap">{{ extension }}</span>
@@ -409,6 +416,8 @@ export default {
       form: this.formFrom(this.media),
       new_keyword: "",
       is_zoomed: false,
+      // a pdf shows its thumb until its viewer is loaded
+      is_pdf_loaded: false,
       is_saving: false,
       is_regenerating: false,
       error: "",
@@ -541,6 +550,7 @@ export default {
       this.form = this.formFrom(this.media);
       this.new_keyword = "";
       this.is_zoomed = false;
+      this.is_pdf_loaded = false;
       this.error = "";
       this.confirm_remove = false;
       this.pending_action = "";
@@ -856,6 +866,45 @@ export default {
 
   audio {
     width: 100%;
+  }
+}
+
+// the first page, the button over its centre
+.m_media--pdf {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  // solid, readable over any page
+  .button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: var(--spacing-small) var(--spacing-medium);
+    border-radius: 2em;
+    background-color: var(--c-noir);
+    color: var(--c-blanc);
+    font-weight: 600;
+    box-shadow: 0 0.25rem 1.5rem rgb(0 0 0 / 35%);
+    transition:
+      background-color 0.2s ease-out,
+      transform 0.2s ease-out;
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--c-noir_light);
+      transform: translate(-50%, -50%) scale(1.05);
+    }
   }
 }
 
