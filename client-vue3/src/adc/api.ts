@@ -180,6 +180,11 @@ export function removeFile(path_to_meta: Path) {
   return request("DELETE", path_to_meta);
 }
 
+// the new $thumbs come through the fileUpdated event
+export function regenerateThumbs(path_to_meta: Path) {
+  return request("PATCH", `${path_to_meta}/_regenerateThumbs`);
+}
+
 /* MEDIA URLS: the content folder is served from / */
 
 function contentURL(path: Path) {
@@ -193,6 +198,13 @@ function contentURL(path: Path) {
 
 function folderOf(meta: FileMeta) {
   return meta.$path.split("/").slice(0, -1).join("/");
+}
+
+// regenerated thumbs keep their names: $thumbs_version (set by the store,
+// not by adc-core) changes their URLs, for the browser to fetch them again
+function thumbPath(meta: FileMeta, name: string) {
+  const version = meta.$thumbs_version;
+  return `thumbs/${folderOf(meta)}/${name}${version ? `?v=${version}` : ""}`;
 }
 
 export function mediaURL(meta: FileMeta) {
@@ -220,7 +232,7 @@ export function thumbSrcset(meta: FileMeta, aspect = 1) {
     .sort(([a], [b]) => +a - +b)
     .map(([res, name]) => {
       const width = aspect >= 1 ? +res : Math.round(+res * aspect);
-      return `${contentURL(`thumbs/${folderOf(meta)}/${name}`)} ${width}w`;
+      return `${contentURL(thumbPath(meta, name))} ${width}w`;
     })
     .join(", ");
 }
@@ -232,5 +244,5 @@ export function thumbURL(meta: FileMeta, resolution: number) {
   const set = resolution in thumbs ? thumbs : Object.values(thumbs)[0];
   const name = typeof set === "object" ? set[resolution] : undefined;
   if (typeof name !== "string") return undefined;
-  return contentURL(`thumbs/${folderOf(meta)}/${name}`);
+  return contentURL(thumbPath(meta, name));
 }

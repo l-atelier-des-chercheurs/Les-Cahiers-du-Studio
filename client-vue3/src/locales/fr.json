@@ -121,6 +121,7 @@
   "remove_item": "Retirer {item}",
   "add_author": "Ajouter un auteur",
   "download": "Télécharger",
+  "refresh_thumb": "Régénérer l’aperçu",
   "remove": "Supprimer",
   "sure_to_remove_media": "Supprimer ce média ?",
   "cancel": "Annuler",

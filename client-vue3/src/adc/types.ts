@@ -22,6 +22,8 @@ export type FileMeta = Meta & {
     "image" | "video" | "audio" | "text" | "pdf" | "url" | "other" | string;
   $media_filename?: string;
   $thumbs?: Record<string, unknown>;
+  // client only: when the thumbs were last regenerated (stores/content.js)
+  $thumbs_version?: number;
   $infos?: Record<string, unknown>;
   $date_uploaded?: string;
 };

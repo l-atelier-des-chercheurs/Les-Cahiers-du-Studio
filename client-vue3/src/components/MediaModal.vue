@@ -258,6 +258,21 @@
         <span class="text-cap font-verysmall">{{ $t("download") }}</span>
       </a>
       <button
+        v-if="can_edit && has_thumbs"
+        type="button"
+        class="button-round m_media--action"
+        :class="{ 'is--busy': is_regenerating }"
+        :disabled="is_regenerating"
+        @click="regenerate"
+      >
+        <svg viewBox="0 0 49 49" aria-hidden="true">
+          <circle cx="24.5" cy="24.5" r="24" />
+          <path d="M33.5,24.5a9,9,0,1,1-2.64-6.36" />
+          <polyline points="31.6 12.4 31.6 18.5 25.5 18.5" />
+        </svg>
+        <span class="text-cap font-verysmall">{{ $t("refresh_thumb") }}</span>
+      </button>
+      <button
         v-if="can_edit"
         type="button"
         class="button-round m_media--action"
@@ -394,6 +409,7 @@ export default {
       new_keyword: "",
       is_zoomed: false,
       is_saving: false,
+      is_regenerating: false,
       error: "",
       confirm_remove: false,
       // close, prev or next, waiting for unsaved changes
@@ -417,6 +433,10 @@ export default {
     },
     large_thumb() {
       return api.thumbURL(this.media, 1600);
+    },
+    // the types adc-core makes thumbs of
+    has_thumbs() {
+      return ["image", "video", "audio", "pdf", "url"].includes(this.type);
     },
     rendered_text() {
       return renderMarkdown(this.form.content);
@@ -537,7 +557,11 @@ export default {
     window.removeEventListener("keydown", this.onKeydown);
   },
   methods: {
-    ...mapActions(useContentStore, ["updateFile", "removeFile"]),
+    ...mapActions(useContentStore, [
+      "updateFile",
+      "removeFile",
+      "regenerateThumbs",
+    ]),
     ...mapActions(useUnseenStore, ["markSeen"]),
     authorColor,
 
@@ -624,6 +648,21 @@ export default {
         });
       } finally {
         this.is_saving = false;
+      }
+    },
+
+    // the new thumbs show once the server's fileUpdated event is in
+    async regenerate() {
+      this.is_regenerating = true;
+      this.error = "";
+      try {
+        await this.regenerateThumbs(this.media.$path);
+      } catch (err) {
+        this.error = this.$t("error_with_code", {
+          code: err.code || err.message,
+        });
+      } finally {
+        this.is_regenerating = false;
       }
     },
 
@@ -970,6 +1009,20 @@ export default {
   &:hover svg,
   &.is--active svg {
     fill: var(--c-noir);
+  }
+  // regenerating: the arrow turns
+  &.is--busy {
+    cursor: progress;
+
+    svg {
+      animation: m_media--spin 1s linear infinite;
+    }
+  }
+}
+
+@keyframes m_media--spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

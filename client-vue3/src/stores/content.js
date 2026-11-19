@@ -96,8 +96,15 @@ export const useContentStore = defineStore("content", {
         if (files && !files.some((f) => f.$path === meta.$path))
           files.push(meta);
       });
+      // new $thumbs keep the same names: a version changes their URLs
       onEvent("fileUpdated", ({ path_to_folder, path_to_meta, changed_data }) =>
-        this._updateFileMeta(path_to_folder, path_to_meta, changed_data)
+        this._updateFileMeta(
+          path_to_folder,
+          path_to_meta,
+          changed_data?.$thumbs
+            ? { ...changed_data, $thumbs_version: Date.now() }
+            : changed_data
+        )
       );
       onEvent("fileRemoved", ({ path_to_folder, path_to_meta }) =>
         this._removeFiles(path_to_folder, [path_to_meta])
@@ -225,6 +232,10 @@ export const useContentStore = defineStore("content", {
     },
     removeFile(path_to_meta) {
       return this._track(api.removeFile(path_to_meta));
+    },
+    // the new thumbs come with the fileUpdated event
+    regenerateThumbs(path_to_meta) {
+      return this._track(api.regenerateThumbs(path_to_meta));
     },
 
     _updateFileMeta(path_to_folder, path_to_meta, changed_data) {
