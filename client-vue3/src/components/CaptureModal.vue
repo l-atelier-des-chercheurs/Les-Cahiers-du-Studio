@@ -48,6 +48,7 @@
             class="m_capture--record"
             :class="{ 'is--recording': is_recording }"
             :disabled="!stream"
+            :title="$t(is_recording ? 'capture_stop' : 'capture_start')"
             :aria-label="$t(is_recording ? 'capture_stop' : 'capture_start')"
             @click="is_recording ? stop() : start()"
           >
@@ -61,13 +62,13 @@
           <p class="m_capture--time" :class="{ 'is--ending': is_ending }">
             {{ formatDuration(elapsed) }} / {{ formatDuration(MAX_DURATION) }}
           </p>
-          <p class="m_capture--message">
+          <!-- <p class="m_capture--message">
             {{
               !stream
                 ? $t("capture_waiting_microphone")
                 : $t(is_recording ? "capture_stop" : "capture_start")
             }}
-          </p>
+          </p> -->
         </template>
       </div>
       <small>{{ $t("capture_max_duration") }}</small>
@@ -154,9 +155,7 @@ export default {
       // only on https:// or localhost: not on http://192.168…
       if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
         this.device_error = this.$t(
-          window.isSecureContext
-            ? "capture_unsupported"
-            : "capture_needs_https"
+          window.isSecureContext ? "capture_unsupported" : "capture_needs_https"
         );
         return;
       }
