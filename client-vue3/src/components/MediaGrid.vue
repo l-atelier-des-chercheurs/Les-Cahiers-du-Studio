@@ -131,12 +131,13 @@ export default {
   height: 100%;
 }
 
-// above the days, outside what scrolls: the days' titles stick under it
+// above the days, outside what scrolls, centered on the page: the days'
+// titles stick under it
 .m_grid--zoom {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: var(--spacing-verysmall);
   padding: var(--spacing-verysmall) var(--spacing-medium);
 
