@@ -207,7 +207,13 @@ export default {
     // string, not to sync on every change of a media's meta
     media_paths() {
       const files = this.cahier?.$files;
-      return Array.isArray(files) ? files.map((f) => f.$path).join("\n") : null;
+      // the repères left out: never outlined as unseen
+      return Array.isArray(files)
+        ? files
+            .filter((f) => f.$type !== "marker")
+            .map((f) => f.$path)
+            .join("\n")
+        : null;
     },
   },
   watch: {
@@ -240,8 +246,9 @@ export default {
     ...mapActions(useContentStore, ["openFolder", "closeFolder"]),
     ...mapActions(useUnseenStore, { syncUnseen: "sync", addUnseen: "add" }),
     // a text, repère or link, from the + button, already written
-    onMediaCreated(path_to_meta) {
-      this.addUnseen(path_to_meta);
+    onMediaCreated(path_to_meta, type) {
+      // a repère is never outlined
+      if (type !== "marker") this.addUnseen(path_to_meta);
       this.scrollTo(path_to_meta);
     },
     openSibling(offset) {
