@@ -4,7 +4,7 @@ const path = require("path");
 // settings_base.json and settings.json from appRoot
 require("adc-core").start({
   appRoot: path.resolve(__dirname),
-  // the Vue 3 client, built and committed by `npm version` (preversion)
+  // the Vue 3 client, built and committed by `npm version` ("version" script)
   clientDist: path.join(__dirname, "client-vue3", "dist"),
   defaultContent: path.join(__dirname, "content"),
 });

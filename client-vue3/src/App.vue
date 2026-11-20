@@ -13,6 +13,8 @@
     <NoticeModal v-if="show_notice" @close="show_notice = false" />
 
     <AppNotifications />
+
+    <UpdateNotice />
   </div>
 </template>
 
@@ -20,9 +22,10 @@
 import AppNotifications from "@/components/AppNotifications.vue";
 import LoginModal from "@/components/LoginModal.vue";
 import NoticeModal from "@/components/NoticeModal.vue";
+import UpdateNotice from "@/components/UpdateNotice.vue";
 
 export default {
-  components: { AppNotifications, LoginModal, NoticeModal },
+  components: { AppNotifications, LoginModal, NoticeModal, UpdateNotice },
   data() {
     return {
       show_login_modal: false,

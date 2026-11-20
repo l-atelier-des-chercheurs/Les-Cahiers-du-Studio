@@ -36,6 +36,22 @@ async function request<T>(
   return data as T;
 }
 
+/* VERSION */
+
+// the app's version on the server (adc-core 0.2.13+), compared with the
+// page's (stores/appVersion.js). undefined when unknown: an older adc-core
+// answers its page instead, a cut connection nothing
+export async function getServerVersion(): Promise<string | undefined> {
+  try {
+    const res = await fetch("/_api2/_version", { cache: "no-store" });
+    if (!res.ok) return undefined;
+    const data = await res.json();
+    return typeof data?.version === "string" ? data.version : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 /* AUTH */
 
 // GET /_authCheck answers 200 when there is no general password,

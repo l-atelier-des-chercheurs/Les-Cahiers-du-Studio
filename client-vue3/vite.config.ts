@@ -26,6 +26,8 @@ export default defineConfig({
     origin: "https://localhost:5173",
     host: true,
     cors: { origin: "*" },
+    // the repo's CHANGELOG.md, imported by src/changelog.js
+    fs: { allow: [".."] },
   },
   build: {
     modulePreload: false,

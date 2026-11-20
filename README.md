@@ -20,10 +20,15 @@ npm start
 ```
 ├── index.js              appelle require("adc-core").start({...})
 ├── settings_base.json    réglages et schéma (cahiers, authors, chats)
+├── CHANGELOG.md          nouveautés, affichées dans l’appli après une mise à jour
 ├── content/              contenu par défaut, copié à la création d'un dossier de contenu
 ├── client-vue3/          client Vue 3, build → client-vue3/dist (compilé et versionné par `npm version`)
 └── scripts/              nettoyage de ffprobe, certificats HTTPS de développement
 ```
+
+## Publier une version
+
+Noter les nouveautés pour les utilisateurices sous `## À venir` dans `CHANGELOG.md`, puis `npm version prerelease` (ou `patch`, `minor`…) : la section prend le numéro et la date de la version, le client est compilé, le tout est commité, tagué et poussé. Après la mise à jour d’une instance, l’appli signale les nouveautés depuis la dernière version ouverte dans le navigateur.
 
 ## Contenus de la v2
 
