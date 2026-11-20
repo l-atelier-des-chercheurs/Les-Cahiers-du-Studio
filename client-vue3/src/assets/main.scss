@@ -432,13 +432,24 @@ small {
   z-index: 2;
   animation: m_tile-closed 1s cubic-bezier(0.25, 0.8, 0.25, 1) both;
 }
-// another media than the one clicked (← →): once scrolled to
-.m_tile[data-closed="browsed"] {
+// another media than the one clicked (← →), or marked seen by the top
+// bar's count: once scrolled to
+.m_tile[data-closed="browsed"],
+.m_tile[data-closed="seen"] {
   animation-delay: 0.35s;
+}
+// marked seen: half as large
+.m_tile[data-closed="seen"] {
+  animation-name: m_tile-seen;
 }
 @keyframes m_tile-closed {
   from {
     transform: scale(1.5);
+  }
+}
+@keyframes m_tile-seen {
+  from {
+    transform: scale(1.25);
   }
 }
 

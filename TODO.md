@@ -103,12 +103,12 @@ Reprendre le bouton + de la v2 (`ImportMedias.vue`) : un bouton rond qui déplie
   - Étape 2, tactile : appui long pour commencer, sans gêner le défilement.
   - À tester sur un vrai cahier : avec des tailles mêlées, le remplissage des trous (dense) peut rendre l'ordre affiché différent de l'ordre des dates, et la ligne d'insertion sauter.
 
-- [ ] **Nouveautés des autres** : le contour vert signale les contributions des autres que l'on n'a pas encore vues (plus les siennes). Après la conférence, pas avant.
-  - Point de départ : est nouveau ce qui a été ajouté depuis la première visite du cahier ; tout ce qui existait avant compte comme vu, sinon un cahier de 300 médias serait entièrement entouré.
-  - Ses propres contributions ne sont jamais nouvelles (son compte dans `$authors`, ou ajoutées depuis ce navigateur). Le défilement jusqu'à elles après un ajout reste.
-  - Un média devient vu quand on l'ouvre dans sa fenêtre, ou par le compteur (ci-dessous).
-  - « Tout marquer comme vu », pour le cahier ou pour un jour (à côté de son libellé), pour ne pas laisser s'accumuler les contours.
-  - Compteur « 12 nouveaux » dans la barre du haut. Un clic va au nouveau média ajouté le moins récemment, le compte comme vu (sans avoir à l'ouvrir), et le compteur passe à « 11 nouveaux » ; un nouveau clic va au suivant, et ainsi de suite.
+- [ ] **Nouveautés des autres** : le contour vert signale aussi les contributions des autres que l'on n'a pas encore vues.
+  - [x] Point de départ : est nouveau ce qui a été ajouté depuis la première visite du cahier ; tout ce qui existait avant compte comme vu, sinon un cahier de 300 médias serait entièrement entouré. (Le navigateur garde la liste des médias qu'il connaît.)
+  - [x] Un média devient vu quand on l'ouvre dans sa fenêtre, quand on le survole une seconde à la souris, ou par le compteur (ci-dessous). Les repères ne sont jamais nouveaux.
+  - [x] Compteur « 12 nouveaux » dans la barre du haut. Un clic va au nouveau média ajouté le moins récemment, le compte comme vu (sans avoir à l'ouvrir), et le compteur passe à « 11 nouveaux » ; un nouveau clic va au suivant, et ainsi de suite.
+  - Décision (20/11) : ses propres ajouts depuis ce navigateur restent entourés, pour voir où ils sont arrivés. Le compteur les compte aussi. Ce qu'on a ajouté depuis un autre appareil compte comme nouveau (`$authors` n'est pas regardé).
+  - [ ] « Tout marquer comme vu », pour le cahier ou pour un jour (à côté de son libellé), pour ne pas laisser s'accumuler les contours.
   - Sans compte : dans le navigateur, comme aujourd'hui. Avec un compte : dans un champ de l'auteur, pour le retrouver sur tous ses appareils ; ce que le navigateur avait vu est fusionné à la connexion.
   - Format, par cahier : la date de la première visite (ou du dernier « Tout marquer comme vu »), et la liste des médias ouverts depuis. Plus petit qu'une liste de tout ce qui a été vu.
   - À vérifier dans adc-core avant de stocker dans le compte : les champs d'un auteur sont-ils lisibles par les autres ? Si oui, il faut un champ visible par son seul propriétaire (sinon la liste montre ce que chacun a ouvert, et quand).

@@ -101,7 +101,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Télécharger** le fichier, **Supprimer** le média (avec une confirmation dans la fenêtre).
 - **Enregistrer et fermer** : enregistre les modifications. Si on ferme ou change de média sans enregistrer, la fenêtre propose d'enregistrer, de ne pas enregistrer ou d'annuler.
 - **Repère** : une fenêtre compacte, sans aperçu, avec seulement son étiquette, sa date (raccourcis « Date de création » et « Maintenant »), « Ajouté par », ses auteurs et « Supprimer ».
-- Ouvrir un média lui retire son contour vert de nouveau média.
+- Ouvrir un média lui retire son contour vert de nouveau média (voir « Nouveaux médias en évidence »).
 - Un texte créé avec le bouton + ouvre directement sa fenêtre, pour l'écrire.
 
 ## Ajouter des médias : le bouton +
@@ -115,8 +115,9 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 - **Glisser-déposer** : quand on fait glisser des fichiers sur la page, le bouton + s'agrandit (« Déposez vos fichiers ici »).
 - Le menu se ferme avec Échap ou un clic ailleurs.
 - **Après création** : un texte, un repère ou un lien apparaît aussitôt, et l'affichage défile jusqu'à lui.
-- **Nouveaux médias en évidence** : tout média ajouté depuis ce navigateur (texte, repère, lien, fichier importé) est entouré de vert jusqu'à ce qu'on l'ouvre.
-  - Un jour replié qui contient des médias pas encore ouverts a un anneau vert autour de son nombre de médias.
+- **Nouveaux médias en évidence** : un média que ce navigateur n'a pas encore vu est entouré de vert jusqu'à ce qu'on l'ouvre, ou qu'on le survole une seconde à la souris. Cela vaut pour les médias ajoutés depuis ce navigateur et pour ceux que d'autres ont ajoutés depuis la dernière visite. Les repères ne sont jamais entourés. À la première visite d'un cahier, rien ne l'est.
+  - Un jour replié qui contient des médias pas encore vus a un anneau vert autour de son nombre de médias.
+  - **Compteur** : dans la barre du haut, juste après le choix de l'affichage, « 12 nouveaux » sur fond vert compte les médias entourés. Chaque clic fait défiler jusqu'au plus anciennement ajouté, le compte comme vu sans l'ouvrir (sa vignette revient d'un peu plus grand à sa taille) et le compteur descend. Il disparaît à zéro.
   - La liste est gardée dans le navigateur, pour chaque cahier.
 - **Auteur** : chaque média ajouté est attribué à la personne connectée. Il est visible tout de suite par les visiteurs du cahier.
 

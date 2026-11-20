@@ -6,6 +6,9 @@ Ce qui change pour les personnes qui utilisent les Cahiers, de la version la plu
 
 ## À venir
 
+- Les médias ajoutés par d’autres personnes depuis la dernière visite sont entourés de vert, comme ceux qu’on ajoute soi-même, jusqu’à ce qu’on les ouvre ou qu’on les survole. À la première visite d’un cahier, rien n’est signalé. Ce suivi est propre à chaque navigateur.
+- Dans la barre du haut, « 12 nouveaux » compte les médias entourés de vert. Chaque clic mène au suivant, du plus anciennement ajouté au plus récent, et le compte comme vu sans avoir à l’ouvrir.
+
 ## 3.1.0-alpha.18 — 2026-11-20
 
 - « Prototype TAV » devient « Vos retours » : on y signale un bug, propose une idée ou une amélioration, même sans compte, et on y retrouve les nouveautés à tester et la présentation du prototype. Cette présentation ne s’ouvre plus qu’à la première visite. Les admins lisent les retours reçus depuis la barre du haut.

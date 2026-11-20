@@ -217,6 +217,8 @@
   "save_and_close": "Enregistrer et fermer",
   "size_not_saved": "La nouvelle taille n’a pas pu être enregistrée ({code}) : le média reprend sa taille.",
   "days_count": "{n} jour | {n} jours",
+  "unseen_count": "{n} nouveau | {n} nouveaux",
+  "show_next_unseen": "Aller au nouveau média suivant",
   "weeks_later": "{n} semaine plus tard… | {n} semaines plus tard…",
   "months_later": "{n} mois plus tard…",
   "years_later": "{n} an plus tard… | {n} ans plus tard…",

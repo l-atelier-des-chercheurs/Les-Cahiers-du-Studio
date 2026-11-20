@@ -71,8 +71,9 @@ export default {
     files: { type: Array, required: true },
     // a media just added: scrolled to once it shows up
     scroll_to: { type: String, default: "" },
-    // the media scrolled to comes back to its size (its window just closed)
-    flash: { type: Boolean, default: false },
+    // the media scrolled to comes back to its size: "browsed" (its window
+    // just closed), "seen" (the top bar's count), see flash.js
+    flash: { type: String, default: "" },
   },
   data() {
     return {
@@ -118,7 +119,7 @@ export default {
         `[data-path="${CSS.escape(this.scroll_to)}"]`
       );
       el?.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (this.flash) closeTile(el, { browsed: true });
+      if (this.flash) closeTile(el, { as: this.flash });
     },
   },
 };

@@ -22,9 +22,10 @@ export function growTile(path_to_meta) {
   tileOf(path_to_meta)?.setAttribute("data-grown", "");
 }
 
-// its window closed: back to its size. browsed: another media than the one
-// clicked, being scrolled to (MediaTimeline, MediaGrid)
-export function closeTile(el_or_path, { browsed = false } = {}) {
+// its window closed: back to its size. as: "browsed", another media than
+// the one clicked, being scrolled to (MediaTimeline, MediaGrid); "seen",
+// marked seen by the top bar's count (CahierView.vue), more gently
+export function closeTile(el_or_path, { as = "" } = {}) {
   ungrow();
   const el = typeof el_or_path === "string" ? tileOf(el_or_path) : el_or_path;
   if (!el) return;
@@ -32,7 +33,7 @@ export function closeTile(el_or_path, { browsed = false } = {}) {
   clearTimeout(el._closed_timeout);
   el.removeAttribute("data-closed");
   void el.offsetWidth;
-  el.setAttribute("data-closed", browsed ? "browsed" : "");
+  el.setAttribute("data-closed", as);
   // once the animation is over (1.35s at most)
   el._closed_timeout = setTimeout(
     () => el.removeAttribute("data-closed"),

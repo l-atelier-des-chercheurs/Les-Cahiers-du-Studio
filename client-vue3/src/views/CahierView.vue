@@ -51,6 +51,17 @@
             </RouterLink>
           </nav>
         </Teleport>
+        <!-- the medias outlined as not seen yet: each click goes to the one
+        added earliest, now seen, and the count goes down -->
+        <button
+          v-if="unseen_medias.length"
+          type="button"
+          class="m_cahier--unseen"
+          :title="$t('show_next_unseen')"
+          @click="showNextUnseen"
+        >
+          {{ $t("unseen_count", unseen_medias.length) }}
+        </button>
       </div>
 
       <Teleport defer to="#m_cahier--menuPanel" :disabled="!is_narrow">
@@ -208,8 +219,9 @@ export default {
       selected_files: [],
       // a media just added, scrolled to once it shows up
       scroll_to: "",
-      // …and comes back to its size: the media whose window just closed
-      scroll_flash: false,
+      // …and comes back to its size: "browsed", the media whose window just
+      // closed; "seen", from the top bar's count (flash.js)
+      scroll_flash: "",
       // the media whose window is open
       open_media: "",
       // moved to another media with ← or →, since the window opened
@@ -223,6 +235,7 @@ export default {
     ...mapState(useContentStore, ["getFolder"]),
     ...mapState(useAppVersionStore, ["is_updated"]),
     ...mapState(useFeedbackStore, ["new_count"]),
+    ...mapState(useUnseenStore, ["isUnseen"]),
     // as on FeedbackButtons': what's new not seen, new feedback for admins
     has_news() {
       return (
@@ -248,6 +261,15 @@ export default {
     // is removed: the window closes
     open_media_meta() {
       return this.sorted_medias[this.open_media_index];
+    },
+    // outlined as not seen yet, the one added earliest first ($date_created:
+    // ISO dates, in UTC, compared as strings)
+    unseen_medias() {
+      return (this.cahier?.$files || [])
+        .filter((f) => this.isUnseen(f.$path))
+        .sort((a, b) =>
+          (a.$date_created || "").localeCompare(b.$date_created || "")
+        );
     },
     all_keywords() {
       const keywords = new Set();
@@ -346,7 +368,19 @@ export default {
       if (event.target.closest?.("a, button")) this.closeMenu();
     },
     ...mapActions(useContentStore, ["openFolder", "closeFolder"]),
-    ...mapActions(useUnseenStore, { syncUnseen: "sync", addUnseen: "add" }),
+    ...mapActions(useUnseenStore, {
+      syncUnseen: "sync",
+      addUnseen: "add",
+      markSeen: "markSeen",
+    }),
+    // the top bar's count: to the media not seen yet added earliest, seen
+    // without opening it, its tile coming back from a little larger
+    showNextUnseen() {
+      const media = this.unseen_medias[0];
+      if (!media) return;
+      this.markSeen(media.$path);
+      this.scrollTo(media.$path, { flash: "seen" });
+    },
     // a text, repère or link, from the + button, already written
     onMediaCreated(path_to_meta, type) {
       // a repère is never outlined
@@ -372,7 +406,7 @@ export default {
     closeMedia() {
       if (this.has_browsed && this.open_media) {
         ungrow();
-        this.scrollTo(this.open_media, { flash: true });
+        this.scrollTo(this.open_media, { flash: "browsed" });
       } else closeTile(this.open_media);
       this.open_media = "";
       this.has_browsed = false;
@@ -389,14 +423,14 @@ export default {
       if (first) this.scrollTo(first);
     },
     // for a few seconds: the media may only show up with the server's event
-    // flash: back to its size once there (its window just closed)
-    scrollTo(path_to_meta, { flash = false } = {}) {
+    // flash: back to its size once there ("browsed" or "seen", flash.js)
+    scrollTo(path_to_meta, { flash = "" } = {}) {
       this.scroll_to = path_to_meta;
       this.scroll_flash = flash;
       clearTimeout(this.scroll_timeout);
       this.scroll_timeout = setTimeout(() => {
         this.scroll_to = "";
-        this.scroll_flash = false;
+        this.scroll_flash = "";
       }, 4000);
     },
     async open() {
@@ -504,6 +538,24 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+}
+
+// green, as the outline of the medias it counts
+.m_cahier--unseen {
+  flex: 0 0 auto;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background-color: var(--c-vert_vif);
+  color: white;
+  font-size: var(--font-size-small);
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: filter 0.15s;
+
+  &:hover,
+  &:focus-visible {
+    filter: brightness(0.95);
   }
 }
 
