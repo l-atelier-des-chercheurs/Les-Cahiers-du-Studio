@@ -112,7 +112,6 @@ export default {
   bottom: max(var(--spacing-medium), env(safe-area-inset-bottom, 0px));
   z-index: 10000;
   display: flex;
-  flex-flow: column nowrap;
   align-items: center;
   gap: var(--spacing-verysmall);
   max-width: calc(100vw - 2 * var(--spacing-medium));
@@ -148,6 +147,7 @@ export default {
 // a reload to do: red, larger, pulsing gently so it isn't missed; its
 // button white on the red
 .m_update.is--reload {
+  flex-flow: column nowrap;
   padding-block: var(--spacing-small);
   background-color: var(--c-rouge);
   color: white;
