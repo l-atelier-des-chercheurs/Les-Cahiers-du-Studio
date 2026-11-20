@@ -109,6 +109,39 @@
           </button>
         </div>
 
+        <!-- a 3D model: its thumb, the viewer only once asked for, as a
+        PDF's. Contributors can make the view they turned it to its thumb -->
+        <template v-else-if="is_3d && is_3d_loaded">
+          <ThreeViewer
+            ref="three"
+            :key="media.$path"
+            :src="media_url"
+            :type="type"
+            :view_matrix="media.$thumb_view"
+            @loaded="is_3d_ready = true"
+          />
+          <button
+            v-if="can_edit && is_3d_ready"
+            type="button"
+            class="m_media--viewAsThumb"
+            :class="{ 'is--busy': is_saving_view }"
+            :disabled="is_saving_view"
+            @click="saveViewAsThumb"
+          >
+            {{ $t(is_saving_view ? "saving_view" : "use_view_as_thumb") }}
+          </button>
+        </template>
+        <div v-else-if="is_3d" class="m_media--page">
+          <img v-if="large_thumb" :src="large_thumb" alt="" />
+          <button
+            type="button"
+            class="m_media--open"
+            @click="is_3d_loaded = true"
+          >
+            {{ $t("load_3d") }}
+          </button>
+        </div>
+
         <div v-else class="m_media--other">
           <span class="text-cap">{{ extension }}</span>
           <span>{{ media.$media_filename }}</span>
@@ -432,6 +465,7 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from "vue";
 import { mapActions } from "pinia";
 import * as api from "@/adc/api";
 import { i18n } from "@/i18n";
@@ -442,6 +476,9 @@ import { useContentStore } from "@/stores/content";
 import { useUnseenStore } from "@/stores/unseen";
 import BaseModal from "./BaseModal.vue";
 import TextEditor from "./TextEditor.vue";
+
+// three.js (~150 kB gzipped): only once a model is asked for
+const ThreeViewer = defineAsyncComponent(() => import("./ThreeViewer.vue"));
 
 // dates closer than this are the same (seconds are not shown)
 const SAME_DATE_MS = 60 * 1000;
@@ -504,7 +541,7 @@ function isWebPlayable({ type, ext, video_codec, audio_codec }) {
 }
 
 export default {
-  components: { BaseModal, TextEditor },
+  components: { BaseModal, TextEditor, ThreeViewer },
   props: {
     media: { type: Object, required: true },
     // contributors and admins of the cahier
@@ -528,6 +565,11 @@ export default {
       is_pdf_loaded: false,
       is_saving: false,
       is_regenerating: false,
+      // a 3D model: its viewer asked for, its model shown, its view being
+      // made its thumb
+      is_3d_loaded: false,
+      is_3d_ready: false,
+      is_saving_view: false,
       // the media being converted for the web, and how far (0 to 100)
       converting_path: "",
       convert_progress: 0,
@@ -555,9 +597,14 @@ export default {
     large_thumb() {
       return api.thumbURL(this.media, 1600);
     },
+    is_3d() {
+      return this.type === "stl" || this.type === "obj";
+    },
     // the types adc-core makes thumbs of
     has_thumbs() {
-      return ["image", "video", "audio", "pdf", "url"].includes(this.type);
+      return ["image", "video", "audio", "pdf", "url", "stl", "obj"].includes(
+        this.type
+      );
     },
     rendered_text() {
       return renderText(this.form.content);
@@ -692,6 +739,8 @@ export default {
       this.form = this.formFrom(this.media);
       this.new_keyword = "";
       this.is_pdf_loaded = false;
+      this.is_3d_loaded = false;
+      this.is_3d_ready = false;
       this.error = "";
       this.confirm_remove = false;
       this.pending_action = "";
@@ -813,6 +862,29 @@ export default {
     },
 
     // the new thumbs show once the server's fileUpdated event is in
+    // as dodoc: the view saved ($thumb_view), the thumbs made again from it
+    // (adc-core's mesh-thumb.js); the viewer closes on the new thumb
+    async saveViewAsThumb() {
+      const view_matrix = this.$refs.three?.getViewMatrix();
+      if (!view_matrix) return;
+      const path = this.media.$path;
+      this.is_saving_view = true;
+      this.error = "";
+      try {
+        await this.updateFile(path, { $thumb_view: view_matrix });
+        await this.regenerateThumbs(path);
+        if (this.media.$path === path) {
+          this.is_3d_loaded = false;
+          this.is_3d_ready = false;
+        }
+      } catch (err) {
+        this.error = this.$t("error_with_code", {
+          code: err.code || err.message,
+        });
+      } finally {
+        this.is_saving_view = false;
+      }
+    },
     async regenerate() {
       this.is_regenerating = true;
       this.error = "";
@@ -994,6 +1066,29 @@ export default {
   }
   > iframe {
     background-color: white;
+  }
+}
+
+// under the model, centred: as the button that opens it, smaller
+.m_media--viewAsThumb {
+  position: absolute;
+  bottom: var(--spacing-medium);
+  left: 50%;
+  padding: var(--spacing-verysmall) var(--spacing-small);
+  border-radius: 2em;
+  background-color: white;
+  color: var(--c-noir);
+  box-shadow: 0 0.25rem 1.5rem rgb(0 0 0 / 25%);
+  transform: translateX(-50%);
+  white-space: nowrap;
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    box-shadow: 0 0.35rem 2rem rgb(0 0 0 / 40%);
+  }
+  &.is--busy:disabled {
+    opacity: 1;
+    cursor: progress;
   }
 }
 

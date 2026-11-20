@@ -18,6 +18,7 @@
     class="m_modal"
     :class="{ 'is--wide': wide, 'is--overBackdrop': is_over_backdrop }"
     @cancel.prevent="$emit('close')"
+    @pointerdown="is_down_on_backdrop = isBackdrop($event.target)"
     @click="onClick"
     @pointerover="onPointerOver"
     @pointerleave="is_over_backdrop = false"
@@ -194,6 +195,8 @@ export default {
       is_folded: readJSON(FOLDED_KEY) === true,
       // the mouse over the background: the cross shows it closes
       is_over_backdrop: false,
+      // the last press began on the background
+      is_down_on_backdrop: false,
     };
   },
   computed: {
@@ -254,8 +257,11 @@ export default {
         target === this.$refs.slides
       );
     },
+    // pressed there too: a drag from the window (turning a 3D model,
+    // selecting text) let go over the background doesn't close it
     onClick(event) {
-      if (this.isBackdrop(event.target)) this.$emit("close");
+      if (this.is_down_on_backdrop && this.isBackdrop(event.target))
+        this.$emit("close");
     },
     // a mouse only: after a tap, the hover would stay
     onPointerOver(event) {
