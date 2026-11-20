@@ -73,14 +73,16 @@
         :start="cahier.start"
         :end="cahier.end"
         :scroll_to="scroll_to"
+        :flash="scroll_flash"
         :can_edit="can_contribute"
-        @open="open_media = $event"
+        @open="openMedia"
       />
       <MediaGrid
         v-else
         :files="cahier.$files"
         :scroll_to="scroll_to"
-        @open="open_media = $event"
+        :flash="scroll_flash"
+        @open="openMedia"
       />
     </div>
 
@@ -100,7 +102,7 @@
       :position="open_media_index + 1"
       :total="sorted_medias.length"
       :all_keywords="all_keywords"
-      @close="open_media = ''"
+      @close="closeMedia"
       @replaced="open_media = $event"
       @prev="openSibling(-1)"
       @next="openSibling(1)"
@@ -121,6 +123,7 @@ import { mapActions, mapState } from "pinia";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
 import { canContributeToFolder } from "@/adc/rights";
+import { closeTile, growTile, ungrow } from "@/flash";
 import { sortByDate } from "@/medias";
 import { useUnseenStore } from "@/stores/unseen";
 import AddMedias from "@/components/AddMedias.vue";
@@ -156,8 +159,12 @@ export default {
       selected_files: [],
       // a media just added, scrolled to once it shows up
       scroll_to: "",
+      // …and comes back to its size: the media whose window just closed
+      scroll_flash: false,
       // the media whose window is open
       open_media: "",
+      // moved to another media with ← or →, since the window opened
+      has_browsed: false,
     };
   },
   computed: {
@@ -253,12 +260,29 @@ export default {
       if (type !== "marker") this.addUnseen(path_to_meta);
       this.scrollTo(path_to_meta);
     },
+    // the timeline under the window stays still: scrolled once, on closing
     openSibling(offset) {
       const media = this.sorted_medias[this.open_media_index + offset];
       if (media) {
         this.open_media = media.$path;
-        this.scrollTo(media.$path);
+        this.has_browsed = true;
       }
+    },
+    // after ← or →: the timeline shows the last media seen
+    // from its tile: the tile grows, as if it became the window
+    openMedia(path_to_meta) {
+      this.open_media = path_to_meta;
+      growTile(path_to_meta);
+    },
+    // the tile back to its size; after ← or →, the one of the last media
+    // seen, once scrolled to (MediaTimeline, MediaGrid)
+    closeMedia() {
+      if (this.has_browsed && this.open_media) {
+        ungrow();
+        this.scrollTo(this.open_media, { flash: true });
+      } else closeTile(this.open_media);
+      this.open_media = "";
+      this.has_browsed = false;
     },
     // the files sent (UploadFilesModal marks them unseen): scroll to the
     // earliest on the timeline
@@ -272,10 +296,15 @@ export default {
       if (first) this.scrollTo(first);
     },
     // for a few seconds: the media may only show up with the server's event
-    scrollTo(path_to_meta) {
+    // flash: back to its size once there (its window just closed)
+    scrollTo(path_to_meta, { flash = false } = {}) {
       this.scroll_to = path_to_meta;
+      this.scroll_flash = flash;
       clearTimeout(this.scroll_timeout);
-      this.scroll_timeout = setTimeout(() => (this.scroll_to = ""), 4000);
+      this.scroll_timeout = setTimeout(() => {
+        this.scroll_to = "";
+        this.scroll_flash = false;
+      }, 4000);
     },
     async open() {
       this.error = "";

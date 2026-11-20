@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { closeTile } from "@/flash";
 import { dateOf, dayKey, formatDay, sortByDate } from "@/medias";
 import MediaTile from "./MediaTile.vue";
 
@@ -32,6 +33,8 @@ export default {
     files: { type: Array, required: true },
     // a media just added: scrolled to once it shows up
     scroll_to: { type: String, default: "" },
+    // the media scrolled to comes back to its size (its window just closed)
+    flash: { type: Boolean, default: false },
   },
   computed: {
     // [{ key, label, medias }], oldest first, as on the timeline
@@ -59,9 +62,11 @@ export default {
     async scrollToMedia() {
       if (!this.scroll_to) return;
       await this.$nextTick();
-      this.$el
-        .querySelector(`[data-path="${CSS.escape(this.scroll_to)}"]`)
-        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      const el = this.$el.querySelector(
+        `[data-path="${CSS.escape(this.scroll_to)}"]`
+      );
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (this.flash) closeTile(el, { browsed: true });
     },
   },
 };

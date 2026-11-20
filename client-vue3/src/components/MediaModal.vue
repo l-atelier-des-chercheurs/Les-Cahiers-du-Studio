@@ -970,6 +970,8 @@ export default {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  // as the tiles: a transparent image on the same white
+  background-color: white;
 
   > video,
   > iframe {

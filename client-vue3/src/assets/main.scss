@@ -416,3 +416,38 @@ small {
     1;
   border-image-repeat: round;
 }
+
+/* A TILE AND ITS WINDOW (flash.js) */
+
+// clicked: grows a little, over its neighbours, as its window opens. A
+// tile only: a repère's label is already turned (transform)
+.m_tile[data-grown] {
+  z-index: 2;
+  transform: scale(1.2);
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+// its window closed: from a little larger back to its size
+.m_tile[data-closed] {
+  z-index: 2;
+  animation: m_tile-closed 1s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+}
+// another media than the one clicked (← →): once scrolled to
+.m_tile[data-closed="browsed"] {
+  animation-delay: 0.35s;
+}
+@keyframes m_tile-closed {
+  from {
+    transform: scale(1.5);
+  }
+}
+
+// without movement: no scale
+@media (prefers-reduced-motion: reduce) {
+  .m_tile[data-grown] {
+    transform: none;
+  }
+  .m_tile[data-closed] {
+    animation: none;
+  }
+}

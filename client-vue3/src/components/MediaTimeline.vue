@@ -148,6 +148,7 @@ import {
 } from "@/medias";
 import { mapActions, mapState } from "pinia";
 import { readJSON, writeJSON } from "@/adc/storage";
+import { closeTile } from "@/flash";
 import { useContentStore } from "@/stores/content";
 import { useNotificationsStore } from "@/stores/notifications";
 import { useUnseenStore } from "@/stores/unseen";
@@ -181,6 +182,8 @@ export default {
     end: { type: String, default: "" },
     // a media just added: scrolled to once it shows up
     scroll_to: { type: String, default: "" },
+    // the media scrolled to comes back to its size (its window just closed)
+    flash: { type: Boolean, default: false },
     // contributors: medias can be resized
     can_edit: { type: Boolean, default: false },
   },
@@ -499,13 +502,15 @@ export default {
       );
       if (this.folded_days[day]) this.toggleDay(day);
       await this.$nextTick();
-      this.$el
-        .querySelector(`[data-path="${CSS.escape(this.scroll_to)}"]`)
-        ?.scrollIntoView({
-          behavior: "smooth",
-          inline: "center",
-          block: "nearest",
-        });
+      const el = this.$el.querySelector(
+        `[data-path="${CSS.escape(this.scroll_to)}"]`
+      );
+      el?.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+      if (this.flash) closeTile(el, { browsed: true });
     },
   },
 };
