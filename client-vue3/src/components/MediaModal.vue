@@ -131,7 +131,7 @@
             {{ $t(is_saving_view ? "saving_view" : "use_view_as_thumb") }}
           </button>
         </template>
-        <div v-else-if="is_3d" class="m_media--page">
+        <div v-else-if="is_3d" class="m_media--page is--3d">
           <img v-if="large_thumb" :src="large_thumb" alt="" />
           <button
             type="button"
@@ -1149,6 +1149,13 @@ export default {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
+  }
+
+  // a model's thumb: as large as the viewer draws it (ThreeViewer.vue), a
+  // square the size of the smaller side, even past its 800px
+  &.is--3d img {
+    width: 100%;
+    height: 100%;
   }
 }
 
