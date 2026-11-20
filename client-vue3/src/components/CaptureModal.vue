@@ -1,6 +1,6 @@
 <template>
   <!-- a capture, from the + button, straight in the browser: for now a
-  sound, from the microphone, 1 minute at most (photo and video to come).
+  sound, from the microphone, 10 minutes at most (photo and video to come).
   A round button starts and stops; a level shows the microphone works.
   Once stopped: listened to, captured again or added. The parent uploads
   it: it emits "submit" with a File, then sets is_creating / error as
@@ -42,6 +42,10 @@
           >
             {{ $t("capture_again") }}
           </button>
+          <!-- a copy kept on the device, if sending it fails (no network) -->
+          <a :href="file_url" :download="download_name" class="textLink">
+            {{ $t("capture_download") }}
+          </a>
         </template>
 
         <template v-else>
@@ -86,7 +90,7 @@
 import BaseModal from "./BaseModal.vue";
 
 // ms
-const MAX_DURATION = 60 * 1000;
+const MAX_DURATION = 10 * 60 * 1000;
 
 // The first the browser records, and the extension adc-core reads as
 // audio. MP4 (Safari, recent Chrome) and Ogg (Firefox) first: the WebM
@@ -129,9 +133,18 @@ export default {
       level: 0,
       file: null,
       file_url: "",
+      // when the capture started, for the downloaded file's name
+      recorded_at: null,
     };
   },
   computed: {
+    // son_2026-11-20_14-32.webm, in local time
+    download_name() {
+      const d = this.recorded_at || new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      const ext = this.file?.name.split(".").pop() || "webm";
+      return `son_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}.${ext}`;
+    },
     // "Envoi… 42 %", then, once all sent, the server saving it
     upload_label() {
       if (this.upload_progress === null) return "";
@@ -235,6 +248,7 @@ export default {
       // chunks every second: nothing lost if the browser stops early
       this.recorder.start(1000);
       this.is_recording = true;
+      this.recorded_at = new Date();
       this.elapsed = 0;
       const started = Date.now();
       this.timer = setInterval(() => {
@@ -286,6 +300,11 @@ export default {
 
   audio {
     width: 100%;
+  }
+
+  // white, as « Capturer à nouveau », not the color of links
+  a.textLink {
+    color: inherit;
   }
 }
 
