@@ -15,51 +15,91 @@
           </svg>
         </RouterLink>
         <h1 class="m_cahier--title">{{ title }}</h1>
-        <!-- how this cahier is shown: next to its title -->
-        <nav class="m_cahier--views" :aria-label="$t('display')">
-          <RouterLink
-            v-for="option in view_options"
-            :key="option.key"
-            :to="{ query: option.query }"
-            replace
-            class="button m_cahier--view"
-            :class="{ 'is--active': view === option.key }"
-            :aria-current="view === option.key ? 'page' : undefined"
-            :aria-label="$t(option.label)"
-            :title="$t(option.label)"
-          >
-            <!-- two days, each a rule with its medias beside it -->
-            <svg
-              v-if="option.key === 'timeline'"
-              viewBox="0 0 20 20"
-              aria-hidden="true"
+        <!-- how this cahier is shown: next to its title, or in the menu on
+        narrow screens -->
+        <Teleport defer to="#m_cahier--menuPanel" :disabled="!is_narrow">
+          <nav class="m_cahier--views" :aria-label="$t('display')">
+            <RouterLink
+              v-for="option in view_options"
+              :key="option.key"
+              :to="{ query: option.query }"
+              replace
+              class="button m_cahier--view"
+              :class="{ 'is--active': view === option.key }"
+              :aria-current="view === option.key ? 'page' : undefined"
+              :aria-label="$t(option.label)"
+              :title="$t(option.label)"
             >
-              <line x1="2.5" y1="2" x2="2.5" y2="18" />
-              <rect x="4.5" y="3.5" width="4" height="5" />
-              <rect x="4.5" y="10.5" width="4" height="5" />
-              <line x1="11.5" y1="2" x2="11.5" y2="18" />
-              <rect x="13.5" y="3.5" width="4" height="5" />
-            </svg>
-            <svg v-else viewBox="0 0 20 20" aria-hidden="true">
-              <rect x="3" y="3" width="6" height="6" />
-              <rect x="11" y="3" width="6" height="6" />
-              <rect x="3" y="11" width="6" height="6" />
-              <rect x="11" y="11" width="6" height="6" />
-            </svg>
-          </RouterLink>
-        </nav>
+              <!-- two days, each a rule with its medias beside it -->
+              <svg
+                v-if="option.key === 'timeline'"
+                viewBox="0 0 20 20"
+                aria-hidden="true"
+              >
+                <line x1="2.5" y1="2" x2="2.5" y2="18" />
+                <rect x="4.5" y="3.5" width="4" height="5" />
+                <rect x="4.5" y="10.5" width="4" height="5" />
+                <line x1="11.5" y1="2" x2="11.5" y2="18" />
+                <rect x="13.5" y="3.5" width="4" height="5" />
+              </svg>
+              <svg v-else viewBox="0 0 20 20" aria-hidden="true">
+                <rect x="3" y="3" width="6" height="6" />
+                <rect x="11" y="3" width="6" height="6" />
+                <rect x="3" y="11" width="6" height="6" />
+                <rect x="11" y="11" width="6" height="6" />
+              </svg>
+            </RouterLink>
+          </nav>
+        </Teleport>
       </div>
 
-      <FeedbackButtons
-        class="m_cahier--prototype"
-        @feedback="$emit('feedback')"
-      />
+      <Teleport defer to="#m_cahier--menuPanel" :disabled="!is_narrow">
+        <FeedbackButtons
+          class="m_cahier--prototype"
+          @feedback="$emit('feedback')"
+        />
+      </Teleport>
 
       <LiveStatus
         class="m_cahier--live"
         :explanation="$t('live_explanation_cahier')"
         :can_publish="can_contribute"
       />
+
+      <!-- narrow screens: the views and the other buttons, behind ☰; it
+      closes once one is chosen, on Esc, or on a click elsewhere -->
+      <div
+        v-show="is_narrow"
+        ref="menu"
+        class="m_cahier--menu"
+        @keydown.esc="closeMenu(true)"
+      >
+        <button
+          ref="menuButton"
+          type="button"
+          class="m_cahier--menuButton"
+          :class="{ 'is--open': is_menu_open }"
+          :aria-expanded="is_menu_open"
+          aria-controls="m_cahier--menuPanel"
+          :aria-label="$t('menu')"
+          :title="$t('menu')"
+          @click="is_menu_open = !is_menu_open"
+        >
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <line x1="3" y1="5.5" x2="17" y2="5.5" />
+            <line x1="3" y1="10" x2="17" y2="10" />
+            <line x1="3" y1="14.5" x2="17" y2="14.5" />
+          </svg>
+          <!-- what's new, or feedback received, waits in it -->
+          <span v-if="has_news" class="m_cahier--menuDot" aria-hidden="true" />
+        </button>
+        <div
+          v-show="is_menu_open"
+          id="m_cahier--menuPanel"
+          class="m_cahier--menuPanel"
+          @click="onMenuClick"
+        />
+      </div>
     </header>
 
     <div class="m_cahier--content">
@@ -129,6 +169,12 @@ import { canContributeToFolder } from "@/adc/rights";
 import { closeTile, growTile, ungrow } from "@/flash";
 import { sortByDate } from "@/medias";
 import { useUnseenStore } from "@/stores/unseen";
+import { useAppVersionStore } from "@/stores/appVersion";
+import { useFeedbackStore } from "@/stores/feedback";
+import { isInstanceAdmin } from "@/adc/rights";
+
+// under 700px: the top bar's buttons in a menu
+const NARROW = window.matchMedia("(max-width: 43.75rem)");
 import AddMedias from "@/components/AddMedias.vue";
 import LiveStatus from "@/components/LiveStatus.vue";
 import FeedbackButtons from "@/components/FeedbackButtons.vue";
@@ -168,11 +214,22 @@ export default {
       open_media: "",
       // moved to another media with ← or →, since the window opened
       has_browsed: false,
+      is_narrow: NARROW.matches,
+      is_menu_open: false,
     };
   },
   computed: {
     ...mapState(useSessionStore, ["token_path"]),
     ...mapState(useContentStore, ["getFolder"]),
+    ...mapState(useAppVersionStore, ["is_updated"]),
+    ...mapState(useFeedbackStore, ["new_count"]),
+    // as on FeedbackButtons': what's new not seen, new feedback for admins
+    has_news() {
+      return (
+        this.is_updated ||
+        (isInstanceAdmin(this.token_path) && this.new_count > 0)
+      );
+    },
     path_to_folder() {
       return `cahiers/${this.slug}`;
     },
@@ -242,6 +299,16 @@ export default {
       this.closeFolder(old_path);
       this.open();
     },
+    is_menu_open(open) {
+      if (open)
+        document.addEventListener("pointerdown", this.onPointerOutside, true);
+      else
+        document.removeEventListener(
+          "pointerdown",
+          this.onPointerOutside,
+          true
+        );
+    },
     // a private cahier opens once its contributor logs in
     token_path() {
       this.open();
@@ -250,11 +317,34 @@ export default {
   created() {
     this.open();
   },
+  mounted() {
+    NARROW.addEventListener("change", this.onNarrowChange);
+  },
   beforeUnmount() {
     clearTimeout(this.scroll_timeout);
     this.closeFolder(this.path_to_folder);
+    NARROW.removeEventListener("change", this.onNarrowChange);
+    document.removeEventListener("pointerdown", this.onPointerOutside, true);
   },
   methods: {
+    onNarrowChange(event) {
+      this.is_narrow = event.matches;
+      if (!event.matches) this.closeMenu();
+    },
+    // open: a click outside it closes it
+    onPointerOutside(event) {
+      if (!this.$refs.menu?.contains(event.target)) this.closeMenu();
+    },
+    // Esc: back on ☰
+    closeMenu(focus_button = false) {
+      if (!this.is_menu_open) return;
+      this.is_menu_open = false;
+      if (focus_button) this.$refs.menuButton?.focus();
+    },
+    // a view, or a button chosen: done with the menu
+    onMenuClick(event) {
+      if (event.target.closest?.("a, button")) this.closeMenu();
+    },
     ...mapActions(useContentStore, ["openFolder", "closeFolder"]),
     ...mapActions(useUnseenStore, { syncUnseen: "sync", addUnseen: "add" }),
     // a text, repère or link, from the + button, already written
@@ -454,6 +544,88 @@ export default {
   min-width: 0;
   line-height: 1.25;
   overflow-wrap: break-word;
+}
+
+// narrow screens: back and title, the live status, ☰
+@media screen and (max-width: 43.75rem) {
+  .m_cahier--header {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+}
+
+.m_cahier--menu {
+  position: relative;
+}
+
+.m_cahier--menuButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--c-gris_fonce);
+  border-radius: 4px;
+  color: inherit;
+
+  svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  &:hover,
+  &:focus-visible,
+  &.is--open {
+    border-color: var(--c-gris_clair);
+  }
+}
+
+.m_cahier--menuDot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--c-rouge);
+  box-shadow: 0 0 0 2px var(--c-noir);
+}
+
+// under ☰, its right edge aligned with it: the views, then the buttons,
+// one under the other
+.m_cahier--menuPanel {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 100;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  gap: var(--spacing-small);
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  padding: var(--spacing-small);
+  border-radius: 4px;
+  background-color: var(--c-noir);
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+
+  // teleported here: more specific than the top bar's narrow rules
+  :deep(.m_feedbackButtons) {
+    flex-flow: column nowrap;
+    align-items: flex-start;
+
+    button {
+      padding: 0.15rem 0.6rem;
+      font-size: var(--font-size-small);
+    }
+  }
 }
 
 .m_cahier--message {

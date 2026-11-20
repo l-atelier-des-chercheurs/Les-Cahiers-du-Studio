@@ -31,7 +31,11 @@
       </span>
     </button>
 
-    <FeedbackListModal v-if="show_list" @close="show_list = false" />
+    <!-- out of the top bar: in a cahier's menu on narrow screens, which
+    closes and hides as it opens -->
+    <Teleport to="body">
+      <FeedbackListModal v-if="show_list" @close="show_list = false" />
+    </Teleport>
   </div>
 </template>
 

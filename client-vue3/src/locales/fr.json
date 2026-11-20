@@ -84,6 +84,7 @@
   "create": "Créer",
   "open": "Ouvrir",
   "back": "Retour",
+  "menu": "Menu",
   "loading": "Chargement…",
   "error_with_code": "Erreur : {code}",
 
