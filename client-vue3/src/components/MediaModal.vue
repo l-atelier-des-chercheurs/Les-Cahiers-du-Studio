@@ -39,6 +39,7 @@
           :poster="large_thumb"
           controls
           preload="metadata"
+          @loadedmetadata="resumePlaying"
         />
 
         <!-- a sound: its player only (its waveform thumb tells nothing) -->
@@ -52,6 +53,7 @@
             :src="media_url"
             controls
             preload="metadata"
+            @loadedmetadata="resumePlaying"
           />
         </div>
 
@@ -559,6 +561,8 @@ export default {
   data() {
     return {
       AUDIO_PLAYER_HEIGHT,
+      // seconds: where its tile was playing it, to carry on from there
+      resume_at: null,
       form: this.formFrom(this.media),
       new_keyword: "",
       // a pdf shows its thumb until its viewer is loaded
@@ -756,8 +760,10 @@ export default {
     if (this.can_edit) this.loadAuthors();
   },
   mounted() {
-    // a video or sound playing in its tile stops
-    stopAll();
+    // a video or sound playing in its tile stops; if it is this one, it
+    // carries on here, from where it was (resumePlaying)
+    const was = stopAll();
+    if (was?.path === this.media.$path) this.resume_at = was.time;
     window.addEventListener("keydown", this.onKeydown);
     this.fitCaption();
   },
@@ -766,6 +772,18 @@ export default {
     window.removeEventListener("keydown", this.onKeydown);
   },
   methods: {
+    // once its player knows its length: the tile's playback goes on
+    async resumePlaying(event) {
+      if (this.resume_at === null) return;
+      const player = event.target;
+      player.currentTime = this.resume_at;
+      this.resume_at = null;
+      try {
+        await player.play();
+      } catch {
+        // autoplay refused: it waits, at that time, for its play button
+      }
+    },
     ...mapActions(useContentStore, [
       "updateFile",
       "removeFile",

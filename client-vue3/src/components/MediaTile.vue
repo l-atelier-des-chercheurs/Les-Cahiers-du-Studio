@@ -380,7 +380,10 @@ export default {
     // the player appears, then plays: from the start each time (a stop,
     // not a pause). Whatever played elsewhere stops (playback.js)
     async startPlaying() {
-      play(this.stopPlaying);
+      play(this.stopPlaying, () => ({
+        path: this.media.$path,
+        time: this.$refs.player?.currentTime || 0,
+      }));
       this.progress = 0;
       this.is_playing = true;
       await this.$nextTick();
