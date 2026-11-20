@@ -21,106 +21,109 @@
     @click="onClick"
   >
     <!-- the panel, and under it the "nav" slot (the media window's ←
-    and →). Given a slide_key, a new key slides the panel out and back in,
-    from the side of slide_direction -->
+    and →). Given a slide_key, a new key brings a new panel in, from the
+    side of slide_direction, over the previous one, which stays until it is
+    covered: the veil never shows in between -->
     <div
       ref="stack"
       class="m_modal--stack"
       :class="{ 'has--nav': !!$slots.nav }"
     >
-      <Transition :name="`m_modal-slide-${slide_direction}`" mode="out-in">
-        <form
-          :key="slide_key"
-          class="m_modal--container"
-          :class="{
-            'has--preview': !!$slots.preview,
-            'has--previewHeight': !!mobile_preview_height,
-            'has--fold': can_fold,
-            'is--folded': can_fold && is_folded,
-          }"
-          :style="
-            mobile_preview_height && {
-              '--mobile-preview-height': mobile_preview_height,
-            }
-          "
-          @submit.prevent="$emit('submit')"
-        >
-          <div v-if="$slots.preview" class="m_modal--preview">
-            <slot name="preview" />
-          </div>
-
-          <!-- folds the column away, the preview then fills the window: a
-          narrow strip of its own between them, over nothing of the preview
-          (a text's toolbar) -->
-          <button
-            v-if="can_fold"
-            type="button"
-            class="m_modal--fold"
-            :aria-label="$t(is_folded ? 'show_sidebar' : 'hide_sidebar')"
-            :title="$t(is_folded ? 'show_sidebar' : 'hide_sidebar')"
-            :aria-expanded="!is_folded"
-            @click="toggleFold"
+      <div class="m_modal--slides">
+        <Transition :name="`m_modal-slide-${slide_direction}`">
+          <form
+            :key="slide_key"
+            class="m_modal--container"
+            :class="{
+              'has--preview': !!$slots.preview,
+              'has--previewHeight': !!mobile_preview_height,
+              'has--fold': can_fold,
+              'is--folded': can_fold && is_folded,
+            }"
+            :style="
+              mobile_preview_height && {
+                '--mobile-preview-height': mobile_preview_height,
+              }
+            "
+            @submit.prevent="$emit('submit')"
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <polyline
-                :points="is_folded ? '9 5 16 12 9 19' : '15 5 8 12 15 19'"
-              />
-            </svg>
-          </button>
-
-          <div class="m_modal--sidebar">
-            <header class="m_modal--header">
-              <h3 class="text-cap"><slot name="header" /></h3>
-            </header>
-
-            <div class="m_modal--fields">
-              <slot />
+            <div v-if="$slots.preview" class="m_modal--preview">
+              <slot name="preview" />
             </div>
 
+            <!-- folds the column away, the preview then fills the window: a
+          narrow strip of its own between them, over nothing of the preview
+          (a text's toolbar) -->
             <button
-              v-if="$slots.submit_button"
-              type="submit"
-              class="m_modal--save"
-              :class="{ 'is--busy': busy }"
-              :disabled="disabled || busy"
-              :aria-busy="busy"
+              v-if="can_fold"
+              type="button"
+              class="m_modal--fold"
+              :aria-label="$t(is_folded ? 'show_sidebar' : 'hide_sidebar')"
+              :title="$t(is_folded ? 'show_sidebar' : 'hide_sidebar')"
+              :aria-expanded="!is_folded"
+              @click="toggleFold"
             >
-              <!-- while sent: a ring filled as it goes, or turning when
-              how far it is isn't known (yet, or anymore: the server is
-              saving it) -->
-              <svg
-                v-if="busy"
-                viewBox="0 0 48 48"
-                class="m_modal--spinner"
-                :class="{ 'is--indeterminate': !has_progress }"
-                aria-hidden="true"
-              >
-                <circle class="_track" cx="24" cy="24" r="12" />
-                <circle
-                  class="_value"
-                  cx="24"
-                  cy="24"
-                  r="12"
-                  pathLength="100"
-                  :stroke-dasharray="`${has_progress ? progress * 100 : 25} 100`"
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <polyline
+                  :points="is_folded ? '9 5 16 12 9 19' : '15 5 8 12 15 19'"
                 />
               </svg>
-              <svg v-else viewBox="0 0 48 48" aria-hidden="true">
-                <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" />
-              </svg>
-              <span class="text-cap font-verysmall" role="status">
-                <template v-if="busy">
-                  {{ $t("sending") }}
-                  <template v-if="has_progress">
-                    {{ Math.round(progress * 100) }} %
-                  </template>
-                </template>
-                <slot v-else name="submit_button" />
-              </span>
             </button>
-          </div>
-        </form>
-      </Transition>
+
+            <div class="m_modal--sidebar">
+              <header class="m_modal--header">
+                <h3 class="text-cap"><slot name="header" /></h3>
+              </header>
+
+              <div class="m_modal--fields">
+                <slot />
+              </div>
+
+              <button
+                v-if="$slots.submit_button"
+                type="submit"
+                class="m_modal--save"
+                :class="{ 'is--busy': busy }"
+                :disabled="disabled || busy"
+                :aria-busy="busy"
+              >
+                <!-- while sent: a ring filled as it goes, or turning when
+              how far it is isn't known (yet, or anymore: the server is
+              saving it) -->
+                <svg
+                  v-if="busy"
+                  viewBox="0 0 48 48"
+                  class="m_modal--spinner"
+                  :class="{ 'is--indeterminate': !has_progress }"
+                  aria-hidden="true"
+                >
+                  <circle class="_track" cx="24" cy="24" r="12" />
+                  <circle
+                    class="_value"
+                    cx="24"
+                    cy="24"
+                    r="12"
+                    pathLength="100"
+                    :stroke-dasharray="`${has_progress ? progress * 100 : 25} 100`"
+                  />
+                </svg>
+                <svg v-else viewBox="0 0 48 48" aria-hidden="true">
+                  <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" />
+                </svg>
+                <span class="text-cap font-verysmall" role="status">
+                  <template v-if="busy">
+                    {{ $t("sending") }}
+                    <template v-if="has_progress">
+                      {{ Math.round(progress * 100) }} %
+                    </template>
+                  </template>
+                  <slot v-else name="submit_button" />
+                </span>
+              </button>
+            </div>
+          </form>
+        </Transition>
+      </div>
 
       <div v-if="$slots.nav" class="m_modal--nav">
         <slot name="nav" />
@@ -354,28 +357,44 @@ export default {
   }
 }
 
-// to another media: out to one side, in from the other
+// the panels, the leaving one and the new one, in the same place
+.m_modal--slides {
+  display: grid;
+  width: 100%;
+
+  > * {
+    grid-area: 1 / 1;
+  }
+}
+
+// to another media: the new panel fades in over the previous one, coming a
+// little from its side; the previous one stays as it is, under it, until
+// covered
 .m_modal-slide-next-enter-active,
 .m_modal-slide-prev-enter-active {
+  z-index: 1;
   transition:
-    transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
-    opacity 0.2s;
+    transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1),
+    opacity 0.25s ease-out;
 }
 .m_modal-slide-next-leave-active,
 .m_modal-slide-prev-leave-active {
-  transition:
-    transform 0.15s ease-in,
-    opacity 0.15s ease-in;
-}
-.m_modal-slide-next-enter-from,
-.m_modal-slide-prev-leave-to {
-  opacity: 0;
-  transform: translateX(40px);
+  z-index: 0;
+  pointer-events: none;
+  // unchanged until the new one is in, then gone at once
+  transition: opacity 0.25s step-end;
 }
 .m_modal-slide-next-leave-to,
+.m_modal-slide-prev-leave-to {
+  opacity: 0;
+}
+.m_modal-slide-next-enter-from {
+  opacity: 0;
+  transform: translateX(16px);
+}
 .m_modal-slide-prev-enter-from {
   opacity: 0;
-  transform: translateX(-40px);
+  transform: translateX(-16px);
 }
 @media (prefers-reduced-motion: reduce) {
   .m_modal-slide-next-enter-active,
@@ -406,7 +425,7 @@ export default {
     background-color: black;
 
     // room for the nav under it
-    .has--nav > & {
+    .has--nav & {
       height: calc(100dvh - 2 * var(--spacing-medium) - 3rem);
     }
 
