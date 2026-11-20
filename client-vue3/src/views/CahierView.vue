@@ -97,6 +97,8 @@
       :can_edit="can_contribute"
       :has_prev="open_media_index > 0"
       :has_next="open_media_index < sorted_medias.length - 1"
+      :position="open_media_index + 1"
+      :total="sorted_medias.length"
       :all_keywords="all_keywords"
       @close="open_media = ''"
       @replaced="open_media = $event"

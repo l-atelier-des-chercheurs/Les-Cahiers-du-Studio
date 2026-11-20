@@ -386,6 +386,9 @@
         >
           ←
         </button>
+        <span v-if="position > 0 && total" class="m_media--navCount">
+          {{ position }} / {{ total }}
+        </span>
         <button
           type="button"
           :disabled="!has_next"
@@ -499,6 +502,9 @@ export default {
     can_edit: { type: Boolean, default: false },
     has_prev: { type: Boolean, default: false },
     has_next: { type: Boolean, default: false },
+    // its place on the timeline, from 1, out of total: between ← and →
+    position: { type: Number, default: 0 },
+    total: { type: Number, default: 0 },
     // every keyword of the cahier, suggested
     all_keywords: { type: Array, default: () => [] },
   },
@@ -1129,6 +1135,18 @@ export default {
       opacity: 0.3;
     }
   }
+}
+
+// "3 / 12", between the arrows: the same width while browsing
+.m_media--navCount {
+  align-self: center;
+  min-width: 4.5em;
+  padding: 0 0.25rem;
+  color: white;
+  font-size: var(--font-size-small);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  white-space: nowrap;
 }
 
 // at the bottom, folded
