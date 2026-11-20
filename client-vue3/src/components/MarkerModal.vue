@@ -1,13 +1,14 @@
 <template>
-  <!-- a repère, from the + button: its time is the time of the click; a
-  label is optional. The parent creates it: it emits "submit" with the
-  label (maybe empty), then sets is_creating / error as props. -->
+  <!-- a repère, from the + button: its time is the time of the click, which
+  can be changed; a label is optional. The parent creates it: it emits
+  "submit" with the label (maybe empty) and the date, then sets is_creating /
+  error as props. -->
   <BaseModal
     :busy="is_creating"
     @close="$emit('close')"
-    @submit="$emit('submit', label.trim())"
+    @submit="$emit('submit', { label: label.trim(), date: marker_date })"
   >
-    <template #header>{{ $t("add_marker") }} · {{ time }}</template>
+    <template #header>{{ $t("add_marker") }}</template>
 
     <div class="m_modal--field">
       <label for="marker_label">{{ $t("label") }}</label>
@@ -22,6 +23,18 @@
       <small>{{ $t("marker_instructions") }}</small>
     </div>
 
+    <div class="m_modal--field">
+      <label for="marker_date">{{ $t("date_on_timeline") }}</label>
+      <input
+        id="marker_date"
+        type="datetime-local"
+        :value="toInputValue(marker_date)"
+        :disabled="is_creating"
+        @change="onDateInput"
+      />
+      <small>{{ $t("marker_date_instructions") }}</small>
+    </div>
+
     <p v-if="error" class="m_modal--field form-error">{{ error }}</p>
 
     <template #submit_button>{{ $t("add") }}</template>
@@ -29,13 +42,12 @@
 </template>
 
 <script>
-import { formatTime } from "@/medias";
 import BaseModal from "./BaseModal.vue";
 
 export default {
   components: { BaseModal },
   props: {
-    // when the repère was asked for: its place on the timeline
+    // when the repère was asked for: its place on the timeline by default
     date: { type: String, required: true },
     is_creating: { type: Boolean, default: false },
     error: { type: String, default: "" },
@@ -44,11 +56,24 @@ export default {
   data() {
     return {
       label: "",
+      marker_date: this.date,
     };
   },
-  computed: {
-    time() {
-      return formatTime(this.date);
+  methods: {
+    // emptied or invalid: the last valid date is kept
+    onDateInput(event) {
+      const date = new Date(event.target.value);
+      if (event.target.value && !isNaN(date))
+        this.marker_date = date.toISOString();
+      else event.target.value = this.toInputValue(this.marker_date);
+    },
+    // datetime-local wants the local time, without zone
+    toInputValue(date) {
+      const d = new Date(date);
+      if (!date || isNaN(d)) return "";
+      return new Date(d - d.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16);
     },
   },
 };

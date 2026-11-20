@@ -317,19 +317,20 @@ export default {
         this.showError("");
       }
     },
-    // the time of the click: what the repère marks
+    // the time of the click: what the repère marks, unless changed in the
+    // window
     openMarkerModal() {
       this.marker_error = "";
       this.marker_date = new Date().toISOString();
       this.is_open = false;
     },
     // only a .meta.txt; the label is optional
-    async createMarker(label) {
+    async createMarker({ label, date }) {
       this.marker_error = "";
       const created = await this.create(() =>
         this.createFile(this.path_to_folder, {
           ...this.newMediaMeta(),
-          date_timeline: this.marker_date,
+          date_timeline: date || this.marker_date,
           ...(label && { caption: label }),
           $type: "marker",
           requested_slug: "repere",

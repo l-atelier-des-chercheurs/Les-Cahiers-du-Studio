@@ -203,8 +203,23 @@ export default {
     title() {
       return this.cahier?.title || this.slug;
     },
+    // the medias' paths, once the cahier's files are loaded: compared as a
+    // string, not to sync on every change of a media's meta
+    media_paths() {
+      const files = this.cahier?.$files;
+      return Array.isArray(files) ? files.map((f) => f.$path).join("\n") : null;
+    },
   },
   watch: {
+    // opened, a media added or removed (by anyone), back after a cut: those
+    // this browser doesn't know yet are outlined until seen
+    media_paths: {
+      immediate: true,
+      handler(paths) {
+        if (paths === null) return;
+        this.syncUnseen(this.path_to_folder, paths ? paths.split("\n") : []);
+      },
+    },
     path_to_folder(new_path, old_path) {
       this.closeFolder(old_path);
       this.open();
@@ -223,7 +238,7 @@ export default {
   },
   methods: {
     ...mapActions(useContentStore, ["openFolder", "closeFolder"]),
-    ...mapActions(useUnseenStore, { loadUnseen: "load", addUnseen: "add" }),
+    ...mapActions(useUnseenStore, { syncUnseen: "sync", addUnseen: "add" }),
     // a text, repère or link, from the + button, already written
     onMediaCreated(path_to_meta) {
       this.addUnseen(path_to_meta);
@@ -256,12 +271,8 @@ export default {
     async open() {
       this.error = "";
       try {
-        const cahier = await this.openFolder(this.path_to_folder);
-        // the medias added from this browser and not seen yet
-        this.loadUnseen(
-          this.path_to_folder,
-          (cahier.$files || []).map((f) => f.$path)
-        );
+        // its medias not seen yet: media_paths, watched
+        await this.openFolder(this.path_to_folder);
       } catch (err) {
         this.error = this.$t("error_with_code", {
           code: err.code || err.message,
