@@ -108,6 +108,14 @@
     <!-- a PDF: said in the bottom left corner, where the others have
     their play button -->
     <span v-if="type === 'pdf'" class="m_tile--badge text-cap">PDF</span>
+    <!-- a website: a globe, as in the + menu (AddMedias.vue) -->
+    <span v-else-if="type === 'url'" class="m_tile--badge is--icon">
+      <svg viewBox="10 10 20 20" aria-hidden="true">
+        <circle cx="20" cy="20" r="8.5" />
+        <ellipse cx="20" cy="20" rx="3.6" ry="8.5" />
+        <line x1="11.5" y1="20" x2="28.5" y2="20" />
+      </svg>
+    </span>
 
     <div v-if="is_playing" class="m_tile--progress" aria-hidden="true">
       <span :style="{ transform: `scaleX(${progress})` }" />
@@ -527,6 +535,20 @@ export default {
   letter-spacing: 0.08em;
   line-height: 1.2;
   pointer-events: none;
+
+  // an icon: as large as the play button
+  &.is--icon {
+    padding: 0.28rem;
+
+    svg {
+      display: block;
+      width: 1.04rem;
+      height: 1.04rem;
+      fill: none;
+      stroke: white;
+      stroke-width: 1.4px;
+    }
+  }
 }
 
 // small, in the play button, on the right of its icon

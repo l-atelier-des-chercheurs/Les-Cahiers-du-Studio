@@ -151,9 +151,10 @@ const ICONS = {
       <line x1="14" y1="18" x2="22" y2="18" />
       <line x1="14" y1="22" x2="19" y2="22" />
     </g>`,
-  embed: `<polyline points="27.5 21.5 27.5 28.5 11.5 28.5 11.5 12.5 18.5 12.5" />
-    <polyline points="22 11.5 28.5 11.5 28.5 18" />
-    <line x1="28.5" y1="11.5" x2="19" y2="21" />`,
+  // a website: a globe, as on its tile (MediaTile.vue)
+  embed: `<circle cx="20" cy="20" r="8.5" />
+    <ellipse cx="20" cy="20" rx="3.6" ry="8.5" />
+    <line x1="11.5" y1="20" x2="28.5" y2="20" />`,
   image: `<rect x="11.5" y="12.85" width="17" height="14.3" />
     <line x1="13.85" y1="14.99" x2="26.48" y2="25.12" />
     <line x1="13.85" y1="25.12" x2="26.48" y2="14.99" />`,
