@@ -563,7 +563,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  // margin-right: 30px;
+  margin: 0 var(--spacing-small) 0 0;
   font-size: inherit;
 
   &::before {
