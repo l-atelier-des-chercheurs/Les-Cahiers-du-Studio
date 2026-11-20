@@ -10,6 +10,7 @@
       type === 'audio' ? `calc(2 * ${AUDIO_PLAYER_HEIGHT})` : ''
     "
     :disabled="!is_dirty || is_saving"
+    foldable
     @close="request('close')"
     @submit="save('close')"
   >

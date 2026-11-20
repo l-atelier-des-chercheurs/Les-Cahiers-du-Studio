@@ -35,6 +35,8 @@
           :class="{
             'has--preview': !!$slots.preview,
             'has--previewHeight': !!mobile_preview_height,
+            'has--fold': can_fold,
+            'is--folded': can_fold && is_folded,
           }"
           :style="
             mobile_preview_height && {
@@ -46,6 +48,25 @@
           <div v-if="$slots.preview" class="m_modal--preview">
             <slot name="preview" />
           </div>
+
+          <!-- folds the column away, the preview then fills the window: a
+          narrow strip of its own between them, over nothing of the preview
+          (a text's toolbar) -->
+          <button
+            v-if="can_fold"
+            type="button"
+            class="m_modal--fold"
+            :aria-label="$t(is_folded ? 'show_sidebar' : 'hide_sidebar')"
+            :title="$t(is_folded ? 'show_sidebar' : 'hide_sidebar')"
+            :aria-expanded="!is_folded"
+            @click="toggleFold"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <polyline
+                :points="is_folded ? '9 5 16 12 9 19' : '15 5 8 12 15 19'"
+              />
+            </svg>
+          </button>
 
           <div class="m_modal--sidebar">
             <header class="m_modal--header">
@@ -121,6 +142,12 @@
 </template>
 
 <script>
+import { readJSON, writeJSON } from "@/adc/storage";
+
+// the column folded (foldable windows): one choice for every window and
+// cahier, kept in this browser
+const FOLDED_KEY = "cahiers.modal_sidebar_folded";
+
 // The open windows, the last one on top. Escape closes only that one:
 // handled here rather than by the dialog's cancel event, which Chrome
 // skips on a second Escape without a click in between (the dialog then
@@ -153,9 +180,19 @@ export default {
     busy: { type: Boolean, default: false },
     // 0 to 1 while busy, if known: shown on the spinner, in %
     progress: { type: Number, default: null },
+    // with a preview: a button folds the column (on wide screens)
+    foldable: { type: Boolean, default: false },
   },
   emits: ["close", "submit"],
+  data() {
+    return {
+      is_folded: readJSON(FOLDED_KEY) === true,
+    };
+  },
   computed: {
+    can_fold() {
+      return this.foldable && !!this.$slots.preview;
+    },
     // all sent, the server still saving it: as unknown
     has_progress() {
       return this.progress !== null && this.progress < 1;
@@ -196,6 +233,10 @@ export default {
     setTimeout(remove, 400);
   },
   methods: {
+    toggleFold() {
+      this.is_folded = !this.is_folded;
+      writeJSON(FOLDED_KEY, this.is_folded || undefined);
+    },
     // the dialog fills the window: a click outside the panel targets it,
     // or the stack around the panel and its nav
     onClick(event) {
@@ -379,6 +420,40 @@ export default {
         grid-template-rows: var(--mobile-preview-height) minmax(0, 1fr);
       }
     }
+
+    // wide screens: the column folds to the left, out of sight (the
+    // preview's border hides it), and out of reach once folded
+    @media screen and (min-width: 50.0625rem) {
+      overflow: hidden;
+      transition: grid-template-columns 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+      &.has--fold {
+        grid-template-columns: 360px 2rem minmax(0, 1fr);
+        grid-template-areas: "sidebar fold preview";
+      }
+
+      > .m_modal--sidebar {
+        justify-self: end;
+        width: 360px;
+        transition: visibility 0s;
+      }
+
+      &.is--folded {
+        grid-template-columns: 0 2rem minmax(0, 1fr);
+
+        > .m_modal--sidebar {
+          visibility: hidden;
+          transition: visibility 0s 0.25s;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        &,
+        &.is--folded > .m_modal--sidebar {
+          transition: none;
+        }
+      }
+    }
   }
 }
 
@@ -387,6 +462,47 @@ export default {
   position: relative;
   min-width: 0;
   min-height: 0;
+}
+
+// a strip the window's height, against the column: a chevron at the
+// header's height, towards where the column goes
+.m_modal--fold {
+  grid-area: fold;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--spacing-medium) 0 0;
+  border-radius: 0;
+  background-color: var(--c-noir);
+  color: var(--c-gris_clair);
+  transition:
+    color 0.25s ease-out,
+    background-color 0.25s ease-out;
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--c-noir_light);
+    color: white;
+  }
+
+  &:focus-visible {
+    outline-offset: -2px;
+  }
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  // narrow screens: the fields are under the preview, nothing to fold
+  @media screen and (max-width: 50rem) {
+    display: none;
+  }
 }
 
 .m_modal--sidebar {
