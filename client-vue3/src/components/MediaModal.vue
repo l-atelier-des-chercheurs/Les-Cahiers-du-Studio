@@ -127,7 +127,9 @@
       <textarea
         v-if="can_edit"
         id="media_caption"
+        ref="caption"
         v-model="form.caption"
+        class="m_media--caption"
         rows="2"
       />
       <p v-else class="m_media--value">{{ form.caption }}</p>
@@ -677,6 +679,10 @@ export default {
       this.pending_action = "";
       this.markSeen(this.media.$path);
     },
+    // typed, or another media's
+    "form.caption"() {
+      this.$nextTick(this.fitCaption);
+    },
   },
   created() {
     this.markSeen(this.media.$path);
@@ -686,6 +692,7 @@ export default {
     // a video or sound playing in its tile stops
     stopAll();
     window.addEventListener("keydown", this.onKeydown);
+    this.fitCaption();
   },
   beforeUnmount() {
     this.is_unmounted = true;
@@ -907,6 +914,17 @@ export default {
       return `${(bytes / 1024 ** i).toLocaleString(i18n.global.locale.value, {
         maximumFractionDigits: i ? 1 : 0,
       })} ${this.$t(units[i])}`;
+    },
+    // the caption field: 2 lines at least, as many as the caption beyond,
+    // up to 8 (max-height in the styles), then it scrolls
+    fitCaption() {
+      const el = this.$refs.caption;
+      if (!el) return;
+      el.style.height = "auto";
+      // not laid out (hidden): its 2 rows
+      if (!el.scrollHeight) return;
+      const borders = el.offsetHeight - el.clientHeight;
+      el.style.height = `${el.scrollHeight + borders}px`;
     },
     // datetime-local wants the local time, without zone
     toInputValue(date) {
@@ -1144,6 +1162,11 @@ export default {
   margin: 0;
   white-space: pre-line;
   overflow-wrap: anywhere;
+}
+
+// grown to the caption by fitCaption(): 8 lines at most
+.m_media--caption {
+  max-height: calc(8lh + 2 * var(--spacing-small) + 2px);
 }
 
 .m_media--date {
