@@ -41,14 +41,14 @@
             <circle class="_dot" cx="12" cy="7.75" r="1.1" />
           </svg>
         </button>
-        <button
+        <!-- <button
           type="button"
           class="m_update--close"
           :aria-label="$t('close')"
           @click="markSeen"
         >
           ×
-        </button>
+        </button> -->
       </div>
     </Transition>
 
@@ -112,6 +112,7 @@ export default {
   bottom: max(var(--spacing-medium), env(safe-area-inset-bottom, 0px));
   z-index: 10000;
   display: flex;
+  flex-flow: column nowrap;
   align-items: center;
   gap: var(--spacing-verysmall);
   max-width: calc(100vw - 2 * var(--spacing-medium));
