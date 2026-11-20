@@ -105,6 +105,10 @@
       <span v-if="time_shown" class="m_tile--duration">{{ time_shown }}</span>
     </button>
 
+    <!-- a PDF: said in the bottom left corner, where the others have
+    their play button -->
+    <span v-if="type === 'pdf'" class="m_tile--badge text-cap">PDF</span>
+
     <div v-if="is_playing" class="m_tile--progress" aria-hidden="true">
       <span :style="{ transform: `scaleX(${progress})` }" />
     </div>
@@ -486,6 +490,21 @@ export default {
     outline: 2px solid white;
     outline-offset: 1px;
   }
+}
+
+// the kind of file, as the play button: small capitals on a dark tab
+.m_tile--badge {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  background-color: rgb(0 0 0 / 50%);
+  color: white;
+  font-size: var(--font-size-verysmall);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  pointer-events: none;
 }
 
 // small, in the play button, on the right of its icon

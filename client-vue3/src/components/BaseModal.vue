@@ -16,9 +16,11 @@
   <dialog
     ref="dialog"
     class="m_modal"
-    :class="{ 'is--wide': wide }"
+    :class="{ 'is--wide': wide, 'is--overBackdrop': is_over_backdrop }"
     @cancel.prevent="$emit('close')"
     @click="onClick"
+    @pointerover="onPointerOver"
+    @pointerleave="is_over_backdrop = false"
   >
     <!-- the panel, and under it the "nav" slot (the media window's ←
     and →). Given a slide_key, a new key brings a new panel in, from the
@@ -29,7 +31,7 @@
       class="m_modal--stack"
       :class="{ 'has--nav': !!$slots.nav }"
     >
-      <div class="m_modal--slides">
+      <div ref="slides" class="m_modal--slides">
         <Transition :name="`m_modal-slide-${slide_direction}`">
           <form
             :key="slide_key"
@@ -190,6 +192,8 @@ export default {
   data() {
     return {
       is_folded: readJSON(FOLDED_KEY) === true,
+      // the mouse over the background: the cross shows it closes
+      is_over_backdrop: false,
     };
   },
   computed: {
@@ -241,13 +245,22 @@ export default {
       writeJSON(FOLDED_KEY, this.is_folded || undefined);
     },
     // the dialog fills the window: a click outside the panel targets it,
-    // or the stack around the panel and its nav
+    // or the stack around the panel and its nav, or the slides' wrapper,
+    // as wide as the window
+    isBackdrop(target) {
+      return (
+        target === this.$refs.dialog ||
+        target === this.$refs.stack ||
+        target === this.$refs.slides
+      );
+    },
     onClick(event) {
-      if (
-        event.target === this.$refs.dialog ||
-        event.target === this.$refs.stack
-      )
-        this.$emit("close");
+      if (this.isBackdrop(event.target)) this.$emit("close");
+    },
+    // a mouse only: after a tap, the hover would stay
+    onPointerOver(event) {
+      this.is_over_backdrop =
+        event.pointerType === "mouse" && this.isBackdrop(event.target);
     },
   },
 };
@@ -633,15 +646,32 @@ export default {
   right: 0;
   padding: var(--spacing-verysmall);
 
+  svg {
+    border-radius: 50%;
+    transition:
+      background-color 0.2s ease-out,
+      transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
   line {
     fill: none;
     stroke: var(--c-gris_clair);
     stroke-miterlimit: 10;
     stroke-width: 3px;
+    transition: stroke 0.2s ease-out;
   }
 
-  &:hover line {
-    stroke: white;
+  // hovered, or the background, which closes the window too: a light disc,
+  // a larger white cross
+  &:hover,
+  .is--overBackdrop > & {
+    svg {
+      background-color: rgb(255 255 255 / 15%);
+      transform: scale(1.15);
+    }
+    line {
+      stroke: white;
+    }
   }
 }
 </style>
