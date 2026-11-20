@@ -6,6 +6,8 @@
   if the window is closed by mistake. -->
   <BaseModal
     :disabled="!has_text || is_creating"
+    :busy="is_creating"
+    :progress="upload_progress"
     @close="$emit('close')"
     @submit="submit"
   >
@@ -56,6 +58,8 @@ export default {
   props: {
     modelValue: { type: String, default: "" },
     is_creating: { type: Boolean, default: false },
+    // 0 to 1 while sent, if known (BaseModal's spinner)
+    upload_progress: { type: Number, default: null },
     error: { type: String, default: "" },
   },
   emits: ["close", "submit", "update:modelValue"],

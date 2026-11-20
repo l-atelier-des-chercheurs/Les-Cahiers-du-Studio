@@ -92,6 +92,7 @@
       v-if="show_text_modal"
       v-model="text_draft"
       :is_creating="is_creating"
+      :upload_progress="upload_progress"
       :error="text_error"
       @close="show_text_modal = false"
       @submit="createText"
@@ -109,7 +110,7 @@
     <CaptureModal
       v-if="show_capture_modal"
       :is_creating="is_creating"
-      :upload_progress="capture_progress"
+      :upload_progress="upload_progress"
       :error="capture_error"
       @close="show_capture_modal = false"
       @submit="createCapture"
@@ -118,6 +119,7 @@
     <EmbedModal
       v-if="show_embed_modal"
       :is_creating="is_creating"
+      :upload_progress="upload_progress"
       :error="embed_error"
       @close="show_embed_modal = false"
       @submit="createEmbed"
@@ -189,8 +191,8 @@ export default {
       show_text_modal: false,
       show_capture_modal: false,
       capture_error: "",
-      // 0 to 1 while the captured sound is sent, null otherwise
-      capture_progress: null,
+      // 0 to 1 while a text, link or sound is sent, null otherwise
+      upload_progress: null,
       // what was written, kept if the window is closed before adding it
       text_draft: "",
       text_error: "",
@@ -260,12 +262,16 @@ export default {
         ...creditsMeta(),
       };
     },
+    // makeMedia gets a callback for the upload's progress (0 to 1)
     async create(makeMedia) {
       if (this.is_creating) return;
       this.is_creating = true;
+      this.upload_progress = null;
       this.showError("");
       try {
-        const { meta_filename, uploaded_meta } = await makeMedia();
+        const { meta_filename, uploaded_meta } = await makeMedia(
+          (ratio) => (this.upload_progress = ratio)
+        );
         this.is_open = false;
         this.$emit(
           "created",
@@ -280,6 +286,7 @@ export default {
         return false;
       } finally {
         this.is_creating = false;
+        this.upload_progress = null;
       }
     },
 
@@ -294,11 +301,12 @@ export default {
     // later in the media's window
     async createText(html) {
       this.text_error = "";
-      const created = await this.create(() =>
+      const created = await this.create((onProgress) =>
         this.uploadFile(
           this.path_to_folder,
           new File([html], "texte.md", { type: "text/markdown" }),
-          this.newMediaMeta()
+          this.newMediaMeta(),
+          onProgress
         )
       );
       if (created) {
@@ -342,11 +350,12 @@ export default {
     // the page's og:image
     async createEmbed(url) {
       this.embed_error = "";
-      const created = await this.create(() =>
+      const created = await this.create((onProgress) =>
         this.uploadFile(
           this.path_to_folder,
           new File([url], "lien.txt", { type: "text/plain" }),
-          { ...this.newMediaMeta(), $type: "url" }
+          { ...this.newMediaMeta(), $type: "url" },
+          onProgress
         )
       );
       if (created) this.show_embed_modal = false;
@@ -364,16 +373,14 @@ export default {
     },
     async createCapture(file) {
       this.capture_error = "";
-      this.capture_progress = 0;
-      const created = await this.create(() =>
+      const created = await this.create((onProgress) =>
         this.uploadFile(
           this.path_to_folder,
           file,
           { ...this.newMediaMeta(), $type: "audio" },
-          (ratio) => (this.capture_progress = ratio)
+          onProgress
         )
       );
-      this.capture_progress = null;
       if (created) this.show_capture_modal = false;
       else {
         this.capture_error = this.error;

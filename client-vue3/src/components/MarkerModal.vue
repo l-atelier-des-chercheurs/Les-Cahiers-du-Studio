@@ -3,7 +3,7 @@
   label is optional. The parent creates it: it emits "submit" with the
   label (maybe empty), then sets is_creating / error as props. -->
   <BaseModal
-    :disabled="is_creating"
+    :busy="is_creating"
     @close="$emit('close')"
     @submit="$emit('submit', label.trim())"
   >

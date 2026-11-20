@@ -60,13 +60,41 @@
               v-if="$slots.submit_button"
               type="submit"
               class="m_modal--save"
-              :disabled="disabled"
+              :class="{ 'is--busy': busy }"
+              :disabled="disabled || busy"
+              :aria-busy="busy"
             >
-              <svg viewBox="0 0 48 48" aria-hidden="true">
+              <!-- while sent: a ring filled as it goes, or turning when
+              how far it is isn't known (yet, or anymore: the server is
+              saving it) -->
+              <svg
+                v-if="busy"
+                viewBox="0 0 48 48"
+                class="m_modal--spinner"
+                :class="{ 'is--indeterminate': !has_progress }"
+                aria-hidden="true"
+              >
+                <circle class="_track" cx="24" cy="24" r="12" />
+                <circle
+                  class="_value"
+                  cx="24"
+                  cy="24"
+                  r="12"
+                  pathLength="100"
+                  :stroke-dasharray="`${has_progress ? progress * 100 : 25} 100`"
+                />
+              </svg>
+              <svg v-else viewBox="0 0 48 48" aria-hidden="true">
                 <polyline points="35.48 13.74 22.2 36.41 12.81 25.55" />
               </svg>
-              <span class="text-cap font-verysmall">
-                <slot name="submit_button" />
+              <span class="text-cap font-verysmall" role="status">
+                <template v-if="busy">
+                  {{ $t("sending") }}
+                  <template v-if="has_progress">
+                    {{ Math.round(progress * 100) }} %
+                  </template>
+                </template>
+                <slot v-else name="submit_button" />
               </span>
             </button>
           </div>
@@ -121,8 +149,18 @@ export default {
     // on narrow screens, the preview's height (a CSS length) instead of
     // 45% of the window: a sound's player needs little
     mobile_preview_height: { type: String, default: "" },
+    // being sent: the submit button turns into a spinner
+    busy: { type: Boolean, default: false },
+    // 0 to 1 while busy, if known: shown on the spinner, in %
+    progress: { type: Number, default: null },
   },
   emits: ["close", "submit"],
+  computed: {
+    // all sent, the server still saving it: as unknown
+    has_progress() {
+      return this.progress !== null && this.progress < 1;
+    },
+  },
   mounted() {
     this.$refs.dialog.showModal();
     if (!open_modals.length)
@@ -415,10 +453,42 @@ export default {
 
   span {
     letter-spacing: 0.1em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // still green while sent: it is on its way, not unavailable
+  &.is--busy:disabled {
+    background-color: var(--c-vert_vif);
+    color: var(--c-noir);
+    cursor: progress;
   }
 
   @media screen and (max-width: 50rem) {
     padding: var(--spacing-verysmall);
+  }
+}
+
+.m_modal--spinner {
+  circle {
+    fill: none;
+    stroke-width: 3px;
+  }
+  ._track {
+    opacity: 0.25;
+  }
+  // from the top, clockwise
+  ._value {
+    transform: rotate(-90deg);
+    transform-origin: center;
+    transition: stroke-dasharray 0.2s linear;
+  }
+  &.is--indeterminate {
+    animation: m_modal-spin 0.9s linear infinite;
+  }
+}
+@keyframes m_modal-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

@@ -7,6 +7,8 @@
   props. The microphone is released as soon as the window closes. -->
   <BaseModal
     :disabled="!file || is_creating"
+    :busy="is_creating"
+    :progress="upload_progress"
     @close="$emit('close')"
     @submit="submit"
   >
@@ -76,9 +78,7 @@
 
     <p v-if="error" class="m_modal--field form-error">{{ error }}</p>
 
-    <template #submit_button>
-      {{ is_creating && upload_label ? upload_label : $t("add") }}
-    </template>
+    <template #submit_button>{{ $t("add") }}</template>
   </BaseModal>
 </template>
 
