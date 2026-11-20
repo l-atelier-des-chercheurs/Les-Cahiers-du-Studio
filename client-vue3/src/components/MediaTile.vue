@@ -10,7 +10,7 @@
     ]"
     v-seen-on-hover="media.$path"
     :data-path="media.$path"
-    :title="summary"
+    :aria-label="summary"
     role="button"
     tabindex="0"
     @click="onClick"
@@ -86,8 +86,8 @@
       @error="stopPlaying"
     />
 
-    <!-- plays in the tile, or stops: the icon, then the duration (the
-    time left, while playing), one button. The rest of the tile still
+    <!-- plays in the tile, or stops: the icon, then, while playing, the
+    time left, one button. The rest of the tile still
     opens the media -->
     <button
       v-if="can_play"
@@ -120,7 +120,18 @@
         :style="{ '--author-color': author_color }"
         aria-hidden="true"
       />
-      <span v-if="legend" class="m_tile--caption">{{ legend }}</span>
+      <!-- one line; hovered, the whole of it over that line, within the
+      tile. Only the line is hovered: moving down, over the whole caption,
+      hides it again -->
+      <span v-if="legend" class="m_tile--captionLine">
+        <span class="m_tile--caption">{{ legend }}</span>
+        <span
+          class="m_tile--caption is--full"
+          :style="caption_lines && { '-webkit-line-clamp': caption_lines }"
+          aria-hidden="true"
+          >{{ legend }}</span
+        >
+      </span>
     </div>
   </div>
 </template>
@@ -246,6 +257,16 @@ export default {
         : this.text;
     },
     // the caption, or for links the site's name
+    // the whole caption's lines, within the tile (5px around, 2px of
+    // padding above and under; 0.7rem at 1.2, as in the styles)
+    caption_lines() {
+      if (!this.tile_height) return 0;
+      const rem = parseFloat(
+        getComputedStyle(document.documentElement).fontSize
+      );
+      const line_height = 0.7 * rem * 1.2;
+      return Math.max(1, Math.floor((this.tile_height - 14) / line_height));
+    },
     legend() {
       const { caption, $content } = this.media;
       if (caption) return caption;
@@ -259,6 +280,7 @@ export default {
       return "";
     },
     // on hover: what the tile no longer writes out
+    // its name for screen readers (no tooltip: the caption shows on the tile)
     summary() {
       return [
         formatTime(dateOf(this.media)),
@@ -284,9 +306,9 @@ export default {
       return seconds > 0 ? seconds : 0;
     },
     // "1:07"; while playing, the time left
+    // while playing only: the time left
     time_shown() {
-      if (!this.duration) return "";
-      if (!this.is_playing) return formatDuration(this.duration);
+      if (!this.duration || !this.is_playing) return "";
       return formatDuration(Math.max(0, this.duration - this.current_time));
     },
     // videos and sounds play in the tile
@@ -469,7 +491,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  min-width: 2rem;
+  min-width: 1.6rem;
   padding: 0;
   border-radius: 4px;
   background-color: rgb(0 0 0 / 50%);
@@ -477,9 +499,9 @@ export default {
   transition: background-color 0.2s ease-out;
 
   svg {
-    width: 2rem;
-    height: 2rem;
-    padding: 0.35rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0.28rem;
     fill: white;
   }
 
@@ -558,6 +580,12 @@ export default {
   //   0 1px 3px rgb(0 0 0 / 35%);
 }
 
+.m_tile--captionLine {
+  position: relative;
+  min-width: 0;
+  display: flex;
+}
+
 .m_tile--caption {
   min-width: 0;
   padding: 2px 4px;
@@ -569,5 +597,27 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  // the line: hovered with the mouse
+  &:not(.is--full) {
+    pointer-events: auto;
+  }
+
+  // the whole caption, over the line, as wide as it may be; as many lines
+  // as the tile has room for (caption_lines), the last one cut
+  &.is--full {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    display: none;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  &:hover + .is--full {
+    display: -webkit-box;
+  }
 }
 </style>
