@@ -38,16 +38,22 @@
           class="m_addMedias--option"
           :class="{ 'is--disabled': disabled }"
           :tabindex="is_open ? 0 : -1"
-          @keydown.enter.space.prevent="$refs[`input_${option.key}`][0].click()"
+          :aria-disabled="disabled"
+          @click="disabled && $event.preventDefault()"
+          @keydown.enter.space.prevent="
+            !disabled && $refs[`input_${option.key}`][0].click()
+          "
         >
           <span class="m_addMedias--label">{{ $t(option.label) }}</span>
           <svg viewBox="0 0 40 40" aria-hidden="true" v-html="option.icon" />
+          <!-- never disabled: the connection may drop while the picker is
+          open (a phone preparing videos, the page in the background), and
+          a disabled input would lose the files chosen -->
           <input
             :ref="`input_${option.key}`"
             type="file"
             multiple
             :accept="option.accept"
-            :disabled="disabled"
             tabindex="-1"
             @change="onInputChange"
           />

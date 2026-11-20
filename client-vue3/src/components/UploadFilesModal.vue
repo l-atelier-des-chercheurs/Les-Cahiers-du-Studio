@@ -184,12 +184,45 @@ import { useUnseenStore } from "@/stores/unseen";
 import { contributor_name, creditsMeta } from "@/contributor";
 import BaseModal from "./BaseModal.vue";
 
-// previews read from the disk: only light images, to spare phones' memory
-const MAX_PREVIEW_SIZE = 15 * 1024 * 1024;
+// previews read from the disk: shrunk to this width, one image at a time.
+// Shown as they are, a few photos from a recent phone (48 Mpx, ~190 MB
+// each once decoded, whatever their weight on disk) made the browser
+// crash and reload the page: the window never showed up.
+const PREVIEW_WIDTH = 220;
+// beyond this, not even read
+const MAX_PREVIEW_SIZE = 40 * 1024 * 1024;
 // two dates closer than this are the same one (seconds are not shown)
 const SAME_DATE_MS = 60 * 1000;
 
 let next_id = 0;
+
+// a small JPEG of an image file, or null if the browser can't read it
+// (HEIC outside Safari…). An <img> rather than createImageBitmap: it
+// follows the photo's EXIF orientation everywhere.
+async function shrinkImage(file, width) {
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  try {
+    img.src = url;
+    await img.decode();
+    const scale = Math.min(1, width / img.naturalWidth);
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+    canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", 0.8)
+    );
+    // frees the canvas' memory right away (Safari keeps it otherwise)
+    canvas.width = canvas.height = 0;
+    return blob;
+  } catch {
+    return null;
+  } finally {
+    img.src = "";
+    URL.revokeObjectURL(url);
+  }
+}
 
 export default {
   components: { BaseModal },
@@ -269,13 +302,8 @@ export default {
   },
   created() {
     this.abort_controller = new AbortController();
-    for (const item of this.items)
-      if (
-        item.file.type.startsWith("image/") &&
-        item.file.size < MAX_PREVIEW_SIZE
-      )
-        item.preview_url = URL.createObjectURL(item.file);
     this.run();
+    this.makePreviews();
   },
   beforeUnmount() {
     window.removeEventListener("beforeunload", this.onBeforeUnload);
@@ -477,6 +505,24 @@ export default {
 
     /* DISPLAY */
 
+    // one image after the other, until the window closes; the ones already
+    // sent show adc-core's thumb instead
+    async makePreviews() {
+      const signal = this.abort_controller.signal;
+      for (const item of this.items) {
+        if (signal.aborted) return;
+        if (
+          item.meta ||
+          !item.file.type.startsWith("image/") ||
+          item.file.size > MAX_PREVIEW_SIZE
+        )
+          continue;
+        const blob = await shrinkImage(item.file, PREVIEW_WIDTH);
+        if (!blob) continue;
+        if (signal.aborted) return;
+        item.preview_url = URL.createObjectURL(blob);
+      }
+    },
     previewOf(item) {
       return (item.meta && thumbURL(item.meta, 220)) || item.preview_url;
     },
