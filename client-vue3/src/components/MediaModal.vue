@@ -77,10 +77,13 @@
           <p v-if="form.caption">{{ form.caption }}</p>
         </div>
 
-        <div v-else-if="type === 'url'" class="m_media--url">
+        <!-- a website, a PDF: the preview, and over its centre the same
+        large button, to open the site or load the PDF's viewer -->
+        <div v-else-if="type === 'url'" class="m_media--page">
           <img v-if="large_thumb" :src="large_thumb" alt="" />
           <a
             v-if="safe_url"
+            class="m_media--open"
             :href="safe_url"
             target="_blank"
             rel="noopener noreferrer"
@@ -95,9 +98,13 @@
           :src="media_url"
           :title="media.$media_filename"
         />
-        <div v-else-if="type === 'pdf'" class="m_media--pdf">
+        <div v-else-if="type === 'pdf'" class="m_media--page">
           <img v-if="large_thumb" :src="large_thumb" alt="" />
-          <button type="button" class="button" @click="is_pdf_loaded = true">
+          <button
+            type="button"
+            class="m_media--open"
+            @click="is_pdf_loaded = true"
+          >
             {{ $t("load_pdf") }}
           </button>
         </div>
@@ -484,7 +491,9 @@ const CONVERTIBLE_AUDIO_EXTS = [
 
 function isWebPlayable({ type, ext, video_codec, audio_codec }) {
   const audioOk = (codecs) =>
-    !audio_codec || codecs.includes(audio_codec) || audio_codec.startsWith("pcm_");
+    !audio_codec ||
+    codecs.includes(audio_codec) ||
+    audio_codec.startsWith("pcm_");
   if (type === "video")
     return (
       WEB_VIDEO.exts.includes(ext) &&
@@ -593,7 +602,9 @@ export default {
       );
     },
     is_converting() {
-      return !!this.converting_path && this.converting_path === this.media.$path;
+      return (
+        !!this.converting_path && this.converting_path === this.media.$path
+      );
     },
     author_color() {
       return authorColor(this.form.authors[0]);
@@ -971,6 +982,7 @@ export default {
   justify-content: center;
   overflow: hidden;
   // as the tiles: a transparent image on the same white
+  background-color: var(--c-noir);
   background-color: white;
 
   > video,
@@ -1001,7 +1013,6 @@ export default {
 }
 
 .m_media--audio,
-.m_media--url,
 .m_media--marker,
 .m_media--other {
   display: flex;
@@ -1030,8 +1041,8 @@ export default {
   }
 }
 
-// the first page, the button over its centre
-.m_media--pdf {
+// a PDF's first page, a site's preview: whole, the button over its centre
+.m_media--page {
   position: relative;
   display: flex;
   align-items: center;
@@ -1044,34 +1055,33 @@ export default {
     max-height: 100%;
     object-fit: contain;
   }
-
-  // solid, readable over any page
-  .button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: var(--spacing-small) var(--spacing-medium);
-    border-radius: 2em;
-    background-color: var(--c-noir);
-    color: var(--c-blanc);
-    font-weight: 600;
-    box-shadow: 0 0.25rem 1.5rem rgb(0 0 0 / 35%);
-    transition:
-      background-color 0.2s ease-out,
-      transform 0.2s ease-out;
-
-    &:hover,
-    &:focus-visible {
-      background-color: var(--c-noir_light);
-      transform: translate(-50%, -50%) scale(1.05);
-    }
-  }
 }
 
-.m_media--url a {
-  color: white;
-  text-underline-offset: 0.15em;
+// over the preview's centre: large, black on white, readable over any page
+.m_media--open {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: calc(100% - 2 * var(--spacing-medium));
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: 2em;
+  background-color: white;
+  color: var(--c-noir);
+  font-size: var(--font-size-large);
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 0.25rem 1.5rem rgb(0 0 0 / 35%);
+  transform: translate(-50%, -50%);
+  transition:
+    box-shadow 0.2s ease-out,
+    transform 0.2s ease-out;
+
+  &:hover,
+  &:focus-visible {
+    box-shadow: 0 0.35rem 2rem rgb(0 0 0 / 45%);
+    transform: translate(-50%, -50%) scale(1.05);
+  }
 }
 
 .m_media--marker {

@@ -93,8 +93,8 @@
       v-if="can_play"
       type="button"
       class="m_tile--playButton"
-      :aria-label="$t(is_playing ? 'stop' : 'play')"
-      :title="$t(is_playing ? 'stop' : 'play')"
+      :aria-label="play_label"
+      :title="play_label"
       @click.stop="togglePlay"
       @keydown.enter.space.stop
     >
@@ -105,11 +105,26 @@
       <span v-if="time_shown" class="m_tile--duration">{{ time_shown }}</span>
     </button>
 
-    <!-- a PDF: said in the bottom left corner, where the others have
-    their play button -->
-    <span v-if="type === 'pdf'" class="m_tile--badge text-cap">PDF</span>
-    <!-- a website: a globe, as in the + menu (AddMedias.vue) -->
-    <span v-else-if="type === 'url'" class="m_tile--badge is--icon">
+    <!-- the kind of file, in the bottom left corner where sounds and
+    videos have their play button, as large: PDF, 3D, a website's globe
+    (as in the + menu, AddMedias.vue). Named on hover -->
+    <span
+      v-if="type === 'pdf'"
+      class="m_tile--badge text-cap"
+      :title="$t('type_pdf')"
+      >PDF</span
+    >
+    <span
+      v-else-if="type === 'obj' || type === 'stl'"
+      class="m_tile--badge text-cap"
+      :title="$t(`type_${type}`)"
+      >3D</span
+    >
+    <span
+      v-else-if="type === 'url'"
+      class="m_tile--badge is--icon"
+      :title="$t('type_url')"
+    >
       <svg viewBox="10 10 20 20" aria-hidden="true">
         <circle cx="20" cy="20" r="8.5" />
         <ellipse cx="20" cy="20" rx="3.6" ry="8.5" />
@@ -319,6 +334,11 @@ export default {
       if (!this.duration || !this.is_playing) return "";
       return formatDuration(Math.max(0, this.duration - this.current_time));
     },
+    // says which: a sound or a video
+    play_label() {
+      const kind = this.type === "video" ? "video" : "audio";
+      return this.$t(`${this.is_playing ? "stop" : "play"}_${kind}`);
+    },
     // videos and sounds play in the tile
     can_play() {
       return ["video", "audio"].includes(this.type) && !!this.media_url;
@@ -492,21 +512,32 @@ export default {
 
 // bottom left: plays in the tile, or stops; the duration on the right of
 // the icon, on the same background. Rounded as the tile
-.m_tile--playButton {
+// the tabs in the bottom left corner, the play button and the kind of
+// file: the same height, about the same width, the same dark
+.m_tile--playButton,
+.m_tile--badge {
   position: absolute;
   bottom: 6px;
   left: 6px;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  justify-content: center;
   min-width: 1.6rem;
+  height: 1.6rem;
   padding: 0;
   border-radius: 4px;
   background-color: rgb(0 0 0 / 50%);
   color: white;
+  font-size: var(--font-size-verysmall);
+  line-height: 1;
+}
+
+.m_tile--playButton {
   transition: background-color 0.2s ease-out;
 
   svg {
+    flex: 0 0 auto;
     width: 1.6rem;
     height: 1.6rem;
     padding: 0.28rem;
@@ -522,23 +553,15 @@ export default {
   }
 }
 
-// the kind of file, as the play button: small capitals on a dark tab
+// a word (PDF, 3D), or an icon as large as the play button's. A click on
+// it opens the media, as on the rest of the tile
 .m_tile--badge {
-  position: absolute;
-  bottom: 6px;
-  left: 6px;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  background-color: rgb(0 0 0 / 50%);
-  color: white;
-  font-size: var(--font-size-verysmall);
+  padding: 0 0.35rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   letter-spacing: 0.08em;
-  line-height: 1.2;
-  pointer-events: none;
 
-  // an icon: as large as the play button
   &.is--icon {
-    padding: 0.28rem;
+    padding: 0;
 
     svg {
       display: block;
