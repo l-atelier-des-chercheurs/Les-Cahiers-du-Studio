@@ -6,6 +6,8 @@ Ce qui change pour les personnes qui utilisent les Cahiers, de la version la plu
 
 ## À venir
 
+## 3.1.0-alpha.18 — 2026-11-20
+
 - « Prototype TAV » devient « Vos retours » : on y signale un bug, propose une idée ou une amélioration, même sans compte, et on y retrouve les nouveautés à tester et la présentation du prototype. Cette présentation ne s’ouvre plus qu’à la première visite. Les admins lisent les retours reçus depuis la barre du haut.
 - Après une mise à jour, l’appli le signale et présente ses nouveautés depuis la dernière version utilisée. Si la mise à jour a lieu pendant qu’une page est ouverte, elle propose de recharger la page.
 - Visionneuse 3D pour les fichiers STL et OBJ, dans la fenêtre du média : faire tourner, zoomer, déplacer le modèle. Les contributeurices peuvent faire de la vue choisie l’aperçu du fichier.
