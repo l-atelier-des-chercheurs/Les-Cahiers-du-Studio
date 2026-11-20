@@ -114,6 +114,35 @@ Quittez nano avec <kbd>Ctrl</kbd> + <kbd>X</kbd>, puis <kbd>Y</kbd> et <kbd>Entr
 
 Pour faire tourner plusieurs instances sur le même serveur, donnez à chacune son propre dossier d'installation, son `desired_port` (8081, 8082…), son `contentPath` et son sous-domaine. Si le port demandé est occupé, l'application prend le suivant.
 
+### Recevoir les retours par e-mail (facultatif)
+
+Les retours envoyés depuis « Vos retours » sont toujours gardés sur l'instance, et les admins les lisent dans « Retours reçus ». Pour les recevoir aussi par e-mail, il faut un serveur d'envoi (SMTP : celui de votre hébergeur de mail, ou un service comme Brevo, Mailjet…) et une adresse de contact.
+
+Le serveur d'envoi, dans `settings.json` :
+
+```json
+{
+  "desired_port": 8080,
+  "contentPath": "/home/ubuntu/archives-vivantes-contenus",
+  "public_url": "https://archives.mon-domaine.fr",
+  "mailer": {
+    "host": "smtp.mon-hebergeur.fr",
+    "port": 465,
+    "secure": true,
+    "auth": { "user": "cahiers@mon-domaine.fr", "pass": "mot de passe" },
+    "from": "Les Cahiers du Studio <cahiers@mon-domaine.fr>"
+  }
+}
+```
+
+L'adresse qui reçoit les retours, dans le fichier `meta.txt` du dossier des contenus (créé au premier lancement), sur une ligne à ajouter :
+
+```toml
+contactmail_of_instance = "equipe@mon-domaine.fr"
+```
+
+Puis relancez l'application. Chaque retour arrive par e-mail ; y répondre écrit directement à la personne, si elle a laissé son adresse. Si l'e-mail ne part pas (serveur injoignable, mauvais mot de passe), le retour reste gardé sur l'instance et l'erreur est notée dans le journal. Pour que les e-mails n'arrivent pas en indésirables, l'adresse `from` doit appartenir à un domaine dont l'envoi est configuré (SPF, DKIM) chez votre hébergeur de mail.
+
 ## 5. Lancer l'application
 
 Testez d'abord en mode debug :
@@ -166,12 +195,16 @@ server {
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection 'upgrade';
     proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
     proxy_cache_bypass $http_upgrade;
     proxy_read_timeout 300s;
     proxy_send_timeout 300s;
   }
 }
 ```
+
+Les deux lignes `X-Forwarded-…` transmettent à l'application l'adresse IP des visiteurs (sinon, elle ne voit que celle de nginx) : elle s'en sert pour limiter l'envoi de retours par personne.
 
 `client_max_body_size` est la taille maximale d'un fichier envoyé. L'application accepte par défaut jusqu'à 10 000 Mo : c'est donc ce réglage de nginx qui fixe la limite en pratique. 500 Mo laisse passer des vidéos de quelques minutes sans saturer le disque. Les délais allongés évitent de couper l'envoi d'une vidéo lourde.
 

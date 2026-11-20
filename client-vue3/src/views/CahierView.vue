@@ -50,7 +50,10 @@
         </nav>
       </div>
 
-      <PrototypeBadge class="m_cahier--prototype" @notice="$emit('notice')" />
+      <FeedbackButtons
+        class="m_cahier--prototype"
+        @feedback="$emit('feedback')"
+      />
 
       <LiveStatus
         class="m_cahier--live"
@@ -128,17 +131,17 @@ import { sortByDate } from "@/medias";
 import { useUnseenStore } from "@/stores/unseen";
 import AddMedias from "@/components/AddMedias.vue";
 import LiveStatus from "@/components/LiveStatus.vue";
-import PrototypeBadge from "@/components/PrototypeBadge.vue";
+import FeedbackButtons from "@/components/FeedbackButtons.vue";
 import MediaGrid from "@/components/MediaGrid.vue";
 import MediaTimeline from "@/components/MediaTimeline.vue";
 import UploadFilesModal from "@/components/UploadFilesModal.vue";
 
 export default {
-  emits: ["notice"],
+  emits: ["feedback"],
   components: {
     AddMedias,
     LiveStatus,
-    PrototypeBadge,
+    FeedbackButtons,
     MediaGrid,
     // loaded on demand, with its Markdown libraries (marked, DOMPurify),
     // when a media is first opened
@@ -396,11 +399,14 @@ export default {
   .m_cahier--header {
     grid-template-columns: minmax(0, 1fr) auto auto;
   }
-  // more specific than PrototypeBadge's own rule
+  // more specific than FeedbackButtons' own rules
   .m_cahier--header .m_cahier--prototype {
     justify-self: end;
-    padding: 0.1rem 0.45rem;
-    font-size: var(--font-size-verysmall);
+
+    :deep(button) {
+      padding: 0.1rem 0.45rem;
+      font-size: var(--font-size-verysmall);
+    }
   }
   // as much room as there is, then an ellipsis
   .m_cahier--title {

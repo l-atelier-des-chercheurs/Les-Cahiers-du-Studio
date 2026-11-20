@@ -4,13 +4,17 @@
       <component
         :is="Component"
         @login="show_login_modal = true"
-        @notice="show_notice = true"
+        @feedback="feedback_tab = 'feedback'"
       />
     </RouterView>
 
     <LoginModal v-if="show_login_modal" @close="show_login_modal = false" />
 
-    <NoticeModal v-if="show_notice" @close="show_notice = false" />
+    <FeedbackPanel
+      v-if="feedback_tab"
+      :initial_tab="feedback_tab"
+      @close="feedback_tab = ''"
+    />
 
     <AppNotifications />
 
@@ -19,19 +23,36 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from "vue";
+import { readJSON, writeJSON } from "@/adc/storage";
 import AppNotifications from "@/components/AppNotifications.vue";
 import LoginModal from "@/components/LoginModal.vue";
-import NoticeModal from "@/components/NoticeModal.vue";
 import UpdateNotice from "@/components/UpdateNotice.vue";
 
+const WELCOMED_KEY = "cahiers.welcomed";
+
 export default {
-  components: { AppNotifications, LoginModal, NoticeModal, UpdateNotice },
+  components: {
+    AppNotifications,
+    LoginModal,
+    UpdateNotice,
+    FeedbackPanel: defineAsyncComponent(
+      () => import("@/components/FeedbackPanel.vue")
+    ),
+  },
   data() {
     return {
       show_login_modal: false,
-      // the app is not open yet: say so on every visit
-      show_notice: true,
+      // the "Vos retours" panel open, on this tab
+      feedback_tab: "",
     };
+  },
+  // a first visit: the app is a prototype, said once, on the panel's
+  // "about" tab (it was said on every visit)
+  created() {
+    if (readJSON(WELCOMED_KEY)) return;
+    writeJSON(WELCOMED_KEY, true);
+    if (!window.app_infos?.page_is_standalone_html) this.feedback_tab = "about";
   },
 };
 </script>

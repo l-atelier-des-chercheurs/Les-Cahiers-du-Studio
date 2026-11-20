@@ -3,7 +3,7 @@
   <main class="m_home">
     <header class="m_home--header">
       <div class="m_home--topbar">
-        <PrototypeBadge @notice="$emit('notice')" />
+        <FeedbackButtons @feedback="$emit('feedback')" />
         <LiveStatus
           class="m_home--live"
           :explanation="$t('live_explanation_home')"
@@ -207,7 +207,7 @@ import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
 import CreateCahierModal from "@/components/CreateCahierModal.vue";
 import LiveStatus from "@/components/LiveStatus.vue";
-import PrototypeBadge from "@/components/PrototypeBadge.vue";
+import FeedbackButtons from "@/components/FeedbackButtons.vue";
 
 // "Élise" and "elise" match
 const normalize = (text) =>
@@ -217,8 +217,8 @@ const normalize = (text) =>
     .toLowerCase();
 
 export default {
-  components: { CreateCahierModal, LiveStatus, PrototypeBadge },
-  emits: ["login", "notice"],
+  components: { CreateCahierModal, LiveStatus, FeedbackButtons },
+  emits: ["login", "feedback"],
   data() {
     return {
       // set by adc-core's index.pug

@@ -52,6 +52,35 @@ export async function getServerVersion(): Promise<string | undefined> {
   }
 }
 
+/* FEEDBACK */
+
+// on the app, sent by anyone, read by the instance's admins (adc-core
+// 0.2.14+, server/feedback.js)
+export type Feedback = {
+  id: string;
+  date: string;
+  type: string;
+  message: string;
+  name?: string;
+  email?: string;
+  context?: Record<string, unknown>;
+  token_path?: Path;
+};
+
+export function sendFeedback(feedback: {
+  type: string;
+  message: string;
+  name?: string;
+  email?: string;
+  context?: Record<string, unknown>;
+}) {
+  return request<{ id: string }>("POST", "_feedback", feedback);
+}
+
+export function getFeedback() {
+  return request<Feedback[]>("GET", "_feedback");
+}
+
 /* AUTH */
 
 // GET /_authCheck answers 200 when there is no general password,
