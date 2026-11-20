@@ -8,6 +8,7 @@
       `is--${type}`,
       { 'is--unseen': is_unseen, 'is--playing': is_playing },
     ]"
+    v-seen-on-hover="media.$path"
     :data-path="media.$path"
     :title="summary"
     role="button"
@@ -127,6 +128,7 @@ import { mapState } from "pinia";
 import { authorColor, dateOf, formatDuration, formatTime } from "@/medias";
 import { play, release } from "@/playback";
 import { useUnseenStore } from "@/stores/unseen";
+import { vSeenOnHover } from "@/seenOnHover";
 
 // one of the cahiers' thumb resolutions (settings_base.json): about 2× the
 // tiles' width, for sharp thumbs on dense screens
@@ -176,6 +178,7 @@ function loadRenderer() {
 }
 
 export default {
+  directives: { seenOnHover: vSeenOnHover },
   props: {
     media: { type: Object, required: true },
   },

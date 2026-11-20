@@ -71,6 +71,7 @@
             <div v-if="segment.marker" class="m_tl--marker">
               <div
                 class="m_tl--markerLabel"
+                v-seen-on-hover="segment.marker.$path"
                 :class="{ 'is--unseen': isUnseen(segment.marker.$path) }"
                 :data-path="segment.marker.$path"
                 role="button"
@@ -152,6 +153,7 @@ import { readJSON, writeJSON } from "@/adc/storage";
 import { useContentStore } from "@/stores/content";
 import { useNotificationsStore } from "@/stores/notifications";
 import { useUnseenStore } from "@/stores/unseen";
+import { vSeenOnHover } from "@/seenOnHover";
 import MediaTile from "./MediaTile.vue";
 
 // empty days in a row: one half circle each, up to this many, then the
@@ -168,6 +170,7 @@ const MIN_SIZE = 2;
 const MAX_W = 16;
 
 export default {
+  directives: { seenOnHover: vSeenOnHover },
   components: { MediaTile },
   // open: a media's window, with its path
   emits: ["open"],
@@ -560,8 +563,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  margin-right: 30px;
+  // margin-right: 30px;
   font-size: inherit;
 
   &::before {

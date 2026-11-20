@@ -2,7 +2,8 @@ import { defineStore } from "pinia";
 import { readJSON, writeJSON } from "@/adc/storage";
 
 // Medias added from this browser that haven't been seen yet: outlined in
-// the cahier until opened (MediaModal.vue marks them seen).
+// the cahier until opened (MediaModal.vue) or hovered for 2 s with the
+// mouse (seenOnHover.js).
 // Kept in this browser for each cahier.
 
 const storageKey = (path_to_folder) => `cahiers.unseen.${path_to_folder}`;
