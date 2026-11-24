@@ -17,8 +17,9 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
 ## Comptes et droits
 
 - **Se connecter** : choisir son nom dans la liste des auteurs, puis saisir son mot de passe. La connexion est gardée entre deux visites (30 jours par défaut).
+- **Créer un compte** : « Créer un compte », sous la connexion. Nom (deux comptes ne peuvent pas avoir le même), e-mail (obligatoire si l'instance le demande ; deux comptes ne peuvent pas avoir le même), mot de passe deux fois (6 caractères au moins). Si l'instance a un code d'invitation, il est demandé en premier. Une fois le compte créé, on est connecté avec lui.
 - **Se déconnecter** : depuis la page d'accueil, sous « Connecté avec le compte : … ».
-- **Créer des cahiers** : réservé aux administrateurs de l'instance.
+- **Créer des cahiers** : toute personne qui a un compte. Sans être connecté, « Créer un cahier » demande d'abord de se connecter.
 - **Modifier un cahier, y ajouter des médias** : réservé à ses administrateurs et à ses contributeurs. La personne qui crée un cahier en devient administratrice.
 - **Cahier public** : visible par tous les visiteurs, connectés ou non.
 - **Cahier ouvert à tous** (case « Contributions ouvertes à tous » à la création) : tout visiteur peut ajouter des médias, sans compte. Le cahier est alors public, et marqué « ouvert à tous » dans la liste.
@@ -34,7 +35,7 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
   - sa date de création et sa dernière modification ;
   - un bouton « Ouvrir ».
 - **Recherche par nom** : ne tient compte ni des majuscules ni des accents (« elise » trouve « Élise »).
-- **Créer un cahier** (administrateurs) : fenêtre avec le titre et une case « Privé ».
+- **Créer un cahier** : fenêtre avec le titre et une case « Privé ».
   - Deux cahiers ne peuvent pas avoir le même titre.
   - Certains titres sont réservés.
   - Après la création, le cahier s'ouvre.
@@ -136,15 +137,20 @@ Référence pour écrire la documentation : ce que l'on voit et ce que l'on peut
   - **Date de l'import**.
   - **Date personnalisée** : ouvre un champ date et heure.
   - Le choix est enregistré tout de suite, et la timeline se met à jour.
+- **Réglages du cahier** (ses admins et ceux de l'instance) : un crayon juste après le titre ouvre une fenêtre pour changer :
+  - le titre (l'adresse du cahier ne change pas : les liens déjà partagés continuent de marcher) et la description ;
+  - le début et la fin de la timeline, facultatifs ;
+  - l'accès : privé, public, ou ouvert aux contributions sans compte, comme à la création ;
+  - les admins et les contributeurices, choisis parmi les comptes. Un cahier garde toujours au moins un admin ; se retirer soi-même des admins est signalé avant d'enregistrer ;
+  - « Supprimer le cahier », après confirmation dans la fenêtre. Le cahier va dans la corbeille du serveur, puis l'accueil s'affiche.
 - **Terminer** : ferme la fenêtre une fois tous les envois finis. L'affichage défile jusqu'au plus ancien des médias importés (et déplie son jour s'il était replié).
 - **Fermer pendant un envoi** : la fenêtre demande de « Continuer l'import » ou d'« Arrêter les envois ».
 
 ## Pas encore fait
 
 - Fenêtre d'un média : changer l'adresse d'un lien ne met pas encore son aperçu à jour.
-- Modifier ou supprimer un cahier. Description, début et fin à la création.
-- Gérer les contributeurs d'un cahier.
-- Créer un compte. Saisir le mot de passe général de l'instance.
+- Description, début et fin à la création (ils se règlent ensuite, dans les réglages du cahier).
+- Saisir le mot de passe général de l'instance.
 - Afficher les dates et la couverture des cahiers dans la liste d'accueil.
 - Dans la timeline : graduations des heures, repère « maintenant ».
 - Refus d'un type de fichier dans la fenêtre d'import.

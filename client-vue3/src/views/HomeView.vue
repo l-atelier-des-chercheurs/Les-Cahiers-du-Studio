@@ -120,8 +120,10 @@
       <p v-else-if="!cahiers" class="m_home--message">{{ $t("loading") }}</p>
 
       <TransitionGroup v-else tag="div" name="list" class="m_home--folders">
+        <!-- any account creates cahiers ($can_be_created_by: "logged-in"):
+        shown to everyone, logging in first (openCreateModal) -->
         <button
-          v-if="!search && can_create_cahier"
+          v-if="!search"
           key="create"
           type="button"
           class="m_home--folders--card m_home--folders--card_createButton"
@@ -201,7 +203,7 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import * as api from "@/adc/api";
-import { canSeeFolder, isInstanceAdmin } from "@/adc/rights";
+import { canSeeFolder } from "@/adc/rights";
 import { i18n } from "@/i18n";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
@@ -272,11 +274,6 @@ export default {
         .split(/\n\s*\n/)
         .map((paragraph) => paragraph.trim())
         .filter(Boolean);
-    },
-    // only instance admins create cahiers ($admins "everyone" lets anyone,
-    // logging in first)
-    can_create_cahier() {
-      return isInstanceAdmin(this.token_path);
     },
     // kept up to date by the "cahiers" room (stores/content.js)
     cahiers() {

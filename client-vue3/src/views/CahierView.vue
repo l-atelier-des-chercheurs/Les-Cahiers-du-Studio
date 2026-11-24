@@ -15,6 +15,20 @@
           </svg>
         </RouterLink>
         <h1 class="m_cahier--title">{{ title }}</h1>
+        <!-- the cahier's settings, for its admins -->
+        <button
+          v-if="can_admin"
+          type="button"
+          class="m_cahier--edit"
+          :aria-label="$t('cahier_settings')"
+          :title="$t('cahier_settings')"
+          @click="show_settings = true"
+        >
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M13.5,3.5l3,3L7,16H4V13Z" />
+            <line x1="11.5" y1="5.5" x2="14.5" y2="8.5" />
+          </svg>
+        </button>
         <!-- how this cahier is shown: next to its title, or in the menu on
         narrow screens -->
         <Teleport defer to="#m_cahier--menuPanel" :disabled="!is_narrow">
@@ -162,6 +176,13 @@
       @next="openSibling(1)"
     />
 
+    <CahierSettingsModal
+      v-if="show_settings && cahier"
+      :cahier="cahier"
+      @close="show_settings = false"
+      @removed="$router.push({ name: 'home' })"
+    />
+
     <UploadFilesModal
       v-if="selected_files.length"
       :path_to_folder="path_to_folder"
@@ -176,7 +197,7 @@ import { defineAsyncComponent } from "vue";
 import { mapActions, mapState } from "pinia";
 import { useContentStore } from "@/stores/content";
 import { useSessionStore } from "@/stores/session";
-import { canContributeToFolder } from "@/adc/rights";
+import { canAdminFolder, canContributeToFolder } from "@/adc/rights";
 import { closeTile, growTile, ungrow } from "@/flash";
 import { sortByDate } from "@/medias";
 import { useUnseenStore } from "@/stores/unseen";
@@ -187,6 +208,7 @@ import { isInstanceAdmin } from "@/adc/rights";
 // under 700px: the top bar's buttons in a menu
 const NARROW = window.matchMedia("(max-width: 43.75rem)");
 import AddMedias from "@/components/AddMedias.vue";
+import CahierSettingsModal from "@/components/CahierSettingsModal.vue";
 import LiveStatus from "@/components/LiveStatus.vue";
 import FeedbackButtons from "@/components/FeedbackButtons.vue";
 import MediaGrid from "@/components/MediaGrid.vue";
@@ -197,6 +219,7 @@ export default {
   emits: ["feedback"],
   components: {
     AddMedias,
+    CahierSettingsModal,
     LiveStatus,
     FeedbackButtons,
     MediaGrid,
@@ -228,6 +251,7 @@ export default {
       has_browsed: false,
       is_narrow: NARROW.matches,
       is_menu_open: false,
+      show_settings: false,
     };
   },
   computed: {
@@ -280,6 +304,9 @@ export default {
     },
     can_contribute() {
       return canContributeToFolder(this.cahier, this.token_path);
+    },
+    can_admin() {
+      return !!this.cahier && canAdminFolder(this.cahier, this.token_path);
     },
     // the timeline by default, the grid at ?vue=grille
     view() {
@@ -556,6 +583,35 @@ export default {
   &:hover,
   &:focus-visible {
     filter: brightness(0.95);
+  }
+}
+
+// a pencil, next to the title
+.m_cahier--edit {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  color: var(--c-gris_clair);
+
+  svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.3;
+    stroke-linejoin: round;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: white;
+    background-color: var(--c-gris_fonce);
   }
 }
 

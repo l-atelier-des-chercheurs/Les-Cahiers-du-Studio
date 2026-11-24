@@ -24,6 +24,8 @@ Le client cache déjà ces cahiers (`canSeeFolder`), mais c'est seulement de l'a
 
 ### Proposition
 
+Reprise dans `adc-core/TODO.md` (« Private folders », 24/11), avec la vérification du `signup_password` côté serveur (voir le point 2).
+
 On filtre par socket, sur le modèle de la présence (`sendPresence` / `getPresenceFor`), qui envoie déjà à chacun ce qu'il a le droit de voir. Chaque socket a déjà son `token_path`, vérifié à la connexion, et le client se reconnecte (`reconnect()`) quand on se connecte à un compte ou qu'on s'en déconnecte.
 
 - [ ] **Une seule règle**, `canSeeFolder(meta, token_path)` côté serveur : le dossier est public, ou bien `token_path` est admin du dossier, contributeur du dossier, ou admin de l'instance. Elle sert pour la liste, les rooms et les événements.
@@ -42,30 +44,31 @@ On filtre par socket, sur le modèle de la présence (`sendPresence` / `getPrese
 
 ## 2. Création de compte
 
-- [ ] Formulaire d'inscription dans `LoginModal` (lien « Créer un compte ») : nom, mot de passe (deux fois), e-mail.
-- [ ] Inscription protégée par le `signup_password` de l'instance : c'est le code donné aux personnes invitées. Le champ n'apparaît que si l'instance en a un.
-- [ ] Saisie du mot de passe général, quand l'instance en a un (déjà dans le TODO principal).
-- [ ] E-mail obligatoire (`require_mail_to_signup`) : sans e-mail, pas de récupération du mot de passe.
-- [ ] Connecté automatiquement après l'inscription.
+- [x] Formulaire d'inscription dans `LoginModal` (lien « Créer un compte ») : nom, e-mail, mot de passe (deux fois, 6 caractères au moins) (24/11).
+- [x] Code d'invitation : le `signup_password` de l'instance. Le champ n'apparaît que si l'instance en a un. **Vérifié seulement dans le navigateur** tant qu'adc-core ne le vérifie pas (`adc-core/TODO.md`, « Signup password checked on the server ») : il décourage, il ne protège pas.
+- [x] E-mail obligatoire si l'instance a `require_mail_to_signup: true` (à mettre dans le `settings.json` du VPS, avec `signup_password`). Enregistré en minuscules. Les e-mails sont encore renvoyés à tout visiteur par `GET /_api2/authors` (`adc-core/TODO.md`).
+- [x] Connecté automatiquement après l'inscription ; parti de « Créer un cahier », la fenêtre de création s'ouvre ensuite.
+- [ ] Tester sur le serveur : inscription avec et sans code, nom et e-mail déjà pris, compte créé puis cahier créé.
+- [ ] Saisie du mot de passe général, quand l'instance en a un (déjà dans le TODO principal). Pas d'interface du tout pour l'instant : une instance avec un mot de passe général ne marche pas avec les Cahiers v3.
 
 ## 3. Créer un cahier avec un compte
 
-- [ ] `can_create_cahier` dans `HomeView.vue` : tout auteur connecté, plus seulement les admins de l'instance. Le serveur l'accepte déjà (`$can_be_created_by: "logged-in"`).
-- [ ] Sans compte : le bouton « Créer un cahier » propose de se connecter ou de créer un compte.
+- [x] Tout auteur connecté, plus seulement les admins de l'instance. Le serveur l'accepte déjà (`$can_be_created_by: "logged-in"`).
+- [x] Sans compte : le bouton « Créer un cahier » est affiché et demande de se connecter (puis ouvre la fenêtre). Proposer aussi de créer un compte, une fois l'inscription faite.
 - [ ] Le créateur devient admin du cahier : c'est déjà le cas (`CreateCahierModal`).
 
 ## 4. Réglages d'un cahier
 
-Une fenêtre pour les admins du cahier, ouverte depuis la barre du haut (dans le menu ☰ sur petit écran). Rester proche de la fenêtre de la v2.
+`CahierSettingsModal.vue`, ouverte par un crayon à côté du titre, pour les admins du cahier (24/11). Écrite sans reprendre la fenêtre de la v2.
 
-- [ ] Reprendre la fenêtre de la v2 comme point de départ (branche `master`)
-- [ ] Titre et description
-- [ ] Début et fin de la timeline, facultatifs
-- [ ] Visibilité : public / privé / ouvert aux contributions sans compte
-- [ ] Admins et contributeurs, choisis parmi les comptes : ajouter et retirer. Empêcher de se retirer soi-même s'il ne reste plus d'autre admin.
-- [ ] Supprimer le cahier, avec une confirmation dans la page
-- [ ] Renommer ne change pas l'adresse (`/<slug>`) : les liens déjà partagés continuent de marcher
+- [x] Titre et description
+- [x] Début et fin de la timeline, facultatifs
+- [x] Visibilité : public / privé / ouvert aux contributions sans compte (les deux cases de la création)
+- [x] Admins et contributeurices, choisis parmi les comptes : ajouter et retirer. Toujours au moins un admin ; se retirer soi-même est signalé avant d'enregistrer.
+- [x] Supprimer le cahier, avec une confirmation dans la fenêtre (il va dans la corbeille d'adc-core)
+- [x] Renommer ne change pas l'adresse (`/<slug>`) : les liens déjà partagés continuent de marcher
 - [ ] Mise à jour en direct chez les autres (titre, droits), avec les événements du point 1
+- [ ] Un autre admin supprime le cahier pendant qu'on le regarde : la page reste sur « Chargement… » au lieu de le dire
 
 ## 5. Mot de passe oublié
 
