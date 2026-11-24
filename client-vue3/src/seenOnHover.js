@@ -4,7 +4,8 @@ import { useUnseenStore } from "@/stores/unseen";
 // is seen once the mouse stays over it for a while. With a mouse only:
 // on touch screens, a tap opens it, which marks it seen too (MediaModal.vue).
 
-const DELAY_MS = 1000;
+// plus the outline's fade (MediaTile.vue): about a second in all
+const DELAY_MS = 700;
 
 function clear(el) {
   clearTimeout(el._seen_timeout);
