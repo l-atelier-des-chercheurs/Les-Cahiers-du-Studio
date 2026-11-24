@@ -255,11 +255,10 @@ function folderOf(meta: FileMeta) {
   return meta.$path.split("/").slice(0, -1).join("/");
 }
 
-// regenerated thumbs keep their names: $thumbs_version (set by the store,
-// not by adc-core) changes their URLs, for the browser to fetch them again
+// names in $thumbs end with ?v=<mtime> (adc-core): a regenerated thumb gets
+// a new URL, and the browser may cache it for good
 function thumbPath(meta: FileMeta, name: string) {
-  const version = meta.$thumbs_version;
-  return `thumbs/${folderOf(meta)}/${name}${version ? `?v=${version}` : ""}`;
+  return `thumbs/${folderOf(meta)}/${name}`;
 }
 
 export function mediaURL(meta: FileMeta) {
