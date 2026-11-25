@@ -1,10 +1,18 @@
-import{u as e}from"../build.js";import{t}from"./i18n-BXqy36Kp.js";import{n}from"./markdown-utI3NjUR.js";import{N as r,Tt as i,d as a,f as o,g as s,i as c,j as l,l as u,t as d}from"./_plugin-vue_export-helper-DEwKEnfU.js";var f=`# Nouveautés
+import{u as e}from"../build.js";import{t}from"./i18n-BKnLzhZd.js";import{n}from"./markdown-utI3NjUR.js";import{N as r,Tt as i,d as a,f as o,g as s,i as c,j as l,l as u,t as d}from"./_plugin-vue_export-helper-DEwKEnfU.js";var f=`# Nouveautés
 
 Ce qui change pour les personnes qui utilisent les Cahiers, de la version la plus récente à la plus ancienne. L’appli affiche les nouveautés depuis la dernière version utilisée dans le navigateur.
 
 Écrire les nouveautés sous « À venir » au fil de l’eau : \`npm version\` remplace ce titre par le numéro et la date de la version.
 
 ## À venir
+
+## 3.1.0-alpha.19 — 2026-11-25
+
+- Créer son compte, depuis la fenêtre de connexion : un nom, un e-mail et un mot de passe, et le code d’invitation s’il y en a un.
+- Toute personne qui a un compte peut créer ses cahiers.
+- Un crayon à côté du titre d’un cahier ouvre ses réglages, pour ses admins : titre, description, début et fin de la timeline, accès (privé, public, ouvert à tous), admins et contributeurices, et suppression du cahier. L’adresse du cahier ne change pas avec son titre.
+- Les médias ajoutés par d’autres personnes depuis la dernière visite sont entourés de vert, comme ceux qu’on ajoute soi-même, jusqu’à ce qu’on les ouvre ou qu’on les survole. À la première visite d’un cahier, rien n’est signalé. Ce suivi est propre à chaque navigateur.
+- Dans la barre du haut, « 12 nouveaux » compte les médias entourés de vert. Chaque clic mène au suivant, du plus anciennement ajouté au plus récent, et le compte comme vu sans avoir à l’ouvrir.
 
 ## 3.1.0-alpha.18 — 2026-11-20
 

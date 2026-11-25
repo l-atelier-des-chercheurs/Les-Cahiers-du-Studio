@@ -6,6 +6,8 @@ Ce qui change pour les personnes qui utilisent les Cahiers, de la version la plu
 
 ## À venir
 
+## 3.1.0-alpha.19 — 2026-11-25
+
 - Créer son compte, depuis la fenêtre de connexion : un nom, un e-mail et un mot de passe, et le code d’invitation s’il y en a un.
 - Toute personne qui a un compte peut créer ses cahiers.
 - Un crayon à côté du titre d’un cahier ouvre ses réglages, pour ses admins : titre, description, début et fin de la timeline, accès (privé, public, ouvert à tous), admins et contributeurices, et suppression du cahier. L’adresse du cahier ne change pas avec son titre.
